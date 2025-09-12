@@ -1,0 +1,51 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#gradient2)"/>
+  
+  <!-- Chart/Analytics -->
+  <rect x="100" y="100" width="200" height="120" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <path d="M120 180 L140 160 L160 140 L180 120 L200 100 L220 110 L240 90 L260 80 L280 70" stroke="#06D6A0" stroke-width="3" fill="none"/>
+  
+  <!-- Bar chart -->
+  <rect x="120" y="160" width="8" height="40" fill="#7C3AED"/>
+  <rect x="140" y="140" width="8" height="60" fill="#F72585"/>
+  <rect x="160" y="120" width="8" height="80" fill="#06D6A0"/>
+  <rect x="180" y="100" width="8" height="100" fill="#4CC9F0"/>
+  <rect x="200" y="130" width="8" height="70" fill="#7C3AED"/>
+  <rect x="220" y="110" width="8" height="90" fill="#F72585"/>
+  <rect x="240" y="90" width="8" height="110" fill="#06D6A0"/>
+  <rect x="260" y="80" width="8" height="120" fill="#4CC9F0"/>
+  
+  <!-- Megaphone -->
+  <path d="M50 150 L80 140 L80 160 Z" fill="#7C3AED"/>
+  <rect x="80" y="145" width="30" height="10" fill="#7C3AED"/>
+  <circle cx="115" cy="150" r="8" fill="#F72585"/>
+  
+  <!-- Sound waves -->
+  <path d="M125 140 Q135 140 135 150 Q135 160 125 160" stroke="#06D6A0" stroke-width="2" fill="none"/>
+  <path d="M130 135 Q145 135 145 150 Q145 165 130 165" stroke="#06D6A0" stroke-width="2" fill="none"/>
+  
+  <!-- Target -->
+  <circle cx="320" cy="80" r="30" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="320" cy="80" r="20" fill="none" stroke="#F72585" stroke-width="2"/>
+  <circle cx="320" cy="80" r="10" fill="none" stroke="#06D6A0" stroke-width="2"/>
+  <circle cx="320" cy="80" r="4" fill="#7C3AED"/>
+  
+  <!-- Social media icons -->
+  <circle cx="60" cy="60" r="15" fill="#4CC9F0"/>
+  <rect x="52" y="52" width="16" height="16" rx="3" fill="#FFFFFF"/>
+  
+  <circle cx="340" cy="220" r="15" fill="#F72585"/>
+  <path d="M335 215 L345 215 M340 210 L340 220 M335 225 L345 225" stroke="#FFFFFF" stroke-width="2"/>
+  
+  <!-- Email -->
+  <rect x="280" y="240" width="40" height="30" rx="4" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+  <path d="M285 245 L300 255 L315 245" stroke="#7C3AED" stroke-width="2" fill="none"/>
+  
+  <defs>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FDF2F8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EDE9FE;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

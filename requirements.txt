@@ -1,0 +1,54 @@
+# Proyecto Blog Headless Next.js - Dependencias
+# Generado el: 2025-09-12
+# 
+# Este archivo registra todas las dependencias instaladas en el proyecto
+# Actualiza este archivo cada vez que instales nuevos paquetes
+
+## Dependencias de Producción
+next@14.0.0                    # Framework Next.js para React
+react@^18.2.0                 # Librería React
+react-dom@^18.2.0             # Renderizador React DOM
+lottie-react@^2.4.1           # Animaciones Lottie para React
+
+## Dependencias de Desarrollo
+@types/node@^20.0.0           # Definiciones TypeScript para Node.js
+@types/react@^18.2.0          # Definiciones TypeScript para React
+@types/react-dom@^18.2.0      # Definiciones TypeScript para React DOM
+autoprefixer@^10.0.1          # Plugin PostCSS para agregar prefijos de navegador
+eslint@^8.0.0                 # Linter para JavaScript/TypeScript
+eslint-config-next@14.0.0     # Configuración ESLint para Next.js
+postcss@^8.0.0               # Post-procesador CSS
+tailwindcss@^3.3.0           # Framework CSS utility-first
+typescript@^5.0.0            # Compilador TypeScript
+
+## CÓMO INSTALAR EN UN NUEVO PROYECTO
+
+### Opción 1: Usando package.json (RECOMENDADO)
+# 1. Copia el archivo package.json a tu nuevo proyecto
+# 2. Ejecuta el siguiente comando:
+npm install
+
+### Opción 2: Comandos completos de instalación
+# Ejecuta estos comandos en orden:
+npm install next@14.0.0 react@^18.2.0 react-dom@^18.2.0 lottie-react@^2.4.1
+npm install -D @types/node@^20.0.0 @types/react@^18.2.0 @types/react-dom@^18.2.0 autoprefixer@^10.0.1 eslint@^8.0.0 eslint-config-next@14.0.0 postcss@^8.0.0 tailwindcss@^3.3.0 typescript@^5.0.0
+
+### Opción 3: Instalación paso a paso
+# Dependencias de producción:
+npm install next react react-dom lottie-react
+
+# Dependencias de desarrollo:
+npm install -D @types/node @types/react @types/react-dom autoprefixer eslint eslint-config-next postcss tailwindcss typescript
+
+## Notas del Proyecto
+# - Proyecto Next.js usando App Router
+# - Estilizado con Tailwind CSS
+# - Escrito en TypeScript
+# - Usa Lottie para animaciones
+# - Recuerda actualizar este archivo al agregar nuevas dependencias
+
+## ¿Por qué usar la Opción 1?
+# - Es la más confiable
+# - Mantiene las versiones exactas que funcionan bien juntas
+# - Evita conflictos de dependencias
+# - Es más rápido y simple
