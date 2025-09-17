@@ -1,262 +1,197 @@
-import { getPageMetadataBySlug } from '@/services/wordpress';
+import { getBlogPosts } from '@/services/wordpress';
+import Link from 'next/link';
+import Image from 'next/image';
 
-// Datos de ejemplo de publicaciones del blog
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Las 10 tendencias de marketing digital para 2024',
-    slug: 'tendencias-marketing-digital-2024',
-    excerpt: 'Descubre las estrategias que dominarán el panorama digital este año y cómo aplicarlas a tu negocio.',
-    date: '15 de enero, 2024',
-    category: 'Marketing Digital',
-    image: '/images/blog/tendencias-2024.jpg',
-    readTime: '5 min de lectura'
-  },
-  {
-    id: 2,
-    title: 'Cómo mejorar el SEO técnico de tu sitio web',
-    slug: 'mejorar-seo-tecnico',
-    excerpt: 'Guía completa para optimizar los aspectos técnicos de tu sitio web y mejorar tu posicionamiento en buscadores.',
-    date: '8 de enero, 2024',
-    category: 'SEO',
-    image: '/images/blog/seo-tecnico.jpg',
-    readTime: '7 min de lectura'
-  },
-  {
-    id: 3,
-    title: 'Estrategias efectivas de email marketing para conversiones',
-    slug: 'email-marketing-conversiones',
-    excerpt: 'Aprende a diseñar campañas de email marketing que generen resultados tangibles para tu negocio.',
-    date: '2 de enero, 2024',
-    category: 'Email Marketing',
-    image: '/images/blog/email-marketing.jpg',
-    readTime: '6 min de lectura'
-  },
-  {
-    id: 4,
-    title: 'Guía completa de Google Analytics 4',
-    slug: 'guia-google-analytics-4',
-    excerpt: 'Todo lo que necesitas saber para sacar el máximo provecho de la nueva versión de Google Analytics.',
-    date: '28 de diciembre, 2023',
-    category: 'Analítica',
-    image: '/images/blog/ga4.jpg',
-    readTime: '8 min de lectura'
-  },
-  {
-    id: 5,
-    title: 'Diseño web conversional: principios y mejores prácticas',
-    slug: 'diseno-web-conversional',
-    excerpt: 'Cómo diseñar sitios web que no solo se vean bien, sino que también conviertan visitantes en clientes.',
-    date: '20 de diciembre, 2023',
-    category: 'Diseño Web',
-    image: '/images/blog/diseno-conversional.jpg',
-    readTime: '6 min de lectura'
-  },
-  {
-    id: 6,
-    title: 'El poder del storytelling en el marketing de contenidos',
-    slug: 'storytelling-marketing-contenidos',
-    excerpt: 'Aprende a contar historias que conecten emocionalmente con tu audiencia y mejoren tus resultados de marketing.',
-    date: '12 de diciembre, 2023',
-    category: 'Contenidos',
-    image: '/images/blog/storytelling.jpg',
-    readTime: '5 min de lectura'
+// Función para formatear la fecha
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    timeZone: 'UTC'
+  };
+  return new Date(dateString).toLocaleDateString('es-ES', options);
+};
+
+// Función para extraer el texto del excerpt (eliminar etiquetas HTML)
+const getExcerpt = (excerpt: string) => {
+  return excerpt.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...';
+};
+
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  // Obtener el número de página de los parámetros de búsqueda
+  const currentPage = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
+  const perPage = 6; // Número de posts por página
+
+  // Obtener los posts del blog
+  const { posts, totalPages } = await getBlogPosts(currentPage, perPage);
+
+  // Generar los números de página para la paginación
+  const pageNumbers = [];
+  const maxPageButtons = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+  
+  if (endPage - startPage + 1 < maxPageButtons) {
+    startPage = Math.max(1, endPage - maxPageButtons + 1);
   }
-];
 
-// Categorías del blog
-const categories = [
-  { name: 'Todos', slug: 'todos', count: 12 },
-  { name: 'Marketing Digital', slug: 'marketing-digital', count: 5 },
-  { name: 'SEO', slug: 'seo', count: 4 },
-  { name: 'Redes Sociales', slug: 'redes-sociales', count: 3 },
-  { name: 'Diseño Web', slug: 'diseno-web', count: 3 },
-  { name: 'Email Marketing', slug: 'email-marketing', count: 2 },
-  { name: 'Analítica', slug: 'analitica', count: 2 },
-  { name: 'Contenidos', slug: 'contenidos', count: 4 }
-];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
-export default async function BlogPage() {
-  try {
-    const metadata = await getPageMetadataBySlug('blog');
-    
-    return (
-      <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Encabezado */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {metadata.yoast_wpseo_title || 'Blog de Marketing Digital'}
-            </h1>
-            {metadata.yoast_wpseo_metadesc && (
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                {metadata.yoast_wpseo_metadesc}
-              </p>
-            )}
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Nuestro Blog</h1>
+          <p className="text-xl md:text-2xl max-w-3xl mx-auto">
+            Descubre las últimas noticias, consejos y tendencias en marketing digital
+          </p>
+        </div>
+      </div>
+
+      {/* Blog Posts */}
+      <div className="container mx-auto px-4 py-16">
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-semibold text-gray-700">No se encontraron artículos</h2>
+            <p className="text-gray-500 mt-2">Pronto publicaremos nuevo contenido.</p>
           </div>
-          
-          {/* Filtros de categoría */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category.slug}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  category.slug === 'todos'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category.name} ({category.count})
-              </button>
-            ))}
-          </div>
-          
-          {/* Listado de artículos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
-              <article key={post.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                <div className="h-48 bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400">Imagen: {post.title}</span>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <span>{post.date}</span>
-                    <span className="mx-2">•</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  <span className="inline-block bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full mb-3">
-                    {post.category}
-                  </span>
-                  <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-purple-600 transition-colors">
-                    <a href={`/blog/${post.slug}`}>
-                      {post.title}
-                    </a>
-                  </h2>
-                  <p className="text-gray-600 mb-4">
-                    {post.excerpt}
-                  </p>
-                  <a 
-                    href={`/blog/${post.slug}`}
-                    className="text-purple-600 hover:text-purple-800 font-medium inline-flex items-center text-sm"
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post) => (
+                <article key={post.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+                  <Link href={`/blog/${post.slug}`} className="flex flex-col h-full group">
+                    <div className="h-48 w-full relative overflow-hidden">
+                      {post.featured_media_url ? (
+                        <Image
+                          src={post.featured_media_url}
+                          alt={post.featured_media_alt || post.title.rendered}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                          <span className="text-gray-400">Sin imagen</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex items-center text-sm text-gray-500 mb-2">
+                        <span>{formatDate(post.date)}</span>
+                        {post.categories?.length > 0 && (
+                          <>
+                            <span className="mx-2">•</span>
+                            <span>{post.categories[0].name}</span>
+                          </>
+                        )}
+                      </div>
+                      <h2 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-blue-600 transition-colors">
+                        {post.title.rendered}
+                      </h2>
+                      <div className="text-gray-600 mb-4 flex-grow text-sm">
+                        {getExcerpt(post.excerpt.rendered)}
+                      </div>
+                      <div className="flex items-center text-blue-600 font-medium mt-auto">
+                        Leer más
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center">
+                <nav className="flex items-center space-x-2">
+                  <Link 
+                    href={`/blog?page=${Math.max(1, currentPage - 1)}`}
+                    className={`px-4 py-2 border rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 border-blue-300 hover:bg-blue-50'}`}
+                    aria-disabled={currentPage === 1}
+                    tabIndex={currentPage === 1 ? -1 : undefined}
                   >
-                    Leer más
-                    <svg className="w-3.5 h-3.5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-          
-          {/* Paginación */}
-          <div className="mt-12 flex justify-center">
-            <nav className="inline-flex rounded-md shadow -space-x-px" aria-label="Pagination">
-              <a
-                href="#"
-                className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                <span className="sr-only">Anterior</span>
-                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                aria-current="page"
-                className="relative z-10 inline-flex items-center border border-purple-500 bg-purple-50 px-4 py-2 text-sm font-medium text-purple-600"
-              >
-                1
-              </a>
-              <a
-                href="#"
-                className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                2
-              </a>
-              <a
-                href="#"
-                className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                3
-              </a>
-              <a
-                href="#"
-                className="relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                <span className="sr-only">Siguiente</span>
-                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                </svg>
-              </a>
-            </nav>
-          </div>
-          
-          {/* Suscripción al boletín */}
-          <div className="mt-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-8 text-center text-white">
-            <h2 className="text-2xl font-bold mb-4">Suscríbete a nuestro boletín</h2>
-            <p className="text-purple-100 mb-6 max-w-2xl mx-auto">
-              Recibe las últimas noticias, consejos y recursos de marketing digital directamente en tu bandeja de entrada.
-            </p>
-            <form className="max-w-md mx-auto flex gap-2">
-              <input
-                type="email"
-                placeholder="Tu correo electrónico"
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-white text-purple-700 font-medium px-6 py-3 rounded-lg hover:bg-purple-50 transition-colors"
-              >
-                Suscribirse
-              </button>
-            </form>
-            <p className="text-xs text-purple-200 mt-3">
-              Nos tomamos en serio tu privacidad. Nunca compartiremos tu información.
-            </p>
-          </div>
-        </div>
-      </main>
-    );
-  } catch (error) {
-    console.error('Error al cargar la página del blog:', error);
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">Error</h1>
-          <p className="text-gray-600">No se pudo cargar la página del blog.</p>
-        </div>
-      </main>
-    );
-  }
+                    Anterior
+                  </Link>
+                  
+                  {startPage > 1 && (
+                    <>
+                      <Link 
+                        href="/blog?page=1"
+                        className="px-3 py-1 rounded-md hover:bg-blue-50"
+                      >
+                        1
+                      </Link>
+                      {startPage > 2 && <span className="px-1">...</span>}
+                    </>
+                  )}
+                  
+                  {pageNumbers.map((number) => (
+                    <Link
+                      key={number}
+                      href={`/blog?page=${number}`}
+                      className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'hover:bg-blue-50'}`}
+                    >
+                      {number}
+                    </Link>
+                  ))}
+                  
+                  {endPage < totalPages && (
+                    <>
+                      {endPage < totalPages - 1 && <span className="px-1">...</span>}
+                      <Link 
+                        href={`/blog?page=${totalPages}`}
+                        className="px-3 py-1 rounded-md hover:bg-blue-50"
+                      >
+                        {totalPages}
+                      </Link>
+                    </>
+                  )}
+                  
+                  <Link 
+                    href={`/blog?page=${Math.min(totalPages, currentPage + 1)}`}
+                    className={`px-4 py-2 border rounded-md ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 border-blue-300 hover:bg-blue-50'}`}
+                    aria-disabled={currentPage === totalPages}
+                    tabIndex={currentPage === totalPages ? -1 : undefined}
+                  >
+                    Siguiente
+                  </Link>
+                </nav>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export async function generateMetadata() {
-  try {
-    const metadata = await getPageMetadataBySlug('blog');
-    
-    return {
-      title: metadata.yoast_wpseo_title || 'Blog de Marketing Digital - Playful Agency',
-      description: metadata.yoast_wpseo_metadesc || 'Artículos, noticias y consejos sobre marketing digital, SEO, redes sociales, diseño web y más. Mantente actualizado con las últimas tendencias.',
-      openGraph: {
-        title: metadata.yoast_wpseo_og_title || 'Blog de Marketing Digital - Playful Agency',
-        description: metadata.yoast_wpseo_og_description || metadata.yoast_wpseo_metadesc || 'Artículos, noticias y consejos sobre marketing digital, SEO, redes sociales, diseño web y más. Mantente actualizado con las últimas tendencias.',
-        type: 'website',
-        url: 'https://playfulagency.com/blog',
-        images: metadata.yoast_wpseo_og_image ? [{
-          url: metadata.yoast_wpseo_og_image,
+  return {
+    title: 'Blog - Playful Agency',
+    description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+    openGraph: {
+      title: 'Blog - Playful Agency',
+      description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      images: [
+        {
+          url: '/images/og-blog.jpg',
           width: 1200,
           height: 630,
-          alt: 'Blog de Marketing Digital - Playful Agency',
-        }] : [],
-      },
-    };
-  } catch (error) {
-    console.error('Error al generar metadatos de la página del blog:', error);
-    return {
-      title: 'Blog de Marketing Digital - Playful Agency',
-      description: 'Artículos, noticias y consejos sobre marketing digital, SEO, redes sociales, diseño web y más. Mantente actualizado con las últimas tendencias.',
-    };
-  }
+          alt: 'Blog - Playful Agency',
+        },
+      ],
+    },
+  };
 }

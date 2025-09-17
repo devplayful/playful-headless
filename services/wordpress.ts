@@ -202,3 +202,126 @@ export const menuItems: MenuItem[] = [
     slug: 'contactar-agencia-de-marketing-digital'
   }
 ];
+
+// Interfaces para los posts del blog
+export interface WPTerm {
+  id: number;
+  name: string;
+  slug: string;
+  taxonomy: string;
+}
+
+export interface WPFeaturedMedia {
+  id: number;
+  source_url: string;
+  alt_text: string;
+  media_details: {
+    sizes: {
+      [key: string]: {
+        source_url: string;
+        width: number;
+        height: number;
+      };
+    };
+  };
+}
+
+export interface WPPost {
+  id: number;
+  date: string;
+  slug: string;
+  title: {
+    rendered: string;
+  };
+  content: {
+    rendered: string;
+  };
+  excerpt: {
+    rendered: string;
+  };
+  _embedded?: {
+    'wp:featuredmedia'?: WPFeaturedMedia[];
+    'wp:term'?: WPTerm[][];
+  };
+  featured_media?: number;
+  featured_media_url?: string;
+  featured_media_alt?: string;
+}
+
+/**
+ * Obtiene las entradas del blog paginadas
+ * @param page Número de página (comenzando en 1)
+ * @param perPage Cantidad de entradas por página
+ * @returns Promise con el array de posts y el total de páginas
+ */
+export async function getBlogPosts(page: number = 1, perPage: number = 10): Promise<{ posts: WPPost[], totalPages: number }> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,_links,_embedded`,
+      { 
+        next: { revalidate: 60 }, // Revalidar cada minuto
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
+    }
+
+    // Obtener el total de páginas desde los headers
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+    const posts: WPPost[] = await response.json();
+
+    // Procesar los posts para extraer la imagen destacada y categorías
+    const processedPosts = posts.map(post => {
+      const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+      const categories = post._embedded?.['wp:term']?.[0] || [];
+      
+      return {
+        ...post,
+        featured_media_url: featuredMedia?.source_url || null,
+        featured_media_alt: featuredMedia?.alt_text || '',
+        categories
+      };
+    });
+
+    return {
+      posts: processedPosts,
+      totalPages
+    };
+  } catch (error) {
+    console.error('Error en getBlogPosts:', error);
+    return { posts: [], totalPages: 0 };
+  }
+}
+
+/**
+ * Obtiene una entrada del blog por su slug
+ * @param slug Slug de la entrada
+ * @returns Promise con el post o null si no se encuentra
+ */
+export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener el post: ${response.status} ${response.statusText}`);
+    }
+
+    const posts: WPPost[] = await response.json();
+    return posts[0] || null;
+  } catch (error) {
+    console.error('Error en getBlogPostBySlug:', error);
+    return null;
+  }
+}
