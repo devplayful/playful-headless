@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import AnimatedButton from '@/components/AnimatedButton'
+import MaterialServicesSection from '@/components/MaterialServicesSection'
 
 export default function Home() {
   return (
@@ -102,13 +103,8 @@ export default function Home() {
         <div className="absolute bottom-20 right-40 w-5 h-5 bg-yellow-300 rounded-full opacity-60 animate-bounce" style={{animationDelay: '1.5s'}}></div>
       </section>
 
-      {/* Features Section */}
-
-
-      {/* Latest Posts Preview */}
-
-
-      {/* CTA Section */}
+      {/* Material UI Services Section */}
+      <MaterialServicesSection />
 
     </div>
   )
