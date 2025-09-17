@@ -1,183 +1,97 @@
-import AnimatedButton from '@/components/AnimatedButton'
+import { getPageMetadataBySlug } from '@/services/wordpress';
 
-export default function Nosotros() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8">
-            <div className="space-y-4">
-              <h1 className="title-large text-4xl md:text-5xl lg:text-6xl text-purple-900">
-                Conoce a Playful Agency
-              </h1>
-              <p className="subtitle text-xl text-purple-700 max-w-3xl mx-auto">
-                Somos un equipo apasionado de creativos, estrategas y desarrolladores 
-                que transformamos ideas en experiencias digitales extraordinarias.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Story Section */}
-      <section className="py-16 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="title-medium text-3xl md:text-4xl text-purple-900">
-                Nuestra Historia
+export default async function Nosotros() {
+  try {
+    const metadata = await getPageMetadataBySlug('nosotros');
+    
+    return (
+      <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8">
+            {metadata.yoast_wpseo_title || 'Sobre Nosotros'}
+          </h1>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="prose max-w-none">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Conoce más sobre Playful Agency
               </h2>
-              <div className="space-y-4 text-purple-800">
-                <p className="body-text text-lg">
-                  Playful Agency nació de una simple pero poderosa idea: el marketing digital 
-                  no tiene que ser aburrido. Creemos que las mejores estrategias surgen cuando 
-                  combinamos creatividad, datos y una pizca de diversión.
-                </p>
-                <p className="body-text text-lg">
-                  Desde nuestros inicios, hemos ayudado a más de 200 marcas a encontrar su 
-                  voz digital y conectar auténticamente con su audiencia. No somos solo una 
-                  agencia, somos tus compañeros de aventura en el mundo digital.
-                </p>
-                <p className="body-text text-lg">
-                  Cada proyecto es una oportunidad para innovar, experimentar y crear algo 
-                  verdaderamente memorable. Porque creemos que el marketing excepcional 
-                  comienza con personas excepcionales.
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="relative w-full h-96 bg-gradient-to-br from-teal-200 to-purple-300 rounded-2xl flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-4xl">🚀</span>
-                  </div>
-                  <p className="title-medium text-2xl text-white">
-                    +200 Proyectos
-                  </p>
-                  <p className="subtitle text-white">
-                    Exitosos completados
-                  </p>
+              <p className="text-lg text-gray-600 mb-6">
+                Somos una agencia de marketing digital apasionada por ayudar a las empresas a crecer en el mundo digital.
+              </p>
+              <p className="text-gray-600 mb-8">
+                Con un equipo de expertos en diferentes áreas del marketing digital, ofrecemos soluciones personalizadas 
+                que se adaptan a las necesidades específicas de cada cliente.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-6 mt-10">
+                <div>
+                  <h3 className="text-3xl font-bold text-purple-600 mb-2">+100</h3>
+                  <p className="text-gray-600">Clientes satisfechos</p>
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-purple-600 mb-2">+5</h3>
+                  <p className="text-gray-600">Años de experiencia</p>
                 </div>
               </div>
             </div>
+            
+            <div className="relative h-96 bg-gray-100 rounded-lg overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-500/20"></div>
+              <div className="absolute bottom-0 right-0 w-4/5 h-4/5 bg-purple-600/10 rounded-tl-full"></div>
+              <div className="relative h-full flex items-center justify-center">
+                <span className="text-gray-400">Imagen del equipo</span>
+              </div>
+            </div>
           </div>
+          
+          {metadata.yoast_wpseo_metadesc && (
+            <div className="mt-12 p-6 bg-gray-50 rounded-lg">
+              <h2 className="text-xl font-semibold mb-3">Nuestro Enfoque</h2>
+              <p className="text-gray-700">{metadata.yoast_wpseo_metadesc}</p>
+            </div>
+          )}
         </div>
-      </section>
-
-      {/* Our Values Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8 mb-16">
-            <h2 className="title-medium text-3xl md:text-4xl text-purple-900">
-              Nuestros Valores
-            </h2>
-            <p className="subtitle text-xl text-purple-700 max-w-3xl mx-auto">
-              Los principios que guían cada decisión y cada proyecto que emprendemos.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Value 1 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-teal-400 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">💡</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Creatividad</h3>
-              <p className="body-text text-purple-700">
-                Pensamos fuera de la caja para crear soluciones únicas que destaquen 
-                en un mundo digital saturado.
-              </p>
-            </div>
-
-            {/* Value 2 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">📊</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Resultados</h3>
-              <p className="body-text text-purple-700">
-                Cada estrategia está respaldada por datos y métricas que demuestran 
-                el impacto real en tu negocio.
-              </p>
-            </div>
-
-            {/* Value 3 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-pink-400 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Colaboración</h3>
-              <p className="body-text text-purple-700">
-                Trabajamos codo a codo contigo, porque los mejores resultados 
-                surgen de la colaboración auténtica.
-              </p>
-            </div>
-
-            {/* Value 4 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">⚡</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Agilidad</h3>
-              <p className="body-text text-purple-700">
-                Nos adaptamos rápidamente a los cambios del mercado y las 
-                necesidades de nuestros clientes.
-              </p>
-            </div>
-
-            {/* Value 5 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">🎯</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Precisión</h3>
-              <p className="body-text text-purple-700">
-                Cada acción tiene un propósito claro y está alineada con tus 
-                objetivos de negocio.
-              </p>
-            </div>
-
-            {/* Value 6 */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 text-center space-y-4 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">🎉</span>
-              </div>
-              <h3 className="title-medium text-xl text-purple-900">Diversión</h3>
-              <p className="body-text text-purple-700">
-                Creemos que el trabajo excepcional surge cuando disfrutas lo que haces. 
-                ¡Y eso se nota en los resultados!
-              </p>
-            </div>
-          </div>
+      </main>
+    );
+  } catch (error) {
+    console.error('Error al cargar la página de nosotros:', error);
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-red-600 mb-4">Error</h1>
+          <p className="text-gray-600">No se pudo cargar la página de nosotros.</p>
         </div>
-      </section>
+      </main>
+    );
+  }
+}
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h2 className="title-medium text-3xl md:text-4xl text-white">
-            ¿Listo para trabajar con nosotros?
-          </h2>
-          <p className="subtitle text-xl text-purple-100">
-            Conversemos sobre cómo podemos hacer crecer tu negocio juntos.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <AnimatedButton 
-              variant="primary" 
-              href="/servicios"
-            >
-              VER NUESTROS SERVICIOS
-            </AnimatedButton>
-            <AnimatedButton 
-              variant="secondary" 
-              href="/contacto"
-            >
-              CONTACTANOS AHORA
-            </AnimatedButton>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
+export async function generateMetadata() {
+  try {
+    const metadata = await getPageMetadataBySlug('nosotros');
+    
+    return {
+      title: metadata.yoast_wpseo_title || 'Sobre Nosotros - Playful Agency',
+      description: metadata.yoast_wpseo_metadesc || 'Conoce más sobre Playful Agency y nuestro equipo de expertos en marketing digital.',
+      openGraph: {
+        title: metadata.yoast_wpseo_og_title || 'Sobre Nosotros - Playful Agency',
+        description: metadata.yoast_wpseo_og_description || metadata.yoast_wpseo_metadesc || 'Conoce más sobre Playful Agency y nuestro equipo de expertos en marketing digital.',
+        type: 'website',
+        url: 'https://playfulagency.com/nosotros',
+        images: metadata.yoast_wpseo_og_image ? [{
+          url: metadata.yoast_wpseo_og_image,
+          width: 1200,
+          height: 630,
+          alt: 'Sobre Nosotros - Playful Agency',
+        }] : [],
+      },
+    };
+  } catch (error) {
+    console.error('Error al generar metadatos de la página Nosotros:', error);
+    return {
+      title: 'Sobre Nosotros - Playful Agency',
+      description: 'Conoce más sobre Playful Agency y nuestro equipo de expertos en marketing digital.',
+    };
+  }
 }
