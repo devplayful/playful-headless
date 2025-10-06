@@ -51,7 +51,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b border-purple-100">
+    <header className="playful-header bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b border-purple-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -78,6 +78,13 @@ export default function Header() {
                 INICIO
               </Link>
               
+              <Link 
+                href="/casos-de-exito-agencia-de-marketing-digital" 
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+              >
+                CASOS DE ÉXITO
+              </Link>
+
               <div className="relative group">
                 <button 
                   onClick={toggleServices}
@@ -117,13 +124,6 @@ export default function Header() {
               </Link>
               
               <Link 
-                href="/casos-de-exito-agencia-de-marketing-digital" 
-                className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
-              >
-                CASOS DE ÉXITO
-              </Link>
-              
-              <Link 
                 href="/blog" 
                 className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
@@ -132,9 +132,9 @@ export default function Header() {
               
               <Link 
                 href="/contactar-agencia-de-marketing-digital" 
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                className="playful-boton-header px-4 py-2 rounded-lg font-medium transition-colors"
               >
-                CONTACTO
+                Contáctanos
               </Link>
             </div>
           </div>

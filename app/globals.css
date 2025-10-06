@@ -70,3 +70,24 @@ body {
     text-wrap: balance;
   }
 }
+
+.playful-header {
+  margin: 40px 80px !important;
+  padding: 20px;
+  border: 16px !important;
+  background-color: white !important;
+  border-radius: 16px !important;
+  background-color: #E9D7FF;
+}
+
+.playful-boton-header {
+  background-color: #72E3D8;  
+}
+
+body {
+  background-image: url(/images/background.webp);
+  background-color: #E9D7FF !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
