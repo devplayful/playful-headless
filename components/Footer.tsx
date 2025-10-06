@@ -28,7 +28,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link href="/sobre-playful" className="body-text text-white/80 hover:text-white transition-colors">
-                  Sobre Playful
+                  Sobre Playful.
                 </Link>
               </li>
               <li>
