@@ -15,9 +15,6 @@ export default function Home() {
                 <p className="playful-miga-pan">Playful Agency:</p>
                 <h1 className="playful-h1">
                 ¿Tu web está costándole dinero a tu negocio?                </h1>
-                <p className="subtitle text-purple-700 text-xl">
-                  (de sorpresa, claro)
-                </p>
               </div>
               
               <div className="space-y-4 text-purple-800">
