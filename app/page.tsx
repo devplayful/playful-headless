@@ -12,20 +12,17 @@ export default function Home() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-2">
-                <p className="subtitle text-purple-600 text-lg">Playful Agency:</p>
-                <h1 className="title-large text-4xl md:text-5xl lg:text-6xl text-purple-900">
+                <p className="playful-miga-pan">Playful Agency:</p>
+                <h1 className="playful-h1">
                 ¿Tu web está costándole dinero a tu negocio?                </h1>
-                <p className="subtitle text-purple-700 text-xl">
-                  (de sorpresa, claro)
-                </p>
               </div>
               
               <div className="space-y-4 text-purple-800">
-                <p className="body-text text-lg">
-                Tu sitio web no es solo tu carta de presentación; es tu motor de ventas. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás dejando dinero sobre la mesa.
+                <p className="playful-contenido-p">
+                Tu sitio web no es solo tu carta de presentación; es tu motor de ventas. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás <b>dejando dinero sobre la mesa</b>.
                 </p>
-                <p className="body-text text-lg">
-                En Playful Agency, somos expertos en transformar sitios web mediocres en máquinas de conversión. No hacemos diseños bonitos por hacer; creamos tecnología que se traduce en ventas y crecimiento real.
+                <p className="playful-contenido-p">
+                En <b>Playful Agency</b>, somos expertos en transformar sitios web mediocres en <b>máquinas de conversión</b>. No hacemos diseños bonitos por hacer; creamos tecnología que se traduce en <b>ventas y crecimiento real</b>.
                 </p>
               </div>
 
