@@ -165,7 +165,7 @@ const NuestrosValoresSection = () => {
         {valores.map((valor, index) => (
           <div 
             key={index} 
-            className="bg-[#E9D7FF] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center text-center min-h-[500px] justify-center"
+            className="bg-[#FEF7FF] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center text-center min-h-[500px] justify-center"
           >
             <div className="w-20 h-20 mb-4 flex items-center justify-center">
               <div className="w-16 h-16 bg-[#F0E6FF] rounded-full flex items-center justify-center">
