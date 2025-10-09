@@ -27,25 +27,25 @@ body {
     font-weight: 400;
     line-height: 1.1;
   }
-  
+
   .title-medium {
     font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
     font-weight: 400;
     line-height: 1.2;
   }
-  
+
   .title-small {
     font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
     font-weight: 400;
     line-height: 1.3;
   }
-  
+
   .body-text-medium {
     font-family: var(--font-dm-sans), sans-serif;
     font-weight: 500;
     line-height: 1.6;
   }
-  
+
   .body-text-bold {
     font-family: var(--font-dm-sans), sans-serif;
     font-weight: 700;
@@ -67,12 +67,12 @@ body {
   border-radius: 16px !important;
   background-color: #E9D7FF;
   background: #FFFBFF;
-box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
-border-radius: 100px;
+  box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 100px;
 }
 
 .playful-boton-header {
-  background-color: #72E3D8;  
+  background-color: #72E3D8;
 }
 
 body {
@@ -83,7 +83,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/************CSS CLASES GLOBALES*************/ 
+/************CSS CLASES GLOBALES*************/
 
 .playful-h1 {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
@@ -107,4 +107,48 @@ body {
   line-height: 1.1;
   font-size: 16px;
   color: #4A4453;
+}
+
+
+/* Footer */
+
+@media only screen and (min-width: 500px) and (max-width: 768px) {
+  .footer {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .logo {
+    padding: 0px;
+  }
+
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 25%;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .footer {}
+
+  .footerCard {
+    width: 111.5% !important;
+    margin: 0px 0px 50px 0px;
+
+  }
+
+  .logo {
+    padding: 0px;
+  }
+
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .playful-footerItems{
+    width: 50%;
+  }
 }
