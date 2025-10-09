@@ -1,5 +1,6 @@
 import { getPageMetadataBySlug } from '@/services/wordpress';
 import Image from 'next/image';
+import PortfolioCarousel from '@/components/ui/PortfolioCarousel';
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
@@ -42,12 +43,12 @@ const HistorySection = () => {
           
           {/* Tarjeta 1 */}
           <div className="bg-[#E9D7FF] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/new-york-tip.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/new-york-tip.png"
                 alt="Ilustración de estrategia digital"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -58,12 +59,12 @@ const HistorySection = () => {
           
           {/* Tarjeta 2 */}
           <div className="bg-[#E9D7FF] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/ayudamos.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/ayudamos.png"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -87,12 +88,12 @@ const MissionVisionSection = () => {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Tarjeta Misión */}
         <div className="bg-[#FFEFD1] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/MISION.PNG" // CAMBIA ESTA RUTA
+                src="/images/nosotros/MISION.PNG"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -104,12 +105,12 @@ const MissionVisionSection = () => {
         
         {/* Tarjeta Visión */}
         <div className="bg-[#FFDBDB] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/vision.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/vision.png"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -123,65 +124,249 @@ const MissionVisionSection = () => {
   );
 };
 
-// --- COMPONENTE DE VALORES ---
+// --- COMPONENTE DE EQUIPO ---
+const EquipoSection = () => {
+  return (
+    <section className="bg-[#E4FFF9] py-10 md:py-0 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#440099] mb-12 text-center">
+          Nuestro Equipo
+        </h2>
+        
+        <p className="text-center text-gray-700 max-w-3xl mx-auto mb-12">
+          Conoce al talentoso equipo detrás de Playful Agency. Nuestros expertos combinan creatividad y experiencia para ofrecerte las mejores soluciones digitales.
+        </p>
+        
+        {/* Grid para las tarjetas - 2 arriba, 3 abajo */}
+        <div className="flex flex-col items-center">
+          {/* Primera fila - 2 tarjetas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 w-full max-w-4xl">
+            {/* Tarjeta Directora Fundadora */}
+            <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="relative mb-4 h-28 w-28">
+                  <Image
+                    src="/images/nosotros/directora.png"
+                    alt="Directora Fundadora"
+                    width={112}
+                    height={112}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Ana</h3>
+                <p className="mb-5 w-full rounded-lg bg-[#440099] px-5 py-2 text-center text-sm font-semibold text-white">
+                  Directora Fundadora
+                </p>
+                <div className="mb-6 flex w-full gap-2">
+                  <div className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">SEO</div>
+                  <div className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">Desarrollo Web</div>
+                </div>
+                <p className="mb-6 flex-grow text-gray-600">Lidera la visión estratégica de la agencia y la dirección creativa de todos los proyectos.</p>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="mt-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 transition-colors duration-300 hover:text-[#440099]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            {/* Tarjeta Director Fundador */}
+            <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="relative mb-4 h-28 w-28">
+                  <Image
+                    src="/images/nosotros/director.png"
+                    alt="Director Fundador"
+                    width={112}
+                    height={112}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Jose</h3>
+                <p className="mb-5 w-full rounded-lg bg-[#440099] px-5 py-2 text-center text-sm font-semibold text-white">
+                  Director Fundador
+                </p>
+                <div className="mb-6 flex w-full gap-2">
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">SEO</span>
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">Marketing Digital</span>
+                </div>
+                <p className="mb-6 flex-grow text-gray-600">Gestiona la operación y el crecimiento estratégico del negocio, asegurando la excelencia operativa.</p>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="mt-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 transition-colors duration-300 hover:text-[#440099]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {/* Segunda fila - 3 tarjetas */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+            {/* Tarjeta Diseñadora UX/UI */}
+            <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="relative mb-4 h-28 w-28">
+                  <Image
+                    src="/images/nosotros/copywriter.png"
+                    alt="Diseñadora UX/UI"
+                    width={112}
+                    height={112}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Member Team</h3>
+                <div className="mb-4 flex w-full gap-2">
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">SEO</span>
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">Copywrite</span>
+                </div>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="mt-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 transition-colors duration-300 hover:text-[#440099]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Tarjeta Especialista en Ads */}
+            <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="relative mb-4 h-28 w-28">
+                  <Image
+                    src="/images/nosotros/uiux.png"
+                    alt="Diseño Web"
+                    width={112}
+                    height={112}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Member Team</h3>
+                <div className="mb-4 flex w-full gap-2">
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">Diseño Web</span>
+                </div>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="mt-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 transition-colors duration-300 hover:text-[#440099]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Tarjeta Copywriter */}
+            <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="relative mb-4 h-28 w-28">
+                  <Image
+                    src="/images/nosotros/devweb.png"
+                    alt="Desarrollador Web"
+                    width={112}
+                    height={112}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">Member Team</h3>
+                <div className="mb-4 flex w-full gap-2">
+                  <span className="flex-1 rounded-lg bg-[#E9D7FF] px-4 py-1.5 text-center text-sm font-medium text-[#440099]">Desarrollo Web</span>
+                </div>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="mt-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 transition-colors duration-300 hover:text-[#440099]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- COMPONENTE DE NUESTROS VALORES ---
 const NuestrosValoresSection = () => {
   const valores = [
     {
-      titulo: 'Innovación',
-      descripcion: 'Buscamos constantemente nuevas formas de mejorar y revolucionar el comercio electrónico en la región.',
-      imagen: '/images/nosotros/innovacion.png' // Asegúrate de tener esta imagen en la carpeta public
+      id: 1,
+      titulo: 'Aprendizaje',
+      descripcion: 'Nos comprometemos a desarrollar nuevas habilidades y mejorarnos constantemente, manteniendo una mentalidad abierta y enfocada en el crecimiento.',
+      imagen: '/images/nosotros/aprendizaje.png'
     },
     {
-      titulo: 'Compromiso',
-      descripcion: 'Estamos comprometidos con el éxito de cada uno de nuestros clientes y socios comerciales.',
-      imagen: '/images/nosotros/compromiso.png'
+      id: 2,
+      titulo: 'Franqueza',
+      descripcion: 'Fomentamos una comunicación sincera y clara, expresándonos con honestidad para construir relaciones basadas en la confianza.',
+      imagen: '/images/nosotros/franqueza.png'
     },
     {
-      titulo: 'Excelencia',
-      descripcion: 'Buscamos la excelencia en cada proyecto, ofreciendo soluciones de la más alta calidad.',
-      imagen: '/images/nosotros/excelencia.png'
+      id: 3,
+      titulo: 'Honestidad',
+      descripcion: 'Actuamos con total congruencia entre lo que decimos y lo que hacemos, evitando la mentira a toda costa,',
+      imagen: '/images/nosotros/honestidad.png'
     },
     {
-      titulo: 'Trabajo en Equipo',
-      descripcion: 'Creemos en el poder de la colaboración y el trabajo en equipo para alcanzar grandes logros.',
-      imagen: '/images/nosotros/equipo.png'
+      id: 4,
+      titulo: 'Independencia',
+      descripcion: 'Valoramos nuestra capacidad para pensar y actuar de manera autónoma, tomando decisiones con criterio propio.',
+      imagen: '/images/nosotros/independencia.png'
     },
     {
-      titulo: 'Integridad',
-      descripcion: 'Actuamos con honestidad, ética y transparencia en todas nuestras operaciones.',
-      imagen: '/images/nosotros/integridad.png'
+      id: 5,
+      titulo: 'Puntualidad',
+      descripcion: 'Cumplimos con los compromisos y llegamos a tiempo, impulsados por el respeto y la responsabilidad hacia los demás.',
+      imagen: '/images/nosotros/puntualidad.png'
     },
     {
-      titulo: 'Pasión',
-      descripcion: 'Nos apasiona lo que hacemos y eso se refleja en cada proyecto que emprendemos.',
-      imagen: '/images/nosotros/pasion.png'
+      id: 6,
+      titulo: 'Servicio',
+      descripcion: 'Estamos siempre disponibles para ayudar a otros de manera desinteresada, buscando el bienestar común.',
+      imagen: '/images/nosotros/servicios.png'
     }
   ];
 
   return (
-    <section className="py-12 w-[calc(100%-20px)] max-w-[1200px] mx-auto my-8">
-      <h2 className="text-3xl font-bold text-[#453A53] mb-12 text-center">Nuestros Valores</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {valores.map((valor, index) => (
-          <div 
-            key={index} 
-            className="bg-[#FEF7FF] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center text-center min-h-[500px] justify-center"
-          >
-            <div className="w-20 h-20 mb-4 flex items-center justify-center">
-              <div className="w-16 h-16 bg-[#F0E6FF] rounded-full flex items-center justify-center">
-                <Image 
-                  src={valor.imagen} 
-                  alt={valor.titulo} 
-                  width={40} 
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
+    <section className="py-16 md:py-24 w-full max-w-[1200px] mx-auto px-0">
+      <h2 className="text-3xl md:text-4xl font-bold text-[#440099] text-center mb-16">
+        Nuestros Valores
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        {valores.map((valor) => (
+          <div key={valor.id} className="flex flex-col items-center text-center p-8 bg-[#000000] rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div className="mb-6 h-24 w-24 relative">
+              <Image
+                src={valor.imagen}
+                alt={valor.titulo}
+                width={96}
+                height={96}
+                className="object-contain"
+              />
             </div>
-            <h3 className="text-xl font-bold text-[#453A53] mb-3">{valor.titulo}</h3>
-            <p className="text-gray-600">{valor.descripcion}</p>
+            <h3 className="text-xl font-bold text-[#440099] mb-4">
+              {valor.titulo}
+            </h3>
+            <p className="text-gray-600">
+              {valor.descripcion}
+            </p>
           </div>
         ))}
+      </div>
+    </section>
+  );
+};
+
+// -- COMPONENTE DE NUESTRA PALABRA -- //
+const NuestraPalabraSection = () => {
+  return (
+    <section className="bg-[#440099] py-16 md:py-24 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            No confíes solo en nuestra palabra, mira los resultados.
+          </h2>
+          <p className="mx-auto max-w-3xl text-lg text-[#E9D7FF] mb-12 md:mb-4">
+            Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial.
+          </p>
+          <PortfolioCarousel />
+        </div>
       </div>
     </section>
   );
@@ -274,7 +459,15 @@ export default async function Nosotros() {
       
       {/* Sección de Misión y Visión */}
       <MissionVisionSection />
+      
+      {/* Sección Nuestros Valores */}
       <NuestrosValoresSection />
+      
+      {/* Sección Nuestro Equipo */}
+      <EquipoSection />
+
+      { /* Seccion Nuestra Palabra */}
+      <NuestraPalabraSection />      
     </>
   );
 }
