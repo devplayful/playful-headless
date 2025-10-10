@@ -244,7 +244,7 @@ export interface WPPost {
     'wp:term'?: WPTerm[][];
   };
   featured_media?: number;
-  featured_media_url?: string;
+  featured_media_url?: string | null;
   featured_media_alt?: string;
 }
 
@@ -322,6 +322,220 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     return posts[0] || null;
   } catch (error) {
     console.error('Error en getBlogPostBySlug:', error);
+    return null;
+  }
+}
+
+// Interfaces específicas para podcasts
+export interface PodcastEpisode {
+  id: number;
+  date: string;
+  slug: string;
+  title: {
+    rendered: string;
+  };
+  content: {
+    rendered: string;
+  };
+  excerpt: {
+    rendered: string;
+  };
+  featured_media?: number;
+  featured_media_url?: string | null;
+  featured_media_alt?: string;
+  categoria?: number[];
+  etiqueta?: number[];
+  yoast_head?: string;
+  yoast_head_json?: {
+    title: string;
+    description: string;
+    canonical?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: Array<{
+      url: string;
+      width: number;
+      height: number;
+    }>;
+  };
+  _embedded?: {
+    'wp:featuredmedia'?: WPFeaturedMedia[];
+    'wp:term'?: WPTerm[][];
+  };
+}
+
+/**
+ * Obtiene los metadatos de la página principal de podcast
+ */
+export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
+  try {
+    console.log('Iniciando petición para obtener metadatos de la página podcast...');
+    const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=podcast&_fields=yoast_head`;
+    console.log('URL de la API:', apiUrl);
+    
+    const response = await fetch(apiUrl, { 
+      next: { revalidate: 3600 },
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    console.log('Respuesta recibida. Status:', response.status);
+    
+    if (!response.ok) {
+      console.error('Error en la respuesta:', response.status);
+      // Si no existe la página, devolvemos metadatos por defecto
+      return {
+        yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
+        yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+        yoast_wpseo_canonical: 'https://endpoint.playfulagency.com/podcast/',
+        yoast_wpseo_og_title: 'Podcast - Bendita Web | Playful Agency',
+        yoast_wpseo_og_description: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+        yoast_wpseo_og_image: ''
+      };
+    }
+
+    const [podcastPage] = await response.json();
+    
+    if (!podcastPage || !podcastPage.yoast_head) {
+      console.error('No hay yoast_head en la respuesta para podcast');
+      return {
+        yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
+        yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+        yoast_wpseo_canonical: 'https://endpoint.playfulagency.com/podcast/',
+        yoast_wpseo_og_title: 'Podcast - Bendita Web | Playful Agency',
+        yoast_wpseo_og_description: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+        yoast_wpseo_og_image: ''
+      };
+    }
+
+    // Extraer el título
+    const titleMatch = podcastPage.yoast_head.match(/<title>(.*?)<\/title>/);
+    const title = titleMatch ? titleMatch[1] : 'Podcast - Bendita Web | Playful Agency';
+    
+    // Función para extraer contenido de meta tags
+    const getMetaContent = (html: string, name: string): string => {
+      let regex = new RegExp(`<meta[^>]*(?:name|property)="${name}"[^>]*content="([^"]*)"`);
+      let match = html.match(regex);
+      
+      if (!match) {
+        regex = new RegExp(`<meta[^>]*(?:name|property)='${name}'[^>]*content='([^']*)'`);
+        match = html.match(regex);
+      }
+      
+      return match ? match[1] : '';
+    };
+
+    const metadata = {
+      yoast_wpseo_title: title,
+      yoast_wpseo_metadesc: getMetaContent(podcastPage.yoast_head, 'description'),
+      yoast_wpseo_canonical: getMetaContent(podcastPage.yoast_head, 'canonical'),
+      yoast_wpseo_og_title: getMetaContent(podcastPage.yoast_head, 'og:title'),
+      yoast_wpseo_og_description: getMetaContent(podcastPage.yoast_head, 'og:description'),
+      yoast_wpseo_og_image: getMetaContent(podcastPage.yoast_head, 'og:image'),
+    };
+
+    console.log('Metadatos extraídos para podcast:', JSON.stringify(metadata, null, 2));
+    return metadata;
+    
+  } catch (error) {
+    console.error('Error en getPodcastPageMetadata:', error);
+    return {
+      yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
+      yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+      yoast_wpseo_canonical: 'https://endpoint.playfulagency.com/podcast/',
+      yoast_wpseo_og_title: 'Podcast - Bendita Web | Playful Agency',
+      yoast_wpseo_og_description: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
+      yoast_wpseo_og_image: ''
+    };
+  }
+}
+
+/**
+ * Obtiene los episodios del podcast paginados
+ */
+export async function getPodcastEpisodes(page: number = 1, perPage: number = 10): Promise<{ episodes: PodcastEpisode[], totalPages: number }> {
+  try {
+    console.log(`Obteniendo episodios de podcast - Página: ${page}, Por página: ${perPage}`);
+    
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/podcast?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los episodios: ${response.status} ${response.statusText}`);
+    }
+
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+    const episodes: PodcastEpisode[] = await response.json();
+
+    // Procesar los episodios para extraer la imagen destacada
+    const processedEpisodes = episodes.map(episode => {
+      const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
+      
+      return {
+        ...episode,
+        featured_media_url: featuredMedia?.source_url || null,
+        featured_media_alt: featuredMedia?.alt_text || '',
+      };
+    });
+
+    console.log(`Episodios obtenidos: ${processedEpisodes.length}, Total de páginas: ${totalPages}`);
+    
+    return {
+      episodes: processedEpisodes,
+      totalPages
+    };
+  } catch (error) {
+    console.error('Error en getPodcastEpisodes:', error);
+    return { episodes: [], totalPages: 0 };
+  }
+}
+
+/**
+ * Obtiene un episodio específico por su slug
+ */
+export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
+  try {
+    console.log(`Obteniendo episodio de podcast por slug: ${slug}`);
+    
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/podcast?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener el episodio: ${response.status} ${response.statusText}`);
+    }
+
+    const episodes: PodcastEpisode[] = await response.json();
+    const episode = episodes[0];
+    
+    if (!episode) {
+      return null;
+    }
+
+    // Procesar el episodio para extraer la imagen destacada
+    const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
+    
+    return {
+      ...episode,
+      featured_media_url: featuredMedia?.source_url || null,
+      featured_media_alt: featuredMedia?.alt_text || '',
+    };
+  } catch (error) {
+    console.error('Error en getPodcastEpisodeBySlug:', error);
     return null;
   }
 }
