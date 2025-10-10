@@ -230,6 +230,7 @@ export interface WPPost {
   id: number;
   date: string;
   slug: string;
+  link: string;
   title: {
     rendered: string;
   };
@@ -244,56 +245,126 @@ export interface WPPost {
     'wp:term'?: WPTerm[][];
   };
   featured_media?: number;
-  featured_media_url?: string | null;
-  featured_media_alt?: string;
 }
 
 /**
- * Obtiene las entradas del blog paginadas
- * @param page Número de página (comenzando en 1)
- * @param perPage Cantidad de entradas por página
- * @returns Promise con el array de posts y el total de páginas
+ * Obtiene las últimas entradas del blog
+ * @param perPage Número de entradas a devolver (máx 10)
  */
-export async function getBlogPosts(page: number = 1, perPage: number = 10): Promise<{ posts: WPPost[], totalPages: number }> {
-  try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/posts?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,_links,_embedded`,
-      { 
-        next: { revalidate: 60 }, // Revalidar cada minuto
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
-    }
-
-    // Obtener el total de páginas desde los headers
-    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-    const posts: WPPost[] = await response.json();
-
-    // Procesar los posts para extraer la imagen destacada y categorías
-    const processedPosts = posts.map(post => {
-      const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-      const categories = post._embedded?.['wp:term']?.[0] || [];
-      
-      return {
-        ...post,
-        featured_media_url: featuredMedia?.source_url || null,
-        featured_media_alt: featuredMedia?.alt_text || '',
-        categories
+interface WPFeaturedMedia {
+  source_url: string;
+  media_details: {
+    sizes: {
+      [key: string]: {
+        source_url: string;
       };
+    };
+  };
+}
+
+interface WPPost {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  excerpt: {
+    rendered: string;
+  };
+  date: string;
+  slug: string;
+  link: string;
+  _embedded?: {
+    'wp:featuredmedia'?: WPFeaturedMedia[];
+    'wp:term'?: any[][];
+  };
+}
+
+export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
+  id: number;
+  title: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  imageUrl: string;
+  slug: string;
+  link: string;
+}>> {
+  try {
+    const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+    url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
+    url.searchParams.append('per_page', Math.min(perPage, 10).toString());
+    url.searchParams.append('orderby', 'date');
+    url.searchParams.append('order', 'desc');
+    
+    console.log('Fetching posts from:', url.toString());
+
+    const response = await fetch(url.toString(), { 
+      next: { revalidate: 3600 },
+      headers: {
+        'Content-Type': 'application/json',
+      }
     });
 
-    return {
-      posts: processedPosts,
-      totalPages
-    };
+    if (!response.ok) {
+      throw new Error(`Error al obtener las entradas del blog: ${response.status}`);
+    }
+
+    const posts: WPPost[] = await response.json();
+
+    return posts.map(post => {
+      // Obtener categoría principal
+      let category = 'Sin categoría';
+      const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
+      if (categories && categories.length > 0) {
+        category = categories[0].name;
+      }
+
+      // Obtener imagen destacada
+      let imageUrl = '/images/blog/placeholder.jpg';
+      const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+      
+      if (featuredMedia) {
+        // Intentar obtener la imagen en diferentes tamaños, con prioridad al tamaño completo
+        imageUrl = featuredMedia.source_url || 
+                  featuredMedia.media_details?.sizes?.full?.source_url ||
+                  featuredMedia.media_details?.sizes?.large?.source_url ||
+                  featuredMedia.media_details?.sizes?.medium_large?.source_url ||
+                  featuredMedia.media_details?.sizes?.medium?.source_url ||
+                  imageUrl;
+        
+        console.log('Featured image found for post', post.id, ':', imageUrl);
+      } else {
+        console.log('No featured image found for post:', post.id);
+      }
+
+      // Formatear fecha
+      const date = new Date(post.date);
+      const formattedDate = date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).split('/').join(' / ');
+
+      // Limpiar excerpt de etiquetas HTML
+      const excerpt = post.excerpt.rendered
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&[a-z]+;/g, '')
+        .trim();
+
+      return {
+        id: post.id,
+        title: post.title.rendered.replace(/&[a-z]+;/g, ''),
+        excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt,
+        category,
+        date: formattedDate,
+        imageUrl,
+        slug: post.slug,
+        link: post.link
+      };
+    });
   } catch (error) {
-    console.error('Error en getBlogPosts:', error);
-    return { posts: [], totalPages: 0 };
+    console.error('Error en getLatestBlogPosts:', error);
+    return [];
   }
 }
 
@@ -324,6 +395,46 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     console.error('Error en getBlogPostBySlug:', error);
     return null;
   }
+}
+
+// Interface para miembros del equipo
+export interface TeamMember {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  excerpt: {
+    rendered: string;
+  };
+  cargo?: number[];  // IDs de cargos (opcional)
+  rol?: number[];    // IDs de roles (opcional)
+  acf: {
+    informacion?: {
+      linkedin_imagen?: string;
+      linkedin_url?: string;
+      email?: string;
+    };
+    nombre?: string;
+    cargo?: string;  // Nombre del cargo como string (opcional)
+    cargoIds?: number[]; // IDs de cargos (alternativa)
+    habilidades: string[];
+    descripcion: string;
+    linkedin_url: string;
+    imagen: {
+      url: string;
+      alt: string;
+    };
+  };
+  _embedded?: {
+    'wp:term'?: Array<Array<{
+      id: number;
+      name: string;
+      slug: string;
+      taxonomy: string;
+    }>>;
+    'wp:featuredmedia'?: WPFeaturedMedia[];
+  };
+  // Las propiedades cargo y rol están definidas arriba como opcionales
 }
 
 // Interfaces específicas para podcasts
@@ -501,6 +612,77 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
 /**
  * Obtiene un episodio específico por su slug
  */
+// Obtiene los miembros del equipo
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/equipo?_embed=wp:term,wp:featuredmedia&per_page=100`,
+      { 
+        next: { revalidate: 3600 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los miembros del equipo: ${response.status} ${response.statusText}`);
+    }
+
+    const teamMembers = await response.json();
+    
+    // Mapear los términos de cargo y rol
+    const membersWithTerms = await Promise.all(teamMembers.map(async (member: any) => {
+      try {
+        // Obtener términos de cargo y rol
+        const cargos = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'cargo') || [];
+        const roles = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'rol') || [];
+        
+        // Obtener la imagen destacada
+        const featuredMedia = member._embedded?.['wp:featuredmedia']?.[0];
+        
+        // Obtener la URL de LinkedIn de la estructura correcta
+        const linkedinUrl = member.acf?.informacion?.linkedin_url || member.acf?.linkedin_url || '#';
+        
+        // Determinar el cargo: primero de los términos embebidos, luego del ACF como string
+        const cargo = cargos.length > 0 
+          ? cargos[0].name 
+          : (member.acf?.cargo || '');
+        
+        return {
+          ...member,
+          acf: {
+            ...member.acf, // Mantener otros campos ACF
+            nombre: member.title?.rendered || member.acf?.nombre || '',
+            cargo: cargo,
+            cargoIds: cargos.map((c: any) => c.id), // Guardar IDs para referencia
+            habilidades: roles.map((r: any) => r.name) || member.acf?.habilidades || [],
+            descripcion: (() => {
+              const excerpt = member.excerpt?.rendered?.replace(/<[^>]*>?/gm, '').trim();
+              const acfDesc = member.acf?.descripcion?.trim();
+              return excerpt && excerpt !== '00' ? excerpt : (acfDesc || '');
+            })(),
+            linkedin_url: linkedinUrl,
+            imagen: {
+              url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/nosotros/placeholder-avatar.png',
+              alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
+            }
+          }
+        };
+      } catch (error) {
+        console.error('Error procesando miembro del equipo:', error);
+        return null;
+      }
+    }));
+
+    // Filtrar cualquier miembro nulo y asegurar el tipo correcto
+    return membersWithTerms.filter((member): member is TeamMember => member !== null);
+  } catch (error) {
+    console.error('Error al obtener los miembros del equipo:', error);
+    return [];
+  }
+}
+
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
   try {
     console.log(`Obteniendo episodio de podcast por slug: ${slug}`);
