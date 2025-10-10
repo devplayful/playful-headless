@@ -11,9 +11,9 @@ export interface YoastMetaData {
 
 export async function getHomePageMetadata(): Promise<YoastMetaData> {
   try {
-    console.log('Iniciando petición a WordPress...');
+    /* console.log('Iniciando petición a WordPress...'); */
     const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=home-2&_fields=yoast_head`;
-    console.log('URL de la API:', apiUrl);
+    /* console.log('URL de la API:', apiUrl); */
     
     const response = await fetch(apiUrl, { 
       next: { revalidate: 3600 },
@@ -22,7 +22,7 @@ export async function getHomePageMetadata(): Promise<YoastMetaData> {
       }
     });
     
-    console.log('Respuesta recibida. Status:', response.status);
+    /* console.log('Respuesta recibida. Status:', response.status); */
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -65,7 +65,7 @@ export async function getHomePageMetadata(): Promise<YoastMetaData> {
       yoast_wpseo_og_image: getMetaContent(homePage.yoast_head, 'og:image'),
     };
 
-    console.log('Metadatos extraídos:', JSON.stringify(metadata, null, 2));
+    /* console.log('Metadatos extraídos:', JSON.stringify(metadata, null, 2)); */
     return metadata;
     
   } catch (error) {
@@ -83,9 +83,9 @@ export async function getHomePageMetadata(): Promise<YoastMetaData> {
 
 export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData> {
   try {
-    console.log(`Iniciando petición para obtener metadatos de la página: ${slug}`);
+    /* console.log(`Iniciando petición para obtener metadatos de la página: ${slug}`); */
     const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=yoast_head`;
-    console.log('URL de la API:', apiUrl);
+    /* console.log('URL de la API:', apiUrl); */
     
     const response = await fetch(apiUrl, { 
       next: { revalidate: 3600 },
@@ -94,7 +94,7 @@ export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData
       }
     });
     
-    console.log('Respuesta recibida. Status:', response.status);
+    /* console.log('Respuesta recibida. Status:', response.status); */
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -137,7 +137,7 @@ export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData
       yoast_wpseo_og_image: getMetaContent(pageData.yoast_head, 'og:image'),
     };
 
-    console.log(`Metadatos extraídos para ${slug}:`, JSON.stringify(metadata, null, 2));
+    /* console.log(`Metadatos extraídos para ${slug}:`, JSON.stringify(metadata, null, 2)); */
     return metadata;
     
   } catch (error) {
