@@ -5,7 +5,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer  className="px-5">
+    <footer className="px-5">
       {" "}
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto mt-[80px] mb-[80px] flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] w-[510px] ml-[83px] flex items-center flex-col justify-evenly">
@@ -97,7 +97,7 @@ export default function Footer() {
           <div className="playful-footerInfo flex justify-evenly">
             {/* Nosotros */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
                 NOSOTROS
               </h3>
               <ul className="space-y-2">
@@ -130,7 +130,7 @@ export default function Footer() {
 
             {/* Servicios */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
                 SERVICIOS
               </h3>
               <ul className="space-y-2">
@@ -163,7 +163,7 @@ export default function Footer() {
 
             {/* Legal y Contacto */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
                 LEGAL
               </h3>
               <ul className="space-y-2 mb-6">
@@ -195,7 +195,7 @@ export default function Footer() {
             &copy;{currentYear} Playful Agency. Todos los derechos reservados.
           </p>
         </div>
-      </div> 
+      </div>
     </footer>
   );
 }

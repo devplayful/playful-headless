@@ -139,7 +139,7 @@ export default function CaseStudiesContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           {/* Left Column - Text */}
           <div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-[50px] lg:text-[57px] font-bold text-white mb-6 leading-tight">
               Resultados que hablan por sí solos
             </h1>
             <p className="text-white text-lg leading-relaxed opacity-90">
@@ -184,10 +184,9 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Filtros */}
-      {/* Filtros */}
       <div className="max-w-7xl mx-auto mb-8">
-        <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-3xl px-6 py-6 flex flex-col gap-4">
-          <h3 className="text-base font-medium text-gray-900">Filtrar por</h3>
+        <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">
+          {/* <h3 className="text-base font-medium text-gray-900">Filtrar por</h3> */}
 
           {/* Filtros disponibles */}
           <div className="flex flex-wrap gap-2">
@@ -327,12 +326,14 @@ export default function CaseStudiesContent() {
                       {caseStudy.description}
                     </p>
 
-                    {/* Botón */}
-                    <button
-                      className={`w-full ${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg`}
-                    >
-                      {caseStudy.buttonText}
-                    </button>
+                    {/* Botón alineado a la derecha */}
+                    <div className="flex justify-end">
+                      <button
+                        className={`${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg`}
+                      >
+                        {caseStudy.buttonText}
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -350,7 +351,7 @@ export default function CaseStudiesContent() {
           <div className="lg:flex lg:items-center lg:space-x-12">
             {/* Columna izquierda - Imagen */}
             <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl">
+              <div className="relative rounded-2xl overflow-hidden ">
                 <img
                   src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
                   alt="Agencia de Marketing Digital"
@@ -371,14 +372,13 @@ export default function CaseStudiesContent() {
               </p>
               <div className="space-y-4 flex flex-col items-center">
                 <div className="flex items-center">
-                  <div className="w-2 h-2 bg-[#453A53]  mr-3"></div>
                   <h2 className="text-[28px] font-bold text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
                     ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
                   </h2>
                 </div>
               </div>
-              <button className="mt-8 bg-[#6D28D9] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                Comenzar ahora
+              <button className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+                ¡Empieza ya!
               </button>
             </div>
           </div>
