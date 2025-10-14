@@ -184,78 +184,79 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Filtros */}
+      {/* Filtros */}
       <div className="max-w-7xl mx-auto mb-8">
-        <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-full px-8 py-6 flex items-center gap-4 flex-wrap">
-          {/* Active filters */}
-          {activeFilters.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-medium text-gray-700">
-                Filtros:
-              </span>
-              {activeFilters.map((filter) => (
-                <span
-                  key={filter}
-                  className="inline-flex items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-full text-sm font-medium shadow-sm"
-                >
-                  <svg
-                    className="w-4 h-4 text-teal-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <circle cx="10" cy="10" r="8" />
-                  </svg>
-                  {filter}
-                  <button
-                    onClick={() => removeFilter(filter)}
-                    className="text-gray-500 hover:text-gray-700"
-                    aria-label={`Eliminar filtro ${filter}`}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </span>
-              ))}
-              <button
-                onClick={() => setActiveFilters([])}
-                className="text-sm text-gray-600 hover:text-gray-900 underline"
-              >
-                Limpiar filtros
-              </button>
-            </div>
-          )}
+        <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-3xl px-6 py-6 flex flex-col gap-4">
+          <h3 className="text-base font-medium text-gray-900">Filtrar por</h3>
 
-          {/* Available filters */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Filtros disponibles */}
+          <div className="flex flex-wrap gap-2">
             {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => toggleFilter(tag)}
-                className={`px-4 py-2 rounded-full text-sm font-medium border ${
+                className={`px-4 py-2 rounded-full text-sm font-medium ${
                   activeFilters.includes(tag)
-                    ? "bg-white text-purple-700 border-purple-300 shadow-md"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    ? "bg-white text-teal-600 shadow-sm"
+                    : "bg-white/80 text-gray-700 hover:bg-white"
                 }`}
               >
                 {tag}
               </button>
             ))}
           </div>
+
+          {/* Filtros activos */}
+          {activeFilters.length > 0 && (
+            <div className="mt-2">
+              <div className="text-sm text-gray-500 mb-2">
+                Filtros aplicados:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {activeFilters.map((filter) => (
+                  <span
+                    key={filter}
+                    className="inline-flex items-center gap-2 bg-white text-gray-700 px-3 py-1.5 rounded-full text-sm font-medium"
+                  >
+                    {filter}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFilter(filter);
+                      }}
+                      className="text-gray-400 hover:text-gray-600"
+                      aria-label={`Eliminar filtro ${filter}`}
+                    >
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </span>
+                ))}
+                <button
+                  onClick={() => setActiveFilters([])}
+                  className="text-sm text-indigo-600 hover:text-indigo-800 font-medium ml-2"
+                >
+                  Limpiar todo
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Grid de casos de éxito */}
-      <div className="bg-[#E4FFF9] rounded-3xl mx-auto my-8 w-[71%]">
+      <div className="bg-[#E4FFF9] playful-Grid-CasosExito rounded-3xl mx-auto my-8 w-[71%]">
         <div className="max-w-7xl mx-auto py-8 px-4">
           {filteredCaseStudies.length === 0 ? (
             <div className="text-center py-12">
@@ -345,7 +346,7 @@ export default function CaseStudiesContent() {
 
       {/* Sección de dos columnas */}
       <div className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
           <div className="lg:flex lg:items-center lg:space-x-12">
             {/* Columna izquierda - Imagen */}
             <div className="lg:w-1/2 mb-12 lg:mb-0">
@@ -383,7 +384,6 @@ export default function CaseStudiesContent() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

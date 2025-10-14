@@ -47,16 +47,14 @@ export default function TestimonialsSection() {
     autoplaySpeed: 5000,
     centerMode: false,
     arrows: true,
-    centerPadding: '60px',
     responsive: [
       {
-        breakpoint: 1280,
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
           dots: true,
-          centerPadding: '40px'
+          arrows: true
         }
       },
       {
@@ -64,8 +62,8 @@ export default function TestimonialsSection() {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          centerMode: true,
-          centerPadding: '60px'
+          dots: true,
+          arrows: false
         }
       }
     ]
@@ -73,7 +71,7 @@ export default function TestimonialsSection() {
 
   return (
     <section className="py-16  from-purple-700 to-purple-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           Nuestros aliados estratégicos
@@ -81,7 +79,7 @@ export default function TestimonialsSection() {
          
         </div>
 
-        <div className="px-12">
+        <div className="px-12 playful-movil-testimonialCard">
           <Slider {...settings} className="mx-[-30px]">
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="px-6">
@@ -127,36 +125,29 @@ export default function TestimonialsSection() {
           <div className="px-8">
             <Slider 
               {...{
-                ...settings,
                 slidesToShow: 3,
                 slidesToScroll: 1,
                 autoplay: true,
                 autoplaySpeed: 3000,
-                arrows: false,
-                dots: false,
+                arrows: true,
+                dots: true,
                 responsive: [
                   {
                     breakpoint: 1024,
                     settings: {
-                      slidesToShow: 3,
+                      slidesToShow: 2,
                       slidesToScroll: 1,
-                      infinite: true
+                      arrows: true,
+                      dots: true
                     }
                   },
                   {
                     breakpoint: 768,
                     settings: {
-                      slidesToShow: 2,
-                      slidesToScroll: 1,
-                      centerMode: false
-                    }
-                  },
-                  {
-                    breakpoint: 480,
-                    settings: {
                       slidesToShow: 1,
                       slidesToScroll: 1,
-                      centerMode: true
+                      arrows: false,
+                      dots: true
                     }
                   }
                 ]
@@ -192,33 +183,33 @@ export default function TestimonialsSection() {
             
             <Slider 
               {...{
-                ...settings,
                 slidesToShow: 3,
                 slidesToScroll: 1,
                 autoplay: false,
                 arrows: true,
-                dots: false,
+                dots: true,
                 responsive: [
                   {
                     breakpoint: 1024,
                     settings: {
                       slidesToShow: 2,
                       slidesToScroll: 1,
-                      infinite: true
+                      arrows: true,
+                      dots: true
                     }
                   },
                   {
-                    breakpoint: 640,
+                    breakpoint: 768,
                     settings: {
                       slidesToShow: 1,
                       slidesToScroll: 1,
-                      centerMode: true,
-                      centerPadding: '20px'
+                      arrows: false,
+                      dots: true
                     }
                   }
                 ]
               }}
-              className="mx-[-10px]"
+              className="mx-[-15px]"
             >
               {[1, 2, 3, 4, 5, 6].map((item) => (
                 <div key={`blog-${item}`} className="px-3">
