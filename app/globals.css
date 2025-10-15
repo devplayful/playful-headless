@@ -135,6 +135,7 @@ body {
   .footerCard {
     width: 111.5% !important;
     margin: 0px 0px 50px 0px;
+    height: 329px;
 
   }
 
@@ -151,4 +152,11 @@ body {
   .playful-footerItems{
     width: 50%;
   }
+  .playful-Grid-CasosExito{
+    width: 100% !important;
+  }
+  .playful-movil-testimonialCard{
+   padding: 0px !important; 
+  }
+  
 }
