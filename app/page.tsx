@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import AnimatedButton from '@/components/AnimatedButton'
 import MaterialServicesSection from '@/components/MaterialServicesSection'
+import SolucionesPlayful from '@/components/SolucionesPlayful'
 
 export default function Home() {
   return (
@@ -28,19 +29,16 @@ export default function Home() {
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <AnimatedButton 
-                    variant="primary" 
-                    href="/servicios"
-                  >
-                  ¡Quiero saber más! 
-                  </AnimatedButton>
+                    <button className="playful-boton">
+                    ¡Quiero saber más! 
+                    </button>
                 </div>
               </div>
             </div>
 
             {/* Right Illustration Area */}
             <div className="relative">
-
+                <img src="../images/Playful-Agency-tu-agencia-de-marketing-digital.webp" alt="" />
             </div>
           </div>
         </div>
@@ -54,6 +52,8 @@ export default function Home() {
 
       {/* Material UI Services Section */}
       <MaterialServicesSection />
+      <br></br>
+      <SolucionesPlayful />
 
     </div>
   )

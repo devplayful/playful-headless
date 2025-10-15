@@ -59,6 +59,8 @@ body {
   }
 }
 
+/*
+
 .playful-header {
   margin: 40px 80px !important;
   padding: 20px;
@@ -83,7 +85,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/************CSS CLASES GLOBALES*************/
+/************CSS CLASES GLOBALES*************/ 
 
 .playful-h1 {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
@@ -91,6 +93,14 @@ body {
   line-height: 1.1;
   font-size: 72px;
   color: #440099;
+}
+
+.playful-h2 {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  font-size: 45px;
+  color: #4A4453;
 }
 
 .playful-miga-pan {
@@ -107,56 +117,4 @@ body {
   line-height: 1.1;
   font-size: 16px;
   color: #4A4453;
-}
-
-
-/* Footer */
-
-@media only screen and (min-width: 500px) and (max-width: 768px) {
-  .footer {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .logo {
-    padding: 0px;
-  }
-
-  .playful-footerInfo {
-    display: flex;
-    flex-direction: column;
-    margin-left: 25%;
-  }
-}
-
-@media only screen and (max-width: 425px) {
-  .footer {}
-
-  .footerCard {
-    width: 111.5% !important;
-    margin: 0px 0px 50px 0px;
-    height: 329px;
-
-  }
-
-  .logo {
-    padding: 0px;
-  }
-
-  .playful-footerInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .playful-footerItems{
-    width: 50%;
-  }
-  .playful-Grid-CasosExito{
-    width: 100% !important;
-  }
-  .playful-movil-testimonialCard{
-   padding: 0px !important; 
-  }
-  
 }

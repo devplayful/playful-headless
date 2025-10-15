@@ -6,7 +6,6 @@ export default function Footer() {
 
   return (
     <footer className="px-5">
-      {" "}
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto mt-[80px] mb-[80px] flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] w-[510px] ml-[83px] flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
@@ -177,7 +176,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/politica-de-privacidad"
+                    href="/politica-de-cookies"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Política de Cookies
@@ -188,6 +187,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
       {/* Copyright y Redes Sociales */}
       <div className="text-center mt-12 pt-8 mb-[50px]">
         <div className="flex justify-center">
@@ -198,4 +198,5 @@ export default function Footer() {
       </div>
     </footer>
   );
+  
 }
