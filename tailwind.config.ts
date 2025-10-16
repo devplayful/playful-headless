@@ -20,8 +20,43 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      // Personalizar el Ancho (width)
+      width: {
+        '320p': '320px', // Clase resultante: w-60p
+      },
+      // Personalizar la Altura (height)
+      height: {
+        '444p': '444px', // Clase resultante: h-90p
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')({
+      target: 'modern',
+      css: {
+        h1: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h2: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h3: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h4: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h5: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h6: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        p: {
+          fontFamily: 'DM Sans, sans-serif',
+        },
+      },
+    }),
+  ],
 }
 export default config
