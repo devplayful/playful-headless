@@ -19,7 +19,7 @@ export default function Home() {
                 ¿Tu web está costándole dinero a tu negocio?                </h1>
               </div>
               
-              <div className="space-y-4 text-purple-800">
+              <div className="space-y-4 2 text-purple-800">
                 <p className="playful-contenido-p">
                 Tu sitio web no es solo tu carta de presentación; es tu motor de ventas. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás <b>dejando dinero sobre la mesa</b>.
                 </p>
