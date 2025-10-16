@@ -201,7 +201,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Sección de Entradas del Blog */}
-        <BlogPosts/>
+       
       </div>
     </section>
   );

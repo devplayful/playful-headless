@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import BlogPosts from "@/components/BlogPosts";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -344,6 +345,7 @@ export default function CaseStudiesContent() {
 
       {/* Sección de Testimonios */}
       <TestimonialsSection />
+       <BlogPosts/>    
 
       {/* Sección de dos columnas */}
       <div className="py-16">
@@ -355,15 +357,15 @@ export default function CaseStudiesContent() {
                 <img
                   src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
                   alt="Agencia de Marketing Digital"
-                  className="w-full h-auto object-cover"
+                  className="w-[90%] h-auto object-cover"
                 />
               </div>
             </div>
 
             {/* Columna derecha - Contenido */}
-            <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden bg-[#FFEFD1]">
+            <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden ">
               <div 
-                className="absolute inset-0 w-full h-full"
+                className="absolute inset-0 w-full h-full bg-[#FFEFD1]"
                 style={{
                   backgroundImage: 'url(/images/background.webp)',
                   backgroundSize: 'cover',
