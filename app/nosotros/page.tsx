@@ -394,6 +394,57 @@ const BlogSection = async () => {
   );
 };
 
+// --- COMPONENTE CTA ---
+const CTASection = ({
+  imagePath = "/images/nosotros/cta-illustration.png",
+  imageAlt = "Ilustración de crecimiento digital"
+}: {
+  imagePath?: string;
+  imageAlt?: string;
+}) => {
+  return (
+    <section className="my-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto">
+      <div className="flex flex-col md:flex-row items-stretch">
+        {/* Sección de Imagen */}
+        <div className="w-full md:w-1/2 flex justify-center items-center p-6 bg-transparent">
+          <div className="w-[452px] h-[557px] flex items-center justify-center">
+            <img
+              src={imagePath}
+              alt={imageAlt}
+              width={452}
+              height={557}
+              className="w-full h-full object-contain"
+              style={{
+                display: 'block'
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Sección de Contenido */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center p-8 md:p-10 bg-[#B3FFF3]">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#322051]">
+            No esperes más para empezar a ganar
+          </h2>
+          <p className="text-gray-700 max-w-md">
+            Deja de arreglar tu web con parches y dejas de perder clientes por fallas que no puedes ver.
+            Es hora de invertir en una solución profesional.
+          </p>
+          <p className="font-semibold text-[#322051] text-lg">
+            ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
+          </p>
+          <a
+            href="/contacto"
+            className="inline-block bg-[#7c23ce] hover:bg-[#a99cec] text-white rounded-full px-8 py-4 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 mt-3"
+          >
+            ¡Empieza ya!
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- COMPONENTE DE PROPUESTA DE VALOR ---
 const ValuePropositionSection = () => {
   const statistics = [
@@ -431,6 +482,63 @@ const ValuePropositionSection = () => {
 };
 
 
+// --- COMPONENTE HERO PERSONALIZADO ---
+const HeroSection = ({
+  title,
+  subtitle,
+  description,
+  imagePath,
+  imageAlt,
+  bgColor = 'bg-[#E9D7FF]',
+  textColor = 'text-[#440099]',
+  textSecondaryColor = 'text-gray-600'
+}: {
+  title: string;
+  subtitle: string;
+  description: string;
+  imagePath: string;
+  imageAlt: string;
+  bgColor?: string;
+  textColor?: string;
+  textSecondaryColor?: string;
+}) => {
+  return (
+    <section className={`min-h-[480px] ${bgColor} flex items-center py-12`}>
+      <div className="w-full">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Columna Izquierda */}
+            <div className="md:w-1/2 text-center md:text-left">
+              <h1 className={`text-4xl md:text-[28px] font-paytone-one ${textColor} mb-4 font-bold`}>
+                {title}
+              </h1>
+              <h2 className="text-2xl md:text-[57px] font-bold text-[#440099] mb-6">
+                {subtitle}
+              </h2>
+              <div className={`prose md:text-[18px] ${textSecondaryColor} w-full max-w-none`}>
+                <p>{description}</p>
+              </div>
+            </div>
+            
+            {/* Columna Derecha */}
+            <div className="md:w-1/2 flex justify-center">
+              <div className="relative w-full max-w-[412px] h-[350px]">
+                <Image
+                  src={imagePath}
+                  alt={imageAlt}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- COMPONENTE PRINCIPAL DE LA PÁGINA "NOSOTROS" ---
 export default async function Nosotros() {
   const metadata = await getPageMetadataBySlug('nosotros');
@@ -438,40 +546,13 @@ export default async function Nosotros() {
   return (
     <>
       {/* Sección Superior "Nosotros" */}
-      <main className="min-h-[480px] bg-[#E9D7FF] flex items-center py-12">
-        <div className="w-full">
-          <div className="max-w-[1200px] mx-auto px-0">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              {/* Columna Izquierda */}
-              <div className="md:w-1/2 text-center md:text-left">
-                <h1 className={`text-4xl md:text-[28px] font-paytone-one text-gray-900 mb-4 font-bold`}>
-                  Playful Agency
-                </h1>
-                <h2 className="text-2xl md:text-[57px] font-bold text-[#440099] mb-6">
-                  Nosotros
-                </h2>
-                <div className="prose md:text-[18px] text-gray-600 w-full max-w-none">
-                  <p>Un breve texto que hable de quiénes somos como introducción a la sección, debe ser breve pero conciso.</p>
-                </div>
-              </div>
-              
-              {/* Columna Derecha */}
-              <div className="md:w-1/2 flex justify-center">
-                <div className="relative w-full max-w-[412px] h-[350px]">
-                  <Image
-                    src="/images/nosotros/nosotros-img.png"
-                    alt="Playful Agency"
-                    width={412}
-                    height={350}
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+      <HeroSection 
+        title="Playful Agency"
+        subtitle="Nosotros"
+        description="Un breve texto que hable de quiénes somos como introducción a la sección, debe ser breve pero conciso."
+        imagePath="/images/nosotros/nosotros-img.png"
+        imageAlt="Playful Agency"
+      />
 
       {/* Sección "Propuesta de valor" */}
       <ValuePropositionSection />
@@ -492,7 +573,13 @@ export default async function Nosotros() {
       <NuestraPalabraSection />      
 
       {/* Sección del Blog */}
-<BlogSection />
+      <BlogSection />
+      
+      {/* Sección CTA */}
+      <CTASection 
+        imagePath="/images/nosotros/cta-illustration.png"
+        imageAlt="Ilustración de crecimiento digital"
+      />
     </>
   );
 }
