@@ -344,7 +344,7 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Sección de Testimonios */}
-      <TestimonialsSection />
+      <TestimonialsSection textColor="#ffffff"/>
        <BlogPosts/>    
 
       {/* Sección de dos columnas */}

@@ -41,7 +41,17 @@ const testimonials = [
   },
 ];
 
-export default function TestimonialsSection() {
+interface TestimonialsSectionProps {
+  textColor?: string; // Hex color code, e.g. '#ffffff'
+}
+
+export default function TestimonialsSection({ textColor = '#4A4453' }: TestimonialsSectionProps) {
+  // Create style object for text color
+  const textStyle = {
+    color: textColor,
+  };
+
+ 
   const settings = {
     dots: true,
     infinite: true,
@@ -78,10 +88,10 @@ export default function TestimonialsSection() {
     <section className="py-16  from-purple-700 to-purple-900">
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={textStyle}>
             Lo que nuestros clientes dicen
           </h2>
-          <p className="text-white/80 text-lg mb-12 max-w-3xl mx-auto">
+          <p className="text-lg mb-12 max-w-3xl mx-auto" >
             Aquí, la voz la tienen ellos. Las historias de nuestros clientes no
             solo son nuestra mejor carta de presentación, sino también el
             reflejo de un trabajo enfocado en resultados reales que potencian
@@ -106,7 +116,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     {/* Nombre */}
-                    <h4 className="text-center text-gray-900 font-semibold text-lg mb-2">
+                    <h4 className="text-center font-semibold text-lg mb-2" style={textStyle}>
                       {testimonial.name}
                     </h4>
 
@@ -120,7 +130,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     {/* Contenido del testimonio */}
-                    <p className="text-gray-600 text-center flex-grow flex items-center">
+                    <p className="text-center flex-grow flex items-center" >
                       "{testimonial.content}"
                     </p>
                   </div>
@@ -134,7 +144,7 @@ export default function TestimonialsSection() {
         <div className="my-16">
           <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8">
             <h3 className="text-center text-white text-2xl md:text-3xl font-bold mb-12">
-              Nuestros aliados estratégicos
+              <span style={textStyle}>Nuestros aliados estratégicos</span>
             </h3>
             <div className="">
               <Slider
