@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
+import BlogPosts from "@/components/BlogPosts";
 
 const testimonials = [
   {
@@ -200,105 +201,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Sección de Entradas del Blog */}
-        <div className="relative mt-20 py-16 px-4 sm:px-6 lg:px-[4rem] rounded-3xl overflow-hidden">
-          {/* Background image from parent */}
-          <div className="absolute inset-0 ">
-            <div className="absolute bg-[#006A61] inset-0 bg-[url('/images/background.webp')] bg-cover bg-center"></div>
-          </div>
-          {/* Semi-transparent overlay */}
-          <div className="absolute inset-0 bg-[#006A61]/[0.5] "></div>
-          <div className="max-w-7xl mx-auto relative z-0">
-            <h3 className="text-center text-white text-3xl md:text-4xl font-bold mb-4">
-              Explora Nuestro Blog
-            </h3>
-            <p className="text-center text-white/80 text-lg mb-12 max-w-3xl mx-auto">
-              Descubre artículos, guías y consejos para llevar tu negocio al
-              siguiente nivel
-            </p>
-
-            <Slider
-              {...{
-                slidesToShow: 3,
-                slidesToScroll: 1,
-                autoplay: false,
-                arrows: true,
-                dots: true,
-                responsive: [
-                  {
-                    breakpoint: 1024,
-                    settings: {
-                      slidesToShow: 2,
-                      slidesToScroll: 1,
-                      arrows: true,
-                      dots: true,
-                    },
-                  },
-                  {
-                    breakpoint: 768,
-                    settings: {
-                      slidesToShow: 1,
-                      slidesToScroll: 1,
-                      arrows: false,
-                      dots: true,
-                    },
-                  },
-                ],
-              }}
-              className="mx-[-15px]"
-            >
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div key={`blog-${item}`} className="px-3">
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
-                    {/* Imagen del post */}
-                    <div className="h-48 bg-gray-200 relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          Imagen del Post {item}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Badge de categoría */}
-                    <div className="px-5 pt-4">
-                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium">
-                        Marketing Digital
-                      </span>
-                    </div>
-
-                    {/* Contenido */}
-                    <div className="p-5 flex-1 flex flex-col">
-                      <h4 className="text-gray-900 font-bold text-xl mb-3 leading-tight">
-                        Cómo mejorar tu presencia en línea con estrategias de
-                        marketing digital efectivas
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-5 flex-1">
-                        Descubre las mejores estrategias para mejorar tu
-                        presencia en línea y llegar a más clientes potenciales a
-                        través del marketing digital.
-                      </p>
-
-                      {/* Pie de tarjeta */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span className="text-sm text-gray-500">
-                          Hace 2 días
-                        </span>
-                        <button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-medium py-1.5 px-4 rounded-full transition-colors">
-                          Leer más
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-
-            <div className="text-center mt-12">
-              <button className="bg-white text-[#2A0064] hover:bg-gray-100 font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                ¡Crece como ellos!
-              </button>
-            </div>
-          </div>
-        </div>
+        <BlogPosts/>
       </div>
     </section>
   );

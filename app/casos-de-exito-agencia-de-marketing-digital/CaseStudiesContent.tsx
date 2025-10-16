@@ -208,9 +208,9 @@ export default function CaseStudiesContent() {
           {/* Filtros activos */}
           {activeFilters.length > 0 && (
             <div className="mt-2">
-              <div className="text-sm text-gray-500 mb-2">
+              {/* <div className="text-sm text-gray-500 mb-2">
                 Filtros aplicados:
-              </div>
+              </div> */}
               <div className="flex flex-wrap gap-2">
                 {activeFilters.map((filter) => (
                   <span
@@ -361,25 +361,37 @@ export default function CaseStudiesContent() {
             </div>
 
             {/* Columna derecha - Contenido */}
-            <div className="lg:w-1/2 bg-[#FFEFD1] p-12 rounded-2xl text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight text-[#453A53]">
-                No esperes más para empezar a ganar
-              </h2>
-              <p className="text-lg text-[#453A53] mb-8">
-                Deja de arreglar tu web con parches y dejas de perder clientes
-                por fallas que no puedes ver. Es hora de invertir en una
-                solución profesional.
-              </p>
-              <div className="space-y-4 flex flex-col items-center">
-                <div className="flex items-center">
-                  <h2 className="text-[28px] font-bold text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
-                    ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
-                  </h2>
+            <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden bg-[#FFEFD1]">
+              <div 
+                className="absolute inset-0 w-full h-full"
+                style={{
+                  backgroundImage: 'url(/images/background.webp)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              />
+              <div className="absolute inset-0 bg-[#FFEFD1]/[0.6]"></div>
+              <div className="relative z-10 h-full flex flex-col items-center justify-center p-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight text-[#453A53]">
+                  No esperes más para empezar a ganar
+                </h2>
+                <p className="text-lg text-[#453A53] mb-8">
+                  Deja de arreglar tu web con parches y dejas de perder clientes
+                  por fallas que no puedes ver. Es hora de invertir en una
+                  solución profesional.
+                </p>
+                <div className="space-y-4 flex flex-col items-center">
+                  <div className="flex items-center">
+                    <h2 className="text-[28px] font-bold text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                      ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
+                    </h2>
+                  </div>
                 </div>
+                <button className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+                  ¡Empieza ya!
+                </button>
               </div>
-              <button className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                ¡Empieza ya!
-              </button>
             </div>
           </div>
         </div>
