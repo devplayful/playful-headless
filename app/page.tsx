@@ -2,6 +2,7 @@ import Link from 'next/link'
 import AnimatedButton from '@/components/AnimatedButton'
 import MaterialServicesSection from '@/components/MaterialServicesSection'
 import SolucionesPlayful from '@/components/SolucionesPlayful'
+import TestimonialsSection from '@/components/TestimonialsSectionClient'
 
 export default function Home() {
   return (
@@ -54,6 +55,8 @@ export default function Home() {
       <MaterialServicesSection />
       <br></br>
       <SolucionesPlayful />
+
+      <TestimonialsSection />
 
     </div>
   )
