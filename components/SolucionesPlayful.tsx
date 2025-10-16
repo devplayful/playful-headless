@@ -42,13 +42,13 @@ const cardData = [
   },
 ];
 
-export default function MaterialServicesSection() {
+export default function SolucionesPlayful() {
   return (
    <Container>
-    <div className='playful-contenedor playful-contenedor-FFEFD1'>
-      <h2 className='playful-h2'>Lo que realmente está matando tus conversiones</h2>
+    <div className='playful-contenedor playful-contenedor-B3FFF3'>
+      <h2 className='playful-h2'>Soluciones Playful: Tecnología que se traduce en ventas</h2>
       <p className='playful-contenido-p'>
-      El problema no es tu producto. Es la <b>mala experiencia</b> que le das a tus clientes.
+      Somos más que una agencia de diseño web. Somos tus socios tecnológicos, dedicados a construir la base que tu negocio necesita para escalar.
       </p>
 
 
@@ -63,7 +63,7 @@ export default function MaterialServicesSection() {
         ))}
       </div>
 
-      <button className="playful-boton">
+      <button className="conversion-cta-button">
         <span role="img" aria-label="emoji-star">
           ✨
         </span>{' '}
