@@ -85,7 +85,7 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
   };
 
   return (
-    <section className="py-16  from-purple-700 to-purple-900">
+    <section className="from-purple-700 to-purple-900">
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={textStyle}>
@@ -191,7 +191,7 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
                   ])
                   .map((logo, index) => (
                     <div key={index} className="px-2 sm:px-4">
-                      <div className="w-full h-[400px] sm:h-64">
+                      <div className="w-full h-[230px] sm:h-64">
                         <div className="w-full h-full relative">
                           <Image
                             src={logo}
