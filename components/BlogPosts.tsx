@@ -79,7 +79,7 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
   onButtonClick,
   className = "",
   backgroundColor = "#006A61",
-  textColor = "#ffffff",
+  textColor = "#FEF7FF",
   buttonTextColor = "#2A0064",
   buttonBgColor = "#39DDCB",
   overlayOpacity = 0.5,
