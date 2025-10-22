@@ -357,7 +357,7 @@ export default function CaseStudiesContent() {
                 <img
                   src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
                   alt="Agencia de Marketing Digital"
-                  className="w-[90%] h-auto object-cover"
+                  className="w-[80%] h-auto object-cover"
                 />
               </div>
             </div>
