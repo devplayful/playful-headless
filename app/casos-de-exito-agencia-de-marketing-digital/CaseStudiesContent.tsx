@@ -127,7 +127,17 @@ export default function CaseStudiesContent() {
         );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-700 via-purple-600 to-purple-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div
+      className="min-h-screen py-12 px-4 sm:px-6 lg:px-8"
+      style={{
+        backgroundColor: "#5724AB",
+        backgroundImage: "url(/images/background.webp)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundBlendMode: "overlay",
+      }}
+    >
       <div className="max-w-7xl mx-auto mb-16">
         {/* Breadcrumb */}
         <div className="mb-8">
@@ -344,8 +354,8 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Sección de Testimonios */}
-      <TestimonialsSection textColor="#ffffff"/>
-       <BlogPosts/>    
+      <TestimonialsSection textColor="#ffffff" />
+      <BlogPosts />
 
       {/* Sección de dos columnas */}
       <div className="py-16">
@@ -357,20 +367,20 @@ export default function CaseStudiesContent() {
                 <img
                   src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
                   alt="Agencia de Marketing Digital"
-                  className="w-[90%] h-auto object-cover"
+                  className="w-[80%] h-auto object-cover"
                 />
               </div>
             </div>
 
             {/* Columna derecha - Contenido */}
             <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden ">
-              <div 
+              <div
                 className="absolute inset-0 w-full h-full bg-[#FFEFD1]"
                 style={{
-                  backgroundImage: 'url(/images/background.webp)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
+                  backgroundImage: "url(/images/background.webp)",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
                 }}
               />
               <div className="absolute inset-0 bg-[#FFEFD1]/[0.6]"></div>

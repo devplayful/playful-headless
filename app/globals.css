@@ -618,11 +618,9 @@ body {
     display: flex;
     flex-direction: row;
   }
-
   .logo {
     padding: 0px;
   }
-
   .playful-footerInfo {
     display: flex;
     flex-direction: column;
@@ -631,24 +629,19 @@ body {
 }
 
 @media only screen and (max-width: 425px) {
-
   .footerCard {
     width: 111.5% !important;
     margin: 0px 0px 50px 0px;
     height: 329px;
-
   }
-
   .logo {
     padding: 0px;
   }
-
   .playful-footerInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-
   .playful-footerItems{
     width: 50%;
   }
@@ -657,8 +650,7 @@ body {
   }
   .playful-movil-testimonialCard{
    padding: 0px !important; 
-  }
-  
+  }  
 }
 
 
@@ -669,11 +661,9 @@ body {
     display: flex;
     flex-direction: row;
   }
-
   .logo {
     padding: 0px;
   }
-
   .playful-footerInfo {
     display: flex;
     flex-direction: column;
@@ -682,25 +672,19 @@ body {
 }
 
 @media only screen and (max-width: 425px) {
-
-
   .footerCard {
     width: 111.5% !important;
     margin: 0px 0px 50px 0px;
     height: 329px;
-
   }
-
   .logo {
     padding: 0px;
   }
-
   .playful-footerInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-
   .playful-footerItems{
     width: 50%;
   }
@@ -709,6 +693,5 @@ body {
   }
   .playful-movil-testimonialCard{
    padding: 0px !important; 
-  }
-  
+  }  
 }
