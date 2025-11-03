@@ -1,12 +1,16 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { footerColor } = useTheme();
 
   return (
-    <footer className="px-5">
-      <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto mt-[80px] mb-[80px] flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
+    <footer className={`px-5 ${footerColor}`}>
+      <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] w-[510px] ml-[83px] flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
             <img

@@ -5,26 +5,36 @@ import { usePathname } from 'next/navigation';
 
 type ThemeContextType = {
   headerColor: string;
+  footerColor: string;
   setHeaderColor: (color: string) => void;
+  setFooterColor: (color: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [headerColor, setHeaderColor] = useState('transparent');
+  const [headerColor, setHeaderColor] = useState('bg-[#E9D7FF]');
+  const [footerColor, setFooterColor] = useState('bg-[#E9D7FF]');
 
-  // Actualizar el color del header basado en la ruta
+  // Actualizar los colores basados en la ruta
   useEffect(() => {
     if (pathname === '/casos-de-exito-agencia-de-marketing-digital') {
-      setHeaderColor('playful-header-mora'); // Azul oscuro solo para la página de casos de éxito
+      setHeaderColor('playful-header-mora');
+      setFooterColor('playful-footer-mora');
     } else {
-      setHeaderColor('bg-[#E9D7FF]'); // Color lila para todas las demás páginas incluyendo el home
+      setHeaderColor('bg-[#E9D7FF]');
+      setFooterColor('bg-[#E9D7FF]');
     }
   }, [pathname]);
 
   return (
-    <ThemeContext.Provider value={{ headerColor, setHeaderColor }}>
+    <ThemeContext.Provider value={{ 
+      headerColor, 
+      footerColor,
+      setHeaderColor, 
+      setFooterColor 
+    }}>
       {children}
     </ThemeContext.Provider>
   );

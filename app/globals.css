@@ -28,6 +28,10 @@ body {
   background-color: #5724AB !important;
 }
 
+.playful-footer-mora {
+  background-color: #5724AB !important;
+}
+
 /* Typography Classes */
 @layer components {
   .title-large {
