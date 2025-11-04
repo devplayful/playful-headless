@@ -2,6 +2,8 @@ import { getPageMetadataBySlug, TeamMember, getTeamMembers, getLatestBlogPosts }
 import Image from 'next/image';
 import PortfolioCarousel from '@/components/ui/PortfolioCarousel';
 import Link from 'next/link';
+import BlogPosts from '@/components/BlogPosts';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
@@ -333,12 +335,14 @@ const NuestraPalabraSection = () => {
 };
 
 // --- COMPONENTE DE BLOG ---
+
+
 const BlogSection = async () => {
   const blogPosts = await getLatestBlogPosts(3);
 
   return (
-    <section className="bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
-      <div className="max-w-4xl mx-auto text-center">
+    <section className="bg-[#006A61] rounded-3xl md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      {/* <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           ¿Estás listo para dejar de perder y empezar a ganar?
         </h2>
@@ -389,7 +393,8 @@ const BlogSection = async () => {
         >
           Ver más artículos
         </Link>
-      </div>
+      </div> */}
+      <BlogPosts /> 
     </section>
   );
 };
@@ -572,14 +577,14 @@ export default async function Nosotros() {
       { /* Seccion Nuestra Palabra */}
       <NuestraPalabraSection />      
 
-      {/* Sección del Blog */}
+      {/* Sección del Blog */} 
       <BlogSection />
-      
+
       {/* Sección CTA */}
-      <CTASection 
-        imagePath="/images/nosotros/cta-illustration.png"
-        imageAlt="Ilustración de crecimiento digital"
-      />
+      <TwoColumnCtaSection
+      contentBgColor="#B3FFF3"
+      imageAlt="Ilustración de crecimiento digital"
+      imageUrl="/images/nosotros/cta-illustration.png" />
     </>
   );
 }
