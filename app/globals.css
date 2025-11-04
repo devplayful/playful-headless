@@ -82,6 +82,15 @@ body {
 
 /* Tipografía Base (Desktop) */
 
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-paytone;
+  }
+  p {
+    @apply font-dm-sans text-base font-normal;
+  }
+}
+
 .color-home {
   background-color: #e9d7ff;
 }
