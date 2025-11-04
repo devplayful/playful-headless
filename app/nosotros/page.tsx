@@ -341,7 +341,7 @@ const BlogSection = async () => {
   const blogPosts = await getLatestBlogPosts(3);
 
   return (
-    <section className="bg-[#006A61] rounded-3xl md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+    <section className="bg-[#006A61] rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
       {/* <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           ¿Estás listo para dejar de perder y empezar a ganar?
