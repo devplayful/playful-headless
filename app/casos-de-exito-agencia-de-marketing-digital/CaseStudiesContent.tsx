@@ -52,12 +52,12 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {caseStudy.tags.map((tag, index) => (
+            {caseStudy.categories.map((category, index) => (
               <span
                 key={index}
                 className="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700"
               >
-                {tag}
+                {category}
               </span>
             ))}
           </div>
@@ -103,6 +103,11 @@ interface WPCaseStudy {
     button_text: string;
     button_color: string;
     imagen_destacada: string;
+    categoria1?: string;
+    categoria2?: string;
+    categoria3?: string;
+    categoria4?: string;
+    categoria5?: string;
   };
   _embedded?: {
     'wp:featuredmedia'?: Array<{
@@ -117,7 +122,7 @@ export interface CaseStudy {
   title: string;
   slug: string;
   description: string;
-  tags: string[];
+  categories: string[];
   badge: string;
   badgeColor: string;
   buttonText: string;
@@ -165,14 +170,20 @@ export default function CaseStudiesContent() {
             image = item.featured_media_url;
           }
           
+          const categories = [
+            item.acf?.categoria1,
+            item.acf?.categoria2,
+            item.acf?.categoria3,
+            item.acf?.categoria4,
+            item.acf?.categoria5,
+          ].filter(Boolean) as string[];
+
           return {
             id: item.id,
             title: title,
             slug: item.slug || `caso-${item.id}`,
             description: description || 'Descripción no disponible',
-            tags: item.tags ? 
-              (Array.isArray(item.tags) ? item.tags : [item.tags]) : 
-              (item.acf?.tags || []),
+            categories: categories,
             badge: item.acf?.badge || item.meta?._case_study_badge || '',
             badgeColor: item.acf?.badge_color || item.meta?._case_study_badge_color || 'bg-purple-600',
             buttonText: item.acf?.button_text || 'Ver más',
@@ -193,9 +204,9 @@ export default function CaseStudiesContent() {
     fetchCaseStudies();
   }, []);
 
-  // All available tags from the case studies
-  const allTags = Array.from(
-    new Set(caseStudies.flatMap((study) => study.tags))
+  // All available categories from the case studies
+  const allCategories = Array.from(
+    new Set(caseStudies.flatMap((study) => study.categories))
   );
 
   // State for active filters
@@ -243,7 +254,7 @@ export default function CaseStudiesContent() {
     activeFilters.length === 0
       ? caseStudies
       : caseStudies.filter((study) =>
-          activeFilters.some((filter) => study.tags.includes(filter))
+          activeFilters.some((filter) => study.categories.includes(filter))
         );
 
   if (loading) {
@@ -330,17 +341,17 @@ export default function CaseStudiesContent() {
 
           {/* Filtros disponibles */}
           <div className="flex flex-wrap gap-2">
-            {allTags.map((tag) => (
+            {allCategories.map((category) => (
               <button
-                key={tag}
-                onClick={() => toggleFilter(tag)}
+                key={category}
+                onClick={() => toggleFilter(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  activeFilters.includes(tag)
+                  activeFilters.includes(category)
                     ? "bg-white text-teal-600 shadow-sm"
                     : "bg-white/80 text-gray-700 hover:bg-white"
                 }`}
               >
-                {tag}
+                {category}
               </button>
             ))}
           </div>
