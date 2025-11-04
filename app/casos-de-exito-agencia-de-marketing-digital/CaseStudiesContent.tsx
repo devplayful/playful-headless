@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import BlogPosts from "@/components/BlogPosts";
+import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 
 // Componente para la tarjeta de caso de estudio
 const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
@@ -51,12 +52,12 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {caseStudy.tags.map((tag, index) => (
+            {caseStudy.categories.map((category, index) => (
               <span
                 key={index}
                 className="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700"
               >
-                {tag}
+                {category}
               </span>
             ))}
           </div>
@@ -102,6 +103,11 @@ interface WPCaseStudy {
     button_text: string;
     button_color: string;
     imagen_destacada: string;
+    categoria1?: string;
+    categoria2?: string;
+    categoria3?: string;
+    categoria4?: string;
+    categoria5?: string;
   };
   _embedded?: {
     'wp:featuredmedia'?: Array<{
@@ -116,7 +122,7 @@ export interface CaseStudy {
   title: string;
   slug: string;
   description: string;
-  tags: string[];
+  categories: string[];
   badge: string;
   badgeColor: string;
   buttonText: string;
@@ -164,14 +170,20 @@ export default function CaseStudiesContent() {
             image = item.featured_media_url;
           }
           
+          const categories = [
+            item.acf?.categoria1,
+            item.acf?.categoria2,
+            item.acf?.categoria3,
+            item.acf?.categoria4,
+            item.acf?.categoria5,
+          ].filter(Boolean) as string[];
+
           return {
             id: item.id,
             title: title,
             slug: item.slug || `caso-${item.id}`,
             description: description || 'Descripción no disponible',
-            tags: item.tags ? 
-              (Array.isArray(item.tags) ? item.tags : [item.tags]) : 
-              (item.acf?.tags || []),
+            categories: categories,
             badge: item.acf?.badge || item.meta?._case_study_badge || '',
             badgeColor: item.acf?.badge_color || item.meta?._case_study_badge_color || 'bg-purple-600',
             buttonText: item.acf?.button_text || 'Ver más',
@@ -192,9 +204,9 @@ export default function CaseStudiesContent() {
     fetchCaseStudies();
   }, []);
 
-  // All available tags from the case studies
-  const allTags = Array.from(
-    new Set(caseStudies.flatMap((study) => study.tags))
+  // All available categories from the case studies
+  const allCategories = Array.from(
+    new Set(caseStudies.flatMap((study) => study.categories))
   );
 
   // State for active filters
@@ -242,7 +254,7 @@ export default function CaseStudiesContent() {
     activeFilters.length === 0
       ? caseStudies
       : caseStudies.filter((study) =>
-          activeFilters.some((filter) => study.tags.includes(filter))
+          activeFilters.some((filter) => study.categories.includes(filter))
         );
 
   if (loading) {
@@ -329,17 +341,17 @@ export default function CaseStudiesContent() {
 
           {/* Filtros disponibles */}
           <div className="flex flex-wrap gap-2">
-            {allTags.map((tag) => (
+            {allCategories.map((category) => (
               <button
-                key={tag}
-                onClick={() => toggleFilter(tag)}
+                key={category}
+                onClick={() => toggleFilter(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  activeFilters.includes(tag)
+                  activeFilters.includes(category)
                     ? "bg-white text-teal-600 shadow-sm"
                     : "bg-white/80 text-gray-700 hover:bg-white"
                 }`}
               >
-                {tag}
+                {category}
               </button>
             ))}
           </div>
@@ -423,59 +435,13 @@ export default function CaseStudiesContent() {
 
       {/* Sección de Testimonios */}
       <TestimonialsSection textColor="#ffffff" />
+      
+      {/* Sección del Blog */}
       <BlogPosts />
-
+      
       {/* Sección de dos columnas */}
-      <div className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:flex lg:items-center lg:space-x-12">
-            {/* Columna izquierda - Imagen */}
-            <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <div className="relative rounded-2xl overflow-hidden">
-                <img
-                  src="/images/logos/Playful Agency Conectemos.png"
-                  alt="Agencia de Marketing Digital"
-                  className="w-[100%] h-auto object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Columna derecha - Contenido */}
-            <div className="lg:w-[708px] h-full min-h-[500px] rounded-2xl relative overflow-hidden">
-              <div
-                className="absolute inset-0 w-full h-full bg-[#FFEFD1]"
-                style={{
-                  backgroundImage: "url(/images/background.webp)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-              <div className="absolute inset-0 bg-[#FFEFD1]/[0.6]"></div>
-              <div className="relative z-10 h-full flex flex-col items-center justify-center p-5 lg:p-12">
-                <h2 className="text-3xl md:text-4xl text-center font-bold mb-6 leading-tight text-[#453A53]">
-                  No esperes más para empezar a ganar
-                </h2>
-                <p className="text-lg text-[#453A53] text-center mb-8">
-                  Deja de arreglar tu web con parches y dejas de perder clientes
-                  por fallas que no puedes ver. Es hora de invertir en una
-                  solución profesional.
-                </p>
-                <div className="space-y-4 flex flex-col items-center">
-                  <div className="flex items-center">
-                    <h2 className="text-[28px] font-bold text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
-                      ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
-                    </h2>
-                  </div>
-                </div>
-                <button className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                  ¡Empieza ya!
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TwoColumnCtaSection
+      contentBgColor="#FFEFD1" />
     </div>
   );
 }
