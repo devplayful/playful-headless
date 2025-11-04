@@ -43,9 +43,10 @@ const testimonials = [
 
 interface TestimonialsSectionProps {
   textColor?: string; // Hex color code, e.g. '#ffffff'
+  className?: string;
 }
 
-export default function TestimonialsSection({ textColor = '#4A4453' }: TestimonialsSectionProps) {
+export default function TestimonialsSection({ textColor = '#4A4453', className }: TestimonialsSectionProps) {
   const responsiveSettings = useSliderSettings();
 
   // Create style object for text color
@@ -54,7 +55,7 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
   };
 
   return (
-    <section className="from-purple-700 to-purple-900 overflow-hidden">
+    <section className={className}>
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={textStyle}>

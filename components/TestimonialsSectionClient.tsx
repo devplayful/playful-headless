@@ -7,6 +7,6 @@ const TestimonialsSection = dynamic(
   { ssr: false }
 );
 
-export default function TestimonialsSectionClient() {
-  return <TestimonialsSection />;
+export default function TestimonialsSectionClient({ className }: { className?: string }) {
+  return <TestimonialsSection className={className} />;
 }

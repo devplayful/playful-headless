@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden color-home">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -52,11 +52,11 @@ export default function Home() {
       </section>
 
       {/* Material UI Services Section */}
-      <MaterialServicesSection />
-      <br></br>
-      <SolucionesPlayful />
+      <MaterialServicesSection className="color-home contenedores-home" />
 
-      <TestimonialsSection />
+      <SolucionesPlayful className="color-home contenedores-home" />
+
+      <TestimonialsSection className="color-home contenedores-home" />
 
     </div>
   )

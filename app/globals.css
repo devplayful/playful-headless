@@ -81,6 +81,16 @@ body {
 /************CSS CLASES GLOBALES*************/
 
 /* Tipografía Base (Desktop) */
+
+.color-home {
+  background-color: #e9d7ff;
+}
+
+.contenedores-home {
+  display: flex;
+  justify-content: center;
+}
+
 .playful-h1 {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
   font-weight: 400;
@@ -154,6 +164,7 @@ body {
 }
 
 .playful-contenedor {
+  max-width: 1200px;
   display: flex;
   gap: 25px;
   flex-direction: column;

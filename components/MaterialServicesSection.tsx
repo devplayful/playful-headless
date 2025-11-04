@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Card, 
   CardContent, 
@@ -42,9 +41,9 @@ const cardData = [
   },
 ];
 
-export default function MaterialServicesSection() {
+export default function MaterialServicesSection({ className }: { className?: string }) {
   return (
-   <Container>
+   <section className={className}>
     <div className='playful-contenedor playful-contenedor-FFEFD1'>
       <h2 className='playful-h2'>Lo que realmente está matando tus conversiones</h2>
       <p className='playful-contenido-p'>
@@ -72,6 +71,6 @@ export default function MaterialServicesSection() {
 
 
     </div>
-   </Container>
+   </section>
   );
 }

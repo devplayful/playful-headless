@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Card, 
   CardContent, 
@@ -42,9 +41,9 @@ const cardData = [
   },
 ];
 
-export default function SolucionesPlayful() {
+export default function SolucionesPlayful({ className }: { className?: string }) {
   return (
-   <Container>
+   <section className={className}>
     <div className='playful-contenedor playful-contenedor-B3FFF3'>
       <h2 className='playful-h2'>Soluciones Playful: Tecnología que se traduce en ventas</h2>
       <p className='playful-contenido-p'>
@@ -72,6 +71,6 @@ export default function SolucionesPlayful() {
 
 
     </div>
-   </Container>
+   </section>
   );
 }
