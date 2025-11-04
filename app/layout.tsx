@@ -4,7 +4,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ChatWidget from '@/components/ChatWidget'
-import ThemeProvider from '@/components/ThemeProvider'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 
 const paytoneOne = Paytone_One({ 
@@ -24,7 +24,7 @@ const dmSans = DM_Sans({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  console.log('=== Iniciando generación de metadatos ===');
+  /* console.log('=== Iniciando generación de metadatos ==='); */
   
   try {
     const yoastData = await getHomePageMetadata();
@@ -70,8 +70,8 @@ export async function generateMetadata(): Promise<Metadata> {
       };
     }
 
-    console.log('=== Metadatos generados correctamente ===');
-    console.log(JSON.stringify(metadata, null, 2));
+    /* console.log('=== Metadatos generados correctamente ===');
+    console.log(JSON.stringify(metadata, null, 2)); */
     
     return metadata;
     

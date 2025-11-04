@@ -18,6 +18,18 @@
 
 body {
   font-family: var(--font-dm-sans), sans-serif;
+  background-image: url(/images/background.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.playful-header-mora {
+  background-color: #5724AB !important;
+}
+
+.playful-footer-mora {
+  background-color: #5724AB !important;
 }
 
 /* Typography Classes */
@@ -27,37 +39,25 @@ body {
     font-weight: 400;
     line-height: 1.1;
   }
-  
+
   .title-medium {
     font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
     font-weight: 400;
     line-height: 1.2;
   }
-  
+
   .title-small {
     font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
     font-weight: 400;
     line-height: 1.3;
   }
-  
-  .subtitle {
-    font-family: var(--font-montserrat), sans-serif;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-  
-  .body-text {
-    font-family: var(--font-dm-sans), sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-  
+
   .body-text-medium {
     font-family: var(--font-dm-sans), sans-serif;
     font-weight: 500;
     line-height: 1.6;
   }
-  
+
   .body-text-bold {
     font-family: var(--font-dm-sans), sans-serif;
     font-weight: 700;
@@ -71,32 +71,9 @@ body {
   }
 }
 
-.playful-header {
-  margin: 40px 80px !important;
-  padding: 20px;
-  border: 16px !important;
-  background-color: white !important;
-  border-radius: 16px !important;
-  background-color: #E9D7FF;
-  background: #FFFBFF;
-box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
-border-radius: 100px;
-}
+/************CSS CLASES GLOBALES*************/
 
-.playful-boton-header {
-  background-color: #72E3D8;  
-}
-
-body {
-  background-image: url(/images/background.webp);
-  background-color: #E9D7FF !important;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/************CSS CLASES GLOBALES*************/ 
-
+/* Tipografía Base (Desktop) */
 .playful-h1 {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
   font-weight: 400;
@@ -105,6 +82,15 @@ body {
   color: #440099;
 }
 
+.playful-h2 {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  font-size: 45px;
+  color: #4A4453;
+}
+
+.playful-h3,
 .playful-miga-pan {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
   font-weight: 400;
@@ -116,8 +102,596 @@ body {
 .playful-contenido-p {
   font-family: var(--font-dm-sans), sans-serif;
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.5;
   font-size: 16px;
   color: #4A4453;
 }
 
+/* Componentes Base (Desktop) */
+
+.playful-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playful-header nav{
+  margin: 40px 80px !important;
+  padding: 20px;
+  background: #FFFBFF;
+  box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 100px;
+  width: 100%;
+  max-width: 1200px;
+  /**max-width: 1200px; /* <--- NUEVO: Limita el ancho máximo del header */
+}
+
+.playful-boton-header {
+  background-color: #72E3D8;
+}
+
+.playful-boton {
+  color: #2A0064;
+  background-color: #39DDCB;
+  padding: 10px;
+  border-radius: 30px;
+  width: 195px;
+}
+
+.playful-contenedor-FFEFD1 {
+  background-color: #FFEFD1;
+}
+
+.playful-contenedor-B3FFF3 {
+  background-color: #B3FFF3;
+}
+
+.playful-contenedor {
+  display: flex;
+  gap: 25px;
+  flex-direction: column;
+  padding: 80px !important;
+  border-radius: 68px !important;
+  background-image: url(/images/background.webp);
+  text-align: center;
+}
+
+/**************************************************/
+/************ CONVERSION CARDS (DESKTOP) **********/
+/**************************************************/
+
+.conversion-container {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f7f3ff;
+}
+
+.conversion-title {
+  font-size: 2.5em;
+  font-weight: 800;
+  margin-bottom: 0.2em;
+  color: #333;
+  line-height: 1.1;
+}
+
+.conversion-subtitle {
+  font-size: 1.1em;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+/* Desktop Wrapper (Grid de 3 columnas) */
+.conversion-cards-wrapper {
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px;
+  overflow-x: visible;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* Desktop Card Style */
+.conversion-card {
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center; /* Centrado en Desktop */
+  min-height: 350px;
+  /* Comportamiento de scroll desactivado */
+  scroll-snap-align: none;
+  flex-shrink: 1; 
+}
+
+/* Elementos de la tarjeta (Comunes para todas las vistas) */
+.card-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #333;
+  min-height: 60px;
+}
+
+.card-description {
+  font-size: 1em;
+  color: #777;
+  line-height: 1.6;
+}
+
+/* Botón CTA */
+.conversion-cta-button {
+  background-color: #6a0dad;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 15px 30px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 40px;
+  box-shadow: 0 4px 10px rgba(106, 13, 173, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.conversion-cta-button:hover {
+  background-color: #55008c;
+}
+
+/* Ocultar el salto de línea en desktop */
+.conversion-title-break {
+  display: none;
+}
+
+
+/**************************************************/
+/****************** MEDIA QUERIES *****************/
+/**************************************************/
+
+/* ==================================== */
+/* 1. TABLET (600px a 1023px) */
+/* ==================================== */
+@media (min-width: 600px) and (max-width: 1023px) {
+  /* Tipografía */
+  .playful-h1 { font-size: 56px; }
+  .playful-h2 { font-size: 36px; }
+  .playful-miga-pan { font-size: 24px; }
+  
+  /* Layouts */
+  .playful-header {
+      margin: 30px 40px !important;
+      border-radius: 60px;
+  }
+  .playful-contenedor {
+      padding: 60px !important;
+      border-radius: 50px !important;
+  }
+
+  /* Conversiones: Scroll Horizontal (2.2 tarjetas) */
+  .conversion-title { font-size: 2.2em; }
+  
+  .conversion-cards-wrapper {
+      display: flex; /* Habilita el flex para scroll */
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      gap: 25px;
+      /* Sobrescribe los estilos de Desktop */
+      grid-template-columns: none;
+      max-width: none;
+      padding: 0 20px;
+      margin-left: -20px;
+      margin-right: -20px;
+  }
+
+  .conversion-card {
+      width: 45%; 
+      flex-shrink: 0; /* No encoger en scroll */
+      scroll-snap-align: start; 
+      padding: 25px;
+      min-height: 320px;
+      text-align: left; /* Alineación a la izquierda en scroll */
+  }
+}
+
+/* ==================================== */
+/* 2. MOBILE (0px a 599px) */
+/* ==================================== */
+@media (max-width: 599px) {
+
+  .playful-header nav {
+    margin: 10px 10px !important;
+  }
+
+  /* Tipografía */
+  .playful-h1 { font-size: 38px; }
+  .playful-h2 { font-size: 28px; }
+  .playful-miga-pan { font-size: 20px; }
+  .playful-contenido-p { font-size: 14px; }
+
+  /* Layouts */
+  .playful-header {
+      margin: 0px 0px !important;
+      padding: 15px;
+      border-radius: 40px;
+  }
+  .playful-contenedor {
+      padding: 40px !important;
+      border-radius: 40px !important;
+      gap: 15px;
+  }
+
+  /* Conversiones: Scroll Horizontal (1.2 tarjetas) */
+  .conversion-title { font-size: 1.8em; }
+  .conversion-subtitle {
+      font-size: 1em;
+      margin-bottom: 30px;
+  }
+
+  .conversion-cards-wrapper {
+      display: flex; /* Habilita el flex para scroll */
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      gap: 15px;
+      /* Sobrescribe los estilos de Desktop */
+      grid-template-columns: none;
+      max-width: none;
+      padding: 0 10px;
+      margin-left: -10px;
+      margin-right: -10px;
+  }
+
+  .conversion-card {
+      width: 85%; 
+      flex-shrink: 0;
+      scroll-snap-align: center;
+      padding: 20px;
+      min-height: 300px;
+      text-align: center; /* Alineación a la izquierda en scroll */
+  }
+
+  .card-title {
+      font-size: 1.2em;
+  }
+
+  /* Mostrar el salto de línea en mobile para títulos largos */
+  .conversion-title-break {
+      display: block;
+  }
+}
+
+/* Ocultar barra de scroll en navegadores WebKit (Chrome, Safari) */
+.conversion-cards-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+
+/*****************************/
+
+/* ==================================== */
+/* ESTILOS DEL FOOTER (BASE: DESKTOP) */
+/* ==================================== */
+
+.playful-footer {
+  background-color: #3f0088; /* Fondo principal morado oscuro */
+  padding-top: 150px; /* Espacio para que la tarjeta 'caiga' dentro */
+  padding-bottom: 50px;
+  position: relative; /* Contenedor para la tarjeta flotante */
+  overflow: hidden; 
+}
+
+.playful-footer-content-wrapper {
+  /* Grid de 4 columnas para desktop */
+  display: grid;
+  grid-template-columns: 1fr repeat(3, 1fr); 
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+  padding-left: 20px; 
+  padding-right: 20px;
+  position: relative;
+  z-index: 10; 
+}
+
+/* --- Estilos de las Columnas de Navegación --- */
+
+.footer-nav-group {
+  padding-left: 20px; 
+}
+
+.footer-title {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: white; 
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #c9b4e5; /* Morado claro para los links */
+  text-decoration: none;
+  font-size: 1em;
+  line-height: 1.5;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+}
+
+
+/* ==================================== */
+/* ESTILOS DE LA TARJETA FLOTANTE (Desktop) */
+/* ==================================== */
+
+.footer-contact-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  
+  /* Posicionamiento flotante en Desktop */
+  position: absolute;
+  top: -100px; 
+  left: 20px; 
+  width: 300px; 
+  z-index: 20;
+}
+
+/* Contenido de la tarjeta */
+.footer-logo-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.footer-logo {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.footer-logo-text {
+  font-size: 1.8em;
+  font-weight: 800;
+  color: #3f0088;
+}
+
+/* Íconos Sociales */
+.footer-social-icons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 10px;
+}
+
+.icon-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #eee;
+  color: #3f0088;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Botón de Contacto */
+.footer-contact-button {
+  /* Toma los estilos de .playful-boton-header para el color */
+  color: #3f0088; /* Color del texto turquesa */
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.contact-icon {
+  margin-right: 8px;
+  font-size: 1.2em; /* Hace el emoji un poco más grande */
+}
+
+/* ==================================== */
+/* MEDIA QUERY: TABLET (600px a 1023px) */
+/* ==================================== */
+@media (min-width: 600px) and (max-width: 1023px) {
+  
+  .playful-footer {
+      padding-top: 100px;
+  }
+
+  .playful-footer-content-wrapper {
+      /* 2 columnas para el contenido principal, la tarjeta 'flota' encima */
+      grid-template-columns: 1fr 1fr; 
+      gap: 30px;
+  }
+
+  /* La tarjeta pasa a estar centrada y limitada en ancho */
+  .footer-contact-card {
+      top: -70px;
+      left: 50%; 
+      transform: translateX(-50%); /* Centrado perfecto con transform */
+      width: 80%;
+      max-width: 400px;
+  }
+  
+  /* El contenido debajo de la tarjeta se reorganiza para no chocar */
+  .footer-nav-group {
+      padding-left: 0;
+      text-align: center;
+  }
+
+  /* Ordenamiento de las columnas usando Grid Area */
+  .footer-nav-group.nosotros {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+  }
+  .footer-nav-group.servicios {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+  }
+  .footer-nav-group.legal {
+      grid-column: 1 / 3; /* Ocupa todo el ancho */
+      grid-row: 3 / 4;
+      margin-top: 20px;
+  }
+}
+
+
+/* ==================================== */
+/* MEDIA QUERY: MOBILE (0px a 599px) */
+/* ==================================== */
+@media (max-width: 599px) {
+
+  .playful-footer {
+      padding-top: 120px; 
+      padding-left: 0;
+      padding-right: 0;
+  }
+
+  .playful-footer-content-wrapper {
+      /* Layout de columna para móvil */
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      padding: 0 20px; /* Padding interno */
+  }
+
+  /* La tarjeta ahora es ESTÁTICA y ocupa el ancho completo */
+  .footer-contact-card {
+      position: static;
+      transform: none;
+      width: auto;
+      border-radius: 20px;
+      margin: -80px 10px 0 10px; /* Margen superior negativo para mantener el efecto de 'flote' */
+      padding: 30px 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  /* El resto de las columnas van apiladas y centradas */
+  .footer-nav-group {
+      padding-left: 0;
+      text-align: center;
+  }
+  
+  .footer-title {
+      margin-bottom: 15px;
+  }
+
+  .footer-links li {
+      margin-bottom: 6px;
+  }
+}
+
+
+
+/* Footer */
+
+@media only screen and (min-width: 500px) and (max-width: 768px) {
+  .footer {
+    display: flex;
+    flex-direction: row;
+  }
+  .logo {
+    padding: 0px;
+  }
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 25%;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .footerCard {
+    width: 111.5% !important;
+    margin: 0px 0px 50px 0px;
+    height: 329px;
+  }
+  .logo {
+    padding: 0px;
+  }
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .playful-footerItems{
+    width: 50%;
+  }
+  .playful-Grid-CasosExito{
+    width: 100% !important;
+  }
+  .playful-movil-testimonialCard{
+   padding: 0px !important; 
+  }  
+}
+
+
+/* El Footer movil que FRAO*/
+
+@media only screen and (min-width: 500px) and (max-width: 768px) {
+  .footer {
+    display: flex;
+    flex-direction: row;
+  }
+  .logo {
+    padding: 0px;
+  }
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 25%;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .footerCard {
+    width: 111.5% !important;
+    margin: 0px 0px 50px 0px;
+    height: 329px;
+  }
+  .logo {
+    padding: 0px;
+  }
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .playful-footerItems{
+    width: 50%;
+  }
+  .playful-Grid-CasosExito{
+    width: 100% !important;
+  }
+  .playful-movil-testimonialCard{
+   padding: 0px !important; 
+  }  
+}

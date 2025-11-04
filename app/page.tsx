@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import AnimatedButton from '@/components/AnimatedButton'
 import MaterialServicesSection from '@/components/MaterialServicesSection'
+import SolucionesPlayful from '@/components/SolucionesPlayful'
+import TestimonialsSection from '@/components/TestimonialsSectionClient'
 
 export default function Home() {
   return (
@@ -17,7 +19,7 @@ export default function Home() {
                 ¿Tu web está costándole dinero a tu negocio?                </h1>
               </div>
               
-              <div className="space-y-4 text-purple-800">
+              <div className="space-y-4 2 text-purple-800">
                 <p className="playful-contenido-p">
                 Tu sitio web no es solo tu carta de presentación; es tu motor de ventas. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás <b>dejando dinero sobre la mesa</b>.
                 </p>
@@ -28,19 +30,16 @@ export default function Home() {
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <AnimatedButton 
-                    variant="primary" 
-                    href="/servicios"
-                  >
-                  ¡Quiero saber más! 
-                  </AnimatedButton>
+                    <button className="playful-boton">
+                    ¡Quiero saber más! 
+                    </button>
                 </div>
               </div>
             </div>
 
             {/* Right Illustration Area */}
             <div className="relative">
-
+                <img src="../images/Playful-Agency-tu-agencia-de-marketing-digital.webp" alt="" />
             </div>
           </div>
         </div>
@@ -54,6 +53,10 @@ export default function Home() {
 
       {/* Material UI Services Section */}
       <MaterialServicesSection />
+      <br></br>
+      <SolucionesPlayful />
+
+      <TestimonialsSection />
 
     </div>
   )
