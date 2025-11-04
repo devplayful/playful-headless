@@ -303,7 +303,7 @@ export default function CaseStudiesContent() {
         </div>
 
         {/* Bottom Text Section */}
-        <div className="text-center mb-12">
+        <div className="lg:text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
             No confíes solo en nuestra palabra, mira los resultados.
           </h2>
@@ -427,77 +427,21 @@ export default function CaseStudiesContent() {
 
       {/* Sección de dos columnas */}
       <div className="py-16">
-        <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
-          <div className="lg:flex lg:items-center lg:space-x-12">
-            {/* Columna izquierda - Imagen */}
-            <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <div className="relative rounded-2xl overflow-hidden ">
-                <img
-                  src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
-                  alt="Agencia de Marketing Digital"
-                  className="w-[80%] h-auto object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Columna derecha - Contenido */}
-            <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden ">
-              <div
-                className="absolute inset-0 w-full h-full bg-[#FFEFD1]"
-                style={{
-                  backgroundImage: "url(/images/background.webp)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              />
-              <div className="absolute inset-0 bg-[#FFEFD1]/[0.6]"></div>
-              <div className="relative z-10 h-full flex flex-col items-center justify-center p-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight text-[#453A53]">
-                  No esperes más para empezar a ganar
-                </h2>
-                <p className="text-lg text-[#453A53] mb-8">
-                  Deja de arreglar tu web con parches y dejas de perder clientes
-                  por fallas que no puedes ver. Es hora de invertir en una
-                  solución profesional.
-                </p>
-                <div className="space-y-4 flex flex-col items-center">
-                  <div className="flex items-center">
-                    <h2 className="text-[28px] font-bold text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
-                      ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
-                    </h2>
-                  </div>
-                </div>
-                <button className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                  ¡Empieza ya!
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Sección de Testimonios */}
-      <TestimonialsSection textColor="#ffffff" />
-      <BlogPosts />
-
-      {/* Sección de dos columnas */}
-      <div className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:flex lg:items-center lg:space-x-12">
             {/* Columna izquierda - Imagen */}
             <div className="lg:w-1/2 mb-12 lg:mb-0">
               <div className="relative rounded-2xl overflow-hidden">
                 <img
-                  src="/images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
+                  src="/images/logos/Playful Agency Conectemos.png"
                   alt="Agencia de Marketing Digital"
-                  className="w-[80%] h-auto object-cover"
+                  className="w-[100%] h-auto object-cover"
                 />
               </div>
             </div>
 
             {/* Columna derecha - Contenido */}
-            <div className="lg:w-1/2 h-full min-h-[600px] rounded-2xl relative overflow-hidden">
+            <div className="lg:w-[708px] h-full min-h-[500px] rounded-2xl relative overflow-hidden">
               <div
                 className="absolute inset-0 w-full h-full bg-[#FFEFD1]"
                 style={{
@@ -508,18 +452,18 @@ export default function CaseStudiesContent() {
                 }}
               />
               <div className="absolute inset-0 bg-[#FFEFD1]/[0.6]"></div>
-              <div className="relative z-10 h-full flex flex-col items-center justify-center p-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight text-[#453A53]">
+              <div className="relative z-10 h-full flex flex-col items-center justify-center p-5 lg:p-12">
+                <h2 className="text-3xl md:text-4xl text-center font-bold mb-6 leading-tight text-[#453A53]">
                   No esperes más para empezar a ganar
                 </h2>
-                <p className="text-lg text-[#453A53] mb-8">
+                <p className="text-lg text-[#453A53] text-center mb-8">
                   Deja de arreglar tu web con parches y dejas de perder clientes
                   por fallas que no puedes ver. Es hora de invertir en una
                   solución profesional.
                 </p>
                 <div className="space-y-4 flex flex-col items-center">
                   <div className="flex items-center">
-                    <h2 className="text-[28px] font-bold text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                    <h2 className="text-[28px] font-bold text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
                       ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
                     </h2>
                   </div>

@@ -1,10 +1,10 @@
 "use client";
 
+import { useSliderSettings } from "../../hooks/useSliderSettings";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
-import BlogPosts from "@/components/BlogPosts";
 
 const testimonials = [
   {
@@ -46,46 +46,15 @@ interface TestimonialsSectionProps {
 }
 
 export default function TestimonialsSection({ textColor = '#4A4453' }: TestimonialsSectionProps) {
+  const responsiveSettings = useSliderSettings();
+
   // Create style object for text color
   const textStyle = {
     color: textColor,
   };
 
- 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    centerMode: false,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          dots: true,
-          arrows: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          dots: true,
-          arrows: false,
-        },
-      },
-    ],
-  };
-
   return (
-    <section className="from-purple-700 to-purple-900">
+    <section className="from-purple-700 to-purple-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={textStyle}>
@@ -100,7 +69,14 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
         </div>
 
         <div className="px-12 playful-movil-testimonialCard">
-          <Slider {...settings} className="mx-[-30px]">
+          <Slider {...{
+            ...responsiveSettings,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 5000,
+            infinite: true,
+            centerMode: false,
+          }} className="mx-[-30px]">
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="px-6">
                 <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[444px] flex flex-col mx-auto">
@@ -149,38 +125,13 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
             <div className="">
               <Slider
                 {...{
-                  slidesToShow: 3,
+                  ...responsiveSettings,
                   slidesToScroll: 1,
                   autoplay: true,
                   autoplaySpeed: 2000,
-                  arrows: true,
-                  dots: false,
                   infinite: true,
                   speed: 800,
                   cssEase: "ease-in-out",
-                  responsive: [
-                    {
-                      breakpoint: 1280,
-                      settings: {
-                        slidesToShow: 3,
-                        arrows: true,
-                      },
-                    },
-                    {
-                      breakpoint: 1024,
-                      settings: {
-                        slidesToShow: 2,
-                        arrows: true,
-                      },
-                    },
-                    {
-                      breakpoint: 640,
-                      settings: {
-                        slidesToShow: 1,
-                        arrows: false,
-                      },
-                    },
-                  ],
                 }}
                 className="[&_.slick-arrow]:hidden sm:[&_.slick-arrow]:block"
               >
@@ -197,7 +148,7 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
                             src={logo}
                             alt={`Logo ${logo.split("/").pop()?.split(".")[0]}`}
                             fill
-                            sizes="(max-width: 768px) 10vw, (max-width: 1024px) 50vw, 33vw"
+                            sizes="(max-width: 768px) 80vw, (max-width: 1024px) 40vw, 30vw"
                             className="object-contain p-1 sm:p-2"
                             priority={index < 2}
                           />
@@ -208,10 +159,7 @@ export default function TestimonialsSection({ textColor = '#4A4453' }: Testimoni
               </Slider>
             </div>
           </div>
-        </div>
-
-        {/* Sección de Entradas del Blog */}
-       
+        </div>       
       </div>
     </section>
   );
