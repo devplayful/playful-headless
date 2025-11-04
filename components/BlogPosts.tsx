@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
+import { useSliderSettings } from "../hooks/useSliderSettings";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -99,6 +100,7 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
     }));
 
   const blogPosts = posts.length > 0 ? posts : defaultPosts;
+  const responsiveSettings = useSliderSettings();
 
   return (
     <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
@@ -156,31 +158,9 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
 
           <Slider
             {...{
-              slidesToShow: 3,
+              ...responsiveSettings,
               slidesToScroll: 1,
               autoplay: false,
-              arrows: true,
-              dots: true,
-              responsive: [
-                {
-                  breakpoint: 1024,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    arrows: true,
-                    dots: true,
-                  },
-                },
-                {
-                  breakpoint: 768,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    arrows: false,
-                    dots: true,
-                  },
-                },
-              ],
             }}
             className="mx-[-15px]"
           >
