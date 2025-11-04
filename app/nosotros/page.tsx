@@ -509,7 +509,7 @@ const HeroSection = ({
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Columna Izquierda */}
             <div className="md:w-1/2 text-center md:text-left">
-              <h1 className={`text-4xl md:text-[28px] font-paytone-one ${textColor} mb-4 font-bold`}>
+              <h1 className={`text-4xl md:text-[28px] playful-miga-pan ${textColor} mb-4 font-bold`}>
                 {title}
               </h1>
               <h2 className="text-2xl md:text-[57px] font-bold text-[#440099] mb-6">
