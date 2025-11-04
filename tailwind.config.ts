@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import typography from '@tailwindcss/typography'
 
 const config: Config = {
   content: [
@@ -31,32 +32,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography')({
-      target: 'modern',
-      css: {
-        h1: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        h2: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        h3: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        h4: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        h5: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        h6: {
-          fontFamily: 'paytone, sans-serif',
-        },
-        p: {
-          fontFamily: 'DM Sans, sans-serif',
-        },
-      },
-    }),
+    typography,
   ],
 }
 export default config
