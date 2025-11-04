@@ -1,5 +1,7 @@
-import { getPageMetadataBySlug } from '@/services/wordpress';
+import { getPageMetadataBySlug, TeamMember, getTeamMembers, getLatestBlogPosts } from '@/services/wordpress';
 import Image from 'next/image';
+import PortfolioCarousel from '@/components/ui/PortfolioCarousel';
+import Link from 'next/link';
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
@@ -42,12 +44,12 @@ const HistorySection = () => {
           
           {/* Tarjeta 1 */}
           <div className="bg-[#E9D7FF] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/new-york-tip.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/new-york-tip.png"
                 alt="Ilustración de estrategia digital"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -58,12 +60,12 @@ const HistorySection = () => {
           
           {/* Tarjeta 2 */}
           <div className="bg-[#E9D7FF] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/ayudamos.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/ayudamos.png"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -87,12 +89,12 @@ const MissionVisionSection = () => {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Tarjeta Misión */}
         <div className="bg-[#FFEFD1] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/MISION.PNG" // CAMBIA ESTA RUTA
+                src="/images/nosotros/MISION.PNG"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -104,12 +106,12 @@ const MissionVisionSection = () => {
         
         {/* Tarjeta Visión */}
         <div className="bg-[#FFDBDB] rounded-2xl shadow-lg p-8 flex flex-col items-center text-center">
-            <div className="relative w-full max-w-[200px] h-[200px] mb-6">
+            <div className="relative w-full max-w-[200px] h-[180px] mb-6">
               <Image
-                src="/images/nosotros/vision.png" // CAMBIA ESTA RUTA
+                src="/images/nosotros/vision.png"
                 alt="Ilustración de crecimiento y optimización"
-                width={400}
-                height={350}
+                width={200}
+                height={180}
                 className="object-contain"
               />
             </div>
@@ -123,65 +125,321 @@ const MissionVisionSection = () => {
   );
 };
 
-// --- COMPONENTE DE VALORES ---
+// Componente para mostrar la tarjeta de un miembro del equipo
+const TeamMemberCard = ({ member }: { member: TeamMember }) => {
+  return (
+    <div className="flex h-full w-full flex-col rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+      <div className="flex flex-col items-center">
+        <div className="relative mb-4 h-28 w-28">
+          <Image
+            src={member.acf.imagen.url}
+            alt={member.acf.imagen.alt}
+            width={112}
+            height={112}
+            className="rounded-full object-cover"
+          />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">{member.acf.nombre}</h3>
+        {member.acf.cargo && member.acf.cargo.trim() !== '' && (
+          <p className="mb-2 w-full rounded-lg bg-[#440099] px-0 py-2 text-center text-sm font-semibold text-white">
+            {member.acf.cargo}
+          </p>
+        )}
+        {member.acf.habilidades.length > 0 && (
+          <div className="mb-6 w-full">
+            <div className={`grid ${member.acf.habilidades.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'} gap-2 w-full`}>
+              {member.acf.habilidades.map((habilidad, index) => (
+                <div 
+                  key={index}
+                  className="w-full rounded-lg bg-[#E9D7FF] px-4 py-2 text-center text-sm font-medium text-[#440099] whitespace-nowrap overflow-hidden text-ellipsis"
+                >
+                  {habilidad}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {member.acf.descripcion && member.acf.descripcion.trim() !== '' && (
+          <p className="mb-0 flex-grow text-gray-600">{member.acf.descripcion}</p>
+        )}
+        
+        {/* Solo el ícono de LinkedIn */}
+        <div className="mt-4">
+          <a 
+            href={member.acf.linkedin_url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-block p-2 text-gray-400 hover:text-[#0077b5] transition-colors"
+            aria-label={`LinkedIn de ${member.acf.nombre}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- COMPONENTE DE EQUIPO ---
+const EquipoSection = async () => {
+  // Obtener los miembros del equipo desde WordPress
+  const teamMembers = await getTeamMembers();
+  
+  // Separar fundadores del resto del equipo
+  const fundadores = teamMembers.filter(member => 
+    member.acf.cargo.toLowerCase().includes('fundador') || 
+    member.acf.cargo.toLowerCase().includes('fundadora')
+  );
+  
+  const equipo = teamMembers.filter(member => 
+    !member.acf.cargo.toLowerCase().includes('fundador') && 
+    !member.acf.cargo.toLowerCase().includes('fundadora')
+  );
+  
+  return (
+    <section className="bg-[#E4FFF9] py-10 md:py-0 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#440099] mb-12 text-center">
+          Nuestro Equipo
+        </h2>
+        
+        <p className="text-center text-gray-700 max-w-3xl mx-auto mb-12">
+          Conoce al talentoso equipo detrás de Playful Agency. Nuestros expertos combinan creatividad y experiencia para ofrecerte las mejores soluciones digitales.
+        </p>
+        
+        {/* Sección de Fundadores */}
+        {fundadores.length > 0 && (
+          <div className="mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {fundadores.map((member) => (
+                <TeamMemberCard key={member.id} member={member} />
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Sección del Equipo */}
+        {equipo.length > 0 && (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {equipo.map((member) => (
+                <TeamMemberCard key={member.id} member={member} />
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {teamMembers.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">Próximamente más información sobre nuestro equipo.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+// --- COMPONENTE DE NUESTROS VALORES ---
 const NuestrosValoresSection = () => {
   const valores = [
     {
-      titulo: 'Innovación',
-      descripcion: 'Buscamos constantemente nuevas formas de mejorar y revolucionar el comercio electrónico en la región.',
-      imagen: '/images/nosotros/innovacion.png' // Asegúrate de tener esta imagen en la carpeta public
+      id: 1,
+      titulo: 'Aprendizaje',
+      descripcion: 'Nos comprometemos a desarrollar nuevas habilidades y mejorarnos constantemente, manteniendo una mentalidad abierta y enfocada en el crecimiento.',
+      imagen: '/images/nosotros/aprendizaje.png'
     },
     {
-      titulo: 'Compromiso',
-      descripcion: 'Estamos comprometidos con el éxito de cada uno de nuestros clientes y socios comerciales.',
-      imagen: '/images/nosotros/compromiso.png'
+      id: 2,
+      titulo: 'Franqueza',
+      descripcion: 'Fomentamos una comunicación sincera y clara, expresándonos con honestidad para construir relaciones basadas en la confianza.',
+      imagen: '/images/nosotros/franqueza.png'
     },
     {
-      titulo: 'Excelencia',
-      descripcion: 'Buscamos la excelencia en cada proyecto, ofreciendo soluciones de la más alta calidad.',
-      imagen: '/images/nosotros/excelencia.png'
+      id: 3,
+      titulo: 'Honestidad',
+      descripcion: 'Actuamos con total congruencia entre lo que decimos y lo que hacemos, evitando la mentira a toda costa,',
+      imagen: '/images/nosotros/honestidad.png'
     },
     {
-      titulo: 'Trabajo en Equipo',
-      descripcion: 'Creemos en el poder de la colaboración y el trabajo en equipo para alcanzar grandes logros.',
-      imagen: '/images/nosotros/equipo.png'
+      id: 4,
+      titulo: 'Independencia',
+      descripcion: 'Valoramos nuestra capacidad para pensar y actuar de manera autónoma, tomando decisiones con criterio propio.',
+      imagen: '/images/nosotros/independencia.png'
     },
     {
-      titulo: 'Integridad',
-      descripcion: 'Actuamos con honestidad, ética y transparencia en todas nuestras operaciones.',
-      imagen: '/images/nosotros/integridad.png'
+      id: 5,
+      titulo: 'Puntualidad',
+      descripcion: 'Cumplimos con los compromisos y llegamos a tiempo, impulsados por el respeto y la responsabilidad hacia los demás.',
+      imagen: '/images/nosotros/puntualidad.png'
     },
     {
-      titulo: 'Pasión',
-      descripcion: 'Nos apasiona lo que hacemos y eso se refleja en cada proyecto que emprendemos.',
-      imagen: '/images/nosotros/pasion.png'
+      id: 6,
+      titulo: 'Servicio',
+      descripcion: 'Estamos siempre disponibles para ayudar a otros de manera desinteresada, buscando el bienestar común.',
+      imagen: '/images/nosotros/servicios.png'
     }
   ];
 
   return (
-    <section className="py-12 w-[calc(100%-20px)] max-w-[1200px] mx-auto my-8">
-      <h2 className="text-3xl font-bold text-[#453A53] mb-12 text-center">Nuestros Valores</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {valores.map((valor, index) => (
-          <div 
-            key={index} 
-            className="bg-[#FEF7FF] rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center text-center min-h-[500px] justify-center"
-          >
-            <div className="w-20 h-20 mb-4 flex items-center justify-center">
-              <div className="w-16 h-16 bg-[#F0E6FF] rounded-full flex items-center justify-center">
-                <Image 
-                  src={valor.imagen} 
-                  alt={valor.titulo} 
-                  width={40} 
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
+    <section className="py-16 md:py-24 w-full max-w-[1200px] mx-auto px-0">
+      <h2 className="text-3xl md:text-4xl font-bold text-[#440099] text-center mb-16">
+        Nuestros Valores
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        {valores.map((valor) => (
+          <div key={valor.id} className="flex flex-col items-center text-center p-8 bg-[#FEF7FF] rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div className="mb-6 h-24 w-24 relative">
+              <Image
+                src={valor.imagen}
+                alt={valor.titulo}
+                width={96}
+                height={96}
+                className="object-contain"
+              />
             </div>
-            <h3 className="text-xl font-bold text-[#453A53] mb-3">{valor.titulo}</h3>
-            <p className="text-gray-600">{valor.descripcion}</p>
+            <h3 className="text-xl font-bold text-[#440099] mb-4">
+              {valor.titulo}
+            </h3>
+            <p className="text-gray-600">
+              {valor.descripcion}
+            </p>
           </div>
         ))}
+      </div>
+    </section>
+  );
+};
+
+// -- COMPONENTE DE NUESTRA PALABRA -- //
+const NuestraPalabraSection = () => {
+  return (
+    <section className="bg-[#440099] py-16 md:py-24 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            No confíes solo en nuestra palabra, mira los resultados.
+          </h2>
+          <p className="mx-auto max-w-3xl text-lg text-[#E9D7FF] mb-12 md:mb-4">
+            Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial.
+          </p>
+          <PortfolioCarousel />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- COMPONENTE DE BLOG ---
+const BlogSection = async () => {
+  const blogPosts = await getLatestBlogPosts(3);
+
+  return (
+    <section className="bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          ¿Estás listo para dejar de perder y empezar a ganar?
+        </h2>
+        <p className="text-white text-base md:text-lg leading-relaxed mb-10">
+          Visita nuestro blog para descubrir lo que esta empresa de soluciones digitales puede aportar a tu estrategia con 
+          consejos que hacen que todo parezca más fácil que un truco de magia. Es el momento de leer un poco 
+          (que no todo son videos de TikTok) y tomar nota para hacer que tu marca sea la estrella del espectáculo.
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        {blogPosts.map((post) => (
+          <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+            <div className="relative h-48 bg-gray-100">
+              <Image 
+                src={post.imageUrl} 
+                alt={post.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="p-6 flex flex-col flex-grow">
+              <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-xs font-medium text-gray-700 mb-3">
+                {post.category}
+              </span>
+              <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2">
+                {post.title}
+              </h3>
+              <p className="text-gray-700 text-sm mb-6">{post.excerpt}</p>
+              <div className="mt-auto flex justify-between items-center">
+                <span className="text-xs text-gray-500">{post.date.replace(/\//g, ' / ')}</span>
+                <Link 
+                  href={post.link}
+                  className="bg-[#440099] hover:bg-[#330077] text-white font-semibold rounded-full px-4 py-2 text-sm transition-colors"
+                >
+                  Leer más
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="flex justify-center mt-12">
+        <Link 
+          href="/blog"
+          className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 text-base shadow-lg transition-colors"
+        >
+          Ver más artículos
+        </Link>
+      </div>
+    </section>
+  );
+};
+
+// --- COMPONENTE CTA ---
+const CTASection = ({
+  imagePath = "/images/nosotros/cta-illustration.png",
+  imageAlt = "Ilustración de crecimiento digital"
+}: {
+  imagePath?: string;
+  imageAlt?: string;
+}) => {
+  return (
+    <section className="my-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto">
+      <div className="flex flex-col md:flex-row items-stretch">
+        {/* Sección de Imagen */}
+        <div className="w-full md:w-1/2 flex justify-center items-center p-6 bg-transparent">
+          <div className="w-[452px] h-[557px] flex items-center justify-center">
+            <img
+              src={imagePath}
+              alt={imageAlt}
+              width={452}
+              height={557}
+              className="w-full h-full object-contain"
+              style={{
+                display: 'block'
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Sección de Contenido */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center p-8 md:p-10 bg-[#B3FFF3]">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#322051]">
+            No esperes más para empezar a ganar
+          </h2>
+          <p className="text-gray-700 max-w-md">
+            Deja de arreglar tu web con parches y dejas de perder clientes por fallas que no puedes ver.
+            Es hora de invertir en una solución profesional.
+          </p>
+          <p className="font-semibold text-[#322051] text-lg">
+            ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
+          </p>
+          <a
+            href="/contacto"
+            className="inline-block bg-[#7c23ce] hover:bg-[#a99cec] text-white rounded-full px-8 py-4 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 mt-3"
+          >
+            ¡Empieza ya!
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -224,6 +482,63 @@ const ValuePropositionSection = () => {
 };
 
 
+// --- COMPONENTE HERO PERSONALIZADO ---
+const HeroSection = ({
+  title,
+  subtitle,
+  description,
+  imagePath,
+  imageAlt,
+  bgColor = 'bg-[#E9D7FF]',
+  textColor = 'text-[#440099]',
+  textSecondaryColor = 'text-gray-600'
+}: {
+  title: string;
+  subtitle: string;
+  description: string;
+  imagePath: string;
+  imageAlt: string;
+  bgColor?: string;
+  textColor?: string;
+  textSecondaryColor?: string;
+}) => {
+  return (
+    <section className={`min-h-[480px] ${bgColor} flex items-center py-12`}>
+      <div className="w-full">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Columna Izquierda */}
+            <div className="md:w-1/2 text-center md:text-left">
+              <h1 className={`text-4xl md:text-[28px] playful-miga-pan ${textColor} mb-4 font-bold`}>
+                {title}
+              </h1>
+              <h2 className="text-2xl md:text-[57px] font-bold text-[#440099] mb-6">
+                {subtitle}
+              </h2>
+              <div className={`prose md:text-[18px] ${textSecondaryColor} w-full max-w-none`}>
+                <p>{description}</p>
+              </div>
+            </div>
+            
+            {/* Columna Derecha */}
+            <div className="md:w-1/2 flex justify-center">
+              <div className="relative w-full max-w-[412px] h-[350px]">
+                <Image
+                  src={imagePath}
+                  alt={imageAlt}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- COMPONENTE PRINCIPAL DE LA PÁGINA "NOSOTROS" ---
 export default async function Nosotros() {
   const metadata = await getPageMetadataBySlug('nosotros');
@@ -231,40 +546,13 @@ export default async function Nosotros() {
   return (
     <>
       {/* Sección Superior "Nosotros" */}
-      <main className="min-h-[480px] bg-[#E9D7FF] flex items-center py-12">
-        <div className="w-full">
-          <div className="max-w-[1000px] mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              {/* Columna Izquierda */}
-              <div className="md:w-1/2 text-center md:text-left">
-                <h1 className={`text-4xl md:text-[28px] font-paytone-one text-gray-900 mb-4 font-bold`}>
-                  Playful Agency
-                </h1>
-                <h2 className="text-2xl md:text-[57px] font-bold text-[#440099] mb-6">
-                  Nosotros
-                </h2>
-                <div className="prose md:text-[18px] text-gray-600 w-full max-w-none">
-                  <p>Un breve texto que hable de quiénes somos como introducción a la sección, debe ser breve pero conciso.</p>
-                </div>
-              </div>
-              
-              {/* Columna Derecha */}
-              <div className="md:w-1/2 flex justify-center">
-                <div className="relative w-full max-w-[412px] h-[350px]">
-                  <Image
-                    src="/images/nosotros/nosotros-img.png"
-                    alt="Playful Agency"
-                    width={412}
-                    height={350}
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+      <HeroSection 
+        title="Playful Agency"
+        subtitle="Nosotros"
+        description="Un breve texto que hable de quiénes somos como introducción a la sección, debe ser breve pero conciso."
+        imagePath="/images/nosotros/nosotros-img.png"
+        imageAlt="Playful Agency"
+      />
 
       {/* Sección "Propuesta de valor" */}
       <ValuePropositionSection />
@@ -274,7 +562,24 @@ export default async function Nosotros() {
       
       {/* Sección de Misión y Visión */}
       <MissionVisionSection />
+      
+      {/* Sección Nuestros Valores */}
       <NuestrosValoresSection />
+      
+      {/* Sección Nuestro Equipo */}
+      <EquipoSection />
+
+      { /* Seccion Nuestra Palabra */}
+      <NuestraPalabraSection />      
+
+      {/* Sección del Blog */}
+      <BlogSection />
+      
+      {/* Sección CTA */}
+      <CTASection 
+        imagePath="/images/nosotros/cta-illustration.png"
+        imageAlt="Ilustración de crecimiento digital"
+      />
     </>
   );
 }
