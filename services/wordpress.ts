@@ -214,8 +214,8 @@ export interface WPTerm {
 export interface WPFeaturedMedia {
   id: number;
   source_url: string;
-  alt_text: string;
-  media_details: {
+  alt_text?: string;
+  media_details?: {
     sizes: {
       [key: string]: {
         source_url: string;
@@ -224,6 +224,8 @@ export interface WPFeaturedMedia {
       };
     };
   };
+  width?: number;
+  height?: number;
 }
 
 export interface WPPost {
@@ -234,71 +236,88 @@ export interface WPPost {
   title: {
     rendered: string;
   };
-  content: {
+  content?: {
     rendered: string;
+    protected?: boolean;
   };
-  excerpt: {
+  excerpt?: {
     rendered: string;
+    protected?: boolean;
   };
-  _embedded?: {
-    'wp:featuredmedia'?: WPFeaturedMedia[];
-    'wp:term'?: WPTerm[][];
-  };
-  featured_media?: number;
-}
-
-/**
- * Obtiene las últimas entradas del blog
- * @param perPage Número de entradas a devolver (máx 10)
- */
-interface WPFeaturedMedia {
-  source_url: string;
-  media_details: {
-    sizes: {
-      [key: string]: {
-        source_url: string;
-      };
-    };
-  };
-}
-
-interface WPPost {
-  id: number;
-  title: {
-    rendered: string;
-  };
-  excerpt: {
-    rendered: string;
-  };
-  date: string;
-  slug: string;
-  link: string;
   _embedded?: {
     'wp:featuredmedia'?: WPFeaturedMedia[];
     'wp:term'?: any[][];
   };
+  featured_media?: number;
+  featured_media_url?: string;
+  featured_media_alt?: string;
+  categories?: any[];
+  tags?: any[];
+  author?: number;
+  author_name?: string;
+  author_avatar_urls?: {
+    [key: string]: string;
+  };
+  modified?: string;
+  modified_gmt?: string;
+  status?: string;
+  type?: string;
+  format?: string;
+  sticky?: boolean;
+  comment_status?: string;
+  ping_status?: string;
+  template?: string;
+  meta?: {
+    [key: string]: any;
+  };
 }
 
+// ... (rest of the code remains the same)
+
 /**
- * Obtiene posts del blog con paginación
+ * Obtiene posts del blog con paginación y filtrado por categoría
  * @param page Número de página (comenzando en 1)
  * @param perPage Cantidad de posts por página (máx 100)
+ * @param categorySlug Slug de la categoría para filtrar (opcional)
  */
-export async function getBlogPosts(page: number = 1, perPage: number = 6): Promise<{ posts: WPPost[], totalPages: number }> {
+export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
+  // ... (rest of the code remains the same)
   try {
     // Validar parámetros
     page = Math.max(1, page);
     perPage = Math.min(100, Math.max(1, perPage));
 
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term`,
-      { 
-        next: { revalidate: 60 }, // Revalidar cada minuto
-        headers: {
-          'Content-Type': 'application/json',
+    // Construir URL con filtro de categoría si existe
+    let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term`;
+    
+    // Si hay una categoría, primero obtener su ID
+    if (categorySlug) {
+      try {
+        const categoriesResponse = await fetch(
+          `${WORDPRESS_API_URL}/wp/v2/categories?slug=${categorySlug}`,
+          { 
+            next: { revalidate: 3600 },
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+        
+        if (categoriesResponse.ok) {
+          const categories = await categoriesResponse.json();
+          if (categories.length > 0) {
+            url += `&categories=${categories[0].id}`;
+          }
         }
+      } catch (error) {
+        console.error('Error al obtener categoría:', error);
       }
-    );
+    }
+
+    const response = await fetch(url, { 
+      next: { revalidate: 60 }, // Revalidar cada minuto
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
 
     if (!response.ok) {
       throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
@@ -396,7 +415,7 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
       }).split('/').join(' / ');
 
       // Limpiar excerpt de etiquetas HTML
-      const excerpt = post.excerpt.rendered
+      const excerpt = (post.excerpt?.rendered ?? '')
         .replace(/<[^>]*>?/gm, '')
         .replace(/&[a-z]+;/g, '')
         .trim();
@@ -440,7 +459,31 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     }
 
     const posts: WPPost[] = await response.json();
-    return posts[0] || null;
+    
+    if (!posts || posts.length === 0) {
+      return null;
+    }
+
+    const post = posts[0];
+
+    // Procesar datos embebidos
+    if (post._embedded) {
+      // Procesar imagen destacada
+      if (post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+        const media = post._embedded['wp:featuredmedia'][0];
+        post.featured_media_url = media.source_url;
+        post.featured_media_alt = media.alt_text || '';
+      }
+
+      // Procesar términos (categorías y tags)
+      if (post._embedded['wp:term']) {
+        const terms = post._embedded['wp:term'];
+        post.categories = terms[0] || [];
+        post.tags = terms[1] || [];
+      }
+    }
+
+    return post;
   } catch (error) {
     console.error('Error en getBlogPostBySlug:', error);
     return null;
@@ -760,6 +803,11 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
 
     // Procesar el episodio para extraer la imagen destacada
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
+    
+    // Asegurarse de que excerpt existe
+    if (!episode.excerpt) {
+      episode.excerpt = { rendered: '' };
+    }
     
     return {
       ...episode,
