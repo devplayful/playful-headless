@@ -56,7 +56,7 @@ export default function Home() {
 
       <SolucionesPlayful className="color-home contenedores-home" />
 
-      <TestimonialsSection className="color-home contenedores-home" />
+      <TestimonialsSection className="color-home" />
 
     </div>
   )
