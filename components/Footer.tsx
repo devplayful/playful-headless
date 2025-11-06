@@ -100,7 +100,7 @@ export default function Footer() {
           <div className="playful-footerInfo flex justify-evenly">
             {/* Nosotros */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
                 NOSOTROS
               </h3>
               <ul className="space-y-2">
@@ -133,7 +133,7 @@ export default function Footer() {
 
             {/* Servicios */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
                 SERVICIOS
               </h3>
               <ul className="space-y-2">
@@ -166,7 +166,7 @@ export default function Footer() {
 
             {/* Legal y Contacto */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h3 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
                 LEGAL
               </h3>
               <ul className="space-y-2 mb-6">

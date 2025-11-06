@@ -58,7 +58,7 @@ export default function TestimonialsSection({ textColor = '#4A4453', className }
     <section className={className}>
       <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={textStyle}>
+          <h2 className="text-3xl md:text-4xl font-normal mb-4" style={textStyle}>
             Lo que nuestros clientes dicen
           </h2>
           <p className="text-lg mb-12 max-w-3xl mx-auto " style={textStyle} >
@@ -120,7 +120,7 @@ export default function TestimonialsSection({ textColor = '#4A4453', className }
         {/* Sección de Logos de Clientes - Versión Mejorada */}
         <div className="my-16">
           <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8">
-            <h3 className="text-center text-white text-2xl md:text-3xl font-bold mb-12">
+            <h3 className="text-center text-white text-2xl md:text-3xl font-normal mb-12">
               <span style={textStyle}>Nuestros aliados estratégicos</span>
             </h3>
             <div className="">

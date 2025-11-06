@@ -100,7 +100,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
             />
             <div className="absolute inset-0" style={{ backgroundColor: `${contentBgColor}40` }}></div>
             <div className="relative z-10 h-full flex flex-col items-center justify-center p-5 lg:p-12">
-              <h2 className="text-3xl md:text-4xl text-center font-bold mb-6 leading-tight text-[#453A53]">
+              <h2 className="text-3xl md:text-4xl text-center font-normal mb-6 leading-tight text-[#453A53]">
                 {title}
               </h2>
               <p className="text-lg text-[#453A53] text-center mb-8">
@@ -108,7 +108,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               </p>
               <div className="space-y-4 flex flex-col items-center">
                 <div className="flex items-center">
-                  <h2 className="text-[28px] font-bold text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                  <h2 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
                     {ctaTitle}
                   </h2>
                 </div>
