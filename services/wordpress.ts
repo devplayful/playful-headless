@@ -308,8 +308,16 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6): Promi
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
     const posts: WPPost[] = await response.json();
 
+    // Procesar los posts para incluir las imágenes destacadas
+    const processedPosts = posts.map(post => ({
+      ...post,
+      featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+      featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
+      categories: post._embedded?.['wp:term']?.[0] || []
+    }));
+
     return {
-      posts,
+      posts: processedPosts,
       totalPages
     };
   } catch (error) {
