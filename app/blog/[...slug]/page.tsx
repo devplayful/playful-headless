@@ -81,24 +81,53 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-8">
+      {/* Header con título e imagen */}
+      <header className="bg-white border-b border-gray-200 py-12">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center space-x-2 mb-4">
-            {post.categories && post.categories.length > 0 && (
-              <Link 
-                href={`/blog?category=${post.categories[0].slug}`}
-                className="text-sm font-medium text-[#440099] hover:text-[#5500BB] transition-colors"
-              >
-                {post.categories[0].name}
-              </Link>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Columna izquierda: Título y resumen */}
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
+                {post.categories && post.categories.length > 0 && (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <Link 
+                      href={`/blog?category=${post.categories[0].slug}`}
+                      className="text-sm font-medium text-[#440099] hover:text-[#5500BB] transition-colors uppercase"
+                    >
+                      {post.categories[0].name}
+                    </Link>
+                  </>
+                )}
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
+                {post.title.rendered}
+              </h1>
+              
+              {post.excerpt?.rendered && (
+                <div 
+                  className="text-lg text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ 
+                    __html: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 200) + '...' 
+                  }} 
+                />
+              )}
+            </div>
+
+            {/* Columna derecha: Imagen destacada */}
+            {post.featured_media_url && (
+              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#DFFFFE] to-[#E0F7FA]">
+                <Image
+                  src={post.featured_media_url}
+                  alt={post.featured_media_alt || post.title.rendered}
+                  fill
+                  className="object-contain p-8"
+                  priority
+                />
+              </div>
             )}
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#2A0064] leading-tight mb-4">
-            {post.title.rendered}
-          </h1>
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
-            <span>{formatDate(post.date)}</span>
           </div>
         </div>
       </header>
@@ -106,17 +135,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">
         <article>
-          {post.featured_media_url && (
-            <div className="relative w-full h-64 md:h-80 lg:h-96 mb-12 rounded-2xl overflow-hidden">
-              <Image
-                src={post.featured_media_url}
-                alt={post.featured_media_alt || post.title.rendered}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          )}
           
           {/* Table of Contents - Antes del contenido */}
           {headings.length > 0 && (
