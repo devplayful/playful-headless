@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
+import { BlogPostContent } from './BlogPostContent';
 
 export async function generateStaticParams() {
   const { posts } = await getBlogPosts(1, 100);
@@ -80,7 +81,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const contentWithIds = $.html();
 
   return (
-    <div className="min-h-screen bg-white">
+    <BlogPostContent 
+      title={post.title.rendered}
+      featuredImage={post.featured_media_url}
+    >
+      <div className="min-h-screen bg-white">
       {/* Header con título e imagen */}
       <header className="bg-white border-b border-gray-200 py-12">
         <div className="max-w-6xl mx-auto px-6">
@@ -172,7 +177,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
         </article>
       </main>
-    </div>
+      </div>
+    </BlogPostContent>
   );
 }
 

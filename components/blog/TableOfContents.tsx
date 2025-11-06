@@ -1,9 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { handleSmoothScroll } from '@/utils/smoothScroll';
+import { smoothScrollTo } from '@/utils/smoothScroll';
 import { PdfLoader } from '@/components/ui/PdfLoader';
 
 interface TableOfContentsProps {
@@ -27,6 +27,29 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       return prev + diff * 0.3; // Suavizado para la animación
     });
   };
+
+  // Efecto para manejar el hash en la URL al cargar la página
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        // Pequeño retraso para asegurar que el DOM esté listo
+        setTimeout(() => {
+          smoothScrollTo(hash);
+        }, 100);
+      }
+    };
+
+    // Manejar el hash inicial
+    handleHashChange();
+
+    // Agregar listener para cambios en el hash
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   const handleDownloadPDF = async () => {
     if (!contentRef.current) return;
@@ -144,24 +167,49 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
     }
   };
 
+  // Función para manejar el clic en los enlaces
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    e.preventDefault();
+    const targetId = slug.replace('#', '');
+    
+    // Actualizar la URL primero
+    if (window.history.pushState) {
+      window.history.pushState(null, '', `#${targetId}`);
+    } else {
+      window.location.hash = `#${targetId}`;
+    }
+    
+    // Usar un pequeño retraso para asegurar que el DOM esté listo
+    setTimeout(() => {
+      smoothScrollTo(targetId);
+    }, 50);
+  };
+
   return (
     <div className="bg-[#DFFFFE] rounded-2xl p-8 relative" ref={contentRef}>
       {isGeneratingPdf && <PdfLoader progress={generationProgress} />}
       <h2 className="text-2xl font-bold text-[#440099] mb-6">En este artículo</h2>
-      <ul className="space-y-3">
-        {items.map((item) => (
-          <li key={item.slug} className="flex items-start">
-            <span className="text-gray-700 mr-3 flex-shrink-0">•</span>
-            <a
-              href={item.slug}
-              onClick={(e) => handleSmoothScroll(e, item.slug.replace('#', ''))}
-              className="text-gray-700 hover:text-[#440099] transition-colors cursor-pointer text-sm leading-relaxed"
-            >
-              {item.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <nav aria-label="Tabla de contenidos">
+        <ul className="space-y-3">
+          {items.map((item) => {
+            // Asegurarse de que el slug no tenga el # al principio
+            const cleanSlug = item.slug.startsWith('#') ? item.slug.substring(1) : item.slug;
+            return (
+              <li key={cleanSlug} className="flex items-start">
+                <span className="text-gray-700 mr-3 flex-shrink-0">•</span>
+                <a
+                  href={`#${cleanSlug}`}
+                  onClick={(e) => handleLinkClick(e, cleanSlug)}
+                  className="text-gray-700 hover:text-[#440099] transition-colors cursor-pointer text-sm leading-relaxed hover:underline"
+                  aria-label={`Ir a la sección: ${item.text}`}
+                >
+                  {item.text}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
       
       {/* Botón de descarga PDF */}
       <button 

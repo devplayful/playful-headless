@@ -1,10 +1,11 @@
-import Link from 'next/link'
-import AnimatedButton from '@/components/AnimatedButton'
-import MaterialServicesSection from '@/components/MaterialServicesSection'
-import SolucionesPlayful from '@/components/SolucionesPlayful'
-import TestimonialsSection from '@/components/TestimonialsSectionClient'
+import Link from 'next/link';
+import AnimatedButton from '@/components/AnimatedButton';
+import MaterialServicesSection from '@/components/MaterialServicesSection';
+import SolucionesPlayful from '@/components/SolucionesPlayful';
+import TestimonialsSection from '@/components/TestimonialsSectionClient';
+import { HomePageContent } from './HomePageContent';
 
-export default function Home() {
+function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
@@ -59,5 +60,13 @@ export default function Home() {
       <TestimonialsSection className="color-home" />
 
     </div>
-  )
+  );
+}
+
+export default function Home() {
+  return (
+    <HomePageContent>
+      <HomeContent />
+    </HomePageContent>
+  );
 }
