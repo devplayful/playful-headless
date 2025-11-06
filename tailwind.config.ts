@@ -33,6 +33,34 @@ const config: Config = {
   },
   plugins: [
     typography,
+    require('@tailwindcss/typography')({
+      target: 'modern',
+      css: {
+        h1: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h2: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h3: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h4: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h5: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        h6: {
+          fontFamily: 'paytone, sans-serif',
+        },
+        p: {
+          fontFamily: 'DM Sans, sans-serif',                   
+        },
+      },
+    }),
   ],
 }
+
+
 export default config

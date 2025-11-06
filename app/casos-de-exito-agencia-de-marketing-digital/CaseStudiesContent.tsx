@@ -290,7 +290,7 @@ export default function CaseStudiesContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           {/* Left Column - Text */}
           <div>
-            <h1 className="text-[50px] lg:text-[57px] font-bold text-white mb-6 leading-tight">
+            <h1 className="text-[50px] lg:text-[57px] font-normal text-white mb-6 leading-tight">
               Resultados que hablan por sí solos
             </h1>
             <p className="text-white text-lg leading-relaxed opacity-90">
@@ -315,8 +315,8 @@ export default function CaseStudiesContent() {
         </div>
 
         {/* Bottom Text Section */}
-        <div className="lg:text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+        <div className="lg:text-center mb-12 ">
+          <h2 className="text-3xl lg:text-4xl font-normal text-white mb-6">
             No confíes solo en nuestra palabra, mira los resultados.
           </h2>
           <p className="text-white text-lg opacity-90 max-w-4xl mx-auto">
@@ -335,7 +335,7 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Filtros */}
-      <div className="max-w-7xl mx-auto mb-8">
+      <div className="md:w-[71%] w-full mx-auto mb-8">
         <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">
           {/* <h3 className="text-base font-medium text-gray-900">Filtrar por</h3> */}
 
@@ -347,7 +347,7 @@ export default function CaseStudiesContent() {
                 onClick={() => toggleFilter(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium ${
                   activeFilters.includes(category)
-                    ? "bg-white text-teal-600 shadow-sm"
+                    ? "bg-[#39DDCB] text-[#2A0064] shadow-sm"
                     : "bg-white/80 text-gray-700 hover:bg-white"
                 }`}
               >
@@ -406,7 +406,7 @@ export default function CaseStudiesContent() {
       </div>
 
       {/* Grid de casos de éxito */}
-      <div className="bg-[#E4FFF9] playful-Grid-CasosExito rounded-3xl mx-auto my-8 w-[71%]">
+      <div className="bg-[#E4FFF9] playful-Grid-CasosExito rounded-3xl mx-auto my-8 md:w-[71%] w-full">
         <div className="max-w-7xl mx-auto py-8 px-4">
           {filteredCaseStudies.length === 0 ? (
             <div className="text-center py-12">
