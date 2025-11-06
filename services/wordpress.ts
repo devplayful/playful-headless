@@ -279,6 +279,48 @@ interface WPPost {
   };
 }
 
+/**
+ * Obtiene posts del blog con paginación
+ * @param page Número de página (comenzando en 1)
+ * @param perPage Cantidad de posts por página (máx 100)
+ */
+export async function getBlogPosts(page: number = 1, perPage: number = 6): Promise<{ posts: WPPost[], totalPages: number }> {
+  try {
+    // Validar parámetros
+    page = Math.max(1, page);
+    perPage = Math.min(100, Math.max(1, perPage));
+
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term`,
+      { 
+        next: { revalidate: 60 }, // Revalidar cada minuto
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
+    }
+
+    // Obtener el número total de páginas del header de la respuesta
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+    const posts: WPPost[] = await response.json();
+
+    return {
+      posts,
+      totalPages
+    };
+  } catch (error) {
+    console.error('Error en getBlogPosts:', error);
+    return {
+      posts: [],
+      totalPages: 0
+    };
+  }
+}
+
 export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
   id: number;
   title: string;
