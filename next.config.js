@@ -8,6 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/wp-content/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
     ],
     // Opcional: Configura tamaños de imagen para diferentes breakpoints
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

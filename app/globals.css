@@ -170,15 +170,35 @@ body {
 
 .playful-contenedor-B3FFF3 {
   background-color: #B3FFF3;
-  margin-top: 40px;
+  margin-top: 40px !important;
 }
 
 .playful-contenedor {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   gap: 25px;
   flex-direction: column;
-  padding: 80px !important;
+  padding: 40px 20px !important;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  /* Estilos para tablet (768px en adelante) */
+  @media (min-width: 768px) {
+    padding: 60px 40px !important;
+    max-width: 720px;
+  }
+
+  /* Estilos para desktop (1024px en adelante) */
+  @media (min-width: 1024px) {
+    padding: 80px 60px !important;
+    max-width: 1000px;
+  }
+
+  /* Estilos para pantallas grandes (1280px en adelante) */
+  @media (min-width: 1280px) {
+    max-width: 1200px;
+  }
   border-radius: 68px !important;
   background-image: url(/images/background.webp);
   text-align: center;

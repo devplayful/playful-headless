@@ -12,7 +12,7 @@ const portfolioItems = [
     title: "SOYTECHNO se transforma y genera un aumento del 40% en conversiones",
     description: "SoyTechno, una empresa de tecnología, necesitaba renovar su plataforma de ventas. Los usuarios se frustraban con la navegación y el proceso de compra era demasiado largo, lo que se traducía en ventas perdidas.",
     tags: ["UI/UX Design", "E-commerce", "Analítica SEO"],
-    imageUrl: "/images/portfolio/soytechno.png",
+    imageUrl: "https://picsum.photos/800/500?random=1",
     highlight: "+40% Conversiones",
     buttonText: "Ver caso completo"
   },
@@ -20,7 +20,7 @@ const portfolioItems = [
     title: "Mercantil SFI se renueva e impulsa su presencia global en el sector Financiero",
     description: "Mercantil Servicios Financieros Internacional y la transformamos en una plataforma digital que impulsa su presencia global y mejora la interacción con sus clientes.",
     tags: ["UI/UX Design", "E-commerce", "Analítica SEO"],
-    imageUrl: "/images/portfolio/mercantil.png",
+    imageUrl: "https://picsum.photos/800/500?random=2",
     highlight: "Innovación Tecnológica",
     buttonText: "Explora la historia"
   },
@@ -28,7 +28,7 @@ const portfolioItems = [
     title: "Banco Venezolano de Crédito estratega en posicionamiento",
     description: "Banco Venezolano de Crédito rediseña su plataforma y busca posicionarse con una propuesta de valor de lo más actual en el sector financiero.",
     tags: ["Analítica SEO", "E-commerce"],
-    imageUrl: "/images/portfolio/bvc.png",
+    imageUrl: "https://picsum.photos/800/500?random=3",
     highlight: "Estrategia y Posicionamiento",
     buttonText: "Conoce el caso"
   },
