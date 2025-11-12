@@ -14,7 +14,7 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col">
-      <Link href={`/casos-de-exito/detalle/${caseStudy.slug}`} className="block h-full">
+      <Link href={`/casos-de-exito/${caseStudy.slug}`} className="block h-full">
         {/* Imagen */}
         <div className="relative h-56 bg-gray-200 overflow-hidden group">
           {hasImage ? (

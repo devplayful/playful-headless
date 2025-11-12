@@ -778,6 +778,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
 
 // Interfaces for Success Stories
 export interface ACFSuccessStory {
+  // Existing properties
   categoria1: string;
   categoria2: string;
   categoria3: string;
@@ -805,6 +806,33 @@ export interface ACFSuccessStory {
   desafioimagen4: { url: string; alt: string; } | false;
   tercerh2: string;
   decima: string;
+  
+  // New properties
+  subtitle?: string;
+  description?: string;
+  hero_image?: {
+    url: string;
+    alt: string;
+  };
+  challenge_title?: string;
+  challenge_description?: string;
+  challenge_logos?: Array<{
+    url: string;
+    alt: string;
+  }>;
+  work_process?: Array<{
+    title: string;
+    description: string;
+    step_items: string[];
+    step_image?: {
+      url: string;
+      alt: string;
+    };
+  }>;
+  results?: Array<{
+    result_value: string;
+    result_description: string;
+  }>;
 }
 
 export interface SuccessStory extends WPPost {
