@@ -75,7 +75,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
       {/* Challenge Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2A0064] mb-6">{story.acf.segundoh2 || 'El Desafío'}</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#2A0064] mb-6">{story.acf.primerh2 || 'El Desafío'}</h2>
           <div className="text-lg text-gray-600 mb-12" dangerouslySetInnerHTML={{ __html: story.acf.tercerap || '' }} />
           {Array.isArray(story.acf?.challenge_logos) && story.acf.challenge_logos.length > 0 && (
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
@@ -97,7 +97,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
       </section>
 
       {/* Work Process Images with Title and Description */}
-      <section className="py-16 bg-white">
+      <section className="py-0 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
             {/* Images Row */}
@@ -131,36 +131,59 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
         </div>
       </section>
 
-      {/* Results Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2A0064]">Los Resultados</h2>
+      {/* Content Grid Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-6 bg-[#E9D7FF] rounded-[18px] p-8">
+          {/* Top Row - Two Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* Left Column - Text Content */}
+            <div className="space-y-6 bg-white p-8 rounded-[18px]">
+              {[
+                { content: story.acf?.cuartap, className: 'text-[#005F9E] font-payton font-bold text-[22px] leading-relaxed' },
+                { content: story.acf?.quintap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed' },
+                { content: story.acf?.sextap, className: 'text-[#F78D2B] font-payton font-bold text-[22px] leading-relaxed' },
+                { content: story.acf?.septimap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed mt-8 mb-4' },
+                { content: story.acf?.octavap, className: 'text-[#44A147] font-payton font-bold text-[22px] leading-relaxed' },
+                { content: story.acf?.novenap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed' }
+              ].filter(item => item.content).map((item, index) => (
+                <div 
+                  key={`text-${index}`}
+                  className={item.className}
+                  dangerouslySetInnerHTML={{ __html: item.content || '' }}
+                />
+              ))}
+            </div>
+
+            {/* Right Column - Image */}
+            {story.acf?.desafioimagen1 && (
+              <div className="relative w-full h-96 bg-gray-100 rounded-[18px] overflow-hidden">
+                <Image
+                  src={story.acf.desafioimagen1}
+                  alt="Imagen de desafío"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
           </div>
-          
-          {/* Safely check for results array */}
-          {story.acf?.results && Array.isArray(story.acf.results) && story.acf.results.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-              {story.acf.results.map((result, index) => {
-                const Icon = [ResultIcon1, ResultIcon2, ResultIcon3][index % 3];
-                return (
-                  <div key={index} className="bg-gray-50 p-8 rounded-lg shadow-lg">
-                    <Icon className="w-16 h-16 text-[#2A0064] mx-auto mb-4" />
-                    <h3 className="text-4xl font-bold text-[#2A0064] mb-2">
-                      {result.result_value || 'N/A'}
-                    </h3>
-                    <p className="text-gray-600">
-                      {result.result_description || 'Sin descripción disponible'}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No hay resultados disponibles</p>
-            </div>
-          )}
+
+          {/* Bottom Row - Three Images */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
+              { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
+              { id: 'desafioimagen4', url: story.acf?.desafioimagen4 }
+            ].filter(item => item.url).map((item, index) => (
+              <div key={`${item.id}-${index}`} className="relative w-full h-64 bg-gray-100 rounded-[18px] overflow-hidden">
+                <Image
+                  src={item.url}
+                  alt={`Imagen de desafío ${index + 2}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>
