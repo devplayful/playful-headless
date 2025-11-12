@@ -85,10 +85,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       title={post.title.rendered}
       featuredImage={post.featured_media_url}
     >
-      <div className="min-h-screen bg-white">
+      <div className="detalle-blog-fondo min-h-screen bg-white">
       {/* Header con título e imagen */}
-      <header className="bg-white border-b border-gray-200 py-12">
-        <div className="max-w-6xl mx-auto px-6">
+      <header className="detalle-blog-fondo border-b border-gray-200 py-12">
+        <div className="max-w-6xl mx-auto px-6 py-12 bg-white rounded-[18px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
@@ -138,7 +138,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="detalle-blog-fondo max-w-4xl mx-auto px-6 py-12">
         <article>
           
           {/* Table of Contents - Antes del contenido */}

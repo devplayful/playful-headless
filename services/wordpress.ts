@@ -776,6 +776,98 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
   }
 }
 
+// Interfaces for Success Stories
+export interface ACFSuccessStory {
+  categoria1: string;
+  categoria2: string;
+  categoria3: string;
+  categoria4: string;
+  categoria5: string;
+  h1: string;
+  primerap: string;
+  imagenbanner: { url: string; alt: string; } | false;
+  primerh2: string;
+  segundap: string;
+  imagenminuta1: { url: string; alt: string; } | false;
+  imagenminuta2: { url: string; alt: string; } | false;
+  imagenminuta3: { url: string; alt: string; } | false;
+  segundoh2: string;
+  tercerap: string;
+  cuartap: string;
+  quintap: string;
+  sextap: string;
+  septimap: string;
+  octavap: string;
+  novenap: string;
+  desafioimagen1: { url: string; alt: string; } | false;
+  desafioimagen2: { url: string; alt: string; } | false;
+  desafioimagen3: { url: string; alt: string; } | false;
+  desafioimagen4: { url: string; alt: string; } | false;
+  tercerh2: string;
+  decima: string;
+}
+
+export interface SuccessStory extends WPPost {
+  acf: ACFSuccessStory;
+}
+
+/**
+ * Obtiene un caso de éxito por su slug
+ * @param slug Slug del caso de éxito
+ * @returns Promise con el caso de éxito o null si no se encuentra
+ */
+export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory | null> {
+  try {
+    console.log('Fetching success story with slug:', slug);
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
+      {
+        next: { revalidate: 3600 },
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache', // Ensure we're not getting cached data
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error('Error response from API:', await response.text());
+      throw new Error(`Error al obtener el caso de éxito: ${response.status} ${response.statusText}`);
+    }
+
+    const stories: any[] = await response.json();
+    console.log('API Response:', JSON.stringify(stories, null, 2));
+    
+    if (!stories || stories.length === 0) {
+      console.log('No story found with slug:', slug);
+      return null;
+    }
+
+    const story = stories[0];
+    
+    // Log the ACF fields to see what we're working with
+    console.log('Story ACF fields:', story.acf);
+
+    // Ensure we have the ACF data
+    if (!story.acf) {
+      console.error('No ACF data found for story:', story);
+      return null;
+    }
+
+    // Process embedded media if needed, similar to blog posts
+    if (story._embedded?.['wp:featuredmedia']?.[0]) {
+      story.featured_media_url = story._embedded['wp:featuredmedia'][0].source_url;
+      story.featured_media_alt = story._embedded['wp:featuredmedia'][0].alt_text;
+    }
+
+    return story as SuccessStory;
+
+  } catch (error) {
+    console.error('Error en getSuccessStoryBySlug:', error);
+    return null;
+  }
+}
+
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
   try {
     console.log(`Obteniendo episodio de podcast por slug: ${slug}`);
