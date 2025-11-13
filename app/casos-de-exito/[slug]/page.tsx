@@ -177,7 +177,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
               <div key={`${item.id}-${index}`} className="relative w-full h-64 bg-gray-100 rounded-[18px] overflow-hidden">
                 <Image
                   src={item.url}
-                  alt={`Imagen de desafío ${index + 2}`}
+                  alt={`La Imagen de desafío ${index + 2}`}
                   fill
                   className="object-cover"
                 />
