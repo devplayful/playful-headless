@@ -41,13 +41,12 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
   return (
     <div className="bg-white text-gray-800">
       {/* Hero Section */}
-      <section className="bg-[#2A0064] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-20">
+      <section className="playful-header-mora text-white">
+        <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="text-center md:text-left">
-              <h1 className="text-4xl lg:text-5xl font-bold mb-4">{story.title.rendered}</h1>
-              <h2 className="text-2xl lg:text-3xl font-semibold text-gray-300 mb-6">{story.acf.h1 || 'Caso de Éxito'}</h2>
-              <p className="text-lg text-gray-400" dangerouslySetInnerHTML={{ __html: story.acf.primerap || '' }} />
+              <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">{story.title.rendered}</h1>
+              <p className="text-lg text-[#4A4453]" dangerouslySetInnerHTML={{ __html: story.acf.primerap || '' }} />
             </div>
             <div>
               <div className="relative w-full h-[400px] rounded-lg overflow-hidden bg-gray-100">
