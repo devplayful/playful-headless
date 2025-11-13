@@ -11,7 +11,7 @@ export default function Footer() {
   return (
     <footer className={`px-5 ${footerColor}`}>
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
-        <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] w-[510px] ml-[83px] flex items-center flex-col justify-evenly">
+        <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] md:w-[40%] w-full ml-0 md:ml-[83px] flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
             <img
               src="/images/logos/Playful-LogoV.svg"
@@ -166,9 +166,9 @@ export default function Footer() {
 
             {/* Legal y Contacto */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
+              <h6 className="subtitle text-[22px] md:text-normal font-normal my-4 text-white">
                 LEGAL
-              </h3>
+              </h6>
               <ul className="space-y-2 mb-6">
                 <li>
                   <Link

@@ -743,3 +743,20 @@ body {
    padding: 0px !important; 
   }  
 }
+
+
+@media only screen and (min-width: 480px) and (max-width: 575px) {
+  .logo {
+    background-color: red;
+  }
+  .footer{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .playful-footerInfo{
+     display: flex;
+    flex-direction: row;
+    margin-left: 0px;
+  }
+}
