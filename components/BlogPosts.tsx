@@ -140,7 +140,7 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
         <div className="max-w-7xl mx-auto relative z-0">
           {title && (
             <h3
-              className="text-center text-3xl md:text-4xl font-bold mb-4"
+              className="text-center text-3xl md:text-4xl font-normal mb-4"
               style={{ color: textColor }}
             >
               {title}

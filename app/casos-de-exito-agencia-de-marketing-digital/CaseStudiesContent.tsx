@@ -46,7 +46,7 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         {/* Contenido */}
         <div className="p-6 flex-1 flex flex-col">
           {/* Título */}
-          <h3 className="text-xl font-bold text-gray-900 mb-4 leading-tight">
+          <h3 className="text-xl font-normal text-gray-900 mb-4 leading-tight">
             {caseStudy.title}
           </h3>
 
@@ -328,7 +328,7 @@ export default function CaseStudiesContent() {
 
         {/* CTA Text */}
         <div className="text-center mb-8">
-          <h3 className="text-2xl lg:text-3xl font-bold text-white">
+          <h3 className="text-2xl lg:text-3xl font-normal text-white">
             ¿Quieres ser el próximo?
           </h3>
         </div>

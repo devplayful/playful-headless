@@ -11,7 +11,7 @@ export default function Footer() {
   return (
     <footer className={`px-5 ${footerColor}`}>
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
-        <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] h-[453px] w-[510px] ml-[83px] flex items-center flex-col justify-evenly">
+        <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] lg:w-[45%] lg:ml-[60px] h-[453px] w-full ml-0  flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
             <img
               src="/images/logos/Playful-LogoV.svg"
@@ -100,9 +100,9 @@ export default function Footer() {
           <div className="playful-footerInfo flex justify-evenly">
             {/* Nosotros */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h6 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
                 NOSOTROS
-              </h3>
+              </h6>
               <ul className="space-y-2">
                 <li>
                   <Link
@@ -133,9 +133,9 @@ export default function Footer() {
 
             {/* Servicios */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h6 className="subtitle text-[22px] md:text-lg font-normal my-4 text-white">
                 SERVICIOS
-              </h3>
+              </h6>
               <ul className="space-y-2">
                 <li>
                   <Link
@@ -166,9 +166,9 @@ export default function Footer() {
 
             {/* Legal y Contactos */}
             <div className="playful-footerItems">
-              <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
+              <h6 className="subtitle text-[22px] md:text-normal font-normal my-4 text-white">
                 LEGAL
-              </h3>
+              </h6>
               <ul className="space-y-2 mb-6">
                 <li>
                   <Link
@@ -195,7 +195,7 @@ export default function Footer() {
       {/* Copyright y Redes Sociales */}
       <div className="text-center mt-12 pt-8 mb-[50px]">
         <div className="flex justify-center">
-          <p className="body-text text-[#2A0064] text-[16px]">
+          <p className="body-text text-[#f2f2f2] lg:pb-[4.4rem] lg:pt-[4.4rem] pb-[2rem] pt-[2rem]  text-[16px]">
             &copy;{currentYear} Playful Agency. Todos los derechos reservados.
           </p>
         </div>
