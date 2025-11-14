@@ -31,24 +31,44 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Aquí iría la lógica para enviar el formulario a tu API o servicio de correo
-      // Por ahora, simulamos un envío exitoso después de 1.5 segundos
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setSubmitStatus({
-        success: true,
-        message: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
+      // Enviar el formulario a nuestra API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          business: formData.business,
+          message: formData.message,
+        }),
       });
-      
-      // Limpiar el formulario después de un envío exitoso
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        business: '',
-        message: ''
-      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus({
+          success: true,
+          message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
+        });
+        
+        // Limpiar el formulario después de un envío exitoso
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          business: '',
+          message: ''
+        });
+      } else {
+        setSubmitStatus({
+          success: false,
+          message: data.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
+        });
+      }
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
       setSubmitStatus({
