@@ -83,7 +83,7 @@ body {
 /* Tipografía Base (Desktop) */
 
 @layer base {
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4, h5{
     @apply font-paytone;
   }
   p {
@@ -708,6 +708,7 @@ body {
   .footer {
     display: flex;
     flex-direction: row;
+    padding: 2.1rem;
   }
   .logo {
     padding: 0px;
@@ -716,6 +717,7 @@ body {
     display: flex;
     flex-direction: column;
     margin-left: 25%;
+    
   }
 }
 
@@ -746,10 +748,7 @@ body {
 
 
 @media only screen and (min-width: 480px) and (max-width: 575px) {
-  .logo {
-    background-color: red;
-  }
-  .footer{
+   .footer{
     display: flex;
     flex-direction: column;
   }
@@ -758,5 +757,36 @@ body {
      display: flex;
     flex-direction: row;
     margin-left: 0px;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1023px) {
+  
+  .footer{
+    padding: 4.2rem 0px;
+  }
+  
+   .footerCard {
+    width: 82% !important;
+    margin: 0px !important;
+    
+  }
+}
+
+@media (min-width: 426px) and (max-width: 570px) {
+  .playful-footerInfo {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .infoFooter {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .footerCard {
+    width: 108.5% !important;
   }
 }

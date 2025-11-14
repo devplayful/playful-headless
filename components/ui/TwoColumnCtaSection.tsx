@@ -73,7 +73,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
 }) => {
   return (
     <div className="py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto pt-[0.7rem] pb-[0.7rem] sm:px-6 lg:px-8">
         <div className="lg:flex lg:items-center lg:space-x-12">
           {/* Columna izquierda - Imagen */}
           <div className="lg:w-1/2 mb-12 lg:mb-0">
