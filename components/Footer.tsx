@@ -164,7 +164,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Legal y Contacto */}
+            {/* Legal y Contactos */}
             <div className="playful-footerItems">
               <h3 className="subtitle text-[22px] md:text-lg font-semibold my-4 text-white">
                 LEGAL
