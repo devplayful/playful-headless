@@ -192,11 +192,12 @@ const EquipoSection = async () => {
   
   // Separar fundadores del resto del equipo
   const fundadores = teamMembers.filter(member => 
-    member.acf.cargo.toLowerCase().includes('fundador') || 
-    member.acf.cargo.toLowerCase().includes('fundadora')
+    member.acf.cargo?.toLowerCase().includes('fundador') || 
+    member.acf.cargo?.toLowerCase().includes('fundadora')
   );
   
   const equipo = teamMembers.filter(member => 
+    member.acf.cargo && 
     !member.acf.cargo.toLowerCase().includes('fundador') && 
     !member.acf.cargo.toLowerCase().includes('fundadora')
   );

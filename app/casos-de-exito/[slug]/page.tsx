@@ -20,18 +20,19 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 interface PageProps {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function SuccessStoryPage({ params, searchParams }: PageProps) {
   // Ensure we have a valid slug
-  if (!params?.slug) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.slug) {
     notFound();
   }
 
   // Get the story data
-  const story = await getSuccessStoryBySlug(params.slug as string);
+  const story = await getSuccessStoryBySlug(resolvedParams.slug as string);
 
   // If no story is found, return 404
   if (!story) {
@@ -102,11 +103,11 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
             {/* Images Row */}
             <div className="flex justify-center gap-8 mb-12">
               {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
-                .filter(Boolean)
+                .filter((image): image is { url: string; alt: string } => Boolean(image) && typeof image === 'object')
                 .map((image, index) => (
                   <div key={index} className="relative w-36 h-36 bg-white rounded-lg shadow-md flex items-center justify-center p-4">
                     <Image
-                      src={image || ''}
+                      src={image.url}
                       alt={`Imagen ${index + 1}`}
                       width={120}
                       height={120}
@@ -157,7 +158,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
             {story.acf?.desafioimagen1 && (
               <div className="relative w-full h-96 bg-gray-100 rounded-[18px] overflow-hidden">
                 <Image
-                  src={story.acf.desafioimagen1}
+                  src={typeof story.acf.desafioimagen1 === 'string' ? story.acf.desafioimagen1 : story.acf.desafioimagen1.url}
                   alt="Imagen de desafío"
                   fill
                   className="object-cover"
@@ -172,10 +173,10 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
               { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
               { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
               { id: 'desafioimagen4', url: story.acf?.desafioimagen4 }
-            ].filter(item => item.url).map((item, index) => (
+            ].filter((item): item is { id: string; url: { url: string; alt: string } } => Boolean(item.url) && typeof item.url === 'object').map((item, index) => (
               <div key={`${item.id}-${index}`} className="relative w-full h-64 bg-gray-100 rounded-[18px] overflow-hidden">
                 <Image
-                  src={item.url}
+                  src={item.url.url}
                   alt={`La Imagen de desafío ${index + 2}`}
                   fill
                   className="object-cover"

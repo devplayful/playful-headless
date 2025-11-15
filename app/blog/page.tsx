@@ -22,11 +22,12 @@ const getExcerpt = (excerpt: string) => {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Obtener el número de página y categoría de los parámetros de búsqueda
-  const currentPage = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
-  const category = typeof searchParams?.category === 'string' ? searchParams.category : '';
+  const resolvedSearchParams = await searchParams;
+  const currentPage = typeof resolvedSearchParams?.page === 'string' ? parseInt(resolvedSearchParams.page) : 1;
+  const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : '';
   const perPage = 9; // Número de posts por página (3x3 grid)
 
   // Obtener los posts del blog (filtrados por categoría si existe)

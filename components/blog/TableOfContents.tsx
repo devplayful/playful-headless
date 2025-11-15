@@ -93,15 +93,14 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       
       // Crear el PDF
       const canvas = await html2canvas(articleClone, {
-        scale: 2 as any, // Usamos 'as any' temporalmente para evitar el error de tipo
+        // @ts-expect-error - scale no está en los tipos oficiales pero es soportada
+        scale: 2,
         useCORS: true,
         logging: false,
         onclone: (clonedDoc: Document) => {
           // Actualizar progreso cuando se clona el documento
           updateProgress(60);
-        },
-        // @ts-ignore - La propiedad oncloneTimeout no está en los tipos pero es soportada
-        oncloneTimeout: 0
+        }
       });
       
       // Actualizar progreso

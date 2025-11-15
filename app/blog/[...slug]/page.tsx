@@ -25,14 +25,15 @@ const formatDate = (dateString: string) => {
 };
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string[];
-  };
+  }>;
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // El array slug contiene [category, post-slug]
-  const [category, postSlug] = params.slug;
+  const { slug } = await params;
+  const [category, postSlug] = slug;
   
   if (!postSlug) {
     notFound();
@@ -182,8 +183,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: { params: { slug: string[] } }): Promise<Metadata> {
-  const [, postSlug] = params.slug;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const [, postSlug] = slug;
   
   if (!postSlug) {
     return {
