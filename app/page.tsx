@@ -2,6 +2,7 @@ import Link from 'next/link';
 import AnimatedButton from '@/components/AnimatedButton';
 import MaterialServicesSection from '@/components/MaterialServicesSection';
 import SolucionesPlayful from '@/components/SolucionesPlayful';
+import CarouselResultados from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import { HomePageContent } from './HomePageContent';
 
@@ -56,8 +57,9 @@ function HomeContent() {
       <MaterialServicesSection className="color-home contenedores-home" />
 
       <SolucionesPlayful className="color-home contenedores-home" />
-
       <TestimonialsSection className="color-home" />
+      
+      <CarouselResultados className="color-home contenedores-home" />
 
     </div>
   );
