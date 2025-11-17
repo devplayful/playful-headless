@@ -34,10 +34,10 @@ export default async function BlogPage({
   const { posts, totalPages } = await getBlogPosts(currentPage, perPage, category);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Último artículo destacado */}
       {posts.length > 0 && (
-        <div className="w-full bg-[#E8D5FF] pt-12">
+        <div className="w-full  pt-12">
           <div className="max-w-7xl mx-auto px-6 pb-12">
             <div>
               <h2 className="text-2xl font-bold text-[#2A0064] mb-8">Último Artículo</h2>
@@ -108,14 +108,14 @@ export default async function BlogPage({
       )}
 
       {/* Barra de categorías */}
-      <div className="w-full bg-[#E8D5FF] pb-6">
+      <div className="w-full  pb-6">
         <div className="max-w-7xl mx-auto px-6">
           <BlogCategories currentCategory={category} />
         </div>
       </div>
 
       {/* Grid de Posts */}
-      <div className="w-full bg-[#E8D5FF] pt-0 pb-12">
+      <div className="w-full  pt-0 pb-12">
         <div className="max-w-7xl mx-auto px-6">
           {posts.length <= 1 ? (
             <div className="text-center py-12">

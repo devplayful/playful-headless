@@ -343,7 +343,7 @@ const BlogSection = async () => {
   const blogPosts = await getLatestBlogPosts(3);
 
   return (
-    <section className="bg-[#006A61] rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+    <section className="rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
       <BlogPosts /> 
     </section>
   );
@@ -360,7 +360,7 @@ const CTASection = ({
   return (
     <section className="relative overflow-hidden mt-12 mb-0 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto">
       {/* Overlay de confeti para la sección CTA */}
-      <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
+      <div className="pointer-events-none absolute inset-0 "></div>
       <div className="relative z-10 flex flex-col md:flex-row items-stretch">
         {/* Sección de Imagen */}
         <div className="w-full md:w-1/2 flex justify-center items-center p-6 bg-transparent">
@@ -462,7 +462,7 @@ const HeroSection = ({
   textSecondaryColor?: string;
 }) => {
   return (
-    <section className={`min-h-[480px] ${bgColor} flex items-center py-12`}>
+    <section className={`min-h-[480px] flex items-center py-12`}>
       <div className="w-full">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -503,7 +503,7 @@ export default async function Nosotros() {
   const metadata = await getPageMetadataBySlug('nosotros');
   
   return (
-    <div className="bg-[#E9D7FF] bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat w-full">
+    <div className="w-full">
       {/* Sección Superior "Nosotros" */}
       <HeroSection 
         title="Playful Agency"

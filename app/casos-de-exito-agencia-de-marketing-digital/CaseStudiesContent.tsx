@@ -277,7 +277,7 @@ export default function CaseStudiesContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#5724AB] bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat bg-blend-overlay py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto mb-16">
         {/* Breadcrumb */}
         <div className="mb-8">

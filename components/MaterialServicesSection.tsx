@@ -1,76 +1,108 @@
-'use client';
+"use client";
 
-import { 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
-  CardActions, 
-  Button, 
-  Grid, 
-  Chip,
-  Fab
-} from '@mui/material';
-import { 
-  ShoppingCart, 
-  TrendingUp, 
-  Palette, 
-  Speed,
-  ArrowForward,
-  Star
-} from '@mui/icons-material';
+import React from "react";
+import dynamic from "next/dynamic";
+import { useSliderSettings } from "../hooks/useSliderSettings";
+
+// Importación dinámica del Slider para asegurar que solo se cargue en el cliente
+const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
+  ssr: false,
+  loading: () => <div>Cargando...</div>,
+});
+
+// Importar estilos de slick
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const cardData = [
   {
-    icon: '❌', // Puedes usar un componente de ícono real o una imagen
-    title: 'Diseño obsoleto o confuso:',
+    icon: "❌", // Puedes usar un componente de ícono real o una imagen
+    title: "Diseño obsoleto o confuso:",
     description:
-      'Un sitio web que se ve viejo o es difícil de navegar ahuyenta a los clientes. Piensa en tu web como tu tienda física: si la entrada es un laberinto, nadie va a entrar.',
+      "Un sitio web que se ve viejo o es difícil de navegar ahuyenta a los clientes. Piensa en tu web como tu tienda física: si la entrada es un laberinto, nadie va a entrar.",
   },
   {
-    icon: '🚀',
-    title: 'Velocidad de carga lenta:',
+    icon: "🚀",
+    title: "Velocidad de carga lenta:",
     description:
-      'Cada segundo que tu web tarda en cargar es un cliente que se va. Un sitio lento genera frustración y poca confianza.',
+      "Cada segundo que tu web tarda en cargar es un cliente que se va. Un sitio lento genera frustración y poca confianza.",
   },
   {
-    icon: '🐞',
-    title: 'Errores técnicos y bugs:',
+    icon: "🐞",
+    title: "Errores técnicos y bugs:",
     description:
-      '¿Tu checkout falla? ¿Los botones no funcionan? Estos pequeños fallos hacen que tus clientes abandonen el carrito y que nunca más regresen.',
+      "¿Tu checkout falla? ¿Los botones no funcionan? Estos pequeños fallos hacen que tus clientes abandonen el carrito y que nunca más regresen.",
+  },
+  {
+    icon: "📱",
+    title: "No es responsive:",
+    description:
+      "Más del 60% de los usuarios navegan desde móvil. Si tu web no se adapta a todos los dispositivos, estás perdiendo la mayoría de tus clientes.",
+  },
+  {
+    icon: "🔍",
+    title: "Mala optimización SEO:",
+    description:
+      "Si no te encuentran en Google, no existes. Una web sin SEO es como tener una tienda en el medio del desierto.",
+  },
+  {
+    icon: "💳",
+    title: "Proceso de pago complicado:",
+    description:
+      "Cuanto más pasos agregues al checkout, más clientes abandonan. La simplicidad es la clave de la conversión.",
   },
 ];
 
-export default function MaterialServicesSection({ className }: { className?: string }) {
+export default function MaterialServicesSection({
+  className,
+}: {
+  className?: string;
+}) {
+  const responsiveSettings = useSliderSettings();
+  
   return (
-   <section className={className}>
-    <div className='playful-contenedor playful-contenedor-FFEFD1'>
-      <h2 className='playful-h2'>Lo que realmente está matando tus conversiones</h2>
-      <p className='playful-contenido-p'>
-      El problema no es tu producto. Es la <b>mala experiencia</b> que le das a tus clientes.
-      </p>
+    <section className={className}>
+      <div className="playful-contenedor playful-contenedor-FFEFD1">
+        <h2 className="playful-h2 max-w-3xl mx-auto">
+          Lo que realmente está matando tus conversiones
+        </h2>
+        <p className="playful-contenido-p max-w-3xl mx-auto">
+          El problema no es tu producto. Es la <b>mala experiencia</b> que le
+          das a tus clientes.
+        </p>
 
-
- {/* Contenedor principal con el scroll horizontal en mobile */}
- <div className="conversion-cards-wrapper">
-        {cardData.map((card, index) => (
-          <div key={index} className="conversion-card">
-            <div className="card-icon">{card.icon}</div>
-            <h3 className="playful-h3">{card.title}</h3>
-            <p className="playful-contenido-p">{card.description}</p>
-          </div>
-        ))}
+        {/* Contenedor del carousel */}
+        <div className="carousel-container md:mx-0 mx-[-1rem]">
+          <Slider
+            {...{
+              ...responsiveSettings,
+              slidesToScroll: 1,
+              autoplay: true,
+              arrows: false,
+              dots: false,
+            }}
+            className="conversion-cards-wrapper"
+          >
+            {cardData.map((card, index) => (
+              <div
+                key={index}
+                className="carousel-slide md:px-6"
+              >
+                <div className="conversion-card">
+                  <div className="card-icon">{card.icon}</div>
+                  <h3 className="playful-h3">{card.title}</h3>
+                  <p className="playful-contenido-p">{card.description}</p>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+        <div className="text-center mt-12">
+          <button className="playful-boton font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+            ¡Crece como ellos!
+          </button>
+        </div>
       </div>
-
-      <button className="playful-boton">
-        <span role="img" aria-label="emoji-star">
-          ✨
-        </span>{' '}
-        ¡Crece como ellos!
-      </button>
-
-
-    </div>
-   </section>
+    </section>
   );
 }

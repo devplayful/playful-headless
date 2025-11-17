@@ -6,8 +6,10 @@ import { usePathname } from 'next/navigation';
 type ThemeContextType = {
   headerColor: string;
   footerColor: string;
+  bodyBgColor: 'casos-exito' | 'default';
   setHeaderColor: (color: string) => void;
   setFooterColor: (color: string) => void;
+  setBodyBgColor: (color: 'casos-exito' | 'default') => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -16,18 +18,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [headerColor, setHeaderColor] = useState('bg-[#E9D7FF]');
   const [footerColor, setFooterColor] = useState('bg-[#E9D7FF]');
+  const [bodyBgColor, setBodyBgColor] = useState<'casos-exito' | 'default'>('default');
   const [isBlogPost, setIsBlogPost] = useState(false);
 
   // Actualizar los colores basados en la ruta
   useEffect(() => {
-    if (pathname === '/casos-de-exito-agencia-de-marketing-digital') {
+    if (pathname === '/casos-de-exito-agencia-de-marketing-digital' || 
+        (pathname && pathname.startsWith('/casos-de-exito/'))) {
       setHeaderColor('playful-header-mora');
       setFooterColor('playful-footer-mora');
-      setIsBlogPost(false);
-    } else if (pathname && pathname.startsWith('/casos-de-exito/')) {
-      // Para páginas de detalle de casos de éxito como /casos-de-exito/slug
-      setHeaderColor('playful-header-mora');
-      setFooterColor('playful-header-mora');
+      setBodyBgColor('casos-exito');
       setIsBlogPost(false);
     } else if (pathname && /^\/blog\/[^\/]+$/.test(pathname)) {
       // Solo aplica a rutas como /blog/titulo-articulo, no a /blog/ ni a /blog/mas-vistos/...
@@ -37,6 +37,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     } else {
       setHeaderColor('bg-[#E9D7FF]');
       setFooterColor('bg-[#E9D7FF]');
+      setBodyBgColor('default');
       setIsBlogPost(false);
     }
   }, [pathname]);
@@ -45,8 +46,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     <ThemeContext.Provider value={{ 
       headerColor, 
       footerColor,
+      bodyBgColor,
       setHeaderColor, 
-      setFooterColor 
+      setFooterColor,
+      setBodyBgColor
     }}>
       {children}
     </ThemeContext.Provider>
