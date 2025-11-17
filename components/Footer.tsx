@@ -9,7 +9,7 @@ export default function Footer() {
   const { footerColor } = useTheme();
 
   return (
-    <footer className={`px-5 ${footerColor}`}>
+    <footer className={`px-5`}>
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] lg:w-[45%] lg:ml-[60px] h-[453px] w-full ml-0  flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">

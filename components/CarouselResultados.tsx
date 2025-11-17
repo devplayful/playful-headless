@@ -185,7 +185,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   const responsiveSettings = useSliderSettings();
 
   return (
-    <section className={`${className} lg:pb-[12rem] pb-[6rem] p-[1.2rem]`}>
+    <section className={`${className}  p-[1.2rem]`}>
       <div
         className="w-full max-w-full flex flex-col gap-[25px] p-[2.2rem]
          lg:px-[4rem] mx-auto box-border md:p-[60px_40px] md:max-w-[720px] lg:p-[80px_90px]

@@ -11,7 +11,7 @@ function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
-      <section className="relative overflow-hidden color-home">
+      <section className="relative overflow-hidden ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -72,14 +72,15 @@ function HomeContent() {
       </section>
 
       {/* Material UI Services Section */}
-      <MaterialServicesSection className="color-home contenedores-home px-[1rem]" />
+      <MaterialServicesSection className=" contenedores-home px-[1rem]" />
 
-      <SolucionesPlayful className="color-home contenedores-home px-[1rem]" />
-      <TestimonialsSection className="color-home px-[1rem]" />
+      <SolucionesPlayful className=" contenedores-home px-[1rem]" />
+      <TestimonialsSection className=" px-[1rem]" />
 
-      <CarouselResultados className="color-home contenedores-home" />
+      <CarouselResultados className=" contenedores-home" />
 
-      <TwoColumnCtaSection />
+      <TwoColumnCtaSection
+      contentBgColor="#B3FFF3" />
     </div>
   );
 }

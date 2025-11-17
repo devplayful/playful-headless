@@ -54,7 +54,7 @@ export default function Header() {
   const { headerColor } = useTheme();
 
   return (
-    <header className={`playful-header sticky top-0 z-50 transition-colors duration-300 overflow-x-hidden ${headerColor}`}>
+    <header className={`playful-header sticky top-0 z-50 transition-colors duration-300 overflow-x-hidden`}>
       <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full">
         {/* Mobile Layout - Pantallas >= 400px */}
         <div className="lg:hidden hidden min-[400px]:flex items-center justify-between px-4 py-3 w-full max-w-full">
