@@ -361,7 +361,7 @@ body {
 
   /* Tipografía */
   .playful-h1 { font-size: 38px; }
-  .playful-h2 { font-size: 28px; }
+  .playful-h2 { font-size: 27px; }
   .playful-miga-pan { font-size: 20px; }
   .playful-contenido-p { font-size: 14px; }
 
@@ -398,7 +398,7 @@ body {
   }
 
   .conversion-card {
-      width: 85%; 
+      width: 100%; 
       flex-shrink: 0;
       scroll-snap-align: center;
       padding: 20px;

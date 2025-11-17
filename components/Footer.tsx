@@ -195,7 +195,9 @@ export default function Footer() {
       {/* Copyright y Redes Sociales */}
       <div className="text-center mt-12 pt-8 mb-[50px]">
         <div className="flex justify-center">
-          <p className="body-text text-[#f2f2f2] lg:pb-[4.4rem] lg:pt-[4.4rem] pb-[2rem] pt-[2rem]  text-[16px]">
+          <p className={`body-text lg:pb-[4.4rem] lg:pt-[4.4rem] pb-[2rem] pt-[2rem] text-[16px] ${
+            footerColor.includes('mora') ? 'text-white' : 'text-[#2A0064]'
+          }`}>
             &copy;{currentYear} Playful Agency. Todos los derechos reservados.
           </p>
         </div>

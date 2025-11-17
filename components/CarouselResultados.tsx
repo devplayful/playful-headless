@@ -217,7 +217,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
             {...{
               ...responsiveSettings,
               slidesToScroll: 1,
-              autoplay: false,
+              autoplay: true,
               arrows: false,
               dots: false,
             }}
