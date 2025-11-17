@@ -337,7 +337,7 @@ body {
   }
 
   .conversion-card {
-      width: 45%; 
+      width: 109%; 
       flex-shrink: 0; /* No encoger en scroll */
       scroll-snap-align: start; 
       padding: 25px;

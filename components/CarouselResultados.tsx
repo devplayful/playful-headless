@@ -340,7 +340,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         <div
           className="w-full max-w-full flex flex-col gap-[25px] p-[2.2rem]
            lg:px-[4rem] mx-auto box-border md:p-[60px_40px] md:max-w-[720px] lg:p-[80px_90px]
-            lg:max-w-[1000px] xl:max-w-[1200px] rounded-[68px] bg-[url('/images/background.webp')]
+            lg:max-w-[1000px] xl:max-w-[1200px] rounded-3xl md:rounded-[68px] bg-[url('/images/background.webp')]
              text-center playful-contenedor-B3FFF3"
           style={{ backgroundColor: backgroundColor }}
         >

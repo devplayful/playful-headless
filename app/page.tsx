@@ -40,7 +40,9 @@ function HomeContent() {
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="playful-boton font-semibold">¡Quiero saber más!</button>
+                  <button className="playful-boton font-semibold">
+                    ¡Quiero saber más!
+                  </button>
                 </div>
               </div>
             </div>
@@ -78,9 +80,9 @@ function HomeContent() {
       <TestimonialsSection className=" px-[1rem]" />
 
       <CarouselResultados className=" contenedores-home" />
-
-      <TwoColumnCtaSection
-      contentBgColor="#B3FFF3" />
+      <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
+        <TwoColumnCtaSection contentBgColor="#B3FFF3" />
+      </div>
     </div>
   );
 }

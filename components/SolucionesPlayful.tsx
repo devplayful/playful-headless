@@ -14,6 +14,34 @@ const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+// Estilos CSS para line-clamp
+const cardStyles = `
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+  }
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+  }
+  .conversion-cards-wrapper .slick-slide {
+    height: auto;
+  }
+  .conversion-cards-wrapper .slick-slide > div {
+    height: 100%;
+  }
+  .conversion-cards-wrapper .slick-track {
+    display: flex;
+    align-items: stretch;
+  }
+`;
+
 const cardData = [
   {
     icon: "❌", // Puedes usar un componente de ícono real o una imagen
@@ -61,8 +89,10 @@ export default function SolucionesPlayful({
   const responsiveSettings = useSliderSettings();
   
   return (
-    <section className={`${className} pb-[5rem]`}>
-      <div className="playful-contenedor playful-contenedor-B3FFF3 ">
+    <>
+      <style dangerouslySetInnerHTML={{ __html: cardStyles }} />
+      <section className={`${className} pb-[5rem]`}>
+        <div className="playful-contenedor playful-contenedor-B3FFF3 ">
         <h2 className="playful-h2 max-w-3xl mx-auto">
           Soluciones Playful: Tecnología que se traduce en ventas
         </h2>
@@ -87,12 +117,12 @@ export default function SolucionesPlayful({
             {cardData.map((card, index) => (
               <div
                 key={index}
-                className="carousel-slide md:px-6"
+                className="carousel-slide md:px-6 h-full"
               >
-                <div className="conversion-card">
-                  <div className="card-icon">{card.icon}</div>
-                  <h3 className="playful-h3">{card.title}</h3>
-                  <p className="playful-contenido-p">{card.description}</p>
+                <div className="conversion-card h-[400px] flex flex-col">
+                  <div className="card-icon flex-shrink-0">{card.icon}</div>
+                  <h3 className="playful-h3 flex-shrink-0 line-clamp-2 h-16 flex items-center">{card.title}</h3>
+                  <p className="playful-contenido-p flex-1 line-clamp-4 overflow-hidden">{card.description}</p>
                 </div>
               </div>
             ))}
@@ -103,7 +133,8 @@ export default function SolucionesPlayful({
             ¡Crece como ellos!
           </button>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
