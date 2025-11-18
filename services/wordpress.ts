@@ -939,3 +939,93 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
     return null;
   }
 }
+
+// Interface para casos de éxito
+export interface CaseStudy {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  categories: string[];
+  badge: string;
+  badgeColor: string;
+  buttonText: string;
+  buttonColor: string;
+  image: string;
+}
+
+/**
+ * Obtiene casos de éxito desde WordPress
+ */
+export async function getCaseStudies(): Promise<CaseStudy[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?_embed`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener casos de éxito: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    // Transformar los datos de la API al formato esperado por el componente
+    const transformedData: CaseStudy[] = data.map((item: any) => {
+      // Extraer título
+      const title = item.title?.rendered || 'Sin título';
+      
+      // Extraer descripción y limpiar HTML
+      let description = '';
+      if (item.excerpt?.rendered) {
+        description = item.excerpt.rendered
+          .replace(/<[^>]*>?/gm, '') // Eliminar etiquetas HTML
+          .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, '') // Eliminar etiquetas cortas restantes
+          .trim();
+      } else if (item.content?.rendered) {
+        description = item.content.rendered
+          .replace(/<[^>]*>?/gm, '')
+          .substring(0, 200) + '...';
+      }
+      
+      // Extraer imagen destacada
+      let image = '';
+      if (item._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
+        image = item._embedded['wp:featuredmedia'][0].source_url;
+      } else if (item.featured_media_url) {
+        image = item.featured_media_url;
+      }
+      
+      const categories = [
+        item.acf?.categoria1,
+        item.acf?.categoria2,
+        item.acf?.categoria3,
+        item.acf?.categoria4,
+        item.acf?.categoria5,
+      ].filter(Boolean) as string[];
+
+      return {
+        id: item.id,
+        title: title,
+        slug: item.slug || `caso-${item.id}`,
+        description: description || 'Descripción no disponible',
+        categories: categories,
+        badge: item.acf?.badge || item.meta?._case_study_badge || '',
+        badgeColor: item.acf?.badge_color || item.meta?._case_study_badge_color || 'bg-purple-600',
+        buttonText: item.acf?.button_text || 'Ver más',
+        buttonColor: item.acf?.button_color || 'bg-purple-600',
+        image: image,
+      };
+    });
+
+    return transformedData;
+  } catch (error) {
+    console.error('Error en getCaseStudies:', error);
+    return [];
+  }
+}

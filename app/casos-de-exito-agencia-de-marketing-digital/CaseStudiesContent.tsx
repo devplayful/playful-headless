@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import BlogPosts from "@/components/BlogPosts";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import { CaseStudy } from "@/services/wordpress";
 
 // Componente para la tarjeta de caso de estudio
 const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
@@ -86,123 +87,41 @@ const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
   ssr: false,
 });
 
-// Interfaz para los casos de éxito de la API
-interface WPCaseStudy {
-  id: number;
-  title: {
-    rendered: string;
-  };
-  slug: string;
-  excerpt: {
-    rendered: string;
-  };
-  acf: {
-    tags: string[];
-    badge: string;
-    badge_color: string;
-    button_text: string;
-    button_color: string;
-    imagen_destacada: string;
-    categoria1?: string;
-    categoria2?: string;
-    categoria3?: string;
-    categoria4?: string;
-    categoria5?: string;
-  };
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-    }>;
-  };
+
+interface CaseStudiesContentProps {
+  caseStudies: CaseStudy[];
 }
 
-// Interfaz para los casos de estudio transformados
-export interface CaseStudy {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  categories: string[];
-  badge: string;
-  badgeColor: string;
-  buttonText: string;
-  buttonColor: string;
-  image: string;
-}
-
-export default function CaseStudiesContent() {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchCaseStudies = async () => {
-      try {
-        const response = await fetch('https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed');
-        if (!response.ok) {
-          throw new Error('Error al cargar los casos de éxito');
-        }
-        const data = await response.json();
-        
-        // Transformar los datos de la API al formato esperado por el componente
-        const transformedData: CaseStudy[] = data.map((item: any) => {
-          // Extraer título
-          const title = item.title?.rendered || 'Sin título';
-          
-          // Extraer descripción y limpiar HTML
-          let description = '';
-          if (item.excerpt?.rendered) {
-            description = item.excerpt.rendered
-              .replace(/<[^>]*>?/gm, '') // Eliminar etiquetas HTML
-              .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, '') // Eliminar etiquetas cortas restantes
-              .trim();
-          } else if (item.content?.rendered) {
-            description = item.content.rendered
-              .replace(/<[^>]*>?/gm, '')
-              .substring(0, 200) + '...';
-          }
-          
-          // Extraer imagen destacada
-          let image = '';
-          if (item._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-            image = item._embedded['wp:featuredmedia'][0].source_url;
-          } else if (item.featured_media_url) {
-            image = item.featured_media_url;
-          }
-          
-          const categories = [
-            item.acf?.categoria1,
-            item.acf?.categoria2,
-            item.acf?.categoria3,
-            item.acf?.categoria4,
-            item.acf?.categoria5,
-          ].filter(Boolean) as string[];
-
-          return {
-            id: item.id,
-            title: title,
-            slug: item.slug || `caso-${item.id}`,
-            description: description || 'Descripción no disponible',
-            categories: categories,
-            badge: item.acf?.badge || item.meta?._case_study_badge || '',
-            badgeColor: item.acf?.badge_color || item.meta?._case_study_badge_color || 'bg-purple-600',
-            buttonText: item.acf?.button_text || 'Ver más',
-            buttonColor: item.acf?.button_color || 'bg-blue-600 hover:bg-blue-700',
-            image: image
-          };
-        });
-        
-        setCaseStudies(transformedData);
-      } catch (err) {
-        console.error('Error fetching case studies:', err);
-        setError('No se pudieron cargar los casos de estudio. Por favor, intente nuevamente más tarde.');
-      } finally {
-        setLoading(false);
-      }
+export default function CaseStudiesContent({ caseStudies }: CaseStudiesContentProps) {
+  // Función para obtener el color de fondo del badge
+  const getBadgeColorClass = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      'purple': 'bg-purple-600',
+      'blue': 'bg-blue-600',
+      'green': 'bg-green-600',
+      'red': 'bg-red-600',
+      'yellow': 'bg-yellow-600',
+      'pink': 'bg-pink-600',
+      'indigo': 'bg-indigo-600',
+      'gray': 'bg-gray-600',
     };
+    return colorMap[color] || color || 'bg-purple-600';
+  };
 
-    fetchCaseStudies();
-  }, []);
+  // Función para obtener el color de fondo del botón
+  const getButtonColorClass = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      'purple': 'bg-purple-600 hover:bg-purple-700',
+      'blue': 'bg-blue-600 hover:bg-blue-700',
+      'green': 'bg-green-600 hover:bg-green-700',
+      'red': 'bg-red-600 hover:bg-red-700',
+      'yellow': 'bg-yellow-600 hover:bg-yellow-700',
+      'pink': 'bg-pink-600 hover:bg-pink-700',
+      'indigo': 'bg-indigo-600 hover:bg-indigo-700',
+      'gray': 'bg-gray-600 hover:bg-gray-700',
+    };
+    return colorMap[color] || color || 'bg-purple-600 hover:bg-purple-700';
+  };
 
   // All available categories from the case studies
   const allCategories = Array.from(
@@ -211,70 +130,29 @@ export default function CaseStudiesContent() {
 
   // State for active filters
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-red-600 mb-4">{error}</p>
-        <button 
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-        >
-          Reintentar
-        </button>
-      </div>
-    );
-  }
 
   // Toggle filter on/off
   const toggleFilter = (filter: string) => {
     setActiveFilters(
-      (prev) =>
+      (prev: string[]) =>
         prev.includes(filter)
-          ? prev.filter((f) => f !== filter) // Remove filter if it's active
+          ? prev.filter((f: string) => f !== filter) // Remove filter if it's active
           : [...prev, filter] // Add filter if it's not active
     );
   };
 
   // Remove a specific filter
   const removeFilter = (filter: string) => {
-    setActiveFilters(activeFilters.filter((f) => f !== filter));
+    setActiveFilters(activeFilters.filter((f: string) => f !== filter));
   };
 
   // Filter case studies based on active filters
   const filteredCaseStudies =
     activeFilters.length === 0
       ? caseStudies
-      : caseStudies.filter((study) =>
-          activeFilters.some((filter) => study.categories.includes(filter))
+      : caseStudies.filter((study: CaseStudy) =>
+          activeFilters.some((filter: string) => study.categories.includes(filter))
         );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500 text-center">
-          <p className="text-xl font-semibold">Error al cargar los casos de estudio</p>
-          <p className="mt-2">{error}</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay py-12 px-4 sm:px-6 lg:px-8">
