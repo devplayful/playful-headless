@@ -194,19 +194,21 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
               className="mx-[-15px]"
             >
               {blogPosts.map((post) => (
-              <div key={`blog-${post.id}`} className="px-3">
-                <div className="bg-white rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
+              <div key={`blog-${post.id}`} className="px-3 h-full">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg h-[480px] flex flex-col">
                   {/* Post Image */}
                   <div className="h-48 bg-gray-200 relative">
-                    <img
-                      src={post.imageUrl || "/images/blog/placeholder.jpg"}
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/images/blog/placeholder.jpg";
-                      }}
-                    />
+                    <a href={`/blog/${post.category.toLowerCase().replace(/\s+/g, '-')}/${post.slug}`} className="block w-full h-full">
+                      <img
+                        src={post.imageUrl || "/images/blog/placeholder.jpg"}
+                        alt={post.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/images/blog/placeholder.jpg";
+                        }}
+                      />
+                    </a>
                   </div>
 
                   {/* Category Badge */}
@@ -218,10 +220,12 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
 
                   {/* Content */}
                   <div className="p-5 flex-1 flex flex-col">
-                    <h4 className="text-gray-900 font-bold text-xl mb-3 leading-tight">
-                      {post.title}
-                    </h4>
-                    <p className="text-gray-600 text-sm mb-5 flex-1">
+                    <a href={`/blog/${post.category.toLowerCase().replace(/\s+/g, '-')}/${post.slug}`}>
+                      <h4 className="text-gray-900 font-bold text-xl mb-3 leading-tight line-clamp-2 hover:text-[#7C3AED] transition-colors cursor-pointer">
+                        {post.title}
+                      </h4>
+                    </a>
+                    <p className="text-gray-600 text-sm mb-5 flex-1 line-clamp-3">
                       {post.excerpt}
                     </p>
 
