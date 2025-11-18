@@ -402,11 +402,11 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
             {/* Title and Description */}
             <div className="text-center max-w-4xl">
               <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
-                {story.acf?.tercerh2 || 'Nuestro Enfoque'}
+                {story.acf?.resultadotitulo || 'Nuestro Enfoque'}
               </h2>
               <div 
                 className="text-lg text-gray-700 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
+                dangerouslySetInnerHTML={{ __html: story.acf?.resultadodescripcion || '' }}
               />
             </div>
           </div>
@@ -495,6 +495,58 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
           </div>
         </div>
       </section>
+
+      {/* Testimonial Section */}
+      {story.acf?.testimonialnombre && (
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="bg-[#FFD977] rounded-[18px] px-8 py-10 md:px-16 md:py-14 flex flex-col md:flex-row items-center gap-10 relative overflow-hidden">
+              <div className="absolute -top-10 -left-4 text-white/40 text-[160px] leading-none select-none hidden sm:block">
+                “
+              </div>
+              <div className="absolute -bottom-24 right-0 text-white/40 text-[220px] leading-none select-none hidden sm:block">
+                ”
+              </div>
+
+              <div className="relative z-10 flex-shrink-0 flex flex-col items-center md:items-start gap-4">
+                {story.acf?.testimonial_foto && (
+                  <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-200">
+                    <Image
+                      src={
+                        typeof story.acf.testimonial_foto === 'string'
+                          ? (story.acf.testimonial_foto as string)
+                          : (story.acf.testimonial_foto as { url: string }).url
+                      }
+                      alt={story.acf?.testimonialnombre || 'Testimonial'}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <div className="text-center md:text-left">
+                  {story.acf?.testimonialnombre && (
+                    <p className="text-lg md:text-xl font-payton font-bold text-[#4A4453]">
+                      {story.acf.testimonialnombre}
+                    </p>
+                  )}
+                  {story.acf?.testimonialcargo && (
+                    <p className="text-sm md:text-base font-dmsans text-[#4A4453]">
+                      {story.acf.testimonialcargo}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative z-10 flex-1">
+                <p className="text-base md:text-lg leading-relaxed text-[#4A4453] font-dmsans max-w-2xl">
+                  {story.acf.testimonio}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
     </div>
   );
