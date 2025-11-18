@@ -39,9 +39,9 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
   }
 
   return (
-    <div className="bg-white text-gray-800">
+    <div className="text-gray-800">
       {/* Hero Section */}
-      <section className="playful-header-mora text-white">
+      <section className="text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="text-center md:text-left">
