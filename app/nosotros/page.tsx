@@ -197,9 +197,8 @@ const EquipoSection = async () => {
   );
   
   const equipo = teamMembers.filter(member => 
-    member.acf.cargo && 
-    !member.acf.cargo.toLowerCase().includes('fundador') && 
-    !member.acf.cargo.toLowerCase().includes('fundadora')
+    !member.acf.cargo?.toLowerCase().includes('fundador') && 
+    !member.acf.cargo?.toLowerCase().includes('fundadora')
   );
   
   return (
