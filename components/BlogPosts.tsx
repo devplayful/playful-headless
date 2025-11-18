@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSliderSettings } from "../hooks/useSliderSettings";
+import { getLatestBlogPosts } from "@/services/wordpress";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -53,8 +54,9 @@ interface BlogPost {
   excerpt: string;
   category: string;
   date: string;
-  imageUrl?: string;
-  readMoreLink?: string;
+  imageUrl: string;
+  slug: string;
+  link: string;
 }
 
 interface BlogPostsProps {
@@ -86,21 +88,43 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
   overlayOpacity = 0.5,
   overlayColor = "#006A61",
 }) => {
-  // Default posts if none provided
-  const defaultPosts: BlogPost[] = Array(6)
-    .fill(0)
-    .map((_, i) => ({
-      id: i + 1,
-      title:
-        "Cómo mejorar tu presencia en línea con estrategias de marketing digital efectivas",
-      excerpt:
-        "Descubre las mejores estrategias para mejorar tu presencia en línea y llegar a más clientes potenciales a través del marketing digital.",
-      category: "Marketing Digital",
-      date: "Hace 2 días",
-    }));
-
-  const blogPosts = posts.length > 0 ? posts : defaultPosts;
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const responsiveSettings = useSliderSettings();
+
+  // Fetch blog posts on component mount
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        if (posts.length > 0) {
+          setBlogPosts(posts);
+        } else {
+          const latestPosts = await getLatestBlogPosts(6);
+          setBlogPosts(latestPosts);
+        }
+      } catch (error) {
+        console.error('Error fetching blog posts:', error);
+        // Fallback to default posts if API fails
+        const defaultPosts: BlogPost[] = Array(6)
+          .fill(0)
+          .map((_, i) => ({
+            id: i + 1,
+            title: "Cómo mejorar tu presencia en línea con estrategias de marketing digital efectivas",
+            excerpt: "Descubre las mejores estrategias para mejorar tu presencia en línea y llegar a más clientes potenciales a través del marketing digital.",
+            category: "Marketing Digital",
+            date: "Hace 2 días",
+            imageUrl: "/images/blog/placeholder.jpg",
+            slug: "estrategias-marketing-digital",
+            link: "#"
+          }));
+        setBlogPosts(defaultPosts);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogPosts();
+  }, [posts]);
 
   return (
     <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
@@ -156,32 +180,33 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
             </p>
           )}
 
-          <Slider
-            {...{
-              ...responsiveSettings,
-              slidesToScroll: 1,
-              autoplay: false,
-            }}
-            className="mx-[-15px]"
-          >
-            {blogPosts.map((post) => (
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="text-white">Cargando entradas del blog...</div>
+            </div>
+          ) : (
+            <Slider
+              {...{
+                ...responsiveSettings,
+                slidesToScroll: 1,
+                autoplay: true,
+              }}
+              className="mx-[-15px]"
+            >
+              {blogPosts.map((post) => (
               <div key={`blog-${post.id}`} className="px-3">
                 <div className="bg-white rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
                   {/* Post Image */}
                   <div className="h-48 bg-gray-200 relative">
-                    {post.imageUrl ? (
-                      <img
-                        src={post.imageUrl}
-                        alt={post.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          Imagen del Post {post.id}
-                        </span>
-                      </div>
-                    )}
+                    <img
+                      src={post.imageUrl || "/images/blog/placeholder.jpg"}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/images/blog/placeholder.jpg";
+                      }}
+                    />
                   </div>
 
                   {/* Category Badge */}
@@ -204,7 +229,7 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-sm text-gray-500">{post.date}</span>
                       <a
-                        href={post.readMoreLink || "#"}
+                        href={`/blog/${post.category.toLowerCase().replace(/\s+/g, '-')}/${post.slug}`}
                         className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-medium py-1.5 px-4 rounded-full transition-colors"
                       >
                         Leer más
@@ -213,8 +238,9 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
                   </div>
                 </div>
               </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          )}
 
           <div className="text-center mt-12">
             <button
