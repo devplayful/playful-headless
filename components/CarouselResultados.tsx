@@ -1,27 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Grid,
-  Chip,
-  Fab,
-} from "@mui/material";
-import {
-  ShoppingCart,
-  TrendingUp,
-  Palette,
-  Speed,
-  ArrowForward,
-  Star,
-} from "@mui/icons-material";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -32,6 +14,38 @@ const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
 // Importar estilos de slick
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+// Estilos CSS para line-clamp
+const cardStyles = `
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+    line-height: 1.25rem;
+  }
+  .conversion-cards-wrapper .slick-slide {
+    height: auto;
+  }
+  .conversion-cards-wrapper .slick-slide > div {
+    height: 100%;
+  }
+  .conversion-cards-wrapper .slick-track {
+    display: flex;
+    align-items: stretch;
+  }
+  .conversion-cards-wrapper .slick-list {
+    height: 100%;
+  }
+`;
 
 /**
  * Componente CarouselResultados - Muestra un slider de casos de éxito con diseño responsivo
@@ -50,16 +64,51 @@ import "slick-carousel/slick/slick-theme.css";
  * @param {string} [actionButtonColor="#2563EB"] - Color del botón de acción de las cards
  */
 
+// Interfaz para los casos de éxito de la API
+interface WPCaseStudy {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  slug: string;
+  excerpt: {
+    rendered: string;
+  };
+  content?: {
+    rendered: string;
+  };
+  acf: {
+    tags: string[];
+    badge: string;
+    badge_color: string;
+    button_text: string;
+    button_color: string;
+    imagen_destacada: string;
+    categoria1?: string;
+    categoria2?: string;
+    categoria3?: string;
+    categoria4?: string;
+    categoria5?: string;
+  };
+  _embedded?: {
+    'wp:featuredmedia'?: Array<{
+      source_url: string;
+    }>;
+  };
+}
+
+// Interfaz para los casos de estudio transformados
 interface CaseStudy {
-  id?: number;
-  imageUrl?: string;
-  badge: string;
-  badgeText: string;
+  id: number;
   title: string;
-  tags: string[];
+  slug: string;
   description: string;
+  categories: string[];
+  badge: string;
+  badgeColor: string;
   buttonText: string;
-  onCaseClick?: () => void;
+  buttonColor: string;
+  image: string;
 }
 
 interface CarouselResultadosProps {
@@ -79,90 +128,91 @@ interface CarouselResultadosProps {
   actionButtonColor?: string;
 }
 
-const defaultCases: CaseStudy[] = [
-  {
-    imageUrl: "/images/mockup-laptop.jpg",
-    badge: "+ 40%",
-    badgeText: "Conversiones",
-    title:
-      "SOYTECHNO se transforma y genera un aumento del 40% en conversiones",
-    tags: ["UI/UX Design", "E-commerce", "Analítica SEO"],
-    description:
-      "SoyTechno, una empresa de tecnología, necesitaba renovar su plataforma de ventas. Los usuarios se frustraban con la navegación y el proceso de compra era demasiado largo, lo que se traducía en ventas perdidas.",
-    buttonText: "Ver caso completo",
-  },
-  {
-    imageUrl: "/images/mockup-mobile.jpg",
-    badge: "Innovación",
-    badgeText: "Tecnológica",
-    title:
-      "Mercantil SFI se renueva e impulsa su presencia global en el sector Financiero",
-    tags: ["UI/UX Design", "E-commerce", "Analítica SEO"],
-    description:
-      "Mercantil Servicios Financieros Internacional y la transformamos en una plataforma digital que impulsa su presencia global y mejora la interacción con sus clientes.",
-    buttonText: "Explora la historia",
-  },
-  {
-    imageUrl: "/images/mockup-dashboard.jpg",
-    badge: "+ 65%",
-    badgeText: "Engagement",
-    title: "TechFlow optimiza su experiencia digital y aumenta el engagement",
-    tags: ["UI/UX Design", "Dashboard", "Analítica"],
-    description:
-      "TechFlow necesitaba una plataforma más intuitiva para sus usuarios. Rediseñamos completamente su interfaz, mejorando la usabilidad y la experiencia del usuario.",
-    buttonText: "Ver transformación",
-  },
-  {
-    imageUrl: "/images/mockup-ecommerce.jpg",
-    badge: "+ 80%",
-    badgeText: "Ventas Online",
-    title: "DigitalStore revoluciona su e-commerce con nuevas tecnologías",
-    tags: ["E-commerce", "Mobile First", "Conversiones"],
-    description:
-      "DigitalStore transformó completamente su tienda online, implementando las últimas tecnologías para mejorar la experiencia de compra y aumentar las conversiones.",
-    buttonText: "Descubre más",
-  },
-  {
-    imageUrl: "/images/mockup-app.jpg",
-    badge: "App",
-    badgeText: "Innovadora",
-    title: "StartupTech lanza su aplicación móvil con gran éxito",
-    tags: ["Mobile App", "UI/UX Design", "Startup"],
-    description:
-      "StartupTech necesitaba una aplicación móvil que reflejara su innovación. Desarrollamos una app intuitiva que conecta perfectamente con su audiencia objetivo.",
-    buttonText: "Ver aplicación",
-  },
-  {
-    imageUrl: "/images/mockup-website.jpg",
-    badge: "+ 120%",
-    badgeText: "Tráfico Web",
-    title: "WebCorp multiplica su tráfico web con estrategia digital integral",
-    tags: ["SEO", "Marketing Digital", "Analítica"],
-    description:
-      "WebCorp logró multiplicar su tráfico web implementando una estrategia digital integral que incluye SEO, contenido optimizado y analítica avanzada.",
-    buttonText: "Ver estrategia",
-  },
-  {
-    imageUrl: "/images/mockup-platform.jpg",
-    badge: "Plataforma",
-    badgeText: "Escalable",
-    title: "CloudTech desarrolla plataforma escalable para el futuro",
-    tags: ["Cloud", "Escalabilidad", "Tecnología"],
-    description:
-      "CloudTech necesitaba una plataforma que creciera con su negocio. Desarrollamos una solución escalable que se adapta a sus necesidades futuras.",
-    buttonText: "Conocer más",
-  },
-  {
-    imageUrl: "/images/mockup-analytics.jpg",
-    badge: "+ 200%",
-    badgeText: "ROI",
-    title: "DataCorp optimiza su ROI con analítica avanzada",
-    tags: ["Analítica", "Big Data", "ROI"],
-    description:
-      "DataCorp transformó su toma de decisiones implementando analítica avanzada que les permitió optimizar su ROI y mejorar significativamente sus resultados.",
-    buttonText: "Ver resultados",
-  },
-];
+// Componente para la tarjeta de caso de estudio
+const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const hasImage = caseStudy.image && !imageError;
+
+  return (
+    <div className="px-2 h-full">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-[500px]">
+        <Link href={`/casos-de-exito/${caseStudy.slug}`} className="block h-full flex flex-col">
+          {/* Imagen */}
+          <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
+            {hasImage ? (
+              <img
+                src={caseStudy.image}
+                alt={caseStudy.title}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                <span className="text-gray-400">Sin imagen</span>
+              </div>
+            )}
+            
+            {/* Badge sobre la imagen */}
+            {caseStudy.badge && (
+              <div
+                className={`absolute bottom-4 left-4 ${caseStudy.badgeColor} text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg`}
+              >
+                {caseStudy.badge}
+              </div>
+            )}
+          </div>
+
+          {/* Contenido */}
+          <div className="p-6 flex-1 flex flex-col min-h-0">
+            {/* Título */}
+            <h3 className="text-xl font-normal text-gray-900 mb-4 leading-tight line-clamp-2 h-14 flex items-center">
+              {caseStudy.title}
+            </h3>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-4 h-8 overflow-hidden">
+              {caseStudy.categories.slice(0, 2).map((category, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700 whitespace-nowrap"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+
+            {/* Descripción */}
+            <div className="text-gray-600 text-sm mb-6 flex-1 leading-5">
+              <p className="line-clamp-3" style={{ 
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                lineHeight: '1.25rem'
+              }}>
+                {caseStudy.description || 'Descripción no disponible'}
+              </p>
+            </div>
+
+            {/* Botón alineado a la derecha */}
+            <div className="flex justify-end mt-auto">
+              <button
+                className={`${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0`}
+              >
+                {caseStudy.buttonText}
+              </button>
+            </div>
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 
 const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   title = "No confíes solo ennuestra palabra, mira los resultados.",
@@ -180,19 +230,120 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   badgeColor = "#7C3AED",
   actionButtonColor = "#2563EB",
 }) => {
-  // Use provided cases or default ones
-  const caseStudies = cases.length > 0 ? cases : defaultCases;
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const responsiveSettings = useSliderSettings();
 
+  useEffect(() => {
+    const fetchCaseStudies = async () => {
+      try {
+        const response = await fetch('https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed');
+        if (!response.ok) {
+          throw new Error('Error al cargar los casos de éxito');
+        }
+        const data = await response.json();
+        
+        // Transformar los datos de la API al formato esperado por el componente
+        const transformedData: CaseStudy[] = data.map((item: WPCaseStudy) => {
+          // Extraer título
+          const title = item.title?.rendered || 'Sin título';
+          
+          // Extraer descripción y limpiar HTML
+          let description = '';
+          if (item.excerpt?.rendered) {
+            description = item.excerpt.rendered
+              .replace(/<[^>]*>?/gm, '') // Eliminar etiquetas HTML
+              .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, '') // Eliminar etiquetas cortas restantes
+              .replace(/&nbsp;/g, ' ') // Reemplazar espacios no separables
+              .replace(/&amp;/g, '&') // Decodificar entidades HTML
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .trim();
+          }
+          
+          // Si no hay descripción del excerpt, usar el contenido del post
+          if (!description && item.content?.rendered) {
+            description = item.content.rendered
+              .replace(/<[^>]*>?/gm, '')
+              .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, '')
+              .replace(/&nbsp;/g, ' ')
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .trim();
+          }
+          
+          // Si aún no hay descripción, usar una por defecto
+          if (!description) {
+            description = 'Descubre cómo este proyecto transformó los resultados de nuestro cliente con estrategias innovadoras y soluciones personalizadas.';
+          }
+
+          // Extraer imagen destacada
+          let image = '';
+          if (item._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
+            image = item._embedded['wp:featuredmedia'][0].source_url;
+          } else if (item.acf?.imagen_destacada) {
+            image = item.acf.imagen_destacada;
+          }
+
+          // Construir array de categorías
+          const categories: string[] = [];
+          if (item.acf?.tags) {
+            categories.push(...item.acf.tags);
+          }
+          // Agregar categorías adicionales si existen
+          for (let i = 1; i <= 5; i++) {
+            const categoria = item.acf?.[`categoria${i}` as keyof typeof item.acf] as string;
+            if (categoria) {
+              categories.push(categoria);
+            }
+          }
+
+          return {
+            id: item.id,
+            title,
+            slug: item.slug,
+            description,
+            categories,
+            badge: item.acf?.badge || '',
+            badgeColor: item.acf?.badge_color || 'bg-purple-600',
+            buttonText: item.acf?.button_text || 'Ver más',
+            buttonColor: item.acf?.button_color || 'bg-blue-600',
+            image,
+          };
+        });
+
+        setCaseStudies(transformedData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Solo hacer fetch si no se proporcionaron casos
+    if (cases.length === 0) {
+      fetchCaseStudies();
+    } else {
+      setCaseStudies(cases);
+      setLoading(false);
+    }
+  }, [cases]);
+
   return (
-    <section className={`${className}  p-[1.2rem]`}>
-      <div
-        className="w-full max-w-full flex flex-col gap-[25px] p-[2.2rem]
-         lg:px-[4rem] mx-auto box-border md:p-[60px_40px] md:max-w-[720px] lg:p-[80px_90px]
-          lg:max-w-[1000px] xl:max-w-[1200px] rounded-[68px] bg-[url('/images/background.webp')]
-           text-center playful-contenedor-B3FFF3"
-        style={{ backgroundColor: backgroundColor }}
-      >
+    <>
+      <style dangerouslySetInnerHTML={{ __html: cardStyles }} />
+      <section className={`${className}  p-[1.2rem]`}>
+        <div
+          className="w-full max-w-full flex flex-col gap-[25px] p-[2.2rem]
+           lg:px-[4rem] mx-auto box-border md:p-[60px_40px] md:max-w-[720px] lg:p-[80px_90px]
+            lg:max-w-[1000px] xl:max-w-[1200px] rounded-[68px] bg-[url('/images/background.webp')]
+             text-center playful-contenedor-B3FFF3"
+          style={{ backgroundColor: backgroundColor }}
+        >
         {title && (
           <h2 className="playful-h2 text-center text-3xl md:text-4xl font-normal mb-4" style={{ color: textColor }}>
             {title}
@@ -212,105 +363,63 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         )}
 
         {/* Contenedor del carousel */}
-        <div className="carousel-container md:mx-0 mx-[-1rem] ">
-          <Slider
-            {...{
-              ...responsiveSettings,
-              slidesToScroll: 1,
-              autoplay: true,
-              arrows: false,
-              dots: false,
-            }}
-            className="conversion-cards-wrapper"
-          >
-            {caseStudies.map((card, index) => (
-              <div
-                key={index}
-                className="carousel-slide md:px-6 "
+        <div className="carousel-container md:mx-0 mx-[-1rem]">
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+              <p className="mt-4" style={{ color: textColor }}>Cargando casos de éxito...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-red-300 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <div
-                  className="rounded-3xl overflow-hidden shadow-lg w-full w-[100%] md:w-[108%] h-full flex flex-col"
-                  style={{ backgroundColor: cardBgColor }}
-                >
-                  {/* Imagen del mockup */}
-                  <div className="relative h-36 md:h-48 bg-gray-100">
-                    {card.imageUrl ? (
-                      <img
-                        src={card.imageUrl}
-                        alt={card.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-400 flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          Mockup {index + 1}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Badge flotante */}
-                    <div
-                      className="absolute top-2 right-2 md:top-4 md:right-4 text-white px-2 py-1 md:px-4 md:py-2 rounded-xl md:rounded-2xl shadow-lg text-xs md:text-base"
-                      style={{ backgroundColor: badgeColor }}
-                    >
-                      <div className="text-sm md:text-lg font-bold">{card.badge}</div>
-                      <div className="text-[10px] md:text-xs">{card.badgeText}</div>
-                    </div>
-                  </div>
-
-                  {/* Contenido de la card */}
-                  <div className="p-4 md:p-6 flex-1 flex flex-col text-left">
-                    {/* Título */}
-                    <h3 className="text-gray-900 font-bold text-base md:text-lg mb-3 md:mb-4 leading-tight">
-                      {card.title}
-                    </h3>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1 md:gap-2 mb-3 md:mb-4">
-                      {card.tags.map((tag, tagIndex) => (
-                        <span
-                          key={tagIndex}
-                          className="inline-block bg-gray-100 text-gray-700 text-[10px] md:text-xs px-2 py-1 md:px-3 md:py-1 rounded-full font-medium border"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Descripción */}
-                    <p className="text-gray-600 text-xs md:text-sm mb-4 md:mb-6 flex-1 leading-relaxed">
-                      {card.description}
-                    </p>
-
-                    {/* Botón de acción */}
-                    <button
-                      className="hover:opacity-90 text-white text-xs md:text-sm font-medium py-2 md:py-3 px-4 md:px-6 rounded-full transition-all w-full"
-                      style={{ backgroundColor: actionButtonColor }}
-                      onClick={card.onCaseClick}
-                    >
-                      {card.buttonText}
-                    </button>
-                  </div>
+                Reintentar
+              </button>
+            </div>
+          ) : caseStudies.length > 0 ? (
+            <Slider
+              {...{
+                ...responsiveSettings,
+                slidesToScroll: 1,
+                autoplay: true,
+                arrows: true,
+                dots: false,
+              }}
+              className="conversion-cards-wrapper"
+            >
+              {caseStudies.map((caseStudy) => (
+                <div key={caseStudy.id} className="h-full">
+                  <CaseStudyCard caseStudy={caseStudy} />
                 </div>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          ) : (
+            <div className="text-center py-12">
+              <p style={{ color: textColor }}>No hay casos de éxito disponibles.</p>
+            </div>
+          )}
         </div>
 
-        <div className="text-center">
-          <button
-            className="font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
-            onClick={onButtonClick}
-            style={{
-              backgroundColor: buttonBgColor,
-              color: buttonTextColor,
-            }}
-          >
-            {buttonText}
-          </button>
+        {onButtonClick && (
+          <div className="text-center">
+            <button
+              className="font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
+              onClick={onButtonClick}
+              style={{
+                backgroundColor: buttonBgColor,
+                color: buttonTextColor,
+              }}
+            >
+              {buttonText}
+            </button>
+          </div>
+        )}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
