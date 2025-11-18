@@ -13,11 +13,15 @@ export default function Footer() {
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] lg:w-[45%] lg:ml-[60px] h-[453px] w-full ml-0  flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
-            <img
-              src="/images/logos/Playful-LogoV.svg"
-              alt="logo Playful Agency"
-              className="w-[214px] h-[50px]"
-            />
+            <Link href="/"
+            prefetch={true}>
+              <img
+                src="/images/logos/Playful-LogoV.svg"
+                
+                alt="logo Playful Agency"
+                className="w-[214px] h-[50px] cursor-pointer hover:opacity-80 transition-opacity"
+              />
+            </Link>
             <div className="w-[100%] h-[2px] bg-[#2A0064] mt-4"></div>
           </div>
 
@@ -88,7 +92,8 @@ export default function Footer() {
           </div>
           <div className="contacto">
             <Link
-              href="/contacto"
+              href="/contactar-agencia-de-marketing-digital"
+              prefetch={true}
               className="inline-block text-[22px] font-dm-sans font-medium bg-teal-400 hover:bg-teal-500 text-[#2A0064] px-6 py-2 rounded-full transition-colors shadow-md hover:shadow-lg"
             >
               Contáctanos
@@ -107,6 +112,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/sobre-playful"
+                    prefetch={true}
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Sobre Playful
@@ -114,7 +120,8 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/casos-de-exito"
+                    href="/casos-de-exito-agencia-de-marketing-digital"
+                    prefetch={true}
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Casos de éxito
@@ -122,7 +129,8 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/nuestro-blog"
+                    href="/blog"
+                    prefetch={true}
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Nuestro Blog

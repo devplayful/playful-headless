@@ -147,6 +147,7 @@ export default function Header() {
             <div className="flex items-center space-x-6 lg:space-x-8">
               <Link 
                 href="/" 
+                prefetch={true}
                 className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
                 INICIO
@@ -154,6 +155,7 @@ export default function Header() {
               
               <Link 
                 href="/casos-de-exito-agencia-de-marketing-digital" 
+                prefetch={true}
                 className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
                 CASOS DE ÉXITO
@@ -162,6 +164,7 @@ export default function Header() {
               <div className="relative group">
                 <button 
                   onClick={toggleServices}
+                  
                   className="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors"
                 >
                   SERVICIOS
@@ -180,6 +183,7 @@ export default function Header() {
                     {services.map((service) => (
                       <Link
                         key={service.slug}
+                        prefetch={true}
                         href={`/${service.slug}`}
                         className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                       >
@@ -192,6 +196,7 @@ export default function Header() {
 
               <Link 
                 href="/nosotros" 
+                prefetch={true}
                 className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
                 NOSOTROS
@@ -199,6 +204,7 @@ export default function Header() {
               
               <Link 
                 href="/blog" 
+                prefetch={true}
                 className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
               >
                 BLOG
@@ -206,6 +212,7 @@ export default function Header() {
               
               <Link 
                 href="/contactar-agencia-de-marketing-digital" 
+                prefetch={true}
                 className="playful-boton-header px-4 py-2 rounded-lg font-medium transition-colors"
               >
                 Contáctanos
@@ -252,6 +259,7 @@ export default function Header() {
                 <div className="space-y-1">
                   <Link 
                     href="/" 
+                    prefetch={true}
                     className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -293,6 +301,7 @@ export default function Header() {
 
                   <Link 
                     href="/nosotros" 
+                    prefetch={true}
                     className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -301,6 +310,7 @@ export default function Header() {
 
                   <Link 
                     href="/casos-de-exito-agencia-de-marketing-digital" 
+                    prefetch={true}
                     className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -309,6 +319,7 @@ export default function Header() {
 
                   <Link 
                     href="/blog" 
+                    prefetch={true}
                     className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -317,6 +328,7 @@ export default function Header() {
 
                   <Link 
                     href="/contactar-agencia-de-marketing-digital" 
+                    prefetch={true}
                     className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
