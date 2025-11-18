@@ -41,7 +41,7 @@ export default function Header() {
   const { headerColor } = useTheme();
 
   return (
-    <header className={`playful-header sticky top-0 z-50 transition-colors duration-300 overflow-x-hidden`}>
+    <header className={`playful-header sticky top-0 z-[9999] transition-colors duration-300 overflow-x-hidden`}>
       <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full">
         {/* Mobile Layout - Pantallas >= 400px */}
         <div className="lg:hidden hidden min-[400px]:flex items-center justify-between px-4 py-3 w-full max-w-full">
@@ -127,7 +127,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden lg:flex items-center h-16 justify-between">
+        <div className="hidden lg:flex items-center h-16 justify-between relative">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
@@ -176,7 +176,7 @@ export default function Header() {
                 </button>
                 
                 {isServicesOpen && (
-                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50 py-2">
+                  <div className="fixed left-1/2 -translate-x-1/2 top-[110px] w-64 bg-white rounded-lg shadow-2xl z-[10000] py-2 border border-gray-100">
                     {services.map((service) => (
                       <Link
                         key={service.slug}
