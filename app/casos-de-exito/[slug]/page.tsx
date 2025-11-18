@@ -100,7 +100,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
             {/* Images Row */}
-            <div className="flex justify-center gap-8 mb-12">
+            <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
               {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
                 .filter(Boolean)
                 .map((image, index) => (
