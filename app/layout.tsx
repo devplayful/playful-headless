@@ -9,17 +9,20 @@ import { getHomePageMetadata } from '@/services/wordpress';
 const paytoneOne = Paytone_One({ 
   weight: '400',
   subsets: ['latin'],
-  variable: '--font-paytone-one'
+  variable: '--font-paytone-one',
+  display: 'swap',
 })
 
 const montserrat = Montserrat({ 
   subsets: ['latin'],
-  variable: '--font-montserrat'
+  variable: '--font-montserrat',
+  display: 'swap',
 })
 
 const dmSans = DM_Sans({ 
   subsets: ['latin'],
-  variable: '--font-dm-sans'
+  variable: '--font-dm-sans',
+  display: 'swap',
 })
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -91,11 +94,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`}>
+      <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
           <Header />
           <main className="min-h-screen">
