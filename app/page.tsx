@@ -84,7 +84,7 @@ function HomeContent() {
       overlayColor="#5724AB"/>
       </div>
 
-      <TestimonialsSection className=" px-[1rem] pt-[6rem]" />
+      <TestimonialsSection className=" px-[1rem] pt-[6rem]  lg:pt-[1px]" />
 
       <CarouselResultados className=" contenedores-home" />
       <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
