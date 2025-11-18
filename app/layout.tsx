@@ -3,6 +3,7 @@ import { Paytone_One, Montserrat, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { BodyClassManager } from '@/components/BodyClassManager';
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 
@@ -100,6 +101,7 @@ export default function RootLayout({
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
+          <BodyClassManager />
           <Header />
           <main className="min-h-screen">
             {children}

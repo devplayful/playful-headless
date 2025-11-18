@@ -98,7 +98,7 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
 
   return (
     
-    <div className="bg-[#E8D5FF] flex justify-center">
+    <div className="flex justify-center">
       <div className="bg-[#2A0064] max-w-[1440px] px-4 py-6 rounded-full ">
         <div className="flex flex-wrap items-center justify-center gap-2">
           {categories.map((cat) => (

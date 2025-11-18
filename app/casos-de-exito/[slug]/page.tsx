@@ -20,19 +20,18 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function SuccessStoryPage({ params, searchParams }: PageProps) {
   // Ensure we have a valid slug
-  const resolvedParams = await params;
-  if (!resolvedParams?.slug) {
+  if (!params?.slug) {
     notFound();
   }
 
   // Get the story data
-  const story = await getSuccessStoryBySlug(resolvedParams.slug as string);
+  const story = await getSuccessStoryBySlug(params.slug as string);
 
   // If no story is found, return 404
   if (!story) {
@@ -103,11 +102,11 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
             {/* Images Row */}
             <div className="flex justify-center gap-8 mb-12">
               {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
-                .filter((image): image is { url: string; alt: string } => Boolean(image) && typeof image === 'object')
+                .filter(Boolean)
                 .map((image, index) => (
                   <div key={index} className="relative w-36 h-36 bg-white rounded-lg shadow-md flex items-center justify-center p-4">
                     <Image
-                      src={image.url}
+                      src={image || ''}
                       alt={`Imagen ${index + 1}`}
                       width={120}
                       height={120}
@@ -158,7 +157,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
             {story.acf?.desafioimagen1 && (
               <div className="relative w-full h-96 bg-gray-100 rounded-[18px] overflow-hidden">
                 <Image
-                  src={typeof story.acf.desafioimagen1 === 'string' ? story.acf.desafioimagen1 : story.acf.desafioimagen1.url}
+                  src={story.acf.desafioimagen1}
                   alt="Imagen de desafío"
                   fill
                   className="object-cover"
@@ -173,10 +172,10 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
               { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
               { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
               { id: 'desafioimagen4', url: story.acf?.desafioimagen4 }
-            ].filter((item): item is { id: string; url: { url: string; alt: string } } => Boolean(item.url) && typeof item.url === 'object').map((item, index) => (
+            ].filter(item => item.url).map((item, index) => (
               <div key={`${item.id}-${index}`} className="relative w-full h-64 bg-gray-100 rounded-[18px] overflow-hidden">
                 <Image
-                  src={item.url.url}
+                  src={item.url}
                   alt={`La Imagen de desafío ${index + 2}`}
                   fill
                   className="object-cover"
@@ -186,6 +185,317 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
           </div>
         </div>
       </section>
+
+      {/* Work Process Images with Title and Description */}
+      <section className="py-0 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col items-center">           
+            {/* Title and Description */}
+            <div className="text-center max-w-4xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+                {story.acf?.tercerh2 || 'Nuestro Enfoque'}
+              </h2>
+              <div 
+                className="text-lg text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Development Process Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="relative">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              {/* Image Section - Left Side */}
+              <div className="relative w-full h-[500px] rounded-xl overflow-hidden shadow-lg">
+                {story.acf?.imagendesarrollo ? (
+                  <Image
+                    src={typeof story.acf.imagendesarrollo === 'string' ? story.acf.imagendesarrollo : story.acf.imagendesarrollo.url}
+                    alt="Proceso de desarrollo"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50%"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <span className="text-gray-500">Imagen no disponible</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Content Section - Right Side */}
+              <div className="space-y-8">
+                {/* Debug: Check field values */}
+                <div className="hidden">
+                  {JSON.stringify({
+                    primerh3desarrollo: story.acf?.primerh3desarrollo,
+                    primerapdesarrollo: story.acf?.primerapdesarrollo,
+                    segundoh3desarrollo: story.acf?.segundoh3desarrollo,
+                    segundopdesarrollo: story.acf?.segundopdesarrollo,
+                    tercerh3desarrollo: story.acf?.tercerh3desarrollo,
+                    tercerapdesarrollo: story.acf?.tercerapdesarrollo
+                  })}
+                </div>
+
+                {story.acf?.primerah3desarrollo && story.acf.primerapdesarrollo && (
+                  <div className="space-y-4">
+                    <h3 className="text-[22px] font-payton text-[#453A53] mb-3">
+                      {story.acf.primerah3desarrollo}
+                    </h3>
+                    <div 
+                      className="text-gray-700 leading-relaxed text-lg"
+                      dangerouslySetInnerHTML={{ __html: story.acf.primerapdesarrollo }}
+                    />
+                  </div>
+                )}
+
+                {story.acf?.segundah3desarrollo && story.acf.segundapdesarrollo && (
+                  <div className="space-y-4">
+                    <h3 className="text-[22px] font-payton text-[#453A53] mb-3">
+                      {story.acf.segundah3desarrollo}
+                    </h3>
+                    <div 
+                      className="text-gray-700 leading-relaxed text-lg"
+                      dangerouslySetInnerHTML={{ __html: story.acf.segundapdesarrollo }}
+                    />
+                  </div>
+                )}
+
+                {story.acf?.tercerh3desarrollo && story.acf.tercerapdesarrollo && (
+                  <div className="space-y-4">
+                    <h3 className="text-[22px] font-payton text-[#453A53] mb-3">
+                      {story.acf.tercerh3desarrollo}
+                    </h3>
+                    <div 
+                      className="text-gray-700 leading-relaxed text-lg"
+                      dangerouslySetInnerHTML={{ __html: story.acf.tercerapdesarrollo }}
+                    />
+                  </div>
+                )}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
+          {/* First Row - 3 images */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Grilla 1 */}
+            {story.acf?.grilla1 && (
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src={typeof story.acf.grilla1 === 'string' ? story.acf.grilla1 : story.acf.grilla1.url}
+                  alt="Gallery image 1"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+            )}
+
+            {/* Grilla 2 */}
+            {story.acf?.grilla2 && (
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src={typeof story.acf.grilla2 === 'string' ? story.acf.grilla2 : story.acf.grilla2.url}
+                  alt="Gallery image 2"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+            )}
+
+            {/* Grilla 3 */}
+            {story.acf?.grilla3 && (
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src={typeof story.acf.grilla3 === 'string' ? story.acf.grilla3 : story.acf.grilla3.url}
+                  alt="Gallery image 3"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Grilla 1 */}
+            {story.acf?.grilla4 && (
+              <div>
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg mb-4">
+                <Image
+                  src={typeof story.acf.grilla4 === 'string' ? story.acf.grilla4 : story.acf.grilla4.url}
+                  alt="Gallery image 1"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src={typeof story.acf.grilla5 === 'string' ? story.acf.grilla5 : story.acf.grilla5.url}
+                  alt="Gallery image 2"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+
+
+              </div>
+            )}
+
+            {/* Grilla 2 */}
+            {story.acf?.grilla6 && (
+
+            <div className="relative w-full h-[541px] rounded-xl overflow-hidden shadow-lg">
+            <Image
+              src={typeof story.acf.grilla6 === 'string' ? story.acf.grilla6 : story.acf.grilla6.url}
+              alt="Gallery image 3"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            />
+            </div>
+            )}
+
+            {/* Grilla 3 */}
+            {story.acf?.grilla7 && (
+              <div>
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg mb-4">
+                <Image
+                  src={typeof story.acf.grilla7 === 'string' ? story.acf.grilla7 : story.acf.grilla7.url}
+                  alt="Gallery image 3"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+              </div>
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg flex items-center justify-center bg-gray-100">
+              <Image
+                src={typeof story.acf.grilla8 === 'string' ? story.acf.grilla8 : story.acf.grilla8.url}
+                alt="Gallery image 3"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              />
+            </div>
+
+            </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-0 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col items-center">           
+            {/* Title and Description */}
+            <div className="text-center max-w-4xl">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+                {story.acf?.tercerh2 || 'Nuestro Enfoque'}
+              </h2>
+              <div 
+                className="text-lg text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Results Cards Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="rounded-[18px] px-6 py-12 md:px-10 md:py-14">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 max-w-5xl mx-auto">
+              {/* Card 1 */}
+              {(story.acf?.resultado1 || story.acf?.resultado1) && (
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
+                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
+                    {story.acf?.resultado1}
+                  </h3>
+                  <div
+                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
+                    dangerouslySetInnerHTML={{ __html: story.acf?.resultadop1 || '' }}
+                  />
+                </div>
+              )}
+
+              {/* Card 2 */}
+              {(story.acf?.resultado2 || story.acf?.resultado2) && (
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
+                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
+                    {story.acf?.resultado2}
+                  </h3>
+                  <div
+                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
+                    dangerouslySetInnerHTML={{ __html: story.acf?.resultadop2 || '' }}
+                  />
+                </div>
+              )}
+
+              {/* Card 2 */}
+              {(story.acf?.resultado3 || story.acf?.resultado3) && (
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
+                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
+                    {story.acf?.resultado3}
+                  </h3>
+                  <div
+                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
+                    dangerouslySetInnerHTML={{ __html: story.acf?.resultadop3 || '' }}
+                  />
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Phone Images Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          {/* En mobile y tablet: carrusel horizontal; en desktop: grilla */}
+          <div className="flex gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
+            {[
+              { id: 'telefono1', value: story.acf?.telefono1 },
+              { id: 'telefono2', value: story.acf?.telefono2 },
+              { id: 'telefono3', value: story.acf?.telefono3 },
+              { id: 'telefono4', value: story.acf?.telefono4 },
+            ]
+              .filter(item => item.value)
+              .map((item, index) => (
+                <div
+                  key={`${item.id}-${index}`}
+                  className="relative w-[300px] sm:w-[300px] flex-shrink-0 h-[650px] lg:w-[300px] lg:h-[650px] rounded-[18px] overflow-hidden"
+                >
+                  <Image
+                    src={
+                      typeof item.value === 'string'
+                        ? (item.value as string)
+                        : (item.value as { url: string }).url
+                    }
+                    alt={`Teléfono ${index + 1}`}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }

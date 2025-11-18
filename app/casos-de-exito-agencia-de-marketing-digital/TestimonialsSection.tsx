@@ -118,7 +118,7 @@ export default function TestimonialsSection({ textColor = '#4A4453', className }
         </div>
 
         {/* Sección de Logos de Clientes - Versión Mejorada */}
-        <div className="my-16">
+        <div className="py-16">
           <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8">
             <h3 className="text-center text-white text-2xl md:text-3xl font-normal mb-12">
               <span style={textStyle}>Nuestros aliados estratégicos</span>
