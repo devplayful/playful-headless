@@ -6,6 +6,7 @@ import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import BlogPosts from "@/components/BlogPosts";
 
 function HomeContent() {
   return (
@@ -77,7 +78,13 @@ function HomeContent() {
       <MaterialServicesSection className=" contenedores-home px-[1rem]" />
 
       <SolucionesPlayful className=" contenedores-home px-[1rem]" />
-      <TestimonialsSection className=" px-[1rem]" />
+      <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
+      <BlogPosts 
+      backgroundColor="#5724AB"
+      overlayColor="#5724AB"/>
+      </div>
+
+      <TestimonialsSection className=" px-[1rem] pt-[6rem]" />
 
       <CarouselResultados className=" contenedores-home" />
       <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
