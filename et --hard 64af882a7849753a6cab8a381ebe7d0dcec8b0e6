@@ -1,0 +1,688 @@
+[33mcommit 64af882a7849753a6cab8a381ebe7d0dcec8b0e6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnombre-de-tu-nueva-rama[m[33m)[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 18 11:42:06 2025 -0400
+
+    Ajustes header
+
+[33mcommit 3d3d825b1d0d2cd7fcd94f328616cc1a3adbd1f2[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 18 11:24:41 2025 -0400
+
+    Ajustes casos
+
+[33mcommit 530752a5eb31b1c6899cd8dbda7224f4a041388d[m[33m ([m[1;32mmain[m[33m)[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 18 09:55:19 2025 -0400
+
+    Caso de exito 2
+
+[33mcommit 4da42b7bb1af1bba41f5867675d6f6210297a98c[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Nov 17 21:49:23 2025 -0400
+
+    Caso de exito
+
+[33mcommit 64cea8a195f4cb13b7674b9821e9af245ba5ed8d[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Nov 17 16:26:36 2025 -0400
+
+    Detalle caso de exito
+
+[33mcommit 55b85ed682de12f7a11f8670ce9bf2bae28d8faa[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Nov 17 13:27:55 2025 -0400
+
+    Ajuste
+
+[33mcommit b7ccd1b78a671b0b34e63693277f84a75234102c[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Nov 17 13:22:47 2025 -0400
+
+    caso dañado
+
+[33mcommit bcaae6f2127098f299525548786795c9adab419a[m
+Merge: 471175d 01da7f6
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 17 12:59:05 2025 -0400
+
+    merge con el feacture
+
+[33mcommit 01da7f621af63e73183a304cf0ebfc8938566967[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 17 12:53:00 2025 -0400
+
+    ajuste de bg color en el body
+
+[33mcommit e6762462942dedb437cf40a7b4f08c6a5de5ec29[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 17 10:10:01 2025 -0400
+
+    ajustes vesrion movil Home
+
+[33mcommit 9f05193bd227f4cd6c8a61bc55204f9a477abe35[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Sun Nov 16 18:01:54 2025 -0400
+
+    ajuste movil del componente CarouselResultados
+
+[33mcommit c55194c7c069bb9970b7c78cfd406565fafb35f4[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Sun Nov 16 13:08:31 2025 -0400
+
+    creacion del componete CarouselResultados del home
+
+[33mcommit 471175d2c29c345ab0ed04766fdda877cc0359bc[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Sat Nov 15 16:01:49 2025 -0400
+
+    fix build
+
+[33mcommit 7a8132c8697675022f3dc6ed3fe4ff337e77760b[m
+Merge: 75a2bf7 2a19d57
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Sat Nov 15 15:16:28 2025 -0400
+
+    Merge branch 'arturo-3' into arturo-4
+
+[33mcommit 2a19d5797d973b393bf77053dea56df3b82215c7[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Fri Nov 14 17:27:54 2025 -0400
+
+    nueva rama arturo-3
+
+[33mcommit 75a2bf7bd4545374c277350adad96cb61cd5e76b[m
+Merge: ea334bf 6b30d2b
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Nov 14 16:38:38 2025 -0400
+
+    Merge branch 'feacture'
+    ajustes de la version movil del footer
+
+[33mcommit 6b30d2ba7261a7b6d3b1ce4dc0fa45ac1631bfe5[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Nov 14 16:38:01 2025 -0400
+
+    ajustes del footer version movil
+
+[33mcommit ea334bf8d77afd96c1c18beba9c242fd661ce6d2[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Nov 14 11:09:06 2025 -0400
+
+    ultimos cambios funcionales del main
+
+[33mcommit c149e49ed6259b7bd8b73ece7887681b49396a47[m
+Merge: e2c6249 3ddac0e
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Thu Nov 13 09:17:55 2025 -0400
+
+    Merge branch 'arturo-2': Resolved conflicts in app/nosotros/page.tsx
+
+[33mcommit 14e568468f0b065256dbfd2b9ac46b70404bd8f1[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Nov 12 20:30:14 2025 -0400
+
+    cambios en el footer
+
+[33mcommit e2c6249e9d70557dce85eff86ba2644e9a392022[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 12 20:27:02 2025 -0400
+
+    Para merge
+
+[33mcommit a8f6239b2b01ecedf97a72b6e5915df249e9f3dc[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 12 20:12:21 2025 -0400
+
+    Casos de exito y blog
+
+[33mcommit 3937315443dbb41e997c2e377b2898f8b1fd9c83[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 12 19:52:11 2025 -0400
+
+    Casos de exito detalle
+
+[33mcommit 28d5362976e9811fbe82381c85ce45b39c576e50[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 12 18:49:39 2025 -0400
+
+    Casos de exito
+
+[33mcommit 022968b935b216ed854459850f9272e5139203b5[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 12 16:16:11 2025 -0400
+
+    Descarga PDF
+
+[33mcommit 98c325a4681bf27ee440bae171d043f7bd7de023[m
+Merge: e409f61 33492d8
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Nov 6 18:05:03 2025 -0400
+
+    Merge branch 'main' of https://github.com/devplayful/playful-headless into feacture
+    cambios funcionales main
+
+[33mcommit 33492d8a3d6274e4d4e5a523ec5c5a738e6c46a3[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Nov 6 18:04:24 2025 -0400
+
+    ultimos cambios funcionales main
+
+[33mcommit e409f6138dfb20dd4c3fe7e31d0dac3c73892989[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Nov 6 17:29:11 2025 -0400
+
+    ajustes geerales del feacture
+
+[33mcommit 68263c900fb85bed5c6abee7d71e72a08f910e47[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Nov 6 17:28:20 2025 -0400
+
+    Funcional Blog
+
+[33mcommit 6ea8f041793e8e35a1db21b6e8bb28928cf1356b[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Nov 6 17:04:25 2025 -0400
+
+    Ajustes loader
+
+[33mcommit 8e6526810304148e15f47dc53d7eb89de73ac4bd[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Nov 6 15:32:55 2025 -0400
+
+    descarga pdf
+
+[33mcommit 22d9483c508d0a9b4f8f1ea516df0762c21bd768[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Nov 6 14:46:29 2025 -0400
+
+    Blog Detalle
+
+[33mcommit 0cf36fbb6c7eca680e7336f53d0fcdc0fce688e4[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Nov 6 14:42:02 2025 -0400
+
+    Blog
+
+[33mcommit a97a6a4fd96d6cf8520879c5fdf6606aa425aaf1[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 5 21:36:26 2025 -0400
+
+    Ajustes Blog
+
+[33mcommit 576c8f21ac6cee01a118237932806dcbfbf768e3[m
+Merge: 237d966 59af7c9
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 5 21:26:38 2025 -0400
+
+    Merge branch 'main' of https://github.com/devplayful/playful-headless into feature-header-ajustes
+    Comentario
+
+[33mcommit 59af7c97a1973b2088dcd4b465f02c8971c29995[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 5 21:25:36 2025 -0400
+
+    Home
+
+[33mcommit 237d966339a134e68e61442d6ed95f9311a4d154[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Nov 5 21:19:16 2025 -0400
+
+    Ajustes General
+
+[33mcommit 3ddac0eef8e78a53d1b83e6af0d408e1e373e4c2[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Nov 4 18:08:18 2025 -0400
+
+    Pagina de contacto lista y cambios aplicados a la pagina de nosotros
+
+[33mcommit 2a27064733365707f11cf91865c86f24bcb2df25[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 15:51:06 2025 -0400
+
+    estandarizacion de fuentes de las etiquetas 'p' y 'h'
+
+[33mcommit b4c42c1e11e2ccad4ca772f22f6284c8190541cd[m
+Merge: 79e74d3 a5aefae
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 15:06:14 2025 -0400
+
+    Merge branch 'feacture'
+    merge con el feacture css filtro casos de exito
+
+[33mcommit a5aefaec340cc945e8b245cbd5355b8e48c28686[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 15:04:59 2025 -0400
+
+    cambios de css del filtro
+
+[33mcommit 79e74d3fe95d9601b5006c0926df522d4a900c1f[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 14:52:42 2025 -0400
+
+    Ajustes Home
+
+[33mcommit c577d94e9f88a089635d509bf1a013bedcd947ff[m
+Merge: 1a9569b b242579
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 14:31:21 2025 -0400
+
+    Merge branch 'main' of https://github.com/devplayful/playful-headless into feature-header-ajustes
+    Ajustes Filtro
+
+[33mcommit 1a9569bf4b89a0b4d01fed904a833777f7f846a9[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 14:31:08 2025 -0400
+
+    Ajustes Colores Home
+
+[33mcommit b2425790de70d710baaff5afb789f4ba0ac1f333[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 14:27:32 2025 -0400
+
+    actualizacion de filtros de casos de exito
+
+[33mcommit 6fa322097837f2e173057de4b79c5ac95e1fb03a[m
+Merge: 08220d4 9aad3a1
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 13:47:24 2025 -0400
+
+    Merge branch 'main' of https://github.com/devplayful/playful-headless
+    creacion del componente CTA.
+
+[33mcommit 08220d4c2d22a93f8b351f4270e725ce0e695d9e[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 13:47:00 2025 -0400
+
+    creacion de componente del CTA a dos columnas
+
+[33mcommit 9aad3a1a8e4903eca560e91c8bf10678a2d2c0e0[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 13:16:13 2025 -0400
+
+    Ajustes librerias
+
+[33mcommit cb2532d3bd9d45f4de5a4731472ed38118d5506c[m
+Merge: 843377d cdcd097
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 12:57:51 2025 -0400
+
+    Merge branch 'main' of https://github.com/devplayful/playful-headless
+    Pull Main Ronaldo
+
+[33mcommit 843377dd5e6fb749e5bda50031d109b08e8b1c0f[m
+Merge: de64a24 2f93409
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 12:46:26 2025 -0400
+
+    Merge branch 'feature-header-ajustes'
+    Merge con la rama feaature-brunMerge con la rama feaature-brunMerge con
+    la rama feaature-brunooo
+
+[33mcommit 2f934096c76bfa1879ba31d1fb860f9bbb4642b8[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Nov 4 12:45:26 2025 -0400
+
+    Ajustes header
+
+[33mcommit cdcd0973c8d8d032449ff0c5b123da7933009ccc[m
+Merge: de64a24 cf68e91
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 12:38:44 2025 -0400
+
+    Merge branch 'feacture'
+    merge con la rama feacture.
+
+[33mcommit de64a2479f2f98893c42a84c7fc262ef11bc05b7[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 12:38:18 2025 -0400
+
+    instalacion de dependencias swiper
+
+[33mcommit cf68e919f94d36ae2ee9190b60fc8f3fe8a4573b[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Nov 4 12:29:20 2025 -0400
+
+    mejoras de diseno movil de testimoniales
+
+[33mcommit 25bc3f24eab9f3b6fa16bf98eca23a42437f1815[m
+Merge: 38dc0a8 685cd08
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Nov 4 12:16:42 2025 -0400
+
+    Merge branch 'arturo-2'
+
+[33mcommit 685cd08f777a7c89ff4babf31b12800378074f28[m
+Merge: e5676d2 38dc0a8
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Nov 4 12:11:12 2025 -0400
+
+    Merge branch 'main' into arturo-2
+    
+    # Conflicts:
+    #       app/globals.css
+    #       package-lock.json
+    #       package.json
+
+[33mcommit e5676d23537e4271f27d4b4656a164ce83523b14[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Nov 4 12:03:38 2025 -0400
+
+    Nuevos cambios
+
+[33mcommit 496516d0ad738dfd6b51b499fab7e9a1f0ee5d7c[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 3 18:41:17 2025 -0400
+
+    carga dinamica de las tarjetas de caso de exitos
+
+[33mcommit 38dc0a8e3646d1389b9ab9f7a3257aa457d0791b[m
+Merge: 5caef46 4abff78
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 3 17:29:24 2025 -0400
+
+    Merge branch 'feacture'
+    merge con el feactura
+
+[33mcommit 5caef46a2e84c074ce0a95412389a9ba69e5c465[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Nov 3 17:25:05 2025 -0400
+
+    Ajustes header
+
+[33mcommit 4abff786fa6ad6516996a0c2dcf4830fa70d98f5[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Nov 3 17:22:54 2025 -0400
+
+    ultimos cambios funcionales del feature
+
+[33mcommit d544154457be8a74f037b17f5a1ed54ea9e766ba[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Oct 22 15:23:04 2025 -0400
+
+    mejoras de la vaersion  movil de nuestros aliados estrategicos
+
+[33mcommit b22ad71dd21fcaea491e4d791e9beb30929366de[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Oct 22 15:04:20 2025 -0400
+
+    cambio de bg de la pagina caso de exito
+
+[33mcommit 95fa643e7a0a484864f1f5ec55b3ee578a90bf1b[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Oct 22 13:19:55 2025 -0400
+
+    Header funcional
+
+[33mcommit 13cbebdbc9193fff97e265d77547446d0f7bf2ee[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Oct 22 12:13:21 2025 -0400
+
+    ultimos cambios funcionales de la rama feacture
+
+[33mcommit 1208f1d6ae68f496e058e84bb1c0721d996effe8[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 17:13:23 2025 -0400
+
+    mejorar del componente testimoniales, props para el text-color
+
+[33mcommit ec461967caa02e1006f689aebb68be49b21f48a6[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 16:32:09 2025 -0400
+
+    version movil footer y casos de exito
+
+[33mcommit 92b601256e5f606a09f94c7d9975732a1b439fe6[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 16:27:38 2025 -0400
+
+    mejoras del componente BlogPosts, para hacerlo independiende de Testimoniales
+
+[33mcommit de2ee34fa04f6a8f349de26069207f7f7ce501df[m
+Merge: ed13f6c e0bbb8b
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Oct 16 15:37:59 2025 -0400
+
+    Ajustes Home
+
+[33mcommit e0bbb8b1b87d91bdfb57e208fb29e4c42c76ffa5[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Oct 16 15:34:41 2025 -0400
+
+    Preparando para merge a main
+
+[33mcommit 261da9f976cba94995d24a84556fd3a1aa0c3ed2[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Thu Oct 16 15:17:43 2025 -0400
+
+    Ajustes home
+
+[33mcommit ed13f6c66f2aede596e0d66cee910e73635ca939[m
+Merge: e8ffd14 72a064d
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 15:12:48 2025 -0400
+
+    Merge branch 'feacture'
+    
+    merge con la rama feacture
+
+[33mcommit 72a064dd3e9fdb9b0455553ec6cd0bd3fea60dfa[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 15:06:18 2025 -0400
+
+    creacion de componente de BlogPosts personalizable con props
+
+[33mcommit 7cbf5eb200902c4b2d5b7957f5e218196fa1f0a2[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 16 15:03:48 2025 -0400
+
+    creacion de componente de BlogPosts personalizable
+
+[33mcommit 6410e6f1d6fec5365ce58d1b74b8beda1f28abd9[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Wed Oct 15 21:13:11 2025 -0400
+
+    cta creado
+
+[33mcommit c76ce2e571c1ec2b6955d11c8d8cdfbf43a3f6b0[m
+Merge: e8ffd14 ff695d2
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Oct 15 11:19:31 2025 -0400
+
+    Merge sin estilos
+
+[33mcommit ff695d2052af6a921de87688361d14894d25ec76[m[33m ([m[1;31morigin/feature-home[m[33m)[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Oct 15 11:03:02 2025 -0400
+
+    home octubre 15
+
+[33mcommit e8ffd14126371df7d1138e77c014f8faa45dccc6[m
+Merge: 45159ba ec2a686
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Oct 15 11:00:30 2025 -0400
+
+    Merge Funcional Main
+
+[33mcommit 45159baf3bb46ee1be739e35e084fcb657d674e1[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Oct 15 09:57:14 2025 -0400
+
+    WIP: Cambios temporales antes de cambiar de rama
+
+[33mcommit ec2a686f772ff1df72a59a77052e19b301845f2d[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Oct 14 17:09:05 2025 -0400
+
+    modificacion de img aliados estrategicos y bg de entradas del blog
+
+[33mcommit 68cd22bec102f4aeb248797e629bf7e1ed362485[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Oct 14 14:34:33 2025 -0400
+
+    version movil de la page casos de exito
+
+[33mcommit 8e1035c8212a94f80d47ff0dc322b27630cea54d[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Fri Oct 10 18:25:20 2025 -0400
+
+    Primera version HOME
+
+[33mcommit 26cd308b70ec8b952e31588c6bf173befe2220d1[m
+Merge: 0df57ec c8238d0
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Oct 10 18:15:21 2025 -0400
+
+    merge con el main
+
+[33mcommit c8238d05f1101ca7d943b1f8f9fbc6ec8d00f8a4[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Oct 10 18:05:17 2025 -0400
+
+    merge funcional con la rama feacture, pagina casos de exito
+
+[33mcommit 0df57eca7c7eea6b6c0150fd3af7654bf0027fa6[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Fri Oct 10 17:47:51 2025 -0400
+
+    seccion mobile del footer
+
+[33mcommit a7a9f4153ced29bf12b756a8d8d2f321fb2ee041[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Fri Oct 10 16:23:53 2025 -0400
+
+    componente blog listo
+
+[33mcommit 1b3ac052d5fc5d46c472260b64b490aba82b2055[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Thu Oct 9 17:57:11 2025 -0400
+
+    diseno mobile del footer
+
+[33mcommit 5e7034ba8858a58a40d0ac7304779afa1809b72b[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Thu Oct 9 15:42:27 2025 -0400
+
+    Actualizacion jueves 9 oct
+
+[33mcommit 5be969fbc63ef9ccf2b99f874f2b5ab69ba1766a[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Oct 8 19:01:38 2025 -0400
+
+    seccion del footer casos de exito a medio terminar
+
+[33mcommit 6ba460715c404ad91a555be57e1b9fad26ebe479[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Wed Oct 8 13:56:16 2025 -0400
+
+    Pagina caso de exito
+
+[33mcommit 0fc49530ae203d3074139560bef7f5d816d8d6d9[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Oct 7 14:35:54 2025 -0400
+
+    cambio de color
+
+[33mcommit 5a30accd7c22bee953267b48958c14a440de80d9[m
+Merge: c347787 b28491e
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Oct 7 14:19:45 2025 -0400
+
+    Merge branch 'main' into Bruno
+
+[33mcommit c3477874a33e729ee3958acc769635a163609e49[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Tue Oct 7 14:10:24 2025 -0400
+
+    creacion seccion nosotros
+
+[33mcommit dedf30f6aeb0e496464985d08e22ce7fb337665c[m
+Merge: d2e35ec b28491e
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Oct 7 13:05:20 2025 -0400
+
+    merge de css
+
+[33mcommit d2e35ecc0d0559bf3b29fc2a9cab46ecacdccd9d[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Oct 7 13:03:36 2025 -0400
+
+    Guardando cambios locales antes de mergear main
+
+[33mcommit b28491ef05e909d539533390a00f71b78e34c253[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Oct 7 12:58:22 2025 -0400
+
+    Cambios en feature-home
+
+[33mcommit 64627bf5df0c7fd8d90e25ce6d7b859de6ba021f[m
+Merge: a83ee66 ac3b44d
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Tue Oct 7 12:48:50 2025 -0400
+
+    Merge remote changes into feacture branch
+
+[33mcommit 7bcacdfab094ff81fc6c1b81b3ca826bd5326b41[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Tue Oct 7 12:48:49 2025 -0400
+
+    Fuentes GLOBALES
+
+[33mcommit a83ee662b02680063cd9f6880ade60526dbf68c8[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Oct 6 18:30:26 2025 -0400
+
+    commit funcional antes que Ronaldo lo tocara
+
+[33mcommit c7f44814eb3d6c39d20d02125242304d8594fb3c[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Oct 6 18:16:25 2025 -0400
+
+    commit funcional antes que lo tocara Ronaldo
+
+[33mcommit f3e9a2ae49c3fb87065d632a89d4f45f533cef1d[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Mon Oct 6 18:31:17 2025 -0400
+
+    Ajustes HEADER
+
+[33mcommit ac3b44deb3012256dc32f05140910f342784f819[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Oct 6 18:30:26 2025 -0400
+
+    commit funcional antes que Ronaldo lo tocara
+
+[33mcommit 872ef690785f054f7403943bf305e49f35a9e736[m
+Author: BRUFHALO <ronaldo.somostinn@gmail.com>
+Date:   Mon Oct 6 18:16:25 2025 -0400
+
+    commit funcional antes que lo tocara Ronaldo
+
+[33mcommit f21ecb24d6699a3a35e5061482b98d3332aae3e4[m
+Author: Arturo Tovar <dev@playfulagency.com>
+Date:   Thu Oct 2 09:29:28 2025 -0400
+
+    Se agrego componente de podcast
+
+[33mcommit 4ceaa036b613c915bb3a59cbedd8fb193da60b8c[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Sep 17 16:59:05 2025 -0400
+
+    API REST BLOG / Se configuro el api rest para la busqueda de entradas
+
+[33mcommit ec1a3392c5166d2b22ba3833e7177372c44ec6c4[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Sep 17 13:32:24 2025 -0400
+
+    API YOAST GENERAL / Se implemento una llamada general al api dependiendo de la ubicacion del usuario GENERAL
+
+[33mcommit 3bbc2ed6423a9c06244f055c56afd0b834908f4c[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Wed Sep 17 10:15:55 2025 -0400
+
+    YOAST API / Carga de Metadatos HOME
+
+[33mcommit 49b03364ddbe3ec25c41e0d6989239fbc9129f6e[m
+Author: Bruno Palacios <bruno.somostinn@gmail.com>
+Date:   Fri Sep 12 18:00:20 2025 -0400
+
+    primer commit

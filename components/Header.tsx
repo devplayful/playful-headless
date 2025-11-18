@@ -26,19 +26,6 @@ export default function Header() {
     setIsServicesOpen(!isServicesOpen)
   }
 
-  // Cerrar menú al hacer scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isMenuOpen || isServicesOpen) {
-        setIsMenuOpen(false)
-        setIsServicesOpen(false)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isMenuOpen, isServicesOpen])
-
   // Datos de los servicios
   const services = [
     { title: 'Agencia E-commerce', slug: 'agencia-e-commerce' },
@@ -54,7 +41,7 @@ export default function Header() {
   const { headerColor } = useTheme();
 
   return (
-    <header className={`playful-header sticky top-0 z-50 transition-colors duration-300 overflow-x-hidden`}>
+    <header className={`playful-header sticky top-0 z-[9999] transition-colors duration-300 overflow-x-hidden`}>
       <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full">
         {/* Mobile Layout - Pantallas >= 400px */}
         <div className="lg:hidden hidden min-[400px]:flex items-center justify-between px-4 py-3 w-full max-w-full">
@@ -140,7 +127,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden lg:flex items-center h-16 justify-between">
+        <div className="hidden lg:flex items-center h-16 justify-between relative">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
@@ -189,7 +176,7 @@ export default function Header() {
                 </button>
                 
                 {isServicesOpen && (
-                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-50 py-2">
+                  <div className="fixed left-1/2 -translate-x-1/2 top-[110px] w-64 bg-white rounded-lg shadow-2xl z-[10000] py-2 border border-gray-100">
                     {services.map((service) => (
                       <Link
                         key={service.slug}
@@ -227,76 +214,116 @@ export default function Header() {
           </div>
 
         </div>
-
+  
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white rounded-3xl mt-3 mx-3 shadow-2xl overflow-hidden">
-            <div className="py-4 space-y-2">
-              <Link 
-                href="/" 
-                className="block px-6 py-3 text-gray-800 hover:text-purple-600 hover:bg-purple-50 font-semibold transition-all text-base"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                INICIO
-              </Link>
-              
-              <div>
+          <div className="lg:hidden fixed inset-0 z-50 flex">
+            {/* Overlay */}
+            <button
+              className="flex-1 bg-black/40"
+              aria-label="Cerrar menú"
+              onClick={() => setIsMenuOpen(false)}
+            />
+
+            {/* Drawer */}
+            <div className="w-80 max-w-[85%] h-full bg-[#3C009C] text-white shadow-2xl flex flex-col">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/20">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/images/logos/playful-LogoV.svg"
+                    alt="Playful Agency Logo"
+                    width={100}
+                    height={35}
+                    className="h-8 w-auto"
+                  />
+                </div>
                 <button
-                  onClick={toggleServices}
-                  className="w-full text-left px-6 py-3 text-gray-800 hover:text-purple-600 hover:bg-purple-50 font-semibold transition-all flex justify-between items-center text-base"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 text-white hover:text-[#0FF] transition-colors"
+                  aria-label="Cerrar menú"
                 >
-                  <span>SERVICIOS</span>
-                  <svg
-                    className={`w-5 h-5 transition-transform ${isServicesOpen ? 'transform rotate-180' : ''}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-                
-                {isServicesOpen && (
-                  <div className="bg-gray-50 py-2 space-y-1">
-                    {services.map((service) => (
-                      <Link
-                        key={service.slug}
-                        href={`/${service.slug}`}
-                        className="block px-8 py-2.5 text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-all text-sm font-medium"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {service.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
-              
-              <Link 
-                href="/nosotros" 
-                className="block px-6 py-3 text-gray-800 hover:text-purple-600 hover:bg-purple-50 font-semibold transition-all text-base"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                NOSOTROS
-              </Link>
-              
-              <Link 
-                href="/casos-de-exito-agencia-de-marketing-digital" 
-                className="block px-6 py-3 text-gray-800 hover:text-purple-600 hover:bg-purple-50 font-semibold transition-all text-base"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                CASOS DE ÉXITO
-              </Link>
-              
-              <Link 
-                href="/blog" 
-                className="block px-6 py-3 text-gray-800 hover:text-purple-600 hover:bg-purple-50 font-semibold transition-all text-base"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                BLOG
-              </Link>
-              
+
+              <div className="flex-1 overflow-y-auto py-4">
+                <div className="space-y-1">
+                  <Link 
+                    href="/" 
+                    className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Inicio
+                  </Link>
+
+                  <div>
+                    <button
+                      onClick={toggleServices}
+                      className="w-full text-left px-6 py-3 text-sm font-semibold flex justify-between items-center hover:bg-white/10 transition-colors"
+                    >
+                      <span>Servicios</span>
+                      <svg
+                        className={`w-5 h-5 transition-transform ${isServicesOpen ? 'transform rotate-180' : ''}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {isServicesOpen && (
+                      <div className="bg-[#2A0070] py-1 space-y-1">
+                        {services.map((service) => (
+                          <Link
+                            key={service.slug}
+                            href={`/${service.slug}`}
+                            className="block px-8 py-2 text-sm hover:bg-white/10 transition-colors"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {service.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <Link 
+                    href="/nosotros" 
+                    className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Nosotros
+                  </Link>
+
+                  <Link 
+                    href="/casos-de-exito-agencia-de-marketing-digital" 
+                    className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Casos de éxito
+                  </Link>
+
+                  <Link 
+                    href="/blog" 
+                    className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Blog
+                  </Link>
+
+                  <Link 
+                    href="/contactar-agencia-de-marketing-digital" 
+                    className="block px-6 py-3 text-sm font-semibold hover:bg-white/10 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Contáctanos
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         )}
