@@ -417,10 +417,10 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-[18px] px-6 py-12 md:px-10 md:py-14">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-fit mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 max-w-5xl mx-auto">
               {/* Card 1 */}
               {(story.acf?.resultado1 || story.acf?.resultado1) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-[300px] mx-auto md:w-[338px] md:h-[504px] text-center">
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
                   <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
                     {story.acf?.resultado1}
                   </h3>
@@ -433,7 +433,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
 
               {/* Card 2 */}
               {(story.acf?.resultado2 || story.acf?.resultado2) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-[300px] mx-auto md:w-[338px] md:h-[504px] text-center">
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
                   <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
                     {story.acf?.resultado2}
                   </h3>
@@ -446,7 +446,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
 
               {/* Card 2 */}
               {(story.acf?.resultado3 || story.acf?.resultado3) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-[300px] mx-auto md:w-[338px] md:h-[504px] text-center">
+                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
                   <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
                     {story.acf?.resultado3}
                   </h3>
@@ -465,8 +465,8 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
       {/* Phone Images Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          {/* En mobile: carrusel horizontal; en desktop: grilla */}
-          <div className="flex gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 md:overflow-visible">
+          {/* En mobile y tablet: carrusel horizontal; en desktop: grilla */}
+          <div className="flex gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
             {[
               { id: 'telefono1', value: story.acf?.telefono1 },
               { id: 'telefono2', value: story.acf?.telefono2 },
@@ -477,7 +477,7 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
               .map((item, index) => (
                 <div
                   key={`${item.id}-${index}`}
-                  className="relative w-[300px] flex-shrink-0 h-[755px] md:w-[300px] md:h-[755px] rounded-[18px] overflow-hidden"
+                  className="relative w-[300px] sm:w-[300px] flex-shrink-0 h-[650px] lg:w-[300px] lg:h-[650px] rounded-[18px] overflow-hidden"
                 >
                   <Image
                     src={
