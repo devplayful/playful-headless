@@ -17,6 +17,8 @@ interface BlogPost {
 export default function NosotrosBlogSectionClient() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const postsPerPage = 3;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -24,7 +26,7 @@ export default function NosotrosBlogSectionClient() {
         const res = await fetch('/api/blog-posts');
         const data = await res.json();
         const arr = Array.isArray(data) ? data : (Array.isArray(data?.posts) ? data.posts : []);
-        setPosts(arr.slice(0, 3));
+        setPosts(arr); // Obtener todos los posts
       } catch (e) {
         console.error('Error fetching blog posts', e);
       } finally {
@@ -33,6 +35,17 @@ export default function NosotrosBlogSectionClient() {
     };
     fetchPosts();
   }, []);
+
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+  const currentPosts = posts.slice(currentIndex * postsPerPage, (currentIndex + 1) * postsPerPage);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalPages);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages);
+  };
 
   return (
     <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
@@ -51,8 +64,34 @@ export default function NosotrosBlogSectionClient() {
       {loading ? (
         <div className="relative z-10 text-center text-white">Cargando artículos…</div>
       ) : (
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          {posts.map((post) => (
+        <div className="relative z-10">
+          {/* Controles del carrusel */}
+          {totalPages > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Anterior"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Siguiente"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Grid de posts */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-12">
+            {currentPosts.map((post) => (
             <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
               <div className="relative h-48 bg-gray-100">
                 {post.imageUrl ? (
@@ -76,6 +115,23 @@ export default function NosotrosBlogSectionClient() {
               </div>
             </div>
           ))}
+          </div>
+
+          {/* Indicadores de página */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-8">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    index === currentIndex ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
+                  }`}
+                  aria-label={`Ir a página ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

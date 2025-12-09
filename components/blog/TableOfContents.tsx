@@ -74,68 +74,159 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       // Crear un clon del artículo para el PDF
       const articleClone = articleElement.cloneNode(true) as HTMLElement;
       
-      // Ocultar elementos que no queremos en el PDF
-      const elementsToHide = articleClone.querySelectorAll('.toc, .prose img, button, .hidden-print');
+      // Ocultar elementos que no queremos en el PDF (mantenemos las imágenes)
+      const elementsToHide = articleClone.querySelectorAll('.toc, button, .hidden-print');
       elementsToHide.forEach(el => {
         (el as HTMLElement).style.display = 'none';
+      });
+
+      // Asegurar que las imágenes sean visibles y tengan el tamaño correcto
+      const images = articleClone.querySelectorAll('img');
+      images.forEach(img => {
+        const imgElement = img as HTMLImageElement;
+        imgElement.style.display = 'block';
+        imgElement.style.maxWidth = '100%';
+        imgElement.style.height = 'auto';
       });
 
       // Agregar el clon al final del body temporalmente
       articleClone.style.position = 'absolute';
       articleClone.style.left = '-9999px';
-      articleClone.style.padding = '20px';
-      articleClone.style.maxWidth = '800px';
-      articleClone.style.margin = '0 auto';
+      articleClone.style.top = '0';
+      articleClone.style.width = '800px';
+      articleClone.style.padding = '40px';
+      articleClone.style.backgroundColor = 'white';
+      articleClone.style.color = 'black';
       document.body.appendChild(articleClone);
 
       // Actualizar progreso
       updateProgress(40);
       
-      // Crear el PDF
+      // Convertir imágenes externas a base64 usando un proxy CORS
+      const allImages = Array.from(articleClone.querySelectorAll('img')) as HTMLImageElement[];
+      console.log(`Procesando ${allImages.length} imágenes...`);
+      
+      let imagesConverted = 0;
+      for (const img of allImages) {
+        if (!img.src || img.src.startsWith('data:')) continue;
+        
+        try {
+          // Usar proxy CORS para descargar la imagen
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(img.src)}`;
+          const response = await fetch(proxyUrl);
+          
+          if (!response.ok) throw new Error('Error al descargar imagen');
+          
+          const blob = await response.blob();
+          
+          // Convertir el blob a base64
+          const reader = new FileReader();
+          const dataUrl = await new Promise<string>((resolve, reject) => {
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+          
+          // Actualizar el src
+          img.src = dataUrl;
+          
+          // Eliminar atributos de Next.js Image que pueden causar problemas
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+          
+          // Asegurar que la imagen sea visible y tenga dimensiones
+          img.style.position = 'relative';
+          img.style.display = 'block';
+          img.style.visibility = 'visible';
+          img.style.opacity = '1';
+          img.style.width = img.width ? `${img.width}px` : 'auto';
+          img.style.height = img.height ? `${img.height}px` : 'auto';
+          
+          // Si la imagen tiene un contenedor padre de Next.js, ajustarlo
+          const parent = img.parentElement;
+          if (parent && parent.style.position === 'relative') {
+            parent.style.position = 'relative';
+            parent.style.display = 'block';
+          }
+          
+          imagesConverted++;
+          console.log(`Imagen ${imagesConverted}/${allImages.length} convertida a base64`);
+        } catch (error) {
+          console.warn('No se pudo descargar imagen:', img.src, error);
+          // Ocultar la imagen si no se puede descargar
+          img.style.display = 'none';
+        }
+      }
+      
+      console.log(`${imagesConverted} de ${allImages.length} imágenes convertidas exitosamente`);
+      
+      // Esperar un momento para que se actualicen los src
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Crear el PDF con configuración mejorada
+      console.log('Iniciando html2canvas...');
       const canvas = await html2canvas(articleClone, {
-        // @ts-expect-error - scale no está en los tipos oficiales pero es soportada
         scale: 2,
-        useCORS: true,
-        logging: false,
+        useCORS: false,
+        allowTaint: false,
+        logging: true,
+        backgroundColor: '#ffffff',
+        windowWidth: 800,
+        windowHeight: articleClone.scrollHeight,
         onclone: (clonedDoc: Document) => {
+          console.log('Documento clonado exitosamente');
           // Actualizar progreso cuando se clona el documento
           updateProgress(60);
         }
-      });
+      } as any);
+      console.log('Canvas creado exitosamente:', canvas.width, 'x', canvas.height);
       
       // Actualizar progreso
       updateProgress(80);
 
-      // Configuración del PDF
+      // Convertir el canvas completo a imagen DATA URL antes de crear el PDF
+      // Esto se hace una sola vez para evitar problemas con tainted canvas
       const imgData = canvas.toDataURL('image/png');
+      console.log('Imagen generada exitosamente');
+
+      // Configuración del PDF
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
       });
 
+      // Agregar primera página en blanco
+      pdf.text('', 10, 10); // Página en blanco
+      pdf.addPage(); // Agregar segunda página para el contenido
+
       // Tamaño de la página A4 en mm
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       
-      // Calcular la relación de aspecto de la imagen
-      const imgWidth = pageWidth - 40; // Margen de 20mm a cada lado
+      // Márgenes
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
+      const contentHeight = pageHeight - (margin * 2);
+      
+      // Calcular dimensiones de la imagen para que quepa en el ancho de la página
+      const imgWidth = contentWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      // Agregar la imagen al PDF
+      // Agregar la imagen al PDF con paginación automática
       let heightLeft = imgHeight;
-      let position = 20; // Margen superior
+      let position = margin;
       
-      // Agregar la imagen en múltiples páginas si es necesario
+      // Primera página de contenido (ya está creada arriba)
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      heightLeft -= contentHeight;
+      
+      // Agregar páginas adicionales si es necesario
       while (heightLeft > 0) {
-        pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
-        heightLeft -= (pageHeight - 40); // Restar el espacio de la página (menos márgenes)
-        
-        if (heightLeft > 0) {
-          pdf.addPage();
-          position = heightLeft - imgHeight; // Ajustar la posición para la siguiente página
-          if (position < 20) position = 20; // Mantener un margen mínimo
-        }
+        position = heightLeft - imgHeight + margin;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= contentHeight;
       }
 
       // Eliminar el clon temporal
@@ -159,8 +250,10 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       }, 1000);
       
     } catch (error) {
-      console.error('Error al generar el PDF:', error);
-      alert('Ocurrió un error al generar el PDF. Por favor, inténtalo de nuevo.');
+      console.error('Error completo al generar el PDF:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack available');
+      console.error('Mensaje:', error instanceof Error ? error.message : String(error));
+      alert('Ocurrió un error al generar el PDF. Revisa la consola para más detalles.');
       setIsGeneratingPdf(false);
       setGenerationProgress(0);
     }

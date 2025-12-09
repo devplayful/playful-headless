@@ -79,7 +79,23 @@ body {
 /* Tipografía Base (Desktop) */
 
 .detalle-blog-fondo {
-  background-color: #fef7ff;
+  background: linear-gradient(135deg, #E9D7FF 0%, #F5E6FF 50%, #FFE6F0 100%);
+}
+
+.blog-card-gradient-1 {
+  background: linear-gradient(135deg, #72E3D8 0%, #8DD9F5 50%, #B8A4FF 100%);
+}
+
+.blog-card-gradient-2 {
+  background: linear-gradient(135deg, #FFE6F0 0%, #E9D7FF 50%, #D4F1F4 100%);
+}
+
+.blog-card-gradient-3 {
+  background: linear-gradient(135deg, #FFD6E8 0%, #C9B4FF 50%, #A4E8E0 100%);
+}
+
+.blog-card-gradient-4 {
+  background: linear-gradient(135deg, #B8F5E8 0%, #D4C5FF 50%, #FFE0F0 100%);
 }
 
 @layer base {
@@ -89,6 +105,20 @@ body {
   p {
     @apply font-dm-sans text-base font-normal;
   }
+}
+
+/* Estilos para el contenido del blog */
+.blog-content {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.blog-title {
+  @apply font-paytone text-[#440099] font-bold;
+}
+
+.blog-button {
+  @apply bg-[#440099] text-white font-bold rounded-full transition-all duration-300;
+  @apply hover:bg-[#5500BB] hover:shadow-lg;
 }
 
 .color-home {
@@ -797,4 +827,36 @@ body.bg-casos-exito {
 
 body.bg-other-page {
   background-color: #E9D7FF;
+}
+
+/* Ocultar plugin WTI Like Post */
+.watch-action,
+.action-like,
+.action-unlike,
+.lbg-style1,
+.unlbg-style1,
+.wti-like-post {
+  display: none !important;
+}
+
+/* Estilos adicionales para el blog */
+.blog-page-bg {
+  background: linear-gradient(135deg, #E9D7FF 0%, #F5E6FF 50%, #FFE6F0 100%);
+  min-height: 100vh;
+}
+
+/* Animación suave para las tarjetas del blog */
+@keyframes blog-card-hover {
+  from {
+    transform: translateY(0);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  to {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.blog-card:hover {
+  animation: blog-card-hover 0.3s ease forwards;
 }

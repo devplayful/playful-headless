@@ -97,24 +97,21 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
   }
 
   return (
-    
-    <div className="flex justify-center">
-      <div className="bg-[#2A0064] max-w-[1440px] px-4 py-6 rounded-full ">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/blog${cat.slug ? `?category=${cat.slug}` : ''}`}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                currentCategory === (cat.slug === '' ? '' : cat.slug)
-                  ? 'bg-white text-[#440099] font-semibold'
-                  : 'bg-white text-gray-700 hover:bg-[#39DDCB] hover:text-white'
-              }`}
-            >
-              {cat.name}
-            </Link>
-          ))}
-        </div>
+    <div className="bg-[#2A0064] rounded-full py-4 px-6">
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            href={`/blog${cat.slug ? `?category=${cat.slug}` : ''}`}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+              currentCategory === (cat.slug === '' ? '' : cat.slug)
+                ? 'bg-[#72E3D8] text-[#2A0064] shadow-md'
+                : 'bg-white text-[#2A0064] hover:bg-[#72E3D8] hover:text-[#2A0064]'
+            }`}
+          >
+            {cat.name}
+          </Link>
+        ))}
       </div>
     </div>
   );
