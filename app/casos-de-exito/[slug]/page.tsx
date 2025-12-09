@@ -132,56 +132,58 @@ export default async function SuccessStoryPage({ params, searchParams }: PagePro
 
       {/* Content Grid Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-6 bg-[#E9D7FF] rounded-[18px] p-8">
-          {/* Top Row - Two Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Left Column - Text Content */}
-            <div className="space-y-6 bg-white p-8 rounded-[18px]">
-              {[
-                { content: story.acf?.cuartap, className: 'text-[#005F9E] font-payton font-bold text-[22px] leading-relaxed' },
-                { content: story.acf?.quintap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed' },
-                { content: story.acf?.sextap, className: 'text-[#F78D2B] font-payton font-bold text-[22px] leading-relaxed' },
-                { content: story.acf?.septimap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed mt-8 mb-4' },
-                { content: story.acf?.octavap, className: 'text-[#44A147] font-payton font-bold text-[22px] leading-relaxed' },
-                { content: story.acf?.novenap, className: 'text-[#4A4453] font-dmsans font-normal text-[22px] leading-relaxed' }
-              ].filter(item => item.content).map((item, index) => (
-                <div 
-                  key={`text-${index}`}
-                  className={item.className}
-                  dangerouslySetInnerHTML={{ __html: item.content || '' }}
-                />
-              ))}
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="bg-[#E9D7FF] rounded-[18px] p-8 md:p-12">
+            {/* Top Row - Two Columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Left Column - Text Content */}
+              <div className="space-y-6 bg-white p-8 md:p-10 rounded-[18px]">
+                {[
+                  { content: story.acf?.cuartap, className: 'text-[#005F9E] font-payton font-bold text-[20px] md:text-[22px] leading-relaxed' },
+                  { content: story.acf?.quintap, className: 'text-[#4A4453] font-dmsans font-normal text-[18px] md:text-[20px] leading-relaxed' },
+                  { content: story.acf?.sextap, className: 'text-[#F78D2B] font-payton font-bold text-[20px] md:text-[22px] leading-relaxed mt-4' },
+                  { content: story.acf?.septimap, className: 'text-[#4A4453] font-dmsans font-normal text-[18px] md:text-[20px] leading-relaxed' },
+                  { content: story.acf?.octavap, className: 'text-[#44A147] font-payton font-bold text-[20px] md:text-[22px] leading-relaxed mt-4' },
+                  { content: story.acf?.novenap, className: 'text-[#4A4453] font-dmsans font-normal text-[18px] md:text-[20px] leading-relaxed' }
+                ].filter(item => item.content).map((item, index) => (
+                  <div 
+                    key={`text-${index}`}
+                    className={item.className}
+                    dangerouslySetInnerHTML={{ __html: item.content || '' }}
+                  />
+                ))}
+              </div>
+
+              {/* Right Column - Image */}
+              {story.acf?.desafioimagen1 && (
+                <div className="relative w-full h-[400px] lg:h-full min-h-[500px] bg-transparent rounded-[18px] overflow-hidden">
+                  <Image
+                    src={story.acf.desafioimagen1}
+                    alt="Imagen de desafío"
+                    fill
+                    className="object-contain object-right"
+                  />
+                </div>
+              )}
             </div>
 
-            {/* Right Column - Image */}
-            {story.acf?.desafioimagen1 && (
-              <div className="relative w-full h-96 bg-gray-100 rounded-[18px] overflow-hidden">
-                <Image
-                  src={story.acf.desafioimagen1}
-                  alt="Imagen de desafío"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Bottom Row - Three Images */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
-              { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
-              { id: 'desafioimagen4', url: story.acf?.desafioimagen4 }
-            ].filter(item => item.url).map((item, index) => (
-              <div key={`${item.id}-${index}`} className="relative w-full h-64 bg-gray-100 rounded-[18px] overflow-hidden">
-                <Image
-                  src={item.url}
-                  alt={`La Imagen de desafío ${index + 2}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
+            {/* Bottom Row - Three Images */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
+                { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
+                { id: 'desafioimagen4', url: story.acf?.desafioimagen4 }
+              ].filter(item => item.url).map((item, index) => (
+                <div key={`${item.id}-${index}`} className="relative w-full h-[22rem] bg-transparent rounded-[18px] overflow-hidden">
+                  <Image
+                    src={item.url}
+                    alt={`Imagen de desafío ${index + 2}`}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
