@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getSuccessStoryBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
 
+
 const ResultIcon1 = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
@@ -29,9 +30,10 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default async function SuccessStoryPage({
   params,
 }: {
-  params: { slug: string };
+  params: any;
 }) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams as { slug: string };
 
   if (!slug) {
     notFound();
@@ -122,23 +124,30 @@ export default async function SuccessStoryPage({
       <section className="py-0 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
-            <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
-              {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
-                .filter(Boolean)
-                .map((image: string, index: number) => (
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
+             {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
+              .filter(Boolean)
+              .map((image, index) => {
+                const src =
+                  typeof image === 'string'
+                    ? image
+                    : (image as { url: string; alt?: string }).url;
+
+                return (
                   <div
                     key={index}
                     className="relative w-36 h-36 bg-white rounded-lg shadow-md flex items-center justify-center p-4"
                   >
                     <Image
-                      src={image}
+                      src={src}
                       alt={`Imagen ${index + 1}`}
                       width={120}
                       height={120}
                       className="object-contain w-full h-full"
                     />
                   </div>
-                ))}
+                );
+              })}
             </div>
 
             <div className="text-center max-w-4xl">
@@ -205,7 +214,11 @@ export default async function SuccessStoryPage({
               {story.acf?.desafioimagen1 && (
                 <div className="relative w-full h-[400px] lg:h-full min-h-[500px] bg-transparent rounded-[18px] overflow-hidden">
                   <Image
-                    src={story.acf.desafioimagen1}
+                    src={
+                      typeof story.acf.desafioimagen1 === 'string'
+                        ? story.acf.desafioimagen1
+                        : (story.acf.desafioimagen1 as { url: string }).url
+                    }
                     alt="Imagen de desafío"
                     fill
                     className="object-contain object-right"
@@ -215,26 +228,33 @@ export default async function SuccessStoryPage({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
-                { id: 'desafioimagen3', url: story.acf?.desafioimagen3 },
-                { id: 'desafioimagen4', url: story.acf?.desafioimagen4 },
-              ]
-                .filter((item) => item.url)
-                .map((item, index) => (
+            {[
+              { id: 'desafioimagen2', value: story.acf?.desafioimagen2 },
+              { id: 'desafioimagen3', value: story.acf?.desafioimagen3 },
+              { id: 'desafioimagen4', value: story.acf?.desafioimagen4 },
+            ]
+              .filter((item) => item.value)
+              .map((item, index) => {
+                const src =
+                  typeof item.value === 'string'
+                    ? item.value
+                    : (item.value as { url: string; alt?: string }).url;
+
+                return (
                   <div
                     key={`${item.id}-${index}`}
                     className="relative w-full h-[22rem] bg-transparent rounded-[18px] overflow-hidden"
                   >
                     <Image
-                      src={item.url as string}
+                      src={src}
                       alt={`Imagen de desafío ${index + 2}`}
                       fill
                       className="object-contain"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
                   </div>
-                ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -409,7 +429,7 @@ export default async function SuccessStoryPage({
                     src={
                       typeof story.acf.grilla5 === 'string'
                         ? story.acf.grilla5
-                        : story.acf.grilla5.url
+                        : (story.acf.grilla5 as { url: string }).url
                     }
                     alt="Gallery image 2"
                     fill
@@ -456,7 +476,7 @@ export default async function SuccessStoryPage({
                     src={
                       typeof story.acf.grilla8 === 'string'
                         ? story.acf.grilla8
-                        : story.acf.grilla8.url
+                        : (story.acf.grilla8 as { url: string }).url
                     }
                     alt="Gallery image 3"
                     fill
