@@ -29,9 +29,9 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default async function SuccessStoryPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
 
   if (!slug) {
     notFound();
@@ -122,7 +122,6 @@ export default async function SuccessStoryPage({
       <section className="py-0 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
-            {/* Images Row */}
             <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
               {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
                 .filter(Boolean)
@@ -142,7 +141,6 @@ export default async function SuccessStoryPage({
                 ))}
             </div>
 
-            {/* Title and Description */}
             <div className="text-center max-w-4xl">
               <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
                 {story.acf?.segundoh2 || 'Nuestro Enfoque'}
@@ -160,9 +158,7 @@ export default async function SuccessStoryPage({
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-[#E9D7FF] rounded-[18px] p-8 md:p-12">
-            {/* Top Row - Two Columns */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              {/* Left Column - Text Content */}
               <div className="space-y-6 bg-white p-8 md:p-10 rounded-[18px]">
                 {[
                   {
@@ -206,7 +202,6 @@ export default async function SuccessStoryPage({
                   ))}
               </div>
 
-              {/* Right Column - Image */}
               {story.acf?.desafioimagen1 && (
                 <div className="relative w-full h-[400px] lg:h-full min-h-[500px] bg-transparent rounded-[18px] overflow-hidden">
                   <Image
@@ -219,7 +214,6 @@ export default async function SuccessStoryPage({
               )}
             </div>
 
-            {/* Bottom Row - Three Images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { id: 'desafioimagen2', url: story.acf?.desafioimagen2 },
@@ -246,7 +240,7 @@ export default async function SuccessStoryPage({
         </div>
       </section>
 
-      {/* Work Process Images with Title and Description (segunda) */}
+      {/* Work Process (segunda) */}
       <section className="py-0 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
@@ -268,7 +262,6 @@ export default async function SuccessStoryPage({
         <div className="max-w-7xl mx-auto px-6">
           <div className="relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              {/* Image Section - Left Side */}
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden shadow-lg">
                 {story.acf?.imagendesarrollo ? (
                   <Image
@@ -289,7 +282,6 @@ export default async function SuccessStoryPage({
                 )}
               </div>
 
-              {/* Content Section - Right Side */}
               <div className="space-y-8">
                 <div className="hidden">
                   {JSON.stringify({
@@ -346,7 +338,6 @@ export default async function SuccessStoryPage({
       {/* Gallery Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
-          {/* First Row - 3 images */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {story.acf?.grilla1 && (
               <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
