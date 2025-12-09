@@ -20,18 +20,21 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function SuccessStoryPage({ params, searchParams }: PageProps) {
+  // Await params to get the slug
+  const { slug } = await params;
+  
   // Ensure we have a valid slug
-  if (!params?.slug) {
+  if (!slug) {
     notFound();
   }
 
   // Get the story data
-  const story = await getSuccessStoryBySlug(params.slug as string);
+  const story = await getSuccessStoryBySlug(slug);
 
   // If no story is found, return 404
   if (!story) {
