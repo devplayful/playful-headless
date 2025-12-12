@@ -49,7 +49,7 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logos/playful-LogoV.svg"
+                src="/images/logos/playful-logov.svg"
                 alt="Playful Agency Logo"
                 width={100}
                 height={35}
