@@ -90,7 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     >
       <div className="min-h-screen">
       {/* Header con título e imagen */}
-      <header className="py-12">
+      <header className="py-12" data-hero="blog-hero">
         <div className="max-w-6xl mx-auto px-6 py-12 bg-white rounded-[18px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}

@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ocultar scrollbar pero mantener funcionalidad de scroll */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari y Opera */
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

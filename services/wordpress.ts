@@ -348,6 +348,138 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   }
 }
 
+/**
+ * Obtiene el post destacado más reciente (con etiqueta 'destacado')
+ * @returns Promise con el post destacado o null si no hay ninguno
+ */
+export async function getFeaturedBlogPost(): Promise<WPPost | null> {
+  try {
+    // Primero, obtener el ID de la etiqueta 'destacado'
+    const tagsResponse = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/tags?slug=destacado`,
+      { 
+        next: { revalidate: 3600 },
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!tagsResponse.ok) {
+      console.error('Error al obtener la etiqueta destacado');
+      return null;
+    }
+
+    const tags = await tagsResponse.json();
+    
+    // Si no existe la etiqueta, retornar null
+    if (!tags || tags.length === 0) {
+      console.log('No existe la etiqueta "destacado" en WordPress');
+      return null;
+    }
+
+    const featuredTagId = tags[0].id;
+    
+    // Obtener posts con esa etiqueta (solo el más reciente)
+    const postsResponse = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?tags=${featuredTagId}&per_page=1&_embed=wp:featuredmedia,wp:term`,
+      { 
+        next: { revalidate: 60 },
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+    if (!postsResponse.ok) {
+      throw new Error(`Error al obtener posts destacados: ${postsResponse.status}`);
+    }
+
+    const posts: WPPost[] = await postsResponse.json();
+    
+    if (!posts || posts.length === 0) {
+      console.log('No hay posts con la etiqueta "destacado"');
+      return null;
+    }
+
+    // Procesar el post para incluir imágenes y categorías
+    const post = posts[0];
+    return {
+      ...post,
+      featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+      featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
+      categories: post._embedded?.['wp:term']?.[0] || [],
+      tags: post._embedded?.['wp:term']?.[1] || []
+    };
+  } catch (error) {
+    console.error('Error en getFeaturedBlogPost:', error);
+    return null;
+  }
+}
+
+/**
+ * Obtiene posts de la categoría 'Más vistos'
+ * @param perPage Número de posts a obtener (por defecto 6)
+ * @returns Promise con array de posts más vistos
+ */
+export async function getMostViewedPosts(perPage: number = 6): Promise<WPPost[]> {
+  try {
+    // Obtener el ID de la categoría 'mas-vistos'
+    const categoriesResponse = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/categories?slug=mas-vistos`,
+      { 
+        next: { revalidate: 3600 },
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!categoriesResponse.ok) {
+      console.error('Error al obtener la categoría mas-vistos');
+      return [];
+    }
+
+    const categories = await categoriesResponse.json();
+    
+    // Si no existe la categoría, retornar array vacío
+    if (!categories || categories.length === 0) {
+      console.log('No existe la categoría "mas-vistos" en WordPress');
+      return [];
+    }
+
+    const categoryId = categories[0].id;
+    
+    // Obtener posts de esa categoría
+    const postsResponse = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?categories=${categoryId}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term`,
+      { 
+        next: { revalidate: 60 },
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+    if (!postsResponse.ok) {
+      throw new Error(`Error al obtener posts más vistos: ${postsResponse.status}`);
+    }
+
+    const posts: WPPost[] = await postsResponse.json();
+    
+    if (!posts || posts.length === 0) {
+      console.log('No hay posts con la categoría "mas-vistos"');
+      return [];
+    }
+
+    // Procesar posts para incluir imágenes y categorías
+    const processedPosts = posts.map(post => ({
+      ...post,
+      featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+      featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
+      categories: post._embedded?.['wp:term']?.[0] || [],
+      tags: post._embedded?.['wp:term']?.[1] || []
+    }));
+
+    return processedPosts;
+  } catch (error) {
+    console.error('Error en getMostViewedPosts:', error);
+    return [];
+  }
+}
+
 export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
   id: number;
   title: string;

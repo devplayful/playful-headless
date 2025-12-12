@@ -1,8 +1,9 @@
-import { getBlogPosts } from '@/services/wordpress';
+import { getBlogPosts, getFeaturedBlogPost, getMostViewedPosts } from '@/services/wordpress';
 import Link from 'next/link';
 import Image from 'next/image';
 import BlogCategories from './BlogCategories';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
+import MostViewedArticles from '@/components/blog/MostViewedArticles';
 
 // Función para formatear la fecha
 const formatDate = (dateString: string) => {
@@ -29,26 +30,37 @@ export default async function BlogPage({
   const resolvedSearchParams = await searchParams;
   const currentPage = typeof resolvedSearchParams?.page === 'string' ? parseInt(resolvedSearchParams.page) : 1;
   const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : '';
-  const perPage = 10; // 1 destacado + 9 en el grid (3x3)
+  const perPage = 9; // 9 posts en el grid (3x3)
 
+  // Obtener el post destacado (con etiqueta 'destacado')
+  const featuredPost = await getFeaturedBlogPost();
+  
+  // Obtener posts más vistos (6 artículos)
+  const mostViewedPosts = await getMostViewedPosts(6);
+  
   // Obtener los posts del blog (filtrados por categoría si existe)
   const { posts, totalPages } = await getBlogPosts(currentPage, perPage, category);
+  
+  // Filtrar posts para no duplicar el destacado en el grid
+  const gridPosts = featuredPost 
+    ? posts.filter(post => post.id !== featuredPost.id)
+    : posts;
 
   return (
     <div className="min-h-screen">
-      {/* Último artículo destacado */}
-      {posts.length > 0 && (
+      {/* Artículo destacado */}
+      {featuredPost && (
         <div className="w-full pt-12">
           <div className="max-w-7xl mx-auto px-6 pb-12">
             <div>
               <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
                 {/* Imagen del artículo destacado con fondo colorido */}
                 <div className="h-80 md:h-96 w-full relative bg-gradient-to-br from-[#72E3D8] via-[#8DD9F5] to-[#B8A4FF]">
-                  {posts[0].featured_media_url ? (
+                  {featuredPost.featured_media_url ? (
                     <div className="relative w-full h-full flex items-center justify-center p-8">
                       <Image
-                        src={posts[0].featured_media_url}
-                        alt={posts[0].featured_media_alt || posts[0].title.rendered}
+                        src={featuredPost.featured_media_url}
+                        alt={featuredPost.featured_media_alt || featuredPost.title.rendered}
                         fill
                         className="object-contain p-8"
                         sizes="(max-width: 768px) 100vw, 80vw"
@@ -68,37 +80,51 @@ export default async function BlogPage({
                 {/* Contenido del artículo destacado */}
                 <div className="p-8 md:p-10">
                   {/* Metadata superior */}
-                  <div className="flex flex-wrap items-center justify-between mb-4 text-sm gap-3">
-                    <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
-                      <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-[#440099] font-semibold">AUTOR EN PLAYFUL</span>
+                  <div className="flex flex-wrap items-center justify-between mb-4 text-xs md:text-sm gap-3">
+                    {/* Grupo izquierda: DESTACADO + AUTOR */}
+                    <div className="flex items-center gap-3">
+                      {/* Badge DESTACADO */}
+                      <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
+                        <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-[#440099] font-semibold text-xs md:text-sm">DESTACADO</span>
+                      </div>
+                      
+                      {/* Badge Autor */}
+                      <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
+                        <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-[#440099] font-semibold text-xs md:text-sm">AUTOR EN PLAYFUL</span>
+                      </div>
                     </div>
+                    
+                    {/* Grupo derecha: FECHA */}
                     <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-[#440099] font-semibold">{formatDate(posts[0].date)}</span>
+                      <span className="text-[#440099] font-semibold text-xs md:text-sm">{formatDate(featuredPost.date)}</span>
                     </div>
                   </div>
 
                   {/* Título destacado */}
                   <Link 
-                    href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
+                    href={`/blog/${featuredPost.categories?.[0]?.slug || 'sin-categoria'}/${featuredPost.slug}`}
                     className="block mb-4"
                   >
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
-                      {posts[0].title.rendered}
+                      {featuredPost.title.rendered}
                     </h1>
                   </Link>
                   
                   <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                    {posts[0].excerpt?.rendered ? getExcerpt(posts[0].excerpt.rendered) : ''}
+                    {featuredPost.excerpt?.rendered ? getExcerpt(featuredPost.excerpt.rendered) : ''}
                   </p>
                   
                   <Link 
-                    href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
+                    href={`/blog/${featuredPost.categories?.[0]?.slug || 'sin-categoria'}/${featuredPost.slug}`}
                     className="inline-block bg-[#440099] text-white px-8 py-3 rounded-full font-bold text-base hover:bg-[#5500BB] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     LEER ARTÍCULO ›
@@ -108,6 +134,11 @@ export default async function BlogPage({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Sección de Artículos Más Vistos */}
+      {mostViewedPosts.length > 0 && (
+        <MostViewedArticles posts={mostViewedPosts} />
       )}
 
       {/* Barra de categorías */}
@@ -120,7 +151,7 @@ export default async function BlogPage({
       {/* Grid de Posts */}
       <div className="w-full pt-0 pb-12">
         <div className="max-w-7xl mx-auto px-6">
-          {posts.length <= 1 ? (
+          {gridPosts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lg text-gray-700">No se encontraron más artículos en esta categoría.</p>
             </div>
@@ -128,7 +159,7 @@ export default async function BlogPage({
             <>
               <h2 className="text-3xl font-bold text-[#440099] mb-10">Más Artículos</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-[#D2BBFF] p-10 rounded-[10px]">
-                {posts.slice(1).map((post) => (
+                {gridPosts.map((post) => (
                   <article 
                     key={post.id} 
                     className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1"
@@ -182,16 +213,18 @@ export default async function BlogPage({
                       </p>
                       
                       {/* Fecha y botón */}
-                      <div className="flex items-center justify-between mt-auto">
-                        <span className="text-xs text-gray-500 font-medium">
-                          {formatDate(post.date)}
-                        </span>
-                        <Link 
-                          href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
-                          className="inline-block bg-[#440099] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
-                        >
-                          LEER MÁS
-                        </Link>
+                      <div className="mt-auto">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                          <span className="text-xs text-gray-500 font-medium">
+                            {formatDate(post.date)}
+                          </span>
+                          <Link 
+                            href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
+                            className="block md:inline-block text-center bg-[#440099] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
+                          >
+                            LEER MÁS
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </article>
@@ -200,22 +233,60 @@ export default async function BlogPage({
 
               {/* Paginación */}
               {totalPages > 1 && (
-                <div className="mt-12 mb-10 flex justify-center items-center gap-3">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <>
+                  {/* Paginador móvil - Botones < > */}
+                  <div className="mt-12 mb-4 md:hidden flex justify-center items-center gap-4">
                     <Link
-                      key={page}
-                      href={`/blog?page=${page}${category ? `&category=${category}` : ''}`}
-                      className={`w-12 h-12 flex items-center justify-center rounded-[10px] text-lg font-bold transition-all duration-300 ${
-                        currentPage === page 
-                          ? 'bg-[#D3B0FF] text-[#440099] shadow-md' 
-                          : 'bg-white text-[#440099] hover:bg-[#D3B0FF] hover:text-[#440099] border-2 border-[#D2BBFF]'
+                      href={`/blog?page=${Math.max(1, currentPage - 1)}${category ? `&category=${category}` : ''}`}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                        currentPage === 1
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
+                          : 'bg-[#440099] text-white hover:bg-[#5500BB] shadow-lg'
                       }`}
-                      aria-label={`Página ${page}`}
+                      aria-label="Página anterior"
                     >
-                      {page}
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
                     </Link>
-                  ))}
-                </div>
+                    
+                    <span className="text-[#440099] font-bold text-lg">
+                      {currentPage} / {totalPages}
+                    </span>
+                    
+                    <Link
+                      href={`/blog?page=${Math.min(totalPages, currentPage + 1)}${category ? `&category=${category}` : ''}`}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                        currentPage === totalPages
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
+                          : 'bg-[#440099] text-white hover:bg-[#5500BB] shadow-lg'
+                      }`}
+                      aria-label="Página siguiente"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+
+                  {/* Paginador desktop - Números */}
+                  <div className="mt-12 mb-4 hidden md:flex justify-center items-center gap-3">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Link
+                        key={page}
+                        href={`/blog?page=${page}${category ? `&category=${category}` : ''}`}
+                        className={`w-12 h-12 flex items-center justify-center rounded-[10px] text-lg font-bold transition-all duration-300 ${
+                          currentPage === page 
+                            ? 'bg-[#D3B0FF] text-[#440099] shadow-md' 
+                            : 'bg-white text-[#440099] hover:bg-[#D3B0FF] hover:text-[#440099] border-2 border-[#D2BBFF]'
+                        }`}
+                        aria-label={`Página ${page}`}
+                      >
+                        {page}
+                      </Link>
+                    ))}
+                  </div>
+                </>
               )}
             </>
           )}
