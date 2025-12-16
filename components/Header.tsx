@@ -132,7 +132,7 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logos/playful-LogoV.svg"
+                src="/images/logos/playful-logov.svg"
                 alt="Playful Agency Logo"
                 width={120}
                 height={40}
@@ -230,7 +230,7 @@ export default function Header() {
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/20">
                 <div className="flex items-center gap-2">
                   <Image
-                    src="/images/logos/playful-LogoV.svg"
+                    src="/images/logos/playful-logov.svg"
                     alt="Playful Agency Logo"
                     width={100}
                     height={35}
