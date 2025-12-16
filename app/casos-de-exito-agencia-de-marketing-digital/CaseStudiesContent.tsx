@@ -214,7 +214,7 @@ export default function CaseStudiesContent({ caseStudies }: CaseStudiesContentPr
 
       {/* Filtros */}
       <div className="md:w-[71%] w-full mx-auto mb-8">
-        <div className="w-full bg-gradient-to-r from-teal-100 to-purple-100 rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">
+        <div className="w-full bg-[#B3FFF3] rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">
           {/* <h3 className="text-base font-medium text-gray-900">Filtrar por</h3> */}
 
           {/* Filtros disponibles */}

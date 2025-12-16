@@ -173,12 +173,12 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
               {caseStudy.title}
             </h3>
 
-            {/* Tags */}
+            {/* Tags - CENTRADOS VERTICALMENTE */}
             <div className="flex flex-wrap gap-2 mb-4 h-8 overflow-hidden">
               {caseStudy.categories.slice(0, 2).map((category, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700 whitespace-nowrap"
+                  className="flex items-center px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700 whitespace-nowrap"
                 >
                   {category}
                 </span>

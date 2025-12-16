@@ -127,7 +127,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden lg:flex items-center h-16 justify-between relative">
+        <div className="hidden lg:flex items-center h-16 justify-between relative px-5">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
