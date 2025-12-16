@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss'
 import typography from '@tailwindcss/typography'
+import { fontFamily } from 'tailwindcss/defaultTheme'
 
 const config: Config = {
   content: [
@@ -10,6 +11,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
+        // DM Sans como fuente por defecto del sitio
+        sans: ['var(--font-dm-sans)', ...fontFamily.sans],
+        // Aliases adicionales para uso específico
         'title': ['var(--font-paytone-one)', 'var(--font-montserrat)', 'sans-serif'],
         'body': ['var(--font-dm-sans)', 'sans-serif'],
         'paytone': ['var(--font-paytone-one)', 'sans-serif'],
@@ -23,11 +27,11 @@ const config: Config = {
       },
       // Personalizar el Ancho (width)
       width: {
-        '320p': '320px', // Clase resultante: w-60p
+        '320p': '320px',
       },
       // Personalizar la Altura (height)
       height: {
-        '444p': '444px', // Clase resultante: h-90p
+        '444p': '444px',
       }
     },
   },
@@ -37,30 +41,29 @@ const config: Config = {
       target: 'modern',
       css: {
         h1: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         h2: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         h3: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         h4: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         h5: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         h6: {
-          fontFamily: 'paytone, sans-serif',
+          fontFamily: 'var(--font-paytone-one), sans-serif',
         },
         p: {
-          fontFamily: 'DM Sans, sans-serif',                   
+          fontFamily: 'var(--font-dm-sans), sans-serif',                   
         },
       },
     }),
   ],
 }
-
 
 export default config

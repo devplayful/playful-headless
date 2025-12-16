@@ -25,7 +25,7 @@ export default function SoyTechnoSectionD({ data }: Props) {
   ].filter(item => item.titulo || item.parrafo);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-[#FEF7FF]">
       <div className="max-w-7xl mx-auto px-6">
         {/* BLOQUE D1: Header pill */}
         {data.titulo_de_la_seccion_d && (

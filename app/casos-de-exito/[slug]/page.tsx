@@ -7,6 +7,9 @@ import SoyTechnoSectionC from '@/components/soytechno/SoyTechnoSectionC';
 import SoyTechnoSectionD from '@/components/soytechno/SoyTechnoSectionD';
 import SoyTechnoSectionE from '@/components/soytechno/SoyTechnoSectionE';
 import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
+import PhoneCarouselSection from './PhoneCarouselSection';
+import CaseStudyCta from './CaseStudyCta'
+
 
 
 const ResultIcon1 = (props: React.SVGProps<SVGSVGElement>) => (
@@ -71,7 +74,7 @@ export default async function SuccessStoryPage({
       <section className="text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="text-center md:text-left">
+            <div className="text-center md:text-left md:pt-4">
               <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
                 {story.title.rendered}
               </h1>
@@ -92,7 +95,7 @@ export default async function SuccessStoryPage({
                     alt={story.title.rendered}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-opacity duration-300"
+                    className="object-contain transition-opacity duration-300"
                     priority
                   />
                 ) : (
@@ -108,8 +111,8 @@ export default async function SuccessStoryPage({
       </section>
 
       {/* Challenge Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto text-center px-6">
+      <section className="py-20 bg-[#FEF7FF] ">
+        <div className="max-w-4xl mx-auto text-center px-6 ">
           <h2 className="text-3xl lg:text-4xl font-bold text-[#2A0064] mb-6">
             {story.acf.primerh2 || 'El Desafío'}
           </h2>
@@ -146,7 +149,7 @@ export default async function SuccessStoryPage({
         story.acf?.imagenminuta3 ||
         story.acf?.segundoh2 ||
         story.acf?.tercerap) && (
-        <section className="py-0 bg-white">
+        <section className="py-0 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
           <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
@@ -200,7 +203,7 @@ export default async function SuccessStoryPage({
         story.acf?.desafioimagen2 ||
         story.acf?.desafioimagen3 ||
         story.acf?.desafioimagen4) && (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-[#E9D7FF] rounded-[24px] p-6 md:p-8 lg:p-10">
             {/* Contenedor principal sin fondo */}
@@ -285,7 +288,7 @@ export default async function SuccessStoryPage({
                         }
                         alt="Logo cliente"
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         sizes="450px"
                       />
                     </div>
@@ -319,7 +322,7 @@ export default async function SuccessStoryPage({
                         }
                         alt="Mockup desktop"
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         sizes="450px"
                       />
                     </div>
@@ -340,7 +343,7 @@ export default async function SuccessStoryPage({
         story.acf?.imagenminuta3 ||
         story.acf?.otroh2st ||
         story.acf?.otropst) && (
-        <section className="py-0 bg-white">
+        <section className="py-0 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
             {/* Título y descripción */}
@@ -415,11 +418,11 @@ export default async function SuccessStoryPage({
         story.acf?.segundapdesarrollo ||
         story.acf?.tercerh3desarrollo ||
         story.acf?.tercerapdesarrollo) && (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-[#FEF7FF]">
           <div className="max-w-7xl mx-auto px-6">
             <div className="relative">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div className="relative w-full h-[500px] rounded-xl overflow-hidden shadow-lg">
+                <div className="relative w-full h-[500px] rounded-xl overflow-hidden">
                   {story.acf?.imagendesarrollo ? (
                     <Image
                       src={
@@ -430,7 +433,7 @@ export default async function SuccessStoryPage({
                       alt="Proceso de desarrollo"
                       fill
                       sizes="(max-width: 1024px) 100vw, 50%"
-                      className="object-cover"
+                      className="object-contain"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -502,11 +505,11 @@ export default async function SuccessStoryPage({
         story.acf?.grilla6 ||
         story.acf?.grilla7 ||
         story.acf?.grilla8) && (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {story.acf?.grilla1 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla1 === 'string'
@@ -515,14 +518,14 @@ export default async function SuccessStoryPage({
                   }
                   alt="Gallery image 1"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
             )}
 
             {story.acf?.grilla2 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla2 === 'string'
@@ -531,14 +534,14 @@ export default async function SuccessStoryPage({
                   }
                   alt="Gallery image 2"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
             )}
 
             {story.acf?.grilla3 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla3 === 'string'
@@ -547,7 +550,7 @@ export default async function SuccessStoryPage({
                   }
                   alt="Gallery image 3"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
@@ -557,7 +560,7 @@ export default async function SuccessStoryPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {story.acf?.grilla4 && (
               <div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg mb-4">
+                <div className="relative w-full h-[248px] rounded-xl overflow-hidden mb-4">
                   <Image
                     src={
                       typeof story.acf.grilla4 === 'string'
@@ -566,11 +569,11 @@ export default async function SuccessStoryPage({
                     }
                     alt="Gallery image 1"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg">
+                <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla5 === 'string'
@@ -579,7 +582,7 @@ export default async function SuccessStoryPage({
                     }
                     alt="Gallery image 2"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
@@ -587,7 +590,7 @@ export default async function SuccessStoryPage({
             )}
 
             {story.acf?.grilla6 && (
-              <div className="relative w-full h-[541px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative w-full h-[541px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla6 === 'string'
@@ -596,7 +599,7 @@ export default async function SuccessStoryPage({
                   }
                   alt="Gallery image 3"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
@@ -604,7 +607,7 @@ export default async function SuccessStoryPage({
 
             {story.acf?.grilla7 && (
               <div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg mb-4">
+                <div className="relative w-full h-[248px] rounded-xl overflow-hidden mb-4">
                   <Image
                     src={
                       typeof story.acf.grilla7 === 'string'
@@ -613,11 +616,11 @@ export default async function SuccessStoryPage({
                     }
                     alt="Gallery image 3"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden shadow-lg flex items-center justify-center bg-gray-100">
+                <div className="relative w-full h-[248px] rounded-xl overflow-hidden flex items-center justify-center">
                   <Image
                     src={
                       typeof story.acf.grilla8 === 'string'
@@ -626,7 +629,7 @@ export default async function SuccessStoryPage({
                     }
                     alt="Gallery image 3"
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
@@ -637,7 +640,7 @@ export default async function SuccessStoryPage({
       </section>
       )}
 
-      <section className="py-0 bg-white">
+      <section className="py-0 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center">
             <div className="text-center max-w-4xl">
@@ -656,17 +659,17 @@ export default async function SuccessStoryPage({
       </section>
 
       {/* Results Cards Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#FEF7FF]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-[18px] px-6 py-12 md:px-10 md:py-14">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 max-w-5xl mx-auto">
-              {(story.acf?.resultado1 || story.acf?.resultado1) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
-                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 max-w-6xl mx-auto">
+              {(story.acf?.resultado1 || story.acf?.resultadop1) && (
+                <div className="bg-[#E9D7FF] rounded-[24px] px-8 py-10 h-full min-h-[420px] flex flex-col justify-start w-full max-w-[380px] mx-auto md:max-w-none md:w-full text-center">
+                  <h3 className="text-base md:text-lg font-paytone font-bold tracking-wide text-[#2A0064] mb-6 uppercase leading-tight">
                     {story.acf?.resultado1}
                   </h3>
                   <div
-                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
+                    className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
                     dangerouslySetInnerHTML={{
                       __html: story.acf?.resultadop1 || '',
                     }}
@@ -674,127 +677,135 @@ export default async function SuccessStoryPage({
                 </div>
               )}
 
-              {(story.acf?.resultado2 || story.acf?.resultado2) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
-                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
-                    {story.acf?.resultado2}
-                  </h3>
-                  <div
-                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
-                    dangerouslySetInnerHTML={{
-                      __html: story.acf?.resultadop2 || '',
-                    }}
-                  />
-                </div>
-              )}
-
-              {(story.acf?.resultado3 || story.acf?.resultado3) && (
-                <div className="bg-[#E9D7FF] rounded-[18px] px-6 py-8 h-full flex flex-col justify-start w-full max-w-[320px] mx-auto md:max-w-none md:w-full md:h-[504px] text-center">
-                  <h3 className="text-sm md:text-base font-payton font-bold tracking-wide text-[#453A53] mb-3 uppercase">
-                    {story.acf?.resultado3}
-                  </h3>
-                  <div
-                    className="text-sm md:text-base leading-relaxed text-[#4A4453] font-dmsans"
-                    dangerouslySetInnerHTML={{
-                      __html: story.acf?.resultadop3 || '',
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+              {(story.acf?.resultado2 || story.acf?.resultadop2) && (
+                <div className="bg-[#E9D7FF] rounded-[24px] px-8 py-10 h-full min-h-[420px] flex flex-col justify-start w-full max-w-[380px] mx-auto md:max-w-none md:w-full text-center">
+                  <h3 className="text-base md:text-lg font-paytone font-bold tracking-wide text-[#2A0064] mb-6 uppercase leading-tight">
+              {story.acf?.resultado2}
+            </h3>
+            <div
+              className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
+              dangerouslySetInnerHTML={{
+                __html: story.acf?.resultadop2 || '',
+              }}
+            />
           </div>
-        </div>
-      </section>
+        )}
+
+        {(story.acf?.resultado3 || story.acf?.resultadop3) && (
+          <div className="bg-[#E9D7FF] rounded-[24px] px-8 py-10 h-full min-h-[420px] flex flex-col justify-start w-full max-w-[380px] mx-auto md:max-w-none md:w-full text-center">
+            <h3 className="text-base md:text-lg font-paytone font-bold tracking-wide text-[#2A0064] mb-6 uppercase leading-tight">
+              {story.acf?.resultado3}
+            </h3>
+            <div
+              className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
+              dangerouslySetInnerHTML={{
+                __html: story.acf?.resultadop3 || '',
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Phone Images Section */}
-      {(story.acf?.telefono1 ||
-        story.acf?.telefono2 ||
-        story.acf?.telefono3 ||
-        story.acf?.telefono4) && (
-        <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
-            {[
-              { id: 'telefono1', value: story.acf?.telefono1 },
-              { id: 'telefono2', value: story.acf?.telefono2 },
-              { id: 'telefono3', value: story.acf?.telefono3 },
-              { id: 'telefono4', value: story.acf?.telefono4 },
-            ]
-              .filter((item) => item.value)
-              .map((item, index) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  className="relative w-[300px] sm:w-[300px] flex-shrink-0 h-[650px] lg:w-[300px] lg:h-[650px] rounded-[18px] overflow-hidden"
-                >
-                  <Image
-                    src={
-                      typeof item.value === 'string'
-                        ? (item.value as string)
-                        : (item.value as { url: string }).url
-                    }
-                    alt={`Teléfono ${index + 1}`}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-      </section>
-      )}
+      {(story.acf?.telefono1 || story.acf?.telefono2 || story.acf?.telefono3 || story.acf?.telefono4) && (
+      <PhoneCarouselSection phones={{
+        telefono1: story.acf?.telefono1,
+        telefono2: story.acf?.telefono2,
+        telefono3: story.acf?.telefono3,
+        telefono4: story.acf?.telefono4,
+        telefonos: story.acf?.telefonos,
+          }} />
+        )}
 
       {/* Testimonial Section */}
-      {story.acf?.testimonialnombre && (
-        <section className="py-16 bg-white">
+      {(story.acf?.testimonialnombre || story.acf?.testimonio) && (
+        <section className="py-16 bg-[#FEF7FF]">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="bg-[#FFD977] rounded-[18px] px-8 py-10 md:px-16 md:py-14 flex flex-col md:flex-row items-center gap-10 relative overflow-hidden">
-              <div className="absolute -top-10 -left-4 text-white/40 text-[160px] leading-none select-none hidden sm:block">
-                “
-              </div>
-              <div className="absolute -bottom-24 right-0 text-white/40 text-[220px] leading-none select-none hidden sm:block">
-                ”
-              </div>
+            <div className="mx-auto w-full max-w-[1050px]">
+              <div className="bg-[#FFD977] rounded-[26px] px-8 py-10 md:px-14 md:py-14 relative overflow-hidden h-[400px] flex items-center justify-center">
+                {/* Comillas grandes (contorno) */}
+                <div
+                  className="pointer-events-none absolute left-[28%] top-[6%] hidden md:block text-[260px] leading-none opacity-70"
+                  style={
+              {
+                WebkitTextStroke: '2px rgba(255,255,255,0.55)',
+                WebkitTextFillColor: 'transparent',
+              } as React.CSSProperties
+            }
+          >
+            “
+          </div>
+          <div
+            className="pointer-events-none absolute right-[7%] bottom-[-27%] hidden md:block text-[260px] leading-none opacity-70"
+            style={
+              {
+                WebkitTextStroke: '2px rgba(255,255,255,0.55)',
+                WebkitTextFillColor: 'transparent',
+              } as React.CSSProperties
+            }
+          >
+            ”
+          </div>
 
-              <div className="relative z-10 flex-shrink-0 flex flex-col items-center md:items-start gap-4">
-                {story.acf?.testimonial_foto && (
-                  <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-200">
-                    <Image
-                      src={
-                        typeof story.acf.testimonial_foto === 'string'
-                          ? (story.acf.testimonial_foto as string)
-                          : (story.acf.testimonial_foto as { url: string }).url
-                      }
-                      alt={story.acf?.testimonialnombre || 'Testimonial'}
-                      fill
-                      sizes="112px"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="text-center md:text-left">
-                  {story.acf?.testimonialnombre && (
-                    <p className="text-lg md:text-xl font-payton font-bold text-[#4A4453]">
-                      {story.acf.testimonialnombre}
-                    </p>
-                  )}
-                  {story.acf?.testimonialcargo && (
-                    <p className="text-sm md:text-base font-dmsans text-[#4A4453]">
-                      {story.acf.testimonialcargo}
-                    </p>
-                  )}
+          <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[260px,1fr] items-center gap-8 md:gap-12">
+            {/* Columna izquierda: avatar + nombre + cargo */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              {story.acf?.testimonial_foto && (
+                <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white/70 ring-4 ring-white/60">
+                  <Image
+                    src={
+                      typeof story.acf.testimonial_foto === 'string'
+                        ? (story.acf.testimonial_foto as string)
+                        : (story.acf.testimonial_foto as { url: string }).url
+                    }
+                    alt={story.acf?.testimonialnombre || 'Testimonial'}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
                 </div>
-              </div>
+              )}
 
-              <div className="relative z-10 flex-1">
-                <p className="text-base md:text-lg leading-relaxed text-[#4A4453] font-dmsans max-w-2xl">
+              {story.acf?.testimonialnombre && (
+                <p className="mt-4 text-2xl font-paytone font-bold text-[#2A0064] leading-tight">
+                  {story.acf.testimonialnombre}
+                </p>
+              )}
+
+              {story.acf?.testimonialcargo && (
+                <p className="mt-1 text-sm md:text-base font-dmsans text-[#2A0064]/80">
+                  {story.acf.testimonialcargo}
+                </p>
+              )}
+            </div>
+
+            {/* Columna derecha: texto */}
+            {story.acf?.testimonio && (
+              <div className="text-center md:text-left">
+                <p className="text-base md:text-lg leading-relaxed text-[#2A0064]/90 font-dmsans italic max-w-[520px] mx-auto md:mx-0 md:pl-6">
                   {story.acf.testimonio}
                 </p>
               </div>
-            </div>
+            )}
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+  </section>
       )}
+      {/* Case Study CTA */}
+      <CaseStudyCta
+        title="¿Estás perdiendo dinero al no vender directamente?"
+        description="Si tu plataforma anterior no te permitía capturar el valor de tu tráfico, es hora de un diseño de E-commerce que te convierta en un líder DTC como Odwalla."
+        emphasis="No esperes más para empezar a ganar."
+        buttonText="¡Hablemos de tu proyecto!"
+        buttonHref="/contactar-agencia-de-marketing-digital"
+        illustrationSrc="/images/Playful-Agency-Conectemos.png"
+        illustrationAlt="Ilustración CTA"
+      />
     </div>
   );
 }
