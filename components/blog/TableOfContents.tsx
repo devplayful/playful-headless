@@ -64,85 +64,35 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       // Actualizar progreso
       updateProgress(20);
       
-      // Obtener el HERO del blog (para portada) y el ARTICLE (para contenido)
-      const heroElement = document.querySelector('[data-hero="blog-hero"]');
+      // Obtener el elemento del artículo principal
       const articleElement = document.querySelector('article');
-      
-      if (!heroElement || !articleElement) {
-        console.error('No se encontró el hero del blog o el artículo');
-        console.log('Hero encontrado:', !!heroElement);
-        console.log('Article encontrado:', !!articleElement);
+      if (!articleElement) {
+        console.error('No se encontró el elemento del artículo');
         return;
       }
 
-      // Crear clones separados para portada (hero) y contenido (article)
-      const heroClone = heroElement.cloneNode(true) as HTMLElement;
+      // Crear un clon del artículo para el PDF
       const articleClone = articleElement.cloneNode(true) as HTMLElement;
       
-      // Excluir elementos no deseados del contenido (NO secciones completas)
-      console.log('\n=== LIMPIANDO ELEMENTOS ===');
-      
-      const elementsToHide = articleClone.querySelectorAll(`
-        .toc,
-        .hidden-print,
-        [aria-label*="Compartir"],
-        [href*="whatsapp"],
-        [href*="linkedin"],
-        [href*="facebook"],
-        [href*="twitter"],
-        button
-      `);
-      
-      console.log(`Ocultando ${elementsToHide.length} elementos (botones, compartir, toc)`);
+      // Ocultar elementos que no queremos en el PDF (mantenemos las imágenes)
+      const elementsToHide = articleClone.querySelectorAll('.toc, button, .hidden-print');
       elementsToHide.forEach(el => {
         (el as HTMLElement).style.display = 'none';
       });
-      
-      // NO ocultar secciones completas, solo elementos específicos
-      // Comentado para evitar ocultar imágenes accidentalmente:
-      // const shareSection = articleClone.querySelector('section:has(a[aria-label*="Compartir"])');
-      // if (shareSection) {
-      //   (shareSection as HTMLElement).style.display = 'none';
-      // }
-      
-      console.log('✓ Elementos limpiados');
-      console.log('✓ Imágenes preservadas\n');
 
-      // Asegurar que las imágenes sean visibles en ambos clones ANTES de convertir
-      const heroImagesPrep = Array.from(heroClone.querySelectorAll('img'));
-      const articleImagesPrep = Array.from(articleClone.querySelectorAll('img'));
-      
-      console.log('=== PREPARANDO IMÁGENES ===');
-      console.log(`Hero: ${heroImagesPrep.length} imágenes`);
-      console.log(`Article: ${articleImagesPrep.length} imágenes`);
-      
-      [...heroImagesPrep, ...articleImagesPrep].forEach(img => {
+      // Asegurar que las imágenes sean visibles y tengan el tamaño correcto
+      const images = articleClone.querySelectorAll('img');
+      images.forEach(img => {
         const imgElement = img as HTMLImageElement;
-        // Estilos básicos antes de convertir a base64
         imgElement.style.display = 'block';
-        imgElement.style.visibility = 'visible';
-        imgElement.style.opacity = '1';
         imgElement.style.maxWidth = '100%';
         imgElement.style.height = 'auto';
       });
-      
-      console.log('✓ Imágenes preparadas\n');
 
-      // Agregar los clones al final del body temporalmente
-      // Portada (hero del blog)
-      heroClone.style.position = 'absolute';
-      heroClone.style.left = '-9999px';
-      heroClone.style.top = '0';
-      heroClone.style.width = '800px';
-      heroClone.style.padding = '40px';
-      heroClone.style.backgroundColor = 'white';
-      heroClone.style.color = 'black';
-      document.body.appendChild(heroClone);
-      
-      // Contenido (article)
+      // Agregar el clon al final del body temporalmente
       articleClone.style.position = 'absolute';
       articleClone.style.left = '-9999px';
-      articleClone.style.top = '2000px';
+      articleClone.style.top = '0';
       articleClone.style.width = '800px';
       articleClone.style.padding = '40px';
       articleClone.style.backgroundColor = 'white';
@@ -152,69 +102,17 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       // Actualizar progreso
       updateProgress(40);
       
-      // Convertir imágenes externas a base64 en ambos clones
-      const heroImages = Array.from(heroClone.querySelectorAll('img')) as HTMLImageElement[];
-      const articleImages = Array.from(articleClone.querySelectorAll('img')) as HTMLImageElement[];
-      const allImages = [...heroImages, ...articleImages];
-      
-      console.log(`\n=== PROCESANDO IMÁGENES ===`);
-      console.log(`Total de imágenes encontradas: ${allImages.length}`);
-      console.log(`- Hero: ${heroImages.length} imágenes`);
-      console.log(`- Article: ${articleImages.length} imágenes\n`);
+      // Convertir imágenes externas a base64 usando un proxy CORS
+      const allImages = Array.from(articleClone.querySelectorAll('img')) as HTMLImageElement[];
+      console.log(`Procesando ${allImages.length} imágenes...`);
       
       let imagesConverted = 0;
-      for (let i = 0; i < allImages.length; i++) {
-        const img = allImages[i];
-        
-        // Buscar src en múltiples atributos (Next.js Image puede usar data-src, etc.)
-        let imgSrc = img.src || 
-                     img.getAttribute('src') || 
-                     img.getAttribute('data-src') || 
-                     img.getAttribute('data-nimg') || 
-                     '';
-        
-        console.log(`\nImagen ${i + 1}/${allImages.length}:`);
-        console.log('  - Elemento:', img.tagName, img.className);
-        console.log('  - src original:', imgSrc.substring(0, 150) || 'vacío');
-        
-        if (!imgSrc) {
-          console.log('  ⚠️ Imagen sin src, intentando obtener desde currentSrc...');
-          imgSrc = img.currentSrc || '';
-        }
-        
-        if (!imgSrc || imgSrc.length === 0) {
-          console.log('  - ✗ Saltada (sin src válido)');
-          continue;
-        }
-        
-        if (imgSrc.startsWith('data:')) {
-          console.log('  - Saltada (ya es base64)');
-          continue;
-        }
-        
-        // Extraer URL real si es Next.js Image Optimization
-        if (imgSrc.includes('/_next/image?url=')) {
-          try {
-            const url = new URL(imgSrc, window.location.origin);
-            const realImageUrl = url.searchParams.get('url');
-            if (realImageUrl) {
-              console.log('  🔄 Next.js Image detectada, extrayendo URL real...');
-              console.log('  - URL Next.js:', imgSrc.substring(0, 100) + '...');
-              imgSrc = decodeURIComponent(realImageUrl);
-              console.log('  - URL real extraída:', imgSrc.substring(0, 100) + '...');
-            }
-          } catch (e) {
-            console.warn('  ⚠️ Error extrayendo URL de Next.js Image:', e);
-          }
-        }
-        
-        console.log('  - Procesando:', imgSrc.substring(0, 100) + '...');
+      for (const img of allImages) {
+        if (!img.src || img.src.startsWith('data:')) continue;
         
         try {
-          // Usar endpoint propio para descargar la imagen (optimizado para Vercel Edge)
-          const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imgSrc)}`;
-          console.log('  - Usando proxy:', proxyUrl.substring(0, 80) + '...');
-          
+          // Usar proxy CORS para descargar la imagen
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(img.src)}`;
           const response = await fetch(proxyUrl);
           
           if (!response.ok) throw new Error('Error al descargar imagen');
@@ -229,104 +127,67 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
             reader.readAsDataURL(blob);
           });
           
-          // Actualizar el src a base64
+          // Actualizar el src
           img.src = dataUrl;
-          img.setAttribute('src', dataUrl);
           
           // Eliminar atributos de Next.js Image que pueden causar problemas
           img.removeAttribute('srcset');
           img.removeAttribute('sizes');
-          img.removeAttribute('loading');
           
           // Asegurar que la imagen sea visible y tenga dimensiones
-          img.style.cssText = `
-            position: relative !important;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            max-width: 100% !important;
-            height: auto !important;
-          `;
+          img.style.position = 'relative';
+          img.style.display = 'block';
+          img.style.visibility = 'visible';
+          img.style.opacity = '1';
+          img.style.width = img.width ? `${img.width}px` : 'auto';
+          img.style.height = img.height ? `${img.height}px` : 'auto';
           
           // Si la imagen tiene un contenedor padre de Next.js, ajustarlo
           const parent = img.parentElement;
-          if (parent) {
-            parent.style.display = 'block';
+          if (parent && parent.style.position === 'relative') {
             parent.style.position = 'relative';
-            parent.style.overflow = 'visible';
+            parent.style.display = 'block';
           }
           
           imagesConverted++;
-          console.log(`  - ✓ Convertida a base64 (${Math.round(dataUrl.length / 1024)} KB)`);
-          console.log(`  - Total convertidas: ${imagesConverted}/${allImages.length}`);
-          
+          console.log(`Imagen ${imagesConverted}/${allImages.length} convertida a base64`);
         } catch (error) {
-          console.error(`  - ✗ Error descargando imagen:`, error);
-          console.error(`  - URL original:`, imgSrc);
-          // NO ocultar la imagen, dejar que html2canvas intente renderizarla
-          // img.style.display = 'none';
+          console.warn('No se pudo descargar imagen:', img.src, error);
+          // Ocultar la imagen si no se puede descargar
+          img.style.display = 'none';
         }
       }
       
-      console.log(`\n=== RESUMEN ===`);
-      console.log(`✓ ${imagesConverted} de ${allImages.length} imágenes convertidas exitosamente`);
-      console.log(`✗ ${allImages.length - imagesConverted} imágenes fallidas\n`);
+      console.log(`${imagesConverted} de ${allImages.length} imágenes convertidas exitosamente`);
       
-      // Esperar a que TODAS las imágenes base64 se carguen completamente
-      console.log('Esperando a que las imágenes se carguen...');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Aumentado a 2 segundos
+      // Esperar un momento para que se actualicen los src
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Forzar carga de imágenes creando promesas de carga
-      const imageLoadPromises = allImages.map(img => {
-        return new Promise((resolve) => {
-          if (img.complete || img.src.startsWith('data:')) {
-            resolve(true);
-          } else {
-            img.onload = () => resolve(true);
-            img.onerror = () => resolve(false);
-            // Timeout por si alguna imagen no carga
-            setTimeout(() => resolve(false), 5000);
-          }
-        });
-      });
-      
-      await Promise.all(imageLoadPromises);
-      console.log('✓ Todas las imágenes cargadas\n');
-      
-      // Crear canvas para PORTADA (hero del blog)
-      console.log('Iniciando html2canvas para portada (hero)...');
-      const heroCanvas = await html2canvas(heroClone, {
+      // Crear el PDF con configuración mejorada
+      console.log('Iniciando html2canvas...');
+      const canvas = await html2canvas(articleClone, {
         scale: 2,
         useCORS: false,
         allowTaint: false,
-        logging: false,
+        logging: true,
         backgroundColor: '#ffffff',
         windowWidth: 800,
-        windowHeight: heroClone.scrollHeight
+        windowHeight: articleClone.scrollHeight,
+        onclone: (clonedDoc: Document) => {
+          console.log('Documento clonado exitosamente');
+          // Actualizar progreso cuando se clona el documento
+          updateProgress(60);
+        }
       } as any);
-      console.log('Canvas de portada creado:', heroCanvas.width, 'x', heroCanvas.height);
+      console.log('Canvas creado exitosamente:', canvas.width, 'x', canvas.height);
       
-      updateProgress(50);
-      
-      // Crear canvas para CONTENIDO (article)
-      console.log('Iniciando html2canvas para contenido...');
-      const contentCanvas = await html2canvas(articleClone, {
-        scale: 2,
-        useCORS: false,
-        allowTaint: false,
-        logging: false,
-        backgroundColor: '#ffffff',
-        windowWidth: 800,
-        windowHeight: articleClone.scrollHeight
-      } as any);
-      console.log('Canvas de contenido creado:', contentCanvas.width, 'x', contentCanvas.height);
-      
-      updateProgress(60);
+      // Actualizar progreso
+      updateProgress(80);
 
-      // Convertir ambos canvas a imágenes
-      const heroImgData = heroCanvas.toDataURL('image/png');
-      const contentImgData = contentCanvas.toDataURL('image/png');
-      console.log('Imágenes generadas exitosamente');
+      // Convertir el canvas completo a imagen DATA URL antes de crear el PDF
+      // Esto se hace una sola vez para evitar problemas con tainted canvas
+      const imgData = canvas.toDataURL('image/png');
+      console.log('Imagen generada exitosamente');
 
       // Configuración del PDF
       const pdf = new jsPDF({
@@ -335,88 +196,40 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
         format: 'a4',
       });
 
-      // Dimensiones de página A4
+      // Agregar primera página en blanco
+      pdf.text('', 10, 10); // Página en blanco
+      pdf.addPage(); // Agregar segunda página para el contenido
+
+      // Tamaño de la página A4 en mm
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      // Márgenes
       const margin = 20;
       const contentWidth = pageWidth - (margin * 2);
       const contentHeight = pageHeight - (margin * 2);
       
-      // PÁGINA 1: PORTADA (Hero completo del blog: título, imagen, fecha, categoría, extracto)
-      const heroImgWidth = contentWidth;
-      const heroImgHeight = (heroCanvas.height * heroImgWidth) / heroCanvas.width;
+      // Calcular dimensiones de la imagen para que quepa en el ancho de la página
+      const imgWidth = contentWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      // Calcular altura proporcional para que quepa en la página
-      const heroScaledHeight = Math.min(heroImgHeight, contentHeight);
-      pdf.addImage(heroImgData, 'PNG', margin, margin, heroImgWidth, heroScaledHeight);
+      // Agregar la imagen al PDF con paginación automática
+      let heightLeft = imgHeight;
+      let position = margin;
       
-      updateProgress(70);
+      // Primera página de contenido (ya está creada arriba)
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      heightLeft -= contentHeight;
       
-      // PÁGINAS 2+: CONTENIDO (Article paginado con fórmula consistente)
-      
-      // 1. Calcular altura total de la imagen en mm (manteniendo aspect ratio)
-      const contentWidthMm = contentWidth;  // Ya definido arriba
-      const contentImageHeightMm = (contentCanvas.height * contentWidthMm) / contentCanvas.width;
-      
-      // 2. Calcular número total de páginas necesarias
-      const totalPages = Math.ceil(contentImageHeightMm / contentHeight);
-      
-      console.log('Paginación del contenido:');
-      console.log(`- Canvas: ${contentCanvas.width}x${contentCanvas.height} px`);
-      console.log(`- Altura total en PDF: ${contentImageHeightMm.toFixed(2)} mm`);
-      console.log(`- Altura por página: ${contentHeight} mm`);
-      console.log(`- Total de páginas: ${totalPages}`);
-      
-      // 3. Iterar por cada página y recortar la porción correcta del canvas
-      for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+      // Agregar páginas adicionales si es necesario
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight + margin;
         pdf.addPage();
-        
-        // Calcular posición Y en mm para esta página
-        const startYmm = pageIndex * contentHeight;
-        const endYmm = Math.min(startYmm + contentHeight, contentImageHeightMm);
-        const pageHeightMm = endYmm - startYmm;
-        
-        // Convertir mm a píxeles usando la proporción total
-        const sourceYpx = Math.round((startYmm / contentImageHeightMm) * contentCanvas.height);
-        const sourceHeightPx = Math.round((pageHeightMm / contentImageHeightMm) * contentCanvas.height);
-        
-        // Asegurar que no exceda los límites del canvas
-        const actualSourceHeight = Math.min(sourceHeightPx, contentCanvas.height - sourceYpx);
-        
-        console.log(`Página ${pageIndex + 2}:`);
-        console.log(`  - Rango mm: ${startYmm.toFixed(2)} - ${endYmm.toFixed(2)}`);
-        console.log(`  - sourceY: ${sourceYpx} px, sourceHeight: ${actualSourceHeight} px`);
-        
-        // Crear canvas temporal para esta porción
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = contentCanvas.width;
-        tempCanvas.height = actualSourceHeight;
-        
-        const ctx = tempCanvas.getContext('2d');
-        if (ctx) {
-          // Copiar la porción exacta del canvas original
-          ctx.drawImage(
-            contentCanvas,
-            0, sourceYpx,                      // sourceX, sourceY
-            contentCanvas.width, actualSourceHeight,  // sourceWidth, sourceHeight
-            0, 0,                              // destX, destY
-            contentCanvas.width, actualSourceHeight   // destWidth, destHeight
-          );
-          
-          // Convertir esta porción a imagen
-          const sliceImgData = tempCanvas.toDataURL('image/png');
-          
-          // Agregar al PDF con la altura exacta en mm
-          pdf.addImage(sliceImgData, 'PNG', margin, margin, contentWidthMm, pageHeightMm);
-        }
-        
-        // Actualizar progreso
-        const progress = 70 + ((pageIndex + 1) / totalPages) * 20;
-        updateProgress(Math.min(95, progress));
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= contentHeight;
       }
-      
-      // Eliminar los clones temporales
-      document.body.removeChild(heroClone);
+
+      // Eliminar el clon temporal
       document.body.removeChild(articleClone);
       
       // Actualizar progreso

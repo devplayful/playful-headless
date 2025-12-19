@@ -1,7 +1,7 @@
 import { getPageMetadataBySlug } from '@/services/wordpress';
 import CaseStudiesContent from './CaseStudiesContent';
 
-export default async function CaseStudiesPage() {
+export default function CaseStudiesPage() {
   return <CaseStudiesContent />;
 }
 
