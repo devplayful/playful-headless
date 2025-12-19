@@ -26,33 +26,6 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   onButtonClick,
 }) => {
   return (
-<<<<<<< HEAD
-    <div className="py-4 lg:py-10">
-      <div className="max-w-7xl mx-auto pt-[0.7rem] pb-[0.7rem] sm:px-6 lg:px-8">
-        <div className="lg:flex lg:items-center lg:space-x-12">
-          {/* Columna izquierda - Imagen */}
-          <div className="lg:w-1/2 mb-12 lg:mb-0">
-            <div className="relative rounded-2xl overflow-hidden">
-              <img
-                src={imageUrl}
-                alt={imageAlt}
-                className="w-[100%] h-auto object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Columna derecha - Contenido */}
-          <div className="lg:w-[708px] h-full min-h-[500px] rounded-2xl relative overflow-hidden">
-            <div
-              className="absolute inset-0 w-full h-full"
-              style={{
-                backgroundColor: contentBgColor,
-                backgroundImage: "url(/images/background.webp)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-=======
     <div className="w-full">
       <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
         {/* Columna izquierda - Imagen */}
@@ -62,7 +35,6 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               src={imageUrl}
               alt={imageAlt}
               className="w-full h-auto object-cover"
->>>>>>> arturo-4
             />
           </div>
         </div>
