@@ -1,10 +1,8 @@
-import { getPageMetadataBySlug, getCaseStudies } from '@/services/wordpress';
+import { getPageMetadataBySlug } from '@/services/wordpress';
 import CaseStudiesContent from './CaseStudiesContent';
 
 export default async function CaseStudiesPage() {
-  const caseStudies = await getCaseStudies();
-  
-  return <CaseStudiesContent caseStudies={caseStudies} />;
+  return <CaseStudiesContent />;
 }
 
 export async function generateMetadata() {
