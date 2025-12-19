@@ -6,11 +6,7 @@ export default function NosotrosCTASection({
   imageAlt?: string;
 }) {
   return (
-<<<<<<< HEAD
-    <section className="relative overflow-hidden mt-6 mb-0 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto">
-=======
     <section className="relative overflow-hidden mt-12 mb-12 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto md:mt-[40px] md:mb-16">
->>>>>>> arturo-4
       {/* Overlay de confeti para la sección CTA */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       <div className="relative z-10 flex flex-col md:flex-row items-stretch">
