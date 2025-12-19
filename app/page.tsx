@@ -6,18 +6,11 @@ import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
-import { getLatestBlogPosts } from "@/services/wordpress";
 import BlogPosts from "@/components/BlogPosts";
 
-<<<<<<< HEAD
-async function HomeContent() {
-  const latestPosts = await getLatestBlogPosts(6);
-
-=======
 const shell = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
 
 function HomeContent() {
->>>>>>> arturo-4
   return (
     <div className="">
       {/* Hero Section */}
@@ -70,7 +63,7 @@ function HomeContent() {
         {/* Floating decorative elements */}
         <div className="absolute top-20 left-10 w-4 h-4 bg-purple-300 rounded-full opacity-60 animate-bounce"></div>
         <div
-          className="absolute top-40 right-20 w-6 h-6 bg-teal-300 rounded-full opacity-60 animate-bounce"
+          className="absolute top-40 right-20 w-6 h-6 bg-pink-300 rounded-full opacity-60 animate-bounce"
           style={{ animationDelay: "0.5s" }}
         ></div>
         <div
@@ -84,24 +77,6 @@ function HomeContent() {
       </section>
 
       {/* Material UI Services Section */}
-<<<<<<< HEAD
-      <MaterialServicesSection className=" contenedores-home px-[1rem]" />
-      <SolucionesPlayful className=" contenedores-home px-[1rem]" />
-      <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
-        <BlogPosts
-          posts={latestPosts}
-          backgroundColor="#5724AB"
-          overlayColor="#5724AB"
-        />
-      </div>
-
-      <TestimonialsSection className=" px-[1rem] pt-[6rem]  lg:pt-[1px]" />
-
-      <CarouselResultados className=" contenedores-home" />
-      <div className="py-12 px-4 sm:px-6 lg:px-8">
-        <TwoColumnCtaSection contentBgColor="#B3FFF3" />
-      </div>
-=======
       <MaterialServicesSection className={shell} />
 
       <SolucionesPlayful className={shell} />
@@ -135,7 +110,6 @@ function HomeContent() {
           />
         </div>
       </section>
->>>>>>> arturo-4
     </div>
   );
 }

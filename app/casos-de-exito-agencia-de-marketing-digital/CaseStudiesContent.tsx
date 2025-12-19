@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import BlogPosts from "@/components/BlogPosts";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
-import { CaseStudy } from "@/services/wordpress";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -101,30 +100,6 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   );
 };
 
-<<<<<<< HEAD
-// Importación dinámica para evitar problemas de hidratación
-const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
-  ssr: false,
-});
-
-
-interface CaseStudiesContentProps {
-  caseStudies: CaseStudy[];
-}
-
-export default function CaseStudiesContent({ caseStudies }: CaseStudiesContentProps) {
-  // Función para obtener el color de fondo del badge
-  const getBadgeColorClass = (color: string) => {
-    const colorMap: { [key: string]: string } = {
-      'purple': 'bg-purple-600',
-      'blue': 'bg-blue-600',
-      'green': 'bg-green-600',
-      'red': 'bg-red-600',
-      'yellow': 'bg-yellow-600',
-      'pink': 'bg-pink-600',
-      'indigo': 'bg-indigo-600',
-      'gray': 'bg-gray-600',
-=======
 export default function CaseStudiesContent() {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -201,67 +176,33 @@ export default function CaseStudiesContent() {
       } finally {
         setLoading(false);
       }
->>>>>>> arturo-4
     };
-    return colorMap[color] || color || 'bg-purple-600';
-  };
 
-  // Función para obtener el color de fondo del botón
-  const getButtonColorClass = (color: string) => {
-    const colorMap: { [key: string]: string } = {
-      'purple': 'bg-purple-600 hover:bg-purple-700',
-      'blue': 'bg-blue-600 hover:bg-blue-700',
-      'green': 'bg-green-600 hover:bg-green-700',
-      'red': 'bg-red-600 hover:bg-red-700',
-      'yellow': 'bg-yellow-600 hover:bg-yellow-700',
-      'pink': 'bg-pink-600 hover:bg-pink-700',
-      'indigo': 'bg-indigo-600 hover:bg-indigo-700',
-      'gray': 'bg-gray-600 hover:bg-gray-700',
-    };
-    return colorMap[color] || color || 'bg-purple-600 hover:bg-purple-700';
-  };
+    fetchCaseStudies();
+  }, []);
 
   // All available categories
   const allCategories = Array.from(
     new Set(caseStudies.flatMap((study) => study.categories))
   );
 
-<<<<<<< HEAD
-  // State for active filters
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-
-  // Toggle filter on/off
-  const toggleFilter = (filter: string) => {
-    setActiveFilters(
-      (prev: string[]) =>
-        prev.includes(filter)
-          ? prev.filter((f: string) => f !== filter) // Remove filter if it's active
-          : [...prev, filter] // Add filter if it's not active
-=======
   const toggleFilter = (filter: string) => {
     setActiveFilters((prev) =>
       prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
->>>>>>> arturo-4
     );
   };
 
   const removeFilter = (filter: string) => {
-<<<<<<< HEAD
-    setActiveFilters(activeFilters.filter((f: string) => f !== filter));
-=======
     setActiveFilters((prev) => prev.filter((f) => f !== filter));
->>>>>>> arturo-4
   };
 
   const filteredCaseStudies =
     activeFilters.length === 0
       ? caseStudies
-      : caseStudies.filter((study: CaseStudy) =>
-          activeFilters.some((filter: string) => study.categories.includes(filter))
+      : caseStudies.filter((study) =>
+          activeFilters.some((filter) => study.categories.includes(filter))
         );
 
-<<<<<<< HEAD
-=======
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -290,7 +231,6 @@ export default function CaseStudiesContent() {
   // Patrón con padding responsive
   const sectionShell = "max-w-[1200px] mx-auto px-4 sm:px-6";
 
->>>>>>> arturo-4
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay pt-4 pb-12">
       <div className={sectionShell}>
