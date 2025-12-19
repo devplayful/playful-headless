@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
 import { BlogPostContent } from './BlogPostContent';
-import NosotrosBlogSectionClient from '@/components/sections/NosotrosBlogSectionClient';
+import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 
 export async function generateStaticParams() {
@@ -90,8 +90,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     >
       <div className="min-h-screen">
       {/* Header con título e imagen */}
+<<<<<<< HEAD
       <header className="py-12" data-hero="blog-hero">
         <div className="max-w-6xl mx-auto px-6 py-12 bg-white rounded-[18px]">
+=======
+      <header className="pt-4 pb-12">
+        <div className="mx-auto max-w-[1200px] px-4 md:px-6 py-12 bg-white rounded-[18px]">
+>>>>>>> arturo-4
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
@@ -141,7 +146,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </header>
 
       {/* Categorías y Compartir - Debajo del Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-8">
+      <section className="mx-auto max-w-[1200px] px-4 md:px-6 py-8">
         <div className="flex items-center justify-between gap-6 flex-wrap">
           {/* Categorías a la izquierda */}
           <div className="flex flex-wrap items-center gap-2">
@@ -269,7 +274,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección de artículos relacionados */}
       <div className="mt-16">
-        <NosotrosBlogSectionClient />
+        <BlogRelatedPostsSection />
       </div>
       
       {/* Sección CTA */}

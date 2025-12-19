@@ -247,6 +247,14 @@ export interface WPPost {
   _embedded?: {
     'wp:featuredmedia'?: WPFeaturedMedia[];
     'wp:term'?: any[][];
+    'author'?: Array<{
+      id: number;
+      name: string;
+      slug: string;
+      avatar_urls?: {
+        [key: string]: string;
+      };
+    }>;
   };
   featured_media?: number;
   featured_media_url?: string;
@@ -288,7 +296,7 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
     perPage = Math.min(100, Math.max(1, perPage));
 
     // Construir URL con filtro de categoría si existe
-    let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term`;
+    let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
     
     // Si hay una categoría, primero obtener su ID
     if (categorySlug) {
@@ -327,12 +335,13 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
     const posts: WPPost[] = await response.json();
 
-    // Procesar los posts para incluir las imágenes destacadas
+    // Procesar los posts para incluir las imágenes destacadas y autor
     const processedPosts = posts.map(post => ({
       ...post,
       featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
       featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
-      categories: post._embedded?.['wp:term']?.[0] || []
+      categories: post._embedded?.['wp:term']?.[0] || [],
+      author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
     }));
 
     return {

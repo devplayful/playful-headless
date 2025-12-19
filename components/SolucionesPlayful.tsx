@@ -2,6 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
@@ -103,7 +104,7 @@ export default function SolucionesPlayful({
         </p>
 
         {/* Contenedor del carousel */}
-        <div className="carousel-container md:mx-0 mx-[-1rem]">
+        <div className="carousel-container overflow-hidden">
           <Slider
             {...{
               ...responsiveSettings,
@@ -129,9 +130,9 @@ export default function SolucionesPlayful({
           </Slider>
         </div>
         <div className="text-center mt-12">
-          <button className="conversion-cta-button font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+          <Link href="/contactar-agencia-de-marketing-digital" className="conversion-cta-button font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 inline-block">
             ¡Crece como ellos!
-          </button>
+          </Link>
         </div>
         </div>
       </section>

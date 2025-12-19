@@ -336,12 +336,9 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: cardStyles }} />
-      <section className={`${className}  p-[1.2rem]`}>
+      <div className="w-full">
         <div
-          className="w-full max-w-full flex flex-col gap-[25px] p-[2.2rem]
-           lg:px-[4rem] mx-auto box-border md:p-[60px_40px] md:max-w-[720px] lg:p-[80px_90px]
-            lg:max-w-[1000px] xl:max-w-[1200px] rounded-3xl md:rounded-[68px] bg-[url('/images/background.webp')]
-             text-center playful-contenedor-B3FFF3"
+          className="w-full flex flex-col gap-[25px] p-[2.2rem] lg:px-[4rem] box-border md:p-[60px_40px] lg:p-[80px_90px] rounded-3xl md:rounded-[68px] bg-[url('/images/background.webp')] text-center playful-contenedor-B3FFF3"
           style={{ backgroundColor: backgroundColor }}
         >
         {title && (
@@ -363,7 +360,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         )}
 
         {/* Contenedor del carousel */}
-        <div className="carousel-container md:mx-0 mx-[-1rem]">
+        <div className="carousel-container overflow-hidden">
           {loading ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
@@ -418,7 +415,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           </div>
         )}
         </div>
-      </section>
+      </div>
     </>
   );
 };

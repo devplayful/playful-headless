@@ -95,7 +95,7 @@ export default async function SuccessStoryPage({
                     alt={story.title.rendered}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain transition-opacity duration-300"
+                    className="object-cover transition-opacity duration-300"
                     priority
                   />
                 ) : (

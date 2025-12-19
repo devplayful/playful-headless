@@ -33,9 +33,9 @@ export default function PoliticaDePrivacidad() {
               </nav>
 
             <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
-            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">POLÍTICA DE PRIVACIDAD DE PLAYFUL AGENCY</h2>
+            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Protegemos tu Identidad: Seguridad y Confianza para Tus Datos</h2>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px] mb-4">
-                En <strong className="font-bold">Playful</strong> Agency, nos comprometemos a proteger tu privacidad y garantizar la seguridad de tu información personal. Esta política describe cómo recopilamos, usamos y protegemos tus datos cuando interactúas con nuestros servicios.
+                Tu privacidad y la seguridad de tus datos son una prioridad para nosotros. En esta sección, te ofrecemos información clara y detallada sobre nuestras prácticas de manejo de datos, seguridad y tus derechos como usuario. <strong className="font-bold">Nuestro compromiso es generar confianza</strong> en cada interacción.
               </p>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[14px] text-[#4A4453] opacity-80">
               Última actualización: 17 de octubre de 2024
@@ -55,7 +55,7 @@ export default function PoliticaDePrivacidad() {
 
       {/* Content Section */}
       <section className="relative overflow-hidden rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-0 mb-16">
-        <div className="pointer-events-none absolute inset-0 bg-[#EBDBFF]" />
+        <div className="pointer-events-none absolute inset-0 bg-white" />
         <div className="relative z-10 w-full max-w-[1180px] mx-auto bg-[#F7EDFF] rounded-[36px] p-8 md:p-10">
           {/* Contenido de política de privacidad */}
           <div className="space-y-8 [font-family:var(--font-dm-sans),sans-serif] text-[#453A53]">

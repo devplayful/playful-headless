@@ -145,7 +145,7 @@ body {
   font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
   font-weight: 400;
   line-height: 1.1;
-  font-size: 72px;
+  font-size: 56px;
   color: #440099;
 }
 
@@ -198,11 +198,31 @@ body {
 }
 
 .playful-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #2A0064;
   background-color: #39DDCB;
-  padding: 10px;
-  border-radius: 30px;
-  width: 195px;
+  padding: 16px 32px;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+  width: auto;
+  min-height: auto;
+  transition: all 0.3s ease;
+}
+
+.playful-boton:hover {
+  transform: scale(1.05);
+  background-color: #2ec4b6;
+}
+
+@media (max-width: 640px) {
+  .playful-boton {
+    width: 100%;
+    padding: 16px 24px;
+  }
 }
 
 .playful-contenedor-FFEFD1 {
@@ -456,6 +476,16 @@ body {
 /* Ocultar barra de scroll en navegadores WebKit (Chrome, Safari) */
 .conversion-cards-wrapper::-webkit-scrollbar {
   display: none;
+}
+
+/* Clase para ocultar scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }
 
 
