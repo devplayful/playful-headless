@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogCategories from './BlogCategories';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
+import MostViewedArticles from '@/components/blog/MostViewedArticles';
 
 // Función para formatear la fecha
 const formatDate = (dateString: string) => {
@@ -38,12 +39,12 @@ export default async function BlogPage({
     <div className="min-h-screen">
       {/* Último artículo destacado */}
       {posts.length > 0 && (
-        <div className="w-full pt-12">
+        <div className="w-full pt-4">
           <div className="max-w-7xl mx-auto px-6 pb-12">
             <div>
               <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
                 {/* Imagen del artículo destacado con fondo colorido */}
-                <div className="h-80 md:h-96 w-full relative bg-gradient-to-br from-[#72E3D8] via-[#8DD9F5] to-[#B8A4FF]">
+                <div className="h-80 md:h-96 w-full relative bg-white">
                   {posts[0].featured_media_url ? (
                     <div className="relative w-full h-full flex items-center justify-center p-8">
                       <Image
@@ -73,7 +74,7 @@ export default async function BlogPage({
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-[#440099] font-semibold">AUTOR EN PLAYFUL</span>
+                      <span className="text-[#440099] font-semibold">{posts[0].author_name?.toUpperCase() || 'PLAYFUL AGENCY'}</span>
                     </div>
                     <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
@@ -88,7 +89,7 @@ export default async function BlogPage({
                     href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
                     className="block mb-4"
                   >
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
+                    <h1 className="text-[1.4rem] md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
                       {posts[0].title.rendered}
                     </h1>
                   </Link>
@@ -110,6 +111,9 @@ export default async function BlogPage({
         </div>
       )}
 
+      {/* Artículos Más Vistos */}
+      <MostViewedArticles posts={posts} />
+
       {/* Barra de categorías */}
       <div className="w-full pb-8">
         <div className="max-w-7xl mx-auto px-6">
@@ -118,7 +122,7 @@ export default async function BlogPage({
       </div>
 
       {/* Grid de Posts */}
-      <div className="w-full pt-0 pb-12">
+      <div className="w-full pt-0 pb-0 md:pb-6">
         <div className="max-w-7xl mx-auto px-6">
           {posts.length <= 1 ? (
             <div className="text-center py-12">
@@ -134,7 +138,7 @@ export default async function BlogPage({
                     className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1"
                   >
                     {/* Imagen del artículo con fondo colorido */}
-                    <div className="h-56 relative bg-gradient-to-br from-[#FFE6F0] via-[#E9D7FF] to-[#D4F1F4]">
+                    <div className="h-56 relative bg-white">
                       {post.featured_media_url ? (
                         <div className="relative w-full h-full">
                           <Image
@@ -182,13 +186,13 @@ export default async function BlogPage({
                       </p>
                       
                       {/* Fecha y botón */}
-                      <div className="flex items-center justify-between mt-auto">
+                      <div className="flex flex-col gap-3 mt-auto">
                         <span className="text-xs text-gray-500 font-medium">
                           {formatDate(post.date)}
                         </span>
                         <Link 
                           href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
-                          className="inline-block bg-[#440099] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
+                          className="w-full bg-[#440099] text-white py-3 rounded-full font-bold text-sm text-center hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
                         >
                           LEER MÁS
                         </Link>
@@ -200,21 +204,38 @@ export default async function BlogPage({
 
               {/* Paginación */}
               {totalPages > 1 && (
-                <div className="mt-12 mb-10 flex justify-center items-center gap-3">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Link
-                      key={page}
-                      href={`/blog?page=${page}${category ? `&category=${category}` : ''}`}
-                      className={`w-12 h-12 flex items-center justify-center rounded-[10px] text-lg font-bold transition-all duration-300 ${
-                        currentPage === page 
-                          ? 'bg-[#D3B0FF] text-[#440099] shadow-md' 
-                          : 'bg-white text-[#440099] hover:bg-[#D3B0FF] hover:text-[#440099] border-2 border-[#D2BBFF]'
-                      }`}
-                      aria-label={`Página ${page}`}
-                    >
-                      {page}
-                    </Link>
-                  ))}
+                <div className="mt-12 mb-10 flex justify-center items-center gap-4">
+                  <Link
+                    href={`/blog?page=${currentPage - 1}${category ? `&category=${category}` : ''}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md ${
+                      currentPage === 1
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
+                        : 'bg-white text-[#440099] hover:bg-[#440099] hover:text-white'
+                    }`}
+                    aria-label="Página anterior"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </Link>
+                  
+                  <span className="text-lg font-bold text-[#440099]">
+                    {currentPage} / {totalPages}
+                  </span>
+                  
+                  <Link
+                    href={`/blog?page=${currentPage + 1}${category ? `&category=${category}` : ''}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md ${
+                      currentPage === totalPages
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
+                        : 'bg-[#440099] text-white hover:bg-[#5500BB]'
+                    }`}
+                    aria-label="Página siguiente"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
                 </div>
               )}
             </>

@@ -8,12 +8,14 @@ import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
 
+const shell = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
+
 function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
       <section className="relative overflow-hidden ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
@@ -41,9 +43,9 @@ function HomeContent() {
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="playful-boton font-semibold">
-                    ¡Quiero saber más!
-                  </button>
+                  <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton">
+                    Completa el formulario y cuéntanos tu idea
+                  </Link>
                 </div>
               </div>
             </div>
@@ -51,7 +53,7 @@ function HomeContent() {
             {/* Right Illustration Area */}
             <div className="relative">
               <img
-                src="../images/Playful-Agency-tu-agencia-de-marketing-digital.webp"
+                src="../images/playful-imagen-banner.png"
                 alt=""
               />
             </div>
@@ -75,21 +77,39 @@ function HomeContent() {
       </section>
 
       {/* Material UI Services Section */}
-      <MaterialServicesSection className=" contenedores-home px-[1rem]" />
+      <MaterialServicesSection className={shell} />
 
-      <SolucionesPlayful className=" contenedores-home px-[1rem]" />
-      <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
-      <BlogPosts 
-      backgroundColor="#5724AB"
-      overlayColor="#5724AB"/>
-      </div>
+      <SolucionesPlayful className={shell} />
+      <section className="py-12">
+        <div className={shell}>
+          <BlogPosts 
+            backgroundColor="#5724AB"
+            overlayColor="#5724AB"
+          />
+        </div>
+      </section>
 
-      <TestimonialsSection className=" px-[1rem] pt-[6rem]" />
+      <section className="py-12">
+        <div className={shell}>
+          <TestimonialsSection />
+        </div>
+      </section>
 
-      <CarouselResultados className=" contenedores-home" />
-      <div className="min-h-screen   py-12 px-4 sm:px-6 lg:px-8">
-        <TwoColumnCtaSection contentBgColor="#B3FFF3" />
-      </div>
+      <section className="py-12">
+        <div className={shell}>
+          <CarouselResultados />
+        </div>
+      </section>
+      <section className="py-12">
+        <div className={shell}>
+          <TwoColumnCtaSection 
+            contentBgColor="#B3FFF3"
+            imageUrl="/images/imagen-cta-playful.png"
+            buttonText="Llena el formulario y hablemos sobre tu web"
+            buttonLink="/contactar-agencia-de-marketing-digital"
+          />
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { getPageMetadataBySlug, TeamMember, getTeamMembers, getLatestBlogPosts } from '@/services/wordpress';
 import Image from 'next/image';
-import PortfolioCarousel from '@/components/ui/PortfolioCarousel';
 import Link from 'next/link';
 import BlogPosts from '@/components/BlogPosts';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import CarouselResultados from '@/components/CarouselResultados';
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
@@ -318,24 +318,6 @@ const NuestrosValoresSection = () => {
   );
 };
 
-// -- COMPONENTE DE NUESTRA PALABRA -- //
-const NuestraPalabraSection = () => {
-  return (
-    <section className="bg-[#440099] py-16 md:py-24 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            No confíes solo en nuestra palabra, mira los resultados.
-          </h2>
-          <p className="mx-auto max-w-3xl text-lg text-[#E9D7FF] mb-12 md:mb-4">
-            Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial.
-          </p>
-          <PortfolioCarousel />
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // --- COMPONENTE DE BLOG ---
 const BlogSection = async () => {
@@ -357,7 +339,7 @@ const CTASection = ({
   imageAlt?: string;
 }) => {
   return (
-    <section className="relative overflow-hidden mt-12 mb-0 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto">
+    <section className="relative overflow-hidden mt-12 mb-12 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto md:mt-[40px] md:mb-16">
       {/* Overlay de confeti para la sección CTA */}
       <div className="pointer-events-none absolute inset-0 "></div>
       <div className="relative z-10 flex flex-col md:flex-row items-stretch">
@@ -470,7 +452,7 @@ const HeroSection = ({
               <h1 className={`[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[20px] sm:text-[24px] lg:text-[28px] ${textColor} mb-4`}>
                 {title}
               </h1>
-              <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[38px] sm:text-[56px] lg:text-[72px] text-[#440099] mb-6">
+              <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[56px] text-[#440099] mb-6">
                 {subtitle}
               </h2>
               <div className={`prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] ${textSecondaryColor} w-full max-w-none`}>
@@ -504,14 +486,43 @@ export default async function Nosotros() {
   return (
     <div className="w-full">
       {/* Sección Superior "Nosotros" */}
-      <HeroSection 
-        title="Playful Agency"
-        subtitle="Nosotros"
-        description="Un breve texto que hable de quiénes somos como introducción a la sección, debe ser breve pero conciso."
-        imagePath="/images/nosotros/nosotros-img.png"
-        imageAlt="Playful Agency"
-        textColor="text-[#4A4453]"
-      />
+      <div className="w-full">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="min-h-[480px] flex items-center pt-4 pb-12">
+            <div className="w-full">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                {/* Columna Izquierda */}
+                <div className="md:w-1/2 text-center md:text-left">
+                  <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[20px] sm:text-[24px] lg:text-[28px] text-[#4A4453] mb-4">
+                    Playful Agency
+                  </h1>
+                  <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[56px] text-[#440099] mb-6">
+                    Diseño con Para Negocios que Quieren Resultados Reales
+                  </h2>
+                  <div className="prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] text-gray-600 w-full max-w-none">
+                    <p>
+                      En Playful Agency, nos dedicamos a transformar tus objetivos de negocio en experiencias digitales funcionales y atractivas. Somos un equipo de diseñadores y desarrolladores apasionados por la solución de problemas complejos. Descubre cómo nuestra atención al detalle puede <strong className="font-bold">generar un impacto significativo en tus métricas</strong> y en la conexión con tu audiencia.
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Columna Derecha */}
+                <div className="md:w-1/2 flex justify-center">
+                  <div className="relative w-full max-w-[580px] h-[480px]">
+                    <Image
+                      src="/images/nosotros/nosotros-equipo.png"
+                      alt="Playful Agency"
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Sección "Propuesta de valor" */}
       <ValuePropositionSection />
@@ -528,8 +539,12 @@ export default async function Nosotros() {
       {/* Sección Nuestro Equipo */}
       <EquipoSection />
 
-      { /* Seccion Nuestra Palabra */}
-      <NuestraPalabraSection />      
+      {/* Sección Casos de Éxito - Carrusel */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <CarouselResultados />
+        </div>
+      </section>
 
       {/* Sección del Blog */} 
       <BlogSection />
