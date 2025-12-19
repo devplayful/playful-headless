@@ -98,20 +98,12 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
 
   return (
     <div className="bg-[#2A0064] rounded-full py-4 px-6 overflow-hidden">
-<<<<<<< HEAD
-      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide md:justify-center md:flex-wrap">
-=======
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide sm:flex-nowrap sm:justify-start lg:flex-wrap lg:justify-center whitespace-nowrap">
->>>>>>> arturo-4
         {categories.map((cat) => (
           <Link
             key={cat.id}
             href={`/blog${cat.slug ? `?category=${cat.slug}` : ''}`}
-<<<<<<< HEAD
-            className={`flex-shrink-0 px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
-=======
             className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all flex-shrink-0 ${
->>>>>>> arturo-4
               currentCategory === (cat.slug === '' ? '' : cat.slug)
                 ? 'bg-[#72E3D8] text-[#2A0064] shadow-md'
                 : 'bg-white text-[#2A0064] hover:bg-[#72E3D8] hover:text-[#2A0064]'

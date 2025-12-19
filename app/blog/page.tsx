@@ -49,14 +49,14 @@ export default async function BlogPage({
   return (
     <div className="min-h-screen">
       {/* Último artículo destacado */}
-      {posts.length > 0 && (
-        <div className="w-full pt-12">
+      {featuredPost && (
+        <div className="w-full pt-4">
           <div className="max-w-7xl mx-auto px-6 pb-12">
             <div>
               <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
                 {/* Imagen del artículo destacado con fondo colorido */}
-                <div className="h-80 md:h-96 w-full relative bg-gradient-to-br from-[#72E3D8] via-[#8DD9F5] to-[#B8A4FF]">
-                  {posts[0].featured_media_url ? (
+                <div className="h-80 md:h-96 w-full relative bg-white">
+                  {featuredPost.featured_media_url ? (
                     <div className="relative w-full h-full flex items-center justify-center p-8">
                       <Image
                         src={featuredPost.featured_media_url}
@@ -85,15 +85,13 @@ export default async function BlogPage({
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-[#440099] font-semibold">AUTOR EN PLAYFUL</span>
+                      <span className="text-[#440099] font-semibold">{featuredPost.author_name?.toUpperCase() || 'PLAYFUL AGENCY'}</span>
                     </div>
-                    
-                    {/* Grupo derecha: FECHA */}
                     <div className="flex items-center gap-2 bg-[#F0E6FF] px-4 py-2 rounded-full">
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-[#440099] font-semibold text-xs md:text-sm">{formatDate(featuredPost.date)}</span>
+                      <span className="text-[#440099] font-semibold">{formatDate(featuredPost.date)}</span>
                     </div>
                   </div>
 
@@ -102,8 +100,8 @@ export default async function BlogPage({
                     href={`/blog/${featuredPost.categories?.[0]?.slug || 'sin-categoria'}/${featuredPost.slug}`}
                     className="block mb-4"
                   >
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
-                      {posts[0].title.rendered}
+                    <h1 className="text-[1.4rem] md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
+                      {featuredPost.title.rendered}
                     </h1>
                   </Link>
                   
@@ -134,7 +132,7 @@ export default async function BlogPage({
       {/* Grid de Posts */}
       <div className="w-full pt-0 pb-0 md:pb-6">
         <div className="max-w-7xl mx-auto px-6">
-          {gridPosts.length === 0 ? (
+          {posts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lg text-gray-700">No se encontraron más artículos en esta categoría.</p>
             </div>
