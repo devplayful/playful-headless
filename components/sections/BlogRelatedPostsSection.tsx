@@ -18,7 +18,18 @@ export default function BlogRelatedPostsSection() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const postsPerPage = 3;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const postsPerPage = isMobile ? 1 : 3;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -48,10 +59,10 @@ export default function BlogRelatedPostsSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-4 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-4 mb-16">
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[45px] leading-[52px] mb-4">
+        <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
           ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
         </h2>
         <p className="text-white text-base md:text-lg leading-relaxed mb-10">
@@ -63,12 +74,12 @@ export default function BlogRelatedPostsSection() {
         <div className="relative z-10 text-center text-white">Cargando artículos…</div>
       ) : (
         <div className="relative z-10">
-          {/* Controles del carrusel */}
-          {totalPages > 1 && (
+          {/* Controles del carrusel - Desktop */}
+          {totalPages > 1 && !isMobile && (
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                className="absolute left-0 -ml-[12px] top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
                 aria-label="Anterior"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +88,7 @@ export default function BlogRelatedPostsSection() {
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                className="absolute right-0 -mr-[12px] top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
                 aria-label="Siguiente"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +99,7 @@ export default function BlogRelatedPostsSection() {
           )}
 
           {/* Grid de posts */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-4 md:px-12">
             {currentPosts.map((post) => (
             <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
               <div className="relative h-48 bg-gray-100">
@@ -115,6 +126,30 @@ export default function BlogRelatedPostsSection() {
           ))}
           </div>
 
+          {/* Controles del carrusel - Mobile (debajo de las tarjetas) */}
+          {totalPages > 1 && isMobile && (
+            <div className="flex justify-center items-center gap-4 mt-8">
+              <button
+                onClick={prevSlide}
+                className="bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Anterior"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={nextSlide}
+                className="bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Siguiente"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* Indicadores de página */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-8">
@@ -133,8 +168,8 @@ export default function BlogRelatedPostsSection() {
         </div>
       )}
 
-      <div className="relative z-10 flex justify-center mt-12">
-        <Link href="/blog" className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 text-base shadow-lg transition-colors">
+      <div className="relative z-10 flex justify-center mt-12 pb-5 md:pb-0">
+        <Link href="/blog" className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 !text-[14px] !leading-[18px] md:!text-base md:!leading-normal shadow-lg transition-colors">
           Ver más artículos
         </Link>
       </div>

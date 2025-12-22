@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import BlogPosts from "@/components/BlogPosts";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -232,17 +232,17 @@ export default function CaseStudiesContent() {
   const sectionShell = "max-w-[1200px] mx-auto px-4 sm:px-6";
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay pt-4 pb-12">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay pt-0 pb-8">
       <div className={sectionShell}>
         {/* Breadcrumb */}
-        <div className="mb-8">
-          <p className="text-white text-lg font-semibold">
-            Home / <span className="font-bold">Casos de éxito</span>
+        <div className="mb-0">
+          <p className="text-white [font-family:var(--font-paytone-one)] font-normal text-[28px] leading-[32px]">
+            Home / <span className="font-normal">Casos de éxito</span>
           </p>
         </div>
 
         {/* Hero Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">
           <div>
             <h1 className="text-[50px] lg:text-[57px] font-normal text-white mb-6 leading-tight">
               Resultados que hablan por sí solos
@@ -259,9 +259,9 @@ export default function CaseStudiesContent() {
           <div className="flex justify-center lg:justify-end">
             <div className="relative">
               <img
-                src="/images/casos-de-exitos-imagen.png"
+                src="/images/casos-de-exito.png"
                 alt="Playful Agency - Casos de éxito"
-                className="w-full max-w-md lg:max-w-lg"
+                className="w-full max-w-sm lg:max-w-md"
               />
             </div>
           </div>
@@ -390,7 +390,7 @@ export default function CaseStudiesContent() {
 
         {/* Sección del Blog */}
         <div className="my-16">
-          <BlogPosts />
+          <BlogRelatedPostsSection />
         </div>
 
         {/* Sección de dos columnas */}

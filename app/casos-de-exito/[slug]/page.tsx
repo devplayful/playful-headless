@@ -72,19 +72,19 @@ export default async function SuccessStoryPage({
     <div className="text-gray-800">
       {/* Hero Section */}
       <section className="text-white">
-        <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto bg-[#E9D7FF] rounded-t-[18px] p-[80px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="text-center md:text-left md:pt-4">
-              <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
                 {story.title.rendered}
               </h1>
               <p
-                className="text-lg text-[#4A4453]"
+                className="text-base sm:text-lg text-[#4A4453]"
                 dangerouslySetInnerHTML={{ __html: story.acf.primerap || '' }}
               />
             </div>
             <div>
-              <div className="relative w-full h-[400px] rounded-lg overflow-hidden bg-gray-100">
+              <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] rounded-lg overflow-hidden bg-gray-100">
                 {story.acf?.imagenbanner ? (
                   <Image
                     src={
@@ -111,13 +111,19 @@ export default async function SuccessStoryPage({
       </section>
 
       {/* Challenge Section */}
-      <section className="py-20 bg-[#FEF7FF] ">
-        <div className="max-w-4xl mx-auto text-center px-6 ">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#2A0064] mb-6">
+      <section className="py-12 sm:py-16 md:py-20 bg-[#FEF7FF] ">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 ">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
             {story.acf.primerh2 || 'El Desafío'}
           </h2>
+          {story.acf.segundap && (
+            <div
+              className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6"
+              dangerouslySetInnerHTML={{ __html: story.acf.segundap }}
+            />
+          )}
           <div
-            className="text-lg text-gray-600 mb-12"
+            className="text-base sm:text-lg text-gray-600 mb-8 sm:mb-12"
             dangerouslySetInnerHTML={{ __html: story.acf.tercerap || '' }}
           />
           {Array.isArray(story.acf?.challenge_logos) &&
@@ -150,9 +156,9 @@ export default async function SuccessStoryPage({
         story.acf?.segundoh2 ||
         story.acf?.tercerap) && (
         <section className="py-0 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center">
-          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 mb-12">
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
              {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
               .filter(Boolean)
               .map((image, index) => {
@@ -178,12 +184,12 @@ export default async function SuccessStoryPage({
               })}
             </div>
 
-            <div className="text-center max-w-4xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+            <div className="text-center max-w-4xl px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
                 {story.acf?.segundoh2 || 'Nuestro Enfoque'}
               </h2>
               <div
-                className="text-lg text-gray-700 leading-relaxed"
+                className="text-base sm:text-lg text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: story.acf?.tercerap || '' }}
               />
             </div>
@@ -203,16 +209,16 @@ export default async function SuccessStoryPage({
         story.acf?.desafioimagen2 ||
         story.acf?.desafioimagen3 ||
         story.acf?.desafioimagen4) && (
-        <section className="py-16 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="bg-[#E9D7FF] rounded-[24px] p-6 md:p-8 lg:p-10">
+        <section className="py-12 sm:py-16 bg-[#FEF7FF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="bg-[#E9D7FF] rounded-[18px] sm:rounded-[24px] p-4 sm:p-6 md:p-8 lg:p-10">
             {/* Contenedor principal sin fondo */}
-            <div className="p-6 md:p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-items-center">
+            <div className="p-4 sm:p-6 md:p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 justify-items-center">
                 {/* Columna Izquierda - 50% */}
-                <div className="p-0 m-0 flex flex-col justify-between">
+                <div className="p-0 m-0 flex flex-col justify-between w-full">
                   {/* Cuadrado grande arriba: Textos */}
-                  <div className="bg-white rounded-[18px] p-6 md:p-8 shadow-[0_8px_24px_rgba(15,23,42,0.08)] h-[600px]">
+                  <div className="bg-white rounded-[18px] p-4 sm:p-6 md:p-8 shadow-[0_8px_24px_rgba(15,23,42,0.08)] min-h-[400px] sm:min-h-[500px] md:h-[600px]">
                     {[
                       {
                         content: story.acf?.cuartap,
@@ -257,8 +263,8 @@ export default async function SuccessStoryPage({
 
                   {/* DesafioImagen3 con contenedor especial */}
                   {story.acf?.desafioimagen3 && (
-                    <div className="bg-[#FFEFD1] rounded-[36px] p-[18px] overflow-hidden mt-6 grid justify-items-center">
-                      <div className="relative w-[420px] h-[240px]">
+                    <div className="bg-[#FFEFD1] rounded-[24px] sm:rounded-[36px] p-4 sm:p-[18px] overflow-hidden mt-4 sm:mt-6 grid justify-items-center">
+                      <div className="relative w-full max-w-[420px] h-[180px] sm:h-[240px]">
                         <Image
                           src={
                             typeof story.acf.desafioimagen3 === 'string'
@@ -276,10 +282,10 @@ export default async function SuccessStoryPage({
                 </div>
 
                 {/* Columna Derecha - 50% */}
-                <div className="p-0 m-0 space-y-6">
+                <div className="p-0 m-0 space-y-4 sm:space-y-6 w-full">
                   {/* 1. DesafioImagen1 - Logo */}
                   {story.acf?.desafioimagen1 && (
-                    <div className="relative w-[420px] h-[220px] rounded-2xl overflow-hidden">
+                    <div className="relative w-full max-w-[420px] h-[180px] sm:h-[220px] rounded-2xl overflow-hidden mx-auto">
                       <Image
                         src={
                           typeof story.acf.desafioimagen1 === 'string'
@@ -296,7 +302,7 @@ export default async function SuccessStoryPage({
 
                   {/* 2. DesafioImagen2 - Teléfono */}
                   {story.acf?.desafioimagen2 && (
-                    <div className="relative w-[420px] h-[380px] rounded-2xl overflow-hidden">
+                    <div className="relative w-full max-w-[420px] h-[300px] sm:h-[380px] rounded-2xl overflow-hidden mx-auto">
                       <Image
                         src={
                           typeof story.acf.desafioimagen2 === 'string'
@@ -313,7 +319,7 @@ export default async function SuccessStoryPage({
 
                   {/* 3. DesafioImagen4 - Imagen inferior */}
                   {story.acf?.desafioimagen4 && (
-                    <div className="relative w-[420px] h-[270px] rounded-2xl overflow-hidden">
+                    <div className="relative w-full max-w-[420px] h-[220px] sm:h-[270px] rounded-2xl overflow-hidden mx-auto">
                       <Image
                         src={
                           typeof story.acf.desafioimagen4 === 'string'
@@ -344,15 +350,15 @@ export default async function SuccessStoryPage({
         story.acf?.otroh2st ||
         story.acf?.otropst) && (
         <section className="py-0 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center">
             {/* Título y descripción */}
-            <div className="text-center max-w-4xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+            <div className="text-center max-w-4xl px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
                 {story.acf?.tercerh2 || 'Nuestro Enfoque'}
               </h2>
               <div
-                className="text-lg text-gray-700 leading-relaxed mb-12"
+                className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
                 dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
               />
             </div>
@@ -385,12 +391,12 @@ export default async function SuccessStoryPage({
             </div>
 
             {/* Segundo título y párrafo */}
-            <div className="text-center max-w-4xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+            <div className="text-center max-w-4xl px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
                 {story.acf?.otroh2st || ''}
               </h2>
               <div
-                className="text-lg text-gray-700 leading-relaxed mb-12"
+                className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
                 dangerouslySetInnerHTML={{ __html: story.acf?.otropst || '' }}
               />
             </div>
@@ -418,11 +424,11 @@ export default async function SuccessStoryPage({
         story.acf?.segundapdesarrollo ||
         story.acf?.tercerh3desarrollo ||
         story.acf?.tercerapdesarrollo) && (
-        <section className="py-16 bg-[#FEF7FF]">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="py-12 sm:py-16 bg-[#FEF7FF]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="relative">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div className="relative w-full h-[500px] rounded-xl overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
+                <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[800px] rounded-xl overflow-hidden">
                   {story.acf?.imagendesarrollo ? (
                     <Image
                       src={
@@ -442,7 +448,7 @@ export default async function SuccessStoryPage({
                   )}
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   <div className="hidden">
                     {JSON.stringify({
                       primerh3desarrollo: story.acf?.primerh3desarrollo,
@@ -803,7 +809,7 @@ export default async function SuccessStoryPage({
         emphasis="No esperes más para empezar a ganar."
         buttonText="¡Hablemos de tu proyecto!"
         buttonHref="/contactar-agencia-de-marketing-digital"
-        illustrationSrc="/images/Playful-Agency-Conectemos.png"
+        illustrationSrc="/images/caso-de-exito-imagen.png"
         illustrationAlt="Ilustración CTA"
       />
     </div>

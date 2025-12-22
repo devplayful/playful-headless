@@ -7,6 +7,7 @@ import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
+import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 
 const shell = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
 
@@ -22,22 +23,19 @@ function HomeContent() {
               <div className="space-y-2">
                 <p className="playful-miga-pan">Playful Agency:</p>
                 <h1 className="playful-h1">
-                  ¿Tu web está costándole dinero a tu negocio?{" "}
+                  ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
                 </h1>
               </div>
 
               <div className="space-y-4 2 text-purple-800">
                 <p className="playful-contenido-p">
-                  Tu sitio web no es solo tu carta de presentación; es tu motor
-                  de ventas. Pero si tu web es lenta, confusa o se ve anticuada,
-                  no solo estás perdiendo clientes, sino que estás{" "}
+                Tu sitio web no es solo un escaparate digital; es tu motor de ventas más crucial. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás{" "}
                   <b>dejando dinero sobre la mesa</b>.
                 </p>
                 <p className="playful-contenido-p">
-                  En <b>Playful Agency</b>, somos expertos en transformar sitios
-                  web mediocres en <b>máquinas de conversión</b>. No hacemos
-                  diseños bonitos por hacer; creamos tecnología que se traduce
-                  en <b>ventas y crecimiento real</b>.
+                  En <b>Playful Agency</b>, somos una <b>Agencia de E-commerce</b>
+                  que va más allá del diseño. Nos especializamos en transformar plataformas mediocres en
+                  <b> máquinas de conversión de alto rendimiento</b>. No creamos webs bonitas por hacer; desarrollamos tecnología que se traduce en <b>ventas consistentes y crecimiento real</b>.
                 </p>
               </div>
 
@@ -80,12 +78,10 @@ function HomeContent() {
       <MaterialServicesSection className={shell} />
 
       <SolucionesPlayful className={shell} />
+
       <section className="py-12">
         <div className={shell}>
-          <BlogPosts 
-            backgroundColor="#5724AB"
-            overlayColor="#5724AB"
-          />
+          <CarouselResultados />
         </div>
       </section>
 
@@ -97,14 +93,15 @@ function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <CarouselResultados />
+          <BlogRelatedPostsSection />
         </div>
       </section>
+
       <section className="py-12">
         <div className={shell}>
           <TwoColumnCtaSection 
             contentBgColor="#B3FFF3"
-            imageUrl="/images/imagen-cta-playful.png"
+            imageUrl="/images/imagen-nueva-cta-home.png"
             buttonText="Llena el formulario y hablemos sobre tu web"
             buttonLink="/contactar-agencia-de-marketing-digital"
           />

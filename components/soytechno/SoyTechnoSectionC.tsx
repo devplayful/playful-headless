@@ -31,7 +31,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
         {data.titulo_de_la_seccion_c && (
           <div className="flex justify-center mb-12">
             <div className="bg-[#EADDFF] rounded-full px-8 py-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#2A0064] text-center">
+              <h2 className="text-[1.2rem] leading-[1.2rem] md:text-3xl md:leading-normal font-bold text-[#2A0064] text-center">
                 {data.titulo_de_la_seccion_c}
               </h2>
             </div>
@@ -42,7 +42,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Columna izquierda: Imagen */}
           {data.imagen_izquierda?.url && (
-            <div className="relative w-full h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
+            <div className="relative w-full h-[400px] lg:h-[800px] rounded-xl overflow-hidden">
               <Image
                 src={data.imagen_izquierda.url}
                 alt={data.imagen_izquierda.alt || 'Sección C'}
@@ -79,7 +79,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
       {/* BLOQUE C2.5: Sección titulo_3 y parrafo3 */}
       {(data.titulo_3 || data.parrafo3) && (
         <div className="mt-16">
-          <div className="max-w-4xl mx-auto px-6">
+          <div className="max-w-4xl mx-auto px-6 pt-[6rem]">
             <div className="space-y-4">
               {data.titulo_3 && (
                 <h3 className="text-xl md:text-2xl font-bold text-[#2A0064] text-center">
@@ -105,9 +105,9 @@ export default function SoyTechnoSectionC({ data }: Props) {
             {data.subtitulo_ingenieria && (
               <div className="flex justify-center mb-8">
                 <div className="bg-[#EADDFF] rounded-full px-8 py-4">
-                  <h3 className="text-2xl md:text-3xl font-bold text-[#2A0064] text-center">
+                  <h2 className="text-[1.2rem] leading-[1.2rem] md:text-3xl md:leading-normal font-bold text-[#2A0064] text-center">
                     {data.subtitulo_ingenieria}
-                  </h3>
+                  </h2>
                 </div>
               </div>
             )}

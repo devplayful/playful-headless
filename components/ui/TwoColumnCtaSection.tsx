@@ -15,18 +15,18 @@ interface TwoColumnCtaSectionProps {
 }
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
-  imageUrl = "/images/logos/Playful Agency Conectemos.png",
+  imageUrl = "/images/imagen-nueva-cta-home.png",
   imageAlt = "Agencia de Marketing Digital",
   contentBgColor = "#FFEFD1",
-  title = "No esperes más para empezar a ganar",
-  subtitle = "Deja de arreglar tu web con parches y dejas de perder clientes por fallas que no puedes ver. Es hora de invertir en una solución profesional.",
-  ctaTitle = "¡Contáctanos y hagamos que tu sitio web trabaje para ti!",
-  buttonText = "¡Empieza ya!",
-  buttonLink = "#",
+  title = "¡Es Hora de Dejar de Perder y Empezar a Vender Más!",
+  subtitle = "Deja de arreglar tu web con parches. Como tu Agencia de E-commerce especializada, te ofrecemos una solución profesional y enfocada en la conversión.",
+  ctaTitle = "¡Contáctanos y hagamos que tu tienda online trabaje realmente para ti!",
+  buttonText = "Llena el formulario y hablemos sobre tu web",
+  buttonLink = "/contactar-agencia-de-marketing-digital",
   onButtonClick,
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full mb-[40px]">
       <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-1/2 mb-12 lg:mb-0">
@@ -72,13 +72,15 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               </div>
             </div>
 
-            <a
-              href={buttonLink}
-              onClick={onButtonClick}
-              className="mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline"
-            >
-              {buttonText}
-            </a>
+            <div className="w-full flex justify-center px-5 py-5 md:p-0">
+              <a
+                href={buttonLink}
+                onClick={onButtonClick}
+                className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {buttonText}
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getPageMetadataBySlug } from '@/services/wordpress';
 import CarouselResultados from '@/components/CarouselResultados';
 import NosotrosBlogSectionClient from '@/components/sections/NosotrosBlogSectionClient';
-import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -95,7 +95,7 @@ export default function ContactPage() {
             ¿Tienes un proyecto en la mira o una pregunta técnica que necesita respuesta? Estamos listos para escuchar. Completa el formulario o escríbenos directamente. Analizaremos tu necesidad y nos pondremos en contacto contigo lo antes posible. <strong className="font-bold">Empecemos a planificar tus resultados.</strong>
             </p>
             <div className="mt-8 hidden lg:block">
-              <img src="/images/contacto-imagen.png" alt="Ilustración de contacto" className="w-full max-w-[420px] h-auto object-contain" />
+              <img src="/images/contacto-imagen.png" alt="Ilustración de contacto" className="w-full max-w-[620px] h-auto object-contain" />
             </div>
           </div>
 
@@ -228,7 +228,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#0FA97D] hover:bg-[#0c8966] text-white font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Enviando...' : '¡Quiero que conozcan mi caso!'}
                 </button>
@@ -251,7 +251,11 @@ export default function ContactPage() {
 
       {/* Secciones importadas desde Nosotros */}
       <NosotrosBlogSectionClient />
-      <NosotrosCTASection />
+      
+      {/* CTA Section */}
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
+        <TwoColumnCtaSection />
+      </section>
     </main>
   );
 }
