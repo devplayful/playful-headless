@@ -215,7 +215,7 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
 
 
 const CarouselResultados: React.FC<CarouselResultadosProps> = ({
-  title = "No confíes solo ennuestra palabra, mira los resultados.",
+  title = "Nuestros Clientes: La Prueba de que Sabemos de E-commerce",
   subtitle = "Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial.",
   title2 = "¿Quieres ser el próximo?",
   cases = [],

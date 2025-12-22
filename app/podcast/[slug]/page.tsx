@@ -175,7 +175,7 @@ export default function EpisodePage() {
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <nav className="flex items-center space-x-2 text-sm text-gray-500">
+            <nav className="flex items-center space-x-2 text-sm font-normal text-gray-500">
               <a href="/" className="hover:text-gray-700">Inicio</a>
               <span>›</span>
               <a href="/podcast" className="hover:text-gray-700">Podcast</a>

@@ -8,6 +8,7 @@ import TableOfContents from '@/components/blog/TableOfContents';
 import { BlogPostContent } from './BlogPostContent';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 export async function generateStaticParams() {
   const { posts } = await getBlogPosts(1, 100);
@@ -91,7 +92,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
-        <div className="mx-auto max-w-[1200px] px-4 md:px-6 py-12 bg-white rounded-[18px]">
+        <div className="mx-auto max-w-[1200px] bg-white rounded-[18px] p-[60px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
@@ -227,12 +228,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </section>
 
       {/* Main Content */}
-      <main className="detalle-blog-fondo max-w-4xl mx-auto px-6 py-12">
-        <article>
+      <main className="detalle-blog-fondo max-w-[1200px] mx-auto px-6 py-12">
+        <article className="bg-white rounded-[36px] p-8 md:p-12">
           
           {/* Table of Contents - Antes del contenido */}
           {headings.length > 0 && (
-            <div className="mb-12">
+            <div className="mb-12 max-w-[800px] mx-auto">
               <TableOfContents items={headings.map(h => ({
                 text: h.text,
                 slug: `#${h.slug}`
@@ -273,9 +274,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </div>
       
       {/* Sección CTA */}
-      <div className="mt-16">
-        <NosotrosCTASection />
-      </div>
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-16 mb-20">
+        <TwoColumnCtaSection />
+      </section>
       </div>
     </BlogPostContent>
   );

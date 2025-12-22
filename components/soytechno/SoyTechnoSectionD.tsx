@@ -31,7 +31,7 @@ export default function SoyTechnoSectionD({ data }: Props) {
         {data.titulo_de_la_seccion_d && (
           <div className="flex justify-center mb-12">
             <div className="bg-[#EADDFF] rounded-full px-8 py-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#2A0064] text-center">
+              <h2 className="text-[1.2rem] leading-[1.2rem] md:text-3xl md:leading-normal font-bold text-[#2A0064] text-center">
                 {data.titulo_de_la_seccion_d}
               </h2>
             </div>
@@ -63,7 +63,7 @@ export default function SoyTechnoSectionD({ data }: Props) {
 
           {/* Columna derecha: Imagen */}
           {data.imagen_derecha?.url && (
-            <div className="relative w-full h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
+            <div className="relative w-full h-[400px] lg:h-[800px] rounded-xl overflow-hidden">
               <Image
                 src={data.imagen_derecha.url}
                 alt={data.imagen_derecha.alt || 'Sección D'}

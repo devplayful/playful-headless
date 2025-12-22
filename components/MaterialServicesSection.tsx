@@ -1,84 +1,25 @@
-"use client";
-
 import React from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useSliderSettings } from "../hooks/useSliderSettings";
-
-// Importación dinámica del Slider para asegurar que solo se cargue en el cliente
-const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
-  ssr: false,
-  loading: () => <div>Cargando...</div>,
-});
-
-// Importar estilos de slick
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-// Estilos CSS para line-clamp
-const cardStyles = `
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-wrap: break-word;
-  }
-  .line-clamp-4 {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-wrap: break-word;
-  }
-  .conversion-cards-wrapper .slick-slide {
-    height: auto;
-  }
-  .conversion-cards-wrapper .slick-slide > div {
-    height: 100%;
-  }
-  .conversion-cards-wrapper .slick-track {
-    display: flex;
-    align-items: stretch;
-  }
-`;
+import Image from "next/image";
 
 const cardData = [
   {
-    icon: "❌", // Puedes usar un componente de ícono real o una imagen
+    icon: "/images/diseno-confuso-obsoleto.png",
     title: "Diseño obsoleto o confuso:",
     description:
-      "Un sitio web que se ve viejo o es difícil de navegar ahuyenta a los clientes. Piensa en tu web como tu tienda física: si la entrada es un laberinto, nadie va a entrar.",
+      "Un sitio web que se ve viejo o es difícil de navegar genera desconfianza. En el mundo del e-commerce, una mala impresión equivale a un cliente que se va para no volver.",
   },
   {
-    icon: "🚀",
+    icon: "/images/velocidad-carga-lenta.png",
     title: "Velocidad de carga lenta:",
     description:
-      "Cada segundo que tu web tarda en cargar es un cliente que se va. Un sitio lento genera frustración y poca confianza.",
+      "Cada segundo que tu web tarda en cargar es una oportunidad de venta perdida. Un sitio lento frustra y reduce la confianza, afectando directamente tu tasa de conversión.",
   },
   {
-    icon: "🐞",
+    icon: "/images/errores-tecnicos-bugs.png",
     title: "Errores técnicos y bugs:",
     description:
-      "¿Tu checkout falla? ¿Los botones no funcionan? Estos pequeños fallos hacen que tus clientes abandonen el carrito y que nunca más regresen.",
-  },
-  {
-    icon: "📱",
-    title: "No es responsive:",
-    description:
-      "Más del 60% de los usuarios navegan desde móvil. Si tu web no se adapta a todos los dispositivos, estás perdiendo la mayoría de tus clientes.",
-  },
-  {
-    icon: "🔍",
-    title: "Mala optimización SEO:",
-    description:
-      "Si no te encuentran en Google, no existes. Una web sin SEO es como tener una tienda en el medio del desierto.",
-  },
-  {
-    icon: "💳",
-    title: "Proceso de pago complicado:",
-    description:
-      "Cuanto más pasos agregues al checkout, más clientes abandonan. La simplicidad es la clave de la conversión.",
+      "Un checkout que falla, botones que no funcionan o problemas de visualización móvil hacen que tus clientes abandonen el carrito y que nunca más regresen.",
   },
 ];
 
@@ -87,54 +28,44 @@ export default function MaterialServicesSection({
 }: {
   className?: string;
 }) {
-  const responsiveSettings = useSliderSettings();
-  
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: cardStyles }} />
-      <section className={className}>
-        <div className="playful-contenedor playful-contenedor-FFEFD1">
+    <section className={className}>
+      <div className="playful-contenedor playful-contenedor-FFEFD1">
         <h2 className="playful-h2 max-w-3xl mx-auto">
-          Lo que realmente está matando tus conversiones
+        Lo que realmente está matando tus conversiones online
         </h2>
         <p className="playful-contenido-p max-w-3xl mx-auto">
-          El problema no es tu producto. Es la <b>mala experiencia</b> que le
-          das a tus clientes.
+        El problema rara vez es tu producto. Es la <b>mala experiencia de usuario </b>la que ahuyenta a tus compradores.
         </p>
 
-        {/* Contenedor del carousel */}
-        <div className="carousel-container overflow-hidden">
-          <Slider
-            {...{
-              ...responsiveSettings,
-              slidesToScroll: 1,
-              autoplay: true,
-              arrows: false,
-              dots: false,
-            }}
-            className="conversion-cards-wrapper"
-          >
-            {cardData.map((card, index) => (
-              <div
-                key={index}
-                className="carousel-slide md:px-6 h-full"
-              >
-                <div className="conversion-card h-[400px] flex flex-col">
-                  <div className="card-icon flex-shrink-0">{card.icon}</div>
-                  <h3 className="playful-h3 flex-shrink-0 line-clamp-2 h-16 flex items-center">{card.title}</h3>
-                  <p className="playful-contenido-p flex-1 line-clamp-4 overflow-hidden">{card.description}</p>
-                </div>
+        {/* Grid de 3 tarjetas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
+          {cardData.map((card, index) => (
+            <div
+              key={index}
+              className="conversion-card flex flex-col"
+            >
+              <div className="card-icon flex-shrink-0 mb-4 w-[200px] h-[200px] relative mx-auto">
+                <Image
+                  src={card.icon}
+                  alt={card.title}
+                  width={200}
+                  height={200}
+                  className="object-contain"
+                />
               </div>
-            ))}
-          </Slider>
+              <h3 className="playful-h3 flex-shrink-0 mb-3">{card.title}</h3>
+              <p className="playful-contenido-p flex-1">{card.description}</p>
+            </div>
+          ))}
         </div>
+
         <div className="text-center mt-12">
-          <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton">
-            Escríbenos para conversar sobre tu página web.
+          <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+          Escríbenos para conversar sobre tu página web.
           </Link>
         </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

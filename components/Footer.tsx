@@ -13,11 +13,13 @@ export default function Footer() {
       <div className="footer bg-[#2A0064] rounded-3xl w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-around items-center px-6 pt-[0.7rem] lg:h-[334px]">
         <div className="footerCard rounded-3xl bg-[#FFFFFF] p-[40px] lg:w-[45%] lg:ml-[60px] h-[453px] w-full ml-0  flex items-center flex-col justify-evenly">
           <div className="logo flex flex-col items-center">
+          <Link href="/" aria-label="Ir al inicio">
             <img
               src="/images/logos/playful-logov.svg"
               alt="logo Playful Agency"
               className="w-[214px] h-[50px]"
             />
+          </Link>
             <div className="w-[100%] h-[2px] bg-[#2A0064] mt-4"></div>
           </div>
 
@@ -25,7 +27,7 @@ export default function Footer() {
             {/* Social Media Icons */}
             <div className="redesSociales flex items-center space-x-4 mt-8">
               <a
-                href="#"
+                href="https://www.linkedin.com/company/playful-agency/"
                 className="w-10 h-10 bg-[#2A0064] hover:bg-[#3D0099] rounded-full flex items-center justify-center transition-colors duration-300"
                 aria-label="LinkedIn"
                 target="_blank"
@@ -40,7 +42,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/somosplayful"
                 className="w-10 h-10 bg-[#2A0064] hover:bg-[#3D0099] rounded-full flex items-center justify-center transition-colors duration-300"
                 aria-label="Facebook"
                 target="_blank"
@@ -55,7 +57,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/somosplayful"
                 className="w-10 h-10 bg-[#2A0064] hover:bg-[#3D0099] rounded-full flex items-center justify-center transition-colors duration-300"
                 aria-label="Instagram"
                 target="_blank"
@@ -70,7 +72,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/channel/UCT_NSpYZCqu7oW0nANwfnEw"
                 className="w-10 h-10 bg-[#2A0064] hover:bg-[#3D0099] rounded-full flex items-center justify-center transition-colors duration-300"
                 aria-label="YouTube"
                 target="_blank"
@@ -88,7 +90,7 @@ export default function Footer() {
           </div>
           <div className="contacto">
             <Link
-              href="/contacto"
+              href="/contactar-agencia-de-marketing-digital"
               className="inline-block text-[22px] font-dm-sans font-medium bg-teal-400 hover:bg-teal-500 text-[#2A0064] px-6 py-2 rounded-full transition-colors shadow-md hover:shadow-lg"
             >
               Contáctanos
@@ -106,7 +108,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/sobre-playful"
+                    href="/nosotros"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Sobre Playful
@@ -114,7 +116,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/casos-de-exito"
+                    href="/casos-de-exito-agencia-de-marketing-digital"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Casos de éxito
@@ -122,7 +124,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/nuestro-blog"
+                    href="/blog"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Nuestro Blog
@@ -139,7 +141,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/servicio-de-seo"
+                    href="https://playfulagency.com/agencia-seo/"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Servicio de SEO
@@ -147,7 +149,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/servicio-de-sem"
+                    href="https://playfulagency.com/agencia-sem/"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Servicio de SEM
@@ -155,7 +157,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/servicio-de-diseno-web"
+                    href="https://playfulagency.com/agencia-diseno-web/"
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Servicio de Diseño Web
@@ -176,14 +178,6 @@ export default function Footer() {
                     className="body-text text-white/80 hover:text-white transition-colors"
                   >
                     Política de Privacidad
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/politica-de-cookies"
-                    className="body-text text-white/80 hover:text-white transition-colors"
-                  >
-                    Política de Cookies
                   </Link>
                 </li>
               </ul>

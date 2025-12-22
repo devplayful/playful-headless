@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 // Metadata para SEO
 export const metadata: Metadata = {
@@ -11,12 +11,13 @@ export default function PoliticaDePrivacidad() {
   return (
     <main className="min-h-screen bg-[#E9D7FF] bg-[url('/images/background.webp')] bg-cover bg-center">
       {/* Hero Section - Sección principal con dos columnas según el diseño */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto py-12 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Columna izquierda: textos */}
-          <div className="flex flex-col justify-center items-start text-left">
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto">
+        <div className="bg-[#E9D7FF] rounded-t-[18px] p-[80px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* Columna izquierda: textos */}
+            <div className="flex flex-col justify-center items-start text-left">
               {/* Breadcrumb */}
-              <nav className="mb-6 text-sm" aria-label="Breadcrumb">
+              <nav className="mb-6 [font-family:var(--font-paytone-one)] text-[28px] leading-[32px] font-normal" aria-label="Breadcrumb">
                 <ol className="flex items-center space-x-2 text-[#4A4453]">
                   <li>
                     <a href="/" className="hover:text-[#440099] transition-colors">
@@ -27,7 +28,7 @@ export default function PoliticaDePrivacidad() {
                     <span className="mx-2">&gt;</span>
                   </li>
                   <li>
-                    <span className="text-[#440099] font-medium">Política de Privacidad</span>
+                    <span className="text-[#440099] font-normal">Política de Privacidad</span>
                   </li>
                 </ol>
               </nav>
@@ -42,13 +43,14 @@ export default function PoliticaDePrivacidad() {
             </p>
           </div>
 
-          {/* Columna derecha: ilustración */}
-          <div className="flex justify-center items-center">
-            <img 
-              src="/images/Politica-images/Playful-politica-privacidad.png" 
-              alt="Ilustración de persona leyendo política de privacidad" 
-              className="w-full max-w-[500px] h-auto object-contain" 
-            />
+            {/* Columna derecha: ilustración */}
+            <div className="flex justify-center items-center">
+              <img 
+                src="/images/politica-privacidad-imagen.png" 
+                alt="Ilustración de persona leyendo política de privacidad" 
+                className="w-full max-w-[500px] h-auto object-contain" 
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -56,7 +58,7 @@ export default function PoliticaDePrivacidad() {
       {/* Content Section */}
       <section className="relative overflow-hidden rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-0 mb-16">
         <div className="pointer-events-none absolute inset-0 bg-white" />
-        <div className="relative z-10 w-full max-w-[1180px] mx-auto bg-[#F7EDFF] rounded-[36px] p-8 md:p-10">
+        <div className="relative z-10 w-full max-w-[1180px] mx-auto bg-[#FFF] rounded-[36px] p-8 md:p-10">
           {/* Contenido de política de privacidad */}
           <div className="space-y-8 [font-family:var(--font-dm-sans),sans-serif] text-[#453A53]">
             
@@ -91,42 +93,42 @@ export default function PoliticaDePrivacidad() {
                 A continuación, detallamos cómo tratamos tus datos en función del contexto y la finalidad de los datos recabados:
               </p>
 
-              <div className="space-y-4 bg-#F7EDFF rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Gestionar cualquier tipo de solicitud, sugerencia o petición. Contactar con el remitente de la información, dar respuesta a su solicitud, petición o consulta y hacer un seguimiento posterior.</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Consentimiento de los interesados. Interés legítimo para atender a los requerimientos de información a través de los canales de comunicación.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> No se prevé la cesión de datos a terceros, excepto obligación legal.</p>
                 <p className="text-[15px] leading-[24px]"><strong>PLAZO DE CONSERVACIÓN:</strong> Hasta la resolución de su solicitud de información o mientras perdure la relación comercial.</p>
               </div>
 
-              <div className="space-y-4 bg-[#F7EDFF] rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Gestionar y controlar la cartera de clientes, pre-clientes y proveedores</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Relación contractual para la ejecución de un contrato.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> No se prevé la cesión de datos a terceros, excepto obligación legal o de la ejecución del propio contrato de prestación de servicios.</p>
                 <p className="text-[15px] leading-[24px]"><strong>PLAZO DE CONSERVACIÓN:</strong> Mientras perdure la relación contractual para la ejecución de un contrato.</p>
               </div>
 
-              <div className="space-y-4 bg-[#F7EDFF] rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Prestación de servicios y comercialización de productos: Ofrecer servicios, productos y actividades para que podamos cotizar, prestar, gestionar y ejecutar los servicios</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Consentimiento de los interesados. Interés legítimo para atender a los requerimientos de información a través de los canales de comunicación.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> No se prevé la cesión de datos a terceros, excepto obligación legal o de la ejecución del propio contrato de prestación de servicios.</p>
                 <p className="text-[15px] leading-[24px]"><strong>PLAZO DE CONSERVACIÓN:</strong> Hasta la resolución de su solicitud de información o mientras perdure la relación comercial.</p>
               </div>
 
-              <div className="space-y-4 bg-[#F7EDFF] rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Comunicaciones comerciales. Remisión de comunicaciones promocionales vía electrónica y de newsletters. Informar sobre actividades, artículos de interés, e-books e información general sobre nuestros servicios vía correo electrónico (e-mail, SMS, Whatsapp), así como por vía telefónica.</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Consentimiento del interesado e interés legítimo.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> Prestadores de servicios de mailing y colaboradores dentro y fuera de la Unión Europea que nos dan soporte en el envío de las comunicaciones.</p>
                 <p className="text-[15px] leading-[24px]"><strong>PLAZO DE CONSERVACIÓN:</strong> Se conservarán durante el tiempo necesario para cumplir con la finalidad para la que se recabaron o hasta que el usurario revoque su consentimiento.</p>
               </div>
 
-              <div className="space-y-4 bg-[#F7EDFF] rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Gestión del ejercicio de los derechos de los Usuarios.</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Obligación legal del responsable.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> No se ceden datos a terceros, salvo obligación legal.</p>
                 <p className="text-[15px] leading-[24px]"><strong>PLAZO DE CONSERVACIÓN:</strong> Durante el tiempo necesario para respuesta y para dar cumplimiento a los plazos legales previstos para atender eventuales responsabilidades.</p>
               </div>
 
-              <div className="space-y-4 bg-[#F7EDFF] rounded-2xl p-6">
+              <div className="space-y-4 bg-[#FFF] rounded-2xl p-6">
                 <p className="text-[15px] leading-[24px]"><strong>FINALIDAD DEL TRATAMIENTO:</strong> Gestión fiscal, contable, mercantil y jurídico</p>
                 <p className="text-[15px] leading-[24px]"><strong>FUENTE DE LEGITIMIDAD (BASE LEGAL):</strong> Obligación legal del responsable.</p>
                 <p className="text-[15px] leading-[24px]"><strong>DESTINATARIOS:</strong> Se ceden a encargados de tratamiento bajo contrato para efectuar la prestación de servicios.</p>
@@ -303,7 +305,9 @@ export default function PoliticaDePrivacidad() {
       </section>
 
       {/* CTA Section */}
-      <NosotrosCTASection />
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
+        <TwoColumnCtaSection />
+      </section>
     </main>
   );
 }

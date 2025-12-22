@@ -4,6 +4,7 @@ import Link from 'next/link';
 import BlogPosts from '@/components/BlogPosts';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
+import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
@@ -228,7 +229,7 @@ const EquipoSection = async () => {
         {/* Sección del Equipo */}
         {equipo.length > 0 && (
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {equipo.map((member) => (
                 <TeamMemberCard key={member.id} member={member} />
               ))}
@@ -492,11 +493,11 @@ export default async function Nosotros() {
             <div className="w-full">
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 {/* Columna Izquierda */}
-                <div className="md:w-1/2 text-center md:text-left">
-                  <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[20px] sm:text-[24px] lg:text-[28px] text-[#4A4453] mb-4">
+                <div className="md:w-1/2 text-left">
+                  <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
                     Playful Agency
                   </h1>
-                  <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[56px] text-[#440099] mb-6">
+                  <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
                     Diseño con Para Negocios que Quieren Resultados Reales
                   </h2>
                   <div className="prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] text-gray-600 w-full max-w-none">
@@ -507,13 +508,14 @@ export default async function Nosotros() {
                 </div>
                 
                 {/* Columna Derecha */}
-                <div className="md:w-1/2 flex justify-center">
-                  <div className="relative w-full max-w-[580px] h-[480px]">
+                <div className="md:w-1/2 flex justify-center w-full">
+                  <div className="relative w-full max-w-[580px] min-h-[300px] md:h-[480px]">
                     <Image
-                      src="/images/nosotros/nosotros-equipo.png"
+                      src="/images/nosotros-playful-imagen.png"
                       alt="Playful Agency"
-                      fill
-                      className="object-contain"
+                      width={580}
+                      height={480}
+                      className="object-contain w-full h-auto"
                       priority
                     />
                   </div>
@@ -547,13 +549,12 @@ export default async function Nosotros() {
       </section>
 
       {/* Sección del Blog */} 
-      <BlogSection />
+      <BlogRelatedPostsSection />
 
       {/* Sección CTA */}
-      <CTASection 
-        imagePath="/images/nosotros/cta-illustration.png"
-        imageAlt="Ilustración de crecimiento digital"
-      />
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8">
+        <TwoColumnCtaSection />
+      </section>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import BlogCategories from './BlogCategories';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 // Función para formatear la fecha
 const formatDate = (dateString: string) => {
@@ -244,7 +245,9 @@ export default async function BlogPage({
       </div>
 
       {/* CTA Section */}
-      <NosotrosCTASection />
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
+        <TwoColumnCtaSection />
+      </section>
     </div>
   );
 }
