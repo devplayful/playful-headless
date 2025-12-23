@@ -261,7 +261,14 @@ export interface WPPost {
   featured_media_alt?: string;
   categories?: any[];
   tags?: any[];
-  author?: number;
+  author?: number | {
+    id: number;
+    name: string;
+    slug: string;
+    avatar_urls?: {
+      [key: string]: string;
+    };
+  };
   author_name?: string;
   author_avatar_urls?: {
     [key: string]: string;
@@ -454,7 +461,7 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
   try {
     const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term`,
+      `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
       { 
         next: { revalidate: 60 },
         headers: {
@@ -489,6 +496,11 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
         const terms = post._embedded['wp:term'];
         post.categories = terms[0] || [];
         post.tags = terms[1] || [];
+      }
+
+      // Procesar autor
+      if (post._embedded['author'] && post._embedded['author'][0]) {
+        post.author = post._embedded['author'][0];
       }
     }
 

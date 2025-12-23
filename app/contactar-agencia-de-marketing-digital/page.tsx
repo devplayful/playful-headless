@@ -82,7 +82,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#E9D7FF] bg-[url('/images/background.webp')] bg-cover bg-center">
+    <main className="min-h-screen bg-cover bg-center">
       {/* Sección principal con dos columnas según el diseño */}
       <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto pt-4 pb-12 md:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

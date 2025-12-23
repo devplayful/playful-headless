@@ -117,11 +117,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               
               {post.excerpt?.rendered && (
                 <div 
-                  className="text-lg text-gray-700 leading-relaxed"
+                  className="text-lg text-gray-700 leading-relaxed mb-4"
                   dangerouslySetInnerHTML={{ 
                     __html: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 200) + '...' 
                   }} 
                 />
+              )}
+
+              {/* Badge de Autor */}
+              {post.author && typeof post.author === 'object' && (
+                <div className="inline-flex items-center gap-2 bg-[#440099] text-white px-4 py-2 rounded-full">
+                  {post.author.avatar_urls && post.author.avatar_urls['48'] && (
+                    <img 
+                      src={post.author.avatar_urls['48']} 
+                      alt={post.author.name}
+                      className="w-6 h-6 rounded-full"
+                    />
+                  )}
+                  <span className="text-sm font-medium">{post.author.name}</span>
+                </div>
               )}
             </div>
 

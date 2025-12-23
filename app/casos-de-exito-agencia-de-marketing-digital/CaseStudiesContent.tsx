@@ -279,13 +279,6 @@ export default function CaseStudiesContent() {
           </p>
         </div>
 
-        {/* CTA Text */}
-        <div className="text-center mb-8">
-          <h3 className="text-2xl lg:text-3xl font-normal text-white">
-            ¿Quieres ser el próximo?
-          </h3>
-        </div>
-
         {/* Filtros */}
         <div className="mb-8">
           <div className="w-full bg-[#B3FFF3] rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">

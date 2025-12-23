@@ -26,23 +26,18 @@ export default function Header() {
     setIsServicesOpen(!isServicesOpen)
   }
 
-  // Datos de los servicios
+  // Servicios simplificados
   const services = [
-    { title: 'Agencia E-commerce', slug: 'agencia-e-commerce' },
-    { title: 'Diseño Web', slug: 'agencia-diseno-web' },
-    { title: 'Marketing Internacional', slug: 'marketing-internacional' },
-    { title: 'SEO', slug: 'agencia-seo' },
-    { title: 'UX/UI', slug: 'agencia-ux-ui' },
-    { title: 'SEM', slug: 'agencia-sem' },
-    { title: 'SEO Expertos', slug: 'seo-expertos' },
-    { title: 'SEO Vigo', slug: 'seo-vigo' }
+    { title: 'SEO', url: 'https://playfulagency.com/agencia-seo/' },
+    { title: 'SEM', url: 'https://playfulagency.com/agencia-sem/' },
+    { title: 'Diseño Web', url: 'https://playfulagency.com/agencia-diseno-web/' }
   ]
 
   const { headerColor } = useTheme();
 
   return (
-    <header className={`playful-header sticky top-0 z-[9999] transition-colors duration-300 overflow-x-hidden`}>
-      <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full">
+    <header className={`playful-header sticky top-0 z-[9999] transition-colors duration-300 overflow-visible`}>
+      <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full relative">
         {/* Mobile Layout - Pantallas >= 400px */}
         <div className="lg:hidden hidden min-[400px]:flex items-center justify-between px-4 py-3 w-full max-w-full">
           {/* Logo */}
@@ -160,13 +155,13 @@ export default function Header() {
               </Link>
 
               <div className="relative group">
-                <button 
+                <button
                   onClick={toggleServices}
-                  className="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors"
+                  className="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors cursor-pointer md:pointer-events-none"
                 >
                   SERVICIOS
                   <svg 
-                    className={`w-4 h-4 ml-1 transition-transform ${isServicesOpen ? 'transform rotate-180' : ''}`} 
+                    className={`w-4 h-4 ml-1 transition-transform md:group-hover:rotate-180 ${isServicesOpen ? 'rotate-180 md:rotate-0' : ''}`}
                     fill="none" 
                     viewBox="0 0 24 24" 
                     stroke="currentColor"
@@ -175,19 +170,17 @@ export default function Header() {
                   </svg>
                 </button>
                 
-                {isServicesOpen && (
-                  <div className="fixed left-1/2 -translate-x-1/2 top-[110px] w-64 bg-white rounded-lg shadow-2xl z-[10000] py-2 border border-gray-100">
-                    {services.map((service) => (
-                      <Link
-                        key={service.slug}
-                        href={`/${service.slug}`}
-                        className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                      >
-                        {service.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                <div className={`absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-2xl transition-all duration-200 z-[99999] py-2 border border-gray-100 ${isServicesOpen ? 'opacity-100 visible md:opacity-0 md:invisible' : 'opacity-0 invisible'} md:group-hover:opacity-100 md:group-hover:visible`}>
+                  {services.map((service, index) => (
+                    <a
+                      key={index}
+                      href={service.url}
+                      className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                    >
+                      {service.title}
+                    </a>
+                  ))}
+                </div>
               </div>
 
               <Link 
@@ -277,15 +270,15 @@ export default function Header() {
 
                     {isServicesOpen && (
                       <div className="bg-[#2A0070] py-1 space-y-1">
-                        {services.map((service) => (
-                          <Link
-                            key={service.slug}
-                            href={`/${service.slug}`}
+                        {services.map((service, index) => (
+                          <a
+                            key={index}
+                            href={service.url}
                             className="block px-8 py-2 text-sm hover:bg-white/10 transition-colors"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {service.title}
-                          </Link>
+                          </a>
                         ))}
                       </div>
                     )}

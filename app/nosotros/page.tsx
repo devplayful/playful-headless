@@ -14,17 +14,17 @@ const HistorySection = () => {
       {/* Overlay de confeti por encima del color */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       {/* Sección superior: Imagen a la izquierda, texto a la derecha */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-24">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-6">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Columna izquierda - Imagen */}
           <div className="w-full lg:w-1/2">
             <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
               <Image
-                src="/images/nosotros/playful-history.png"
+                src="/images/nosotros/imagen-nosotros-historia.png"
                 alt="Nuestra Historia"
                 width={500}
                 height={400}
-                className="object-cover w-full h-full"
+                className="object-contain w-full h-full"
               />
             </div>
           </div>
@@ -51,7 +51,7 @@ const HistorySection = () => {
           <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full md:w-[480px] mx-auto">
             <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
               <Image
-                src="/images/nosotros/new-york-tip.png"
+                src="/images/nosotros/historia-eficiencia-seguridad.png"
                 alt="Ilustración de estrategia digital"
                 width={200}
                 height={180}
@@ -67,7 +67,7 @@ const HistorySection = () => {
           <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full md:w-[480px] mx-auto">
             <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
               <Image
-                src="/images/nosotros/ayudamos.png"
+                src="/images/nosotros/generamos-exito-roi.png"
                 alt="Ilustración de crecimiento y optimización"
                 width={200}
                 height={180}
@@ -552,7 +552,7 @@ export default async function Nosotros() {
       <BlogRelatedPostsSection />
 
       {/* Sección CTA */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8">
+      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8 mb-[80px]">
         <TwoColumnCtaSection />
       </section>
     </div>
