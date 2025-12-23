@@ -8,10 +8,13 @@ import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
+import { getAllCaseStudies } from "@/services/wordpress";
 
 const shell = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
 
-function HomeContent() {
+async function HomeContent() {
+  // Obtener casos de éxito una sola vez en el servidor
+  const casosDeExito = await getAllCaseStudies();
   return (
     <div className="">
       {/* Hero Section */}
@@ -81,7 +84,7 @@ function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <CarouselResultados />
+          <CarouselResultados casosDeExito={casosDeExito} />
         </div>
       </section>
 

@@ -243,9 +243,18 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         let data = casosDeExito;
         
         // Solo hacer fetch si no se pasaron datos
-        if (data.length === 0) {
+        if (data.length === 0 && cases.length === 0) {
           const { getAllCaseStudies } = await import('@/services/wordpress');
           data = await getAllCaseStudies();
+        } else if (cases.length > 0) {
+          // Si se pasaron casos ya transformados, usarlos directamente
+          setCaseStudies(cases);
+          setLoading(false);
+          return;
+        } else if (data.length === 0) {
+          // Si no hay datos, no hacer nada
+          setLoading(false);
+          return;
         }
         
         // Transformar los datos de la API al formato esperado por el componente
@@ -328,16 +337,9 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
       }
     };
 
-    // Solo hacer fetch si no se proporcionaron casos ni datos crudos
-    if (cases.length === 0 && casosDeExito.length === 0) {
-      fetchCaseStudies();
-    } else if (cases.length > 0) {
-      setCaseStudies(cases);
-      setLoading(false);
-    } else if (casosDeExito.length > 0) {
-      fetchCaseStudies();
-    }
-  }, [cases, casosDeExito]);
+    // Solo ejecutar una vez al montar el componente
+    fetchCaseStudies();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
