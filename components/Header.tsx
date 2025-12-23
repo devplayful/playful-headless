@@ -28,9 +28,9 @@ export default function Header() {
 
   // Servicios simplificados
   const services = [
-    { title: 'SEO', url: 'https://playfulagency.com/agencia-seo/' },
-    { title: 'SEM', url: 'https://playfulagency.com/agencia-sem/' },
-    { title: 'Diseño Web', url: 'https://playfulagency.com/agencia-diseno-web/' }
+    { title: 'SEO', url: 'https://old.playfulagency.com/agencia-seo/' },
+    { title: 'SEM', url: 'https://old.playfulagency.com/agencia-sem/' },
+    { title: 'Diseño Web', url: 'https://old.playfulagency.com/agencia-diseno-web/' }
   ]
 
   const { headerColor } = useTheme();
@@ -175,6 +175,8 @@ export default function Header() {
                     <a
                       key={index}
                       href={service.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                     >
                       {service.title}
@@ -274,6 +276,8 @@ export default function Header() {
                           <a
                             key={index}
                             href={service.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="block px-8 py-2 text-sm hover:bg-white/10 transition-colors"
                             onClick={() => setIsMenuOpen(false)}
                           >

@@ -94,7 +94,7 @@ const MissionVisionSection = () => {
           <div className="bg-[#FFEFD1] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left">
               <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
                 <Image
-                  src="/images/nosotros/MISION.PNG"
+                  src="/images/nosotros/nuestra-mision.png"
                   alt="Ilustración de crecimiento y optimización"
                   width={200}
                   height={180}
@@ -111,7 +111,7 @@ const MissionVisionSection = () => {
           <div className="bg-[#FFDBDB] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left">
               <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
                 <Image
-                  src="/images/nosotros/vision.png"
+                  src="/images/nosotros/nuestra-vision.png"
                   alt="Ilustración de crecimiento y optimización"
                   width={200}
                   height={180}

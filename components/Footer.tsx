@@ -141,24 +141,30 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="https://playfulagency.com/agencia-seo/"
+                    href="https://old.playfulagency.com/agencia-seo/"
                     className="body-text text-white/80 hover:text-white transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Servicio de SEO
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="https://playfulagency.com/agencia-sem/"
+                    href="https://old.playfulagency.com/agencia-sem/"
                     className="body-text text-white/80 hover:text-white transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Servicio de SEM
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="https://playfulagency.com/agencia-diseno-web/"
+                    href="https://old.playfulagency.com/agencia-diseno-web/"
                     className="body-text text-white/80 hover:text-white transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Servicio de Diseño Web
                   </Link>
