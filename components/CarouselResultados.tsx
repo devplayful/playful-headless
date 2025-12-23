@@ -116,6 +116,7 @@ interface CarouselResultadosProps {
   title2?: string;
   subtitle?: string;
   cases?: CaseStudy[];
+  casosDeExito?: any[]; // Datos crudos de la API
   buttonText?: string;
   onButtonClick?: () => void;
   className?: string;
@@ -219,6 +220,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   subtitle = "Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial.",
   title2 = "¿Quieres ser el próximo?",
   cases = [],
+  casosDeExito = [],
   buttonText = "¡Crece como ellos!",
   onButtonClick,
   className = "",
@@ -238,9 +240,13 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   useEffect(() => {
     const fetchCaseStudies = async () => {
       try {
-        // Importar dinámicamente para evitar problemas con SSR
-        const { getAllCaseStudies } = await import('@/services/wordpress');
-        const data = await getAllCaseStudies();
+        let data = casosDeExito;
+        
+        // Solo hacer fetch si no se pasaron datos
+        if (data.length === 0) {
+          const { getAllCaseStudies } = await import('@/services/wordpress');
+          data = await getAllCaseStudies();
+        }
         
         // Transformar los datos de la API al formato esperado por el componente
         const transformedData: CaseStudy[] = data.map((item: WPCaseStudy) => {
@@ -322,14 +328,16 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
       }
     };
 
-    // Solo hacer fetch si no se proporcionaron casos
-    if (cases.length === 0) {
+    // Solo hacer fetch si no se proporcionaron casos ni datos crudos
+    if (cases.length === 0 && casosDeExito.length === 0) {
       fetchCaseStudies();
-    } else {
+    } else if (cases.length > 0) {
       setCaseStudies(cases);
       setLoading(false);
+    } else if (casosDeExito.length > 0) {
+      fetchCaseStudies();
     }
-  }, [cases]);
+  }, [cases, casosDeExito]);
 
   return (
     <>

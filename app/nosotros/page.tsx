@@ -484,6 +484,10 @@ const HeroSection = ({
 export default async function Nosotros() {
   const metadata = await getPageMetadataBySlug('nosotros');
   
+  // Obtener casos de éxito una sola vez en el servidor
+  const { getAllCaseStudies } = await import('@/services/wordpress');
+  const casosDeExito = await getAllCaseStudies();
+  
   return (
     <div className="w-full">
       {/* Sección Superior "Nosotros" */}
@@ -544,7 +548,7 @@ export default async function Nosotros() {
       {/* Sección Casos de Éxito - Carrusel */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <CarouselResultados />
+          <CarouselResultados casosDeExito={casosDeExito} />
         </div>
       </section>
 
