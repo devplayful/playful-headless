@@ -8,7 +8,7 @@ import SoyTechnoSectionD from '@/components/soytechno/SoyTechnoSectionD';
 import SoyTechnoSectionE from '@/components/soytechno/SoyTechnoSectionE';
 import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
-import CaseStudyCta from './CaseStudyCta'
+import CasoExitoCta from './CasoExitoCta';
 
 
 
@@ -730,7 +730,7 @@ export default async function SuccessStoryPage({
       {(story.acf?.testimonialnombre || story.acf?.testimonio) && (
         <section className="py-16 bg-[#FEF7FF]">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="mx-auto w-full max-w-[1050px]">
+            <div className="mx-auto w-full max-w-[1200px]">
               <div className="bg-[#FFD977] rounded-[26px] px-8 py-10 md:px-14 md:py-14 relative overflow-hidden h-[400px] flex items-center justify-center">
                 {/* Comillas grandes (contorno) */}
                 <div
@@ -802,16 +802,26 @@ export default async function SuccessStoryPage({
     </div>
   </section>
       )}
-      {/* Case Study CTA */}
-      <CaseStudyCta
-        title="¿Estás perdiendo dinero al no vender directamente?"
-        description="Si tu plataforma anterior no te permitía capturar el valor de tu tráfico, es hora de un diseño de E-commerce que te convierta en un líder DTC como Odwalla."
-        emphasis="No esperes más para empezar a ganar."
-        buttonText="¡Hablemos de tu proyecto!"
-        buttonHref="/contactar-agencia-de-marketing-digital"
-        illustrationSrc="/images/caso-de-exito-imagen.png"
-        illustrationAlt="Ilustración CTA"
-      />
+
+      {/* CTA Final Dinámico desde ACF */}
+      {(() => {
+        const cta = story.acf?.mostrar_cta_final;
+        
+        if (!cta?.mostrar_cta || !cta?.titulo_del_cta) return null;
+        
+        return (
+          <section className="py-0 pb-20 bg-[#FEF7FF]">
+            <div className="max-w-7xl mx-auto px-6">
+              <CasoExitoCta
+                title={cta.titulo_del_cta}
+                description={cta.descripcion || ''}
+                title2={cta.titulo2 || ''}
+                paragraph2={cta.parrafo2 || ''}
+              />
+            </div>
+          </section>
+        );
+      })()}
     </div>
   );
 }

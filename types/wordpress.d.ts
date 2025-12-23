@@ -35,6 +35,14 @@ declare module '@/services/wordpress' {
     template?: "default" | "soytechno_extended";
     // SoyTechno extended layout
     soytechno?: SoyTechnoData;
+    // CTA Final
+    mostrar_cta_final?: {
+      mostrar_cta?: boolean;
+      titulo_del_cta?: string;
+      descripcion?: string;
+      titulo2?: string;
+      parrafo2?: string;
+    };
     // Keep existing ACF fields
     [key: string]: any;
   }
