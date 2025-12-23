@@ -960,3 +960,31 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
     return null;
   }
 }
+
+/**
+ * Obtiene todos los casos de éxito
+ * @returns Promise con array de casos de éxito
+ */
+export async function getAllCaseStudies(): Promise<any[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?_embed&per_page=100`,
+      { 
+        next: { revalidate: 3600 }, // Cache por 1 hora
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener casos de éxito: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error en getAllCaseStudies:', error);
+    return [];
+  }
+}

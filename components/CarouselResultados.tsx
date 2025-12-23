@@ -238,11 +238,9 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   useEffect(() => {
     const fetchCaseStudies = async () => {
       try {
-        const response = await fetch('https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed');
-        if (!response.ok) {
-          throw new Error('Error al cargar los casos de éxito');
-        }
-        const data = await response.json();
+        // Importar dinámicamente para evitar problemas con SSR
+        const { getAllCaseStudies } = await import('@/services/wordpress');
+        const data = await getAllCaseStudies();
         
         // Transformar los datos de la API al formato esperado por el componente
         const transformedData: CaseStudy[] = data.map((item: WPCaseStudy) => {
