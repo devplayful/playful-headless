@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import CarouselResultados from '@/components/CarouselResultados';
 import NosotrosBlogSectionClient from '@/components/sections/NosotrosBlogSectionClient';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -9,7 +10,9 @@ interface ContactPageClientProps {
   casosDeExito: any[];
 }
 
-export default function ContactPageClient({ casosDeExito }: ContactPageClientProps) {
+// Componente interno que usa el hook de reCAPTCHA
+function ContactForm({ casosDeExito }: ContactPageClientProps) {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,11 +34,20 @@ export default function ContactPageClient({ casosDeExito }: ContactPageClientPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!executeRecaptcha) {
+      console.error('reCAPTCHA no está disponible');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
     try {
-      // Enviar el formulario a nuestra API
+      // Obtener token de reCAPTCHA
+      const recaptchaToken = await executeRecaptcha('contact_form');
+
+      // Enviar el formulario a nuestra API con el token
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -47,6 +59,7 @@ export default function ContactPageClient({ casosDeExito }: ContactPageClientPro
           phone: formData.phone,
           business: formData.business,
           message: formData.message,
+          recaptchaToken,
         }),
       });
 
@@ -260,5 +273,21 @@ export default function ContactPageClient({ casosDeExito }: ContactPageClientPro
         <TwoColumnCtaSection />
       </section>
     </main>
+  );
+}
+
+// Componente principal con el Provider de reCAPTCHA
+export default function ContactPageClient({ casosDeExito }: ContactPageClientProps) {
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  if (!recaptchaSiteKey) {
+    console.error('NEXT_PUBLIC_RECAPTCHA_SITE_KEY no está configurada');
+    return <ContactForm casosDeExito={casosDeExito} />;
+  }
+
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={recaptchaSiteKey}>
+      <ContactForm casosDeExito={casosDeExito} />
+    </GoogleReCaptchaProvider>
   );
 }

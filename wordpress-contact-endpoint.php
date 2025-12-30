@@ -57,31 +57,35 @@ function playful_handle_contact_form($request) {
     $business = $request->get_param('business');
     $message = $request->get_param('message');
 
-    // Configurar el destinatario (CAMBIAR POR TU EMAIL)
-    $to = 'contacto@playfulagency.com'; // ⚠️ CAMBIAR ESTE EMAIL
+    // Configurar el destinatario
+    $to = 'hello@playfulagency.com';
     
     // Asunto del correo
     $subject = 'Nuevo contacto desde el sitio web - ' . $name;
     
-    // Construir el cuerpo del mensaje
+    // Construir el cuerpo del mensaje con la estructura solicitada
     $body = "Has recibido un nuevo mensaje de contacto desde el sitio web.\n\n";
-    $body .= "Detalles del contacto:\n";
+    $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    $body .= "INFORMACIÓN DEL CONTACTO\n";
     $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-    $body .= "Nombre: " . $name . "\n";
-    $body .= "Email: " . $email . "\n";
+    
+    $body .= "• Nombre: " . $name . "\n\n";
+    $body .= "• Correo electrónico: " . $email . "\n\n";
     
     if (!empty($phone)) {
-        $body .= "Teléfono: " . $phone . "\n";
+        $body .= "• Número de teléfono: " . $phone . "\n\n";
     }
     
     if (!empty($business)) {
-        $body .= "Negocio: " . $business . "\n";
+        $body .= "• Nombre del negocio: " . $business . "\n\n";
     }
     
-    $body .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-    $body .= "Mensaje:\n" . $message . "\n\n";
+    $body .= "• Mensaje del campo '¿Cómo podemos ayudarte?':\n";
+    $body .= $message . "\n\n";
+    
     $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-    $body .= "Este mensaje fue enviado desde: " . get_site_url() . "\n";
+    $body .= "Esto garantizará que la información sea clara y completa para el equipo de Playful Agency.\n\n";
+    $body .= "Enviado desde: " . get_site_url() . "\n";
     $body .= "Fecha: " . date('d/m/Y H:i:s') . "\n";
     
     // Configurar headers

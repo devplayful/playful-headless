@@ -186,7 +186,7 @@ export default async function SuccessStoryPage({
 
             <div className="text-center max-w-4xl px-4">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
-                {story.acf?.segundoh2 || 'Nuestro Enfoque'}
+                {story.acf?.segundoh2 || ''}
               </h2>
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed"
@@ -515,7 +515,7 @@ export default async function SuccessStoryPage({
         <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {story.acf?.grilla1 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
+              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla1 === 'string'
@@ -523,15 +523,16 @@ export default async function SuccessStoryPage({
                       : story.acf.grilla1.url
                   }
                   alt="Gallery image 1"
-                  fill
-                  className="object-contain"
+                  width={350}
+                  height={300}
+                  className="object-contain w-full h-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
             )}
 
             {story.acf?.grilla2 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
+              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla2 === 'string'
@@ -539,15 +540,16 @@ export default async function SuccessStoryPage({
                       : story.acf.grilla2.url
                   }
                   alt="Gallery image 2"
-                  fill
-                  className="object-contain"
+                  width={350}
+                  height={300}
+                  className="object-contain w-full h-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
             )}
 
             {story.acf?.grilla3 && (
-              <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
+              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla3 === 'string'
@@ -555,8 +557,9 @@ export default async function SuccessStoryPage({
                       : story.acf.grilla3.url
                   }
                   alt="Gallery image 3"
-                  fill
-                  className="object-contain"
+                  width={350}
+                  height={300}
+                  className="object-contain w-full h-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
               </div>
@@ -566,7 +569,7 @@ export default async function SuccessStoryPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {story.acf?.grilla4 && (
               <div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden mb-4">
+                <div className="relative w-full h-[302px] rounded-xl overflow-hidden mb-4">
                   <Image
                     src={
                       typeof story.acf.grilla4 === 'string'
@@ -574,12 +577,13 @@ export default async function SuccessStoryPage({
                         : story.acf.grilla4.url
                     }
                     alt="Gallery image 1"
-                    fill
-                    className="object-contain"
+                    width={350}
+                    height={300}
+                    className="object-contain w-full h-full"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden">
+                <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla5 === 'string'
@@ -587,8 +591,9 @@ export default async function SuccessStoryPage({
                         : (story.acf.grilla5 as { url: string }).url
                     }
                     alt="Gallery image 2"
-                    fill
-                    className="object-contain"
+                    width={350}
+                    height={300}
+                    className="object-contain w-full h-full"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
@@ -596,7 +601,7 @@ export default async function SuccessStoryPage({
             )}
 
             {story.acf?.grilla6 && (
-              <div className="relative w-full h-[541px] rounded-xl overflow-hidden">
+              <div className="relative w-full h-[620px] rounded-xl overflow-hidden">
                 <Image
                   src={
                     typeof story.acf.grilla6 === 'string'
@@ -613,7 +618,7 @@ export default async function SuccessStoryPage({
 
             {story.acf?.grilla7 && (
               <div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden mb-4">
+                <div className="relative w-full h-[302px] rounded-xl overflow-hidden mb-4">
                   <Image
                     src={
                       typeof story.acf.grilla7 === 'string'
@@ -621,12 +626,13 @@ export default async function SuccessStoryPage({
                         : story.acf.grilla7.url
                     }
                     alt="Gallery image 3"
-                    fill
-                    className="object-contain"
+                    width={350}
+                    height={300}
+                    className="object-contain w-full h-full"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>
-                <div className="relative w-full h-[248px] rounded-xl overflow-hidden flex items-center justify-center">
+                <div className="relative w-full h-[302px] rounded-xl overflow-hidden flex items-center justify-center">
                   <Image
                     src={
                       typeof story.acf.grilla8 === 'string'
@@ -634,8 +640,9 @@ export default async function SuccessStoryPage({
                         : (story.acf.grilla8 as { url: string }).url
                     }
                     alt="Gallery image 3"
-                    fill
-                    className="object-contain"
+                    width={350}
+                    height={300}
+                    className="object-contain w-full h-full"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
                 </div>

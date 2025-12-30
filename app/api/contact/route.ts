@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, business, message } = body;
+    const { name, email, phone, business, message, recaptchaToken } = body;
 
     // Validación básica
     if (!name || !email || !message) {
@@ -20,6 +20,30 @@ export async function POST(request: NextRequest) {
         { success: false, message: 'Por favor ingresa un email válido.' },
         { status: 400 }
       );
+    }
+
+    // Validar reCAPTCHA token
+    if (recaptchaToken) {
+      const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+      
+      if (recaptchaSecret) {
+        const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `secret=${recaptchaSecret}&response=${recaptchaToken}`,
+        });
+
+        const recaptchaData = await recaptchaResponse.json();
+
+        if (!recaptchaData.success || recaptchaData.score < 0.5) {
+          return NextResponse.json(
+            { success: false, message: 'Verificación de seguridad fallida. Por favor, inténtalo de nuevo.' },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // Enviar al endpoint de WordPress
