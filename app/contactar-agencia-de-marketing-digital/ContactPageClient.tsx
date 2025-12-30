@@ -278,15 +278,15 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
 // Componente principal con el Provider de reCAPTCHA
 export default function ContactPageClient({ casosDeExito }: ContactPageClientProps) {
-  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
-  if (!recaptchaSiteKey) {
-    console.error('NEXT_PUBLIC_RECAPTCHA_SITE_KEY no está configurada');
-    return <ContactForm casosDeExito={casosDeExito} />;
-  }
-
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={recaptchaSiteKey}>
+    <GoogleReCaptchaProvider 
+      reCaptchaKey="6LdvUTssAAAAAPhfMupP02ukQ9VUeXZJ6NzHd8Sh"
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: "head",
+      }}
+    >
       <ContactForm casosDeExito={casosDeExito} />
     </GoogleReCaptchaProvider>
   );
