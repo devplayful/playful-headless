@@ -19,10 +19,12 @@ export default function BlogRelatedPostsSection() {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth <= 1024);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -59,7 +61,7 @@ export default function BlogRelatedPostsSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-4 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-4 mb-16">
+    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-4 mb-16">
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
@@ -74,8 +76,8 @@ export default function BlogRelatedPostsSection() {
         <div className="relative z-10 text-center text-white">Cargando artículos…</div>
       ) : (
         <div className="relative z-10">
-          {/* Controles del carrusel - Desktop */}
-          {totalPages > 1 && !isMobile && (
+          {/* Controles del carrusel - Desktop (solo >= 1024px) */}
+          {totalPages > 1 && !isMobile && !isTablet && (
             <>
               <button
                 onClick={prevSlide}
@@ -99,7 +101,7 @@ export default function BlogRelatedPostsSection() {
           )}
 
           {/* Grid de posts */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-4 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-0">
             {currentPosts.map((post) => (
             <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
               <div className="relative h-48 bg-gray-100">
@@ -126,8 +128,8 @@ export default function BlogRelatedPostsSection() {
           ))}
           </div>
 
-          {/* Controles del carrusel - Mobile (debajo de las tarjetas) */}
-          {totalPages > 1 && isMobile && (
+          {/* Controles del carrusel - Mobile y Tablet (debajo de las tarjetas) */}
+          {totalPages > 1 && (isMobile || isTablet) && (
             <div className="flex justify-center items-center gap-4 mt-8">
               <button
                 onClick={prevSlide}
@@ -150,8 +152,8 @@ export default function BlogRelatedPostsSection() {
             </div>
           )}
 
-          {/* Indicadores de página */}
-          {totalPages > 1 && (
+          {/* Indicadores de página - Solo en desktop >= 1024px */}
+          {totalPages > 1 && !isMobile && !isTablet && (
             <div className="flex justify-center gap-2 mt-8">
               {Array.from({ length: totalPages }).map((_, index) => (
                 <button

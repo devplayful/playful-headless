@@ -52,10 +52,10 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           arrows: false,
-          centerMode: true,
-          centerPadding: '20px',
+          centerMode: false,
+          centerPadding: '0px',
         },
       },
     ],

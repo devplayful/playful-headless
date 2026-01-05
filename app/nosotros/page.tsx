@@ -45,10 +45,10 @@ const HistorySection = () => {
 
       {/* Sección inferior: Dos columnas con tarjetas de imagen y párrafo */}
       <div className="relative z-10 bg-transparent px-6 py-16 md:py-20 rounded-3xl">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-x-12 gap-y-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
           
           {/* Tarjeta 1 */}
-          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full md:w-[480px] mx-auto">
+          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
             <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
               <Image
                 src="/images/nosotros/historia-eficiencia-seguridad.png"
@@ -64,7 +64,7 @@ const HistorySection = () => {
           </div>
           
           {/* Tarjeta 2 */}
-          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full md:w-[480px] mx-auto">
+          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
             <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
               <Image
                 src="/images/nosotros/generamos-exito-roi.png"
@@ -89,7 +89,7 @@ const MissionVisionSection = () => {
   return (
     <section className="rounded-3xl w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8">
       <div className="px-0 py-12 md:py-16">
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tarjeta Misión */}
           <div className="bg-[#FFEFD1] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left">
               <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
@@ -101,7 +101,7 @@ const MissionVisionSection = () => {
                   className="object-contain"
                 />
               </div>
-              <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] mb-4">MISIÓN</h3>
+              <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] pt-[20px] text-[#453A53] mb-4">MISIÓN</h3>
               <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
                 Ayudar a 10,000 dueños de ecommerce que ya facturan entre $100,000 y $200,000 anuales a alcanzar su primer millón de dólares mensuales. Democratizar las ventas online, facilitando la digitalización de pequeños negocios y brindándoles herramientas para lograr sus primeras ventas sin complicaciones. Empoderar a estos emprendedores para que se conviertan en las futuras voces líderes del sector, llevando su conocimiento y experiencia a nuevas fronteras.
               </p>
@@ -118,7 +118,7 @@ const MissionVisionSection = () => {
                   className="object-contain"
                 />
               </div>
-              <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] mb-4">VISIÓN</h3>
+              <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] pt-[20px] text-[#453A53] mb-4">VISIÓN</h3>
               <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
                 En 10 años, Playful será la empresa número 1 en ecommerce en Iberoamérica, habiendo influenciado y desarrollado las marcas más importantes del sector. A través de nuestra innovación y apoyo continuo, habremos ayudado a miles de emprendedores y empresarios a transformar sus negocios digitales, consolidándonos como el motor de crecimiento del ecommerce en la región.
               </p>
@@ -167,20 +167,6 @@ const TeamMemberCard = ({ member }: { member: TeamMember }) => {
           <p className="mb-0 flex-grow text-gray-600">{member.acf.descripcion}</p>
         )}
         
-        {/* Solo el ícono de LinkedIn */}
-        <div className="mt-4">
-          <a 
-            href={member.acf.linkedin_url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-block p-2 text-gray-400 hover:text-[#0077b5] transition-colors"
-            aria-label={`LinkedIn de ${member.acf.nombre}`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-          </a>
-        </div>
       </div>
     </div>
   );
@@ -260,31 +246,31 @@ const NuestrosValoresSection = () => {
       id: 2,
       titulo: 'Franqueza',
       descripcion: 'Fomentamos una comunicación sincera y clara, expresándonos con honestidad para construir relaciones basadas en la confianza.',
-      imagen: '/images/nosotros/franqueza.png'
+      imagen: '/images/nosotros/franqueza.svg'
     },
     {
       id: 3,
       titulo: 'Honestidad',
       descripcion: 'Actuamos con total congruencia entre lo que decimos y lo que hacemos, evitando la mentira a toda costa,',
-      imagen: '/images/nosotros/honestidad.png'
+      imagen: '/images/nosotros/honestidad.svg'
     },
     {
       id: 4,
       titulo: 'Independencia',
       descripcion: 'Valoramos nuestra capacidad para pensar y actuar de manera autónoma, tomando decisiones con criterio propio.',
-      imagen: '/images/nosotros/independencia.png'
+      imagen: '/images/nosotros/independencia.svg'
     },
     {
       id: 5,
       titulo: 'Puntualidad',
       descripcion: 'Cumplimos con los compromisos y llegamos a tiempo, impulsados por el respeto y la responsabilidad hacia los demás.',
-      imagen: '/images/nosotros/puntualidad.png'
+      imagen: '/images/nosotros/puntualidad.svg'
     },
     {
       id: 6,
       titulo: 'Servicio',
       descripcion: 'Estamos siempre disponibles para ayudar a otros de manera desinteresada, buscando el bienestar común.',
-      imagen: '/images/nosotros/servicios.png'
+      imagen: '/images/nosotros/servicio.svg'
     }
   ];
 
@@ -502,7 +488,7 @@ export default async function Nosotros() {
                     Playful Agency
                   </h1>
                   <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
-                    Diseño con Para Negocios que Quieren Resultados Reales
+                    Diseño para negocios que quieren resultados reales
                   </h2>
                   <div className="prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] text-gray-600 w-full max-w-none">
                     <p>

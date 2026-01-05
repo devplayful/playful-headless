@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { useState, useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import CarouselResultados from '@/components/CarouselResultados';
 import NosotrosBlogSectionClient from '@/components/sections/NosotrosBlogSectionClient';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -10,9 +10,9 @@ interface ContactPageClientProps {
   casosDeExito: any[];
 }
 
-// Componente interno que usa el hook de reCAPTCHA
+// Componente del formulario con reCAPTCHA V2
 function ContactForm({ casosDeExito }: ContactPageClientProps) {
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,8 +35,14 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!executeRecaptcha) {
-      console.error('reCAPTCHA no está disponible');
+    // Obtener token de reCAPTCHA V2
+    const recaptchaToken = recaptchaRef.current?.getValue();
+    
+    if (!recaptchaToken) {
+      setSubmitStatus({
+        success: false,
+        message: 'Por favor, completa el reCAPTCHA antes de enviar el formulario.'
+      });
       return;
     }
 
@@ -44,8 +50,6 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     setSubmitStatus(null);
 
     try {
-      // Obtener token de reCAPTCHA
-      const recaptchaToken = await executeRecaptcha('contact_form');
 
       // Enviar el formulario a nuestra API con el token
       const response = await fetch('/api/contact', {
@@ -71,7 +75,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
         });
         
-        // Limpiar el formulario después de un envío exitoso
+        // Limpiar el formulario y reCAPTCHA después de un envío exitoso
         setFormData({
           name: '',
           email: '',
@@ -80,6 +84,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           business: '',
           message: ''
         });
+        recaptchaRef.current?.reset();
       } else {
         setSubmitStatus({
           success: false,
@@ -92,6 +97,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
         success: false,
         message: 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
       });
+      recaptchaRef.current?.reset();
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +111,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           {/* Columna Izquierda: textos e ilustración */}
           <div className="flex flex-col justify-center items-start text-left">
             <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
-            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Hablemos de Tu Próximo Proyecto</h2>
+            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Hablemos de tu próximo proyecto</h2>
             <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[28px] leading-[36px] text-[#453A53] mb-2">¡Explícanos tu caso!</h3>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px]">
             ¿Tienes un proyecto en la mira o una pregunta técnica que necesita respuesta? Estamos listos para escuchar. Completa el formulario o escríbenos directamente. Analizaremos tu necesidad y nos pondremos en contacto contigo lo antes posible. <strong className="font-bold">Empecemos a planificar tus resultados.</strong>
@@ -231,13 +237,14 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     Acepto recibir mensajes de marketing ocasionales de Playful Agency.
                   </span>
                 </label>
-                <div className="mt-4 border border-gray-300 rounded-lg p-4 flex items-center justify-between bg-white">
-                  <label className="flex items-center gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
-                    <span>No soy un robot</span>
-                  </label>
-                  <div className="h-8 w-20 bg-gray-200 rounded"></div>
-                </div>
+              </div>
+              
+              {/* reCAPTCHA V2 Checkbox */}
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                />
               </div>
               
               <div>
@@ -276,18 +283,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
   );
 }
 
-// Componente principal con el Provider de reCAPTCHA
+// Componente principal
 export default function ContactPageClient({ casosDeExito }: ContactPageClientProps) {
-  return (
-    <GoogleReCaptchaProvider 
-      reCaptchaKey="6LdvUTssAAAAAPhfMupP02ukQ9VUeXZJ6NzHd8Sh"
-      scriptProps={{
-        async: false,
-        defer: false,
-        appendTo: "head",
-      }}
-    >
-      <ContactForm casosDeExito={casosDeExito} />
-    </GoogleReCaptchaProvider>
-  );
+  return <ContactForm casosDeExito={casosDeExito} />;
 }

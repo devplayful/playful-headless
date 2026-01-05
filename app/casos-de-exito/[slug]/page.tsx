@@ -72,9 +72,9 @@ export default async function SuccessStoryPage({
     <div className="text-gray-800">
       {/* Hero Section */}
       <section className="text-white">
-        <div className="max-w-7xl mx-auto bg-[#E9D7FF] rounded-t-[18px] p-[80px]">
+        <div className="max-w-7xl mx-auto bg-[#E9D7FF] rounded-t-[18px] p-5 md:p-[80px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="text-center md:text-left md:pt-4">
+            <div className="text-left md:pt-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
                 {story.title.rendered}
               </h1>
@@ -738,76 +738,76 @@ export default async function SuccessStoryPage({
         <section className="py-16 bg-[#FEF7FF]">
           <div className="max-w-7xl mx-auto px-6">
             <div className="mx-auto w-full max-w-[1200px]">
-              <div className="bg-[#FFD977] rounded-[26px] px-8 py-10 md:px-14 md:py-14 relative overflow-hidden h-[400px] flex items-center justify-center">
-                {/* Comillas grandes (contorno) */}
-                <div
-                  className="pointer-events-none absolute left-[28%] top-[6%] hidden md:block text-[260px] leading-none opacity-70"
-                  style={
-              {
-                WebkitTextStroke: '2px rgba(255,255,255,0.55)',
-                WebkitTextFillColor: 'transparent',
-              } as React.CSSProperties
-            }
-          >
-            “
-          </div>
-          <div
-            className="pointer-events-none absolute right-[7%] bottom-[-27%] hidden md:block text-[260px] leading-none opacity-70"
-            style={
-              {
-                WebkitTextStroke: '2px rgba(255,255,255,0.55)',
-                WebkitTextFillColor: 'transparent',
-              } as React.CSSProperties
-            }
-          >
-            ”
-          </div>
+              <div className="bg-[#FFD977] rounded-[26px] px-8 py-10 md:px-14 md:py-14 relative overflow-hidden min-h-[400px]">
+                <div className="w-full h-full flex flex-col md:flex-row items-center gap-8">
+                  {/* Columna izquierda: 40% - Foto y cargo */}
+                  <div className="w-full md:w-[40%] flex flex-col items-center justify-center gap-4">
+                    {story.acf?.testimonial_foto && (
+                      <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-white/70 ring-4 ring-white/60">
+                        <Image
+                          src={
+                            typeof story.acf.testimonial_foto === 'string'
+                              ? (story.acf.testimonial_foto as string)
+                              : (story.acf.testimonial_foto as { url: string }).url
+                          }
+                          alt={story.acf?.testimonialnombre || 'Testimonial'}
+                          fill
+                          sizes="160px"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
 
-          <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-[260px,1fr] items-center gap-8 md:gap-12">
-            {/* Columna izquierda: avatar + nombre + cargo */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              {story.acf?.testimonial_foto && (
-                <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white/70 ring-4 ring-white/60">
-                  <Image
-                    src={
-                      typeof story.acf.testimonial_foto === 'string'
-                        ? (story.acf.testimonial_foto as string)
-                        : (story.acf.testimonial_foto as { url: string }).url
-                    }
-                    alt={story.acf?.testimonialnombre || 'Testimonial'}
-                    fill
-                    sizes="96px"
-                    className="object-cover"
-                  />
+                    {story.acf?.testimonialnombre && (
+                      <p className="text-2xl md:text-3xl font-paytone font-bold text-[#2A0064] leading-tight text-center">
+                        {story.acf.testimonialnombre}
+                      </p>
+                    )}
+
+                    {story.acf?.testimonialcargo && (
+                      <p className="text-base md:text-lg font-dmsans text-[#2A0064]/80 text-center">
+                        {story.acf.testimonialcargo}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Columna derecha: 60% - Testimonio con comillas de fondo */}
+                  <div className="w-full md:w-[60%]">
+                    <section className="relative flex items-center justify-center min-h-[300px]">
+                      {/* Imagen de comillas como fondo */}
+                      <div className="pointer-events-none absolute inset-0 opacity-45">
+                        <Image
+                          src="/images/comillas.png"
+                          alt=""
+                          width={520}
+                          height={520}
+                          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
+                          priority
+                        />
+                      </div>
+
+                      {/* Testimonio */}
+                      {story.acf?.testimonio && (
+                        <div className="relative z-10 px-4 md:px-8">
+                          <p 
+                            className="font-dmsans leading-relaxed text-center italic"
+                            style={{
+                              fontSize: '24px',
+                              color: '#2A0064',
+                              fontWeight: 500,
+                            }}
+                          >
+                            {story.acf.testimonio}
+                          </p>
+                        </div>
+                      )}
+                    </section>
+                  </div>
                 </div>
-              )}
-
-              {story.acf?.testimonialnombre && (
-                <p className="mt-4 text-2xl font-paytone font-bold text-[#2A0064] leading-tight">
-                  {story.acf.testimonialnombre}
-                </p>
-              )}
-
-              {story.acf?.testimonialcargo && (
-                <p className="mt-1 text-sm md:text-base font-dmsans text-[#2A0064]/80">
-                  {story.acf.testimonialcargo}
-                </p>
-              )}
-            </div>
-
-            {/* Columna derecha: texto */}
-            {story.acf?.testimonio && (
-              <div className="text-center md:text-left">
-                <p className="text-base md:text-lg leading-relaxed text-[#2A0064]/90 font-dmsans italic max-w-[520px] mx-auto md:mx-0 md:pl-6">
-                  {story.acf.testimonio}
-                </p>
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        </section>
       )}
 
       {/* CTA Final Dinámico desde ACF */}
