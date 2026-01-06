@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { useSliderSettings } from "../../hooks/useSliderSettings";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 import Image from "next/image";
 
 const testimonials = [
@@ -127,63 +127,6 @@ export default function TestimonialsSection({
 }: TestimonialsSectionProps) {
   const textStyle: React.CSSProperties = { color: textColor };
 
-  // CAMBIO AQUÍ: Configuración corregida
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 2, // Por defecto: 2 cards (desktop > 1024px)
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    arrows: false,
-    responsive: [
-      {
-        breakpoint: 1024, // Tablet: desde 768px hasta 1023px
-        settings: {
-          slidesToShow: 2, // Mantiene 2 cards en tablet
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 767, // Mobile: menos de 768px
-        settings: {
-          slidesToShow: 1, // Solo 1 card en móvil
-          slidesToScroll: 1,
-        }
-      }
-    ]
-  };
-
-  // CAMBIO AQUÍ: Configuración de logos corregida
-  const logoSettings = {
-    slidesToShow: 4, // Por defecto: 4 logos (desktop > 1024px)
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    infinite: true,
-    speed: 800,
-    cssEase: "ease-in-out",
-    dots: true,
-    arrows: false,
-    responsive: [
-      {
-        breakpoint: 1024, // Tablet: desde 768px hasta 1023px
-        settings: {
-          slidesToShow: 4, // Mantiene 4 logos en tablet
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 767, // Mobile: menos de 768px
-        settings: {
-          slidesToShow: 1, // Solo 1 logo en móvil
-          slidesToScroll: 1,
-        }
-      }
-    ]
-  };
-
   return (
     <section className={className}>
       <div className="w-full">
@@ -199,66 +142,115 @@ export default function TestimonialsSection({
         </div>
 
         {/* Carrusel de testimonios */}
-        <div className="max-w-[1200px] mx-auto playful-movil-testimonialCard overflow-hidden [&_.slick-dots]:mt-[20px]">
-          <Slider {...sliderSettings}>
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="px-3">
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full max-w-[520px] h-[750px] md:h-[650px] flex flex-col justify-center items-center text-center p-8 mx-auto">
-                  <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                    <span className="text-2xl font-bold text-purple-700">
-                      {testimonial.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </span>
-                  </div>
-
-                  <h4 className="font-semibold text-lg mb-2" style={textStyle}>
-                    {testimonial.name}
-                  </h4>
-
-                  <div className="flex justify-center mb-4">
-                    <div className="text-yellow-400 text-xl">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
+        <div className="w-full overflow-hidden pb-12">
+          <div className="max-w-[1200px] mx-auto px-4">
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              slidesPerView={1}
+              spaceBetween={20}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              breakpoints={{
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 24,
+                },
+              }}
+              className="testimonials-swiper"
+            >
+              {testimonials.map((testimonial) => (
+                <SwiperSlide key={testimonial.id}>
+                  <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[650px] flex flex-col justify-center items-center text-center p-3 md:p-8">
+                    <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                      <span className="text-2xl font-bold text-purple-700">
+                        {testimonial.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </span>
                     </div>
-                  </div>
 
-                  <p className="flex-grow flex items-center text-sm md:text-base">
-                    "{testimonial.content}"
-                  </p>
-                </div>
-              </div>
-            ))}
-          </Slider>
+                    <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                      {testimonial.name}
+                    </h4>
+
+                    <div className="flex justify-center mb-4">
+                      <div className="text-yellow-400 text-xl">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="flex-grow flex items-center text-sm md:text-base px-2">
+                      "{testimonial.content}"
+                    </p>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
 
         {/* Logos */}
-        <div className="py-16 overflow-hidden">
+        <div className="py-16">
           <h3 className="text-center text-2xl md:text-3xl font-normal mb-12" style={textStyle}>
             Nuestros aliados estratégicos
           </h3>
 
-          {/* CAMBIO AQUÍ: Usa la nueva configuración logoSettings */}
-          <Slider {...logoSettings} className="[&_.slick-arrow]:hidden sm:[&_.slick-arrow]:block">
-            {partnerLogos.map((logo, index) => (
-              <div key={logo} className="px-2 sm:px-3">
-                <div className="w-full h-[230px] sm:h-64">
-                  <div className="w-full h-full relative">
-                    <Image
-                      src={logo}
-                      alt={`Logo ${logo.split("/").pop()?.split(".")[0]}`}
-                      fill
-                      sizes="(max-width: 768px) 80vw, (max-width: 1024px) 40vw, 30vw"
-                      className="object-contain p-1 sm:p-2"
-                      priority={index < 2}
-                    />
+          <div className="w-full max-w-[1200px] mx-auto px-4 pb-12">
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              slidesPerView={1}
+              spaceBetween={20}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
+              }}
+              breakpoints={{
+                480: {
+                  slidesPerView: 2,
+                  spaceBetween: 16,
+                },
+                640: {
+                  slidesPerView: 3,
+                  spaceBetween: 20,
+                },
+                768: {
+                  slidesPerView: 4,
+                  spaceBetween: 24,
+                },
+              }}
+              className="logos-swiper"
+            >
+              {partnerLogos.map((logo, index) => (
+                <SwiperSlide key={logo}>
+                  <div className="w-full h-[200px] flex items-center justify-center p-4">
+                    <div className="w-full h-full relative">
+                      <Image
+                        src={logo}
+                        alt={`Logo ${logo.split("/").pop()?.split(".")[0]}`}
+                        fill
+                        sizes="(max-width: 768px) 90vw, (max-width: 1024px) 40vw, 25vw"
+                        className="object-contain"
+                        priority={index < 2}
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </Slider>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
       </div>
     </section>
