@@ -15,7 +15,7 @@ const HistorySection = () => {
       {/* Overlay de confeti por encima del color */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       {/* Sección superior: Imagen a la izquierda, texto a la derecha */}
-      <div className="relative z-10 py-16 md:py-6">
+      <div className="relative z-10 p-[20px] md:py-6">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Columna izquierda - Imagen */}
           <div className="w-full lg:w-1/2">
@@ -46,7 +46,7 @@ const HistorySection = () => {
 
       {/* Sección inferior: Dos columnas con tarjetas de imagen y párrafo */}
       <div className="relative z-10 bg-transparent py-16 md:py-20 rounded-3xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16 p-[20px]">
           
           {/* Tarjeta 1 */}
           <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
@@ -190,7 +190,7 @@ const EquipoSection = async () => {
   );
   
   return (
-    <section className="w-full relative overflow-hidden bg-[#E4FFF9] py-10 md:py-0 rounded-3xl my-16 p-[60px]">
+    <section className="w-full relative overflow-hidden bg-[#E4FFF9] rounded-3xl my-16 p-[20px] md:p-[60px]">
       {/* Overlay de confeti sobre el color */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       <div className="relative z-10 py-12 md:py-16">
@@ -317,7 +317,7 @@ const ValuePropositionSection = () => {
   ];
 
   return (
-    <section className="w-full relative overflow-hidden bg-[#440099] py-16 md:py-24 rounded-3xl my-16 p-[80px]">
+    <section className="w-full relative overflow-hidden bg-[#440099] rounded-3xl my-16 p-[30px] md:p-[80px]">
       {/* Overlay de confeti sobre el fondo morado */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       <div className="relative z-10">
