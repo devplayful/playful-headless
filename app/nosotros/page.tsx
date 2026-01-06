@@ -241,7 +241,7 @@ const NuestrosValoresSection = () => {
       id: 1,
       titulo: 'Aprendizaje',
       descripcion: 'Nos comprometemos a desarrollar nuevas habilidades y mejorarnos constantemente, manteniendo una mentalidad abierta y enfocada en el crecimiento.',
-      imagen: '/images/nosotros/aprendizaje.png'
+      imagen: '/images/nosotros/aprendizaje.svg'
     },
     {
       id: 2,
