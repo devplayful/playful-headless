@@ -18,7 +18,7 @@ const CasoExitoCta: React.FC<CasoExitoCtaProps> = ({
   imageUrl = "/images/caso-de-exito-imagen-cta.png"
 }) => {
   return (
-    <div className="w-full mb-[80px] max-w-[1200px] mx-auto px-6 rounded-[36px] relative overflow-hidden" style={{
+    <div className="w-full mb-[80px] max-w-[1200px] mx-auto px-4 md:px-6 rounded-[36px] relative overflow-hidden" style={{
       backgroundColor: "#B3FFF3",
       backgroundImage: "url(/images/background.webp)",
       backgroundSize: "cover",

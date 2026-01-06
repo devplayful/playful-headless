@@ -85,7 +85,7 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
   if (loading) {
     return (
       <div className="w-full bg-[#440099] py-4">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-wrap gap-3 items-center justify-center">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="h-10 bg-[#5a1cb3] animate-pulse rounded-full w-24"></div>

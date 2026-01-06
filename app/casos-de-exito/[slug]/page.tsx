@@ -72,7 +72,7 @@ export default async function SuccessStoryPage({
     <div className="text-gray-800">
       {/* Hero Section */}
       <section className="text-white">
-        <div className="max-w-7xl mx-auto bg-[#E9D7FF] rounded-t-[18px] p-5 md:p-[80px]">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6 bg-[#E9D7FF] rounded-t-[18px] p-5 md:p-[80px] mt-[40px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="text-left md:pt-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
@@ -156,7 +156,7 @@ export default async function SuccessStoryPage({
         story.acf?.segundoh2 ||
         story.acf?.tercerap) && (
         <section className="py-0 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center">
           <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
              {[story.acf?.imagenminuta1, story.acf?.imagenminuta2, story.acf?.imagenminuta3]
@@ -210,7 +210,7 @@ export default async function SuccessStoryPage({
         story.acf?.desafioimagen3 ||
         story.acf?.desafioimagen4) && (
         <section className="py-12 sm:py-16 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="bg-[#E9D7FF] rounded-[18px] sm:rounded-[24px] p-4 sm:p-6 md:p-8 lg:p-10">
             {/* Contenedor principal sin fondo */}
             <div className="p-4 sm:p-6 md:p-8">
@@ -350,7 +350,7 @@ export default async function SuccessStoryPage({
         story.acf?.otroh2st ||
         story.acf?.otropst) && (
         <section className="py-0 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center">
             {/* Título y descripción */}
             <div className="text-center max-w-4xl px-4">
@@ -425,7 +425,7 @@ export default async function SuccessStoryPage({
         story.acf?.tercerh3desarrollo ||
         story.acf?.tercerapdesarrollo) && (
         <section className="py-12 sm:py-16 bg-[#FEF7FF]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
             <div className="relative">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
                 <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[800px] rounded-xl overflow-hidden">
@@ -512,149 +512,157 @@ export default async function SuccessStoryPage({
         story.acf?.grilla7 ||
         story.acf?.grilla8) && (
         <section className="py-16 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {story.acf?.grilla1 && (
-              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
-                <Image
-                  src={
-                    typeof story.acf.grilla1 === 'string'
-                      ? story.acf.grilla1
-                      : story.acf.grilla1.url
-                  }
-                  alt="Gallery image 1"
-                  width={350}
-                  height={300}
-                  className="object-contain w-full h-full"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
-              </div>
-            )}
-
-            {story.acf?.grilla2 && (
-              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
-                <Image
-                  src={
-                    typeof story.acf.grilla2 === 'string'
-                      ? story.acf.grilla2
-                      : story.acf.grilla2.url
-                  }
-                  alt="Gallery image 2"
-                  width={350}
-                  height={300}
-                  className="object-contain w-full h-full"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
-              </div>
-            )}
-
-            {story.acf?.grilla3 && (
-              <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
-                <Image
-                  src={
-                    typeof story.acf.grilla3 === 'string'
-                      ? story.acf.grilla3
-                      : story.acf.grilla3.url
-                  }
-                  alt="Gallery image 3"
-                  width={350}
-                  height={300}
-                  className="object-contain w-full h-full"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {story.acf?.grilla4 && (
-              <div>
-                <div className="relative w-full h-[302px] rounded-xl overflow-hidden mb-4">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-20 bg-[#E9D7FF] rounded-t-[18px]">
+          {/* Grid Masonry de 3 columnas */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            {/* Columna 1: grilla1, grilla4, grilla5 */}
+            <div className="flex flex-col gap-[10px] md:gap-4 md:justify-between md:h-full">
+              {story.acf?.grilla1 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
+                  <Image
+                    src={
+                      typeof story.acf.grilla1 === 'string'
+                        ? story.acf.grilla1
+                        : story.acf.grilla1.url
+                    }
+                    alt="Gallery image 1"
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              )}
+              {story.acf?.grilla4 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla4 === 'string'
                         ? story.acf.grilla4
                         : story.acf.grilla4.url
                     }
-                    alt="Gallery image 1"
-                    width={350}
+                    alt="Gallery image 4"
+                    width={400}
                     height={300}
-                    className="object-contain w-full h-full"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-                <div className="relative w-full h-[302px] rounded-xl overflow-hidden">
+              )}
+              {story.acf?.grilla5 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla5 === 'string'
                         ? story.acf.grilla5
                         : (story.acf.grilla5 as { url: string }).url
                     }
-                    alt="Gallery image 2"
-                    width={350}
+                    alt="Gallery image 5"
+                    width={400}
                     height={300}
-                    className="object-contain w-full h-full"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {story.acf?.grilla6 && (
-              <div className="relative w-full h-[620px] rounded-xl overflow-hidden">
-                <Image
-                  src={
-                    typeof story.acf.grilla6 === 'string'
-                      ? story.acf.grilla6
-                      : story.acf.grilla6.url
-                  }
-                  alt="Gallery image 3"
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                />
-              </div>
-            )}
+            {/* Columna 2: grilla2, grilla6 */}
+            <div className="flex flex-col gap-[10px] md:gap-4">
+              {story.acf?.grilla2 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
+                  <Image
+                    src={
+                      typeof story.acf.grilla2 === 'string'
+                        ? story.acf.grilla2
+                        : story.acf.grilla2.url
+                    }
+                    alt="Gallery image 2"
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              )}
+              {story.acf?.grilla6 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
+                  <Image
+                    src={
+                      typeof story.acf.grilla6 === 'string'
+                        ? story.acf.grilla6
+                        : story.acf.grilla6.url
+                    }
+                    alt="Gallery image 6"
+                    width={400}
+                    height={600}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              )}
+            </div>
 
-            {story.acf?.grilla7 && (
-              <div>
-                <div className="relative w-full h-[302px] rounded-xl overflow-hidden mb-4">
+            {/* Columna 3: grilla3, grilla7, grilla8 */}
+            <div className="flex flex-col gap-[10px] md:gap-4 md:justify-between md:h-full">
+              {story.acf?.grilla3 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
+                  <Image
+                    src={
+                      typeof story.acf.grilla3 === 'string'
+                        ? story.acf.grilla3
+                        : story.acf.grilla3.url
+                    }
+                    alt="Gallery image 3"
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              )}
+              {story.acf?.grilla7 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla7 === 'string'
                         ? story.acf.grilla7
                         : story.acf.grilla7.url
                     }
-                    alt="Gallery image 3"
-                    width={350}
+                    alt="Gallery image 7"
+                    width={400}
                     height={300}
-                    className="object-contain w-full h-full"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-                <div className="relative w-full h-[302px] rounded-xl overflow-hidden flex items-center justify-center">
+              )}
+              {story.acf?.grilla8 && (
+                <div className="relative w-full rounded-xl overflow-hidden">
                   <Image
                     src={
                       typeof story.acf.grilla8 === 'string'
                         ? story.acf.grilla8
                         : (story.acf.grilla8 as { url: string }).url
                     }
-                    alt="Gallery image 3"
-                    width={350}
+                    alt="Gallery image 8"
+                    width={400}
                     height={300}
-                    className="object-contain w-full h-full"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+
           </div>
         </div>
       </section>
       )}
 
       <section className="py-0 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center">
             <div className="text-center max-w-4xl">
               <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
@@ -673,7 +681,7 @@ export default async function SuccessStoryPage({
 
       {/* Results Cards Section */}
       <section className="py-16 bg-[#FEF7FF]">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="rounded-[18px] px-6 py-12 md:px-10 md:py-14">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 max-w-6xl mx-auto">
               {(story.acf?.resultado1 || story.acf?.resultadop1) && (
@@ -736,7 +744,7 @@ export default async function SuccessStoryPage({
       {/* Testimonial Section */}
       {(story.acf?.testimonialnombre || story.acf?.testimonio) && (
         <section className="py-16 bg-[#FEF7FF]">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
             <div className="mx-auto w-full max-w-[1200px]">
               <div className="bg-[#FFD977] rounded-[26px] px-8 py-10 md:px-14 md:py-14 relative overflow-hidden min-h-[400px]">
                 <div className="w-full h-full flex flex-col md:flex-row items-center gap-8">
@@ -818,7 +826,7 @@ export default async function SuccessStoryPage({
         
         return (
           <section className="py-0 pb-20 bg-[#FEF7FF]">
-            <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-[1200px] mx-auto px-4 md:px-6">
               <CasoExitoCta
                 title={cta.titulo_del_cta}
                 description={cta.descripcion || ''}

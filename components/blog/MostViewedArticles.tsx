@@ -39,7 +39,7 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
 
   return (
     <div className="w-full py-12 bg-[#E9D7FF]">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-[#440099]">Artículos Más Vistos</h2>
           <div className="flex gap-2">

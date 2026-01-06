@@ -106,7 +106,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
   return (
     <main className="min-h-screen bg-cover bg-center">
       {/* Sección principal con dos columnas según el diseño */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto pt-4 pb-12 md:pb-16">
+      <section className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-12 md:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Columna Izquierda: textos e ilustración */}
           <div className="flex flex-col justify-center items-start text-left">
@@ -267,7 +267,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       
       {/* Sección Casos de Éxito - Carrusel */}
       <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <CarouselResultados casosDeExito={casosDeExito} />
         </div>
       </section>
@@ -276,7 +276,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       <NosotrosBlogSectionClient />
       
       {/* CTA Section */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
+      <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-8 mb-20">
         <TwoColumnCtaSection />
       </section>
     </main>

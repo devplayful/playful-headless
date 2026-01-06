@@ -27,7 +27,7 @@ export default function SoyTechnoSectionE({ data }: Props) {
 
   return (
     <section className="py-16 bg-[#FEF7FF]">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         {/* BLOQUE E1: Header pill */}
         {data.titulo_de_la_seccion_e && (
           <div className="flex justify-center mb-12">

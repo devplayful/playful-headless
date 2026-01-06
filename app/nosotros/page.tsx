@@ -1,20 +1,21 @@
-import { getPageMetadataBySlug, TeamMember, getTeamMembers, getLatestBlogPosts } from '@/services/wordpress';
+import { getPageMetadataBySlug, TeamMember, getTeamMembers } from '@/services/wordpress';
 import Image from 'next/image';
-import Link from 'next/link';
-import BlogPosts from '@/components/BlogPosts';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
+
+// Constante para clases de contenedor estandarizadas
+const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
 // --- COMPONENTE DE HISTORIA, MISIÓN Y VISIÓN ---
 const HistorySection = () => {
   return (
     // Contenedor principal para la sección de Historia
-    <section className="relative overflow-hidden bg-[#E4FFF9] py-0 rounded-3xl w-[calc(100%-80px)] max-w-[1200px] mx-auto my-0">
+    <section className="w-full relative overflow-hidden bg-[#E4FFF9] py-0 rounded-3xl my-0">
       {/* Overlay de confeti por encima del color */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
       {/* Sección superior: Imagen a la izquierda, texto a la derecha */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-6">
+      <div className="relative z-10 py-16 md:py-6">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Columna izquierda - Imagen */}
           <div className="w-full lg:w-1/2">
@@ -35,7 +36,7 @@ const HistorySection = () => {
               Historia
             </h2>
             <div className="space-y-4">
-              <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453] mx-auto max-w-[92%] min-[768px]:max-w-[700px] min-[1024px]:max-w-[820px]">
+              <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
                 En Playful Agency, nos dimos cuenta de que muchas empresas no estaban aprovechando al máximo el potencial de herramientas clave como el SEO, los anuncios pagados (Ads) y el desarrollo web, lo que estaba limitando su crecimiento digital. A través de nuestra experiencia y crecimiento, hemos aprendido a implementar soluciones estratégicas en estas áreas, potenciando la presencia online de nuestros clientes y optimizando su rendimiento en los canales digitales.
               </p>
             </div>
@@ -44,8 +45,8 @@ const HistorySection = () => {
       </div>
 
       {/* Sección inferior: Dos columnas con tarjetas de imagen y párrafo */}
-      <div className="relative z-10 bg-transparent px-6 py-16 md:py-20 rounded-3xl">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
+      <div className="relative z-10 bg-transparent py-16 md:py-20 rounded-3xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
           
           {/* Tarjeta 1 */}
           <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
@@ -87,7 +88,7 @@ const HistorySection = () => {
 // --- COMPONENTE DE MISIÓN Y VISIÓN ---
 const MissionVisionSection = () => {
   return (
-    <section className="rounded-3xl w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8">
+    <section className="w-full rounded-3xl my-8">
       <div className="px-0 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tarjeta Misión */}
@@ -189,10 +190,10 @@ const EquipoSection = async () => {
   );
   
   return (
-    <section className="relative overflow-hidden bg-[#E4FFF9] py-10 md:py-0 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+    <section className="w-full relative overflow-hidden bg-[#E4FFF9] py-10 md:py-0 rounded-3xl my-16 p-[60px]">
       {/* Overlay de confeti sobre el color */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-16">
+      <div className="relative z-10 py-12 md:py-16">
         <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[40px] text-[#453A53] mb-12 text-center">
           Nuestro Equipo
         </h2>
@@ -275,7 +276,7 @@ const NuestrosValoresSection = () => {
   ];
 
   return (
-    <section className="py-12 md:py-16 w-[calc(100%-80px)] max-w-[1200px] mx-auto px-0">
+    <section className="w-full py-12 md:py-16">
       <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] text-center mb-12">
         Nuestros Valores
       </h2>
@@ -306,69 +307,6 @@ const NuestrosValoresSection = () => {
 };
 
 
-// --- COMPONENTE DE BLOG ---
-const BlogSection = async () => {
-  const blogPosts = await getLatestBlogPosts(3);
-
-  return (
-    <section className="rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
-      <BlogPosts /> 
-    </section>
-  );
-};
-
-// --- COMPONENTE CTA ---
-const CTASection = ({
-  imagePath = "/images/nosotros/cta-illustration.png",
-  imageAlt = "Ilustración de crecimiento digital"
-}: {
-  imagePath?: string;
-  imageAlt?: string;
-}) => {
-  return (
-    <section className="relative overflow-hidden mt-12 mb-12 pb-16 w-[calc(100%-40px)] max-w-[1200px] mx-auto md:mt-[40px] md:mb-16">
-      {/* Overlay de confeti para la sección CTA */}
-      <div className="pointer-events-none absolute inset-0 "></div>
-      <div className="relative z-10 flex flex-col md:flex-row items-stretch">
-        {/* Sección de Imagen */}
-        <div className="w-full md:w-1/2 flex justify-center items-center p-6 bg-transparent">
-          <div className="w-[452px] h-[557px] flex items-center justify-center">
-            <img
-              src={imagePath}
-              alt={imageAlt}
-              width={452}
-              height={557}
-              className="w-full h-full object-contain"
-              style={{
-                display: 'block'
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Sección de Contenido */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center p-8 md:p-10 bg-[#B3FFF3] rounded-3xl">
-          <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-[#453A53] font-[700] text-[45px] leading-[52px] mb-6">
-            No esperes más para empezar a ganar
-          </h2>
-          <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#453A53] max-w-[92%] min-[768px]:max-w-[620px] min-[1024px]:max-w-[680px] mt-2">
-            Deja de arreglar tu web con parches y dejas de perder clientes por fallas que no puedes ver.
-            Es hora de invertir en una solución profesional.
-          </p>
-          <p className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[600] text-[28px] leading-[36px] text-[#453A53] mt-6">
-            ¡Contáctanos y hagamos que tu sitio web trabaje para ti!
-          </p>
-          <a
-            href="/contacto"
-            className="inline-block bg-[#7c23ce] hover:bg-[#a99cec] text-white rounded-full px-8 py-4 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 mt-5"
-          >
-            ¡Empieza ya!
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // --- COMPONENTE DE PROPUESTA DE VALOR ---
 const ValuePropositionSection = () => {
@@ -379,15 +317,15 @@ const ValuePropositionSection = () => {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-[#440099] py-16 md:py-24 rounded-3xl w-[calc(100%-40px)] max-w-[1200px] mx-auto my-16">
+    <section className="w-full relative overflow-hidden bg-[#440099] py-16 md:py-24 rounded-3xl my-16 p-[80px]">
       {/* Overlay de confeti sobre el fondo morado */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat"></div>
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
+      <div className="relative z-10">
         <div className="text-center">
           <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[45px] leading-[52px] mb-6">
             Propuesta de valor de Playful
           </h2>
-          <p className="mx-auto max-w-[92%] min-[768px]:max-w-[820px] min-[1024px]:max-w-[900px] [font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#E9D7FF] mb-12 min-[768px]:mb-16">
+          <p className="mx-auto [font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#E9D7FF] mb-12 min-[768px]:mb-16">
             Ayudamos a dueños de comercios electrónicos que facturan más de 100.000€ al mes y están descontentos con su ecommerce actual, debido a la falta de escalabilidad y actualización de sus agencias anteriores. Con nuestra metodología abierta y ágil, les ayudamos a aumentar sus ingresos mensuales en un 35% sin las complicaciones y dolores de cabeza que conlleva un rediseño tradicional.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
@@ -409,62 +347,6 @@ const ValuePropositionSection = () => {
 };
 
 
-// --- COMPONENTE HERO PERSONALIZADO ---
-const HeroSection = ({
-  title,
-  subtitle,
-  description,
-  imagePath,
-  imageAlt,
-  bgColor = 'bg-[#E9D7FF]',
-  textColor = 'text-[#440099]',
-  textSecondaryColor = 'text-gray-600'
-}: {
-  title: string;
-  subtitle: string;
-  description: string;
-  imagePath: string;
-  imageAlt: string;
-  bgColor?: string;
-  textColor?: string;
-  textSecondaryColor?: string;
-}) => {
-  return (
-    <section className={`min-h-[480px] flex items-center py-12`}>
-      <div className="w-full">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            {/* Columna Izquierda */}
-            <div className="md:w-1/2 text-center md:text-left">
-              <h1 className={`[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[20px] sm:text-[24px] lg:text-[28px] ${textColor} mb-4`}>
-                {title}
-              </h1>
-              <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[56px] text-[#440099] mb-6">
-                {subtitle}
-              </h2>
-              <div className={`prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] ${textSecondaryColor} w-full max-w-none`}>
-                <p>{description}</p>
-              </div>
-            </div>
-            
-            {/* Columna Derecha */}
-            <div className="md:w-1/2 flex justify-center">
-              <div className="relative w-full max-w-[412px] h-[350px]">
-                <Image
-                  src={imagePath}
-                  alt={imageAlt}
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // --- COMPONENTE PRINCIPAL DE LA PÁGINA "NOSOTROS" ---
 export default async function Nosotros() {
@@ -475,10 +357,9 @@ export default async function Nosotros() {
   const casosDeExito = await getAllCaseStudies();
   
   return (
-    <div className="w-full">
+    <main className="max-w-[1200px] mx-auto px-4 md:px-6 w-full">
       {/* Sección Superior "Nosotros" */}
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="min-h-[480px] flex items-center pt-4 pb-12">
             <div className="w-full">
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -513,7 +394,6 @@ export default async function Nosotros() {
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Sección "Propuesta de valor" */}
@@ -532,20 +412,18 @@ export default async function Nosotros() {
       <EquipoSection />
 
       {/* Sección Casos de Éxito - Carrusel */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <CarouselResultados casosDeExito={casosDeExito} />
-        </div>
+      <section className="w-full py-12">
+        <CarouselResultados casosDeExito={casosDeExito} />
       </section>
 
       {/* Sección del Blog */} 
       <BlogRelatedPostsSection />
 
       {/* Sección CTA */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto my-8 mb-[80px]">
+      <section className="w-full my-8 mb-[80px]">
         <TwoColumnCtaSection />
       </section>
-    </div>
+    </main>
   );
 }
 

@@ -41,71 +41,69 @@ const testimonials = [
     avatar: "/images/avatars/avatar4.jpg",
   },
   {
-  id: 5,
-  name: "Hortensia López Almán",
-  role: "",
-  content:
-    "Gracias por el trabajo que hacen con tanto cariño e interés por ayudar a las ONGs.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 6,
-  name: "Carlos Rattia",
-  role: "",
-  content:
-    "No tuve la oportunidad de contratarlos pero me ofrecieron paquetes muy atractivos y muy completos, se nota seriedad y compromiso al conversar con ellos, mejorar los tiempos de respuesta, suele tardar un poco el poder contactarlos",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 8,
-  name: "Ricardo S",
-  role: "",
-  content:
-    "Trabajar con PLAYFUL AGENCY en la obtención de la beca Google Ad Grants ha sido una experiencia realmente efectiva y gratificante. Desde el primer momento, se hicieron cargo del proceso con una velocidad y diligencia que superaron nuestras expectativas.No solo nos guiaron por los entresijos de la solicitud, sino que además aseguraron que todo se ejecutara de forma rápida y sin problemas, lo que resultó en la concesión de la beca. Estamos emocionados por el impacto que los 10,000 dólares mensuales en publicidad puedan tener en nuestros proyectos. Aunque es demasiado pronto para medir los resultados exactos, la perspectiva de lo que esto podría significar para la Fundación Maniapure nos llena de ilusión. En resumen, nuestra experiencia con PLAYFUL AGENCY ha sido altamente positiva y esperamos ver los frutos de esta colaboración en los próximos meses.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 9,
-  name: "Johann G",
-  role: "",
-  content:
-    "Strong knowledge on SEO and Web Services. Highly recommended",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 10,
-  name: "Varenka Leon",
-  role: "",
-  content:
-    "Excelente servicio! Los contraté para servicio de auditoría de página web. Me brindaron todos los detalles necesarios y su atención fue maravillosa, estudio exhaustivo y entendible. Los recomiendo 100% avanzaré en otros servios que ofrecen para optimizar el SEO.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 11,
-  name: "Integrademy Hola",
-  role: "",
-  content:
-    "Contactar con el equipo de Playful Agency ha sido gratificante por las informaciones de valor que han compartido, fueron encuentros donde sé mucha información de valor y definitivamente estamos encantados de trabajar junto. La profesionalidad y la paciencia para explicarnos cada detalle de la auditoría ha sido verdaderamente gratificante para nosotros. Gracias José y Laquesis por el trato y sacarnos tiempo de su agenda.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 12,
-  name: "Citas Ytramites",
-  role: "",
-  content:
-    "Buen Servicio me dieron buena AUDITORIA a mi web en espera de finiquitar un préstamo para que me ayuden con mi Pagina.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-{
-  id: 13,
-  name: "Norma Pacheco",
-  role: "",
-  content:
-    "Al solicitar información acerca de los servicios de Playful Agency, para mejorar mi sitio web, así como lo relacionado con el tema de Email marketing, tuve el privilegio de ser atendida por Jose y Laquesis, representantes de la agencia, quienes me concedieron un espacio de su agenda para explicarme con detalles el alcance de la auditoría SEO que realizaron a mi página, así como recomendaciones y sugerencias que me podría ayudar con el crecimiento de mi negocio inmobiliario. Me explicaron con detalles el resultado de la auditoría efectuada y las sugerencias para mejorar y ampliar la visibilidad de mi página web. Son una empresa muy profesional con un excelente manejo de las herramientas digitales y fundamentalmente la atención personalizada con sus clientes. Playful... !!Super recomendada !! Cinco estrellas.",
-  avatar: "/images/avatars/avatar4.jpg",
-},
-
-
+    id: 5,
+    name: "Hortensia López Almán",
+    role: "",
+    content:
+      "Gracias por el trabajo que hacen con tanto cariño e interés por ayudar a las ONGs.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 6,
+    name: "Carlos Rattia",
+    role: "",
+    content:
+      "No tuve la oportunidad de contratarlos pero me ofrecieron paquetes muy atractivos y muy completos, se nota seriedad y compromiso al conversar con ellos, mejorar los tiempos de respuesta, suele tardar un poco el poder contactarlos",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 8,
+    name: "Ricardo S",
+    role: "",
+    content:
+      "Trabajar con PLAYFUL AGENCY en la obtención de la beca Google Ad Grants ha sido una experiencia realmente efectiva y gratificante. Desde el primer momento, se hicieron cargo del proceso con una velocidad y diligencia que superaron nuestras expectativas.No solo nos guiaron por los entresijos de la solicitud, sino que además aseguraron que todo se ejecutara de forma rápida y sin problemas, lo que resultó en la concesión de la beca. Estamos emocionados por el impacto que los 10,000 dólares mensuales en publicidad puedan tener en nuestros proyectos. Aunque es demasiado pronto para medir los resultados exactos, la perspectiva de lo que esto podría significar para la Fundación Maniapure nos llena de ilusión. En resumen, nuestra experiencia con PLAYFUL AGENCY ha sido altamente positiva y esperamos ver los frutos de esta colaboración en los próximos meses.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 9,
+    name: "Johann G",
+    role: "",
+    content:
+      "Strong knowledge on SEO and Web Services. Highly recommended",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 10,
+    name: "Varenka Leon",
+    role: "",
+    content:
+      "Excelente servicio! Los contraté para servicio de auditoría de página web. Me brindaron todos los detalles necesarios y su atención fue maravillosa, estudio exhaustivo y entendible. Los recomiendo 100% avanzaré en otros servios que ofrecen para optimizar el SEO.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 11,
+    name: "Integrademy Hola",
+    role: "",
+    content:
+      "Contactar con el equipo de Playful Agency ha sido gratificante por las informaciones de valor que han compartido, fueron encuentros donde sé mucha información de valor y definitivamente estamos encantados de trabajar junto. La profesionalidad y la paciencia para explicarnos cada detalle de la auditoría ha sido verdaderamente gratificante para nosotros. Gracias José y Laquesis por el trato y sacarnos tiempo de su agenda.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 12,
+    name: "Citas Ytramites",
+    role: "",
+    content:
+      "Buen Servicio me dieron buena AUDITORIA a mi web en espera de finiquitar un préstamo para que me ayuden con mi Pagina.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
+  {
+    id: 13,
+    name: "Norma Pacheco",
+    role: "",
+    content:
+      "Al solicitar información acerca de los servicios de Playful Agency, para mejorar mi sitio web, así como lo relacionado con el tema de Email marketing, tuve el privilegio de ser atendida por Jose y Laquesis, representantes de la agencia, quienes me concedieron un espacio de su agenda para explicarme con detalles el alcance de la auditoría SEO que realizaron a mi página, así como recomendaciones y sugerencias que me podría ayudar con el crecimiento de mi negocio inmobiliario. Me explicaron con detalles el resultado de la auditoría efectuada y las sugerencias para mejorar y ampliar la visibilidad de mi página web. Son una empresa muy profesional con un excelente manejo de las herramientas digitales y fundamentalmente la atención personalizada con sus clientes. Playful... !!Super recomendada !! Cinco estrellas.",
+    avatar: "/images/avatars/avatar4.jpg",
+  },
 ];
 
 const partnerLogos = [
@@ -127,8 +125,64 @@ export default function TestimonialsSection({
   textColor = "#4A4453",
   className,
 }: TestimonialsSectionProps) {
-  const responsiveSettings = useSliderSettings();
   const textStyle: React.CSSProperties = { color: textColor };
+
+  // CAMBIO AQUÍ: Configuración corregida
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2, // Por defecto: 2 cards (desktop > 1024px)
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1024, // Tablet: desde 768px hasta 1023px
+        settings: {
+          slidesToShow: 2, // Mantiene 2 cards en tablet
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 767, // Mobile: menos de 768px
+        settings: {
+          slidesToShow: 1, // Solo 1 card en móvil
+          slidesToScroll: 1,
+        }
+      }
+    ]
+  };
+
+  // CAMBIO AQUÍ: Configuración de logos corregida
+  const logoSettings = {
+    slidesToShow: 4, // Por defecto: 4 logos (desktop > 1024px)
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    infinite: true,
+    speed: 800,
+    cssEase: "ease-in-out",
+    dots: true,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1024, // Tablet: desde 768px hasta 1023px
+        settings: {
+          slidesToShow: 4, // Mantiene 4 logos en tablet
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 767, // Mobile: menos de 768px
+        settings: {
+          slidesToShow: 1, // Solo 1 logo en móvil
+          slidesToScroll: 1,
+        }
+      }
+    ]
+  };
 
   return (
     <section className={className}>
@@ -144,47 +198,36 @@ export default function TestimonialsSection({
           </p>
         </div>
 
-        {/* Carrusel testimonios */}
-        <div className="playful-movil-testimonialCard overflow-hidden">
-          <Slider
-            {...{
-              ...responsiveSettings,
-              slidesToScroll: 1,
-              autoplay: true,
-              autoplaySpeed: 5000,
-              infinite: true,
-              centerMode: false,
-            }}
-          >
+        {/* Carrusel de testimonios */}
+        <div className="max-w-[1200px] mx-auto playful-movil-testimonialCard overflow-hidden [&_.slick-dots]:mt-[20px]">
+          <Slider {...sliderSettings}>
             {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="px-2 sm:px-3">
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[444px] flex flex-col mx-auto">
-                  <div className="p-8 flex flex-col h-full">
-                    <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-4 mx-auto">
-                      <span className="text-2xl font-bold text-purple-700">
-                        {testimonial.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
-                    </div>
-
-                    <h4 className="text-center font-semibold text-lg mb-2" style={textStyle}>
-                      {testimonial.name}
-                    </h4>
-
-                    <div className="flex justify-center mb-4">
-                      <div className="text-yellow-400 text-xl">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i}>★</span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <p className="text-center flex-grow flex items-center">
-                      "{testimonial.content}"
-                    </p>
+              <div key={testimonial.id} className="px-3">
+                <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full max-w-[520px] h-[750px] md:h-[650px] flex flex-col justify-center items-center text-center p-8 mx-auto">
+                  <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                    <span className="text-2xl font-bold text-purple-700">
+                      {testimonial.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </span>
                   </div>
+
+                  <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                    {testimonial.name}
+                  </h4>
+
+                  <div className="flex justify-center mb-4">
+                    <div className="text-yellow-400 text-xl">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="flex-grow flex items-center text-sm md:text-base">
+                    "{testimonial.content}"
+                  </p>
                 </div>
               </div>
             ))}
@@ -197,19 +240,8 @@ export default function TestimonialsSection({
             Nuestros aliados estratégicos
           </h3>
 
-          <Slider
-            {...{
-              ...responsiveSettings,
-              slidesToScroll: 1,
-              autoplay: true,
-              autoplaySpeed: 2000,
-              infinite: true,
-              speed: 800,
-              cssEase: "ease-in-out",
-              dots: true, // <- recomendado para logos (quita los puntos)
-            }}
-            className="[&_.slick-arrow]:hidden sm:[&_.slick-arrow]:block"
-          >
+          {/* CAMBIO AQUÍ: Usa la nueva configuración logoSettings */}
+          <Slider {...logoSettings} className="[&_.slick-arrow]:hidden sm:[&_.slick-arrow]:block">
             {partnerLogos.map((logo, index) => (
               <div key={logo} className="px-2 sm:px-3">
                 <div className="w-full h-[230px] sm:h-64">

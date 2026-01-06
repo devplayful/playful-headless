@@ -63,7 +63,7 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
 
   return (
     <section className="py-16 bg-[#FEF7FF]">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         <style jsx global>{`
           .phone-carousel-wrapper .slick-slide {
             padding: 0 12px;

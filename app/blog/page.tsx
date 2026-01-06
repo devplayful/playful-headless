@@ -41,7 +41,7 @@ export default async function BlogPage({
       {/* Último artículo destacado */}
       {posts.length > 0 && (
         <div className="w-full pt-4">
-          <div className="max-w-7xl mx-auto px-6 pb-12">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6 pb-12">
             <div>
               <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
                 {/* Imagen del artículo destacado con fondo colorido */}
@@ -117,14 +117,14 @@ export default async function BlogPage({
 
       {/* Barra de categorías */}
       <div className="w-full pb-8">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <BlogCategories currentCategory={category} />
         </div>
       </div>
 
       {/* Grid de Posts */}
       <div className="w-full pt-0 pb-0 md:pb-6">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           {posts.length <= 1 ? (
             <div className="text-center py-12">
               <p className="text-lg text-gray-700">No se encontraron más artículos en esta categoría.</p>
@@ -245,7 +245,7 @@ export default async function BlogPage({
       </div>
 
       {/* CTA Section */}
-      <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
+      <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-8 mb-20">
         <TwoColumnCtaSection />
       </section>
     </div>

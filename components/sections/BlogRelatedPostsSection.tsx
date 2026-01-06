@@ -61,7 +61,7 @@ export default function BlogRelatedPostsSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-12 w-[calc(100%-40px)] max-w-[1200px] mx-auto mt-4 mb-16">
+    <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-16 w-[calc(100%-0px)] max-w-[1200px] mx-auto mt-4 mb-16">
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
@@ -76,30 +76,6 @@ export default function BlogRelatedPostsSection() {
         <div className="relative z-10 text-center text-white">Cargando artículos…</div>
       ) : (
         <div className="relative z-10">
-          {/* Controles del carrusel - Desktop (solo >= 1024px) */}
-          {totalPages > 1 && !isMobile && !isTablet && (
-            <>
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 -ml-[12px] top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
-                aria-label="Anterior"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 -mr-[12px] top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
-                aria-label="Siguiente"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
-
           {/* Grid de posts */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-0">
             {currentPosts.map((post) => (
@@ -128,32 +104,8 @@ export default function BlogRelatedPostsSection() {
           ))}
           </div>
 
-          {/* Controles del carrusel - Mobile y Tablet (debajo de las tarjetas) */}
-          {totalPages > 1 && (isMobile || isTablet) && (
-            <div className="flex justify-center items-center gap-4 mt-8">
-              <button
-                onClick={prevSlide}
-                className="bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
-                aria-label="Anterior"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={nextSlide}
-                className="bg-white/90 hover:bg-white text-[#440099] rounded-full p-3 shadow-lg transition-all hover:scale-110"
-                aria-label="Siguiente"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          )}
-
-          {/* Indicadores de página - Solo en desktop >= 1024px */}
-          {totalPages > 1 && !isMobile && !isTablet && (
+          {/* Indicadores de página - Todas las pantallas */}
+          {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-8">
               {Array.from({ length: totalPages }).map((_, index) => (
                 <button

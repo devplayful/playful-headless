@@ -229,17 +229,11 @@ export default function CaseStudiesContent() {
   }
 
   // Patrón con padding responsive
-  const sectionShell = "max-w-[1200px] mx-auto px-4 sm:px-6";
+  const sectionShell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-blend-overlay pt-0 pb-8">
       <div className={sectionShell}>
-        {/* Breadcrumb */}
-        <div className="mb-0">
-          <p className="text-white [font-family:var(--font-paytone-one)] font-normal text-[28px] leading-[32px]">
-            Home / <span className="font-normal">Casos de éxito</span>
-          </p>
-        </div>
 
         {/* Hero Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">

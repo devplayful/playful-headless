@@ -10,7 +10,7 @@ import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { getAllCaseStudies } from "@/services/wordpress";
 
-const shell = "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
+const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
 async function HomeContent() {
   // Obtener casos de éxito una sola vez en el servidor
@@ -18,8 +18,8 @@ async function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
-      <section className="relative overflow-hidden ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20">
+      <section className="relative overflow-hidden">
+        <div className={`${shell} pt-4 pb-20`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
