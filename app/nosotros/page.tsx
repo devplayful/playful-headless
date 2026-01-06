@@ -253,7 +253,7 @@ const NuestrosValoresSection = () => {
       id: 3,
       titulo: 'Honestidad',
       descripcion: 'Actuamos con total congruencia entre lo que decimos y lo que hacemos, evitando la mentira a toda costa,',
-      imagen: '/images/nosotros/honestidad.svg'
+      imagen: '/images/nosotros/valores-honestidad.svg'
     },
     {
       id: 4,

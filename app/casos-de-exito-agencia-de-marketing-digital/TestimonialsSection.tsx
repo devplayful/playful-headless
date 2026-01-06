@@ -167,13 +167,13 @@ export default function TestimonialsSection({
               {testimonials.map((testimonial) => (
                 <SwiperSlide key={testimonial.id}>
                   <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[650px] flex flex-col justify-center items-center text-center p-3 md:p-8">
-                    <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                      <span className="text-2xl font-bold text-purple-700">
-                        {testimonial.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
+                    <div className="w-20 h-20 relative mb-4">
+                      <Image
+                        src="/images/avatar-playful.svg"
+                        alt="Avatar Playful"
+                        fill
+                        className="object-contain"
+                      />
                     </div>
 
                     <h4 className="font-semibold text-lg mb-2" style={textStyle}>

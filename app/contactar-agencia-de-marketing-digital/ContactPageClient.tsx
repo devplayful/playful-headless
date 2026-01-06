@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import CarouselResultados from '@/components/CarouselResultados';
-import NosotrosBlogSectionClient from '@/components/sections/NosotrosBlogSectionClient';
+import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 interface ContactPageClientProps {
@@ -273,7 +273,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       </section>
 
       {/* Secciones importadas desde Nosotros */}
-      <NosotrosBlogSectionClient />
+      <BlogRelatedPostsSection />
       
       {/* CTA Section */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-8 mb-20">
