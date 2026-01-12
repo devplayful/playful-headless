@@ -29,64 +29,76 @@ const dmSans = DM_Sans({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  /* console.log('=== Iniciando generación de metadatos ==='); */
+  // Valores por defecto explícitos (fuente de verdad para OG)
+  const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
+  const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
+  const defaultOgImage = 'https://playfulagency.com/og.jpg';
   
   try {
     const yoastData = await getHomePageMetadata();
     
     const metadata: Metadata = {
-      title: yoastData.yoast_wpseo_title || 'Playful Agency - Marketing Digital',
-      description: yoastData.yoast_wpseo_metadesc || 'La agencia de marketing digital que va a volar tu cabeza',
+      title: yoastData.yoast_wpseo_title || defaultTitle,
+      description: yoastData.yoast_wpseo_metadesc || defaultDescription,
       metadataBase: new URL('https://playfulagency.com'),
       openGraph: {
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || 'Playful Agency - Marketing Digital',
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || 'La agencia de marketing digital que va a volar tu cabeza',
+        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
+        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url: yoastData.yoast_wpseo_canonical || 'https://playfulagency.com',
+        url: 'https://playfulagency.com',
         siteName: 'Playful Agency',
+        images: [{
+          url: defaultOgImage,
+          width: 1200,
+          height: 630,
+          alt: 'Playful Agency - Agencia de E-commerce',
+        }],
       },
       twitter: {
         card: 'summary_large_image',
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || 'Playful Agency - Marketing Digital',
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || 'La agencia de marketing digital que va a volar tu cabeza',
+        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
+        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
+        images: [defaultOgImage],
+      },
+      alternates: {
+        canonical: 'https://playfulagency.com',
       },
     };
-
-    // Añadir imagen solo si existe
-    if (yoastData.yoast_wpseo_og_image) {
-      metadata.openGraph!.images = [{
-        url: yoastData.yoast_wpseo_og_image,
-        width: 1200,
-        height: 630,
-        alt: yoastData.yoast_wpseo_og_title || 'Playful Agency',
-      }];
-      
-      metadata.twitter = {
-        ...metadata.twitter,
-        images: [yoastData.yoast_wpseo_og_image],
-      };
-    }
-
-    // Añadir URL canónica
-    if (yoastData.yoast_wpseo_canonical) {
-      metadata.alternates = {
-        canonical: yoastData.yoast_wpseo_canonical,
-      };
-    }
-
-    /* console.log('=== Metadatos generados correctamente ===');
-    console.log(JSON.stringify(metadata, null, 2)); */
     
     return metadata;
     
   } catch (error) {
-    console.error('=== Error generando metadatos ===');
-    console.error(error);
+    console.error('Error generando metadatos:', error);
     
+    // Fallback con metadata completa
     return {
-      title: 'Playful Agency - Marketing Digital',
-      description: 'La agencia de marketing digital que va a volar tu cabeza',
+      title: defaultTitle,
+      description: defaultDescription,
+      metadataBase: new URL('https://playfulagency.com'),
+      openGraph: {
+        title: defaultTitle,
+        description: defaultDescription,
+        type: 'website',
+        locale: 'es_ES',
+        url: 'https://playfulagency.com',
+        siteName: 'Playful Agency',
+        images: [{
+          url: defaultOgImage,
+          width: 1200,
+          height: 630,
+          alt: 'Playful Agency - Agencia de E-commerce',
+        }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: defaultTitle,
+        description: defaultDescription,
+        images: [defaultOgImage],
+      },
+      alternates: {
+        canonical: 'https://playfulagency.com',
+      },
     };
   }
 }
