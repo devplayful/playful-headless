@@ -7,6 +7,7 @@ import { BodyClassManager } from '@/components/BodyClassManager';
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -96,15 +97,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
-        {gtmId && <GoogleTagManagerNoscript gtmId={gtmId} />}
         <ThemeProvider>
           <BodyClassManager />
           <Header />
