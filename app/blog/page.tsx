@@ -27,17 +27,82 @@ export default async function BlogPage({
 }: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Obtener el número de página y categoría de los parámetros de búsqueda
+  // Obtener el número de página, categoría y búsqueda de los parámetros
   const resolvedSearchParams = await searchParams;
   const currentPage = typeof resolvedSearchParams?.page === 'string' ? parseInt(resolvedSearchParams.page) : 1;
   const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : '';
+  const searchQuery = typeof resolvedSearchParams?.search === 'string' ? resolvedSearchParams.search : '';
   const perPage = 10; // 1 destacado + 9 en el grid (3x3)
 
   // Obtener los posts del blog (filtrados por categoría si existe)
-  const { posts, totalPages } = await getBlogPosts(currentPage, perPage, category);
+  const { posts: allPosts, totalPages } = await getBlogPosts(currentPage, perPage, category);
+  
+  // Filtrar posts por búsqueda si existe query
+  let posts = allPosts;
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    posts = allPosts.filter(post => {
+      const title = post.title.rendered.toLowerCase();
+      const excerpt = post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').toLowerCase() : '';
+      return title.includes(query) || excerpt.includes(query);
+    });
+  }
 
   return (
     <div className="min-h-screen">
+      {/* Mensaje de búsqueda activa */}
+      {searchQuery && (
+        <div className="w-full pt-8 pb-4">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+            <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <svg className="w-6 h-6 text-[#440099]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <p className="text-[#440099] font-semibold">
+                  Resultados de búsqueda para: <span className="font-bold">"{searchQuery}"</span>
+                  {posts.length > 0 && <span className="ml-2 text-sm">({posts.length} {posts.length === 1 ? 'resultado' : 'resultados'})</span>}
+                </p>
+              </div>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 bg-[#440099] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Limpiar búsqueda
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mensaje de sin resultados */}
+      {searchQuery && posts.length === 0 && (
+        <div className="w-full pt-8 pb-12">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+            <div className="bg-white rounded-3xl p-12 text-center shadow-lg">
+              <svg className="w-20 h-20 mx-auto mb-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h2 className="text-3xl font-bold text-[#440099] mb-4">
+                No se encontraron resultados
+              </h2>
+              <p className="text-gray-600 text-lg mb-8">
+                No encontramos artículos que coincidan con <span className="font-bold text-[#440099]">"{searchQuery}"</span>
+              </p>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 bg-[#440099] text-white px-8 py-4 rounded-full font-bold text-base hover:bg-[#5500BB] transition-all shadow-lg hover:shadow-xl"
+              >
+                Ver todos los artículos
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Último artículo destacado */}
       {posts.length > 0 && (
         <div className="w-full pt-4">
