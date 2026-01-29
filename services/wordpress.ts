@@ -968,7 +968,7 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
 export async function getAllCaseStudies(): Promise<any[]> {
   try {
     const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?_embed&per_page=100`,
+      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
       { 
         next: { revalidate: 3600 }, // Cache por 1 hora
         headers: {
