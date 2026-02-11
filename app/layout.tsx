@@ -3,6 +3,7 @@ import { Paytone_One, Montserrat, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ChatWidget from '@/components/ChatWidget'
 import { BodyClassManager } from '@/components/BodyClassManager';
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
@@ -126,6 +127,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>
