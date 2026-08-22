@@ -264,7 +264,15 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           
           // Extraer descripción y limpiar HTML
           let description = '';
-          if (item.excerpt?.rendered) {
+          const rawExcerpt = item.excerpt?.rendered
+            ? item.excerpt.rendered
+            : '';
+          const cleanedExcerpt = rawExcerpt
+            .replace(/<[^>]*>?/gm, '')
+            .replace(/&nbsp;/g, ' ')
+            .trim();
+          // WP a veces manda "00" como placeholder roto de métricas
+          if (item.excerpt?.rendered && cleanedExcerpt && cleanedExcerpt !== '00') {
             description = item.excerpt.rendered
               .replace(/<[^>]*>?/gm, '') // Eliminar etiquetas HTML
               .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, '') // Eliminar etiquetas cortas restantes
@@ -290,8 +298,9 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           }
           
           // Si aún no hay descripción, usar una por defecto
-          if (!description) {
-            description = 'Descubre cómo este proyecto transformó los resultados de nuestro cliente con estrategias innovadoras y soluciones personalizadas.';
+          if (!description || description.trim() === '00') {
+            const acfLead = (item.acf?.primerap || '').replace(/<[^>]*>?/gm, '').trim();
+            description = acfLead || 'Descubre cómo este proyecto transformó los resultados de nuestro cliente con estrategias innovadoras y soluciones personalizadas.';
           }
 
           // Extraer imagen destacada
