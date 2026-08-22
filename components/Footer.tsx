@@ -141,7 +141,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="https://old.playfulagency.com/agencia-seo/"
+                    href="/agencia-seo"
                     className="body-text text-white/80 hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -151,7 +151,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="https://old.playfulagency.com/agencia-sem/"
+                    href="/agencia-sem"
                     className="body-text text-white/80 hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -161,7 +161,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="https://old.playfulagency.com/agencia-diseno-web/"
+                    href="/agencia-diseno-web"
                     className="body-text text-white/80 hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
