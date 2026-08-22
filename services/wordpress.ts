@@ -153,6 +153,70 @@ export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData
   }
 }
 
+
+export interface WPPage {
+  id: number;
+  slug: string;
+  title: string;
+  lead: string;
+  blocks: Array<{ type: 'heading' | 'paragraph'; text: string }>;
+}
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Página WP (servicios, etc.) para renderizarla en el Next, sin Elementor. */
+export async function getPageBySlug(slug: string): Promise<WPPage | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content,yoast_head`,
+      {
+        next: { revalidate: 300 },
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Error al obtener la página ${slug}: ${response.status}`);
+    }
+    const pages = await response.json();
+    if (!pages?.[0]) return null;
+    const page = pages[0];
+    const html: string = page.content?.rendered || '';
+    const blocks: WPPage['blocks'] = [];
+    const tagRe = /<(h[1-3]|p)[^>]*>([\s\S]*?)<\/\1>/gi;
+    let match: RegExpExecArray | null;
+    const seen = new Set<string>();
+    while ((match = tagRe.exec(html)) && blocks.length < 16) {
+      const text = stripHtml(match[2]);
+      if (text.length < 40) continue;
+      if (seen.has(text)) continue;
+      seen.add(text);
+      blocks.push({
+        type: match[1].toLowerCase().startsWith('h') ? 'heading' : 'paragraph',
+        text,
+      });
+    }
+    const title = stripHtml(page.title?.rendered || slug);
+    const lead = stripHtml(page.excerpt?.rendered || '') || (blocks.find((b) => b.type === 'paragraph')?.text ?? '');
+    return { id: page.id, slug: page.slug, title, lead, blocks };
+  } catch (error) {
+    console.error(`Error en getPageBySlug para ${slug}:`, error);
+    return null;
+  }
+}
+
 // Interfaz para los ítems del menú
 export interface MenuItem {
   title: string;
