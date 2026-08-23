@@ -158,9 +158,18 @@ export interface WPPage {
   id: number;
   slug: string;
   title: string;
-  lead: string;
-  blocks: Array<{ type: 'heading' | 'paragraph'; text: string }>;
+  html: string;
+  stylesheetIds: number[];
 }
+
+const IN_SITE_PAGE_HOSTS = new Set([
+  'endpoint.playfulagency.com',
+  'old.playfulagency.com',
+  'playfulagency.com',
+  'www.playfulagency.com',
+]);
+
+const WP_ASSET_PATH_PREFIXES = ['/wp-content', '/wp-includes', '/wp-json', '/wp-admin'];
 
 function stripHtml(html: string): string {
   return html
@@ -177,11 +186,52 @@ function stripHtml(html: string): string {
     .trim();
 }
 
-/** Página WP (servicios, etc.) para renderizarla en el Next, sin Elementor. */
+function stripScripts(html: string): string {
+  return html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
+}
+
+function collectStylesheetIds(html: string, pageId: number): number[] {
+  const ids = new Set<number>([pageId]);
+  const re = /data-elementor-id=["'](\d+)["']/gi;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(html))) {
+    const id = Number(match[1]);
+    if (!Number.isNaN(id)) ids.add(id);
+  }
+  return Array.from(ids);
+}
+
+function rewritePageHref(url: string): string {
+  const trimmed = url.trim();
+  const parsed = trimmed.match(/^(https?:)?\/\/([^/]+)(\/[^?#]*)?(\?[^#]*)?(#.*)?$/i);
+  if (!parsed) return url;
+
+  const host = parsed[2].toLowerCase();
+  if (!IN_SITE_PAGE_HOSTS.has(host)) return url;
+
+  const path = parsed[3] || '/';
+  if (WP_ASSET_PATH_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))) {
+    return url;
+  }
+
+  const query = parsed[4] || '';
+  const hash = parsed[5] || '';
+  const normalized = path === '/' ? '/' : path.replace(/\/+$/, '');
+  return `${normalized}${query}${hash}`;
+}
+
+/** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
+function rewriteInSitePageHrefs(html: string): string {
+  return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote: string, href: string) => {
+    return `href=${quote}${rewritePageHref(href)}${quote}`;
+  });
+}
+
+/** Página WP (servicios, etc.) con HTML de Elementor para renderizarla en el Next. */
 export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   try {
     const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content,yoast_head`,
+      `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
       {
         next: { revalidate: 300 },
         headers: { 'Content-Type': 'application/json' },
@@ -193,24 +243,11 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
     const pages = await response.json();
     if (!pages?.[0]) return null;
     const page = pages[0];
-    const html: string = page.content?.rendered || '';
-    const blocks: WPPage['blocks'] = [];
-    const tagRe = /<(h[1-3]|p)[^>]*>([\s\S]*?)<\/\1>/gi;
-    let match: RegExpExecArray | null;
-    const seen = new Set<string>();
-    while ((match = tagRe.exec(html)) && blocks.length < 16) {
-      const text = stripHtml(match[2]);
-      if (text.length < 40) continue;
-      if (seen.has(text)) continue;
-      seen.add(text);
-      blocks.push({
-        type: match[1].toLowerCase().startsWith('h') ? 'heading' : 'paragraph',
-        text,
-      });
-    }
+    const rawHtml: string = page.content?.rendered || '';
+    const html = rewriteInSitePageHrefs(stripScripts(rawHtml));
     const title = stripHtml(page.title?.rendered || slug);
-    const lead = stripHtml(page.excerpt?.rendered || '') || (blocks.find((b) => b.type === 'paragraph')?.text ?? '');
-    return { id: page.id, slug: page.slug, title, lead, blocks };
+    const stylesheetIds = collectStylesheetIds(html, page.id);
+    return { id: page.id, slug: page.slug, title, html, stylesheetIds };
   } catch (error) {
     console.error(`Error en getPageBySlug para ${slug}:`, error);
     return null;

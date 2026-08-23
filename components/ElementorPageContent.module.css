@@ -1,0 +1,14 @@
+.page {
+  background: #fff;
+}
+
+.page :global(.elementor-section-stretched) {
+  width: 100% !important;
+  left: 0 !important;
+  max-width: 100% !important;
+}
+
+.page :global(img) {
+  max-width: 100%;
+  height: auto;
+}
