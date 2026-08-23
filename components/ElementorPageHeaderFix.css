@@ -14,3 +14,53 @@
     display: flex !important;
   }
 }
+
+/* Next body uses a lavender photo overlay; old service pages are flat */
+body.playful-elementor-plain {
+  background-image: none !important;
+  background-color: #fff !important;
+  background-attachment: scroll !important;
+}
+
+/* Pollock reset was zeroing <a> padding; Elementor pills need the widget defaults */
+.playful-wp-page a.elementor-button,
+.playful-wp-page .elementor-button {
+  padding: 12px 24px;
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Service tags: wrap as chips, kill the old ticker clip */
+.playful-wp-page .elementor-element-45ee457,
+.playful-wp-page .elementor-element-45ee457.container,
+.playful-wp-page .elementor-element-45ee457.contenedor-texto {
+  overflow: visible !important;
+  height: auto !important;
+  max-width: 100% !important;
+}
+
+.playful-wp-page .elementor-element-867a80c .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 10px 12px !important;
+  width: 100% !important;
+  max-width: 1080px !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+}
+
+.playful-wp-page .elementor-element-867a80c > .elementor-widget-wrap > .elementor-widget {
+  width: auto !important;
+  flex: 0 1 auto !important;
+  max-width: calc(100% - 16px) !important;
+  position: static !important;
+  transform: none !important;
+}
+
+.playful-wp-page .animated-button {
+  animation: none !important;
+}

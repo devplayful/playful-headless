@@ -1,5 +1,5 @@
 .page {
-  background: #fff;
+  background: #f7f5f1;
 }
 
 .page :global(.elementor-section-stretched) {
@@ -13,11 +13,47 @@
   height: auto;
 }
 
-/* next/font hashes family names; Elementor CSS asks for Paytone One / Montserrat / DM Sans */
 .page :global(.elementor-heading-title),
 .page :global(.master-heading),
 .page :global(.master-heading .heading),
 .page :global(.master-heading .main-heading),
 .page :global(.master-heading .sub-heading) {
-  font-family: var(--font-paytone-one), "Paytone One", var(--font-montserrat), Montserrat, sans-serif;
+  font-family: var(--font-paytone-one), "Paytone One", var(--font-montserrat), Montserrat, Outfit, sans-serif;
+}
+
+/* Decorative MAE stacks must not occupy document flow */
+.page :global(.master-shape),
+.page :global(.master-decor) {
+  position: absolute;
+  pointer-events: none;
+}
+
+.page :global(.image-width-auto.elementor-widget-mae-gallery-stack) {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* frontend.min.css hide rules lose to other display:flex; force them */
+@media (max-width: 767px) {
+  .page :global(.elementor-hidden-mobile),
+  .page :global(.elementor-hidden-phone) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .page :global(.elementor-hidden-tablet) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .page :global(.elementor-hidden-desktop) {
+    display: none !important;
+  }
+}
+
+.page :global(.elementor-element-overlay),
+.page :global(#elementor-device-mode) {
+  display: none !important;
 }
