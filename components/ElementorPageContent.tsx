@@ -1,4 +1,5 @@
 import styles from './ElementorPageContent.module.css';
+import './ElementorPageHeaderFix.css';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -31,15 +32,19 @@ export default function ElementorPageContent({
 
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+      />
       {CORE_STYLESHEETS.map((href) => (
         <link key={href} rel="stylesheet" href={href} />
       ))}
       {pageStylesheets.map((href) => (
         <link key={href} rel="stylesheet" href={href} />
       ))}
-      <main className={`${styles.page} playful-wp-page overflow-x-hidden`}>
+      <div className={`${styles.page} playful-wp-page overflow-x-hidden`}>
         <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: html }} />
-      </main>
+      </div>
     </>
   );
 }

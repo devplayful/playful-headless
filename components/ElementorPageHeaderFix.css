@@ -1,0 +1,16 @@
+/*
+ * mae-widgets.min.css ships `.hidden{display:none!important}` and that
+ * overrides Tailwind `hidden lg:flex` / `hidden min-[400px]:flex` on our
+ * Next header, leaving an empty white pill on tablet and desktop.
+ */
+@media (min-width: 1024px) {
+  header .lg\:flex {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 1023.98px) {
+  header .min-\[400px\]\:flex {
+    display: flex !important;
+  }
+}

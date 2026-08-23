@@ -12,3 +12,12 @@
   max-width: 100%;
   height: auto;
 }
+
+/* next/font hashes family names; Elementor CSS asks for Paytone One / Montserrat / DM Sans */
+.page :global(.elementor-heading-title),
+.page :global(.master-heading),
+.page :global(.master-heading .heading),
+.page :global(.master-heading .main-heading),
+.page :global(.master-heading .sub-heading) {
+  font-family: var(--font-paytone-one), "Paytone One", var(--font-montserrat), Montserrat, sans-serif;
+}
