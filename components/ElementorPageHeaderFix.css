@@ -64,3 +64,31 @@ body.playful-elementor-plain {
 .playful-wp-page .animated-button {
   animation: none !important;
 }
+
+/* Unused Pollock/Elementor demo sections. WP custom CSS is `.componetne { display: none }`
+   but `.playful-wp-page section { display: block }` wins, so they show on Next. */
+.playful-wp-page .componetne,
+.playful-wp-page section.componetne {
+  display: none !important;
+}
+
+/* Same leftover blocks on agencia-seo and agencia-diseno-web */
+.playful-wp-page .elementor-element-aef3423,
+.playful-wp-page .elementor-element-4948de9,
+.playful-wp-page .elementor-element-adc0a19,
+.playful-wp-page .elementor-element-c622b2e {
+  display: none !important;
+}
+
+/* Testimonials inherit page `pollock_text` (#7B88A8) on white — too faint vs old */
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .name,
+.playful-wp-page .master-testimonial .name {
+  color: var(--e-global-color-pollock_primary);
+}
+
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .comment,
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .comment p,
+.playful-wp-page .master-testimonial .comment,
+.playful-wp-page .master-testimonial .comment p {
+  color: var(--e-global-color-pollock_primary);
+}
