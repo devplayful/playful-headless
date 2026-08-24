@@ -36,6 +36,39 @@ const CORE_STYLESHEETS = [
   `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css`,
 ];
 
+
+/** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy. */
+function restoreOldBodyCopy(html: string): string {
+  let out = html.replace(
+    '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',
+    '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
+    + '<h2 class="main-heading">No confíes solo en nuestra palabra, mira los resultados</h2>',
+  );
+
+  out = out.replace(
+    'Somos la compañía de <b>marketing digital internacional</b> que trabaja para lograr objetivos en las diferentes areas del mercado en línea, no solo nos encargamos del posicionamiento, <b>también construímos páginas que les permita hacer realidad proyectos</b>',
+    '<span class="playful-wp-hidden-heading">Somos la compañía de <b>marketing digital internacional</b> que trabaja para lograr objetivos en las diferentes areas del mercado en línea, no solo nos encargamos del posicionamiento, <b>también construímos páginas que les permita hacer realidad proyectos</b></span>'
+    + 'Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial. ¿Quieres ser el próximo?',
+  );
+
+  out = out.replace(
+    /(<h2 class="main-heading">)(¡Es Hora de actuar y cambiar tu futuro digital!\s*\(\s*sin necesidad de magia negra\s*\))(<\/h2>)/g,
+    '$1<span class="playful-magia-negra">$2</span>¡Es Hora de Dejar de Perder Dinero y Empezar a Vender Más!$3',
+  );
+
+  out = out.replace(
+    /(<div class="sub-heading">)(No esperes más para dar el siguiente paso\.[\s\S]*?tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
+    '$1<span class="playful-magia-negra">$2</span>Deja de arreglar tu web con parches. Como tu Agencia de E-commerce especializada, te ofrecemos una propuestas profesionales e innovadoras, enfocadas en la conversión.$3',
+  );
+
+  out = out.replaceAll(
+    '<span class="text">¡Contáctanos y empieza ya!</span>',
+    '<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">Agenda una Reunión</span>',
+  );
+
+  return out;
+}
+
 type ElementorPageContentProps = {
   html: string;
   pageId: number;
@@ -47,6 +80,7 @@ export default function ElementorPageContent({
   pageId,
   stylesheetIds,
 }: ElementorPageContentProps) {
+  const bodyHtml = restoreOldBodyCopy(html);
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
@@ -62,7 +96,7 @@ export default function ElementorPageContent({
         <link key={href} rel="stylesheet" href={href} />
       ))}
       <div className={`${styles.page} playful-wp-page overflow-x-hidden elementor-kit-8`}>
-        <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
       </div>
       <ElementorPageScripts pageId={pageId} />
     </>

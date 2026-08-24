@@ -37,6 +37,32 @@ function loadScript(src: string): Promise<void> {
   });
 }
 
+
+type MaeWindow = typeof window & { jQuery?: any };
+
+function initMaeCarousels() {
+  const w = window as MaeWindow;
+  const $ = w.jQuery;
+  if (!$) return;
+
+  document.querySelectorAll('.playful-wp-page img[src=""]').forEach((img) => {
+    (img as HTMLImageElement).src =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  });
+
+  if ($.fn && $.fn.masterCarouselBox) {
+    $('.playful-wp-page .master-carousel-box').each(function (this: HTMLElement) {
+      const $el = $(this);
+      if ($el.hasClass('flickity-enabled') || $el.data('flickity')) return;
+      try {
+        $el.masterCarouselBox();
+      } catch {
+        /* CSS row fallback covers this */
+      }
+    });
+  }
+}
+
 export default function ElementorPageScripts({ pageId }: { pageId: number }) {
   useEffect(() => {
     document.body.classList.add('playful-elementor-plain');
@@ -88,6 +114,7 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
         if (cancelled) return;
         await loadScript(src);
       }
+      if (!cancelled) initMaeCarousels();
     })();
 
     return () => {
