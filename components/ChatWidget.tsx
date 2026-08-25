@@ -1,5 +1,6 @@
 'use client'
 
+/** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
 
 export default function ChatWidget() {
