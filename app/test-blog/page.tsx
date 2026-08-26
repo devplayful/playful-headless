@@ -1,3 +1,13 @@
+import type { Metadata } from 'next';
+import { canonicalForPath } from '@/utils/canonical';
+
+const TEST_BLOG_URL = canonicalForPath('/test-blog');
+
+export const metadata: Metadata = {
+  alternates: { canonical: TEST_BLOG_URL },
+  openGraph: { url: TEST_BLOG_URL },
+};
+
 import { getBlogPostBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
 

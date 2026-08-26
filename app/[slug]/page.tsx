@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { canonicalForPath } from '@/utils/canonical';
 import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
@@ -23,13 +24,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
+  const url = canonicalForPath(`/${slug}`);
   const metadata = await getPageMetadataBySlug(slug);
   return {
     title: metadata.yoast_wpseo_title,
     description: metadata.yoast_wpseo_metadesc,
+    alternates: { canonical: url },
     openGraph: {
       title: metadata.yoast_wpseo_og_title || metadata.yoast_wpseo_title,
       description: metadata.yoast_wpseo_og_description || metadata.yoast_wpseo_metadesc,
+      url,
       images: metadata.yoast_wpseo_og_image ? [metadata.yoast_wpseo_og_image] : undefined,
     },
   };

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { getSuccessStoryBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { canonicalForPath } from '@/utils/canonical';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
 import SoyTechnoSectionB from '@/components/soytechno/SoyTechnoSectionB';
 import SoyTechnoSectionC from '@/components/soytechno/SoyTechnoSectionC';
@@ -11,6 +13,20 @@ import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 
 
+
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const url = canonicalForPath(`/casos-de-exito/${slug}`);
+  return {
+    alternates: { canonical: url },
+    openGraph: { url },
+  };
+}
 
 const ResultIcon1 = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
