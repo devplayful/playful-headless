@@ -1352,3 +1352,35 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-element-4d2eb64 {
     padding-bottom: 80px !important;
   }
 }
+
+
+/* ========== 8o QA (restore blog bottom margin) ==========
+   Old/prod: spacer .elementor-element-0088077 inside pink blog 647a642
+   is --spacer-size:120px desktop / 100px max-width:1024px / 80px max-width:767px
+   (post-84514.css). We hid 0088077 with 145155f to kill a mint strip, and that
+   also ate the pink gap under the white blog cards (flush on cream CTA).
+   Restore the same space as padding-bottom on the pink blog section. Keep
+   0088077 hidden (do not unhide — spacer collapse stays). Do not change
+   4d2eb64's 100px/80px CTA illustration gap. */
+.playful-wp-page .elementor-element-647a642,
+.playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+  padding-bottom: 120px !important;
+}
+@media (max-width: 1024px) {
+  .playful-wp-page .elementor-element-647a642,
+  .playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+    padding-bottom: 100px !important;
+  }
+}
+@media (max-width: 767px) {
+  .playful-wp-page .elementor-element-647a642,
+  .playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+    padding-bottom: 80px !important;
+  }
+}
