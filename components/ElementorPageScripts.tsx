@@ -91,15 +91,19 @@ function zeroPillBox(node: HTMLElement) {
 function initPillsMarquee() {
   document.querySelectorAll('.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap').forEach((wrap) => {
     const el = wrap as HTMLElement;
-    if (el.dataset.pillsMarquee === '1') return;
     Array.from(el.childNodes).forEach((node) => {
       if (node.nodeType === Node.TEXT_NODE) node.parentNode?.removeChild(node);
     });
-    const kids = Array.from(el.children) as HTMLElement[];
-    if (!kids.length) return;
-    kids.forEach((node) => zeroPillBox(node));
-    kids.forEach((node) => el.appendChild(node.cloneNode(true)));
-    el.dataset.pillsMarquee = '1';
+    // Undo a previous marquee clone pass (do not leave duplicated rows).
+    if (el.dataset.pillsMarquee === '1') {
+      const kids = Array.from(el.children);
+      const half = kids.length / 2;
+      if (Number.isInteger(half) && half > 0) {
+        kids.slice(half).forEach((node) => node.remove());
+      }
+      delete el.dataset.pillsMarquee;
+    }
+    Array.from(el.children).forEach((node) => zeroPillBox(node as HTMLElement));
   });
 }
 
