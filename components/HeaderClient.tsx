@@ -47,9 +47,9 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
 
   // Servicios simplificados
   const services = [
-    { title: 'SEO', url: 'https://old.playfulagency.com/agencia-seo/' },
-    { title: 'SEM', url: 'https://old.playfulagency.com/agencia-sem/' },
-    { title: 'Diseño Web', url: 'https://old.playfulagency.com/agencia-diseno-web/' }
+    { title: 'SEO', url: '/agencia-seo' },
+    { title: 'SEM', url: '/agencia-sem' },
+    { title: 'Diseño Web', url: '/agencia-diseno-web' }
   ]
 
   const { headerColor } = useTheme();
@@ -243,15 +243,13 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                 
                 <div className={`absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-2xl transition-all duration-200 z-[99999] py-2 border border-gray-100 ${isServicesOpen ? 'opacity-100 visible md:opacity-0 md:invisible' : 'opacity-0 invisible'} md:group-hover:opacity-100 md:group-hover:visible`}>
                   {services.map((service, index) => (
-                    <a
+                    <Link
                       key={index}
                       href={service.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                     >
                       {service.title}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -390,16 +388,14 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                     {isServicesOpen && (
                       <div className="bg-[#3D006B] border-b border-white/10">
                         {services.map((service, index) => (
-                          <a
+                          <Link
                             key={index}
                             href={service.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
                             className="block px-10 py-3 text-sm hover:bg-white/5 transition-colors"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {service.title}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     )}

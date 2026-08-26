@@ -1,0 +1,1386 @@
+/*
+ * mae-widgets.min.css ships `.hidden{display:none!important}` and that
+ * overrides Tailwind `hidden lg:flex` / `hidden min-[400px]:flex` on our
+ * Next header, leaving an empty white pill on tablet and desktop.
+ */
+@media (min-width: 1024px) {
+  header .lg\:flex {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 1023.98px) {
+  header .min-\[400px\]\:flex {
+    display: flex !important;
+  }
+}
+
+/* Next body uses a lavender photo overlay; old service pages are flat.
+   Teal matches the hero so the blob bleeds under the transparent sticky header
+   instead of leaving a white strip. */
+body.playful-elementor-plain {
+  background-image: none !important;
+  background-color: #DCF8F5 !important;
+  background-attachment: scroll !important;
+  overflow-x: hidden;
+  --e-global-color-pollock_accent: #886CFF;
+}
+
+/* Pollock reset was zeroing <a> padding; Elementor pills need the widget defaults.
+   Kit primary is Outfit — force DM Sans on Elementor/MAE buttons (not Next header). */
+.playful-wp-page a.elementor-button,
+.playful-wp-page .elementor-button,
+.playful-wp-page .elementor-button-text,
+.playful-wp-page a.elementor-button .elementor-button-text,
+.playful-wp-page .master-button,
+.playful-wp-page .master-button .text,
+.playful-wp-page .master-button .content-base,
+.playful-wp-page .master-button .content-hover,
+.playful-wp-page .master-button .content-hover .text {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+
+.playful-wp-page a.elementor-button,
+.playful-wp-page .elementor-button {
+  padding: 12px 24px;
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Unused Pollock/Elementor demo sections. WP custom CSS is `.componetne { display: none }`
+   but `.playful-wp-page section { display: block }` wins, so they show on Next. */
+.playful-wp-page .componetne,
+.playful-wp-page section.componetne {
+  display: none !important;
+}
+
+/* Same leftover blocks on agencia-seo and agencia-diseno-web */
+.playful-wp-page .elementor-element-aef3423,
+.playful-wp-page .elementor-element-4948de9,
+.playful-wp-page .elementor-element-adc0a19,
+.playful-wp-page .elementor-element-c622b2e {
+  display: none !important;
+}
+
+/* Testimonials inherit page `pollock_text` (#7B88A8) on white — too faint vs old */
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .name,
+.playful-wp-page .master-testimonial .name {
+  color: var(--e-global-color-pollock_primary);
+}
+
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .comment,
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .comment p,
+.playful-wp-page .master-testimonial .comment,
+.playful-wp-page .master-testimonial .comment p {
+  color: var(--e-global-color-pollock_primary);
+}
+
+/* Demo leftover IDs only (aef3423, 4948de9, adc0a19, c622b2e). Do not hide
+   the real CTA 4d2eb64 / 0bc6e91 / ede2e59. */
+
+/* --- Testimonials: yellow stars (core-icons/eicons/FA are cross-origin) --- */
+.playful-wp-page .master-testimonial .star-rating > span.ci-star1,
+.playful-wp-page .master-testimonial .star-rating > span[class^="ci-star"] {
+  display: inline-block !important;
+  width: 15px !important;
+  height: 15px !important;
+  margin: 0 3px !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  color: #f9e492 !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f9e492' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  font-family: "Font Awesome 5 Free", eicons, core-icons, sans-serif !important;
+}
+
+.playful-wp-page .master-testimonial .star-rating > span.ci-star1::before,
+.playful-wp-page .master-testimonial .star-rating > span[class^="ci-star"]::before {
+  content: none !important;
+}
+
+.playful-wp-page .elementor-element-a5e8f80.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@media (min-width: 1025px) {
+  .playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box:not(.flickity-enabled) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 20px;
+  }
+  .playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box:not(.flickity-enabled) > .item-carousel {
+    flex: 0 0 calc(25% - 16px) !important;
+    width: calc(25% - 16px) !important;
+    max-width: calc(25% - 16px) !important;
+    margin-right: 0 !important;
+    opacity: 1 !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box:not(.flickity-enabled) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 16px;
+  }
+  .playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box:not(.flickity-enabled) > .item-carousel {
+    flex: 0 0 calc(50% - 12px) !important;
+    width: calc(50% - 12px) !important;
+    max-width: calc(50% - 12px) !important;
+    opacity: 1 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .playful-wp-page .elementor-84514 .elementor-element-a330f72 > .elementor-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+  }
+  .playful-wp-page .elementor-84514 .elementor-element-45525c1 { width: 66.667% !important; }
+  .playful-wp-page .elementor-84514 .elementor-element-7176339 { width: 33.333% !important; }
+  .playful-wp-page .elementor-widget-mae-news-carousel .master-carousel-box:not(.flickity-enabled) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 16px;
+  }
+  .playful-wp-page .elementor-widget-mae-news-carousel .master-carousel-box:not(.flickity-enabled) > .item-carousel {
+    flex: 0 0 calc(50% - 8px) !important;
+    width: calc(50% - 8px) !important;
+    max-width: calc(50% - 8px) !important;
+  }
+}
+
+.playful-wp-page .elementor-84514 .elementor-element-647a642 {
+  min-height: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .playful-wp-page .elementor-84514 .elementor-element-7176339,
+  .playful-wp-page .elementor-84514 .elementor-element-7176339 > .elementor-element-populated,
+  .playful-wp-page .elementor-84514 .elementor-element-cea8fe8,
+  .playful-wp-page .elementor-84514 .elementor-element-cea8fe8 > .elementor-widget-container,
+  .playful-wp-page .elementor-84514 .playful-post-home .recent-news {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+.playful-wp-page .news-style-1 .master-news::before,
+.playful-wp-page .news-style-1 .master-news::after,
+.playful-wp-page .playful-post-home-dos .master-news::before,
+.playful-wp-page .playful-post-home-dos .master-news::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  height: 0 !important;
+  border: none !important;
+}
+
+.playful-wp-page .playful-magia-negra,
+.playful-wp-page .playful-wp-hidden-heading {
+  display: none !important;
+}
+
+@font-face {
+  font-family: "core-icons";
+  src: url("https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: eicons;
+  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-style: normal;
+  font-display: block;
+  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+}
+
+.playful-wp-page {
+  overflow: visible !important;
+  margin-top: -120px;
+}
+@media (max-width: 1023px) {
+  .playful-wp-page { margin-top: -92px; }
+}
+@media (max-width: 599px) {
+  .playful-wp-page { margin-top: -72px; }
+}
+
+.playful-wp-page > .playful-wp-elementor > .elementor > .elementor-top-section:first-child,
+.playful-wp-page .elementor-top-section:first-child,
+.playful-wp-page .elementor-top-section:first-child .elementor-container,
+.playful-wp-page .elementor-top-section:first-child .elementor-column,
+.playful-wp-page .elementor-top-section:first-child .elementor-widget-wrap {
+  position: relative;
+  overflow: visible !important;
+}
+
+.playful-wp-page .elementor-top-section:first-child .elementor-element-3abcdce.image-width-auto {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100% !important; height: 100% !important;
+  pointer-events: none;
+  z-index: 0;
+}
+.playful-wp-page .elementor-top-section:first-child .elementor-element-5be5fed {
+  position: relative;
+  z-index: 1;
+}
+.playful-wp-page .elementor-element-3abcdce .elementor-repeater-item-feda40c.master-shape {
+  top: -340px !important;
+  left: -320px !important;
+  width: 980px !important;
+  height: 980px !important;
+  background-color: #886CFF !important;
+  opacity: 0.35 !important;
+  filter: blur(100px) !important;
+  z-index: 0 !important;
+}
+.playful-wp-page .elementor-element-c292fdc .elementor-repeater-item-6d2e779.master-shape {
+  top: -28% !important;
+  left: -18% !important;
+}
+.playful-wp-page .elementor-top-section:first-child .elementor-heading-title {
+  margin: 0;
+  line-height: 1.12;
+}
+.playful-wp-page .elementor-top-section:first-child .texto-pequeno {
+  margin-top: 6px !important;
+  margin-bottom: 4px !important;
+  line-height: 1.15 !important;
+}
+.playful-wp-page .elementor-top-section:first-child .master-heading .sub-heading {
+  margin-top: 8px;
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+.playful-wp-page .elementor-top-section:first-child .elementor-widget-mae-headings > .elementor-widget-container {
+  margin-bottom: 24px !important;
+}
+.playful-wp-page .master-link.icon-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.playful-wp-page .master-link .icon.ci-right-arrow2,
+.playful-wp-page .master-link .icon[class*="arrow"] {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 4px !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  color: transparent !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23440099' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  font-family: "Font Awesome 5 Free", eicons, "core-icons", sans-serif !important;
+}
+.playful-wp-page .master-link .icon.ci-right-arrow2::before,
+.playful-wp-page .master-link .icon[class*="arrow"]::before {
+  content: none !important;
+}
+.playful-wp-page .elementor-element-c431c27 .master-link .icon,
+.playful-wp-page .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+.playful-wp-page .elementor-element-c431c27 .master-link .icon[class*="arrow"] {
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+}
+.playful-wp-page .elementor-element-802744c .elementor-inner-section > .elementor-container { gap: 24px; }
+.playful-wp-page .elementor-element-8eba476 > .elementor-element-populated,
+.playful-wp-page .elementor-element-91b05ea > .elementor-element-populated,
+.playful-wp-page .elementor-element-8ab73bc > .elementor-element-populated {
+  margin-left: 12px !important;
+  margin-right: 12px !important;
+}
+.playful-wp-page .elementor-element-802744c .elementor-text-editor,
+.playful-wp-page .elementor-element-802744c .elementor-text-editor p {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+.playful-wp-page .master-testimonial {
+  padding: 28px 28px 32px !important;
+  box-sizing: border-box;
+}
+.playful-wp-page .master-testimonial .content-wrap,
+.playful-wp-page .master-testimonial .comment,
+.playful-wp-page .master-testimonial .comment p,
+.playful-wp-page .master-testimonial .name,
+.playful-wp-page .master-testimonial .role {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+.playful-wp-page .playful-post-home h3,
+.playful-wp-page .playful-post-home h3 a,
+.playful-wp-page .master-news .headline-2,
+.playful-wp-page .master-news .headline-2 a {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+  font-size: 18px !important;
+  line-height: 26px !important;
+  font-weight: 600;
+}
+.playful-wp-page .playful-post-home .desc,
+.playful-wp-page .master-news .desc,
+.playful-wp-page .playful-post-home .post-meta,
+.playful-wp-page .playful-post-home .entry-date,
+.playful-wp-page .playful-post-home .name {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+.playful-wp-page .playful-post-home .post-meta {
+  width: auto !important;
+  max-width: 100%;
+  overflow: visible !important;
+}
+.playful-wp-page .playful-post-home .entry-date {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::after,
+.playful-wp-page .post-meta .item.post-date::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: static !important;
+}
+.playful-wp-page .playful-post-home .recent-news > li,
+.playful-wp-page .playful-post-home .recent-news .clearfix {
+  display: flex !important;
+  align-items: flex-end;
+}
+.playful-wp-page .playful-post-home-dos .master-news,
+.playful-wp-page .master-news.item-carousel {
+  display: flex;
+  flex-direction: column;
+}
+.playful-wp-page .master-news .content-wrap { margin-top: auto; }
+.playful-wp-page .contenedor-texto,
+.playful-wp-page .elementor-element.container.contenedor-texto {
+  overflow: visible !important;
+  height: auto !important;
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  padding: 30px 0 20px !important;
+  position: relative;
+}
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+  animation: none !important;
+  transform: none !important;
+}
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget {
+  width: auto !important;
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  position: static !important;
+  transform: none !important;
+}
+.playful-wp-page .moving-text-zurdo .elementor-button,
+.playful-wp-page .moving-text-zurdo .elementor-button-text {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+  font-weight: 600;
+}
+.playful-wp-page .moving-text-zurdo .animated-button { animation: none !important; }
+@keyframes playful-pills-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap {
+    animation: none;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    justify-content: center;
+  }
+  .playful-wp-page .contenedor-texto,
+  .playful-wp-page .elementor-element.container.contenedor-texto {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+.playful-wp-page .elementor-element-4d2eb64 {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+.playful-wp-page > .playful-wp-elementor > .elementor > .elementor-top-section:last-of-type {
+  padding-bottom: 0;
+}
+.playful-wp-page .elementor-top-section:first-child {
+  overflow: visible !important;
+}
+body.playful-elementor-plain .playful-site-footer .playful-site-footer-bar,
+body.playful-elementor-plain footer.playful-site-footer .footer {
+  background-color: #2A0064 !important;
+  box-shadow: 0 12px 40px rgba(42, 0, 100, 0.28);
+}
+body.playful-elementor-plain .playful-site-footer .contacto,
+body.playful-elementor-plain .playful-site-footer .playful-footer-cta {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ========== 2º QA (hero / pastillas / blog / CTA) ========== */
+body.playful-elementor-plain .playful-header { padding-top: 16px; }
+body.playful-elementor-plain .playful-header nav,
+body:has(.playful-wp-page) .playful-header nav {
+  background: rgba(220, 248, 245, 0.18) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.playful-wp-page .elementor-element-45ee457,
+.playful-wp-page .elementor-element.container.contenedor-texto,
+.playful-wp-page .contenedor-texto {
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 20px !important;
+}
+.playful-wp-page .elementor-element-45ee457::before,
+.playful-wp-page .elementor-element-45ee457::after,
+.playful-wp-page .contenedor-texto::before,
+.playful-wp-page .contenedor-texto::after {
+  display: none !important;
+}
+.playful-wp-page .post-meta-categories {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  background: transparent !important;
+  border: 1px solid #886CFF !important;
+  color: #886CFF !important;
+  font-weight: 600;
+  padding: 4px 10px 4px 8px !important;
+  border-radius: 4px !important;
+}
+.playful-wp-page .post-meta-categories a {
+  color: #886CFF !important;
+  background: none !important;
+}
+.playful-wp-page .post-meta-categories::before,
+.playful-wp-page .post-meta .item.post-meta-categories::before {
+  content: "\f02b" !important;
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900 !important;
+  font-style: normal !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  color: #886CFF !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  background: none !important;
+  speak: none;
+}
+.playful-wp-page .post-meta-categories::after,
+.playful-wp-page .post-meta .item.post-meta-categories::after {
+  content: none !important;
+  display: none !important;
+}
+.playful-wp-page .playful-post-home .texts,
+.playful-wp-page .playful-post-home li.clearfix .texts {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  min-width: 0;
+  flex: 1;
+  gap: 0 12px;
+}
+.playful-wp-page .playful-post-home .texts > h3,
+.playful-wp-page .playful-post-home li.clearfix .texts h3 {
+  flex: 0 0 100%;
+  width: 100%;
+}
+.playful-wp-page .playful-post-home .texts .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 12px 0 0 !important;
+}
+.playful-wp-page .playful-post-home .post-meta .item.post-by-author::after,
+.playful-wp-page .playful-post-home .post-meta .item.post-date::after {
+  width: 12px !important;
+  height: 12px !important;
+}
+.playful-wp-page .playful-post-home .recent-news > li {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-items: center !important;
+  gap: 16px;
+}
+.playful-wp-page .playful-post-home .recent-news > li > .thumb {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  flex: 0 0 100px;
+  width: 100px !important;
+  height: 100px !important;
+}
+.playful-wp-page .playful-post-home .recent-news > li > .thumb img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.playful-wp-page .master-news:hover,
+.playful-wp-page .master-news.item-carousel:hover,
+.playful-wp-page .playful-post-home .recent-news > li:hover {
+  background: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(136, 108, 255, 0.16);
+}
+.playful-wp-page .master-news:hover .headline-2 a,
+.playful-wp-page .playful-post-home .recent-news > li:hover h3 a {
+  color: #440099 !important;
+}
+.playful-wp-page .elementor-element-4d2eb64,
+.playful-wp-page .elementor-element-4d2eb64 > .elementor-background-overlay {
+  background-color: #FFF7DB !important;
+  background-image: url("https://old.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.playful-wp-page .elementor-element-4d2eb64 .elementor-repeater-item-067b959.master-shape,
+.playful-wp-page .elementor-element-3db6554 .elementor-repeater-item-067b959.master-shape {
+  background-color: #886CFF !important;
+  opacity: 0.3 !important;
+  filter: blur(150px) !important;
+}
+.playful-wp-page .elementor-element-4d2eb64::before,
+.playful-wp-page .elementor-element-4d2eb64::after {
+  display: none !important;
+}
+.playful-wp-page .elementor-element-145155f,
+.playful-wp-page .elementor-element-4d2eb64 .elementor-element-145155f {
+  --spacer-size: 24px !important;
+}
+.playful-wp-page { --e-global-color-pollock_accent: #886CFF; }
+.playful-wp-page .moving-text-zurdo .elementor-widget-container,
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget {
+  margin: 0 !important;
+}
+.playful-wp-page .moving-text-zurdo .elementor-widget-container { padding: 0 !important; }
+.playful-wp-page .boton-container {
+  height: auto !important;
+  min-height: 0 !important;
+}
+.playful-wp-page .elementor-element-45ee457 .elementor-background-overlay {
+  display: none !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::after,
+.playful-wp-page .post-meta .item.post-date::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: static !important;
+}
+.playful-wp-page .recent-posts-2 .recent-news li::before,
+.playful-wp-page .recent-posts-2 .recent-news li::after,
+.playful-wp-page .news-style-1 .master-news::before,
+.playful-wp-page .news-style-1 .master-news::after,
+.playful-wp-page .playful-post-home-dos .master-news::before,
+.playful-wp-page .playful-post-home-dos .master-news::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  height: 0 !important;
+  transform: none !important;
+}
+.playful-wp-page .master-news:hover .desc,
+.playful-wp-page .master-news:hover .post-meta,
+.playful-wp-page .master-news:hover .entry-date {
+  color: #453A53 !important;
+}
+.playful-wp-page .master-news:hover .post-meta-categories,
+.playful-wp-page .master-news:hover .post-meta-categories a {
+  color: #886CFF !important;
+  background: transparent !important;
+}
+.playful-wp-page .playful-post-home .recent-news h3 a:hover {
+  color: #440099 !important;
+}
+.playful-wp-page .elementor-element-7998a1b,
+.playful-wp-page .elementor-element-7998a1b > .elementor-background-overlay {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.playful-wp-page .elementor-element-7998a1b::before,
+.playful-wp-page .elementor-element-7998a1b::after,
+.playful-wp-page .elementor-element-4d2eb64::before,
+.playful-wp-page .elementor-element-4d2eb64::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  background: none !important;
+  height: 0 !important;
+}
+.playful-wp-page .elementor-element-89ae37b .elementor-repeater-item-067b959.master-shape,
+.playful-wp-page .elementor-element-3db6554 .elementor-repeater-item-067b959.master-shape {
+  background-color: #886CFF !important;
+  background-image: none !important;
+}
+.playful-wp-page .elementor-location-footer,
+.playful-wp-page footer.elementor-85864,
+.playful-wp-page .elementor-85864 {
+  display: none !important;
+}
+body.playful-elementor-plain .playful-site-footer,
+body:has(.playful-wp-page) .playful-site-footer {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body.playful-elementor-plain .playful-site-footer::before,
+body.playful-elementor-plain .playful-site-footer::after,
+body:has(.playful-wp-page) .playful-site-footer::before,
+body:has(.playful-wp-page) .playful-site-footer::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* ========== 3º QA (pills gap / centered headings / blog icons / meta row) ========== */
+
+/* SSR-safe twins: body.playful-elementor-plain is JS-added; these paint immediately. */
+.playful-wp-page .moving-text-zurdo.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-element-867a80c.elementor-column > .elementor-widget-wrap {
+  justify-content: center !important;
+}
+.playful-wp-page .elementor-element-9c65f0d,
+.playful-wp-page .elementor-element-9c65f0d .master-heading,
+.playful-wp-page .elementor-element-9c65f0d .main-heading,
+.playful-wp-page .elementor-element-e92c878,
+.playful-wp-page .elementor-element-e92c878 .master-heading,
+.playful-wp-page .elementor-element-e92c878 .main-heading,
+.playful-wp-page .elementor-element-e92c878 .sub-heading {
+  text-align: center !important;
+}
+.playful-wp-page .post-meta-categories::before,
+.playful-wp-page .post-meta .item.post-meta-categories::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 0 !important;
+  color: transparent !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23886CFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5A2 2 0 0 1 5.5 6.5h4l2 2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::before,
+.playful-wp-page .post-meta .item.post-date::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 0 !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.2'/%3E%3Cpath d='M5 19c1.2-3.2 3.6-5 7-5s5.8 1.8 7 5'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page .post-meta .item.post-date::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page .playful-post-home .texts .post-meta,
+.playful-wp-page .recent-posts-2 .post-meta {
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+.playful-wp-page .playful-post-home .name,
+.playful-wp-page .playful-post-home .entry-date {
+  white-space: nowrap !important;
+}
+
+
+/* 1) Pastillas: even gap. Elementor sets justify-content:space-between plus
+   per-pill widget-container margins (20px / 40px / 90px by breakpoint). */
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo.elementor-column > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap {
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 12px 16px !important;
+  column-gap: 16px !important;
+  row-gap: 12px !important;
+  font-size: 0;
+}
+body.playful-elementor-plain .playful-wp-page .elementor-83510 .elementor-element.elementor-element-867a80c.elementor-column > .elementor-widget-wrap {
+  justify-content: center !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-widget,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .animated-button,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button-wrapper,
+body.playful-elementor-plain .playful-wp-page .elementor-83510 .moving-text-zurdo .elementor-element > .elementor-widget-container {
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:first-child,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:last-child {
+  width: max-content !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button-wrapper {
+  width: max-content !important;
+  display: block !important;
+  text-align: left !important;
+  font-size: 15px;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button {
+  margin: 0 !important;
+}
+
+/* 2) Nuestros Clientes: center both lines (MAE align-center only sets align-items). */
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .master-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d h2 {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 3) CTA / blog-intro heading + subtext centered. */
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .master-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 h2,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .sub-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 4) Blog icons: SVG data-URIs only (no Font Awesome / core-icons webfont). */
+body.playful-elementor-plain .playful-wp-page .post-meta img,
+body.playful-elementor-plain .playful-wp-page .post-meta-categories img,
+body.playful-elementor-plain .playful-wp-page .post-date img,
+body.playful-elementor-plain .playful-wp-page .post-by-author img {
+  display: none !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px;
+  padding: 4px 10px 4px 8px !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23886CFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5A2 2 0 0 1 5.5 6.5h4l2 2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z'/%3E%3C/svg%3E") !important;
+  font-family: inherit !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 5px;
+  white-space: nowrap !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.2'/%3E%3Cpath d='M5 19c1.2-3.2 3.6-5 7-5s5.8 1.8 7 5'/%3E%3C/svg%3E") !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E") !important;
+}
+body.playful-elementor-plain .playful-wp-page .master-news .post-meta {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 10px;
+  width: auto !important;
+  max-width: 100%;
+}
+
+/* 5) Right list: author + date on ONE nowrap row (WP CSS was width:49% each). */
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts,
+body.playful-elementor-plain .playful-wp-page .playful-post-home li.clearfix .texts {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px 10px !important;
+  min-width: 0;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts > h3,
+body.playful-elementor-plain .playful-wp-page .playful-post-home li.clearfix .texts h3 {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  margin-bottom: 4px !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts .post-meta,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .post-meta,
+body.playful-elementor-plain .playful-wp-page .recent-posts-2 .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 10px 0 0 !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts .post-meta:last-child {
+  margin-right: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .name,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .entry-date,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .post-meta .item {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  overflow: visible !important;
+}
+
+/* ========== 4º QA (kill marquee, meta icons BEFORE text, purple footer flush) ========== */
+
+/* 1) Pastillas: wrapping centered grid, no marquee crop, no cloned strip. */
+.playful-wp-page .contenedor-texto,
+.playful-wp-page .elementor-element.container.contenedor-texto,
+.playful-wp-page .elementor-element-45ee457.contenedor-texto,
+body.playful-elementor-plain .playful-wp-page .contenedor-texto,
+body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+}
+
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap,
+.playful-wp-page .moving-text-zurdo.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-element-867a80c.elementor-column > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83510 .elementor-element.elementor-element-867a80c.elementor-column > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  align-content: center !important;
+  gap: 12px 16px !important;
+  row-gap: 12px !important;
+  column-gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  animation: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget,
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:first-child,
+.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:last-child {
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+.playful-wp-page .moving-text-zurdo .elementor-button-wrapper {
+  width: auto !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+/* 2) Blog autor/fecha: ONE row, icon BEFORE each label, never behind/after. */
+.playful-wp-page .post-meta img,
+.playful-wp-page .post-meta-categories img,
+.playful-wp-page .post-date img,
+.playful-wp-page .post-by-author img {
+  display: none !important;
+}
+
+.playful-wp-page .post-meta .item::after,
+.playful-wp-page .post-meta .item.post-by-author::after,
+.playful-wp-page .post-meta .item.post-date::after,
+.playful-wp-page .post-meta-categories::after,
+.playful-wp-page .post-meta .item.post-meta-categories::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  font-size: 0 !important;
+}
+
+.playful-wp-page .playful-post-home .texts,
+.playful-wp-page .playful-post-home li.clearfix .texts,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts {
+  display: grid !important;
+  grid-template-columns: max-content max-content 1fr !important;
+  grid-auto-flow: row !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+  row-gap: 4px !important;
+  width: 100% !important;
+}
+
+.playful-wp-page .playful-post-home .texts > h3,
+.playful-wp-page .playful-post-home li.clearfix .texts h3 {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  flex: none !important;
+}
+
+.playful-wp-page .playful-post-home .texts .post-meta,
+.playful-wp-page .playful-post-home .post-meta,
+.playful-wp-page .recent-posts-2 .post-meta,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.playful-wp-page .post-meta .item,
+.playful-wp-page .post-meta .item.post-by-author,
+.playful-wp-page .post-meta .item.post-date,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  width: auto !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+  position: static !important;
+}
+
+.playful-wp-page .post-meta .item.post-by-author::before,
+.playful-wp-page .post-meta .item.post-date::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  content: "" !important;
+  display: inline-block !important;
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px !important;
+  margin: 0 6px 0 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+
+.playful-wp-page .post-meta .item.post-by-author::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.2'/%3E%3Cpath d='M5 19c1.2-3.2 3.6-5 7-5s5.8 1.8 7 5'/%3E%3C/svg%3E") !important;
+}
+
+.playful-wp-page .post-meta .item.post-date::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E") !important;
+}
+
+.playful-wp-page .master-news .post-meta {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: auto !important;
+}
+
+/* 3) CTA flush — hide trailing Elementor spacers. Footer chrome is home Footer.tsx. */
+.playful-wp-page .elementor-element-4d2eb64 {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+.playful-wp-page .elementor-element-145155f,
+.playful-wp-page .elementor-element-4d2eb64 .elementor-element-145155f,
+.playful-wp-page .elementor-element-0088077 {
+  --spacer-size: 0px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+.playful-wp-page .elementor-element-145155f .elementor-spacer,
+.playful-wp-page .elementor-element-145155f .elementor-spacer-inner,
+.playful-wp-page .elementor-element-0088077 .elementor-spacer,
+.playful-wp-page .elementor-element-0088077 .elementor-spacer-inner {
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
+
+/* Extra specificity vs Elementor post-83510 / post-84514 loaded after Next CSS. */
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-867a80c.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor.elementor-83510 .moving-text-zurdo.elementor-column > .elementor-widget-wrap {
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  align-content: center !important;
+  animation: none !important;
+  width: 100% !important;
+  gap: 12px 16px !important;
+}
+.playful-wp-page .elementor-83510 .moving-text-zurdo .elementor-element > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-15a6088 > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-6ceee9d > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-3c116fa > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-b3ef21a > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-0a1cdae > .elementor-widget-container,
+.playful-wp-page .elementor-83510 .elementor-element.elementor-element-4bee41c > .elementor-widget-container {
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.playful-wp-page .playful-post-home .post-meta .item.post-by-author,
+.playful-wp-page .playful-post-home .post-meta .item.post-date,
+.playful-wp-page .recent-posts-2 .post-meta .item {
+  padding-left: 0 !important;
+  margin-bottom: 0 !important;
+}
+.playful-wp-page .recent-posts-2 .post-meta,
+.playful-wp-page .playful-post-home .texts .post-meta {
+  margin-bottom: 0 !important;
+}
+
+
+
+/* ========== 5º QA (right-list meta ONE row, CTA flush purple footer) ========== */
+
+/* 1) Right list only (.recent-news): two sibling .post-meta on ONE line.
+   Elementor post-84514 custom CSS sets .playful-post-home .post-meta { width:49% !important }
+   at min-width:768px; mae .texts is flex + our earlier flex-wrap lets them stack.
+   Block parent + inline-flex children beats both. Featured .master-news untouched. */
+.playful-wp-page .playful-post-home .recent-news .texts,
+.playful-wp-page .playful-post-home .recent-news li.clearfix .texts,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts {
+  display: block !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: none !important;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > h3,
+.playful-wp-page .playful-post-home .recent-news li.clearfix .texts h3,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > h3,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts > h3 {
+  display: block !important;
+  width: 100% !important;
+  flex: none !important;
+  grid-column: auto !important;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+.playful-wp-page .playful-post-home .recent-news .post-meta,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts > .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: none !important;
+  float: none !important;
+  margin: 0 12px 0 0 !important;
+  white-space: nowrap !important;
+  vertical-align: middle;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > .post-meta:last-child,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > .post-meta:last-child {
+  margin-right: 0 !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .playful-wp-page .playful-post-home .recent-news .post-meta,
+  .playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+  body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .post-meta,
+  body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .post-meta {
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+
+.playful-wp-page .elementor-element-145155f,
+.playful-wp-page .elementor-element-4d2eb64 .elementor-element-145155f,
+.playful-wp-page .elementor-element-0088077,
+body.playful-elementor-plain .playful-wp-page .elementor-element-145155f,
+body.playful-elementor-plain .playful-wp-page .elementor-element-0088077,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-145155f,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-0088077 {
+  --spacer-size: 0px !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
+/* ========== 6o QA (pills bg = SEO-why, testimonials copy, footer=home) ========== */
+
+/* 1) Pastillas sit on the same band as Por que hacer SEO? (section 1b21b92).
+   Old Elementor: #DCF8F5 + CONFETY. Transparent had exposed the white main. */
+.playful-wp-page .elementor-element-45ee457,
+.playful-wp-page .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page .elementor-element.container.contenedor-texto,
+.playful-wp-page .contenedor-texto,
+.playful-wp-page .elementor-element-45ee457 > .elementor-container,
+.playful-wp-page .elementor-element-45ee457 .moving-text-zurdo,
+.playful-wp-page .elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page .elementor-element-45ee457,
+body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+}
+
+/* 2) Testimonials intro: center + softer dark (#453A53, same as SEO-why body copy).
+   post-84478 sets this sub-heading to #000; MAE align-center is only align-items. */
+.playful-wp-page .elementor-element-a5e8f80,
+.playful-wp-page .elementor-element-a5e8f80 .elementor-widget-container,
+.playful-wp-page .elementor-element-a5e8f80 .master-heading,
+.playful-wp-page .elementor-element-a5e8f80 .main-heading,
+.playful-wp-page .elementor-element-a5e8f80 .sub-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-a5e8f80 .sub-heading {
+  text-align: center !important;
+}
+.playful-wp-page .elementor-element-a5e8f80 .sub-heading,
+.playful-wp-page .elementor-84478 .elementor-element-a5e8f80 .master-heading .sub-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-a5e8f80 .sub-heading {
+  color: #453A53 !important;
+}
+
+/* 3) Undo purple flatten so Footer.tsx paints like home (white footerCard,
+   rounded #2A0064 bar). Let Footer.tsx mt-[160px] stand so the card is visible. */
+body.playful-elementor-plain footer,
+body.playful-elementor-plain footer.px-5,
+body.playful-elementor-plain footer.playful-site-footer,
+body:has(.playful-wp-page) footer,
+body:has(.playful-wp-page) footer.px-5 {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+body.playful-elementor-plain footer .footer,
+body.playful-elementor-plain footer .playful-site-footer-bar,
+body.playful-elementor-plain .playful-site-footer .footer,
+body:has(.playful-wp-page) footer .footer,
+body:has(.playful-wp-page) footer .playful-site-footer-bar {
+  background-color: #2A0064 !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+  border-radius: 1.5rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+body.playful-elementor-plain footer .footerCard,
+body.playful-elementor-plain .playful-site-footer .footerCard,
+body:has(.playful-wp-page) footer .footerCard {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-radius: 1.5rem !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+body.playful-elementor-plain footer .footerCard img,
+body:has(.playful-wp-page) footer .footerCard img {
+  filter: none !important;
+}
+body.playful-elementor-plain footer .footerCard .bg-\[\#2A0064\],
+body.playful-elementor-plain footer .footerCard [class*="bg-[#2A0064]"],
+body.playful-elementor-plain footer .logo > div,
+body:has(.playful-wp-page) footer .logo > div {
+  background-color: #2A0064 !important;
+}
+body.playful-elementor-plain footer .redesSociales a,
+body:has(.playful-wp-page) footer .redesSociales a {
+  background-color: #2A0064 !important;
+}
+body.playful-elementor-plain footer .redesSociales a svg,
+body:has(.playful-wp-page) footer .redesSociales a svg {
+  color: #ffffff !important;
+}
+body.playful-elementor-plain footer .text-center,
+body:has(.playful-wp-page) footer .text-center {
+  background-color: transparent !important;
+}
+body.playful-elementor-plain footer .text-center p,
+body:has(.playful-wp-page) footer .text-center p {
+  color: #2A0064 !important;
+}
+
+/* Card is taller than the purple bar; do not clip the overflow into the 160px air. */
+body.playful-elementor-plain footer.playful-site-footer,
+body.playful-elementor-plain footer.playful-site-footer.px-5,
+body:has(.playful-wp-page) footer.playful-site-footer,
+body:has(.playful-wp-page) footer.playful-site-footer.px-5,
+body.playful-elementor-plain footer .footer,
+body.playful-elementor-plain footer .playful-site-footer-bar,
+body:has(.playful-wp-page) footer .footer,
+body:has(.playful-wp-page) footer .playful-site-footer-bar {
+  overflow: visible !important;
+}
+
+
+/* ========== 7o QA (CTA illustration bottom gap, cream only) ==========
+   Old/prod: spacer .elementor-element-145155f inside cream CTA 4d2eb64
+   is --spacer-size:100px desktop / 80px max-width:767px (post-84545.css).
+   4d2eb64 itself has no Elementor padding-bottom. We hid 145155f/0088077
+   to flush the footer and that also flush-cut the cube/feet to the cream
+   edge. Restore the same space as padding-bottom on the cream section.
+   Keep spacers hidden and margin-bottom:0 so we do not reopen a mint
+   strip between CTA and Footer.tsx. */
+.playful-wp-page .elementor-element-4d2eb64,
+.playful-wp-page .elementor-84545 .elementor-element.elementor-element-4d2eb64,
+body.playful-elementor-plain .playful-wp-page .elementor-element-4d2eb64,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-4d2eb64 {
+  padding-bottom: 100px !important;
+  margin-bottom: 0 !important;
+}
+@media (max-width: 767px) {
+  .playful-wp-page .elementor-element-4d2eb64,
+  .playful-wp-page .elementor-84545 .elementor-element.elementor-element-4d2eb64,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-4d2eb64,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-4d2eb64 {
+    padding-bottom: 80px !important;
+  }
+}
+
+
+/* ========== 8o QA (restore blog bottom margin) ==========
+   Old/prod: spacer .elementor-element-0088077 inside pink blog 647a642
+   is --spacer-size:120px desktop / 100px max-width:1024px / 80px max-width:767px
+   (post-84514.css). We hid 0088077 with 145155f to kill a mint strip, and that
+   also ate the pink gap under the white blog cards (flush on cream CTA).
+   Restore the same space as padding-bottom on the pink blog section. Keep
+   0088077 hidden (do not unhide — spacer collapse stays). Do not change
+   4d2eb64's 100px/80px CTA illustration gap. */
+.playful-wp-page .elementor-element-647a642,
+.playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+  padding-bottom: 120px !important;
+}
+@media (max-width: 1024px) {
+  .playful-wp-page .elementor-element-647a642,
+  .playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+    padding-bottom: 100px !important;
+  }
+}
+@media (max-width: 767px) {
+  .playful-wp-page .elementor-element-647a642,
+  .playful-wp-page .elementor-84514 .elementor-element.elementor-element-647a642,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
+    padding-bottom: 80px !important;
+  }
+}
