@@ -98,6 +98,16 @@ export default function ElementorPageContent({
       <div className={`${styles.page} playful-wp-page playful-servicios-page elementor-kit-8`}>
         <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
       </div>
+      <style id="playful-qa2-ssr">{`
+html body .playful-wp-page .playful-post-home .recent-news li .texts{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;gap:0 10px!important}
+html body .playful-wp-page .playful-post-home .recent-news li .texts>h3{flex:0 0 100%!important;width:100%!important}
+html body .playful-wp-page .playful-post-home .recent-news li .texts>.post-meta{display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;max-width:none!important;white-space:nowrap!important;flex:0 0 auto!important}
+html body:has(.playful-wp-page) footer.px-5,
+html body:has(.playful-wp-page) footer .footer,
+html body:has(.playful-wp-page) footer .mt-\\[160px\\]{margin-top:0!important;margin-bottom:0!important}
+html body .playful-wp-page .elementor-element-145155f,
+html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
+`}</style>
       <ElementorPageScripts pageId={pageId} />
     </>
   );
