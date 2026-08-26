@@ -20,7 +20,7 @@ export async function generateStaticParams() {
   return SERVICE_SLUGS.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
   const metadata = await getPageMetadataBySlug(slug);
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function WordPressPage({
   params,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
