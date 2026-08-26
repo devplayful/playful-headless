@@ -1234,3 +1234,88 @@ body.playful-elementor-plain footer .logo > div,
 body:has(.playful-wp-page) footer .logo > div {
   background-color: rgba(255, 255, 255, 0.4) !important;
 }
+
+
+/* ========== 5º QA (right-list meta ONE row, CTA flush purple footer) ========== */
+
+/* 1) Right list only (.recent-news): two sibling .post-meta on ONE line.
+   Elementor post-84514 custom CSS sets .playful-post-home .post-meta { width:49% !important }
+   at min-width:768px; mae .texts is flex + our earlier flex-wrap lets them stack.
+   Block parent + inline-flex children beats both. Featured .master-news untouched. */
+.playful-wp-page .playful-post-home .recent-news .texts,
+.playful-wp-page .playful-post-home .recent-news li.clearfix .texts,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts {
+  display: block !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: none !important;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > h3,
+.playful-wp-page .playful-post-home .recent-news li.clearfix .texts h3,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > h3,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts > h3 {
+  display: block !important;
+  width: 100% !important;
+  flex: none !important;
+  grid-column: auto !important;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+.playful-wp-page .playful-post-home .recent-news .post-meta,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .texts > .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: none !important;
+  float: none !important;
+  margin: 0 12px 0 0 !important;
+  white-space: nowrap !important;
+  vertical-align: middle;
+}
+
+.playful-wp-page .playful-post-home .recent-news .texts > .post-meta:last-child,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .texts > .post-meta:last-child {
+  margin-right: 0 !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .playful-wp-page .playful-post-home .recent-news .post-meta,
+  .playful-wp-page .playful-post-home .recent-news .texts > .post-meta,
+  body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .post-meta,
+  body:has(.playful-wp-page) .playful-wp-page .playful-post-home .recent-news .post-meta {
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+
+/* 2) CTA → purple footer with ZERO mint (#DCF8F5) strip.
+   Footer.tsx mt-[160px] on .footer collapses through <footer> (padding:0) onto body mint.
+   Do not edit Footer.tsx — override here. Keep ad7e0bb purple flatten. */
+body.playful-elementor-plain footer .footer,
+body.playful-elementor-plain footer .footer.mt-\[160px\],
+body.playful-elementor-plain footer .playful-site-footer-bar,
+body:has(.playful-wp-page) footer .footer,
+body:has(.playful-wp-page) footer .footer.mt-\[160px\],
+body:has(.playful-wp-page) footer .playful-site-footer-bar {
+  margin-top: 0 !important;
+}
+
+.playful-wp-page .elementor-element-145155f,
+.playful-wp-page .elementor-element-4d2eb64 .elementor-element-145155f,
+.playful-wp-page .elementor-element-0088077,
+body.playful-elementor-plain .playful-wp-page .elementor-element-145155f,
+body.playful-elementor-plain .playful-wp-page .elementor-element-0088077,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-145155f,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-0088077 {
+  --spacer-size: 0px !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
