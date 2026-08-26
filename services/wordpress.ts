@@ -386,3 +386,227 @@ export interface WPPost {
     [key: string]: any;
   };
 }
+
+// ... (rest of the code remains the same)
+
+/**
+ * Obtiene posts del blog con paginación y filtrado por categoría
+ * @param page Número de página (comenzando en 1)
+ * @param perPage Cantidad de posts por página (máx 100)
+ * @param categorySlug Slug de la categoría para filtrar (opcional)
+ */
+export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
+  // ... (rest of the code remains the same)
+  try {
+    // Validar parámetros
+    page = Math.max(1, page);
+    perPage = Math.min(100, Math.max(1, perPage));
+
+    // Construir URL con filtro de categoría si existe
+    let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
+    
+    // Si hay una categoría, primero obtener su ID
+    if (categorySlug) {
+      try {
+        const categoriesResponse = await fetch(
+          `${WORDPRESS_API_URL}/wp/v2/categories?slug=${categorySlug}`,
+          { 
+            next: { revalidate: 3600 },
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+        
+        if (categoriesResponse.ok) {
+          const categories = await categoriesResponse.json();
+          if (categories.length > 0) {
+            url += `&categories=${categories[0].id}`;
+          }
+        }
+      } catch (error) {
+        console.error('Error al obtener categoría:', error);
+      }
+    }
+
+    const response = await fetch(url, { 
+      next: { revalidate: 60 }, // Revalidar cada minuto
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
+    }
+
+    // Obtener el número total de páginas del header de la respuesta
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+    const posts: WPPost[] = await response.json();
+
+    // Procesar los posts para incluir las imágenes destacadas y autor
+    const processedPosts = posts.map(post => ({
+      ...post,
+      featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+      featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
+      categories: post._embedded?.['wp:term']?.[0] || [],
+      author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
+    }));
+
+    return {
+      posts: processedPosts,
+      totalPages
+    };
+  } catch (error) {
+    console.error('Error en getBlogPosts:', error);
+    return {
+      posts: [],
+      totalPages: 0
+    };
+  }
+}
+
+export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{
+  id: number;
+  title: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  imageUrl: string;
+  slug: string;
+  link: string;
+}>> {
+  try {
+    const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+    url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
+    url.searchParams.append('per_page', Math.min(perPage, 10).toString());
+    url.searchParams.append('orderby', 'date');
+    url.searchParams.append('order', 'desc');
+    
+    console.log('Fetching posts from:', url.toString());
+
+    const response = await fetch(url.toString(), { 
+      next: { revalidate: 3600 },
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener las entradas del blog: ${response.status}`);
+    }
+
+    const posts: WPPost[] = await response.json();
+
+    return posts.map(post => {
+      // Obtener categoría principal
+      let category = 'Sin categoría';
+      const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
+      if (categories && categories.length > 0) {
+        category = categories[0].name;
+      }
+
+      // Obtener imagen destacada
+      let imageUrl = '/images/blog/placeholder.jpg';
+      const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+      
+      if (featuredMedia) {
+        // Intentar obtener la imagen en diferentes tamaños, con prioridad al tamaño completo
+        imageUrl = featuredMedia.source_url || 
+                  featuredMedia.media_details?.sizes?.full?.source_url ||
+                  featuredMedia.media_details?.sizes?.large?.source_url ||
+                  featuredMedia.media_details?.sizes?.medium_large?.source_url ||
+                  featuredMedia.media_details?.sizes?.medium?.source_url ||
+                  imageUrl;
+        
+        console.log('Featured image found for post', post.id, ':', imageUrl);
+      } else {
+        console.log('No featured image found for post:', post.id);
+      }
+
+      // Formatear fecha
+      const date = new Date(post.date);
+      const formattedDate = date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).split('/').join(' / ');
+
+      // Limpiar excerpt de etiquetas HTML
+      const excerpt = (post.excerpt?.rendered ?? '')
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&[a-z]+;/g, '')
+        .trim();
+
+      return {
+        id: post.id,
+        title: post.title.rendered.replace(/&[a-z]+;/g, ''),
+        excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt,
+        category,
+        date: formattedDate,
+        imageUrl,
+        slug: post.slug,
+        link: post.link
+      };
+    });
+  } catch (error) {
+    console.error('Error en getLatestBlogPosts:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene una entrada del blog por su slug
+ * @param slug Slug de la entrada
+ * @returns Promise con el post o null si no se encuentra
+ */
+export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
+      { 
+        next: { revalidate: 60 },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener el post: ${response.status} ${response.statusText}`);
+    }
+
+    const posts: WPPost[] = await response.json();
+    
+    if (!posts || posts.length === 0) {
+      return null;
+    }
+
+    const post = posts[0];
+
+    // Procesar datos embebidos
+    if (post._embedded) {
+      // Procesar imagen destacada
+      if (post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+        const media = post._embedded['wp:featuredmedia'][0];
+        post.featured_media_url = media.source_url;
+        post.featured_media_alt = media.alt_text || '';
+      }
+
+      // Procesar términos (categorías y tags)
+      if (post._embedded['wp:term']) {
+        const terms = post._embedded['wp:term'];
+        post.categories = terms[0] || [];
+        post.tags = terms[1] || [];
+      }
+
+      // Procesar autor
+      if (post._embedded['author'] && post._embedded['author'][0]) {
+        post.author = post._embedded['author'][0];
+      }
+    }
+
+    return post;
+  } catch (error) {
+    console.error('Error en getBlogPostBySlug:', error);
+    return null;
+  }
+}
