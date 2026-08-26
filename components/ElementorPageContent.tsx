@@ -61,8 +61,9 @@ function restoreOldBodyCopy(html: string): string {
     '$1<span class="playful-magia-negra">$2</span>Deja de arreglar tu web con parches. Como tu Agencia de E-commerce especializada, te ofrecemos una propuestas profesionales e innovadoras, enfocadas en la conversión.$3',
   );
 
-  out = out.replaceAll(
+  out = out.split(
     '<span class="text">¡Contáctanos y empieza ya!</span>',
+  ).join(
     '<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">Agenda una Reunión</span>',
   );
 
