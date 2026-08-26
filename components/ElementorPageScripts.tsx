@@ -53,6 +53,7 @@ function initMaeCarousels() {
   initPillsMarquee();
   hideDuplicateMasterLinkArrows();
   hideBrokenPostMetaImages();
+  applyQa2Fixes();
 
   const w = window as MaeWindow;
   const $ = w.jQuery;
@@ -118,12 +119,79 @@ function hideBrokenPostMetaImages() {
   });
 }
 
+function applyQa2Fixes() {
+  document.querySelectorAll('.playful-post-home .recent-news li .texts').forEach((node) => {
+    const texts = node as HTMLElement;
+    texts.style.setProperty('display', 'flex', 'important');
+    texts.style.setProperty('flex-wrap', 'wrap', 'important');
+    texts.style.setProperty('align-items', 'center', 'important');
+    texts.style.setProperty('gap', '0 10px', 'important');
+
+    texts.querySelectorAll('h3').forEach((h) => {
+      const el = h as HTMLElement;
+      el.style.setProperty('flex', '0 0 100%', 'important');
+      el.style.setProperty('width', '100%', 'important');
+    });
+
+    texts.querySelectorAll('.post-meta').forEach((meta) => {
+      const el = meta as HTMLElement;
+      if (el.classList.contains('post-meta-categories')) return;
+      el.style.setProperty('display', 'inline-flex', 'important');
+      el.style.setProperty('flex-direction', 'row', 'important');
+      el.style.setProperty('align-items', 'center', 'important');
+      el.style.setProperty('width', 'auto', 'important');
+      el.style.setProperty('max-width', 'none', 'important');
+      el.style.setProperty('white-space', 'nowrap', 'important');
+      el.style.setProperty('flex-shrink', '0', 'important');
+    });
+  });
+
+  if (!document.querySelector('.playful-wp-page')) return;
+
+  document.querySelectorAll('footer .footer, footer').forEach((node) => {
+    const el = node as HTMLElement;
+    el.style.setProperty('margin-top', '0', 'important');
+    el.style.setProperty('margin-bottom', '0', 'important');
+  });
+
+  document.querySelectorAll('.elementor-element-145155f, .elementor-element-0088077').forEach((node) => {
+    const el = node as HTMLElement;
+    el.style.setProperty('display', 'none', 'important');
+    el.style.setProperty('height', '0', 'important');
+  });
+}
+
+function injectQa2Style() {
+  if (document.getElementById('playful-qa2-runtime')) return;
+  const style = document.createElement('style');
+  style.id = 'playful-qa2-runtime';
+  style.textContent = [
+    '.playful-wp-page .playful-post-home .recent-news li .texts{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:0 10px!important}',
+    '.playful-wp-page .playful-post-home .recent-news li .texts h3{flex:0 0 100%!important;width:100%!important}',
+    '.playful-wp-page .playful-post-home .recent-news li .texts .post-meta:not(.post-meta-categories){display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;max-width:none!important;white-space:nowrap!important;flex-shrink:0!important}',
+    'body:has(.playful-wp-page) footer .footer,body:has(.playful-wp-page) footer{margin-top:0!important;margin-bottom:0!important}',
+    '.playful-wp-page .elementor-element-145155f,.playful-wp-page .elementor-element-0088077{display:none!important;height:0!important}',
+  ].join('');
+  document.body.appendChild(style);
+}
+
 export default function ElementorPageScripts({ pageId }: { pageId: number }) {
   useEffect(() => {
     document.body.classList.add('playful-elementor-plain');
     initPillsMarquee();
     hideDuplicateMasterLinkArrows();
     hideBrokenPostMetaImages();
+    injectQa2Style();
+    const runQa2 = () => {
+      requestAnimationFrame(() => {
+        applyQa2Fixes();
+        window.setTimeout(applyQa2Fixes, 0);
+      });
+    };
+    runQa2();
+    const onLoad = () => applyQa2Fixes();
+    window.addEventListener('load', onLoad);
+    const t500 = window.setTimeout(applyQa2Fixes, 500);
     const w = window as typeof window & { elementorFrontendConfig?: Record<string, unknown> };
     w.elementorFrontendConfig = {
       environmentMode: { edit: false, wpPreview: false, isScriptDebug: false },
@@ -172,11 +240,16 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
         if (cancelled) return;
         await loadScript(src);
       }
-      if (!cancelled) initMaeCarousels();
+      if (!cancelled) {
+        initMaeCarousels();
+        applyQa2Fixes();
+      }
     })();
 
     return () => {
       cancelled = true;
+      window.removeEventListener('load', onLoad);
+      window.clearTimeout(t500);
       document.body.classList.remove('playful-elementor-plain');
     };
   }, [pageId]);
