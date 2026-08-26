@@ -1327,3 +1327,28 @@ body:has(.playful-wp-page) footer .footer,
 body:has(.playful-wp-page) footer .playful-site-footer-bar {
   overflow: visible !important;
 }
+
+
+/* ========== 7o QA (CTA illustration bottom gap, cream only) ==========
+   Old/prod: spacer .elementor-element-145155f inside cream CTA 4d2eb64
+   is --spacer-size:100px desktop / 80px max-width:767px (post-84545.css).
+   4d2eb64 itself has no Elementor padding-bottom. We hid 145155f/0088077
+   to flush the footer and that also flush-cut the cube/feet to the cream
+   edge. Restore the same space as padding-bottom on the cream section.
+   Keep spacers hidden and margin-bottom:0 so we do not reopen a mint
+   strip between CTA and Footer.tsx. */
+.playful-wp-page .elementor-element-4d2eb64,
+.playful-wp-page .elementor-84545 .elementor-element.elementor-element-4d2eb64,
+body.playful-elementor-plain .playful-wp-page .elementor-element-4d2eb64,
+body:has(.playful-wp-page) .playful-wp-page .elementor-element-4d2eb64 {
+  padding-bottom: 100px !important;
+  margin-bottom: 0 !important;
+}
+@media (max-width: 767px) {
+  .playful-wp-page .elementor-element-4d2eb64,
+  .playful-wp-page .elementor-84545 .elementor-element.elementor-element-4d2eb64,
+  body.playful-elementor-plain .playful-wp-page .elementor-element-4d2eb64,
+  body:has(.playful-wp-page) .playful-wp-page .elementor-element-4d2eb64 {
+    padding-bottom: 80px !important;
+  }
+}
