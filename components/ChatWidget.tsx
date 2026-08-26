@@ -1,46 +1,49 @@
 'use client'
 
+/** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
 
 export default function ChatWidget() {
   useEffect(() => {
     console.log('🤖 ChatWidget: Iniciando carga del script de LeadConnector...')
-    
-    // Crear el script element
-    const script = document.createElement('script')
-    script.src = 'https://api.playfulagency.com/js/external-tracking.js'
-    script.setAttribute('data-tracking-id', 'tk_7f428930606f48999b6809f35a288399')
-    script.async = true
-    
-    script.onload = () => {
-      console.log('✅ ChatWidget: Script de LeadConnector cargado exitosamente')
-      
-      // Verificar después de 2 segundos si el script creó algún elemento
-      setTimeout(() => {
-        const chatElements = document.querySelectorAll('[id*="chat"], [class*="chat"], [id*="widget"], [class*="widget"], iframe[src*="leadconnector"], iframe[src*="playful"]')
-        console.log('🔍 ChatWidget: Elementos de chat encontrados:', chatElements.length)
-        if (chatElements.length > 0) {
-          console.log('📍 ChatWidget: Elementos encontrados:', chatElements)
-        } else {
-          console.warn('⚠️ ChatWidget: No se encontraron elementos del chat. Puede que el script solo funcione en producción.')
-        }
-      }, 2000)
+
+    const tracking = document.createElement('script')
+    tracking.src = 'https://api.playfulagency.com/js/external-tracking.js'
+    tracking.setAttribute('data-tracking-id', 'tk_7f428930606f48999b6809f35a288399')
+    tracking.async = true
+
+    tracking.onload = () => {
+      console.log('✅ ChatWidget: Script de tracking cargado exitosamente')
     }
-    
-    script.onerror = (error) => {
-      console.error('❌ ChatWidget: Error al cargar el script de LeadConnector', error)
+    tracking.onerror = (error) => {
+      console.error('❌ ChatWidget: Error al cargar el script de tracking', error)
     }
-    
-    // Agregar el script al documento
-    document.body.appendChild(script)
-    console.log('📝 ChatWidget: Script agregado al DOM')
-    
-    // Cleanup: remover el script cuando el componente se desmonte
+
+    const chat = document.createElement('script')
+    chat.src = 'https://widgets.leadconnectorhq.com/loader.js'
+    chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
+    chat.setAttribute('data-widget-id', '67ac6d90a81d1c5969d763e7')
+    chat.async = true
+
+    chat.onload = () => {
+      console.log('✅ ChatWidget: Widget de High Level cargado')
+    }
+    chat.onerror = (error) => {
+      console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
+    }
+
+    document.body.appendChild(tracking)
+    document.body.appendChild(chat)
+    console.log('📝 ChatWidget: Scripts agregados al DOM')
+
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script)
-        console.log('🗑️ ChatWidget: Script removido del DOM')
+      if (document.body.contains(tracking)) {
+        document.body.removeChild(tracking)
       }
+      if (document.body.contains(chat)) {
+        document.body.removeChild(chat)
+      }
+      console.log('🗑️ ChatWidget: Scripts removidos del DOM')
     }
   }, [])
 
