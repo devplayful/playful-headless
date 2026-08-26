@@ -704,6 +704,45 @@ body:has(.playful-wp-page) footer.playful-site-footer > .footer {
 .playful-wp-page .elementor-element-e92c878 .sub-heading {
   text-align: center !important;
 }
+.playful-wp-page .post-meta-categories::before,
+.playful-wp-page .post-meta .item.post-meta-categories::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 0 !important;
+  color: transparent !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23886CFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5A2 2 0 0 1 5.5 6.5h4l2 2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::before,
+.playful-wp-page .post-meta .item.post-date::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  font-size: 0 !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+.playful-wp-page .post-meta .item.post-by-author::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.2'/%3E%3Cpath d='M5 19c1.2-3.2 3.6-5 7-5s5.8 1.8 7 5'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page .post-meta .item.post-date::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page .playful-post-home .texts .post-meta,
+.playful-wp-page .recent-posts-2 .post-meta {
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+.playful-wp-page .playful-post-home .name,
+.playful-wp-page .playful-post-home .entry-date {
+  white-space: nowrap !important;
+}
 
 
 /* 1) Pastillas: even gap. Elementor sets justify-content:space-between plus
