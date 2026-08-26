@@ -687,3 +687,219 @@ body:has(.playful-wp-page) .playful-site-footer .playful-site-footer-bar,
 body:has(.playful-wp-page) footer.playful-site-footer > .footer {
   margin-top: 40px !important;
 }
+
+/* ========== 3º QA (pills gap / centered headings / blog icons / meta row) ========== */
+
+/* SSR-safe twins: body.playful-elementor-plain is JS-added; these paint immediately. */
+.playful-wp-page .moving-text-zurdo.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-element-867a80c.elementor-column > .elementor-widget-wrap {
+  justify-content: flex-start !important;
+}
+.playful-wp-page .elementor-element-9c65f0d,
+.playful-wp-page .elementor-element-9c65f0d .master-heading,
+.playful-wp-page .elementor-element-9c65f0d .main-heading,
+.playful-wp-page .elementor-element-e92c878,
+.playful-wp-page .elementor-element-e92c878 .master-heading,
+.playful-wp-page .elementor-element-e92c878 .main-heading,
+.playful-wp-page .elementor-element-e92c878 .sub-heading {
+  text-align: center !important;
+}
+
+
+/* 1) Pastillas: even gap. Elementor sets justify-content:space-between plus
+   per-pill widget-container margins (20px / 40px / 90px by breakpoint). */
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo.elementor-column > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap {
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 12px !important;
+  column-gap: 12px !important;
+  row-gap: 0 !important;
+  font-size: 0;
+}
+body.playful-elementor-plain .playful-wp-page .elementor-83510 .elementor-element.elementor-element-867a80c.elementor-column > .elementor-widget-wrap {
+  justify-content: flex-start !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-widget,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .animated-button,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button-wrapper,
+body.playful-elementor-plain .playful-wp-page .elementor-83510 .moving-text-zurdo .elementor-element > .elementor-widget-container {
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:first-child,
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap > .elementor-widget:last-child {
+  width: max-content !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button-wrapper {
+  width: max-content !important;
+  display: block !important;
+  text-align: left !important;
+  font-size: 15px;
+}
+body.playful-elementor-plain .playful-wp-page .moving-text-zurdo .elementor-button {
+  margin: 0 !important;
+}
+
+/* 2) Nuestros Clientes: center both lines (MAE align-center only sets align-items). */
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .master-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d h2 {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+body.playful-elementor-plain .playful-wp-page .elementor-element-9c65f0d.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 3) CTA / blog-intro heading + subtext centered. */
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .master-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 h2,
+body.playful-elementor-plain .playful-wp-page .elementor-element-e92c878 .sub-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 4) Blog icons: SVG data-URIs only (no Font Awesome / core-icons webfont). */
+body.playful-elementor-plain .playful-wp-page .post-meta img,
+body.playful-elementor-plain .playful-wp-page .post-meta-categories img,
+body.playful-elementor-plain .playful-wp-page .post-date img,
+body.playful-elementor-plain .playful-wp-page .post-by-author img {
+  display: none !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px;
+  padding: 4px 10px 4px 8px !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23886CFF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5A2 2 0 0 1 5.5 6.5h4l2 2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z'/%3E%3C/svg%3E") !important;
+  font-family: inherit !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta-categories::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-meta-categories::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::after,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 5px;
+  white-space: nowrap !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before,
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-by-author::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3.2'/%3E%3Cpath d='M5 19c1.2-3.2 3.6-5 7-5s5.8 1.8 7 5'/%3E%3C/svg%3E") !important;
+}
+body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M3.5 10h17'/%3E%3C/svg%3E") !important;
+}
+body.playful-elementor-plain .playful-wp-page .master-news .post-meta {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 10px;
+  width: auto !important;
+  max-width: 100%;
+}
+
+/* 5) Right list: author + date on ONE nowrap row (WP CSS was width:49% each). */
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts,
+body.playful-elementor-plain .playful-wp-page .playful-post-home li.clearfix .texts {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px 10px !important;
+  min-width: 0;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts > h3,
+body.playful-elementor-plain .playful-wp-page .playful-post-home li.clearfix .texts h3 {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  margin-bottom: 4px !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts .post-meta,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .post-meta,
+body.playful-elementor-plain .playful-wp-page .recent-posts-2 .post-meta {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 10px 0 0 !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .texts .post-meta:last-child {
+  margin-right: 0 !important;
+}
+body.playful-elementor-plain .playful-wp-page .playful-post-home .name,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .entry-date,
+body.playful-elementor-plain .playful-wp-page .playful-post-home .post-meta .item {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  overflow: visible !important;
+}

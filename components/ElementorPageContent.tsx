@@ -37,7 +37,9 @@ const CORE_STYLESHEETS = [
 
 /** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy. */
 function restoreOldBodyCopy(html: string): string {
-  let out = html.replace(
+  let out = html.replace(/\u2028|\u2029/g, '');
+  out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
+  out = out.replace(
     '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',
     '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
     + '<h2 class="main-heading">No confíes solo en nuestra palabra, mira los resultados</h2>',

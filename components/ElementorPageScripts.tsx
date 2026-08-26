@@ -52,6 +52,7 @@ function hideDuplicateMasterLinkArrows() {
 function initMaeCarousels() {
   initPillsMarquee();
   hideDuplicateMasterLinkArrows();
+  hideBrokenPostMetaImages();
 
   const w = window as MaeWindow;
   const $ = w.jQuery;
@@ -75,14 +76,41 @@ function initMaeCarousels() {
   }
 }
 
+function zeroPillBox(node: HTMLElement) {
+  node.style.margin = '0';
+  node.style.marginLeft = '0';
+  node.style.marginRight = '0';
+  const box = node.querySelector('.elementor-widget-container') as HTMLElement | null;
+  if (box) {
+    box.style.margin = '0';
+    box.style.paddingLeft = '0';
+    box.style.paddingRight = '0';
+  }
+}
+
 function initPillsMarquee() {
   document.querySelectorAll('.playful-wp-page .moving-text-zurdo > .elementor-widget-wrap').forEach((wrap) => {
     const el = wrap as HTMLElement;
     if (el.dataset.pillsMarquee === '1') return;
-    const kids = Array.from(el.children);
+    Array.from(el.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) node.parentNode?.removeChild(node);
+    });
+    const kids = Array.from(el.children) as HTMLElement[];
     if (!kids.length) return;
+    kids.forEach((node) => zeroPillBox(node));
     kids.forEach((node) => el.appendChild(node.cloneNode(true)));
     el.dataset.pillsMarquee = '1';
+  });
+}
+
+function hideBrokenPostMetaImages() {
+  document.querySelectorAll('.playful-wp-page .post-meta img, .playful-wp-page .post-meta-categories img').forEach((img) => {
+    const el = img as HTMLImageElement;
+    const hide = () => {
+      el.style.display = 'none';
+    };
+    el.addEventListener('error', hide);
+    if (el.complete && el.naturalWidth === 0 && el.getAttribute('src')) hide();
   });
 }
 
@@ -91,6 +119,7 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
     document.body.classList.add('playful-elementor-plain');
     initPillsMarquee();
     hideDuplicateMasterLinkArrows();
+    hideBrokenPostMetaImages();
     const w = window as typeof window & { elementorFrontendConfig?: Record<string, unknown> };
     w.elementorFrontendConfig = {
       environmentMode: { edit: false, wpPreview: false, isScriptDebug: false },
