@@ -133,16 +133,34 @@ function applyQa2Fixes() {
       el.style.setProperty('width', '100%', 'important');
     });
 
-    texts.querySelectorAll('.post-meta').forEach((meta) => {
-      const el = meta as HTMLElement;
-      if (el.classList.contains('post-meta-categories')) return;
+    let row = texts.querySelector(':scope > .playful-meta-row') as HTMLElement | null;
+    const metas = Array.from(texts.querySelectorAll(':scope > .post-meta, :scope > .playful-meta-row .post-meta'))
+      .filter((el) => !el.classList.contains('post-meta-categories')) as HTMLElement[];
+    if (!row && metas.length) {
+      row = document.createElement('div');
+      row.className = 'playful-meta-row';
+      metas.forEach((m) => row!.appendChild(m));
+      texts.appendChild(row);
+    }
+    if (row) {
+      row.style.setProperty('display', 'flex', 'important');
+      row.style.setProperty('flex-direction', 'row', 'important');
+      row.style.setProperty('flex-wrap', 'nowrap', 'important');
+      row.style.setProperty('align-items', 'center', 'important');
+      row.style.setProperty('gap', '8px', 'important');
+      row.style.setProperty('width', '100%', 'important');
+      row.style.setProperty('flex', '0 0 100%', 'important');
+      row.style.setProperty('min-width', '0', 'important');
+      row.style.setProperty('font-size', '11px', 'important');
+    }
+    metas.forEach((el) => {
       el.style.setProperty('display', 'inline-flex', 'important');
       el.style.setProperty('flex-direction', 'row', 'important');
       el.style.setProperty('align-items', 'center', 'important');
       el.style.setProperty('width', 'auto', 'important');
       el.style.setProperty('max-width', 'none', 'important');
       el.style.setProperty('white-space', 'nowrap', 'important');
-      el.style.setProperty('flex-shrink', '0', 'important');
+      el.style.setProperty('flex', '0 1 auto', 'important');
     });
   });
 
@@ -168,7 +186,8 @@ function injectQa2Style() {
   style.textContent = [
     '.playful-wp-page .playful-post-home .recent-news li .texts{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:0 10px!important}',
     '.playful-wp-page .playful-post-home .recent-news li .texts h3{flex:0 0 100%!important;width:100%!important}',
-    '.playful-wp-page .playful-post-home .recent-news li .texts .post-meta:not(.post-meta-categories){display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;max-width:none!important;white-space:nowrap!important;flex-shrink:0!important}',
+    '.playful-wp-page .playful-post-home .recent-news li .texts .playful-meta-row{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;width:100%!important;flex:0 0 100%!important;font-size:11px!important}',
+    '.playful-wp-page .playful-post-home .recent-news li .texts .playful-meta-row .post-meta{display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;white-space:nowrap!important}',
     'body:has(.playful-wp-page) footer .footer,body:has(.playful-wp-page) footer{margin-top:0!important;margin-bottom:0!important}',
     '.playful-wp-page .elementor-element-145155f,.playful-wp-page .elementor-element-0088077{display:none!important;height:0!important}',
   ].join('');
