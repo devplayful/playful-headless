@@ -665,12 +665,6 @@ body:has(.playful-wp-page) .playful-site-footer::after {
   content: none !important;
   display: none !important;
 }
-body.playful-elementor-plain .playful-site-footer .playful-site-footer-bar,
-body.playful-elementor-plain footer.playful-site-footer > .footer,
-body:has(.playful-wp-page) .playful-site-footer .playful-site-footer-bar,
-body:has(.playful-wp-page) footer.playful-site-footer > .footer {
-  margin-top: 0 !important;
-}
 
 /* ========== 3º QA (pills gap / centered headings / blog icons / meta row) ========== */
 
@@ -1216,16 +1210,6 @@ body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .t
   }
 }
 
-/* 2) CTA flush: collapse Footer.tsx mt-[160px]. Home footer chrome stays; do not flatten. */
-body.playful-elementor-plain footer .footer,
-body.playful-elementor-plain footer .footer.mt-\[160px\],
-body.playful-elementor-plain footer .playful-site-footer-bar,
-body:has(.playful-wp-page) footer .footer,
-body:has(.playful-wp-page) footer .footer.mt-\[160px\],
-body:has(.playful-wp-page) footer .playful-site-footer-bar {
-  margin-top: 0 !important;
-}
-
 .playful-wp-page .elementor-element-145155f,
 .playful-wp-page .elementor-element-4d2eb64 .elementor-element-145155f,
 .playful-wp-page .elementor-element-0088077,
@@ -1275,7 +1259,7 @@ body.playful-elementor-plain .playful-wp-page .elementor-element-a5e8f80 .sub-he
 }
 
 /* 3) Undo purple flatten so Footer.tsx paints like home (white footerCard,
-   rounded #2A0064 bar). Keep margin-top:0 so the CTA stays flush. */
+   rounded #2A0064 bar). Let Footer.tsx mt-[160px] stand so the card is visible. */
 body.playful-elementor-plain footer,
 body.playful-elementor-plain footer.px-5,
 body.playful-elementor-plain footer.playful-site-footer,
@@ -1295,7 +1279,6 @@ body:has(.playful-wp-page) footer .playful-site-footer-bar {
   border-radius: 1.5rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  margin-top: 0 !important;
 }
 body.playful-elementor-plain footer .footerCard,
 body.playful-elementor-plain .playful-site-footer .footerCard,
@@ -1331,4 +1314,16 @@ body:has(.playful-wp-page) footer .text-center {
 body.playful-elementor-plain footer .text-center p,
 body:has(.playful-wp-page) footer .text-center p {
   color: #2A0064 !important;
+}
+
+/* Card is taller than the purple bar; do not clip the overflow into the 160px air. */
+body.playful-elementor-plain footer.playful-site-footer,
+body.playful-elementor-plain footer.playful-site-footer.px-5,
+body:has(.playful-wp-page) footer.playful-site-footer,
+body:has(.playful-wp-page) footer.playful-site-footer.px-5,
+body.playful-elementor-plain footer .footer,
+body.playful-elementor-plain footer .playful-site-footer-bar,
+body:has(.playful-wp-page) footer .footer,
+body:has(.playful-wp-page) footer .playful-site-footer-bar {
+  overflow: visible !important;
 }

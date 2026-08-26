@@ -103,9 +103,6 @@ html body .playful-wp-page .playful-post-home .recent-news li .texts{display:fle
 html body .playful-wp-page .playful-post-home .recent-news li .texts>h3{flex:0 0 100%!important;width:100%!important}
 html body .playful-wp-page .playful-post-home .recent-news li .texts>.playful-meta-row{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;width:100%!important;flex:0 0 100%!important;font-size:11px!important}
 html body .playful-wp-page .playful-post-home .recent-news li .texts .playful-meta-row .post-meta{display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;white-space:nowrap!important;flex:0 1 auto!important}
-html body:has(.playful-wp-page) footer.px-5,
-html body:has(.playful-wp-page) footer .footer,
-html body:has(.playful-wp-page) footer .mt-\\[160px\\]{margin-top:0!important;margin-bottom:0!important}
 html body .playful-wp-page .elementor-element-145155f,
 html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
 `}</style>
