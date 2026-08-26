@@ -435,10 +435,6 @@ body.playful-elementor-plain footer.playful-site-footer .footer {
   background-color: #2A0064 !important;
   box-shadow: 0 12px 40px rgba(42, 0, 100, 0.28);
 }
-body.playful-elementor-plain .playful-site-footer .footerCard {
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
 body.playful-elementor-plain .playful-site-footer .contacto,
 body.playful-elementor-plain .playful-site-footer .playful-footer-cta {
   display: block !important;
@@ -458,8 +454,8 @@ body:has(.playful-wp-page) .playful-header nav {
 .playful-wp-page .elementor-element-45ee457,
 .playful-wp-page .elementor-element.container.contenedor-texto,
 .playful-wp-page .contenedor-texto {
-  background: transparent !important;
-  background-image: none !important;
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
   box-shadow: none !important;
   border: 0 !important;
   margin-top: 0 !important;
@@ -944,8 +940,8 @@ body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
   min-height: 0 !important;
   max-height: none !important;
   overflow: visible !important;
-  background: transparent !important;
-  background-image: none !important;
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
 }
 
 .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap,
@@ -1102,7 +1098,7 @@ body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before
   width: auto !important;
 }
 
-/* 3) CTA flush on a continuous purple footer — no mint band, no white cards. */
+/* 3) CTA flush — hide trailing Elementor spacers. Footer chrome is home Footer.tsx. */
 .playful-wp-page .elementor-element-4d2eb64 {
   padding-bottom: 0 !important;
   margin-bottom: 0 !important;
@@ -1124,75 +1120,6 @@ body.playful-elementor-plain .playful-wp-page .post-meta .item.post-date::before
   min-height: 0 !important;
 }
 
-body.playful-elementor-plain footer,
-body.playful-elementor-plain footer.px-5,
-body.playful-elementor-plain footer.playful-site-footer,
-body:has(.playful-wp-page) footer,
-body:has(.playful-wp-page) footer.px-5 {
-  background-color: #280059 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  margin-top: 0 !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-body.playful-elementor-plain footer .footer,
-body.playful-elementor-plain footer .playful-site-footer-bar,
-body.playful-elementor-plain .playful-site-footer .footer,
-body:has(.playful-wp-page) footer .footer {
-  background-color: #280059 !important;
-  margin: 0 !important;
-  margin-top: 0 !important;
-  max-width: none !important;
-  width: 100% !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-body.playful-elementor-plain footer .footerCard,
-body.playful-elementor-plain .playful-site-footer .footerCard,
-body:has(.playful-wp-page) footer .footerCard {
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-body.playful-elementor-plain footer .footerCard img,
-body:has(.playful-wp-page) footer .footerCard img {
-  filter: brightness(0) invert(1);
-}
-
-body.playful-elementor-plain footer .footerCard .bg-\[\#2A0064\],
-body.playful-elementor-plain footer .footerCard [class*="bg-[#2A0064]"] {
-  background-color: rgba(255, 255, 255, 0.35) !important;
-}
-
-body.playful-elementor-plain footer .redesSociales a,
-body:has(.playful-wp-page) footer .redesSociales a {
-  background-color: #ffffff !important;
-}
-body.playful-elementor-plain footer .redesSociales a svg,
-body:has(.playful-wp-page) footer .redesSociales a svg {
-  color: #280059 !important;
-}
-
-body.playful-elementor-plain footer .text-center,
-body:has(.playful-wp-page) footer .text-center {
-  margin-top: 0 !important;
-  padding-top: 16px !important;
-  margin-bottom: 0 !important;
-  background-color: #280059 !important;
-}
-body.playful-elementor-plain footer .text-center p,
-body:has(.playful-wp-page) footer .text-center p {
-  color: #ffffff !important;
-}
 
 /* Extra specificity vs Elementor post-83510 / post-84514 loaded after Next CSS. */
 .playful-wp-page .elementor-83510 .elementor-element.elementor-element-867a80c.elementor-column > .elementor-widget-wrap,
@@ -1230,10 +1157,6 @@ body:has(.playful-wp-page) footer .text-center p {
   margin-bottom: 0 !important;
 }
 
-body.playful-elementor-plain footer .logo > div,
-body:has(.playful-wp-page) footer .logo > div {
-  background-color: rgba(255, 255, 255, 0.4) !important;
-}
 
 
 /* ========== 5º QA (right-list meta ONE row, CTA flush purple footer) ========== */
@@ -1293,9 +1216,7 @@ body.playful-elementor-plain .playful-wp-page .playful-post-home .recent-news .t
   }
 }
 
-/* 2) CTA → purple footer with ZERO mint (#DCF8F5) strip.
-   Footer.tsx mt-[160px] on .footer collapses through <footer> (padding:0) onto body mint.
-   Do not edit Footer.tsx — override here. Keep ad7e0bb purple flatten. */
+/* 2) CTA flush: collapse Footer.tsx mt-[160px]. Home footer chrome stays; do not flatten. */
 body.playful-elementor-plain footer .footer,
 body.playful-elementor-plain footer .footer.mt-\[160px\],
 body.playful-elementor-plain footer .playful-site-footer-bar,
@@ -1318,4 +1239,96 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-element-0088077 {
   padding: 0 !important;
   height: 0 !important;
   min-height: 0 !important;
+}
+
+/* ========== 6o QA (pills bg = SEO-why, testimonials copy, footer=home) ========== */
+
+/* 1) Pastillas sit on the same band as Por que hacer SEO? (section 1b21b92).
+   Old Elementor: #DCF8F5 + CONFETY. Transparent had exposed the white main. */
+.playful-wp-page .elementor-element-45ee457,
+.playful-wp-page .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page .elementor-element.container.contenedor-texto,
+.playful-wp-page .contenedor-texto,
+.playful-wp-page .elementor-element-45ee457 > .elementor-container,
+.playful-wp-page .elementor-element-45ee457 .moving-text-zurdo,
+.playful-wp-page .elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page .elementor-element-45ee457,
+body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
+  background-color: #DCF8F5 !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+}
+
+/* 2) Testimonials intro: center + softer dark (#453A53, same as SEO-why body copy).
+   post-84478 sets this sub-heading to #000; MAE align-center is only align-items. */
+.playful-wp-page .elementor-element-a5e8f80,
+.playful-wp-page .elementor-element-a5e8f80 .elementor-widget-container,
+.playful-wp-page .elementor-element-a5e8f80 .master-heading,
+.playful-wp-page .elementor-element-a5e8f80 .main-heading,
+.playful-wp-page .elementor-element-a5e8f80 .sub-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-a5e8f80 .sub-heading {
+  text-align: center !important;
+}
+.playful-wp-page .elementor-element-a5e8f80 .sub-heading,
+.playful-wp-page .elementor-84478 .elementor-element-a5e8f80 .master-heading .sub-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-element-a5e8f80 .sub-heading {
+  color: #453A53 !important;
+}
+
+/* 3) Undo purple flatten so Footer.tsx paints like home (white footerCard,
+   rounded #2A0064 bar). Keep margin-top:0 so the CTA stays flush. */
+body.playful-elementor-plain footer,
+body.playful-elementor-plain footer.px-5,
+body.playful-elementor-plain footer.playful-site-footer,
+body:has(.playful-wp-page) footer,
+body:has(.playful-wp-page) footer.px-5 {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+body.playful-elementor-plain footer .footer,
+body.playful-elementor-plain footer .playful-site-footer-bar,
+body.playful-elementor-plain .playful-site-footer .footer,
+body:has(.playful-wp-page) footer .footer,
+body:has(.playful-wp-page) footer .playful-site-footer-bar {
+  background-color: #2A0064 !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+  border-radius: 1.5rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 0 !important;
+}
+body.playful-elementor-plain footer .footerCard,
+body.playful-elementor-plain .playful-site-footer .footerCard,
+body:has(.playful-wp-page) footer .footerCard {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-radius: 1.5rem !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+body.playful-elementor-plain footer .footerCard img,
+body:has(.playful-wp-page) footer .footerCard img {
+  filter: none !important;
+}
+body.playful-elementor-plain footer .footerCard .bg-\[\#2A0064\],
+body.playful-elementor-plain footer .footerCard [class*="bg-[#2A0064]"],
+body.playful-elementor-plain footer .logo > div,
+body:has(.playful-wp-page) footer .logo > div {
+  background-color: #2A0064 !important;
+}
+body.playful-elementor-plain footer .redesSociales a,
+body:has(.playful-wp-page) footer .redesSociales a {
+  background-color: #2A0064 !important;
+}
+body.playful-elementor-plain footer .redesSociales a svg,
+body:has(.playful-wp-page) footer .redesSociales a svg {
+  color: #ffffff !important;
+}
+body.playful-elementor-plain footer .text-center,
+body:has(.playful-wp-page) footer .text-center {
+  background-color: transparent !important;
+}
+body.playful-elementor-plain footer .text-center p,
+body:has(.playful-wp-page) footer .text-center p {
+  color: #2A0064 !important;
 }
