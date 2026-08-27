@@ -352,12 +352,12 @@ export async function generateMetadata({
   const url = canonicalForPath('/blog');
   return {
     title: 'Blog - Playful Agency',
-    description: 'Últimas noticias y consejos sobre marketing digital en nuestro blog.',
+    description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
     alternates: { canonical: url },
     ...(noindexFollow ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title: 'Blog - Playful Agency',
-      description: 'Últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
       url,
       images: [
         {
