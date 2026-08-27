@@ -86,6 +86,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const contentWithIds = $.html();
 
   return (
+    <>
+    <h1 className="sr-only">{post.title.rendered}</h1>
     <BlogPostContent 
       title={post.title.rendered}
       featuredImage={post.featured_media_url}
@@ -112,9 +114,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {post.title.rendered}
-              </h1>
+              </h2>
               
               {post.excerpt?.rendered && (
                 <div 
@@ -294,6 +296,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </section>
       </div>
     </BlogPostContent>
+    </>
   );
 }
 
