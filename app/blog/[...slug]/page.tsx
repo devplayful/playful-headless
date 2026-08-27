@@ -297,6 +297,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
+const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string }> = {
+  'actualizar-tu-e-commerce': {
+    description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
+  },
+  'cintillos-de-promocion': {
+    title: 'Cintillos de promoción en ecommerce | Playful',
+    description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+  },
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
   const [, postSlug] = slug;
@@ -320,13 +330,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
+  const override = BLOG_SEO_OVERRIDES[postSlug];
+  const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;
+  const description = override?.description ?? (post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '');
+
   return {
-    title: `${post.title.rendered} | Blog - Playful Agency`,
-    description: post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '',
+    title,
+    description,
     alternates: { canonical: url },
     openGraph: {
-      title: `${post.title.rendered} | Blog - Playful Agency`,
-      description: post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '',
+      title,
+      description,
       type: 'article',
       url,
       publishedTime: post.date,
