@@ -1962,7 +1962,8 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
     line-height: 1.2em !important;
   }
 }
-.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container > .elementor-column > .elementor-widget-wrap,
+/* Right-column illustration only. The generic 022b469 > column wrap was
+   centering the LEFT text column too (hero CTA + 36px leftover air). */
 .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 > .elementor-widget-wrap,
 body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 > .elementor-widget-wrap {
   align-items: center !important;
@@ -2131,6 +2132,66 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ede2e59 .master-button {
   display: flex !important;
   justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ========== QA closed (hero align / 30px air / 2º bloque) ==========
+   José 3 items. Header.tsx / Footer.tsx / layout / global CSS not touched. */
+
+/* 1) Hero buttons left-aligned with the text column (not centered).
+   E-com 8209674 «Haz que funcione tu tienda»; diseño 83849/dcec13b
+   «¡Hagamos una página web!» (width-auto MAE button). */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-8209674,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-8209674 .elementor-widget-container,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-dcec13b,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-dcec13b .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-8209674,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elementor-element-dcec13b {
+  text-align: start !important;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-8209674 .master-button,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-dcec13b .master-button {
+  display: inline-flex !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* 2) E-com 30px aire nav → titular. Same idea as DISEÑO-10 / SEM 1b21b92:
+   old header ~90px + 30px air; spacer 1eb3063 is 120px (= Next header)
+   so the titular was flush. Extra 30px on this hero only. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-748229a,
+.playful-wp-page[data-playful-page="85582"] .elementor-85582 > .elementor-element-748229a,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a {
+  padding-top: 30px !important;
+}
+
+/* 3) Second block: title AND content centered.
+   MAE align-center is align-items only (text stays start).
+   E-com 57734eb «Todo lo que tu e-commerce necesita (y nada de lo que no)»
+   + sub-heading. Diseño 9e7e89c «¿Cómo lo hacemos?» + sub-heading. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .master-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .main-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb h2,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .sub-heading,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .main-heading,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-57734eb .sub-heading,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .elementor-widget-container,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .master-heading,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .main-heading,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c h2,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .sub-heading,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .main-heading,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elementor-element-9e7e89c .sub-heading {
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
