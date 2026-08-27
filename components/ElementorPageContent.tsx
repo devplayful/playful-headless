@@ -35,9 +35,20 @@ const CORE_STYLESHEETS = [
   `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css`,
 ];
 
-/** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy. */
+/** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy.
+ *  Encode U+2028/U+2029 inside src/srcset before stripping them from copy —
+ *  SEM illustration 84118 is stored as Haz-Pruebas-y-\u2028Optimiza-tus-Campanas.png. */
+function preserveMediaLineSeparators(html: string): string {
+  return html.replace(/\s(src|srcset)=("[^"]*"|'[^']*')/gi, (_full, attr: string, quoted: string) => {
+    const q = quoted[0];
+    const url = quoted.slice(1, -1).replace(/\u2028/g, '%E2%80%A8').replace(/\u2029/g, '%E2%80%A9');
+    return ` ${attr}=${q}${url}${q}`;
+  });
+}
+
 function restoreOldBodyCopy(html: string): string {
-  let out = html.replace(/\u2028|\u2029/g, '');
+  let out = preserveMediaLineSeparators(html);
+  out = out.replace(/\u2028|\u2029/g, '');
   out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
   out = out.replace(
     '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',

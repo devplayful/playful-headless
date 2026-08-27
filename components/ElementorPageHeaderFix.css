@@ -291,9 +291,14 @@ body.playful-elementor-plain {
 .playful-wp-page .master-link .icon[class*="arrow"]::before {
   content: none !important;
 }
-.playful-wp-page .elementor-element-c431c27 .master-link .icon,
-.playful-wp-page .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
-.playful-wp-page .elementor-element-c431c27 .master-link .icon[class*="arrow"] {
+/* SEO only: c431c27 text already ends with ">" (Observa Nuestros Casos…).
+   Diseño (83849: «¡QUIERO UN SITIO WEB PERSONALIZADO!») and SEM (83848:
+   «¡ME INTERESA!» in Control de Presupuesto) reuse the same widget ID and
+   need the trailing arrow. JS hideDuplicateMasterLinkArrows still covers
+   any other ">" / "›" label. */
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon,
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon[class*="arrow"] {
   display: none !important;
   background: none !important;
   width: 0 !important;
@@ -1382,5 +1387,132 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
   body.playful-elementor-plain .playful-wp-page .elementor-element-647a642,
   body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
     padding-bottom: 80px !important;
+  }
+}
+
+/* ========== 9o QA (diseño + SEM closed list; do not touch SEO look) ========== */
+
+/* DISEÑO-1 + SEM-1: restore → on c431c27 (hidden globally for SEO ">" label). */
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+.playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon,
+.playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 4px !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23440099' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+/* DISEÑO-2: pastillas. Elementor 52150e0 is space-between / full-width wrap.
+   Shared .moving-text-zurdo rules force center + gap (OK on SEO 867a80c).
+   Restore old justified 3-line wrap on diseño only. Keep duplicate
+   «Optimización Web» pill. */
+.playful-wp-page .elementor-83849 .elementor-element-28cac14,
+.playful-wp-page .elementor-83849 .elementor-element-28cac14.container,
+.playful-wp-page .elementor-83849 .elementor-element-28cac14.contenedor-texto,
+.playful-wp-page .elementor-83849 .elementor-element.container.contenedor-texto.elementor-element-28cac14,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-28cac14,
+body:has(.playful-wp-page) .playful-wp-page .elementor-83849 .elementor-element-28cac14 {
+  width: 100% !important;
+  max-width: none !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-28cac14 > .elementor-container,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0 > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .moving-text-zurdo.elementor-element-52150e0 > .elementor-widget-wrap {
+  width: 100% !important;
+  max-width: none !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-52150e0.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .moving-text-zurdo > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  column-gap: 8px !important;
+  row-gap: 12px !important;
+  gap: 12px 8px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* DISEÑO-3: CTA «¡Conectemos…» right column. MAE align-center is align-items
+   only; old is text-align center for heading + copy + ¡HABLEMOS!. IDs are
+   diseño-only (SEO/SEM CTA uses 7374707 / 0bc6e91). */
+.playful-wp-page .elementor-83849 .elementor-element-b02e0d1,
+.playful-wp-page .elementor-83849 .elementor-element-b02e0d1 > .elementor-widget-wrap,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .elementor-widget-container,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .master-heading,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .main-heading,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a h2,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .sub-heading,
+.playful-wp-page .elementor-83849 .elementor-element-87651af,
+.playful-wp-page .elementor-83849 .elementor-element-87651af .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-7d5b08a .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-7d5b08a .sub-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-87651af .elementor-widget-container,
+.playful-wp-page .elementor-83849 .elementor-element-87651af .master-button {
+  display: flex !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-87651af.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* DISEÑO-4 + SEM-3: blog third column (cea8fe8 list) shorter than the two
+   620px featured cards. Stretch / min-height on diseño + SEM only — 84514
+   is shared with SEO. */
+@media (min-width: 768px) {
+  .playful-wp-page .elementor-83849 .elementor-84514 .elementor-element-a330f72 > .elementor-container,
+  .playful-wp-page .elementor-83848 .elementor-84514 .elementor-element-a330f72 > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-a330f72 > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-a330f72 > .elementor-container {
+    align-items: stretch !important;
+  }
+  .playful-wp-page .elementor-83849 .elementor-element-7176339,
+  .playful-wp-page .elementor-83849 .elementor-element-7176339 > .elementor-element-populated,
+  .playful-wp-page .elementor-83849 .elementor-element-cea8fe8,
+  .playful-wp-page .elementor-83849 .elementor-element-cea8fe8 > .elementor-widget-container,
+  .playful-wp-page .elementor-83849 .playful-post-home,
+  .playful-wp-page .elementor-83849 .playful-post-home .recent-news,
+  .playful-wp-page .elementor-83848 .elementor-element-7176339,
+  .playful-wp-page .elementor-83848 .elementor-element-7176339 > .elementor-element-populated,
+  .playful-wp-page .elementor-83848 .elementor-element-cea8fe8,
+  .playful-wp-page .elementor-83848 .elementor-element-cea8fe8 > .elementor-widget-container,
+  .playful-wp-page .elementor-83848 .playful-post-home,
+  .playful-wp-page .elementor-83848 .playful-post-home .recent-news {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 620px !important;
+    box-sizing: border-box;
+  }
+  .playful-wp-page .elementor-83849 .playful-post-home .recent-news,
+  .playful-wp-page .elementor-83848 .playful-post-home .recent-news {
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
   }
 }
