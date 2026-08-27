@@ -20,6 +20,61 @@ const nextConfig = {
     // Opcional: Configura formatos de imagen soportados
     formats: ['image/avif', 'image/webp'],
   },
+  // Next.js 15 applies an automatic 308 on /path/ before redirects(), so
+  // /servicios/ would never hit the 301 below unless we handle slashes ourselves.
+  skipTrailingSlashRedirect: true,
+  // 301s for retired WordPress paths (QA 2026-08-27).
+  // statusCode: 301 (Next 15 permanent:true emits 308, not 301).
+  async redirects() {
+    return [
+      {
+        source: '/servicios',
+        destination: '/agencia-e-commerce',
+        statusCode: 301,
+      },
+      {
+        source: '/servicios/',
+        destination: '/agencia-e-commerce',
+        statusCode: 301,
+      },
+      {
+        source: '/services',
+        destination: '/agencia-e-commerce',
+        statusCode: 301,
+      },
+      {
+        source: '/services/',
+        destination: '/agencia-e-commerce',
+        statusCode: 301,
+      },
+      {
+        source: '/contacto',
+        destination: '/contactar-agencia-de-marketing-digital',
+        statusCode: 301,
+      },
+      {
+        source: '/contacto/',
+        destination: '/contactar-agencia-de-marketing-digital',
+        statusCode: 301,
+      },
+      {
+        source: '/casos',
+        destination: '/casos-de-exito-agencia-de-marketing-digital',
+        statusCode: 301,
+      },
+      {
+        source: '/casos/',
+        destination: '/casos-de-exito-agencia-de-marketing-digital',
+        statusCode: 301,
+      },
+      // Preserve default Next trailing-slash 308 for every other path.
+      {
+        source: '/:path+/',
+        destination: '/:path+',
+        permanent: true,
+      },
+    ];
+  },
   // Opcional: Configuración de cabeceras de seguridad
   async headers() {
     return [
