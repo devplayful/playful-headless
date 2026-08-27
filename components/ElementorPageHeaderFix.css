@@ -291,9 +291,14 @@ body.playful-elementor-plain {
 .playful-wp-page .master-link .icon[class*="arrow"]::before {
   content: none !important;
 }
-.playful-wp-page .elementor-element-c431c27 .master-link .icon,
-.playful-wp-page .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
-.playful-wp-page .elementor-element-c431c27 .master-link .icon[class*="arrow"] {
+/* SEO only: c431c27 text already ends with ">" (Observa Nuestros Casos…).
+   Diseño (83849: «¡QUIERO UN SITIO WEB PERSONALIZADO!») and SEM (83848:
+   «¡ME INTERESA!» in Control de Presupuesto) reuse the same widget ID and
+   need the trailing arrow. JS hideDuplicateMasterLinkArrows still covers
+   any other ">" / "›" label. */
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon,
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+.playful-wp-page .elementor-83510 .elementor-element-c431c27 .master-link .icon[class*="arrow"] {
   display: none !important;
   background: none !important;
   width: 0 !important;
@@ -1383,4 +1388,539 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
   body:has(.playful-wp-page) .playful-wp-page .elementor-element-647a642 {
     padding-bottom: 80px !important;
   }
+}
+
+/* ========== 9o QA (diseño + SEM closed list; do not touch SEO look) ========== */
+
+/* DISEÑO-1 + SEM-1: restore → on c431c27 (hidden globally for SEO ">" label). */
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon.ci-right-arrow2,
+.playful-wp-page .elementor-83849 .elementor-element-c431c27 .master-link .icon,
+.playful-wp-page .elementor-83848 .elementor-element-c431c27 .master-link .icon {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 4px !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23440099' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+/* DISEÑO-2: pastillas. Elementor 52150e0 is space-between / full-width wrap.
+   Shared .moving-text-zurdo rules force center + gap (OK on SEO 867a80c).
+   Restore old justified 3-line wrap on diseño only. Keep duplicate
+   «Optimización Web» pill. */
+.playful-wp-page .elementor-83849 .elementor-element-28cac14,
+.playful-wp-page .elementor-83849 .elementor-element-28cac14.container,
+.playful-wp-page .elementor-83849 .elementor-element-28cac14.contenedor-texto,
+.playful-wp-page .elementor-83849 .elementor-element.container.contenedor-texto.elementor-element-28cac14,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-28cac14,
+body:has(.playful-wp-page) .playful-wp-page .elementor-83849 .elementor-element-28cac14 {
+  width: 100% !important;
+  max-width: none !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  background-color: #D3B0FF !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-28cac14 > .elementor-container,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0 > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .moving-text-zurdo.elementor-element-52150e0 > .elementor-widget-wrap {
+  width: 100% !important;
+  max-width: none !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-52150e0.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-52150e0.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .moving-text-zurdo > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  column-gap: 8px !important;
+  row-gap: 12px !important;
+  gap: 12px 8px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* DISEÑO-3: CTA «¡Conectemos…» right column. MAE align-center is align-items
+   only; old is text-align center for heading + copy + ¡HABLEMOS!. IDs are
+   diseño-only (SEO/SEM CTA uses 7374707 / 0bc6e91). */
+.playful-wp-page .elementor-83849 .elementor-element-b02e0d1,
+.playful-wp-page .elementor-83849 .elementor-element-b02e0d1 > .elementor-widget-wrap,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .elementor-widget-container,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .master-heading,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .main-heading,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a h2,
+.playful-wp-page .elementor-83849 .elementor-element-7d5b08a .sub-heading,
+.playful-wp-page .elementor-83849 .elementor-element-87651af,
+.playful-wp-page .elementor-83849 .elementor-element-87651af .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-7d5b08a .main-heading,
+body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-7d5b08a .sub-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-87651af .elementor-widget-container,
+.playful-wp-page .elementor-83849 .elementor-element-87651af .master-button {
+  display: flex !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.playful-wp-page .elementor-83849 .elementor-element-87651af.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* DISEÑO-4: blog is IN page 83849 (f34513a / fce9449 66% + 6f58c0c 33%),
+   not the shared 84514 template. Stretch the compact list to the 620px cards. */
+@media (min-width: 768px) {
+  .playful-wp-page .elementor-83849 .elementor-element-f34513a > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-f34513a > .elementor-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+  }
+  .playful-wp-page .elementor-83849 .elementor-element-fce9449 { width: 66.667% !important; }
+  .playful-wp-page .elementor-83849 .elementor-element-6f58c0c { width: 33.333% !important; }
+  .playful-wp-page .elementor-83849 .elementor-element-6f58c0c,
+  .playful-wp-page .elementor-83849 .elementor-element-6f58c0c > .elementor-element-populated,
+  .playful-wp-page .elementor-83849 .elementor-element-708c8a6,
+  .playful-wp-page .elementor-83849 .elementor-element-708c8a6 > .elementor-widget-container,
+  .playful-wp-page .elementor-83849 .elementor-element-708c8a6 .playful-post-home,
+  .playful-wp-page .elementor-83849 .elementor-element-708c8a6 .recent-news,
+  body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-6f58c0c,
+  body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-element-708c8a6 {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 620px !important;
+    box-sizing: border-box;
+  }
+  .playful-wp-page .elementor-83849 .elementor-element-708c8a6 .recent-news {
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
+  }
+}
+
+/* SEM-3: 84514 is a SIBLING custom_grid, not nested under 83848.
+   Scope with data-playful-page so SEO 84514 is untouched. */
+@media (min-width: 768px) {
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .elementor-element-a330f72 > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-a330f72 > .elementor-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+  }
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .elementor-element-7176339,
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .elementor-element-7176339 > .elementor-element-populated,
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .elementor-element-cea8fe8,
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .elementor-element-cea8fe8 > .elementor-widget-container,
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .playful-post-home,
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .playful-post-home .recent-news {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 620px !important;
+    box-sizing: border-box;
+  }
+  .playful-wp-page[data-playful-page="83848"] .elementor-84514 .playful-post-home .recent-news {
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
+  }
+}
+
+/* SEM-4 + SEM-5: pastillas are 45ee457 / 867a80c col-50 + sibling 2894a31.
+   Shared mint #DCF8F5 on .contenedor-texto / 45ee457 paints a mint strip
+   (native SEM bg is #FFDBDB pink + confetti). Column is 50% so pills clip
+   to one row. Match SEO wrap: 100% column, 3 wrap rows, no mint, no clip.
+   Do not change pill text. */
+.playful-wp-page .elementor-83848 .elementor-element-45ee457,
+.playful-wp-page .elementor-83848 .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page .elementor-83848 .elementor-element.container.contenedor-texto.elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto.container,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-45ee457,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto,
+body:has(.playful-wp-page) .playful-wp-page .elementor-83848 .elementor-element-45ee457 {
+  /* Native SEM is #FFDBDB (same as hero). Shared Next CSS paints SEO mint
+     #DCF8F5; post-83848.css locks .contenedor-texto at height:150px + clip. */
+  background-color: #FFDBDB !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  width: 100% !important;
+  max-width: none !important;
+  left: 0 !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+.playful-wp-page .elementor-83848 .elementor-element-45ee457 > .elementor-background-overlay,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 > .elementor-background-overlay {
+  display: none !important;
+}
+.playful-wp-page .elementor-83848 .elementor-element-45ee457 > .elementor-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 > .elementor-container {
+  width: 100% !important;
+  max-width: none !important;
+  flex-wrap: wrap !important;
+}
+.playful-wp-page .elementor-83848 .elementor-element-867a80c,
+.playful-wp-page .elementor-83848 .elementor-element-867a80c.moving-text-zurdo,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.playful-wp-page .elementor-83848 .elementor-element-2894a31,
+.playful-wp-page .elementor-83848 .elementor-element-2894a31.moving-text,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-2894a31 {
+  display: none !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.playful-wp-page .elementor-83848 .elementor-element-867a80c.elementor-column > .elementor-widget-wrap,
+.playful-wp-page .elementor-83848 .elementor-element-867a80c.moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page .elementor-83848 .moving-text-zurdo > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .moving-text-zurdo > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  align-content: center !important;
+  gap: 12px 16px !important;
+  row-gap: 12px !important;
+  column-gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  animation: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+/* SEM-6: clients logo carousel (d0fefa4 in shared 84478). Crop/overflow only
+   on SEM so the first slide is not sliced. SEO carousel left as-is.
+   Prod crop is an initialized-Swiper loop peek (~4.5 slides): clip the
+   viewport and keep logos contained. 4-up fallback before init. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 {
+  --e-image-carousel-slides-to-show: 4;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-image-carousel-wrapper,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-container {
+  overflow: hidden !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide {
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+/* Fallback when Elementor Swiper has not initialized: 11 slides in one row
+   is what crops «ANO TO» / venemerg. 4-up only in that state. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper:not(.swiper-initialized) .swiper-wrapper,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-image-carousel:not(.swiper-initialized) {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper:not(.swiper-initialized) .swiper-slide,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-image-carousel:not(.swiper-initialized) .swiper-slide {
+  flex: 0 0 25% !important;
+  width: 25% !important;
+  max-width: 25% !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-inner,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 figure.swiper-slide-inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-image {
+  object-fit: contain !important;
+  object-position: center !important;
+  max-width: none !important;
+  max-height: none !important;
+  width: 300px !important;
+  height: 200px !important;
+}
+
+
+/* SEM-7: José — pastillas tapadas (height 150px Elementor .contenedor-texto) */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .container.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto.container,
+.elementor-83848 .elementor-element.elementor-element-45ee457.container,
+.elementor-83848 .elementor-element.elementor-element-45ee457.contenedor-texto,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto,
+body.playful-elementor-plain .elementor-83848 .elementor-element-45ee457 {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background-color: #FFDBDB !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.elementor-column,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element.elementor-element-867a80c,
+.elementor-83848 .elementor-element.elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .moving-text-zurdo {
+  width: 100% !important;
+  max-width: 100% !important;
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  animation: none !important;
+  animation-name: none !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c > .elementor-widget-wrap,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo > .elementor-widget-wrap,
+.elementor-83848 .elementor-element-867a80c > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  gap: 16px 20px !important;
+  row-gap: 16px !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  animation: none !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-element,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-button-wrapper {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-2894a31,
+.elementor-83848 .elementor-element-2894a31 {
+  display: none !important;
+}
+
+
+/* ========== SEM 83848 QA (ayuda / logos / FAQ / hero) ==========
+   Closed list. Scope: data-playful-page=83848 / elementor-83848 only. */
+
+/* 1) Mint 802744c: unhide 24002ee (elementor-invisible / opacity 0),
+   restore card 18px italic + strong 800, center 0067e2f button. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee.elementor-invisible,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 .elementor-element-24002ee.elementor-invisible,
+.playful-wp-page .elementor-83848 .elementor-element-24002ee.elementor-invisible,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .master-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .main-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .sub-heading {
+  text-align: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-f00cc4c p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-07b28a1 p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-86e8e80 p {
+  font-size: 18px !important;
+  font-style: italic !important;
+  color: #000000 !important;
+  line-height: 1.45 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c em strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 em strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 strong em {
+  font-weight: 800 !important;
+  color: #000000 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f.align-center,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f .elementor-widget-container {
+  text-align: center !important;
+  display: block !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f .master-button {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 2) Client logos d0fefa4: old paints 300x200. Do not cap at 80px.
+   Crop/overflow may stay; pagination is outside the swiper. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-image {
+  max-height: none !important;
+  height: 200px !important;
+  width: 300px !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-inner,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 figure.swiper-slide-inner {
+  overflow: visible !important;
+  max-width: 100% !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-pagination,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-swiper-button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 3) FAQ 18ebac6 / ea23e47 / eec3d51: unhide titular, SVG +/−, lavender active. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47.elementor-invisible,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 .elementor-element-ea23e47.elementor-invisible,
+.playful-wp-page .elementor-83848 .elementor-element-ea23e47.elementor-invisible,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .master-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .main-heading {
+  text-align: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  margin-right: 10px !important;
+  color: #453A53 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fas,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-plus,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-minus {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  font-family: inherit !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fas::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-plus::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-minus::before {
+  content: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon-closed i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon-opened i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51.playful-tabs .elementor-tab-title.elementor-active,
+.playful-wp-page[data-playful-page="83848"] .playful-tabs.elementor-element-eec3d51 .elementor-tab-title.elementor-active {
+  background: #D3B0FF !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51.playful-tabs .elementor-tab-content.elementor-active,
+.playful-wp-page[data-playful-page="83848"] .playful-tabs.elementor-element-eec3d51 .elementor-accordion-item:has(.elementor-tab-title.elementor-active) .elementor-tab-content {
+  background: #E9D7FF !important;
+}
+
+/* 4) Hero 1b21b92: old header is 90px + 30px air; Next header is 120px
+   flush to the titular. Extra 30px on this section only. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 > .elementor-element-1b21b92,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92 {
+  padding-top: 30px !important;
+}
+
+
+/* SEM-8: José — fondo cyan persistente. Old 45ee457 is #FFDBDB, not #DCF8F5. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 > .elementor-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 .moving-text-zurdo,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element.elementor-element-45ee457,
+.elementor-83848 .elementor-element.elementor-element-45ee457 > .elementor-container,
+.elementor-83848 .elementor-element.elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto {
+  background-color: #FFDBDB !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element-867a80c.moving-text-zurdo {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
+/* SEM-9: José — pastilla Arquitectura SEO mismo fondo que las otras (#F7F7F7). */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button-link,
+.elementor-83848 .elementor-element.elementor-element-83d7ee0 .elementor-button,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button {
+  background-color: #F7F7F7 !important;
+  background-image: none !important;
 }

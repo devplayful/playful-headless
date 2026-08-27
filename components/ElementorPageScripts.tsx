@@ -49,11 +49,113 @@ function hideDuplicateMasterLinkArrows() {
   });
 }
 
-function initMaeCarousels() {
+
+/** SEM-only: 84478 carousel d0fefa4 is shared with SEO. Prod shows a loop
+ *  peek («ANO TO» / venemerg sliced) because Swiper measures ~4.5 slides.
+ *  Force 4-up, clip overflow, contain logos. Do not shrink below old 200px. */
+function fixSemLogoCarousel(pageId?: number) {
+  const root = document.querySelector(
+    '.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4',
+  ) as HTMLElement | null;
+  if (!root) return;
+  if (pageId != null && pageId !== 83848) return;
+
+  root.style.setProperty('--e-image-carousel-slides-to-show', '4');
+
+  const viewport = root.querySelector(
+    '.elementor-image-carousel-wrapper, .swiper, .swiper-container',
+  ) as HTMLElement | null;
+  if (viewport) {
+    viewport.style.setProperty('overflow', 'hidden', 'important');
+  }
+
+  const swiperEl = root.querySelector('.swiper, .swiper-container') as
+    | (HTMLElement & { swiper?: any })
+    | null;
+  const swiper = swiperEl?.swiper;
+  if (swiper && swiper.params) {
+    swiper.params.slidesPerView = 4;
+    swiper.params.slidesPerGroup = 1;
+    swiper.params.centeredSlides = false;
+    swiper.params.watchOverflow = true;
+    if (typeof swiper.params.spaceBetween === 'number' && swiper.params.spaceBetween < 16) {
+      swiper.params.spaceBetween = 16;
+    }
+    try {
+      swiper.update();
+      if (typeof swiper.slideToLoop === 'function' && swiper.params.loop) {
+        swiper.slideToLoop(0, 0);
+      } else {
+        swiper.slideTo(0, 0);
+      }
+    } catch {
+      /* CSS overflow/object-fit still clip the frame */
+    }
+  }
+
+  root.querySelectorAll('.swiper-slide-image').forEach((img) => {
+    const el = img as HTMLImageElement;
+    el.style.setProperty('object-fit', 'contain', 'important');
+    el.style.setProperty('object-position', 'center', 'important');
+    el.style.setProperty('max-width', 'none', 'important');
+    el.style.removeProperty('max-height');
+    el.style.setProperty('max-height', 'none', 'important');
+    el.style.setProperty('width', '300px', 'important');
+    el.style.setProperty('height', '200px', 'important');
+  });
+}
+
+
+/** SEM-only closed list: unhide mint/FAQ headings, keep first FAQ open. */
+function fixSemClosedList(pageId?: number) {
+  if (pageId != null && pageId !== 83848) return;
+  const page = document.querySelector('.playful-wp-page[data-playful-page="83848"]') as HTMLElement | null;
+  if (!page) return;
+
+  page.querySelectorAll('.elementor-element-24002ee, .elementor-element-ea23e47').forEach((node) => {
+    const el = node as HTMLElement;
+    el.classList.remove('elementor-invisible');
+    el.style.setProperty('visibility', 'visible', 'important');
+    el.style.setProperty('opacity', '1', 'important');
+    el.style.setProperty('height', 'auto', 'important');
+    el.style.setProperty('transform', 'none', 'important');
+    el.querySelectorAll('.main-heading, .sub-heading, .master-heading, .elementor-widget-container').forEach((child) => {
+      const c = child as HTMLElement;
+      c.style.setProperty('visibility', 'visible', 'important');
+      c.style.setProperty('opacity', '1', 'important');
+      c.style.setProperty('text-align', 'center', 'important');
+    });
+  });
+
+  const btn = page.querySelector('.elementor-element-0067e2f') as HTMLElement | null;
+  if (btn) {
+    btn.style.setProperty('text-align', 'center', 'important');
+    const wrap = btn.querySelector('.elementor-widget-container') as HTMLElement | null;
+    if (wrap) wrap.style.setProperty('text-align', 'center', 'important');
+  }
+
+  const faq = page.querySelector('.elementor-element-eec3d51 .elementor-accordion') as HTMLElement | null;
+  if (faq) {
+    const firstTitle = faq.querySelector('.elementor-accordion-item .elementor-tab-title') as HTMLElement | null;
+    const firstContent = faq.querySelector('.elementor-accordion-item .elementor-tab-content') as HTMLElement | null;
+    if (firstTitle && !firstTitle.classList.contains('elementor-active')) {
+      firstTitle.classList.add('elementor-active');
+      firstTitle.setAttribute('aria-expanded', 'true');
+    }
+    if (firstContent && !firstContent.classList.contains('elementor-active')) {
+      firstContent.classList.add('elementor-active');
+      firstContent.style.setProperty('display', 'block', 'important');
+    }
+  }
+}
+
+function initMaeCarousels(pageId?: number) {
   initPillsMarquee();
   hideDuplicateMasterLinkArrows();
   hideBrokenPostMetaImages();
   applyQa2Fixes();
+  fixSemLogoCarousel(pageId);
+  fixSemClosedList(pageId);
 
   const w = window as MaeWindow;
   const $ = w.jQuery;
@@ -116,6 +218,44 @@ function hideBrokenPostMetaImages() {
     };
     el.addEventListener('error', hide);
     if (el.complete && el.naturalWidth === 0 && el.getAttribute('src')) hide();
+  });
+}
+
+
+function applySemPillsClipFix() {
+  const page = document.querySelector('.playful-wp-page[data-playful-page="83848"]');
+  if (!page) return;
+  page.querySelectorAll('.elementor-element-45ee457, .contenedor-texto').forEach((node) => {
+    const el = node as HTMLElement;
+    el.style.setProperty('height', 'auto', 'important');
+    el.style.setProperty('min-height', '0', 'important');
+    el.style.setProperty('max-height', 'none', 'important');
+    el.style.setProperty('overflow', 'visible', 'important');
+    el.style.setProperty('background-color', '#FFDBDB', 'important');
+  });
+  page.querySelectorAll('.elementor-element-83d7ee0 .elementor-button').forEach((node) => {
+    (node as HTMLElement).style.setProperty('background-color', '#F7F7F7', 'important');
+  });
+  page.querySelectorAll('.elementor-element-2894a31').forEach((node) => {
+    (node as HTMLElement).style.setProperty('display', 'none', 'important');
+  });
+  page.querySelectorAll('.elementor-element-867a80c, .elementor-element-867a80c .elementor-widget-wrap, .elementor-element-867a80c .elementor-widget, .elementor-element-867a80c .elementor-widget-container').forEach((node) => {
+    const el = node as HTMLElement;
+    el.style.setProperty('position', 'static', 'important');
+    el.style.setProperty('left', 'auto', 'important');
+    el.style.setProperty('top', 'auto', 'important');
+    el.style.setProperty('transform', 'none', 'important');
+    el.style.setProperty('animation', 'none', 'important');
+    el.style.setProperty('animation-name', 'none', 'important');
+    el.style.setProperty('overflow', 'visible', 'important');
+    el.style.setProperty('opacity', '1', 'important');
+    el.style.setProperty('visibility', 'visible', 'important');
+  });
+  page.querySelectorAll('.elementor-element-867a80c').forEach((node) => {
+    const el = node as HTMLElement;
+    el.style.setProperty('background-color', 'transparent', 'important');
+    el.style.setProperty('background-image', 'none', 'important');
+    el.style.setProperty('width', '100%', 'important');
   });
 }
 
@@ -182,6 +322,9 @@ function injectQa2Style() {
     '.playful-wp-page .playful-post-home .recent-news li .texts h3{flex:0 0 100%!important;width:100%!important}',
     '.playful-wp-page .playful-post-home .recent-news li .texts .playful-meta-row{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;width:100%!important;flex:0 0 100%!important;font-size:11px!important}',
     '.playful-wp-page .playful-post-home .recent-news li .texts .playful-meta-row .post-meta{display:inline-flex!important;flex-direction:row!important;align-items:center!important;width:auto!important;white-space:nowrap!important}',
+    '.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,.playful-wp-page[data-playful-page="83848"] .contenedor-texto{height:auto!important;max-height:none!important;overflow:visible!important;background-color:#FFDBDB!important}',
+    '.playful-wp-page[data-playful-page="83848"] .elementor-element-2894a31{display:none!important}',
+    '.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget,.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget-wrap{position:static!important;transform:none!important;animation:none!important;opacity:1!important;visibility:visible!important}',
     '.playful-wp-page .elementor-element-145155f,.playful-wp-page .elementor-element-0088077{display:none!important;height:0!important}',
   ].join('');
   document.body.appendChild(style);
@@ -197,13 +340,32 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
     const runQa2 = () => {
       requestAnimationFrame(() => {
         applyQa2Fixes();
-        window.setTimeout(applyQa2Fixes, 0);
+        applySemPillsClipFix();
+        fixSemLogoCarousel(pageId);
+        fixSemClosedList(pageId);
+        window.setTimeout(() => {
+          applyQa2Fixes();
+          fixSemLogoCarousel(pageId);
+          fixSemClosedList(pageId);
+        }, 0);
       });
     };
     runQa2();
-    const onLoad = () => applyQa2Fixes();
+    const onLoad = () => {
+      applyQa2Fixes();
+      fixSemLogoCarousel(pageId);
+      fixSemClosedList(pageId);
+    };
     window.addEventListener('load', onLoad);
-    const t500 = window.setTimeout(applyQa2Fixes, 500);
+    const t500 = window.setTimeout(() => {
+      applyQa2Fixes();
+      fixSemLogoCarousel(pageId);
+      fixSemClosedList(pageId);
+    }, 500);
+    const t1500 = window.setTimeout(() => {
+      fixSemLogoCarousel(pageId);
+      fixSemClosedList(pageId);
+    }, 1500);
     const w = window as typeof window & { elementorFrontendConfig?: Record<string, unknown> };
     w.elementorFrontendConfig = {
       environmentMode: { edit: false, wpPreview: false, isScriptDebug: false },
@@ -253,8 +415,9 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
         await loadScript(src);
       }
       if (!cancelled) {
-        initMaeCarousels();
+        initMaeCarousels(pageId);
         applyQa2Fixes();
+        fixSemClosedList(pageId);
       }
     })();
 
@@ -262,6 +425,7 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
       cancelled = true;
       window.removeEventListener('load', onLoad);
       window.clearTimeout(t500);
+      window.clearTimeout(t1500);
       document.body.classList.remove('playful-elementor-plain');
     };
   }, [pageId]);
