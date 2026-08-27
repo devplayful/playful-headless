@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { canonicalForPath } from '@/utils/canonical';
 import { getBlogPosts } from '@/services/wordpress';
 import Link from 'next/link';
@@ -30,7 +31,17 @@ export default async function BlogPage({
 }) {
   // Obtener el número de página, categoría y búsqueda de los parámetros
   const resolvedSearchParams = await searchParams;
-  const currentPage = typeof resolvedSearchParams?.page === 'string' ? parseInt(resolvedSearchParams.page) : 1;
+  const pageRaw = resolvedSearchParams?.page;
+  let currentPage = 1;
+  if (pageRaw !== undefined) {
+    if (typeof pageRaw !== 'string' || !/^\d+$/.test(pageRaw)) {
+      notFound();
+    }
+    currentPage = Number.parseInt(pageRaw, 10);
+    if (currentPage < 1) {
+      notFound();
+    }
+  }
   const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : '';
   const searchQuery = typeof resolvedSearchParams?.search === 'string' ? resolvedSearchParams.search : '';
   const perPage = 10; // 1 destacado + 9 en el grid (3x3)
@@ -326,15 +337,27 @@ export default async function BlogPage({
   );
 }
 
-export async function generateMetadata() {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolved = await searchParams;
+  const pageRaw = resolved?.page;
+  const parsedPage = typeof pageRaw === 'string' && /^\d+$/.test(pageRaw)
+    ? Number.parseInt(pageRaw, 10)
+    : 1;
+  const noindexFollow = parsedPage >= 2;
+
   const url = canonicalForPath('/blog');
   return {
     title: 'Blog - Playful Agency',
-    description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+    description: 'Últimas noticias y consejos sobre marketing digital en nuestro blog.',
     alternates: { canonical: url },
+    ...(noindexFollow ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title: 'Blog - Playful Agency',
-      description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      description: 'Últimas noticias y consejos sobre marketing digital en nuestro blog.',
       url,
       images: [
         {
