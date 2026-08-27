@@ -1659,8 +1659,268 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .moving
 .playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-image {
   object-fit: contain !important;
   object-position: center !important;
-  max-width: 100% !important;
-  max-height: 80px !important;
-  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  width: 300px !important;
+  height: 200px !important;
+}
+
+
+/* SEM-7: José — pastillas tapadas (height 150px Elementor .contenedor-texto) */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .container.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto.container,
+.elementor-83848 .elementor-element.elementor-element-45ee457.container,
+.elementor-83848 .elementor-element.elementor-element-45ee457.contenedor-texto,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto,
+body.playful-elementor-plain .elementor-83848 .elementor-element-45ee457 {
   height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background-color: #FFDBDB !important;
+  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.elementor-column,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element.elementor-element-867a80c,
+.elementor-83848 .elementor-element.elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .moving-text-zurdo {
+  width: 100% !important;
+  max-width: 100% !important;
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  animation: none !important;
+  animation-name: none !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c > .elementor-widget-wrap,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo > .elementor-widget-wrap,
+.elementor-83848 .elementor-element-867a80c > .elementor-widget-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  gap: 16px 20px !important;
+  row-gap: 16px !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  animation: none !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-element,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c .elementor-button-wrapper {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-2894a31,
+.elementor-83848 .elementor-element-2894a31 {
+  display: none !important;
+}
+
+
+/* ========== SEM 83848 QA (ayuda / logos / FAQ / hero) ==========
+   Closed list. Scope: data-playful-page=83848 / elementor-83848 only. */
+
+/* 1) Mint 802744c: unhide 24002ee (elementor-invisible / opacity 0),
+   restore card 18px italic + strong 800, center 0067e2f button. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee.elementor-invisible,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 .elementor-element-24002ee.elementor-invisible,
+.playful-wp-page .elementor-83848 .elementor-element-24002ee.elementor-invisible,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .master-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .main-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-24002ee .sub-heading {
+  text-align: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 .elementor-text-editor,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 .elementor-text-editor p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-f00cc4c p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-07b28a1 p,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-802744c .elementor-element-86e8e80 p {
+  font-size: 18px !important;
+  font-style: italic !important;
+  color: #000000 !important;
+  line-height: 1.45 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 b,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-f00cc4c em strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-07b28a1 em strong,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-86e8e80 strong em {
+  font-weight: 800 !important;
+  color: #000000 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f.align-center,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f .elementor-widget-container {
+  text-align: center !important;
+  display: block !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-0067e2f .master-button {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 2) Client logos d0fefa4: old paints 300x200. Do not cap at 80px.
+   Crop/overflow may stay; pagination is outside the swiper. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-image {
+  max-height: none !important;
+  height: 200px !important;
+  width: 300px !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-slide-inner,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 figure.swiper-slide-inner {
+  overflow: visible !important;
+  max-width: 100% !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-pagination,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-swiper-button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 3) FAQ 18ebac6 / ea23e47 / eec3d51: unhide titular, SVG +/−, lavender active. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47.elementor-invisible,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 .elementor-element-ea23e47.elementor-invisible,
+.playful-wp-page .elementor-83848 .elementor-element-ea23e47.elementor-invisible,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .elementor-widget-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .master-heading,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47 .main-heading {
+  text-align: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  margin-right: 10px !important;
+  color: #453A53 !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fas,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-plus,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-minus {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  font-family: inherit !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fas::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-plus::before,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon i.fa-minus::before {
+  content: none !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon-closed i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-accordion-icon-opened i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51.playful-tabs .elementor-tab-title.elementor-active,
+.playful-wp-page[data-playful-page="83848"] .playful-tabs.elementor-element-eec3d51 .elementor-tab-title.elementor-active {
+  background: #D3B0FF !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51.playful-tabs .elementor-tab-content.elementor-active,
+.playful-wp-page[data-playful-page="83848"] .playful-tabs.elementor-element-eec3d51 .elementor-accordion-item:has(.elementor-tab-title.elementor-active) .elementor-tab-content {
+  background: #E9D7FF !important;
+}
+
+/* 4) Hero 1b21b92: old header is 90px + 30px air; Next header is 120px
+   flush to the titular. Extra 30px on this section only. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92,
+.playful-wp-page[data-playful-page="83848"] .elementor-83848 > .elementor-element-1b21b92,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92 {
+  padding-top: 30px !important;
+}
+
+
+/* SEM-8: José — fondo cyan persistente. Old 45ee457 is #FFDBDB, not #DCF8F5. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457.contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 > .elementor-container,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457 .moving-text-zurdo,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element.elementor-element-45ee457,
+.elementor-83848 .elementor-element.elementor-element-45ee457 > .elementor-container,
+.elementor-83848 .elementor-element.elementor-element-867a80c.moving-text-zurdo,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto {
+  background-color: #FFDBDB !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.moving-text-zurdo,
+.elementor-83848 .elementor-element-867a80c.moving-text-zurdo {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
+/* SEM-9: José — pastilla Arquitectura SEO mismo fondo que las otras (#F7F7F7). */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button,
+.playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button-link,
+.elementor-83848 .elementor-element.elementor-element-83d7ee0 .elementor-button,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button {
+  background-color: #F7F7F7 !important;
+  background-image: none !important;
 }
