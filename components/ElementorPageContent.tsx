@@ -83,6 +83,12 @@ function restoreOldBodyCopy(html: string): string {
     '<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">Agenda una Reunión</span>',
   );
 
+  // /agencia-sem only: first heading is H2 in WP. Unique copy so SEO / diseño / e-commerce keep their H1s.
+  out = out.replace(
+    '<h2 class="elementor-heading-title elementor-size-default">Agencia SEM: Potencia tu presencia con publicidad</h2>',
+    '<h1 class="elementor-heading-title elementor-size-default">Agencia SEM: Potencia tu presencia con publicidad</h1>',
+  );
+
   return out;
 }
 

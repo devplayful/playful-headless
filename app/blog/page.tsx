@@ -51,6 +51,14 @@ export default async function BlogPage({
 
   return (
     <div className="min-h-screen">
+      <div className="w-full pt-8 pb-2">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#440099] leading-tight">
+            Nuestro Blog de Playful
+          </h1>
+        </div>
+      </div>
+
       {/* Mensaje de búsqueda activa */}
       {searchQuery && (
         <div className="w-full pt-8 pb-4">
@@ -156,9 +164,9 @@ export default async function BlogPage({
                     href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
                     className="block mb-4"
                   >
-                    <h1 className="text-[1.4rem] md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
+                    <h2 className="text-[1.4rem] md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
                       {posts[0].title.rendered}
-                    </h1>
+                    </h2>
                   </Link>
                   
                   <p className="text-gray-700 text-lg mb-6 leading-relaxed">
