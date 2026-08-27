@@ -367,7 +367,7 @@ export default async function Nosotros() {
                 {/* Columna Izquierda */}
                 <div className="md:w-1/2 text-left">
                   <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
-                    Playful Agency
+                    Para dueños que ya facturan y vienen de otra agencia
                   </h1>
                   <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
                     Diseño para negocios que quieren resultados reales
@@ -432,21 +432,16 @@ export default async function Nosotros() {
 // --- FUNCIÓN PARA METADATOS (SEO) ---
 export async function generateMetadata() {
   const url = canonicalForPath('/nosotros');
-  try {
-    const metadata = await getPageMetadataBySlug('nosotros');
-    
-    return {
-      title: metadata?.yoast_wpseo_title || 'Sobre Nosotros',
-      description: metadata?.yoast_wpseo_metadesc || 'Conoce más sobre nuestra empresa',
-      alternates: { canonical: url },
-      openGraph: { url },
-    };
-  } catch (error) {
-    return {
-      title: 'Sobre Nosotros',
-      description: 'Conoce más sobre nuestra empresa',
-      alternates: { canonical: url },
-      openGraph: { url },
-    };
-  }
+  const title = 'Agencia ecommerce Playful | Nosotros';
+  const description = 'Somos Playful, agencia de ecommerce para dueños que ya facturan y vienen de otra agencia. Armamos la tienda cuando el diseño anterior ya no alcanza.';
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+    },
+  };
 }

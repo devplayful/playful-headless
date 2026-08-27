@@ -15,6 +15,17 @@ import CasoExitoCta from './CasoExitoCta';
 
 
 
+const CASO_SEO_OVERRIDES: Record<string, { title: string; description: string }> = {
+  'jumex-shopify-dtc-ecommerce': {
+    title: 'Jumex Shopify DTC: canal propio para un catálogo grande',
+    description: 'Construimos el canal DTC de Jumex en Shopify. Catálogo grande y pedido propio en jumexus.com, para que la venta no se quede en el marketplace.',
+  },
+  'odwalla-shopify-dtc-ecommerce': {
+    title: 'Odwalla Shopify DTC: de sitio informativo a tienda',
+    description: 'Odwalla tenía web y visitas, no carrito. En Shopify armamos el canal DTC en odwalladrinks.com para que el pedido no se fuera a un tercero.',
+  },
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -22,6 +33,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const url = canonicalForPath(`/casos-de-exito/${slug}`);
+  const override = CASO_SEO_OVERRIDES[slug];
+  if (override) {
+    return {
+      title: override.title,
+      description: override.description,
+      alternates: { canonical: url },
+      openGraph: {
+        title: override.title,
+        description: override.description,
+        url,
+      },
+    };
+  }
   return {
     alternates: { canonical: url },
     openGraph: { url },

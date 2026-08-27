@@ -6,9 +6,18 @@ import ContactPageClient from '@/app/contactar-agencia-de-marketing-digital/Cont
 
 const CONTACT_URL = canonicalForPath('/contactar-agencia-de-marketing-digital');
 
+const CONTACT_TITLE = 'Contactar agencia ecommerce | Playful Agency';
+const CONTACT_DESCRIPTION = 'Formulario para contactar a Playful, agencia de ecommerce. Cuéntanos tu tienda y el caso. Hablamos de tu próximo proyecto, no de una primera venta.';
+
 export const metadata: Metadata = {
+  title: CONTACT_TITLE,
+  description: CONTACT_DESCRIPTION,
   alternates: { canonical: CONTACT_URL },
-  openGraph: { url: CONTACT_URL },
+  openGraph: {
+    title: CONTACT_TITLE,
+    description: CONTACT_DESCRIPTION,
+    url: CONTACT_URL,
+  },
 };
 
 export default async function ContactPage() {
