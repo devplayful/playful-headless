@@ -1555,9 +1555,13 @@ body.playful-elementor-plain .playful-wp-page .elementor-83849 .elementor-elemen
 .playful-wp-page .elementor-83848 .elementor-element-45ee457.contenedor-texto,
 .playful-wp-page .elementor-83848 .elementor-element.container.contenedor-texto.elementor-element-45ee457,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-45ee457,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto,
+.playful-wp-page[data-playful-page="83848"] .contenedor-texto.container,
 body.playful-elementor-plain .playful-wp-page .elementor-83848 .elementor-element-45ee457,
 body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .contenedor-texto,
 body:has(.playful-wp-page) .playful-wp-page .elementor-83848 .elementor-element-45ee457 {
+  /* Native SEM is #FFDBDB (same as hero). Shared Next CSS paints SEO mint
+     #DCF8F5; post-83848.css locks .contenedor-texto at height:150px + clip. */
   background-color: #FFDBDB !important;
   background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
   height: auto !important;
@@ -1615,7 +1619,12 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .moving
 }
 
 /* SEM-6: clients logo carousel (d0fefa4 in shared 84478). Crop/overflow only
-   on SEM so the first slide is not sliced. SEO carousel left as-is. */
+   on SEM so the first slide is not sliced. SEO carousel left as-is.
+   Prod crop is an initialized-Swiper loop peek (~4.5 slides): clip the
+   viewport and keep logos contained. 4-up fallback before init. */
+.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 {
+  --e-image-carousel-slides-to-show: 4;
+}
 .playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .elementor-image-carousel-wrapper,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4 .swiper-container {

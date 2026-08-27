@@ -49,11 +49,67 @@ function hideDuplicateMasterLinkArrows() {
   });
 }
 
-function initMaeCarousels() {
+
+/** SEM-only: 84478 carousel d0fefa4 is shared with SEO. Prod shows a loop
+ *  peek («ANO TO» / venemerg sliced) because Swiper measures ~4.5 slides.
+ *  Force 4-up, clip overflow, contain logos. */
+function fixSemLogoCarousel(pageId?: number) {
+  const root = document.querySelector(
+    '.playful-wp-page[data-playful-page="83848"] .elementor-element-d0fefa4',
+  ) as HTMLElement | null;
+  if (!root) return;
+  if (pageId != null && pageId !== 83848) return;
+
+  root.style.setProperty('--e-image-carousel-slides-to-show', '4');
+
+  const viewport = root.querySelector(
+    '.elementor-image-carousel-wrapper, .swiper, .swiper-container',
+  ) as HTMLElement | null;
+  if (viewport) {
+    viewport.style.setProperty('overflow', 'hidden', 'important');
+  }
+
+  const swiperEl = root.querySelector('.swiper, .swiper-container') as
+    | (HTMLElement & { swiper?: any })
+    | null;
+  const swiper = swiperEl?.swiper;
+  if (swiper && swiper.params) {
+    swiper.params.slidesPerView = 4;
+    swiper.params.slidesPerGroup = 1;
+    swiper.params.centeredSlides = false;
+    swiper.params.watchOverflow = true;
+    if (typeof swiper.params.spaceBetween === 'number' && swiper.params.spaceBetween < 16) {
+      swiper.params.spaceBetween = 16;
+    }
+    try {
+      swiper.update();
+      if (typeof swiper.slideToLoop === 'function' && swiper.params.loop) {
+        swiper.slideToLoop(0, 0);
+      } else {
+        swiper.slideTo(0, 0);
+      }
+    } catch {
+      /* CSS overflow/object-fit still clip the frame */
+    }
+  }
+
+  root.querySelectorAll('.swiper-slide-image').forEach((img) => {
+    const el = img as HTMLImageElement;
+    el.style.setProperty('object-fit', 'contain', 'important');
+    el.style.setProperty('object-position', 'center', 'important');
+    el.style.setProperty('max-width', '100%', 'important');
+    el.style.setProperty('max-height', '80px', 'important');
+    el.style.setProperty('width', 'auto', 'important');
+    el.style.setProperty('height', 'auto', 'important');
+  });
+}
+
+function initMaeCarousels(pageId?: number) {
   initPillsMarquee();
   hideDuplicateMasterLinkArrows();
   hideBrokenPostMetaImages();
   applyQa2Fixes();
+  fixSemLogoCarousel(pageId);
 
   const w = window as MaeWindow;
   const $ = w.jQuery;
@@ -197,13 +253,24 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
     const runQa2 = () => {
       requestAnimationFrame(() => {
         applyQa2Fixes();
-        window.setTimeout(applyQa2Fixes, 0);
+        fixSemLogoCarousel(pageId);
+        window.setTimeout(() => {
+          applyQa2Fixes();
+          fixSemLogoCarousel(pageId);
+        }, 0);
       });
     };
     runQa2();
-    const onLoad = () => applyQa2Fixes();
+    const onLoad = () => {
+      applyQa2Fixes();
+      fixSemLogoCarousel(pageId);
+    };
     window.addEventListener('load', onLoad);
-    const t500 = window.setTimeout(applyQa2Fixes, 500);
+    const t500 = window.setTimeout(() => {
+      applyQa2Fixes();
+      fixSemLogoCarousel(pageId);
+    }, 500);
+    const t1500 = window.setTimeout(() => fixSemLogoCarousel(pageId), 1500);
     const w = window as typeof window & { elementorFrontendConfig?: Record<string, unknown> };
     w.elementorFrontendConfig = {
       environmentMode: { edit: false, wpPreview: false, isScriptDebug: false },
@@ -253,7 +320,7 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
         await loadScript(src);
       }
       if (!cancelled) {
-        initMaeCarousels();
+        initMaeCarousels(pageId);
         applyQa2Fixes();
       }
     })();
@@ -262,6 +329,7 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
       cancelled = true;
       window.removeEventListener('load', onLoad);
       window.clearTimeout(t500);
+      window.clearTimeout(t1500);
       document.body.classList.remove('playful-elementor-plain');
     };
   }, [pageId]);
