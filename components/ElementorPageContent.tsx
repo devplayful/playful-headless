@@ -49,6 +49,11 @@ function preserveMediaLineSeparators(html: string): string {
 function restoreOldBodyCopy(html: string): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
+  // File on disk still has U+2028 in the name; clean URL 404s.
+  out = out.replace(
+    /Haz-Pruebas-y-Optimiza-tus-Campanas/g,
+    'Haz-Pruebas-y-%E2%80%A8Optimiza-tus-Campanas',
+  );
   out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
   out = out.replace(
     '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',
@@ -107,7 +112,7 @@ export default function ElementorPageContent({
       {pageStylesheets.map((href) => (
         <link key={href} rel="stylesheet" href={href} />
       ))}
-      <div className={`${styles.page} playful-wp-page playful-servicios-page elementor-kit-8`}>
+      <div className={`${styles.page} playful-wp-page playful-servicios-page elementor-kit-8`} data-playful-page={pageId}>
         <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
       </div>
       <style id="playful-qa2-ssr">{`
