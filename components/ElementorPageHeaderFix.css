@@ -1924,3 +1924,13 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elemen
   background-color: #F7F7F7 !important;
   background-image: none !important;
 }
+
+
+/* DISEÑO-10: José — aire nav → titular. Same as SEM 83848/1b21b92:
+   old header ~90px + 30px air; Next header 120px flush. Extra 30px on this
+   hero only. Header.tsx / footer / layout / global CSS not touched. */
+.playful-wp-page[data-playful-page="83849"] .elementor-element-1b21b92,
+.playful-wp-page[data-playful-page="83849"] .elementor-83849 > .elementor-element-1b21b92,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elementor-element-1b21b92 {
+  padding-top: 30px !important;
+}
