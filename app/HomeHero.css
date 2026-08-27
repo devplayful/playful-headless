@@ -1,0 +1,6 @@
+/* Home hero: 30px air header → first title/eyebrow. Matches old home.
+   Header.tsx / Footer.tsx / layout / globals.css not touched.
+   page.tsx wraps HomeContent in an extra <div>, then the hero <section>. */
+.playful-home-page > div > section:first-child > div:first-child {
+  padding-top: 30px;
+}

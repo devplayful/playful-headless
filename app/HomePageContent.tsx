@@ -2,6 +2,7 @@
 
 import { BlogLoader } from '@/components/ui/BlogLoader';
 import { useEffect, useState } from 'react';
+import './HomeHero.css';
 
 export function HomePageContent({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -60,5 +61,5 @@ export function HomePageContent({ children }: { children: React.ReactNode }) {
     return <BlogLoader />;
   }
 
-  return <>{children}</>;
+  return <div className="playful-home-page">{children}</div>;
 }
