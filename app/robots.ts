@@ -6,5 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       disallow: ['/wp-json/', '/?rest_route='],
     },
+    sitemap: 'https://playfulagency.com/sitemap.xml',
   }
 }
