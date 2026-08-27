@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: metadata.yoast_wpseo_title,
     description: metadata.yoast_wpseo_metadesc,
     alternates: { canonical: url },
+    ...(slug === 'gracias' ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title: metadata.yoast_wpseo_og_title || metadata.yoast_wpseo_title,
       description: metadata.yoast_wpseo_og_description || metadata.yoast_wpseo_metadesc,
