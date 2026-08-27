@@ -3,7 +3,12 @@ import { canonicalForPath } from '@/utils/canonical';
 import CaseStudiesContent from './CaseStudiesContent';
 
 export default function CaseStudiesPage() {
-  return <CaseStudiesContent />;
+  return (
+    <>
+      <h1 className="sr-only">Resultados que hablan por sí solos</h1>
+      <CaseStudiesContent />
+    </>
+  );
 }
 
 export async function generateMetadata() {

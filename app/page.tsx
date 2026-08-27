@@ -91,9 +91,9 @@ async function HomeContent() {
             <div className="space-y-8">
               <div className="space-y-2">
                 <p className="playful-miga-pan">Playful Agency:</p>
-                <h1 className="playful-h1">
+                <p className="playful-h1">
                   ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
-                </h1>
+                </p>
               </div>
 
               <div className="space-y-4 2 text-purple-800">
@@ -182,8 +182,13 @@ async function HomeContent() {
 
 export default function Home() {
   return (
-    <HomePageContent>
-      <HomeContent />
-    </HomePageContent>
+    <>
+      <h1 className="sr-only">
+        ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
+      </h1>
+      <HomePageContent>
+        <HomeContent />
+      </HomePageContent>
+    </>
   );
 }
