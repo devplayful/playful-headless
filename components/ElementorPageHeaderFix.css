@@ -1934,3 +1934,193 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elemen
 body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elementor-element-1b21b92 {
   padding-top: 30px !important;
 }
+
+/* ========== ECOM QA (page 85582 /agencia-e-commerce) vs old ==========
+   Closed list of 5. All selectors scoped to data-playful-page="85582".
+   Header / Footer / layout / global CSS / nav / copy / sitemaps untouched. */
+
+/* 1) HERO 748229a / 702f19a / ab148e4
+   Next/Tailwind `p{font-size:1rem}` flattens the Paytone 72px titular
+   (widget 702f19a is a text-editor <p>). Old title stays left; restoring
+   size re-balances the right-column illustration (not stuck top-right). */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p,
+.playful-wp-page[data-playful-page="85582"] .elementor-85582 .elementor-element-702f19a p,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
+  font-family: "Paytone One", Montserrat, sans-serif !important;
+  font-size: 72px !important;
+  line-height: 70px !important;
+  font-weight: 400 !important;
+  color: #F7F7F7 !important;
+  text-align: start !important;
+}
+@media (max-width: 1024px) {
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
+    font-size: 42px !important;
+    line-height: 1.2em !important;
+  }
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container > .elementor-column > .elementor-widget-wrap,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 > .elementor-widget-wrap,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 > .elementor-widget-wrap {
+  align-items: center !important;
+  align-content: center !important;
+  justify-content: center !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 2) SERVICE CARDS 4bf2ec3 / 2a572c7
+   Tailwind preflight `figure{display:block}` kills Elementor inline-block
+   centering. Restore image-box + mae-link center like old. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-wrapper,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-wrapper,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-content,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-content,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-title,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-title,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-description,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-description,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-widget-mae-link,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-widget-mae-link,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-widget-mae-link .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-widget-mae-link .elementor-widget-container {
+  text-align: center !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-e391d31 .elementor-image-box-img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-95b6265 .elementor-image-box-img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-a6df1ca .elementor-image-box-img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-5e86558 .elementor-image-box-img {
+  display: inline-block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-4bf2ec3 .elementor-image-box-img img,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-2a572c7 .elementor-image-box-img img {
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 3) «¿Te suenan estos problemas?» 7b09471
+   Old is a 3-up row (not a vertical stack) with 15px column gutters so the
+   white cards read as separate «tarjetas apiladas». Prod gap-default padding
+   is 0. No icons on old cards. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-7b09471 > .elementor-container,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-7b09471 > .elementor-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-7b09471 > .elementor-container > .elementor-column,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-a8d3e5e,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-b044c8f,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-fe8ac46 {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+@media (min-width: 768px) {
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-7b09471 > .elementor-container > .elementor-column {
+    width: 33.333% !important;
+  }
+}
+
+/* 4) FAQ 74ebb9e + accordion 93e5490
+   Unhide + center titular. Reuse 83848/eec3d51 +/− SVG on this accordion. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e.elementor-invisible,
+.playful-wp-page[data-playful-page="85582"] .elementor-85582 .elementor-element-74ebb9e.elementor-invisible,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e.elementor-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  transform: none !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e .master-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e .main-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-74ebb9e h2 {
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  margin-right: 10px !important;
+  color: #453A53 !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fas,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fa-plus,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fa-minus {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  font-family: inherit !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i::before,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fas::before,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fa-plus::before,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon i.fa-minus::before {
+  content: none !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon-closed i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-93e5490 .elementor-accordion-icon-opened i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E") !important;
+}
+
+/* 5) CTA 0bc6e91 + ede2e59 — MAE align-center is align-items only.
+   Old: titular + párrafo + AGENDA UNA REUNIÓN centered in the right column. */
+.playful-wp-page[data-playful-page="85582"] .elementor-element-b962c5e,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-b962c5e > .elementor-widget-wrap,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .master-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .main-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 h2,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .sub-heading,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ede2e59,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ede2e59 .elementor-widget-container,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .main-heading,
+body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-0bc6e91 .sub-heading {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ede2e59 .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ede2e59 .master-button {
+  display: flex !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
