@@ -1,5 +1,67 @@
 const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
 
+/** WP REST fields that Next must never serialize into RSC / client props. */
+const WP_LEAK_KEYS = new Set([
+  'yoast_head',
+  'yoast_head_json',
+  '_links',
+  'link',
+  'guid',
+]);
+
+const WP_ENDPOINT_HOST = 'endpoint.playfulagency.com';
+const WP_ENDPOINT_URL_RE = /https?:\/\/endpoint\.playfulagency\.com[^\s"'<>]*/gi;
+const WP_ENDPOINT_HOST_RE = /endpoint\.playfulagency\.com/gi;
+
+function stripEndpointHost(value: string): string {
+  return value
+    .replace(WP_ENDPOINT_URL_RE, '')
+    .replace(/\/\/endpoint\.playfulagency\.com[^\s"'<>]*/gi, '')
+    .replace(WP_ENDPOINT_HOST_RE, '');
+}
+
+/**
+ * Drop Yoast / _links / guid and any endpoint.playfulagency.com strings
+ * before a WP object is passed into a Client Component (RSC payload).
+ * Featured-media URLs live only on that host; they are dropped rather than
+ * rewritten to a CDN that does not exist.
+ */
+function sanitizeWpPayload<T>(value: T): T {
+  return sanitizeWpValue(value) as T;
+}
+
+function sanitizeWpValue(value: unknown): unknown {
+  if (value == null) return value;
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeWpValue(item));
+  }
+  if (typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
+      if (WP_LEAK_KEYS.has(key) || key.toLowerCase().includes('yoast')) {
+        continue;
+      }
+      const cleaned = sanitizeWpValue(nested);
+      if (cleaned !== undefined) {
+        out[key] = cleaned;
+      }
+    }
+    return out;
+  }
+  if (typeof value === 'string') {
+    if (value.toLowerCase().includes('yoast')) {
+      return undefined;
+    }
+    if (!value.includes(WP_ENDPOINT_HOST)) {
+      return value;
+    }
+    const cleaned = stripEndpointHost(value);
+    if (!cleaned.trim()) return undefined;
+    return cleaned;
+  }
+  return value;
+}
+
 export interface YoastMetaData {
   yoast_wpseo_title: string;
   yoast_wpseo_metadesc: string;
@@ -33,8 +95,14 @@ export async function getHomePageMetadata(): Promise<YoastMetaData> {
     const [homePage] = await response.json();
     
     if (!homePage || !homePage.yoast_head) {
-      console.error('No hay yoast_head en la respuesta');
-      throw new Error('No se encontraron metadatos de Yoast en la página de inicio');
+      return {
+        yoast_wpseo_title: 'Playful Agency',
+        yoast_wpseo_metadesc: 'Agencia de marketing digital y desarrollo web',
+        yoast_wpseo_canonical: '',
+        yoast_wpseo_og_title: '',
+        yoast_wpseo_og_description: '',
+        yoast_wpseo_og_image: ''
+      };
     }
 
     // Extraer el título
@@ -105,8 +173,14 @@ export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData
     const [pageData] = await response.json();
     
     if (!pageData || !pageData.yoast_head) {
-      console.error('No hay yoast_head en la respuesta');
-      throw new Error(`No se encontraron metadatos de Yoast para la página: ${slug}`);
+      return {
+        yoast_wpseo_title: `Playful Agency - ${slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`,
+        yoast_wpseo_metadesc: 'Agencia de marketing digital y desarrollo web',
+        yoast_wpseo_canonical: '',
+        yoast_wpseo_og_title: '',
+        yoast_wpseo_og_description: '',
+        yoast_wpseo_og_image: ''
+      };
     }
 
     // Extraer el título
@@ -671,7 +745,8 @@ export async function getAllCaseStudies(): Promise<any[]> {
       { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
     );
     if (!response.ok) throw new Error(`Error al obtener casos de éxito: ${response.status}`);
-    return await response.json();
+    const casos = await response.json();
+    return sanitizeWpPayload(casos);
   } catch (error) {
     console.error('Error en getAllCaseStudies:', error);
     return [];
