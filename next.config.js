@@ -20,52 +20,6 @@ const nextConfig = {
     // Opcional: Configura formatos de imagen soportados
     formats: ['image/avif', 'image/webp'],
   },
-  // 301s for retired WordPress paths (QA 2026-08-27).
-  // Both slash variants listed so /path and /path/ permanently redirect.
-  async redirects() {
-    return [
-      {
-        source: '/servicios',
-        destination: '/agencia-e-commerce',
-        permanent: true,
-      },
-      {
-        source: '/servicios/',
-        destination: '/agencia-e-commerce',
-        permanent: true,
-      },
-      {
-        source: '/services',
-        destination: '/agencia-e-commerce',
-        permanent: true,
-      },
-      {
-        source: '/services/',
-        destination: '/agencia-e-commerce',
-        permanent: true,
-      },
-      {
-        source: '/contacto',
-        destination: '/contactar-agencia-de-marketing-digital',
-        permanent: true,
-      },
-      {
-        source: '/contacto/',
-        destination: '/contactar-agencia-de-marketing-digital',
-        permanent: true,
-      },
-      {
-        source: '/casos',
-        destination: '/casos-de-exito-agencia-de-marketing-digital',
-        permanent: true,
-      },
-      {
-        source: '/casos/',
-        destination: '/casos-de-exito-agencia-de-marketing-digital',
-        permanent: true,
-      },
-    ];
-  },
   // Opcional: Configuración de cabeceras de seguridad
   async headers() {
     return [
