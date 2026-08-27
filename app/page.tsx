@@ -1,3 +1,69 @@
+import type { Metadata } from 'next';
+import { getHomePageMetadata } from '@/services/wordpress';
+import { canonicalForPath } from '@/utils/canonical';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
+  const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
+  const defaultOgImage = 'https://playfulagency.com/og.jpg';
+  const url = canonicalForPath('/');
+
+  try {
+    const yoastData = await getHomePageMetadata();
+    return {
+      title: yoastData.yoast_wpseo_title || defaultTitle,
+      description: yoastData.yoast_wpseo_metadesc || defaultDescription,
+      openGraph: {
+        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
+        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
+        type: 'website',
+        locale: 'es_ES',
+        url,
+        siteName: 'Playful Agency',
+        images: [{
+          url: defaultOgImage,
+          width: 1200,
+          height: 630,
+          alt: 'Playful Agency - Agencia de E-commerce',
+        }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
+        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
+        images: [defaultOgImage],
+      },
+      alternates: { canonical: url },
+    };
+  } catch {
+    return {
+      title: defaultTitle,
+      description: defaultDescription,
+      openGraph: {
+        title: defaultTitle,
+        description: defaultDescription,
+        type: 'website',
+        locale: 'es_ES',
+        url,
+        siteName: 'Playful Agency',
+        images: [{
+          url: defaultOgImage,
+          width: 1200,
+          height: 630,
+          alt: 'Playful Agency - Agencia de E-commerce',
+        }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: defaultTitle,
+        description: defaultDescription,
+        images: [defaultOgImage],
+      },
+      alternates: { canonical: url },
+    };
+  }
+}
+
 import Link from "next/link";
 import AnimatedButton from "@/components/AnimatedButton";
 import MaterialServicesSection from "@/components/MaterialServicesSection";

@@ -47,7 +47,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url: 'https://playfulagency.com',
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -61,9 +60,6 @@ export async function generateMetadata(): Promise<Metadata> {
         title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         images: [defaultOgImage],
-      },
-      alternates: {
-        canonical: 'https://playfulagency.com',
       },
     };
     
@@ -82,7 +78,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url: 'https://playfulagency.com',
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -96,9 +91,6 @@ export async function generateMetadata(): Promise<Metadata> {
         title: defaultTitle,
         description: defaultDescription,
         images: [defaultOgImage],
-      },
-      alternates: {
-        canonical: 'https://playfulagency.com',
       },
     };
   }

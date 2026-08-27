@@ -1,4 +1,5 @@
 import { getPageMetadataBySlug, TeamMember, getTeamMembers } from '@/services/wordpress';
+import { canonicalForPath } from '@/utils/canonical';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
@@ -430,17 +431,22 @@ export default async function Nosotros() {
 
 // --- FUNCIÓN PARA METADATOS (SEO) ---
 export async function generateMetadata() {
+  const url = canonicalForPath('/nosotros');
   try {
     const metadata = await getPageMetadataBySlug('nosotros');
     
     return {
       title: metadata?.yoast_wpseo_title || 'Sobre Nosotros',
       description: metadata?.yoast_wpseo_metadesc || 'Conoce más sobre nuestra empresa',
+      alternates: { canonical: url },
+      openGraph: { url },
     };
   } catch (error) {
     return {
       title: 'Sobre Nosotros',
       description: 'Conoce más sobre nuestra empresa',
+      alternates: { canonical: url },
+      openGraph: { url },
     };
   }
 }

@@ -1,3 +1,4 @@
+import { canonicalForPath } from '@/utils/canonical';
 import { getBlogPosts } from '@/services/wordpress';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -318,12 +319,15 @@ export default async function BlogPage({
 }
 
 export async function generateMetadata() {
+  const url = canonicalForPath('/blog');
   return {
     title: 'Blog - Playful Agency',
     description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+    alternates: { canonical: url },
     openGraph: {
       title: 'Blog - Playful Agency',
       description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      url,
       images: [
         {
           url: '/images/og-blog.jpg',

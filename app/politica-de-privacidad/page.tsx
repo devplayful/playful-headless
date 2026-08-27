@@ -1,10 +1,15 @@
 import { Metadata } from 'next';
+import { canonicalForPath } from '@/utils/canonical';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 // Metadata para SEO
+const PRIVACY_URL = canonicalForPath('/politica-de-privacidad');
+
 export const metadata: Metadata = {
   title: 'Política de Privacidad | Playful Agency',
   description: 'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.',
+  alternates: { canonical: PRIVACY_URL },
+  openGraph: { url: PRIVACY_URL },
 };
 
 export default function PoliticaDePrivacidad() {

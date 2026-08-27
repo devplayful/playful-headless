@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import { canonicalForPath } from '@/utils/canonical';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
 import { BlogPostContent } from './BlogPostContent';
@@ -299,10 +300,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
   const [, postSlug] = slug;
+  const url = canonicalForPath(`/blog/${slug.join('/')}`);
   
   if (!postSlug) {
     return {
       title: 'Artículo no encontrado',
+      alternates: { canonical: url },
+      openGraph: { url },
     };
   }
 
@@ -311,16 +315,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) {
     return {
       title: 'Artículo no encontrado',
+      alternates: { canonical: url },
+      openGraph: { url },
     };
   }
 
   return {
     title: `${post.title.rendered} | Blog - Playful Agency`,
     description: post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '',
+    alternates: { canonical: url },
     openGraph: {
       title: `${post.title.rendered} | Blog - Playful Agency`,
       description: post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '',
       type: 'article',
+      url,
       publishedTime: post.date,
       authors: [post.author_name || 'Playful Agency'],
       images: [

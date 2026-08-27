@@ -1,4 +1,5 @@
 import { getPageMetadataBySlug } from '@/services/wordpress';
+import { canonicalForPath } from '@/utils/canonical';
 import CaseStudiesContent from './CaseStudiesContent';
 
 export default function CaseStudiesPage() {
@@ -6,17 +7,19 @@ export default function CaseStudiesPage() {
 }
 
 export async function generateMetadata() {
+  const url = canonicalForPath('/casos-de-exito-agencia-de-marketing-digital');
   try {
     const metadata = await getPageMetadataBySlug('casos-de-exito-agencia-de-marketing-digital');
     
     return {
       title: metadata.yoast_wpseo_title || 'Casos de Éxito - Playful Agency',
       description: metadata.yoast_wpseo_metadesc || 'Descubre cómo hemos ayudado a nuestros clientes a alcanzar sus objetivos de negocio con nuestras estrategias de marketing digital.',
+      alternates: { canonical: url },
       openGraph: {
         title: metadata.yoast_wpseo_og_title || 'Casos de Éxito - Playful Agency',
         description: metadata.yoast_wpseo_og_description || metadata.yoast_wpseo_metadesc || 'Descubre cómo hemos ayudado a nuestros clientes a alcanzar sus objetivos de negocio con nuestras estrategias de marketing digital.',
         type: 'website',
-        url: 'https://playfulagency.com/casos-de-exito-agencia-de-marketing-digital',
+        url,
         images: metadata.yoast_wpseo_og_image ? [{
           url: metadata.yoast_wpseo_og_image,
           width: 1200,
@@ -30,6 +33,8 @@ export async function generateMetadata() {
     return {
       title: 'Casos de Éxito - Playful Agency',
       description: 'Descubre cómo hemos ayudado a nuestros clientes a alcanzar sus objetivos de negocio con nuestras estrategias de marketing digital.',
+      alternates: { canonical: url },
+      openGraph: { url },
     };
   }
 }
