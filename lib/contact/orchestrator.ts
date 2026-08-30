@@ -13,6 +13,13 @@ export interface CrmSyncControl {
   withResourceLease<T>(resource: string, operation: () => Promise<T>): Promise<T>;
 }
 
+export class RetainResourceLeaseError extends Error {
+  constructor(public readonly originalError: unknown) {
+    super('El resultado remoto es incierto; el lease se conservará hasta expirar.');
+    this.name = 'RetainResourceLeaseError';
+  }
+}
+
 export interface ContactPipelineDependencies {
   store: IdempotencyStore;
   deliver: (lead: WebsiteLead) => Promise<void>;
@@ -76,10 +83,17 @@ export async function processContactPipeline(
       if (!await dependencies.store.acquireResourceLease(resource, owner)) {
         throw new SubmissionInProgressError();
       }
+      let release = true;
       try {
         return await operation();
+      } catch (error) {
+        if (error instanceof RetainResourceLeaseError) {
+          release = false;
+          throw error.originalError;
+        }
+        throw error;
       } finally {
-        await dependencies.store.releaseResourceLease(resource, owner);
+        if (release) await dependencies.store.releaseResourceLease(resource, owner);
       }
     },
   };

@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { CrmSyncControl } from '../../lib/contact/orchestrator.ts';
+import {
+  type CrmSyncControl,
+  RetainResourceLeaseError,
+} from '../../lib/contact/orchestrator.ts';
 import { SubmissionInProgressError } from '../../lib/contact/idempotency.ts';
 import type {
   CreateOpportunityInput,
@@ -94,7 +97,18 @@ function memoryControl(
     withResourceLease: async (resource, operation) => {
       if (locks.has(resource)) throw new SubmissionInProgressError();
       locks.add(resource);
-      try { return await operation(); } finally { locks.delete(resource); }
+      let release = true;
+      try {
+        return await operation();
+      } catch (error) {
+        if (error instanceof RetainResourceLeaseError) {
+          release = false;
+          throw error.originalError;
+        }
+        throw error;
+      } finally {
+        if (release) locks.delete(resource);
+      }
     },
   };
 }
@@ -175,12 +189,19 @@ test('first touch survives lost upsert and attribution responses on retry', asyn
 
 test('recovers a task id when create succeeded but its response was lost', async () => {
   const gateway = new GatewayMock();
-  const control = memoryControl('submission-lost-task');
+  const locks = new Set<string>();
+  const control = memoryControl('submission-lost-task', locks);
   gateway.loseFirstTaskResponse = true;
 
   await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
   assert.equal(gateway.tasks.length, 1);
   assert.equal(control.progress.taskId, undefined);
+
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+    SubmissionInProgressError,
+  );
+  locks.clear(); // Simulates expiry of the retained short lease.
 
   const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
   assert.equal(recovered.taskId, 'task-1');
@@ -190,12 +211,19 @@ test('recovers a task id when create succeeded but its response was lost', async
 
 test('recovers an opportunity when create succeeded but its response was lost', async () => {
   const gateway = new GatewayMock();
-  const control = memoryControl('submission-lost-opportunity');
+  const locks = new Set<string>();
+  const control = memoryControl('submission-lost-opportunity', locks);
   gateway.loseFirstOpportunityResponse = true;
 
   await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
   assert.equal(gateway.opportunities.length, 1);
   assert.equal(control.progress.opportunityId, undefined);
+
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+    SubmissionInProgressError,
+  );
+  locks.clear(); // Simulates expiry of the retained short lease.
 
   const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
   assert.equal(recovered.opportunityId, 'opportunity-1');

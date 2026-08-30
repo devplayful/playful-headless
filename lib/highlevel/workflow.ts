@@ -1,5 +1,8 @@
 import { createHash } from 'node:crypto';
-import type { CrmSyncControl } from '../contact/orchestrator.ts';
+import {
+  type CrmSyncControl,
+  RetainResourceLeaseError,
+} from '../contact/orchestrator.ts';
 import type { WebsiteLead } from '../contact/types.ts';
 import type { EnabledHighLevelConfig, HighLevelCustomFieldKey } from './config.ts';
 import type {
@@ -7,6 +10,7 @@ import type {
   HighLevelGateway,
   HighLevelOpportunity,
 } from './client.ts';
+import { HighLevelApiError } from './client.ts';
 
 export class AmbiguousOpportunityError extends Error {
   constructor(public readonly count: number) {
@@ -121,16 +125,27 @@ export async function syncWebsiteLeadToHighLevel(
           config.pipelineId,
           contactId,
         ));
-        const opportunity = existing || await gateway.createOpportunity({
-          pipelineId: config.pipelineId,
-          locationId: config.locationId,
-          name: `${lead.business || lead.name} — consulta web`,
-          pipelineStageId: config.consultaStageId,
-          status: 'open',
-          contactId,
-          assignedTo: config.ownerId,
-        });
-        opportunityId = opportunity.id;
+        let resolvedOpportunityId: string;
+        if (existing) {
+          resolvedOpportunityId = existing.id;
+        } else {
+          try {
+            const created = await gateway.createOpportunity({
+              pipelineId: config.pipelineId,
+              locationId: config.locationId,
+              name: `${lead.business || lead.name} — consulta web`,
+              pipelineStageId: config.consultaStageId,
+              status: 'open',
+              contactId,
+              assignedTo: config.ownerId,
+            });
+            resolvedOpportunityId = created.id;
+          } catch (error) {
+            if (error instanceof HighLevelApiError) throw error;
+            throw new RetainResourceLeaseError(error);
+          }
+        }
+        opportunityId = resolvedOpportunityId;
         opportunityCreated = !existing;
         await control.checkpoint({ opportunityId, opportunityCreated });
       },
@@ -148,13 +163,19 @@ export async function syncWebsiteLeadToHighLevel(
         taskId = existing.id;
       } else {
         const dueDate = new Date(now.getTime() + config.slaHours * 60 * 60 * 1000).toISOString();
-        const task = await gateway.createTask(contactId, {
-          title: 'Responder consulta web',
-          body: `Siguiente acción del formulario ${lead.recentAttribution.formId}. ${taskMarker}`,
-          dueDate,
-          completed: false,
-          assignedTo: config.ownerId,
-        });
+        let task;
+        try {
+          task = await gateway.createTask(contactId, {
+            title: 'Responder consulta web',
+            body: `Siguiente acción del formulario ${lead.recentAttribution.formId}. ${taskMarker}`,
+            dueDate,
+            completed: false,
+            assignedTo: config.ownerId,
+          });
+        } catch (error) {
+          if (error instanceof HighLevelApiError) throw error;
+          throw new RetainResourceLeaseError(error);
+        }
         taskId = task.id;
       }
       await control.checkpoint({ taskId });
