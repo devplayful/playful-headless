@@ -4,7 +4,7 @@
 
 - `HIGHLEVEL_ENABLED=false` es el valor predeterminado. Sin activación explícita, el formulario conserva la entrega autenticada a WordPress y no llama a HighLevel.
 - `HIGHLEVEL_TEST_MODE=true` sustituye el cliente remoto por un simulador sin red. Permite verificar el flujo en Preview sin crear contactos, oportunidades o tareas reales.
-- LeadConnector External Tracking se mantiene en todo el sitio excepto `/contactar-agencia-de-marketing-digital`, porque su comportamiento documentado autocaptura cualquier `<form>` DOM antes de reCAPTCHA y del backend. El widget de chat usa un cargador separado y permanece activo también en esa ruta. Impacto aceptado para Preview: HighLevel no recibe el page-view nativo de esa única página; el resto del sitio conserva tracking.
+- LeadConnector External Tracking queda desactivado globalmente por defecto, porque su comportamiento documentado autocaptura cualquier `<form>` DOM antes de reCAPTCHA y del backend. Retirar el elemento al navegar no elimina listeners ya registrados, por lo que una exclusión solo por pathname no es segura. El widget de chat usa un cargador separado y permanece activo. Impacto temporal: HighLevel no recibe page-views nativos mientras el flag está apagado; GA4/GTM no cambia.
 - La integración real usa únicamente variables de servidor. Los tokens, IDs internos, email, teléfono, nombre y mensaje nunca se envían a GA4/GTM ni vuelven en la respuesta del navegador.
 - `generate_lead` se añade a `dataLayer` solo después de que la API confirme el flujo exitoso. El evento contiene únicamente `event` y `form_id`.
 - Cada envío conserva un `submissionId` durante los reintentos. En el servidor solo se guarda su hash SHA-256.
@@ -52,6 +52,6 @@ Pendiente antes de activar el flag en Preview:
 4. Configurar las variables únicamente en Preview, ejecutar un envío sintético y obtener revisión independiente.
 5. Mantener el comportamiento actual de reintento si CRM falla después de la entrega; la idempotencia evita repetir una entrega ya confirmada.
 6. Completar la auditoría de workflows y automatizaciones descrita en `docs/highlevel-workflow-audit.md`; no activar si cualquiera de las cuatro mutaciones puede enrolar un contacto o producir comunicaciones.
-7. Verificar en el DOM y Network de Preview que `external-tracking.js` no carga en la ruta de contacto, que el loader del chat sí carga y que una navegación cliente desde/hacia esa ruta elimina/restaura solo External Tracking. Después de esa evidencia se puede establecer `HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED=true`; mientras sea falso, `HIGHLEVEL_ENABLED=true` falla cerrado.
+7. Mantener `NEXT_PUBLIC_HIGHLEVEL_EXTERNAL_TRACKING_ENABLED=false` hasta desactivar globalmente **Form Submissions** en HighLevel. Verificar después, incluida navegación SPA, que el loader del chat permanece, que no aparece `external_form_submission` y que los page-views vuelven sin autocaptura. Solo con esa evidencia se pueden establecer `HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED=true` y, si se desea recuperar page-views, `NEXT_PUBLIC_HIGHLEVEL_EXTERNAL_TRACKING_ENABLED=true`; mientras la confirmación del servidor sea falsa, `HIGHLEVEL_ENABLED=true` falla cerrado.
 
 No se incluyen secretos ni IDs inventados, y este paquete no migra ni elimina oportunidades existentes.

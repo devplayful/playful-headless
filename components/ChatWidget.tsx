@@ -2,19 +2,20 @@
 
 /** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import {
   HIGHLEVEL_CHAT_WIDGET_ID,
   HIGHLEVEL_CHAT_WIDGET_LOADER,
   HIGHLEVEL_EXTERNAL_TRACKING_SRC,
-  shouldLoadHighLevelExternalTracking,
+  highLevelScriptPolicy,
 } from '@/lib/highlevel/external-tracking'
 
 export default function ChatWidget() {
-  const pathname = usePathname()
+  const policy = highLevelScriptPolicy(
+    process.env.NEXT_PUBLIC_HIGHLEVEL_EXTERNAL_TRACKING_ENABLED === 'true',
+  )
 
   useEffect(() => {
-    if (!shouldLoadHighLevelExternalTracking(pathname)) return
+    if (!policy.externalTracking) return
 
     console.log('🤖 ChatWidget: Iniciando carga del script de LeadConnector...')
 
@@ -38,7 +39,7 @@ export default function ChatWidget() {
       }
       console.log('🗑️ ChatWidget: Script de tracking removido del DOM')
     }
-  }, [pathname])
+  }, [policy.externalTracking])
 
   useEffect(() => {
     const chat = document.createElement('script')
