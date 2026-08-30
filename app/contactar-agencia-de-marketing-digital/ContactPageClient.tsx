@@ -6,8 +6,9 @@ import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
-  createSubmissionId,
+  clearSubmissionId,
   getSubmissionAttribution,
+  getOrCreateSubmissionId,
 } from '@/lib/contact/client-attribution';
 import { pushGenerateLead } from '@/lib/contact/analytics';
 
@@ -30,7 +31,11 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{success: boolean, message: string} | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<{
+    success: boolean;
+    pending?: boolean;
+    message: string;
+  } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,7 +64,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
     try {
 
-      if (!submissionIdRef.current) submissionIdRef.current = createSubmissionId();
+      if (!submissionIdRef.current) submissionIdRef.current = getOrCreateSubmissionId();
       const attribution = getSubmissionAttribution();
 
       // Enviar el formulario a nuestra API con el token. El identificador se
@@ -85,7 +90,27 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.status === 202 && data.pendingConfirmation === true) {
+        setSubmitStatus({
+          success: false,
+          pending: true,
+          message: data.message,
+        });
+
+        // The outcome is unresolved, but reusing or replacing the submission
+        // would risk a duplicate. Preserve the neutral receipt and stop retries.
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          business: '',
+          message: ''
+        });
+        setPrivacyConsent(false);
+        setMarketingConsent(false);
+        recaptchaRef.current?.reset();
+      } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
           pushGenerateLead(data.analytics.formId);
         }
@@ -106,6 +131,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
         setPrivacyConsent(false);
         setMarketingConsent(false);
         submissionIdRef.current = '';
+        clearSubmissionId();
         recaptchaRef.current?.reset();
       } else {
         setSubmitStatus({
@@ -150,7 +176,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
             </div>
 
             {submitStatus && (
-              <div className={`mb-6 p-4 rounded-lg ${submitStatus.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              <div className={`mb-6 p-4 rounded-lg ${
+                submitStatus.pending
+                  ? 'bg-amber-100 text-amber-900'
+                  : submitStatus.success
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+              }`}>
                 {submitStatus.message}
               </div>
             )}

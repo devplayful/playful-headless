@@ -2,6 +2,12 @@
 
 Objetivo: demostrar, antes de activar la integración real, que **upsert de contacto**, **adición de `website-inbound`**, **creación/reutilización de oportunidad en D2C/Consulta** y **creación de tarea** no inscriben al contacto en un workflow existente ni generan efectos secundarios. Esta revisión no se ha ejecutado contra HighLevel desde el repositorio.
 
+## Bloqueo adicional: External Form Tracking
+
+Producción carga `https://api.playfulagency.com/js/external-tracking.js`. La evidencia del 30 de agosto mostró que ese script intercepta el formulario en captura y genera `external_form_submission` antes de reCAPTCHA o de que `/api/contact` confirme la entrega. Dos intentos consecutivos crearon doble actividad sobre un contacto, aunque no crearon oportunidad, tarea ni workflow.
+
+No hay una exclusión por atributo documentada. El paquete omite únicamente ese script en `/contactar-agencia-de-marketing-digital` y mantiene por separado el widget oficial. Antes de activar HighLevel server-side se debe comprobar en Preview: script de tracking ausente en esa ruta, widget presente, cero `external_form_submission`, tracking intacto en otras rutas y navegación cliente sin residuos. La pérdida deliberada es el page-view de HighLevel en la página de contacto; GA4/GTM no forma parte de este cambio.
+
 ## Inventario que se debe exportar o capturar
 
 Para cada workflow de la subcuenta, incluidos borradores y publicados, registrar:

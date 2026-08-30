@@ -11,6 +11,8 @@ export interface CrmProgress {
 }
 
 export type SubmissionState =
+  | { state: 'delivery_pending' }
+  | { state: 'delivery_uncertain' }
   | { state: 'delivered'; crm: CrmProgress }
   | { state: 'completed'; crmSynced: boolean; dryRun: boolean; crm: CrmProgress };
 
@@ -22,10 +24,11 @@ export type BeginResult =
 export interface IdempotencyStore {
   begin(key: string, owner: string): Promise<BeginResult>;
   markDelivered(key: string, owner: string): Promise<void>;
+  markDeliveryUncertain(key: string, owner: string): Promise<void>;
+  clearPendingDelivery(key: string, owner: string): Promise<void>;
   beginCrm(key: string, owner: string): Promise<boolean>;
   saveCrmProgress(key: string, owner: string, progress: CrmProgress): Promise<void>;
   markCompleted(key: string, owner: string, crmSynced: boolean, dryRun: boolean): Promise<void>;
-  releaseDelivery(key: string, owner: string): Promise<void>;
   releaseCrm(key: string, owner: string): Promise<void>;
   acquireResourceLease(resource: string, owner: string): Promise<boolean>;
   releaseResourceLease(resource: string, owner: string): Promise<void>;
@@ -113,12 +116,31 @@ export class RedisRestIdempotencyStore implements IdempotencyStore {
       await this.releaseLease(resource, owner);
       return { kind: 'existing', record: afterLease };
     }
+
+    const script = [
+      "if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end",
+      "if redis.call('EXISTS', KEYS[2]) == 1 then return 0 end",
+      "redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])",
+      'return 1',
+    ].join('\n');
+    const reserved = await this.command<number>([
+      'EVAL', script, 2,
+      this.leaseKey(resource), this.stateKey(key),
+      owner, this.serialize({ state: 'delivery_pending' }), this.ttlSeconds,
+    ]);
+    if (reserved !== 1) {
+      await this.releaseLease(resource, owner);
+      const record = await this.get(key);
+      return record ? { kind: 'existing', record } : { kind: 'busy' };
+    }
     return { kind: 'acquired' };
   }
 
   async markDelivered(key: string, owner: string): Promise<void> {
     const script = [
       "if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end",
+      "local current = redis.call('GET', KEYS[2])",
+      "if not current or cjson.decode(current).state ~= 'delivery_pending' then return 0 end",
       "redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])",
       "redis.call('DEL', KEYS[1])",
       'return 1',
@@ -127,6 +149,39 @@ export class RedisRestIdempotencyStore implements IdempotencyStore {
       'EVAL', script, 2,
       this.leaseKey(`submission:${key}:delivery`), this.stateKey(key),
       owner, this.serialize({ state: 'delivered', crm: {} }), this.ttlSeconds,
+    ]);
+    if (result !== 1) throw new SubmissionInProgressError();
+  }
+
+  async markDeliveryUncertain(key: string, owner: string): Promise<void> {
+    const script = [
+      "if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end",
+      "local current = redis.call('GET', KEYS[2])",
+      "if not current or cjson.decode(current).state ~= 'delivery_pending' then return 0 end",
+      "redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])",
+      "redis.call('DEL', KEYS[1])",
+      'return 1',
+    ].join('\n');
+    const result = await this.command<number>([
+      'EVAL', script, 2,
+      this.leaseKey(`submission:${key}:delivery`), this.stateKey(key),
+      owner, this.serialize({ state: 'delivery_uncertain' }), this.ttlSeconds,
+    ]);
+    if (result !== 1) throw new SubmissionInProgressError();
+  }
+
+  async clearPendingDelivery(key: string, owner: string): Promise<void> {
+    const script = [
+      "if redis.call('GET', KEYS[1]) ~= ARGV[1] then return 0 end",
+      "local current = redis.call('GET', KEYS[2])",
+      "if not current or cjson.decode(current).state ~= 'delivery_pending' then return 0 end",
+      "redis.call('DEL', KEYS[2])",
+      "redis.call('DEL', KEYS[1])",
+      'return 1',
+    ].join('\n');
+    const result = await this.command<number>([
+      'EVAL', script, 2,
+      this.leaseKey(`submission:${key}:delivery`), this.stateKey(key), owner,
     ]);
     if (result !== 1) throw new SubmissionInProgressError();
   }
@@ -181,10 +236,6 @@ export class RedisRestIdempotencyStore implements IdempotencyStore {
       this.ttlSeconds,
     ]);
     if (result !== 1) throw new SubmissionInProgressError();
-  }
-
-  async releaseDelivery(key: string, owner: string): Promise<void> {
-    await this.releaseLease(`submission:${key}:delivery`, owner);
   }
 
   async releaseCrm(key: string, owner: string): Promise<void> {

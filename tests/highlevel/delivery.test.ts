@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { ContactDeliveryError, deliverToWordPress } from '../../lib/contact/delivery.ts';
+import {
+  ContactDeliveryError,
+  DeterministicContactDeliveryError,
+  UncertainContactDeliveryError,
+  deliverToWordPress,
+} from '../../lib/contact/delivery.ts';
 import { lead } from './fixtures.ts';
 
 function configuredEnvironment() {
@@ -102,6 +107,42 @@ test('does not retry an ambiguous write until WordPress idempotency is explicitl
         },
       }),
       (error) => error instanceof ContactDeliveryError && error.status === 504,
+    );
+    assert.equal(calls, 1);
+  } finally {
+    restore();
+  }
+});
+
+test('classifies an explicit 4xx rejection as deterministic and safe to retry later', async () => {
+  const restore = configuredEnvironment();
+  try {
+    await assert.rejects(
+      deliverToWordPress(lead, {
+        fetchImpl: async () => new Response(null, { status: 422 }),
+      }),
+      (error) => error instanceof DeterministicContactDeliveryError
+        && error.upstreamStatus === 422,
+    );
+  } finally {
+    restore();
+  }
+});
+
+test('classifies a 5xx after a write as uncertain even with receipt retries enabled', async () => {
+  const restore = configuredEnvironment();
+  try {
+    let calls = 0;
+    await assert.rejects(
+      deliverToWordPress(lead, {
+        idempotentRetriesEnabled: true,
+        fetchImpl: async () => {
+          calls += 1;
+          return new Response(null, { status: 500 });
+        },
+        sleep: async () => {},
+      }),
+      UncertainContactDeliveryError,
     );
     assert.equal(calls, 1);
   } finally {

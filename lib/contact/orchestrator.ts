@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import type { WebsiteLead, LeadProcessingResult } from './types.ts';
+import { DeterministicContactDeliveryError } from './delivery.ts';
 import {
   type CrmProgress,
   type IdempotencyStore,
@@ -23,13 +24,23 @@ export class RetainResourceLeaseError extends Error {
 export interface ContactPipelineDependencies {
   store: IdempotencyStore;
   deliver: (lead: WebsiteLead) => Promise<void>;
-  syncCrm: (lead: WebsiteLead, control: CrmSyncControl) => Promise<void>;
+  syncCrm?: (lead: WebsiteLead, control: CrmSyncControl) => Promise<void>;
   dryRun: boolean;
   ownerId?: string;
 }
 
 export function submissionKey(submissionId: string): string {
   return createHash('sha256').update(submissionId).digest('hex');
+}
+
+function pendingDelivery(dryRun: boolean, replayed: boolean): LeadProcessingResult {
+  return {
+    deliveryStatus: 'pending_confirmation',
+    delivered: false,
+    crmSynced: false,
+    dryRun,
+    replayed,
+  };
 }
 
 export async function processContactPipeline(
@@ -44,6 +55,7 @@ export async function processContactPipeline(
 
   if (initial.kind === 'existing' && initial.record.state === 'completed') {
     return {
+      deliveryStatus: 'confirmed',
       delivered: true,
       crmSynced: initial.record.crmSynced,
       dryRun: initial.record.dryRun,
@@ -51,16 +63,38 @@ export async function processContactPipeline(
     };
   }
 
+  if (initial.kind === 'existing' && (
+    initial.record.state === 'delivery_pending'
+    || initial.record.state === 'delivery_uncertain'
+  )) {
+    return pendingDelivery(dependencies.dryRun, true);
+  }
+
   let delivered = initial.kind === 'existing' && initial.record.state === 'delivered';
 
   if (!delivered) {
     try {
       await dependencies.deliver(lead);
+    } catch (error) {
+      if (error instanceof DeterministicContactDeliveryError) {
+        await dependencies.store.clearPendingDelivery(key, owner);
+        throw error;
+      }
+      try {
+        await dependencies.store.markDeliveryUncertain(key, owner);
+      } catch {
+        // begin() persisted delivery_pending before the remote write. Keeping
+        // that durable reservation is safer than a blind second delivery.
+      }
+      return pendingDelivery(dependencies.dryRun, false);
+    }
+    try {
       await dependencies.store.markDelivered(key, owner);
       delivered = true;
-    } catch (error) {
-      await dependencies.store.releaseDelivery(key, owner);
-      throw error;
+    } catch {
+      // WordPress returned success but its Redis checkpoint was not confirmed.
+      // delivery_pending remains durable and prevents another remote write.
+      return pendingDelivery(dependencies.dryRun, false);
     }
   }
 
@@ -69,6 +103,7 @@ export async function processContactPipeline(
   }
 
   const progress: CrmProgress = initial.kind === 'existing'
+    && initial.record.state === 'delivered'
     ? { ...initial.record.crm }
     : {};
   const control: CrmSyncControl = {
@@ -99,16 +134,22 @@ export async function processContactPipeline(
   };
 
   try {
-    await dependencies.syncCrm(lead, control);
-    await dependencies.store.markCompleted(key, owner, true, dependencies.dryRun);
+    if (dependencies.syncCrm) await dependencies.syncCrm(lead, control);
+    await dependencies.store.markCompleted(
+      key,
+      owner,
+      Boolean(dependencies.syncCrm),
+      dependencies.dryRun,
+    );
   } catch (error) {
     await dependencies.store.releaseCrm(key, owner);
     throw error;
   }
 
   return {
+    deliveryStatus: 'confirmed',
     delivered: true,
-    crmSynced: true,
+    crmSynced: Boolean(dependencies.syncCrm),
     dryRun: dependencies.dryRun,
     replayed: false,
   };

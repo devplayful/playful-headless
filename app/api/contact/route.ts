@@ -13,6 +13,11 @@ import {
   RedisRestIdempotencyStore,
   SubmissionInProgressError,
 } from '@/lib/contact/idempotency';
+import {
+  ContactPipelineConfigurationError,
+  readContactPipelineConfig,
+} from '@/lib/contact/config';
+import { pendingConfirmationResponse } from '@/lib/contact/api-response';
 import { processContactPipeline } from '@/lib/contact/orchestrator';
 import {
   HighLevelConfigurationError,
@@ -40,24 +45,37 @@ function success(crmSynced: boolean, dryRun: boolean, replayed: boolean) {
     replayed,
   });
 }
+
+function pendingConfirmation(replayed: boolean) {
+  const response = pendingConfirmationResponse(replayed);
+  return NextResponse.json(response.body, { status: response.status });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const lead = normalizeWebsiteLead(body);
     await verifyRecaptcha(body.recaptchaToken);
 
+    const contactPipeline = readContactPipelineConfig();
+    const store = new RedisRestIdempotencyStore(
+      contactPipeline.redisRestUrl,
+      contactPipeline.redisRestToken,
+      contactPipeline.idempotencyTtlSeconds,
+      contactPipeline.leaseSeconds,
+    );
     const highLevel = readHighLevelConfig();
     if (!highLevel.enabled) {
-      await deliverToWordPress(lead);
-      return success(false, false, false);
+      const result = await processContactPipeline(lead, {
+        store,
+        deliver: deliverToWordPress,
+        dryRun: false,
+      });
+      return result.deliveryStatus === 'pending_confirmation'
+        ? pendingConfirmation(result.replayed)
+        : success(false, false, result.replayed);
     }
 
-    const store = new RedisRestIdempotencyStore(
-      highLevel.redisRestUrl,
-      highLevel.redisRestToken,
-      highLevel.idempotencyTtlSeconds,
-      highLevel.leaseSeconds,
-    );
     const gateway = highLevel.testMode
       ? new DryRunHighLevelGateway()
       : new HighLevelApiClient(highLevel.token, highLevel.timeoutMs);
@@ -74,7 +92,9 @@ export async function POST(request: NextRequest) {
       ).then(() => undefined),
       dryRun: highLevel.testMode,
     });
-    return success(result.crmSynced, result.dryRun, result.replayed);
+    return result.deliveryStatus === 'pending_confirmation'
+      ? pendingConfirmation(result.replayed)
+      : success(result.crmSynced, result.dryRun, result.replayed);
   } catch (error) {
     if (error instanceof SubmissionValidationError || error instanceof ContactDeliveryError) {
       const status = error instanceof ContactDeliveryError ? error.status : 400;
@@ -86,8 +106,9 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
-    if (error instanceof HighLevelConfigurationError) {
-      console.error('Configuración de HighLevel incompleta:', error.message);
+    if (error instanceof HighLevelConfigurationError
+      || error instanceof ContactPipelineConfigurationError) {
+      console.error('Configuración del pipeline de contacto incompleta:', error.message);
       return NextResponse.json(
         { success: false, message: 'La integración comercial no está configurada completamente.' },
         { status: 503 },

@@ -7,6 +7,10 @@ import type {
   SubmissionState,
 } from '../../lib/contact/idempotency.ts';
 import { SubmissionInProgressError } from '../../lib/contact/idempotency.ts';
+import {
+  DeterministicContactDeliveryError,
+  UncertainContactDeliveryError,
+} from '../../lib/contact/delivery.ts';
 import { processContactPipeline, submissionKey } from '../../lib/contact/orchestrator.ts';
 import { lead } from './fixtures.ts';
 
@@ -31,11 +35,26 @@ class TestStore implements IdempotencyStore {
   async begin(key: string, owner: string): Promise<BeginResult> {
     const record = this.records.get(key);
     if (record) return { kind: 'existing', record };
-    return this.acquire(`delivery:${key}`, owner) ? { kind: 'acquired' } : { kind: 'busy' };
+    if (!this.acquire(`delivery:${key}`, owner)) return { kind: 'busy' };
+    this.records.set(key, { state: 'delivery_pending' });
+    return { kind: 'acquired' };
   }
   async markDelivered(key: string, owner: string) {
     if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
     this.records.set(key, { state: 'delivered', crm: {} });
+    this.release(`delivery:${key}`, owner);
+  }
+  async markDeliveryUncertain(key: string, owner: string) {
+    if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
+    this.records.set(key, { state: 'delivery_uncertain' });
+    this.release(`delivery:${key}`, owner);
+  }
+  async clearPendingDelivery(key: string, owner: string) {
+    if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
+    this.records.delete(key);
     this.release(`delivery:${key}`, owner);
   }
   async beginCrm(key: string, owner: string) {
@@ -48,11 +67,11 @@ class TestStore implements IdempotencyStore {
   }
   async markCompleted(key: string, owner: string, crmSynced: boolean, dryRun: boolean) {
     if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
-    const crm = this.records.get(key)?.crm || {};
+    const current = this.records.get(key);
+    const crm = current?.state === 'delivered' ? current.crm : {};
     this.records.set(key, { state: 'completed', crmSynced, dryRun, crm });
     this.release(`crm:${key}`, owner);
   }
-  async releaseDelivery(key: string, owner: string) { this.release(`delivery:${key}`, owner); }
   async releaseCrm(key: string, owner: string) { this.release(`crm:${key}`, owner); }
   async acquireResourceLease(resource: string, owner: string) { return this.acquire(`resource:${resource}`, owner); }
   async releaseResourceLease(resource: string, owner: string) { this.release(`resource:${resource}`, owner); }
@@ -97,6 +116,7 @@ test('resumes CRM from its last checkpoint without delivering WordPress twice', 
   assert.deepEqual(visited, ['contact-1']);
   assert.equal(recovered.replayed, false);
   assert.equal(replay.replayed, true);
+  assert.equal(replay.deliveryStatus, 'confirmed');
 });
 
 test('a crashed worker lease expires while the durable delivered checkpoint survives', async () => {
@@ -124,4 +144,94 @@ test('a crashed worker lease expires while the durable delivered checkpoint surv
   });
 
   assert.equal(recoveredCheckpoint, 'contact-before-crash');
+});
+
+test('does not redeliver when WordPress completed remotely but its response was lost', async () => {
+  const store = new TestStore();
+  let remoteDeliveries = 0;
+  let crmCalls = 0;
+
+  const first = await processContactPipeline(lead, {
+    store,
+    deliver: async () => {
+      remoteDeliveries += 1; // WordPress/mail completed before the socket timed out.
+      throw new UncertainContactDeliveryError();
+    },
+    syncCrm: async () => { crmCalls += 1; },
+    dryRun: false,
+    ownerId: 'lost-response-1',
+  });
+
+  store.advance(31);
+  const retry = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { remoteDeliveries += 1; },
+    syncCrm: async () => { crmCalls += 1; },
+    dryRun: false,
+    ownerId: 'lost-response-2',
+  });
+
+  assert.deepEqual(first, {
+    deliveryStatus: 'pending_confirmation',
+    delivered: false,
+    crmSynced: false,
+    dryRun: false,
+    replayed: false,
+  });
+  assert.equal(retry.deliveryStatus, 'pending_confirmation');
+  assert.equal(retry.replayed, true);
+  assert.equal(remoteDeliveries, 1);
+  assert.equal(crmCalls, 0);
+  assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'delivery_uncertain');
+});
+
+test('does not blindly retry when WordPress may not have received the timed-out request', async () => {
+  const store = new TestStore();
+  let attempts = 0;
+
+  const first = await processContactPipeline(lead, {
+    store,
+    deliver: async () => {
+      attempts += 1;
+      throw new UncertainContactDeliveryError();
+    },
+    dryRun: false,
+    ownerId: 'not-received-1',
+  });
+  const retry = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { attempts += 1; },
+    dryRun: false,
+    ownerId: 'not-received-2',
+  });
+
+  assert.equal(first.deliveryStatus, 'pending_confirmation');
+  assert.equal(retry.deliveryStatus, 'pending_confirmation');
+  assert.equal(attempts, 1);
+});
+
+test('clears only deterministic WordPress rejections so a corrected request can retry', async () => {
+  const store = new TestStore();
+  let attempts = 0;
+
+  await assert.rejects(() => processContactPipeline(lead, {
+    store,
+    deliver: async () => {
+      attempts += 1;
+      throw new DeterministicContactDeliveryError(422);
+    },
+    dryRun: false,
+    ownerId: 'rejected-1',
+  }), DeterministicContactDeliveryError);
+
+  const retry = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { attempts += 1; },
+    dryRun: false,
+    ownerId: 'rejected-2',
+  });
+
+  assert.equal(attempts, 2);
+  assert.equal(retry.deliveryStatus, 'confirmed');
+  assert.equal(retry.crmSynced, false);
 });

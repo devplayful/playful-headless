@@ -11,6 +11,24 @@ export class ContactDeliveryError extends Error {
   }
 }
 
+export class DeterministicContactDeliveryError extends ContactDeliveryError {
+  constructor(
+    public readonly upstreamStatus: number,
+    status = 502,
+    message = 'El sistema de entrega rechazó el mensaje. Puedes intentarlo de nuevo.',
+  ) {
+    super(status, message);
+    this.name = 'DeterministicContactDeliveryError';
+  }
+}
+
+export class UncertainContactDeliveryError extends ContactDeliveryError {
+  constructor(status = 504) {
+    super(status, 'No pudimos confirmar la respuesta del sistema de entrega.');
+    this.name = 'UncertainContactDeliveryError';
+  }
+}
+
 interface WordPressDeliveryOptions {
   fetchImpl?: typeof fetch;
   sleep?: (delayMs: number) => Promise<void>;
@@ -60,7 +78,11 @@ export async function deliverToWordPress(
   const wordpressUrl = process.env.WORDPRESS_API_URL?.replace(/\/$/, '');
   const token = process.env.WORDPRESS_CONTACT_TOKEN;
   if (!wordpressUrl || !token) {
-    throw new ContactDeliveryError(503, 'El formulario no está disponible temporalmente.');
+    throw new DeterministicContactDeliveryError(
+      0,
+      503,
+      'El formulario no está disponible temporalmente.',
+    );
   }
 
   const fetchImpl = options.fetchImpl || fetch;
@@ -90,18 +112,25 @@ export async function deliverToWordPress(
       });
 
       if (response.ok) return;
-      if (!idempotentRetriesEnabled || !isRetryableStatus(response.status) || attempt === attempts) {
-        throw new ContactDeliveryError(502, 'No pudimos confirmar la entrega del mensaje.');
+      if (idempotentRetriesEnabled && isRetryableStatus(response.status) && attempt < attempts) {
+        await wait(WORDPRESS_DELIVERY_RETRY_DELAY_MS * attempt);
+        continue;
       }
+
+      if (response.status >= 400 && response.status < 500
+        && response.status !== 408 && response.status !== 409) {
+        throw new DeterministicContactDeliveryError(response.status);
+      }
+      throw new UncertainContactDeliveryError(502);
     } catch (error) {
       if (error instanceof ContactDeliveryError) throw error;
-      if (!idempotentRetriesEnabled || attempt === attempts) {
-        throw new ContactDeliveryError(504, 'No pudimos confirmar la entrega del mensaje.');
+      if (idempotentRetriesEnabled && attempt < attempts) {
+        await wait(WORDPRESS_DELIVERY_RETRY_DELAY_MS * attempt);
+        continue;
       }
+      throw new UncertainContactDeliveryError();
     }
-
-    await wait(WORDPRESS_DELIVERY_RETRY_DELAY_MS * attempt);
   }
 
-  throw new ContactDeliveryError(504, 'No pudimos confirmar la entrega del mensaje.');
+  throw new UncertainContactDeliveryError();
 }
