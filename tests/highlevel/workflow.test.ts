@@ -26,6 +26,7 @@ class GatewayMock implements HighLevelGateway {
   customFields = new Map<string, string>();
   loseFirstUpsertResponse = false;
   loseFirstOriginalResponse = false;
+  loseFirstOpportunityResponse = false;
   loseFirstTaskResponse = false;
 
   async upsertContact(input: UpsertContactInput) {
@@ -59,6 +60,10 @@ class GatewayMock implements HighLevelGateway {
     this.calls.push({ operation: 'create-opportunity', value: input });
     const opportunity = { id: `opportunity-${this.opportunities.length + 1}`, status: 'open' };
     this.opportunities.push(opportunity);
+    if (this.loseFirstOpportunityResponse) {
+      this.loseFirstOpportunityResponse = false;
+      throw new Error('response lost after HighLevel created opportunity');
+    }
     return { id: opportunity.id };
   }
   async findTasks() {
@@ -181,6 +186,22 @@ test('recovers a task id when create succeeded but its response was lost', async
   assert.equal(recovered.taskId, 'task-1');
   assert.equal(gateway.tasks.length, 1);
   assert.equal(gateway.calls.filter((call) => call.operation === 'create-task').length, 1);
+});
+
+test('recovers an opportunity when create succeeded but its response was lost', async () => {
+  const gateway = new GatewayMock();
+  const control = memoryControl('submission-lost-opportunity');
+  gateway.loseFirstOpportunityResponse = true;
+
+  await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+  assert.equal(gateway.opportunities.length, 1);
+  assert.equal(control.progress.opportunityId, undefined);
+
+  const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
+  assert.equal(recovered.opportunityId, 'opportunity-1');
+  assert.equal(recovered.opportunityCreated, false);
+  assert.equal(gateway.opportunities.length, 1);
+  assert.equal(gateway.calls.filter((call) => call.operation === 'create-opportunity').length, 1);
 });
 
 test('serializes opportunity search-create for concurrent submissions to one contact and pipeline', async () => {
