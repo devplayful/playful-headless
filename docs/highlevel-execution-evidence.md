@@ -55,7 +55,7 @@ Los doce campos se agrupan en `GTM Web` y son de una sola línea para aceptar lo
 
 - Commits funcionales locales rebasados: `7733317`, `0726ef6` y `1af9229`.
 - TypeScript: correcto.
-- Pruebas HighLevel: 10/10 correctas.
+- Pruebas HighLevel originales: 10/10 correctas. El endurecimiento posterior añade cobertura de leases recuperables, checkpoints, concurrencia y respuestas perdidas; consultar el commit local y la ejecución de CI correspondiente.
 - La prueba integrada confirma entrega única, reintento idempotente, simulación CRM sin red y ausencia de nombre, email y teléfono en Redis.
 - La compilación previa del paquete funcional terminó correctamente; las respuestas 500 observadas procedían del WordPress externo y no de este paquete.
 
@@ -64,3 +64,5 @@ Los doce campos se agrupan en `GTM Web` y son de una sola línea para aceptar lo
 La activación queda bloqueada hasta disponer de una integración privada de HighLevel con alcance mínimo para contactos, oportunidades, etiquetas y tareas; un Redis REST duradero sin coste confirmado; y variables exclusivas de Preview. No se deben guardar secretos en Git.
 
 Rollback inmediato: fijar `HIGHLEVEL_ENABLED=false`. Esto conserva la entrega autenticada a WordPress y evita llamadas a HighLevel. El pipeline legado, el export y la Smart List permiten recuperar o revisar los seis prospectos sin migrarlos ni borrarlos. Los commits locales pueden revertirse sin afectar HighLevel porque aún no se han publicado.
+
+Antes de activar, también es obligatorio completar `docs/highlevel-workflow-audit.md`. Esta evidencia no afirma que los workflows existentes sean inocuos: esa conclusión requiere inventario, prueba controlada y logs de la subcuenta.
