@@ -1,8 +1,11 @@
 import {
   IDEMPOTENCY_REQUEST_TIMEOUT_MS,
   LEASE_SAFETY_MARGIN_MS,
-  WORDPRESS_DELIVERY_TIMEOUT_MS,
 } from '../contact/timeouts.ts';
+import {
+  ContactPipelineConfigurationError,
+  readContactPipelineConfig,
+} from '../contact/config.ts';
 
 const CUSTOM_FIELD_KEYS = [
   'original_source',
@@ -98,21 +101,30 @@ function customFields(env: Environment): HighLevelCustomFieldIds {
 export function readHighLevelConfig(env: Environment = process.env): HighLevelConfig {
   if (env.HIGHLEVEL_ENABLED !== 'true') return { enabled: false };
 
+  if (env.HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED !== 'true') {
+    throw new HighLevelConfigurationError(
+      'HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED debe confirmar que External Tracking no autocaptura el formulario.',
+    );
+  }
+
   const testMode = env.HIGHLEVEL_TEST_MODE === 'true';
   const timeoutMs = env.HIGHLEVEL_REQUEST_TIMEOUT_MS
     ? integer(env, 'HIGHLEVEL_REQUEST_TIMEOUT_MS', 1000, 30000)
     : 8000;
-  const leaseSeconds = env.HIGHLEVEL_PROCESSING_LEASE_SECONDS
-    ? integer(env, 'HIGHLEVEL_PROCESSING_LEASE_SECONDS', 10, 300)
-    : 30;
+  let contactPipeline;
+  try {
+    contactPipeline = readContactPipelineConfig(env);
+  } catch (error) {
+    if (error instanceof ContactPipelineConfigurationError) {
+      throw new HighLevelConfigurationError(error.message);
+    }
+    throw error;
+  }
+  const leaseSeconds = contactPipeline.leaseSeconds;
   const crmCriticalSectionMs = timeoutMs * 2
     + IDEMPOTENCY_REQUEST_TIMEOUT_MS
     + LEASE_SAFETY_MARGIN_MS;
-  const deliveryCriticalSectionMs = WORDPRESS_DELIVERY_TIMEOUT_MS
-    + IDEMPOTENCY_REQUEST_TIMEOUT_MS
-    + LEASE_SAFETY_MARGIN_MS;
-  const minimumSafeLeaseMs = Math.max(crmCriticalSectionMs, deliveryCriticalSectionMs);
-  if (leaseSeconds * 1000 < minimumSafeLeaseMs) {
+  if (leaseSeconds * 1000 < crmCriticalSectionMs) {
     throw new HighLevelConfigurationError(
       'HIGHLEVEL_PROCESSING_LEASE_SECONDS debe cubrir la entrega WordPress o dos requests CRM, más el checkpoint Redis y el margen de seguridad.',
     );
@@ -129,12 +141,10 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
     contactTag: required(env, 'HIGHLEVEL_CONTACT_TAG'),
     slaHours: integer(env, 'HIGHLEVEL_SLA_HOURS', 1, 168),
     timeoutMs,
-    idempotencyTtlSeconds: env.HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS
-      ? integer(env, 'HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS', 3600, 2592000)
-      : 604800,
+    idempotencyTtlSeconds: contactPipeline.idempotencyTtlSeconds,
     leaseSeconds,
-    redisRestUrl: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL'),
-    redisRestToken: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN'),
+    redisRestUrl: contactPipeline.redisRestUrl,
+    redisRestToken: contactPipeline.redisRestToken,
     customFieldIds: customFields(env),
   };
 }

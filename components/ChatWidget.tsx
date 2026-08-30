@@ -2,13 +2,24 @@
 
 /** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import {
+  HIGHLEVEL_CHAT_WIDGET_ID,
+  HIGHLEVEL_CHAT_WIDGET_LOADER,
+  HIGHLEVEL_EXTERNAL_TRACKING_SRC,
+  shouldLoadHighLevelExternalTracking,
+} from '@/lib/highlevel/external-tracking'
 
 export default function ChatWidget() {
+  const pathname = usePathname()
+
   useEffect(() => {
+    if (!shouldLoadHighLevelExternalTracking(pathname)) return
+
     console.log('🤖 ChatWidget: Iniciando carga del script de LeadConnector...')
 
     const tracking = document.createElement('script')
-    tracking.src = 'https://api.playfulagency.com/js/external-tracking.js'
+    tracking.src = HIGHLEVEL_EXTERNAL_TRACKING_SRC
     tracking.setAttribute('data-tracking-id', 'tk_7f428930606f48999b6809f35a288399')
     tracking.async = true
 
@@ -19,10 +30,21 @@ export default function ChatWidget() {
       console.error('❌ ChatWidget: Error al cargar el script de tracking', error)
     }
 
+    document.body.appendChild(tracking)
+
+    return () => {
+      if (document.body.contains(tracking)) {
+        document.body.removeChild(tracking)
+      }
+      console.log('🗑️ ChatWidget: Script de tracking removido del DOM')
+    }
+  }, [pathname])
+
+  useEffect(() => {
     const chat = document.createElement('script')
-    chat.src = 'https://widgets.leadconnectorhq.com/loader.js'
+    chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
     chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
-    chat.setAttribute('data-widget-id', '67ac6d90a81d1c5969d763e7')
+    chat.setAttribute('data-widget-id', HIGHLEVEL_CHAT_WIDGET_ID)
     chat.async = true
 
     chat.onload = () => {
@@ -32,14 +54,10 @@ export default function ChatWidget() {
       console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
     }
 
-    document.body.appendChild(tracking)
     document.body.appendChild(chat)
-    console.log('📝 ChatWidget: Scripts agregados al DOM')
+    console.log('📝 ChatWidget: Script de chat agregado al DOM')
 
     return () => {
-      if (document.body.contains(tracking)) {
-        document.body.removeChild(tracking)
-      }
       if (document.body.contains(chat)) {
         document.body.removeChild(chat)
       }

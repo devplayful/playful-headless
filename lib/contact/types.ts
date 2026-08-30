@@ -35,10 +35,18 @@ export interface WebsiteLead {
   recentAttribution: ContactAttribution;
 }
 
-export interface LeadProcessingResult {
-  delivered: true;
-  crmSynced: boolean;
-  dryRun: boolean;
-  replayed: boolean;
-}
-
+export type LeadProcessingResult =
+  | {
+    deliveryStatus: 'confirmed';
+    delivered: true;
+    crmSynced: boolean;
+    dryRun: boolean;
+    replayed: boolean;
+  }
+  | {
+    deliveryStatus: 'pending_confirmation';
+    delivered: false;
+    crmSynced: false;
+    dryRun: boolean;
+    replayed: boolean;
+  };

@@ -7,6 +7,7 @@ import {
 } from './types.ts';
 
 const ORIGINAL_ATTRIBUTION_KEY = 'playful:first-touch:v1';
+const SUBMISSION_ID_KEY = 'playful:contact-submission:v1';
 
 function currentTouch(): ContactAttribution {
   const params = new URLSearchParams(window.location.search);
@@ -67,3 +68,23 @@ export function createSubmissionId(): string {
   return `${Date.now().toString(36)}_${crypto.getRandomValues(new Uint32Array(4)).join('_')}`;
 }
 
+export function getOrCreateSubmissionId(): string {
+  try {
+    const current = window.sessionStorage.getItem(SUBMISSION_ID_KEY);
+    if (current && /^[A-Za-z0-9_-]{20,100}$/.test(current)) return current;
+    if (current) window.sessionStorage.removeItem(SUBMISSION_ID_KEY);
+    const created = createSubmissionId();
+    window.sessionStorage.setItem(SUBMISSION_ID_KEY, created);
+    return created;
+  } catch {
+    return createSubmissionId();
+  }
+}
+
+export function clearSubmissionId(): void {
+  try {
+    window.sessionStorage.removeItem(SUBMISSION_ID_KEY);
+  } catch {
+    // Storage availability must not affect the confirmed request response.
+  }
+}
