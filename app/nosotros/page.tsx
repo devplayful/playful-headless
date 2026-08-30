@@ -105,7 +105,7 @@ const MissionVisionSection = () => {
               </div>
               <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] pt-[20px] text-[#453A53] mb-4">MISIÓN</h3>
               <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
-                Ayudar a 10,000 dueños de ecommerce que ya facturan entre $100,000 y $200,000 anuales a alcanzar su primer millón de dólares mensuales. Democratizar las ventas online, facilitando la digitalización de pequeños negocios y brindándoles herramientas para lograr sus primeras ventas sin complicaciones. Empoderar a estos emprendedores para que se conviertan en las futuras voces líderes del sector, llevando su conocimiento y experiencia a nuevas fronteras.
+                Acompañar a equipos de ecommerce en el diseño, implementación y evolución de experiencias digitales funcionales. Trabajamos sobre arquitectura, interfaz, integraciones y medición para que cada proyecto tenga un alcance técnico definido y criterios de verificación claros.
               </p>
             </div>
           
@@ -312,9 +312,9 @@ const NuestrosValoresSection = () => {
 // --- COMPONENTE DE PROPUESTA DE VALOR ---
 const ValuePropositionSection = () => {
   const statistics = [
-    { id: '1', number: '100.000€', description: 'Facturaciones mensuales' },
-    { id: '2', number: '35%', description: 'Aumento en Ingresos mensuales' },
-    { id: '3', number: '0', description: 'Complicaciones y Dolores de Cabeza' },
+    { id: '1', number: 'Shopify', description: 'Implementación y evolución' },
+    { id: '2', number: 'UX/UI', description: 'Flujos y arquitectura' },
+    { id: '3', number: 'Headless', description: 'Integraciones y rendimiento' },
   ];
 
   return (
@@ -327,7 +327,7 @@ const ValuePropositionSection = () => {
             Propuesta de valor de Playful
           </h2>
           <p className="mx-auto [font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#E9D7FF] mb-12 min-[768px]:mb-16">
-            Ayudamos a dueños de comercios electrónicos que facturan más de 100.000€ al mes y están descontentos con su ecommerce actual, debido a la falta de escalabilidad y actualización de sus agencias anteriores. Con nuestra metodología abierta y ágil, les ayudamos a aumentar sus ingresos mensuales en un 35% sin las complicaciones y dolores de cabeza que conlleva un rediseño tradicional.
+            Acompañamos a equipos de ecommerce en el análisis, diseño e implementación de mejoras técnicas: arquitectura de catálogo, experiencia de compra, integraciones, medición y mantenimiento evolutivo. El alcance y los criterios de verificación se definen para cada proyecto.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {statistics.map((stat) => (
@@ -367,14 +367,14 @@ export default async function Nosotros() {
                 {/* Columna Izquierda */}
                 <div className="md:w-1/2 text-left">
                   <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
-                    Para dueños que ya facturan y vienen de otra agencia
+                    Para equipos que necesitan evolucionar su ecommerce
                   </h1>
                   <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
-                    Diseño para negocios que quieren resultados reales
+                    Diseño y desarrollo para ecommerce
                   </h2>
                   <div className="prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] text-gray-600 w-full max-w-none">
                     <p>
-                      En Playful Agency, nos dedicamos a transformar tus objetivos de negocio en experiencias digitales funcionales y atractivas. Somos un equipo de diseñadores y desarrolladores apasionados por la solución de problemas complejos. Descubre cómo nuestra atención al detalle puede <strong className="font-bold">generar un impacto significativo en tus métricas</strong> y en la conexión con tu audiencia.
+                      En Playful Agency convertimos requisitos de negocio en experiencias digitales funcionales. Nuestro equipo de diseño y desarrollo trabaja sobre arquitectura, flujos, interfaz e integraciones para resolver necesidades concretas de ecommerce.
                     </p>
                   </div>
                 </div>
@@ -433,7 +433,7 @@ export default async function Nosotros() {
 export async function generateMetadata() {
   const url = canonicalForPath('/nosotros');
   const title = 'Agencia ecommerce Playful | Nosotros';
-  const description = 'Somos Playful, agencia de ecommerce para dueños que ya facturan y vienen de otra agencia. Armamos la tienda cuando el diseño anterior ya no alcanza.';
+  const description = 'Somos Playful, agencia de ecommerce especializada en diseño, desarrollo, arquitectura e integraciones para tiendas que necesitan evolucionar.';
   return {
     title,
     description,
