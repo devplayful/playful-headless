@@ -42,9 +42,80 @@ add_action('rest_api_init', function () {
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_textarea_field',
             ),
+            // Optional during the backwards-compatible rollout. The Next.js
+            // server always sends this value before retries are enabled.
+            'submission_id' => array(
+                'required' => false,
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'validate_callback' => function($param) {
+                    return preg_match('/\A[A-Za-z0-9_-]{20,100}\z/', $param) === 1;
+                }
+            ),
         ),
     ));
 });
+
+const PLAYFUL_CONTACT_RECEIPT_TTL_SECONDS = 604800;
+const PLAYFUL_CONTACT_PROCESSING_STALE_SECONDS = 120;
+
+function playful_contact_receipt_key($submission_id) {
+    return 'playful_contact_receipt_' . hash('sha256', $submission_id);
+}
+
+function playful_contact_receipt_value($state, $timestamp) {
+    return wp_json_encode(array('state' => $state, 'timestamp' => $timestamp));
+}
+
+/**
+ * Claims one submission atomically. Completed requests are replayed and a
+ * concurrent request is told to retry. A stale worker can be replaced using a
+ * compare-and-swap update so two workers never send the same message.
+ */
+function playful_contact_claim_submission($submission_id) {
+    global $wpdb;
+
+    if ($submission_id === '') {
+        return array('kind' => 'legacy', 'key' => '');
+    }
+
+    $key = playful_contact_receipt_key($submission_id);
+    $now = time();
+    $processing = playful_contact_receipt_value('processing', $now);
+
+    if (add_option($key, $processing, '', false)) {
+        return array('kind' => 'acquired', 'key' => $key);
+    }
+
+    $current = (string) get_option($key, '');
+    $decoded = json_decode($current, true);
+    if (is_array($decoded) && ($decoded['state'] ?? '') === 'completed') {
+        return array('kind' => 'completed', 'key' => $key);
+    }
+
+    $started_at = is_array($decoded) ? (int) ($decoded['timestamp'] ?? 0) : 0;
+    if ($started_at > 0 && ($now - $started_at) <= PLAYFUL_CONTACT_PROCESSING_STALE_SECONDS) {
+        return array('kind' => 'busy', 'key' => $key);
+    }
+
+    $updated = $wpdb->query($wpdb->prepare(
+        "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
+        $processing,
+        $key,
+        $current
+    ));
+
+    return array(
+        'kind' => $updated === 1 ? 'acquired' : 'busy',
+        'key' => $key,
+    );
+}
+
+function playful_contact_delete_receipt($key) {
+    delete_option($key);
+}
+
+add_action('playful_contact_delete_receipt', 'playful_contact_delete_receipt');
 
 /**
  * Maneja el envío del formulario de contacto
@@ -56,6 +127,28 @@ function playful_handle_contact_form($request) {
     $phone = $request->get_param('phone');
     $business = $request->get_param('business');
     $message = $request->get_param('message');
+    $submission_id = (string) $request->get_param('submission_id');
+
+    $claim = playful_contact_claim_submission($submission_id);
+    if ($claim['kind'] === 'completed') {
+        $response = new WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Mensaje enviado correctamente',
+            'replayed' => true,
+        ), 200);
+        $response->header('X-Playful-Contact-Idempotency', 'v1');
+        return $response;
+    }
+    if ($claim['kind'] === 'busy') {
+        $response = new WP_REST_Response(array(
+            'success' => false,
+            'retryable' => true,
+            'message' => 'El mensaje todavía se está procesando',
+        ), 409);
+        $response->header('Retry-After', '1');
+        $response->header('X-Playful-Contact-Idempotency', 'v1');
+        return $response;
+    }
 
     // Configurar el destinatario
     $to = 'hello@playfulagency.com';
@@ -101,14 +194,35 @@ function playful_handle_contact_form($request) {
     // Registrar en logs para debugging (opcional)
     if (!$sent) {
         error_log('Error al enviar email de contacto para: ' . $email);
+        if ($claim['kind'] === 'acquired') {
+            delete_option($claim['key']);
+        }
     }
     
     // Responder al cliente
     if ($sent) {
-        return new WP_REST_Response(array(
+        if ($claim['kind'] === 'acquired') {
+            update_option(
+                $claim['key'],
+                playful_contact_receipt_value('completed', time()),
+                false
+            );
+            wp_schedule_single_event(
+                time() + PLAYFUL_CONTACT_RECEIPT_TTL_SECONDS,
+                'playful_contact_delete_receipt',
+                array($claim['key'])
+            );
+        }
+
+        $response = new WP_REST_Response(array(
             'success' => true,
             'message' => 'Mensaje enviado correctamente',
+            'replayed' => false,
         ), 200);
+        if ($submission_id !== '') {
+            $response->header('X-Playful-Contact-Idempotency', 'v1');
+        }
+        return $response;
     } else {
         return new WP_REST_Response(array(
             'success' => false,

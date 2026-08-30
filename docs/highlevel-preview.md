@@ -28,7 +28,9 @@
 10. Bajo exclusión mutua por contacto/envío, búsqueda por marcador o creación de la tarea SLA; checkpoint.
 11. Confirmación final durable, respuesta al navegador y emisión de `generate_lead` sin PII.
 
-Si HighLevel falla después del paso 5, un reintento retoma el CRM sin volver a enviar WordPress. Si el proceso cae exactamente después de que WordPress acepta el mensaje y antes de guardar el paso 5, el endpoint WordPress actual no permite demostrar entrega exactamente-una-vez; cerrar ese último margen requiere que WordPress acepte y deduplique también `submissionId`.
+Si HighLevel falla después del paso 5, un reintento retoma el CRM sin volver a enviar WordPress. El endpoint WordPress incluido en este paquete acepta `submission_id`, conserva un recibo durante siete días y responde de forma idempotente a reintentos. El cliente servidor solo reintenta timeouts y respuestas transitorias cuando `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`.
+
+El despliegue debe hacerse en este orden: (1) instalar primero el endpoint WordPress con recibos; (2) desplegar Next.js, que ya envía `submission_id` pero mantiene los reintentos desactivados; (3) verificar en una prueba autorizada que WordPress responde con `X-Playful-Contact-Idempotency: v1`; y solo entonces (4) activar `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`. Activar la variable antes de actualizar WordPress puede duplicar correos ante un timeout.
 
 ## Estado de decisiones antes de activar
 
