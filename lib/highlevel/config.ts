@@ -101,9 +101,9 @@ function customFields(env: Environment): HighLevelCustomFieldIds {
 export function readHighLevelConfig(env: Environment = process.env): HighLevelConfig {
   if (env.HIGHLEVEL_ENABLED !== 'true') return { enabled: false };
 
-  if (env.HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED !== 'true') {
+  if (env.HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED !== 'true') {
     throw new HighLevelConfigurationError(
-      'HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED debe confirmar que External Tracking no autocaptura el formulario.',
+      'HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED debe confirmar que HighLevel no autocaptura formularios.',
     );
   }
 

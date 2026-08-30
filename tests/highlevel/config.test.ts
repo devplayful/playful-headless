@@ -22,10 +22,10 @@ test('refuses direct HighLevel sync while external form autocapture is unconfirm
     () => readHighLevelConfig({
       HIGHLEVEL_ENABLED: 'true',
       HIGHLEVEL_TEST_MODE: 'true',
-      HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED: 'false',
+      HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'false',
     }),
     (error) => error instanceof HighLevelConfigurationError
-      && /AUTOCAPTURE_DISABLED/.test(error.message),
+      && /FORM_SUBMISSIONS_DISABLED/.test(error.message),
   );
 });
 
@@ -33,7 +33,7 @@ test('uses a short processing lease independently from the durable result TTL', 
   const enabled = readHighLevelConfig({
     HIGHLEVEL_ENABLED: 'true',
     HIGHLEVEL_TEST_MODE: 'true',
-    HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED: 'true',
+    HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
@@ -58,7 +58,7 @@ test('rejects a lease shorter than the longest two-call CRM critical section', (
   assert.throws(() => readHighLevelConfig({
     HIGHLEVEL_ENABLED: 'true',
     HIGHLEVEL_TEST_MODE: 'true',
-    HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED: 'true',
+    HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
@@ -77,7 +77,7 @@ test('includes WordPress delivery and its Redis checkpoint in lease validation',
   const base = {
     HIGHLEVEL_ENABLED: 'true',
     HIGHLEVEL_TEST_MODE: 'true',
-    HIGHLEVEL_CONTACT_FORM_AUTOCAPTURE_DISABLED: 'true',
+    HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',

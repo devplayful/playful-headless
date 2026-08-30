@@ -6,7 +6,7 @@ Objetivo: demostrar, antes de activar la integración real, que **upsert de cont
 
 Producción carga `https://api.playfulagency.com/js/external-tracking.js`. La evidencia del 30 de agosto mostró que ese script intercepta el formulario en captura y genera `external_form_submission` antes de reCAPTCHA o de que `/api/contact` confirme la entrega. Dos intentos consecutivos crearon doble actividad sobre un contacto, aunque no crearon oportunidad, tarea ni workflow.
 
-No hay una exclusión por atributo documentada. El paquete omite únicamente ese script en `/contactar-agencia-de-marketing-digital` y mantiene por separado el widget oficial. Antes de activar HighLevel server-side se debe comprobar en Preview: script de tracking ausente en esa ruta, widget presente, cero `external_form_submission`, tracking intacto en otras rutas y navegación cliente sin residuos. La pérdida deliberada es el page-view de HighLevel en la página de contacto; GA4/GTM no forma parte de este cambio.
+No hay una exclusión por atributo documentada y quitar el `<script>` al cambiar pathname no elimina listeners globales ya instalados. Por eso el paquete apaga External Tracking en todo el sitio mediante un flag cerrado por defecto y mantiene por separado el widget oficial. Antes de activar HighLevel server-side se debe desactivar globalmente **Form Submissions** en HighLevel y comprobar en Preview, incluida navegación SPA: widget presente, cero `external_form_submission` y page-views restaurados solo después de habilitar de nuevo el script. Mientras el flag permanece apagado se pierden los page-views de HighLevel en todo el sitio; GA4/GTM no forma parte de este cambio.
 
 ## Inventario que se debe exportar o capturar
 
