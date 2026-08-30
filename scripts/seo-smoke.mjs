@@ -55,6 +55,12 @@ assert.equal(canonicals[0][1], `https://playfulagency.com${canonicalPath}`);
 const invalidResponse = await request(`${canonicalPath}/extra`, { redirect: 'manual' });
 assert.equal(invalidResponse.status, 404, 'extra catch-all segments must not resolve');
 
+const unknownCategoryResponse = await request(
+  `/blog/categoria-inexistente/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke`,
+  { redirect: 'manual' },
+);
+assert.equal(unknownCategoryResponse.status, 404, 'unknown category aliases must not drop attribution');
+
 const sitemapResponse = await request('/sitemap.xml', { redirect: 'follow' });
 assert.equal(sitemapResponse.status, 200);
 const sitemap = await sitemapResponse.text();
