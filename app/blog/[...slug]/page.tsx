@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
+import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
 import { BlogPostContent } from './BlogPostContent';
@@ -14,7 +15,7 @@ import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 export async function generateStaticParams() {
   const { posts } = await getBlogPosts(1, 100);
   return posts.map((post) => ({
-    slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
+    slug: [getPrimaryCategorySlug(post), post.slug],
   }));
 }
 
@@ -37,6 +38,10 @@ interface BlogPostPageProps {
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // El array slug contiene [category, post-slug]
   const { slug } = await params;
+  if (slug.length !== 2) {
+    notFound();
+  }
+
   const [category, postSlug] = slug;
   
   if (!postSlug) {
@@ -49,16 +54,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  // Verificar que la categoría en la URL coincida con la categoría del post (opcional)
-  // Si el post tiene categorías, verificamos que la URL sea correcta
-  const postCategory = post.categories?.[0]?.slug || 'sin-categoria';
-  
-  // Solo redirigir si la categoría es completamente diferente
-  // Esto permite flexibilidad en caso de cambios de categoría
-  if (post.categories && post.categories.length > 0 && postCategory !== category) {
-    // En lugar de notFound(), podrías hacer un redirect a la URL correcta
-    // Por ahora, permitimos que se muestre el contenido
-    console.log(`Category mismatch: URL has "${category}" but post has "${postCategory}"`);
+  const postCategory = getPrimaryCategorySlug(post);
+
+  if (postCategory !== category) {
+    // Known WordPress category aliases are compiled into Next redirects at
+    // build time. Unknown categories should be a 404 instead of a redirect
+    // that silently drops attribution parameters.
+    notFound();
   }
 
   // Extraer encabezados para la tabla de contenidos
@@ -313,13 +315,11 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
   const [, postSlug] = slug;
-  const url = canonicalForPath(`/blog/${slug.join('/')}`);
   
-  if (!postSlug) {
+  if (slug.length !== 2 || !postSlug) {
     return {
       title: 'Artículo no encontrado',
-      alternates: { canonical: url },
-      openGraph: { url },
+      robots: { index: false, follow: false },
     };
   }
 
@@ -328,10 +328,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) {
     return {
       title: 'Artículo no encontrado',
-      alternates: { canonical: url },
-      openGraph: { url },
+      robots: { index: false, follow: false },
     };
   }
+
+  const url = canonicalForPath(blogPostPath(post));
 
   const override = BLOG_SEO_OVERRIDES[postSlug];
   const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;

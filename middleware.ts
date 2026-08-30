@@ -5,6 +5,7 @@ const PERMANENT_301: Record<string, string> = {
   '/servicios': '/agencia-e-commerce',
   '/services': '/agencia-e-commerce',
   '/contacto': '/contactar-agencia-de-marketing-digital',
+  '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito-agencia-de-marketing-digital',
 };
 
@@ -13,7 +14,9 @@ export function middleware(request: NextRequest) {
   const path = raw.length > 1 ? raw.replace(/\/+$/, '') : raw;
   const dest = PERMANENT_301[path];
   if (!dest) return NextResponse.next();
-  return NextResponse.redirect(new URL(dest, request.nextUrl.origin), 301);
+  const target = request.nextUrl.clone();
+  target.pathname = dest;
+  return NextResponse.redirect(target, 301);
 }
 
 export const config = {
@@ -24,6 +27,8 @@ export const config = {
     '/services/',
     '/contacto',
     '/contacto/',
+    '/contactanos',
+    '/contactanos/',
     '/casos',
     '/casos/',
   ],

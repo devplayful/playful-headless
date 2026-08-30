@@ -7,6 +7,7 @@ import BlogCategories from './BlogCategories';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { blogPostPath } from '@/utils/blog-url';
 
 // Función para formatear la fecha
 const formatDate = (dateString: string) => {
@@ -172,7 +173,7 @@ export default async function BlogPage({
 
                   {/* Título destacado */}
                   <Link 
-                    href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
+                    href={blogPostPath(posts[0])}
                     className="block mb-4"
                   >
                     <h2 className="text-[1.4rem] md:text-4xl lg:text-5xl font-bold text-[#440099] hover:text-[#5500BB] transition-colors leading-tight">
@@ -185,7 +186,7 @@ export default async function BlogPage({
                   </p>
                   
                   <Link 
-                    href={`/blog/${posts[0].categories?.[0]?.slug || 'sin-categoria'}/${posts[0].slug}`}
+                    href={blogPostPath(posts[0])}
                     className="inline-block bg-[#440099] text-white px-8 py-3 rounded-full font-bold text-base hover:bg-[#5500BB] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     LEER ARTÍCULO ›
@@ -258,7 +259,7 @@ export default async function BlogPage({
 
                       {/* Título */}
                       <Link 
-                        href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`} 
+                        href={blogPostPath(post)}
                         className="block mb-3"
                       >
                         <h3 className="text-xl font-bold text-[#440099] line-clamp-2 leading-tight hover:text-[#5500BB] transition-colors">
@@ -277,7 +278,7 @@ export default async function BlogPage({
                           {formatDate(post.date)}
                         </span>
                         <Link 
-                          href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
+                          href={blogPostPath(post)}
                           className="w-full bg-[#440099] text-white py-3 rounded-full font-bold text-sm text-center hover:bg-[#5500BB] transition-all shadow-md hover:shadow-lg"
                         >
                           LEER MÁS

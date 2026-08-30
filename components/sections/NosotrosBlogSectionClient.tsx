@@ -11,7 +11,7 @@ interface BlogPost {
   category: string;
   excerpt: string;
   date: string;
-  link: string;
+  href: string;
 }
 
 export default function NosotrosBlogSectionClient() {
@@ -108,7 +108,7 @@ export default function NosotrosBlogSectionClient() {
                 <p className="text-gray-700 text-sm mb-6">{post.excerpt}</p>
                 <div className="mt-auto flex justify-between items-center">
                   <span className="text-xs text-gray-500">{post.date?.replace(/\//g, ' / ')}</span>
-                  <Link href={post.link} className="bg-[#440099] hover:bg-[#330077] text-white font-semibold rounded-full px-4 py-2 text-sm transition-colors">
+                  <Link href={post.href} className="bg-[#440099] hover:bg-[#330077] text-white font-semibold rounded-full px-4 py-2 text-sm transition-colors">
                     Leer más
                   </Link>
                 </div>

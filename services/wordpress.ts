@@ -458,7 +458,7 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   }
 }
 
-export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ id: number; title: string; excerpt: string; category: string; date: string; imageUrl: string; slug: string; link: string }>> {
+export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ id: number; title: string; excerpt: string; category: string; date: string; imageUrl: string; slug: string; href: string }>> {
   try {
     const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
     url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
@@ -480,7 +480,8 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
       const date = new Date(post.date);
       const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
       const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
-      return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, link: post.link };
+      const categorySlug = categories?.[0]?.slug || 'sin-categoria';
+      return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, href: `/blog/${categorySlug}/${post.slug}` };
     });
   } catch (error) {
     console.error('Error en getLatestBlogPosts:', error);
