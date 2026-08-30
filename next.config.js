@@ -71,6 +71,16 @@ async function getBlogCategoryRedirects() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // WordPress is a small shared origin. Keep static generation deliberately
+    // serial so a release cannot create the burst of concurrent REST calls
+    // that previously produced transient 500s and false 404 pages.
+    staticGenerationMaxConcurrency: 1,
+    staticGenerationMinPagesPerWorker: 1_000,
+    // The WordPress request layer owns the retry budget. Keep a single page
+    // generation attempt so Next does not multiply those origin requests.
+    staticGenerationRetryCount: 1,
+  },
   images: {
     remotePatterns: [
       {
