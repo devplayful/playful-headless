@@ -71,12 +71,23 @@ export async function POST(request: NextRequest) {
 
     // Enviar al endpoint de WordPress
     const wordpressUrl = process.env.WORDPRESS_API_URL || 'https://endpoint.playfulagency.com/wp-json';
+    const wordpressContactToken = process.env.WORDPRESS_CONTACT_TOKEN;
+
+    if (!wordpressContactToken) {
+      console.error('WORDPRESS_CONTACT_TOKEN no está configurada.');
+      return NextResponse.json(
+        { success: false, message: 'El formulario no está disponible temporalmente.' },
+        { status: 503 }
+      );
+    }
+
     const contactEndpoint = `${wordpressUrl}/playful/v1/contact`;
 
     const response = await fetch(contactEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-Playful-Contact-Token': wordpressContactToken,
       },
       body: JSON.stringify({
         name,
@@ -100,8 +111,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    const data = await response.json();
 
     return NextResponse.json({
       success: true,
