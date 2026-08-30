@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "clean": "rimraf .next",
-    "test:seo": "node scripts/seo-smoke.mjs"
+    "test:seo": "node scripts/seo-smoke.mjs",
+    "test:highlevel": "node --experimental-transform-types --test tests/highlevel/*.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
