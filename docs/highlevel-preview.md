@@ -8,7 +8,7 @@
 - `generate_lead` se añade a `dataLayer` solo después de que la API confirme el flujo exitoso. El evento contiene únicamente `event` y `form_id`.
 - Cada envío conserva un `submissionId` durante los reintentos. En el servidor solo se guarda su hash SHA-256.
 - El estado de entrega y los checkpoints CRM usan un almacén Redis-compatible duradero. No existe un fallback en memoria para producción.
-- Los leases de procesamiento son claves separadas y breves (30 segundos por defecto); el estado final conserva el TTL largo (7 días por defecto). Un proceso caído deja de bloquear los reintentos cuando vence su lease sin borrar el último checkpoint.
+- Los leases de procesamiento son claves separadas y breves (30 segundos por defecto); el estado final conserva el TTL largo (7 días por defecto). Un proceso caído deja de bloquear los reintentos cuando vence su lease sin borrar el último checkpoint. La configuración rechaza un lease que no cubra dos requests CRM más el checkpoint Redis.
 - HighLevel recibe `createNewIfDuplicateAllowed=false`. La búsqueda y creación de oportunidad se serializa con un lease compartido por contacto y pipeline. Solo se crea una oportunidad en `Consulta` si no existe ninguna.
 - Una oportunidad existente no se mueve ni se degrada. Si aparecen dos o más oportunidades abiertas, el flujo se detiene para revisión manual.
 - El primer origen y landing se completan campo a campo solo cuando el valor actual está vacío, también para contactos existentes. Nunca se incluyen en el upsert, por lo que un reintento no los sobrescribe. El origen reciente, UTM, landing, formulario y consentimientos se actualizan en cada consulta confirmada.

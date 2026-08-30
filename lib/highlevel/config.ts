@@ -93,6 +93,19 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
   if (env.HIGHLEVEL_ENABLED !== 'true') return { enabled: false };
 
   const testMode = env.HIGHLEVEL_TEST_MODE === 'true';
+  const timeoutMs = env.HIGHLEVEL_REQUEST_TIMEOUT_MS
+    ? integer(env, 'HIGHLEVEL_REQUEST_TIMEOUT_MS', 1000, 30000)
+    : 8000;
+  const leaseSeconds = env.HIGHLEVEL_PROCESSING_LEASE_SECONDS
+    ? integer(env, 'HIGHLEVEL_PROCESSING_LEASE_SECONDS', 10, 300)
+    : 30;
+  const minimumSafeLeaseMs = timeoutMs * 2 + 10000;
+  if (leaseSeconds * 1000 < minimumSafeLeaseMs) {
+    throw new HighLevelConfigurationError(
+      'HIGHLEVEL_PROCESSING_LEASE_SECONDS debe cubrir dos requests CRM y el checkpoint Redis.',
+    );
+  }
+
   return {
     enabled: true,
     testMode,
@@ -103,15 +116,11 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
     ownerId: required(env, 'HIGHLEVEL_DEFAULT_OWNER_ID'),
     contactTag: required(env, 'HIGHLEVEL_CONTACT_TAG'),
     slaHours: integer(env, 'HIGHLEVEL_SLA_HOURS', 1, 168),
-    timeoutMs: env.HIGHLEVEL_REQUEST_TIMEOUT_MS
-      ? integer(env, 'HIGHLEVEL_REQUEST_TIMEOUT_MS', 1000, 30000)
-      : 8000,
+    timeoutMs,
     idempotencyTtlSeconds: env.HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS
       ? integer(env, 'HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS', 3600, 2592000)
       : 604800,
-    leaseSeconds: env.HIGHLEVEL_PROCESSING_LEASE_SECONDS
-      ? integer(env, 'HIGHLEVEL_PROCESSING_LEASE_SECONDS', 10, 300)
-      : 30,
+    leaseSeconds,
     redisRestUrl: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL'),
     redisRestToken: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN'),
     customFieldIds: customFields(env),
