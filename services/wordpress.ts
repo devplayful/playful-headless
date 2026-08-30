@@ -1,4 +1,5 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
+import { wordpressFetch } from './wordpress-request.mjs';
 
 const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
 
@@ -151,7 +152,7 @@ export async function getHomePageMetadata(): Promise<YoastMetaData> {
     const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=home-2&_fields=yoast_head`;
     /* console.log('URL de la API:', apiUrl); */
     
-    const response = await fetch(apiUrl, { 
+    const response = await wordpressFetch(apiUrl, {
       next: { revalidate: 3600 },
       headers: {
         'Content-Type': 'application/json',
@@ -229,7 +230,7 @@ export async function getPageMetadataBySlug(slug: string): Promise<YoastMetaData
     const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=yoast_head`;
     /* console.log('URL de la API:', apiUrl); */
     
-    const response = await fetch(apiUrl, { 
+    const response = await wordpressFetch(apiUrl, {
       next: { revalidate: 3600 },
       headers: {
         'Content-Type': 'application/json',
@@ -376,29 +377,22 @@ function rewriteInSitePageHrefs(html: string): string {
 
 /** Página WP (servicios, etc.) con HTML de Elementor para renderizarla en el Next. */
 export async function getPageBySlug(slug: string): Promise<WPPage | null> {
-  try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
-      {
-        next: { revalidate: 300 },
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`Error al obtener la página ${slug}: ${response.status}`);
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
+    {
+      next: { revalidate: 300 },
+      headers: { 'Content-Type': 'application/json' },
     }
-    const pages = await response.json();
-    if (!pages?.[0]) return null;
-    const page = pages[0];
-    const rawHtml: string = page.content?.rendered || '';
-    const html = rewriteInSitePageHrefs(stripScripts(rawHtml));
-    const title = stripHtml(page.title?.rendered || slug);
-    const stylesheetIds = collectStylesheetIds(html, page.id);
-    return { id: page.id, slug: page.slug, title, html, stylesheetIds };
-  } catch (error) {
-    console.error(`Error en getPageBySlug para ${slug}:`, error);
-    return null;
-  }
+  );
+  if (response.status === 404) return null;
+  const pages = await response.json();
+  if (!pages?.[0]) return null;
+  const page = pages[0];
+  const rawHtml: string = page.content?.rendered || '';
+  const html = rewriteInSitePageHrefs(stripScripts(rawHtml));
+  const title = stripHtml(page.title?.rendered || slug);
+  const stylesheetIds = collectStylesheetIds(html, page.id);
+  return { id: page.id, slug: page.slug, title, html, stylesheetIds };
 }
 
 // Interfaz para los ítems del menú
@@ -496,53 +490,44 @@ export interface WPPost {
 }
 
 export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
-  try {
-    page = Math.max(1, page);
-    perPage = Math.min(100, Math.max(1, perPage));
-    let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
-    if (categorySlug) {
-      try {
-        const categoriesResponse = await fetch(
-          `${WORDPRESS_API_URL}/wp/v2/categories?slug=${categorySlug}`,
-          { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
-        );
-        if (categoriesResponse.ok) {
-          const categories = await categoriesResponse.json();
-          if (categories.length > 0) url += `&categories=${categories[0].id}`;
-        }
-      } catch (error) {
-        console.error('Error al obtener categoría:', error);
-      }
-    }
-    const response = await fetch(url, { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } });
-    if (!response.ok) throw new Error(`Error al obtener los posts: ${response.status} ${response.statusText}`);
-    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-    const posts: WPPost[] = await response.json();
-    const processedPosts = posts.map(post => ({
-      ...post,
-      featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
-      featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
-      categories: post._embedded?.['wp:term']?.[0] || [],
-      author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
-    }));
-    return { posts: processedPosts, totalPages };
-  } catch (error) {
-    console.error('Error en getBlogPosts:', error);
-    return { posts: [], totalPages: 0 };
+  page = Math.max(1, page);
+  perPage = Math.min(100, Math.max(1, perPage));
+  let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
+  if (categorySlug) {
+    const categoriesResponse = await wordpressFetch(
+      `${WORDPRESS_API_URL}/wp/v2/categories?slug=${encodeURIComponent(categorySlug)}`,
+      { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
+    );
+    if (categoriesResponse.status === 404) return { posts: [], totalPages: 0 };
+    const categories = await categoriesResponse.json();
+    if (categories.length === 0) return { posts: [], totalPages: 0 };
+    url += `&categories=${categories[0].id}`;
   }
+  const response = await wordpressFetch(url, { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } });
+  if (response.status === 404) return { posts: [], totalPages: 0 };
+  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+  const posts: WPPost[] = await response.json();
+  const processedPosts = posts.map(post => ({
+    ...post,
+    featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+    featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
+    categories: post._embedded?.['wp:term']?.[0] || [],
+    author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
+  }));
+  return { posts: processedPosts, totalPages };
 }
 
 export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ id: number; title: string; excerpt: string; category: string; date: string; imageUrl: string; slug: string; href: string }>> {
   try {
-    const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
-    url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
-    url.searchParams.append('per_page', Math.min(perPage, 10).toString());
-    url.searchParams.append('orderby', 'date');
-    url.searchParams.append('order', 'desc');
-    const response = await fetch(url.toString(), { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } });
-    if (!response.ok) throw new Error(`Error al obtener las entradas del blog: ${response.status}`);
-    const posts: WPPost[] = await response.json();
-    return posts.map(post => {
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+  url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
+  url.searchParams.append('per_page', Math.min(perPage, 10).toString());
+  url.searchParams.append('orderby', 'date');
+  url.searchParams.append('order', 'desc');
+  const response = await wordpressFetch(url.toString(), { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } });
+  if (response.status === 404) return [];
+  const posts: WPPost[] = await response.json();
+  return posts.map(post => {
       let category = 'Sin categoría';
       const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
       if (categories && categories.length > 0) category = categories[0].name;
@@ -555,8 +540,8 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
       const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
       const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
       const categorySlug = categories?.[0]?.slug || 'sin-categoria';
-      return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, href: `/blog/${categorySlug}/${post.slug}` };
-    });
+    return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, href: `/blog/${categorySlug}/${post.slug}` };
+  });
   } catch (error) {
     console.error('Error en getLatestBlogPosts:', error);
     return [];
@@ -564,33 +549,28 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
-  try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
-      { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener el post: ${response.status} ${response.statusText}`);
-    const posts: WPPost[] = await response.json();
-    if (!posts || posts.length === 0) return null;
-    const post = posts[0];
-    if (post._embedded) {
-      if (post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-        const media = post._embedded['wp:featuredmedia'][0];
-        post.featured_media_url = media.source_url;
-        post.featured_media_alt = media.alt_text || '';
-      }
-      if (post._embedded['wp:term']) {
-        const terms = post._embedded['wp:term'];
-        post.categories = terms[0] || [];
-        post.tags = terms[1] || [];
-      }
-      if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
+    { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
+  );
+  if (response.status === 404) return null;
+  const posts: WPPost[] = await response.json();
+  if (!posts || posts.length === 0) return null;
+  const post = posts[0];
+  if (post._embedded) {
+    if (post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+      const media = post._embedded['wp:featuredmedia'][0];
+      post.featured_media_url = media.source_url;
+      post.featured_media_alt = media.alt_text || '';
     }
-    return post;
-  } catch (error) {
-    console.error('Error en getBlogPostBySlug:', error);
-    return null;
+    if (post._embedded['wp:term']) {
+      const terms = post._embedded['wp:term'];
+      post.categories = terms[0] || [];
+      post.tags = terms[1] || [];
+    }
+    if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
+  return post;
 }
 
 export interface TeamMember {
@@ -635,7 +615,7 @@ export interface PodcastEpisode {
 export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
   try {
     const apiUrl = `${WORDPRESS_API_URL}/wp/v2/pages?slug=podcast&_fields=yoast_head`;
-    const response = await fetch(apiUrl, { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } });
+    const response = await wordpressFetch(apiUrl, { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } });
     const fallback: YoastMetaData = {
       yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
       yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
@@ -681,18 +661,18 @@ export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
 
 export async function getPodcastEpisodes(page: number = 1, perPage: number = 10): Promise<{ episodes: PodcastEpisode[], totalPages: number }> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/podcast?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
-      { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener los episodios: ${response.status} ${response.statusText}`);
-    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-    const episodes: PodcastEpisode[] = await response.json();
-    const processedEpisodes = episodes.map(episode => {
-      const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-      return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
-    });
-    return { episodes: processedEpisodes, totalPages };
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/podcast?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
+    { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
+  );
+  if (response.status === 404) return { episodes: [], totalPages: 0 };
+  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+  const episodes: PodcastEpisode[] = await response.json();
+  const processedEpisodes = episodes.map(episode => {
+    const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
+    return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+  });
+  return { episodes: processedEpisodes, totalPages };
   } catch (error) {
     console.error('Error en getPodcastEpisodes:', error);
     return { episodes: [], totalPages: 0 };
@@ -701,13 +681,13 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/equipo?_embed=wp:term,wp:featuredmedia&per_page=100`,
-      { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener los miembros del equipo: ${response.status} ${response.statusText}`);
-    const teamMembers = await response.json();
-    const membersWithTerms = await Promise.all(teamMembers.map(async (member: any) => {
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/equipo?_embed=wp:term,wp:featuredmedia&per_page=100`,
+    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
+  );
+  if (response.status === 404) return [];
+  const teamMembers: any[] = await response.json();
+  const membersWithTerms = await Promise.all(teamMembers.map(async (member: any) => {
       try {
         const cargos = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'cargo') || [];
         const roles = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'rol') || [];
@@ -738,8 +718,8 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
         console.error('Error procesando miembro del equipo:', error);
         return null;
       }
-    }));
-    return membersWithTerms.filter((member): member is TeamMember => member !== null);
+  }));
+  return membersWithTerms.filter((member: TeamMember | null): member is TeamMember => member !== null);
   } catch (error) {
     console.error('Error al obtener los miembros del equipo:', error);
     return [];
@@ -773,61 +753,51 @@ export interface SuccessStory extends WPPost {
 }
 
 export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory | null> {
-  try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
-      { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener el caso de éxito: ${response.status} ${response.statusText}`);
-    const stories: any[] = await response.json();
-    if (!stories || stories.length === 0) return null;
-    const story = stories[0];
-    if (!story.acf) return null;
-    if (story._embedded?.['wp:featuredmedia']?.[0]) {
-      story.featured_media_url = story._embedded['wp:featuredmedia'][0].source_url;
-      story.featured_media_alt = story._embedded['wp:featuredmedia'][0].alt_text;
-    }
-    const sanitizedStory = sanitizeWpPayload(story as SuccessStory);
-    sanitizedStory.acf = {
-      ...sanitizedStory.acf,
-      ...preserveCaseStudyMediaFields(story.acf as Record<string, unknown>),
-    };
-    return applyPublicCaseStudyOverrides(sanitizedStory);
-  } catch (error) {
-    console.error('Error en getSuccessStoryBySlug:', error);
-    return null;
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
+    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } }
+  );
+  if (response.status === 404) return null;
+  const stories: any[] = await response.json();
+  if (!stories || stories.length === 0) return null;
+  const story = stories[0];
+  if (!story.acf) return null;
+  if (story._embedded?.['wp:featuredmedia']?.[0]) {
+    story.featured_media_url = story._embedded['wp:featuredmedia'][0].source_url;
+    story.featured_media_alt = story._embedded['wp:featuredmedia'][0].alt_text;
   }
+  const sanitizedStory = sanitizeWpPayload(story as SuccessStory);
+  sanitizedStory.acf = {
+    ...sanitizedStory.acf,
+    ...preserveCaseStudyMediaFields(story.acf as Record<string, unknown>),
+  };
+  return applyPublicCaseStudyOverrides(sanitizedStory);
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
-  try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/podcast?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
-      { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener el episodio: ${response.status} ${response.statusText}`);
-    const episodes: PodcastEpisode[] = await response.json();
-    const episode = episodes[0];
-    if (!episode) return null;
-    const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-    if (!episode.excerpt) episode.excerpt = { rendered: '' };
-    return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
-  } catch (error) {
-    console.error('Error en getPodcastEpisodeBySlug:', error);
-    return null;
-  }
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/podcast?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
+    { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
+  );
+  if (response.status === 404) return null;
+  const episodes: PodcastEpisode[] = await response.json();
+  const episode = episodes[0];
+  if (!episode) return null;
+  const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
+  if (!episode.excerpt) episode.excerpt = { rendered: '' };
+  return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
 }
 
 export async function getAllCaseStudies(): Promise<any[]> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
-      { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
-    );
-    if (!response.ok) throw new Error(`Error al obtener casos de éxito: ${response.status}`);
-    const casos = await response.json();
-    const sanitizedCases = sanitizeWpPayload(casos);
-    return sanitizedCases.map(applyPublicCaseStudyOverrides);
+  const response = await wordpressFetch(
+    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
+    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
+  );
+  if (response.status === 404) return [];
+  const casos = await response.json();
+  const sanitizedCases = sanitizeWpPayload(casos);
+  return sanitizedCases.map(applyPublicCaseStudyOverrides);
   } catch (error) {
     console.error('Error en getAllCaseStudies:', error);
     return [];
