@@ -40,3 +40,21 @@ test('uses a short processing lease independently from the durable result TTL', 
     assert.equal(enabled.idempotencyTtlSeconds, 604800);
   }
 });
+
+test('rejects a lease shorter than the longest two-call CRM critical section', () => {
+  assert.throws(() => readHighLevelConfig({
+    HIGHLEVEL_ENABLED: 'true',
+    HIGHLEVEL_TEST_MODE: 'true',
+    HIGHLEVEL_LOCATION_ID: 'location',
+    HIGHLEVEL_PIPELINE_ID: 'pipeline',
+    HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
+    HIGHLEVEL_CONTACT_TAG: 'website-inbound',
+    HIGHLEVEL_SLA_HOURS: '24',
+    HIGHLEVEL_REQUEST_TIMEOUT_MS: '8000',
+    HIGHLEVEL_PROCESSING_LEASE_SECONDS: '20',
+    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
+    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
+    HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+  }), HighLevelConfigurationError);
+});
