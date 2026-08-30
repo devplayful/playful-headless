@@ -24,6 +24,12 @@ export interface HighLevelOpportunity {
   status: string;
 }
 
+export interface HighLevelTask {
+  id: string;
+  title: string;
+  body?: string;
+}
+
 export interface CreateOpportunityInput {
   pipelineId: string;
   locationId: string;
@@ -44,10 +50,12 @@ export interface CreateTaskInput {
 
 export interface HighLevelGateway {
   upsertContact(input: UpsertContactInput): Promise<UpsertContactResult>;
+  getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
+  findTasks(contactId: string): Promise<HighLevelTask[]>;
   createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }>;
 }
 
@@ -97,6 +105,16 @@ export class HighLevelApiClient implements HighLevelGateway {
     return { id: result.contact.id, isNew: result.new };
   }
 
+  async getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]> {
+    const result = await this.request<{
+      contact: { customFields?: Array<{ id: string; value?: unknown; fieldValue?: unknown }> };
+    }>('get contact attribution', `/contacts/${encodeURIComponent(contactId)}`, { method: 'GET' });
+    return (result.contact.customFields || []).map((item) => ({
+      id: item.id,
+      fieldValue: String(item.fieldValue ?? item.value ?? ''),
+    }));
+  }
+
   async updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
     await this.request('update contact attribution', `/contacts/${encodeURIComponent(contactId)}`, {
       method: 'PUT',
@@ -136,6 +154,15 @@ export class HighLevelApiClient implements HighLevelGateway {
     return { id: result.opportunity.id };
   }
 
+  async findTasks(contactId: string): Promise<HighLevelTask[]> {
+    const result = await this.request<{ tasks?: HighLevelTask[] }>(
+      'search follow-up tasks',
+      `/contacts/${encodeURIComponent(contactId)}/tasks`,
+      { method: 'GET' },
+    );
+    return result.tasks || [];
+  }
+
   async createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }> {
     const result = await this.request<{ task: { id: string } }>(
       'create follow-up task',
@@ -147,14 +174,26 @@ export class HighLevelApiClient implements HighLevelGateway {
 }
 
 export class DryRunHighLevelGateway implements HighLevelGateway {
+  private readonly customFields = new Map<string, string>();
+  private readonly tasks: HighLevelTask[] = [];
+
   async upsertContact(): Promise<UpsertContactResult> {
     return { id: 'preview-contact', isNew: true };
   }
 
-  async updateContactCustomFields(): Promise<void> {}
+  async getContactCustomFields(): Promise<HighLevelCustomFieldValue[]> {
+    return Array.from(this.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
+  }
+  async updateContactCustomFields(_contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
+    for (const item of customFields) this.customFields.set(item.id, item.fieldValue);
+  }
   async addContactTags(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
   async createOpportunity(): Promise<{ id: string }> { return { id: 'preview-opportunity' }; }
-  async createTask(): Promise<{ id: string }> { return { id: 'preview-task' }; }
+  async findTasks(): Promise<HighLevelTask[]> { return [...this.tasks]; }
+  async createTask(_contactId: string, input: CreateTaskInput): Promise<{ id: string }> {
+    const task = { id: 'preview-task', title: input.title, body: input.body };
+    this.tasks.push(task);
+    return { id: task.id };
+  }
 }
-

@@ -26,23 +26,22 @@ function redisRestDouble() {
     } else if (operation === 'GET') {
       result = records.get(String(command[1])) || null;
     } else if (operation === 'EVAL') {
-      const key = String(command[3]);
-      const currentRaw = records.get(key);
-      const current = currentRaw ? JSON.parse(currentRaw) as { state: string; owner?: string } : null;
-
-      if (command.length === 5) {
+      const script = String(command[1]);
+      const firstKey = String(command[3]);
+      if (Number(command[2]) === 1) {
         const owner = String(command[4]);
-        if (!current || (current.state === 'delivery_processing' && current.owner === owner)) {
-          records.delete(key);
+        if (records.get(firstKey) === owner) {
+          records.delete(firstKey);
           result = 1;
         } else {
           result = 0;
         }
       } else {
-        const from = String(command[4]);
+        const stateKey = String(command[4]);
         const owner = String(command[5]);
-        if (current && current.state === from && (!owner || current.owner === owner)) {
-          records.set(key, String(command[6]));
+        if (records.get(firstKey) === owner) {
+          records.set(stateKey, String(command[6]));
+          if (!script.includes('EXPIRE')) records.delete(firstKey);
           result = 1;
         } else {
           result = 0;
@@ -65,6 +64,7 @@ test('Preview E2E entrega una vez, simula CRM y no guarda PII en Redis', async (
     'https://redis.test',
     'test-token',
     config.idempotencyTtlSeconds,
+    config.leaseSeconds,
     redis.fetchImpl,
   );
   const gateway = new DryRunHighLevelGateway();
@@ -73,7 +73,13 @@ test('Preview E2E entrega una vez, simula CRM y no guarda PII en Redis', async (
   const run = (ownerId: string) => processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
-    syncCrm: (submission) => syncWebsiteLeadToHighLevel(submission, gateway, config).then(() => undefined),
+    syncCrm: (submission, control) => syncWebsiteLeadToHighLevel(
+      submission,
+      gateway,
+      config,
+      new Date(),
+      control,
+    ).then(() => undefined),
     dryRun: true,
     ownerId,
   });
@@ -94,4 +100,6 @@ test('Preview E2E entrega una vez, simula CRM y no guarda PII en Redis', async (
   assert.equal(redisTraffic.includes(lead.email), false);
   assert.equal(redisTraffic.includes(lead.phone || ''), false);
   assert.equal(redisTraffic.includes(lead.name), false);
+  assert.equal(redisTraffic.includes('"NX","EX",30'), true);
+  assert.equal(redisTraffic.includes('604800'), true);
 });

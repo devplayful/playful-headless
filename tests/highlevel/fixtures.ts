@@ -28,6 +28,7 @@ export const config: EnabledHighLevelConfig = {
   slaHours: 24,
   timeoutMs: 8000,
   idempotencyTtlSeconds: 604800,
+  leaseSeconds: 30,
   redisRestUrl: 'https://redis.invalid',
   redisRestToken: 'redis-test-token',
   customFieldIds,
@@ -64,4 +65,3 @@ export const lead: WebsiteLead = {
     utm_content: 'cta',
   },
 };
-
