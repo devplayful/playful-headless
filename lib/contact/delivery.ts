@@ -1,11 +1,30 @@
 import type { WebsiteLead } from './types.ts';
 import { WORDPRESS_DELIVERY_TIMEOUT_MS } from './timeouts.ts';
 
+const WORDPRESS_DELIVERY_MAX_ATTEMPTS = 4;
+const WORDPRESS_DELIVERY_RETRY_DELAY_MS = 500;
+
 export class ContactDeliveryError extends Error {
   constructor(public readonly status: number, message: string) {
     super(message);
     this.name = 'ContactDeliveryError';
   }
+}
+
+interface WordPressDeliveryOptions {
+  fetchImpl?: typeof fetch;
+  sleep?: (delayMs: number) => Promise<void>;
+  idempotentRetriesEnabled?: boolean;
+}
+
+function isRetryableStatus(status: number): boolean {
+  // A returned 5xx may have happened after an unknown plugin side effect, so
+  // only retry statuses that the receipt protocol explicitly makes safe.
+  return status === 408 || status === 409 || status === 429;
+}
+
+function sleep(delayMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 export async function verifyRecaptcha(token: unknown): Promise<void> {
@@ -34,30 +53,55 @@ export async function verifyRecaptcha(token: unknown): Promise<void> {
   }
 }
 
-export async function deliverToWordPress(lead: WebsiteLead): Promise<void> {
+export async function deliverToWordPress(
+  lead: WebsiteLead,
+  options: WordPressDeliveryOptions = {},
+): Promise<void> {
   const wordpressUrl = process.env.WORDPRESS_API_URL?.replace(/\/$/, '');
   const token = process.env.WORDPRESS_CONTACT_TOKEN;
   if (!wordpressUrl || !token) {
     throw new ContactDeliveryError(503, 'El formulario no está disponible temporalmente.');
   }
 
-  const response = await fetch(`${wordpressUrl}/playful/v1/contact`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Playful-Contact-Token': token,
-    },
-    body: JSON.stringify({
-      name: lead.name,
-      email: lead.email,
-      phone: lead.phone,
-      business: lead.business,
-      message: lead.message,
-    }),
-    signal: AbortSignal.timeout(WORDPRESS_DELIVERY_TIMEOUT_MS),
-  });
+  const fetchImpl = options.fetchImpl || fetch;
+  const wait = options.sleep || sleep;
+  const idempotentRetriesEnabled = options.idempotentRetriesEnabled
+    ?? process.env.WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED === 'true';
+  const attempts = idempotentRetriesEnabled ? WORDPRESS_DELIVERY_MAX_ATTEMPTS : 1;
 
-  if (!response.ok) {
-    throw new ContactDeliveryError(502, 'No pudimos confirmar la entrega del mensaje.');
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetchImpl(`${wordpressUrl}/playful/v1/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Playful-Contact-Token': token,
+          'X-Playful-Submission-Id': lead.submissionId,
+        },
+        body: JSON.stringify({
+          submission_id: lead.submissionId,
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          business: lead.business,
+          message: lead.message,
+        }),
+        signal: AbortSignal.timeout(WORDPRESS_DELIVERY_TIMEOUT_MS),
+      });
+
+      if (response.ok) return;
+      if (!idempotentRetriesEnabled || !isRetryableStatus(response.status) || attempt === attempts) {
+        throw new ContactDeliveryError(502, 'No pudimos confirmar la entrega del mensaje.');
+      }
+    } catch (error) {
+      if (error instanceof ContactDeliveryError) throw error;
+      if (!idempotentRetriesEnabled || attempt === attempts) {
+        throw new ContactDeliveryError(504, 'No pudimos confirmar la entrega del mensaje.');
+      }
+    }
+
+    await wait(WORDPRESS_DELIVERY_RETRY_DELAY_MS * attempt);
   }
+
+  throw new ContactDeliveryError(504, 'No pudimos confirmar la entrega del mensaje.');
 }
