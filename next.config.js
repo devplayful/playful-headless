@@ -1,7 +1,8 @@
 const WORDPRESS_POSTS_URL = 'https://endpoint.playfulagency.com/wp-json/wp/v2/posts';
-const WORDPRESS_RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
+const WORDPRESS_RETRYABLE_STATUS = new Set([408, 425, 429]);
+const WORDPRESS_ATTEMPT_TIMEOUT_MS = 8_000;
 
-async function fetchWordPressPage(page, attempts = 5) {
+async function fetchWordPressPage(page, attempts = 3) {
   const url = new URL(WORDPRESS_POSTS_URL);
   url.searchParams.set('page', String(page));
   url.searchParams.set('per_page', '100');
@@ -10,22 +11,37 @@ async function fetchWordPressPage(page, attempts = 5) {
   let lastError;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    let stopRetrying = false;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), WORDPRESS_ATTEMPT_TIMEOUT_MS);
     try {
       const response = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
       });
 
       if (response.ok) return response;
 
       const error = new Error(`WordPress posts request failed with ${response.status}`);
-      if (!WORDPRESS_RETRYABLE_STATUS.has(response.status)) throw error;
+      const retryable = WORDPRESS_RETRYABLE_STATUS.has(response.status)
+        || (response.status >= 500 && response.status <= 599);
       lastError = error;
+      stopRetrying = !retryable;
     } catch (error) {
-      lastError = error;
+      lastError = new Error(
+        `WordPress redirect inventory request failed on attempt ${attempt}/${attempts}`,
+        { cause: error },
+      );
+    } finally {
+      clearTimeout(timeout);
     }
 
+    if (stopRetrying) throw lastError;
+
     if (attempt < attempts) {
-      await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** (attempt - 1))));
+      const backoff = 250 * (2 ** (attempt - 1));
+      const jitter = Math.floor(Math.random() * 150);
+      await new Promise((resolve) => setTimeout(resolve, backoff + jitter));
     }
   }
 
