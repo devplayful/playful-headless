@@ -12,7 +12,7 @@
 - HighLevel recibe `createNewIfDuplicateAllowed=false`. La búsqueda y creación de oportunidad se serializa con un lease compartido por contacto y pipeline. Solo se crea una oportunidad en `Consulta` si no existe ninguna.
 - Una oportunidad existente no se mueve ni se degrada. Si aparecen dos o más oportunidades abiertas, el flujo se detiene para revisión manual.
 - El primer origen y landing se completan campo a campo solo cuando el valor actual está vacío, también para contactos existentes. Nunca se incluyen en el upsert, por lo que un reintento no los sobrescribe. El origen reciente, UTM, landing, formulario y consentimientos se actualizan en cada consulta confirmada.
-- Se añade una etiqueta de entrada web sin reemplazar las etiquetas existentes y se crea una siguiente acción con responsable y vencimiento SLA. La tarea lleva un marcador determinista del envío; si se pierde la respuesta de creación, el reintento la encuentra antes de intentar crear otra.
+- Se añade una etiqueta de entrada web sin reemplazar las etiquetas existentes y se crea una siguiente acción con responsable y vencimiento SLA. La tarea lleva un marcador determinista del envío; si se pierde la respuesta de creación, el lease se conserva hasta expirar y el siguiente reintento la encuentra antes de intentar crear otra. La misma espera protege la reconciliación de una creación de oportunidad con respuesta incierta.
 
 ## Secuencia
 
