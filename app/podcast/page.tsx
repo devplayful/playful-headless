@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { getPodcastPageMetadata, getPodcastEpisodes, PodcastEpisode, YoastMetaData } from '@/services/wordpress';
+import { loadPodcastEpisodesState, resolvePodcastEpisodesView } from '@/services/podcast-loader.mjs';
 import { Metadata } from 'next';
 import Head from 'next/head';
 
@@ -150,6 +151,8 @@ export default function PodcastPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [episodesLoading, setEpisodesLoading] = useState(false);
+  const [episodesError, setEpisodesError] = useState<'unavailable' | 'unexpected' | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   const episodesPerPage = 9;
 
@@ -170,24 +173,34 @@ export default function PodcastPage() {
   useEffect(() => {
     async function loadEpisodes() {
       setEpisodesLoading(true);
-      try {
-        const result = await getPodcastEpisodes(currentPage, episodesPerPage);
+      setEpisodesError(null);
+      const result = await loadPodcastEpisodesState(
+        getPodcastEpisodes,
+        currentPage,
+        episodesPerPage,
+      );
+      if (result.status === 'ready') {
         setEpisodes(result.episodes);
         setTotalPages(result.totalPages);
-      } catch (error) {
-        console.error('Error cargando episodios:', error);
-      } finally {
-        setEpisodesLoading(false);
-        setLoading(false);
+      } else {
+        setEpisodesError(result.status);
       }
+      setEpisodesLoading(false);
+      setLoading(false);
     }
     loadEpisodes();
-  }, [currentPage]);
+  }, [currentPage, retryKey]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const episodesView = resolvePodcastEpisodesView({
+    loading: episodesLoading,
+    error: episodesError,
+    episodes,
+  });
 
   // No renderizar hasta tener metadatos para SEO
   if (!metadata) {
@@ -251,9 +264,27 @@ export default function PodcastPage() {
                   Episodios Recientes
                 </h2>
                 
-                {episodesLoading ? (
+                {episodesView === 'loading' ? (
                   <LoadingSpinner />
-                ) : episodes.length > 0 ? (
+                ) : episodesView === 'error' ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-900 text-xl font-semibold mb-3">
+                      Episodios temporalmente no disponibles
+                    </p>
+                    <p className="text-gray-600 text-lg mb-6">
+                      {episodesError === 'unavailable'
+                        ? 'No pudimos consultar WordPress. Inténtalo de nuevo en unos minutos.'
+                        : 'No pudimos cargar los episodios. Inténtalo de nuevo.'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setRetryKey((value) => value + 1)}
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                ) : episodesView === 'episodes' ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {episodes.map((episode) => (
                       <EpisodeCard key={episode.id} episode={episode} />
