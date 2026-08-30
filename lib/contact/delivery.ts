@@ -1,4 +1,5 @@
 import type { WebsiteLead } from './types.ts';
+import { WORDPRESS_DELIVERY_TIMEOUT_MS } from './timeouts.ts';
 
 export class ContactDeliveryError extends Error {
   constructor(public readonly status: number, message: string) {
@@ -53,11 +54,10 @@ export async function deliverToWordPress(lead: WebsiteLead): Promise<void> {
       business: lead.business,
       message: lead.message,
     }),
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(WORDPRESS_DELIVERY_TIMEOUT_MS),
   });
 
   if (!response.ok) {
     throw new ContactDeliveryError(502, 'No pudimos confirmar la entrega del mensaje.');
   }
 }
-
