@@ -32,6 +32,7 @@ export interface EnabledHighLevelConfig {
   slaHours: number;
   timeoutMs: number;
   idempotencyTtlSeconds: number;
+  leaseSeconds: number;
   redisRestUrl: string;
   redisRestToken: string;
   customFieldIds: HighLevelCustomFieldIds;
@@ -108,6 +109,9 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
     idempotencyTtlSeconds: env.HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS
       ? integer(env, 'HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS', 3600, 2592000)
       : 604800,
+    leaseSeconds: env.HIGHLEVEL_PROCESSING_LEASE_SECONDS
+      ? integer(env, 'HIGHLEVEL_PROCESSING_LEASE_SECONDS', 10, 300)
+      : 30,
     redisRestUrl: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL'),
     redisRestToken: required(env, 'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN'),
     customFieldIds: customFields(env),

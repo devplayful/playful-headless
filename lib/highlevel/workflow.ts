@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import type { CrmSyncControl } from '../contact/orchestrator.ts';
 import type { WebsiteLead } from '../contact/types.ts';
 import type { EnabledHighLevelConfig, HighLevelCustomFieldKey } from './config.ts';
 import type {
@@ -56,58 +58,112 @@ function selectOrReject(opportunities: HighLevelOpportunity[]): HighLevelOpportu
   return opportunities[0];
 }
 
+function localControl(lead: WebsiteLead): CrmSyncControl {
+  const progress: CrmSyncControl['progress'] = {};
+  return {
+    submissionKey: createHash('sha256').update(lead.submissionId).digest('hex'),
+    progress,
+    checkpoint: async (patch) => { Object.assign(progress, patch); },
+    withResourceLease: async (_resource, operation) => operation(),
+  };
+}
+
 export async function syncWebsiteLeadToHighLevel(
   lead: WebsiteLead,
   gateway: HighLevelGateway,
   config: EnabledHighLevelConfig,
   now = new Date(),
+  suppliedControl?: CrmSyncControl,
 ): Promise<CrmSyncResult> {
-  const contact = await gateway.upsertContact({
-    name: lead.name,
-    email: lead.email,
-    ...(lead.phone ? { phone: lead.phone } : {}),
-    ...(lead.business ? { companyName: lead.business } : {}),
-    locationId: config.locationId,
-    assignedTo: config.ownerId,
-    customFields: recentFields(lead, config),
-    createNewIfDuplicateAllowed: false,
-  });
+  const control = suppliedControl || localControl(lead);
+  let contactId = control.progress.contactId;
 
-  if (contact.isNew) {
-    await gateway.updateContactCustomFields(contact.id, originalFields(lead, config));
+  if (!contactId) {
+    const contact = await gateway.upsertContact({
+      name: lead.name,
+      email: lead.email,
+      ...(lead.phone ? { phone: lead.phone } : {}),
+      ...(lead.business ? { companyName: lead.business } : {}),
+      locationId: config.locationId,
+      assignedTo: config.ownerId,
+      customFields: recentFields(lead, config),
+      createNewIfDuplicateAllowed: false,
+    });
+    contactId = contact.id;
+    await control.checkpoint({ contactId });
   }
-  await gateway.addContactTags(contact.id, [config.contactTag]);
 
-  const existing = selectOrReject(await gateway.findOpenOpportunities(
-    config.locationId,
-    config.pipelineId,
-    contact.id,
-  ));
+  if (!control.progress.originalAttributionCompleted) {
+    const currentFields = await gateway.getContactCustomFields(contactId);
+    const values = new Map(currentFields.map((item) => [item.id, item.fieldValue]));
+    const missingOriginalFields = originalFields(lead, config).filter((item) => (
+      item.fieldValue.trim() !== '' && !(values.get(item.id) || '').trim()
+    ));
+    if (missingOriginalFields.length > 0) {
+      await gateway.updateContactCustomFields(contactId, missingOriginalFields);
+    }
+    await control.checkpoint({ originalAttributionCompleted: true });
+  }
 
-  const opportunity = existing || await gateway.createOpportunity({
-    pipelineId: config.pipelineId,
-    locationId: config.locationId,
-    name: `${lead.business || lead.name} — consulta web`,
-    pipelineStageId: config.consultaStageId,
-    status: 'open',
-    contactId: contact.id,
-    assignedTo: config.ownerId,
-  });
+  if (!control.progress.tagsCompleted) {
+    await gateway.addContactTags(contactId, [config.contactTag]);
+    await control.checkpoint({ tagsCompleted: true });
+  }
 
-  const dueDate = new Date(now.getTime() + config.slaHours * 60 * 60 * 1000).toISOString();
-  const task = await gateway.createTask(contact.id, {
-    title: 'Responder consulta web',
-    body: `Siguiente acción del formulario ${lead.recentAttribution.formId}.`,
-    dueDate,
-    completed: false,
-    assignedTo: config.ownerId,
-  });
+  let opportunityId = control.progress.opportunityId;
+  let opportunityCreated = control.progress.opportunityCreated;
+  if (!opportunityId) {
+    await control.withResourceLease(
+      `opportunity:${config.locationId}:${config.pipelineId}:${contactId}`,
+      async () => {
+        const existing = selectOrReject(await gateway.findOpenOpportunities(
+          config.locationId,
+          config.pipelineId,
+          contactId,
+        ));
+        const opportunity = existing || await gateway.createOpportunity({
+          pipelineId: config.pipelineId,
+          locationId: config.locationId,
+          name: `${lead.business || lead.name} — consulta web`,
+          pipelineStageId: config.consultaStageId,
+          status: 'open',
+          contactId,
+          assignedTo: config.ownerId,
+        });
+        opportunityId = opportunity.id;
+        opportunityCreated = !existing;
+        await control.checkpoint({ opportunityId, opportunityCreated });
+      },
+    );
+  }
 
-  return {
-    contactId: contact.id,
-    opportunityId: opportunity.id,
-    opportunityCreated: !existing,
-    taskId: task.id,
-  };
+  let taskId = control.progress.taskId;
+  if (!taskId) {
+    const taskMarker = `[playful-submission:${control.submissionKey}]`;
+    await control.withResourceLease(`task:${contactId}:${control.submissionKey}`, async () => {
+      const existing = (await gateway.findTasks(contactId)).find((task) => (
+        (task.body || '').includes(taskMarker)
+      ));
+      if (existing) {
+        taskId = existing.id;
+      } else {
+        const dueDate = new Date(now.getTime() + config.slaHours * 60 * 60 * 1000).toISOString();
+        const task = await gateway.createTask(contactId, {
+          title: 'Responder consulta web',
+          body: `Siguiente acción del formulario ${lead.recentAttribution.formId}. ${taskMarker}`,
+          dueDate,
+          completed: false,
+          assignedTo: config.ownerId,
+        });
+        taskId = task.id;
+      }
+      await control.checkpoint({ taskId });
+    });
+  }
+
+  if (!opportunityId || opportunityCreated === undefined || !taskId) {
+    throw new Error('El flujo CRM terminó sin checkpoints obligatorios.');
+  }
+
+  return { contactId, opportunityId, opportunityCreated, taskId };
 }
-

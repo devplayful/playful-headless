@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       highLevel.redisRestUrl,
       highLevel.redisRestToken,
       highLevel.idempotencyTtlSeconds,
+      highLevel.leaseSeconds,
     );
     const gateway = highLevel.testMode
       ? new DryRunHighLevelGateway()
@@ -64,7 +65,13 @@ export async function POST(request: NextRequest) {
     const result = await processContactPipeline(lead, {
       store,
       deliver: deliverToWordPress,
-      syncCrm: (submission) => syncWebsiteLeadToHighLevel(submission, gateway, highLevel).then(() => undefined),
+      syncCrm: (submission, control) => syncWebsiteLeadToHighLevel(
+        submission,
+        gateway,
+        highLevel,
+        new Date(),
+        control,
+      ).then(() => undefined),
       dryRun: highLevel.testMode,
     });
     return success(result.crmSynced, result.dryRun, result.replayed);

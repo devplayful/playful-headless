@@ -2,43 +2,74 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import type {
   BeginResult,
+  CrmProgress,
   IdempotencyStore,
   SubmissionState,
 } from '../../lib/contact/idempotency.ts';
-import { processContactPipeline } from '../../lib/contact/orchestrator.ts';
+import { SubmissionInProgressError } from '../../lib/contact/idempotency.ts';
+import { processContactPipeline, submissionKey } from '../../lib/contact/orchestrator.ts';
 import { lead } from './fixtures.ts';
 
 class TestStore implements IdempotencyStore {
   records = new Map<string, SubmissionState>();
+  leases = new Map<string, { owner: string; expiresAt: number }>();
+  now = 0;
+
+  advance(seconds: number) { this.now += seconds; }
+
+  private acquire(resource: string, owner: string) {
+    const current = this.leases.get(resource);
+    if (current && current.expiresAt > this.now) return false;
+    this.leases.set(resource, { owner, expiresAt: this.now + 30 });
+    return true;
+  }
+
+  private release(resource: string, owner: string) {
+    if (this.leases.get(resource)?.owner === owner) this.leases.delete(resource);
+  }
 
   async begin(key: string, owner: string): Promise<BeginResult> {
     const record = this.records.get(key);
     if (record) return { kind: 'existing', record };
-    this.records.set(key, { state: 'delivery_processing', owner });
-    return { kind: 'acquired' };
+    return this.acquire(`delivery:${key}`, owner) ? { kind: 'acquired' } : { kind: 'busy' };
   }
-  async markDelivered(key: string) { this.records.set(key, { state: 'delivered' }); }
+  async markDelivered(key: string, owner: string) {
+    if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    this.records.set(key, { state: 'delivered', crm: {} });
+    this.release(`delivery:${key}`, owner);
+  }
   async beginCrm(key: string, owner: string) {
-    if (this.records.get(key)?.state !== 'delivered') return false;
-    this.records.set(key, { state: 'crm_processing', owner });
-    return true;
+    return this.records.get(key)?.state === 'delivered' && this.acquire(`crm:${key}`, owner);
   }
-  async markCompleted(key: string, _owner: string, crmSynced: boolean, dryRun: boolean) {
-    this.records.set(key, { state: 'completed', crmSynced, dryRun });
+  async saveCrmProgress(key: string, owner: string, progress: CrmProgress) {
+    if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    this.records.set(key, { state: 'delivered', crm: { ...progress } });
+    this.leases.set(`crm:${key}`, { owner, expiresAt: this.now + 30 });
   }
-  async releaseDelivery(key: string) { this.records.delete(key); }
-  async releaseCrm(key: string) { this.records.set(key, { state: 'delivered' }); }
+  async markCompleted(key: string, owner: string, crmSynced: boolean, dryRun: boolean) {
+    if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
+    const crm = this.records.get(key)?.crm || {};
+    this.records.set(key, { state: 'completed', crmSynced, dryRun, crm });
+    this.release(`crm:${key}`, owner);
+  }
+  async releaseDelivery(key: string, owner: string) { this.release(`delivery:${key}`, owner); }
+  async releaseCrm(key: string, owner: string) { this.release(`crm:${key}`, owner); }
+  async acquireResourceLease(resource: string, owner: string) { return this.acquire(`resource:${resource}`, owner); }
+  async releaseResourceLease(resource: string, owner: string) { this.release(`resource:${resource}`, owner); }
 }
 
-test('resumes CRM after confirmed delivery without delivering WordPress twice', async () => {
+test('resumes CRM from its last checkpoint without delivering WordPress twice', async () => {
   const store = new TestStore();
   let deliveries = 0;
-  let crmAttempts = 0;
+  const visited: string[] = [];
 
   await assert.rejects(() => processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
-    syncCrm: async () => { crmAttempts += 1; throw new Error('temporary'); },
+    syncCrm: async (_submission, control) => {
+      await control.checkpoint({ contactId: 'contact-1' });
+      throw new Error('crash after contact checkpoint');
+    },
     dryRun: true,
     ownerId: 'attempt-1',
   }));
@@ -46,7 +77,10 @@ test('resumes CRM after confirmed delivery without delivering WordPress twice', 
   const recovered = await processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
-    syncCrm: async () => { crmAttempts += 1; },
+    syncCrm: async (_submission, control) => {
+      visited.push(control.progress.contactId || 'missing');
+      await control.checkpoint({ taskId: 'task-1' });
+    },
     dryRun: true,
     ownerId: 'attempt-2',
   });
@@ -54,14 +88,40 @@ test('resumes CRM after confirmed delivery without delivering WordPress twice', 
   const replay = await processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
-    syncCrm: async () => { crmAttempts += 1; },
+    syncCrm: async () => { throw new Error('must not replay CRM'); },
     dryRun: true,
     ownerId: 'attempt-3',
   });
 
   assert.equal(deliveries, 1);
-  assert.equal(crmAttempts, 2);
+  assert.deepEqual(visited, ['contact-1']);
   assert.equal(recovered.replayed, false);
   assert.equal(replay.replayed, true);
 });
 
+test('a crashed worker lease expires while the durable delivered checkpoint survives', async () => {
+  const store = new TestStore();
+  const key = submissionKey(lead.submissionId);
+  store.records.set(key, { state: 'delivered', crm: { contactId: 'contact-before-crash' } });
+  assert.equal(await store.beginCrm(key, 'crashed-worker'), true);
+
+  await assert.rejects(() => processContactPipeline(lead, {
+    store,
+    deliver: async () => { throw new Error('must not redeliver'); },
+    syncCrm: async () => {},
+    dryRun: true,
+    ownerId: 'early-retry',
+  }), SubmissionInProgressError);
+
+  store.advance(31);
+  let recoveredCheckpoint = '';
+  await processContactPipeline(lead, {
+    store,
+    deliver: async () => { throw new Error('must not redeliver'); },
+    syncCrm: async (_submission, control) => { recoveredCheckpoint = control.progress.contactId || ''; },
+    dryRun: true,
+    ownerId: 'recovered-worker',
+  });
+
+  assert.equal(recoveredCheckpoint, 'contact-before-crash');
+});

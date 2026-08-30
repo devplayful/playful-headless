@@ -4,6 +4,7 @@ import {
   HighLevelConfigurationError,
   readHighLevelConfig,
 } from '../../lib/highlevel/config.ts';
+import { customFieldIds } from './fixtures.ts';
 
 test('is fail-safe and needs no credentials while disabled', () => {
   assert.deepEqual(readHighLevelConfig({ HIGHLEVEL_ENABLED: 'false' }), { enabled: false });
@@ -16,3 +17,26 @@ test('refuses activation without exact pipeline decisions and durable storage', 
   );
 });
 
+test('uses a short processing lease independently from the durable result TTL', () => {
+  const enabled = readHighLevelConfig({
+    HIGHLEVEL_ENABLED: 'true',
+    HIGHLEVEL_TEST_MODE: 'true',
+    HIGHLEVEL_LOCATION_ID: 'location',
+    HIGHLEVEL_PIPELINE_ID: 'pipeline',
+    HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
+    HIGHLEVEL_CONTACT_TAG: 'website-inbound',
+    HIGHLEVEL_SLA_HOURS: '24',
+    HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS: '604800',
+    HIGHLEVEL_PROCESSING_LEASE_SECONDS: '30',
+    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
+    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
+    HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+  });
+
+  assert.equal(enabled.enabled, true);
+  if (enabled.enabled) {
+    assert.equal(enabled.leaseSeconds, 30);
+    assert.equal(enabled.idempotencyTtlSeconds, 604800);
+  }
+});
