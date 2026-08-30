@@ -5,6 +5,11 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import {
+  createSubmissionId,
+  getSubmissionAttribution,
+} from '@/lib/contact/client-attribution';
+import { pushGenerateLead } from '@/lib/contact/analytics';
 
 interface ContactPageClientProps {
   casosDeExito: any[];
@@ -13,6 +18,7 @@ interface ContactPageClientProps {
 // Componente del formulario con reCAPTCHA V2
 function ContactForm({ casosDeExito }: ContactPageClientProps) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const submissionIdRef = useRef('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,6 +28,8 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{success: boolean, message: string} | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -51,7 +59,11 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
     try {
 
-      // Enviar el formulario a nuestra API con el token
+      if (!submissionIdRef.current) submissionIdRef.current = createSubmissionId();
+      const attribution = getSubmissionAttribution();
+
+      // Enviar el formulario a nuestra API con el token. El identificador se
+      // conserva durante reintentos para impedir una segunda oportunidad.
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -63,6 +75,10 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           phone: formData.phone,
           business: formData.business,
           message: formData.message,
+          submissionId: submissionIdRef.current,
+          privacyConsent,
+          marketingConsent,
+          ...attribution,
           recaptchaToken,
         }),
       });
@@ -70,6 +86,9 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
+          pushGenerateLead(data.analytics.formId);
+        }
         setSubmitStatus({
           success: true,
           message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
@@ -84,6 +103,9 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           business: '',
           message: ''
         });
+        setPrivacyConsent(false);
+        setMarketingConsent(false);
+        submissionIdRef.current = '';
         recaptchaRef.current?.reset();
       } else {
         setSubmitStatus({
@@ -218,23 +240,27 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
               
               <div className="space-y-4">
                 <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                  <input
+                    type="checkbox"
+                    checked={privacyConsent}
+                    onChange={(event) => setPrivacyConsent(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                    required
+                  />
                   <span>
-                    Entérate de cómo usamos tus datos en
+                    Acepto el tratamiento de mis datos según la
                     <a href="/politica-de-privacidad" className="text-purple-700 font-semibold hover:underline ml-1">Política de Privacidad</a>
                   </span>
                 </label>
                 <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                  <input
+                    type="checkbox"
+                    checked={marketingConsent}
+                    onChange={(event) => setMarketingConsent(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  />
                   <span>
-                    Consiento recibir notificaciones, emails y alertas de Playful Agency, la recopilación de los mensajes, publicidad y valor.
-                    Puedes administrar tus preferencias desde los mensajes.
-                  </span>
-                </label>
-                <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
-                  <span>
-                    Acepto recibir mensajes de marketing ocasionales de Playful Agency.
+                    Acepto recibir comunicaciones de marketing ocasionales. Puedo retirar este consentimiento en cualquier momento.
                   </span>
                 </label>
               </div>
