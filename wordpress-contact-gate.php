@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Playful Contact Gate
  * Description: Protege el endpoint de contacto de Playful con un secreto servidor a servidor.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Playful Agency
  */
 
@@ -15,6 +15,7 @@ register_activation_hook(__FILE__, function () {
     add_option(PLAYFUL_CONTACT_GATE_ENFORCE_OPTION, '0');
 });
 
+// Ejecutar al final para que ningún plugin posterior pueda reabrir la solicitud.
 add_filter('rest_pre_dispatch', function ($result, $server, $request) {
     if ($request->get_route() !== '/playful/v1/contact' || $request->get_method() !== 'POST') {
         return $result;
@@ -43,7 +44,7 @@ add_filter('rest_pre_dispatch', function ($result, $server, $request) {
     }
 
     return $result;
-}, 5, 3);
+}, PHP_INT_MAX, 3);
 
 add_action('admin_init', function () {
     register_setting('playful_contact_gate', PLAYFUL_CONTACT_GATE_TOKEN_OPTION, array(
