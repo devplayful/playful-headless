@@ -17,7 +17,7 @@ The budget covers `next build`, not dependency installation. The 100-post WordPr
 - WordPress requests have one 8-second operation deadline covering fetch attempts and backoff.
 - 408, 425, 429, 5xx, and network errors receive at most three attempts with bounded jitter.
 - Caller cancellation interrupts both an active fetch and retry backoff; no subsequent request is allowed.
-- A REST 404 or a successful empty collection is an absence. Persistent upstream failure throws `WordPressUnavailableError`.
+- Only a successful `200 []` collection is an absence. A collection 404 and persistent upstream failures throw `WordPressUnavailableError`.
 - Slug pages may render a 404 only after confirmed absence. Build inventory failures stop the build.
 
 ## Rollback

@@ -44,31 +44,64 @@ export async function runGuardedCommand(command, args, options = {}) {
   }
   options.onSpawn?.(child);
   let exceededBudget = false;
+  let forwardedSignal;
   let forceKillPromise = Promise.resolve();
+  let forceKillTimer;
+
+  const terminateGroup = (signal) => {
+    if (forwardedSignal || exceededBudget) return;
+    forwardedSignal = signal;
+    killProcessTree(child, signal);
+    forceKillPromise = new Promise((resolve) => {
+      forceKillTimer = setTimeout(() => {
+        killProcessTree(child, 'SIGKILL');
+        resolve();
+      }, forceKillGraceMs);
+    });
+  };
+  const onSigterm = () => terminateGroup('SIGTERM');
+  const onSigint = () => terminateGroup('SIGINT');
+  process.on('SIGTERM', onSigterm);
+  process.on('SIGINT', onSigint);
+
   const timer = setTimeout(() => {
+    if (forwardedSignal || exceededBudget) return;
     exceededBudget = true;
     console.error(`Build exceeded the ${budgetMs / 1_000}s resilience budget.`);
     killProcessTree(child, 'SIGTERM');
     forceKillPromise = new Promise((resolve) => {
-      setTimeout(() => {
+      forceKillTimer = setTimeout(() => {
         killProcessTree(child, 'SIGKILL');
         resolve();
       }, forceKillGraceMs);
     });
   }, budgetMs);
 
-  const exitCode = await new Promise((resolve) => {
-    child.once('exit', (code) => resolve(code));
-    child.once('error', () => resolve(1));
-  });
-  clearTimeout(timer);
+  let exitCode;
+  try {
+    exitCode = await new Promise((resolve) => {
+      child.once('exit', (code) => resolve(code));
+      child.once('error', () => resolve(1));
+    });
+    clearTimeout(timer);
 
-  if (exceededBudget) {
-    // Wait for the forced group kill even if the leader exits on SIGTERM; a
-    // descendant may ignore SIGTERM and otherwise become an orphan.
-    await forceKillPromise;
-    return 124;
+    if (exceededBudget || forwardedSignal) {
+      // Wait for the forced group kill even if the leader exits on the gentle
+      // signal; a descendant may ignore it and otherwise become an orphan.
+      await forceKillPromise;
+    }
+  } finally {
+    clearTimeout(timer);
+    if (!exceededBudget && !forwardedSignal && forceKillTimer) {
+      clearTimeout(forceKillTimer);
+    }
+    process.removeListener('SIGTERM', onSigterm);
+    process.removeListener('SIGINT', onSigint);
   }
+
+  if (exceededBudget) return 124;
+  if (forwardedSignal === 'SIGTERM') return 128 + 15;
+  if (forwardedSignal === 'SIGINT') return 128 + 2;
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 

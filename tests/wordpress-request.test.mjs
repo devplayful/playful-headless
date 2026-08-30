@@ -160,12 +160,7 @@ test('enforces one deadline across fetch attempts and backoff', async () => {
   assert.equal(calls, 1);
 });
 
-test('collection caller returns empty only for a real 404 or empty 200', async () => {
-  const missing = await wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/missing', {}, {
-    fetchImpl: async () => response(404, 'Not Found'),
-  });
-  assert.deepEqual(missing.items, []);
-
+test('collection caller returns empty only for an empty 200', async () => {
   const empty = await wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/empty', {}, {
     fetchImpl: async () => new Response('[]', {
       status: 200,
@@ -173,6 +168,67 @@ test('collection caller returns empty only for a real 404 or empty 200', async (
     }),
   });
   assert.deepEqual(empty.items, []);
+});
+
+test('collection caller treats a 404 as WordPress unavailability', async () => {
+  let bodyCancelled = false;
+  await assert.rejects(
+    wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/missing', {}, {
+      fetchImpl: async () => new Response(new ReadableStream({
+        cancel() {
+          bodyCancelled = true;
+        },
+      }), { status: 404, statusText: 'Not Found' }),
+    }),
+    (error) => error instanceof WordPressUpstreamError && error.status === 404,
+  );
+  assert.equal(bodyCancelled, true);
+});
+
+test('deadline includes a body that stalls after headers arrive', async () => {
+  let calls = 0;
+
+  await assert.rejects(
+    wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/slow-body', {}, {
+      fetchImpl: async (_input, init) => {
+        calls += 1;
+        return new Response(new ReadableStream({
+          start(controller) {
+            init.signal.addEventListener('abort', () => {
+              controller.error(init.signal.reason);
+            }, { once: true });
+          },
+        }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      },
+      timeoutMs: 20,
+    }),
+    (error) => error instanceof WordPressUpstreamError && /deadline/.test(error.message),
+  );
+  assert.equal(calls, 1);
+});
+
+test('retries a transient response-body failure', async () => {
+  let calls = 0;
+  const result = await wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/body-retry', {}, {
+    fetchImpl: async () => {
+      calls += 1;
+      if (calls === 1) {
+        return new Response(new ReadableStream({
+          start(controller) {
+            controller.error(new TypeError('socket closed while reading body'));
+          },
+        }), { status: 200 });
+      }
+      return new Response('[{"id":1}]', { status: 200 });
+    },
+    sleep: async () => {},
+  });
+
+  assert.deepEqual(result.items, [{ id: 1 }]);
+  assert.equal(calls, 2);
 });
 
 test('collection caller propagates a persistent 5xx instead of returning empty', async () => {

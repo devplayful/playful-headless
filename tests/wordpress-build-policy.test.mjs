@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import {
@@ -52,4 +53,49 @@ test('build timeout kills the complete process group without an orphan', {
     }
   }
   assert.equal(alive, false, `grandchild ${grandchildPid} survived the build timeout`);
+});
+
+test('external SIGTERM is forwarded by the wrapper and force-kills descendants', {
+  skip: process.platform === 'win32' ? 'POSIX process-group assertion' : false,
+}, async () => {
+  const fixture = fileURLToPath(new URL('./fixtures/external-signal-wrapper.mjs', import.meta.url));
+  const wrapper = spawn(process.execPath, [fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
+  let output = '';
+  let grandchildPid;
+
+  await new Promise((resolve, reject) => {
+    const onData = (chunk) => {
+      output += chunk.toString();
+      const match = output.match(/GRANDCHILD_PID=(\d+)/);
+      if (!match) return;
+      grandchildPid = Number(match[1]);
+      wrapper.stdout.off('data', onData);
+      resolve();
+    };
+    wrapper.stdout.on('data', onData);
+    wrapper.once('error', reject);
+    wrapper.once('exit', (code, signal) => {
+      reject(new Error(`wrapper exited before its child was ready: code=${code} signal=${signal}`));
+    });
+  });
+
+  wrapper.kill('SIGTERM');
+  const { code, signal } = await new Promise((resolve, reject) => {
+    wrapper.once('error', reject);
+    wrapper.once('exit', (code, signal) => resolve({ code, signal }));
+  });
+  assert.equal(signal, null);
+  assert.equal(code, 143);
+
+  let alive = true;
+  for (let attempt = 0; attempt < 20 && alive; attempt += 1) {
+    try {
+      process.kill(grandchildPid, 0);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    } catch (error) {
+      if (error?.code !== 'ESRCH') throw error;
+      alive = false;
+    }
+  }
+  assert.equal(alive, false, `grandchild ${grandchildPid} survived external SIGTERM`);
 });

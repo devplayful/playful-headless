@@ -50,6 +50,18 @@ function requestUrl(input) {
   return typeof input === 'string' || input instanceof URL ? String(input) : input.url;
 }
 
+async function cancelResponseBody(response) {
+  await response?.body?.cancel().catch(() => {});
+}
+
+function bufferedResponse(response, body) {
+  return new Response(body.byteLength > 0 ? body : null, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
 /**
  * Fetch WordPress with a small, bounded retry budget for transient failures.
  *
@@ -57,7 +69,7 @@ function requestUrl(input) {
  * absence. Every other non-success response is an upstream failure. This keeps
  * temporary WordPress incidents from being converted into durable Next 404s.
  */
-export async function wordpressFetch(input, init = {}, options = {}) {
+async function wordpressRequest(input, init, options, consumeResponse) {
   const fetchImpl = options.fetchImpl ?? fetch;
   const sleep = options.sleep ?? defaultSleep;
   const random = options.random ?? Math.random;
@@ -92,12 +104,16 @@ export async function wordpressFetch(input, init = {}, options = {}) {
 
   try {
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      let response;
       try {
         throwIfAborted(operationSignal);
-        const response = await fetchImpl(input, { ...init, signal: operationSignal });
+        response = await fetchImpl(input, { ...init, signal: operationSignal });
 
         if (response.ok || response.status === 404) {
-          return response;
+          // Keep both body I/O and its interpretation inside the operation
+          // deadline. A body stream can fail after fetch has resolved with
+          // headers, and that failure must consume the same retry budget.
+          return await consumeResponse(response, { attempt, url });
         }
 
         const retryable = isTransientWordPressStatus(response.status);
@@ -110,8 +126,11 @@ export async function wordpressFetch(input, init = {}, options = {}) {
 
         // The retry will issue a fresh request; release the failed response body
         // first so repeated 5xx responses cannot retain HTTP connections.
-        await response.body?.cancel().catch(() => {});
+        await cancelResponseBody(response);
       } catch (error) {
+        // This also covers bodies that fail while being read. Release whatever
+        // remains before either retrying or reporting the final failure.
+        await cancelResponseBody(response);
         if (error instanceof WordPressUnavailableError) throw error;
         if (operationSignal.aborted) {
           if (requestSignal?.aborted) throw abortReason(requestSignal);
@@ -163,17 +182,31 @@ export async function wordpressFetch(input, init = {}, options = {}) {
   }
 }
 
+export async function wordpressFetch(input, init = {}, options = {}) {
+  return wordpressRequest(input, init, options, async (response) => {
+    const body = await response.arrayBuffer();
+    return bufferedResponse(response, body);
+  });
+}
+
 /** Fetch a WordPress REST collection while preserving absence vs outage. */
 export async function wordpressFetchCollection(input, init = {}, options = {}) {
-  const response = await wordpressFetch(input, init, options);
-  if (response.status === 404) return { items: [], response };
-  const items = await response.json();
-  if (!Array.isArray(items)) {
-    throw new WordPressUnavailableError('WordPress collection returned a non-array payload', {
-      url: requestUrl(input),
-      status: response.status,
-      attempts: 1,
-    });
-  }
-  return { items, response };
+  return wordpressRequest(input, init, options, async (response, { attempt, url }) => {
+    if (response.status !== 200) {
+      throw new WordPressUnavailableError(
+        `WordPress collection failed with ${response.status} ${response.statusText}`,
+        { url, status: response.status, attempts: attempt },
+      );
+    }
+
+    const items = await response.json();
+    if (!Array.isArray(items)) {
+      throw new WordPressUnavailableError('WordPress collection returned a non-array payload', {
+        url,
+        status: response.status,
+        attempts: attempt,
+      });
+    }
+    return { items, response };
+  });
 }

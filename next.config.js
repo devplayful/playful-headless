@@ -12,22 +12,33 @@ async function fetchWordPressPage(page, attempts = 3) {
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     let stopRetrying = false;
+    let response;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), WORDPRESS_ATTEMPT_TIMEOUT_MS);
     try {
-      const response = await fetch(url, {
+      response = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
       });
 
-      if (response.ok) return response;
+      if (response.status === 200) {
+        // Reading and parsing are part of the attempt. fetch() may resolve as
+        // soon as headers arrive while the response body later stalls/fails.
+        const posts = await response.json();
+        if (!Array.isArray(posts)) {
+          throw new Error('WordPress posts response was not a collection');
+        }
+        return { posts, response };
+      }
 
       const error = new Error(`WordPress posts request failed with ${response.status}`);
       const retryable = WORDPRESS_RETRYABLE_STATUS.has(response.status)
         || (response.status >= 500 && response.status <= 599);
       lastError = error;
       stopRetrying = !retryable;
+      await response.body?.cancel().catch(() => {});
     } catch (error) {
+      await response?.body?.cancel().catch(() => {});
       lastError = new Error(
         `WordPress redirect inventory request failed on attempt ${attempt}/${attempts}`,
         { cause: error },
@@ -54,9 +65,9 @@ async function getBlogCategoryRedirects() {
   let totalPages = 1;
 
   do {
-    const response = await fetchWordPressPage(page);
+    const { posts: pagePosts, response } = await fetchWordPressPage(page);
     totalPages = Number(response.headers.get('x-wp-totalpages') || '1');
-    posts.push(...await response.json());
+    posts.push(...pagePosts);
     page += 1;
   } while (page <= totalPages);
 
