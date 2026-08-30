@@ -33,9 +33,28 @@ interface BlogPostPageProps {
   params: Promise<{
     slug: string[];
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+function pathWithSearchParams(
+  pathname: string,
+  searchParams: Record<string, string | string[] | undefined>,
+) {
+  const query = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => query.append(key, item));
+    } else if (value !== undefined) {
+      query.append(key, value);
+    }
+  }
+
+  const serialized = query.toString();
+  return serialized ? `${pathname}?${serialized}` : pathname;
+}
+
+export default async function BlogPostPage({ params, searchParams }: BlogPostPageProps) {
   // El array slug contiene [category, post-slug]
   const { slug } = await params;
   if (slug.length !== 2) {
@@ -57,7 +76,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const postCategory = getPrimaryCategorySlug(post);
 
   if (postCategory !== category) {
-    permanentRedirect(blogPostPath(post));
+    permanentRedirect(pathWithSearchParams(blogPostPath(post), await searchParams));
   }
 
   // Extraer encabezados para la tabla de contenidos
