@@ -62,6 +62,15 @@ function selectOrReject(opportunities: HighLevelOpportunity[]): HighLevelOpportu
   return opportunities[0];
 }
 
+function isDeterministicWriteFailure(error: unknown): boolean {
+  return error instanceof HighLevelApiError && error.status >= 400 && error.status < 500;
+}
+
+function retainLeaseForUncertainWrite(error: unknown): never {
+  if (isDeterministicWriteFailure(error)) throw error;
+  throw new RetainResourceLeaseError(error);
+}
+
 function localControl(lead: WebsiteLead): CrmSyncControl {
   const progress: CrmSyncControl['progress'] = {};
   return {
@@ -98,15 +107,31 @@ export async function syncWebsiteLeadToHighLevel(
   }
 
   if (!control.progress.originalAttributionCompleted) {
-    const currentFields = await gateway.getContactCustomFields(contactId);
-    const values = new Map(currentFields.map((item) => [item.id, item.fieldValue]));
-    const missingOriginalFields = originalFields(lead, config).filter((item) => (
-      item.fieldValue.trim() !== '' && !(values.get(item.id) || '').trim()
-    ));
-    if (missingOriginalFields.length > 0) {
-      await gateway.updateContactCustomFields(contactId, missingOriginalFields);
-    }
-    await control.checkpoint({ originalAttributionCompleted: true });
+    await control.withResourceLease(
+      `original-attribution:${config.locationId}:${contactId}`,
+      async () => {
+        const currentFields = await gateway.getContactCustomFields(contactId);
+        const values = new Map(currentFields.map((item) => [item.id, item.fieldValue]));
+        const missingOriginalFields = originalFields(lead, config).filter((item) => (
+          item.fieldValue.trim() !== '' && !(values.get(item.id) || '').trim()
+        ));
+        let wroteOriginalFields = false;
+        if (missingOriginalFields.length > 0) {
+          try {
+            await gateway.updateContactCustomFields(contactId, missingOriginalFields);
+            wroteOriginalFields = true;
+          } catch (error) {
+            retainLeaseForUncertainWrite(error);
+          }
+        }
+        try {
+          await control.checkpoint({ originalAttributionCompleted: true });
+        } catch (error) {
+          if (wroteOriginalFields) throw new RetainResourceLeaseError(error);
+          throw error;
+        }
+      },
+    );
   }
 
   if (!control.progress.tagsCompleted) {
@@ -126,6 +151,7 @@ export async function syncWebsiteLeadToHighLevel(
           contactId,
         ));
         let resolvedOpportunityId: string;
+        let createdRemotely = false;
         if (existing) {
           resolvedOpportunityId = existing.id;
         } else {
@@ -140,14 +166,19 @@ export async function syncWebsiteLeadToHighLevel(
               assignedTo: config.ownerId,
             });
             resolvedOpportunityId = created.id;
+            createdRemotely = true;
           } catch (error) {
-            if (error instanceof HighLevelApiError) throw error;
-            throw new RetainResourceLeaseError(error);
+            retainLeaseForUncertainWrite(error);
           }
         }
         opportunityId = resolvedOpportunityId;
         opportunityCreated = !existing;
-        await control.checkpoint({ opportunityId, opportunityCreated });
+        try {
+          await control.checkpoint({ opportunityId, opportunityCreated });
+        } catch (error) {
+          if (createdRemotely) throw new RetainResourceLeaseError(error);
+          throw error;
+        }
       },
     );
   }
@@ -159,6 +190,7 @@ export async function syncWebsiteLeadToHighLevel(
       const existing = (await gateway.findTasks(contactId)).find((task) => (
         (task.body || '').includes(taskMarker)
       ));
+      let createdRemotely = false;
       if (existing) {
         taskId = existing.id;
       } else {
@@ -172,13 +204,18 @@ export async function syncWebsiteLeadToHighLevel(
             completed: false,
             assignedTo: config.ownerId,
           });
+          createdRemotely = true;
         } catch (error) {
-          if (error instanceof HighLevelApiError) throw error;
-          throw new RetainResourceLeaseError(error);
+          retainLeaseForUncertainWrite(error);
         }
         taskId = task.id;
       }
-      await control.checkpoint({ taskId });
+      try {
+        await control.checkpoint({ taskId });
+      } catch (error) {
+        if (createdRemotely) throw new RetainResourceLeaseError(error);
+        throw error;
+      }
     });
   }
 

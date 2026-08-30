@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { IDEMPOTENCY_REQUEST_TIMEOUT_MS } from './timeouts.ts';
 
 export interface CrmProgress {
   contactId?: string;
@@ -65,7 +66,7 @@ export class RedisRestIdempotencyStore implements IdempotencyStore {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(command),
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(IDEMPOTENCY_REQUEST_TIMEOUT_MS),
     });
     if (!response.ok) throw new Error(`El almacén de idempotencia devolvió HTTP ${response.status}.`);
     const payload = await response.json() as { result: T; error?: string };

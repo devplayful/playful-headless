@@ -1,3 +1,9 @@
+import {
+  IDEMPOTENCY_REQUEST_TIMEOUT_MS,
+  LEASE_SAFETY_MARGIN_MS,
+  WORDPRESS_DELIVERY_TIMEOUT_MS,
+} from '../contact/timeouts.ts';
+
 const CUSTOM_FIELD_KEYS = [
   'original_source',
   'original_landing',
@@ -99,10 +105,16 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
   const leaseSeconds = env.HIGHLEVEL_PROCESSING_LEASE_SECONDS
     ? integer(env, 'HIGHLEVEL_PROCESSING_LEASE_SECONDS', 10, 300)
     : 30;
-  const minimumSafeLeaseMs = timeoutMs * 2 + 10000;
+  const crmCriticalSectionMs = timeoutMs * 2
+    + IDEMPOTENCY_REQUEST_TIMEOUT_MS
+    + LEASE_SAFETY_MARGIN_MS;
+  const deliveryCriticalSectionMs = WORDPRESS_DELIVERY_TIMEOUT_MS
+    + IDEMPOTENCY_REQUEST_TIMEOUT_MS
+    + LEASE_SAFETY_MARGIN_MS;
+  const minimumSafeLeaseMs = Math.max(crmCriticalSectionMs, deliveryCriticalSectionMs);
   if (leaseSeconds * 1000 < minimumSafeLeaseMs) {
     throw new HighLevelConfigurationError(
-      'HIGHLEVEL_PROCESSING_LEASE_SECONDS debe cubrir dos requests CRM y el checkpoint Redis.',
+      'HIGHLEVEL_PROCESSING_LEASE_SECONDS debe cubrir la entrega WordPress o dos requests CRM, más el checkpoint Redis y el margen de seguridad.',
     );
   }
 

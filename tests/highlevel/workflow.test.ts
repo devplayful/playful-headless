@@ -5,15 +5,16 @@ import {
   RetainResourceLeaseError,
 } from '../../lib/contact/orchestrator.ts';
 import { SubmissionInProgressError } from '../../lib/contact/idempotency.ts';
-import type {
-  CreateOpportunityInput,
-  CreateTaskInput,
-  HighLevelCustomFieldValue,
-  HighLevelGateway,
-  HighLevelOpportunity,
-  HighLevelTask,
-  UpsertContactInput,
-  UpsertContactResult,
+import {
+  HighLevelApiError,
+  type CreateOpportunityInput,
+  type CreateTaskInput,
+  type HighLevelCustomFieldValue,
+  type HighLevelGateway,
+  type HighLevelOpportunity,
+  type HighLevelTask,
+  type UpsertContactInput,
+  type UpsertContactResult,
 } from '../../lib/highlevel/client.ts';
 import {
   AmbiguousOpportunityError,
@@ -31,6 +32,9 @@ class GatewayMock implements HighLevelGateway {
   loseFirstOriginalResponse = false;
   loseFirstOpportunityResponse = false;
   loseFirstTaskResponse = false;
+  originalWriteError?: unknown;
+  opportunityWriteError?: unknown;
+  taskWriteError?: unknown;
 
   async upsertContact(input: UpsertContactInput) {
     this.calls.push({ operation: 'upsert', value: input });
@@ -46,6 +50,7 @@ class GatewayMock implements HighLevelGateway {
   }
   async updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]) {
     this.calls.push({ operation: 'update-original', value: { contactId, customFields } });
+    if (this.originalWriteError) throw this.originalWriteError;
     for (const item of customFields) this.customFields.set(item.id, item.fieldValue);
     if (this.loseFirstOriginalResponse) {
       this.loseFirstOriginalResponse = false;
@@ -61,6 +66,7 @@ class GatewayMock implements HighLevelGateway {
   }
   async createOpportunity(input: CreateOpportunityInput) {
     this.calls.push({ operation: 'create-opportunity', value: input });
+    if (this.opportunityWriteError) throw this.opportunityWriteError;
     const opportunity = { id: `opportunity-${this.opportunities.length + 1}`, status: 'open' };
     this.opportunities.push(opportunity);
     if (this.loseFirstOpportunityResponse) {
@@ -75,6 +81,7 @@ class GatewayMock implements HighLevelGateway {
   }
   async createTask(contactId: string, input: CreateTaskInput) {
     this.calls.push({ operation: 'create-task', value: { contactId, input } });
+    if (this.taskWriteError) throw this.taskWriteError;
     const task = { id: `task-${this.tasks.length + 1}`, title: input.title, body: input.body };
     this.tasks.push(task);
     if (this.loseFirstTaskResponse) {
@@ -170,7 +177,8 @@ test('fills only blank original attribution fields for existing contacts', async
 
 test('first touch survives lost upsert and attribution responses on retry', async () => {
   const gateway = new GatewayMock();
-  const control = memoryControl('submission-retry');
+  const locks = new Set<string>();
+  const control = memoryControl('submission-retry', locks);
   gateway.loseFirstUpsertResponse = true;
 
   await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
@@ -180,11 +188,210 @@ test('first touch survives lost upsert and attribution responses on retry', asyn
   assert.equal(control.progress.contactId, 'contact-1');
   assert.equal(control.progress.originalAttributionCompleted, undefined);
 
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+    SubmissionInProgressError,
+  );
+  locks.clear(); // Simulates expiry of the retained first-touch lease.
+
   await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
   assert.equal(gateway.calls.filter((call) => call.operation === 'upsert').length, 2);
   assert.equal(gateway.calls.filter((call) => call.operation === 'update-original').length, 1);
   assert.equal(gateway.customFields.get(config.customFieldIds.original_source), lead.originalAttribution.source);
   assert.equal(gateway.customFields.get(config.customFieldIds.original_landing), lead.originalAttribution.landing);
+});
+
+test('serializes first-touch attribution from two concurrent sources for the same contact', async () => {
+  const gateway = new GatewayMock();
+  const locks = new Set<string>();
+  const first = memoryControl('submission-first-source', locks);
+  const second = memoryControl('submission-second-source', locks);
+  const secondLead = {
+    ...lead,
+    submissionId: 'submission-second-source',
+    originalAttribution: {
+      ...lead.originalAttribution,
+      source: 'linkedin-organic',
+      landing: '/contacto?utm_source=linkedin',
+    },
+  };
+  let releaseFirstRead!: () => void;
+  let signalFirstRead!: () => void;
+  const firstReadEntered = new Promise<void>((resolve) => { signalFirstRead = resolve; });
+  const firstReadBlocked = new Promise<void>((resolve) => { releaseFirstRead = resolve; });
+  let blockFirstRead = true;
+  gateway.getContactCustomFields = async () => {
+    gateway.calls.push({ operation: 'get-fields' });
+    if (blockFirstRead) {
+      blockFirstRead = false;
+      signalFirstRead();
+      await firstReadBlocked;
+    }
+    return Array.from(gateway.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
+  };
+
+  const firstRun = syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), first);
+  await firstReadEntered;
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(secondLead, gateway, config, new Date(), second),
+    SubmissionInProgressError,
+  );
+  releaseFirstRead();
+  await firstRun;
+  await syncWebsiteLeadToHighLevel(secondLead, gateway, config, new Date(), second);
+
+  assert.equal(gateway.calls.filter((call) => call.operation === 'update-original').length, 1);
+  assert.equal(
+    gateway.customFields.get(config.customFieldIds.original_source),
+    lead.originalAttribution.source,
+  );
+  assert.equal(
+    gateway.customFields.get(config.customFieldIds.original_landing),
+    lead.originalAttribution.landing,
+  );
+});
+
+test('retains the opportunity lease if its post-create checkpoint fails', async () => {
+  const gateway = new GatewayMock();
+  const locks = new Set<string>();
+  const control = memoryControl('submission-opportunity-checkpoint', locks);
+  const checkpoint = control.checkpoint;
+  let failOpportunityCheckpoint = true;
+  control.checkpoint = async (patch) => {
+    if (patch.opportunityId && failOpportunityCheckpoint) {
+      failOpportunityCheckpoint = false;
+      throw new Error('Redis unavailable after opportunity create');
+    }
+    await checkpoint(patch);
+  };
+
+  await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+  assert.equal(gateway.opportunities.length, 1);
+  assert.equal(control.progress.opportunityId, undefined);
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+    SubmissionInProgressError,
+  );
+  locks.clear();
+
+  const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
+  assert.equal(recovered.opportunityId, 'opportunity-1');
+  assert.equal(gateway.calls.filter((call) => call.operation === 'create-opportunity').length, 1);
+});
+
+test('retains the task lease if its post-create checkpoint fails', async () => {
+  const gateway = new GatewayMock();
+  const locks = new Set<string>();
+  const control = memoryControl('submission-task-checkpoint', locks);
+  const checkpoint = control.checkpoint;
+  let failTaskCheckpoint = true;
+  control.checkpoint = async (patch) => {
+    if (patch.taskId && failTaskCheckpoint) {
+      failTaskCheckpoint = false;
+      throw new Error('Redis unavailable after task create');
+    }
+    await checkpoint(patch);
+  };
+
+  await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+  assert.equal(gateway.tasks.length, 1);
+  assert.equal(control.progress.taskId, undefined);
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+    SubmissionInProgressError,
+  );
+  locks.clear();
+
+  const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
+  assert.equal(recovered.taskId, 'task-1');
+  assert.equal(gateway.calls.filter((call) => call.operation === 'create-task').length, 1);
+});
+
+const uncertainWriteFailures = [
+  ['HTTP 5xx', () => new HighLevelApiError(503, 'write')],
+  ['transport', () => new TypeError('socket reset')],
+  ['JSON parse', () => new SyntaxError('invalid JSON')],
+] as const;
+
+for (const [label, error] of uncertainWriteFailures) {
+  test(`retains the first-touch lease after an uncertain ${label} write result`, async () => {
+    const gateway = new GatewayMock();
+    const locks = new Set<string>();
+    const control = memoryControl(`submission-original-${label}`, locks);
+    gateway.originalWriteError = error();
+
+    await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+    await assert.rejects(
+      () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+      SubmissionInProgressError,
+    );
+    assert.equal(gateway.calls.filter((call) => call.operation === 'update-original').length, 1);
+  });
+
+  test(`retains the opportunity lease after an uncertain ${label} write result`, async () => {
+    const gateway = new GatewayMock();
+    const locks = new Set<string>();
+    const control = memoryControl(`submission-opportunity-${label}`, locks);
+    gateway.opportunityWriteError = error();
+
+    await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+    await assert.rejects(
+      () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+      SubmissionInProgressError,
+    );
+    assert.equal(gateway.calls.filter((call) => call.operation === 'create-opportunity').length, 1);
+  });
+
+  test(`retains the task lease after an uncertain ${label} write result`, async () => {
+    const gateway = new GatewayMock();
+    const locks = new Set<string>();
+    const control = memoryControl(`submission-task-${label}`, locks);
+    gateway.opportunities = [{ id: 'opportunity-existing', status: 'open' }];
+    gateway.taskWriteError = error();
+
+    await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
+    await assert.rejects(
+      () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
+      SubmissionInProgressError,
+    );
+    assert.equal(gateway.calls.filter((call) => call.operation === 'create-task').length, 1);
+  });
+}
+
+test('releases resource leases after deterministic HTTP 4xx write failures', async () => {
+  const originalGateway = new GatewayMock();
+  const originalLocks = new Set<string>();
+  const originalControl = memoryControl('submission-original-4xx', originalLocks);
+  originalGateway.originalWriteError = new HighLevelApiError(409, 'update original attribution');
+
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, originalGateway, config, new Date(), originalControl),
+    HighLevelApiError,
+  );
+  assert.equal(originalLocks.size, 0);
+
+  const opportunityGateway = new GatewayMock();
+  const opportunityLocks = new Set<string>();
+  const opportunityControl = memoryControl('submission-opportunity-4xx', opportunityLocks);
+  opportunityGateway.opportunityWriteError = new HighLevelApiError(422, 'create opportunity');
+
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, opportunityGateway, config, new Date(), opportunityControl),
+    HighLevelApiError,
+  );
+  assert.equal(opportunityLocks.size, 0);
+
+  const taskGateway = new GatewayMock();
+  const taskLocks = new Set<string>();
+  const taskControl = memoryControl('submission-task-4xx', taskLocks);
+  taskGateway.opportunities = [{ id: 'opportunity-existing', status: 'open' }];
+  taskGateway.taskWriteError = new HighLevelApiError(400, 'create task');
+
+  await assert.rejects(
+    () => syncWebsiteLeadToHighLevel(lead, taskGateway, config, new Date(), taskControl),
+    HighLevelApiError,
+  );
+  assert.equal(taskLocks.size, 0);
 });
 
 test('recovers a task id when create succeeded but its response was lost', async () => {
