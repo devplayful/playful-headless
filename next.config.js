@@ -73,9 +73,9 @@ async function getBlogCategoryRedirects() {
 const nextConfig = {
   experimental: {
     // WordPress is a small shared origin. Keep static generation deliberately
-    // serial so a release cannot create the burst of concurrent REST calls
+    // tightly bounded so a release cannot create the burst of REST calls
     // that previously produced transient 500s and false 404 pages.
-    staticGenerationMaxConcurrency: 1,
+    staticGenerationMaxConcurrency: 2,
     staticGenerationMinPagesPerWorker: 1_000,
     // The WordPress request layer owns the retry budget. Keep a single page
     // generation attempt so Next does not multiply those origin requests.

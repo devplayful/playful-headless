@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:guarded": "node scripts/build-with-budget.mjs",
     "start": "next start",
     "lint": "next lint",
     "clean": "rimraf .next",
