@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { WPPost } from '@/services/wordpress';
+import { blogPostPath } from '@/utils/blog-url';
 
 interface MostViewedArticlesProps {
   posts: WPPost[];
@@ -95,7 +96,7 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
                 <span className="text-xs font-bold text-[#440099] uppercase mb-3">MÁS VISTOS</span>
                 
                 <Link 
-                  href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
+                  href={blogPostPath(post)}
                   className="block mb-3"
                 >
                   <h3 className="text-lg font-bold text-[#440099] line-clamp-2 leading-tight hover:text-[#5500BB] transition-colors">
@@ -108,7 +109,7 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
                 </p>
                 
                 <Link 
-                  href={`/blog/${post.categories?.[0]?.slug || 'sin-categoria'}/${post.slug}`}
+                  href={blogPostPath(post)}
                   className="mt-auto w-full bg-[#440099] text-white py-3 rounded-full font-bold text-sm text-center hover:bg-[#5500BB] transition-all"
                 >
                   LEER MÁS
