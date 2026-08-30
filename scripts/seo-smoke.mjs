@@ -38,16 +38,10 @@ await expectRedirect(
   '/contactar-agencia-de-marketing-digital',
   301,
 );
-const blogAliasTarget = await expectRedirect(
-  '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke',
+await expectRedirect(
+  '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke&utm_medium=organic&utm_campaign=canonical-alias&utm_content=one&utm_content=two',
   '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',
   308,
-  { preserveQuery: false },
-);
-assert.equal(
-  blogAliasTarget.search,
-  '',
-  'known limitation: static blog category redirects currently drop query parameters',
 );
 
 const canonicalPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
