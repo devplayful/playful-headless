@@ -1,7 +1,7 @@
 import { getBlogPostBySlug, getBlogPosts, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound, permanentRedirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
@@ -33,28 +33,9 @@ interface BlogPostPageProps {
   params: Promise<{
     slug: string[];
   }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-function pathWithSearchParams(
-  pathname: string,
-  searchParams: Record<string, string | string[] | undefined>,
-) {
-  const query = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    if (Array.isArray(value)) {
-      value.forEach((item) => query.append(key, item));
-    } else if (value !== undefined) {
-      query.append(key, value);
-    }
-  }
-
-  const serialized = query.toString();
-  return serialized ? `${pathname}?${serialized}` : pathname;
-}
-
-export default async function BlogPostPage({ params, searchParams }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // El array slug contiene [category, post-slug]
   const { slug } = await params;
   if (slug.length !== 2) {
@@ -76,7 +57,10 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
   const postCategory = getPrimaryCategorySlug(post);
 
   if (postCategory !== category) {
-    permanentRedirect(pathWithSearchParams(blogPostPath(post), await searchParams));
+    // Known WordPress category aliases are compiled into Next redirects at
+    // build time. Unknown categories should be a 404 instead of a redirect
+    // that silently drops attribution parameters.
+    notFound();
   }
 
   // Extraer encabezados para la tabla de contenidos
