@@ -5,6 +5,7 @@ import {
   WordPressUpstreamError,
   isTransientWordPressStatus,
   wordpressFetch,
+  wordpressFetchCollection,
 } from '../services/wordpress-request.mjs';
 
 function response(status, statusText = '') {
@@ -114,6 +115,79 @@ test('does not retry an explicitly aborted request', async () => {
     abortError,
   );
   assert.equal(calls, 1);
+});
+
+test('aborts during backoff without issuing a second request', async () => {
+  const controller = new AbortController();
+  let calls = 0;
+
+  await assert.rejects(
+    wordpressFetch('https://endpoint.playfulagency.com/wp-json', { signal: controller.signal }, {
+      fetchImpl: async () => {
+        calls += 1;
+        return response(503, 'Service Unavailable');
+      },
+      sleep: async (_delay, signal) => {
+        controller.abort();
+        assert.equal(signal.aborted, true);
+      },
+    }),
+    (error) => error?.name === 'AbortError',
+  );
+  assert.equal(calls, 1);
+});
+
+test('enforces one deadline across fetch attempts and backoff', async () => {
+  let calls = 0;
+
+  await assert.rejects(
+    wordpressFetch('https://endpoint.playfulagency.com/wp-json', {}, {
+      fetchImpl: async (_input, init) => {
+        calls += 1;
+        return new Promise((_resolve, reject) => {
+          init.signal.addEventListener('abort', () => reject(init.signal.reason), { once: true });
+        });
+      },
+      timeoutMs: 5,
+    }),
+    (error) => {
+      assert.ok(error instanceof WordPressUpstreamError);
+      assert.match(error.message, /deadline/);
+      assert.equal(error.attempts, 1);
+      return true;
+    },
+  );
+  assert.equal(calls, 1);
+});
+
+test('collection caller returns empty only for a real 404 or empty 200', async () => {
+  const missing = await wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/missing', {}, {
+    fetchImpl: async () => response(404, 'Not Found'),
+  });
+  assert.deepEqual(missing.items, []);
+
+  const empty = await wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/empty', {}, {
+    fetchImpl: async () => new Response('[]', {
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+    }),
+  });
+  assert.deepEqual(empty.items, []);
+});
+
+test('collection caller propagates a persistent 5xx instead of returning empty', async () => {
+  let calls = 0;
+  await assert.rejects(
+    wordpressFetchCollection('https://endpoint.playfulagency.com/wp-json/wp/v2/posts', {}, {
+      fetchImpl: async () => {
+        calls += 1;
+        return response(500, 'Internal Server Error');
+      },
+      sleep: async () => {},
+    }),
+    (error) => error instanceof WordPressUpstreamError && error.status === 500,
+  );
+  assert.equal(calls, 3);
 });
 
 test('classifies only retry-safe statuses as transient', () => {

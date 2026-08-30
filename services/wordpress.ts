@@ -1,5 +1,5 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
-import { wordpressFetch } from './wordpress-request.mjs';
+import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 
 const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
 
@@ -377,15 +377,13 @@ function rewriteInSitePageHrefs(html: string): string {
 
 /** Página WP (servicios, etc.) con HTML de Elementor para renderizarla en el Next. */
 export async function getPageBySlug(slug: string): Promise<WPPage | null> {
-  const response = await wordpressFetch(
+  const { items: pages } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
     {
       next: { revalidate: 300 },
       headers: { 'Content-Type': 'application/json' },
     }
   );
-  if (response.status === 404) return null;
-  const pages = await response.json();
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
@@ -494,19 +492,18 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   perPage = Math.min(100, Math.max(1, perPage));
   let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
   if (categorySlug) {
-    const categoriesResponse = await wordpressFetch(
+    const { items: categories } = await wordpressFetchCollection<any>(
       `${WORDPRESS_API_URL}/wp/v2/categories?slug=${encodeURIComponent(categorySlug)}`,
       { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
     );
-    if (categoriesResponse.status === 404) return { posts: [], totalPages: 0 };
-    const categories = await categoriesResponse.json();
     if (categories.length === 0) return { posts: [], totalPages: 0 };
     url += `&categories=${categories[0].id}`;
   }
-  const response = await wordpressFetch(url, { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } });
-  if (response.status === 404) return { posts: [], totalPages: 0 };
+  const { items: posts, response } = await wordpressFetchCollection<WPPost>(
+    url,
+    { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } },
+  );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-  const posts: WPPost[] = await response.json();
   const processedPosts = posts.map(post => ({
     ...post,
     featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
@@ -518,43 +515,37 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
 }
 
 export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ id: number; title: string; excerpt: string; category: string; date: string; imageUrl: string; slug: string; href: string }>> {
-  try {
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
   url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
   url.searchParams.append('per_page', Math.min(perPage, 10).toString());
   url.searchParams.append('orderby', 'date');
   url.searchParams.append('order', 'desc');
-  const response = await wordpressFetch(url.toString(), { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } });
-  if (response.status === 404) return [];
-  const posts: WPPost[] = await response.json();
+  const { items: posts } = await wordpressFetchCollection<WPPost>(
+    url.toString(),
+    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
+  );
   return posts.map(post => {
-      let category = 'Sin categoría';
-      const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
-      if (categories && categories.length > 0) category = categories[0].name;
-      let imageUrl = '/images/blog/placeholder.jpg';
-      const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-      if (featuredMedia) {
-        imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
-      }
-      const date = new Date(post.date);
-      const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
-      const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
-      const categorySlug = categories?.[0]?.slug || 'sin-categoria';
+    let category = 'Sin categoría';
+    const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
+    if (categories && categories.length > 0) category = categories[0].name;
+    let imageUrl = '/images/blog/placeholder.jpg';
+    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+    if (featuredMedia) {
+      imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
+    }
+    const date = new Date(post.date);
+    const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
+    const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
+    const categorySlug = categories?.[0]?.slug || 'sin-categoria';
     return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, href: `/blog/${categorySlug}/${post.slug}` };
   });
-  } catch (error) {
-    console.error('Error en getLatestBlogPosts:', error);
-    return [];
-  }
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
-  const response = await wordpressFetch(
+  const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
-  if (response.status === 404) return null;
-  const posts: WPPost[] = await response.json();
   if (!posts || posts.length === 0) return null;
   const post = posts[0];
   if (post._embedded) {
@@ -660,70 +651,56 @@ export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
 }
 
 export async function getPodcastEpisodes(page: number = 1, perPage: number = 10): Promise<{ episodes: PodcastEpisode[], totalPages: number }> {
-  try {
-  const response = await wordpressFetch(
+  const { items: episodes, response } = await wordpressFetchCollection<PodcastEpisode>(
     `${WORDPRESS_API_URL}/wp/v2/podcast?_embed=wp:featuredmedia,wp:term&per_page=${perPage}&page=${page}&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
-  if (response.status === 404) return { episodes: [], totalPages: 0 };
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-  const episodes: PodcastEpisode[] = await response.json();
   const processedEpisodes = episodes.map(episode => {
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
     return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
   });
   return { episodes: processedEpisodes, totalPages };
-  } catch (error) {
-    console.error('Error en getPodcastEpisodes:', error);
-    return { episodes: [], totalPages: 0 };
-  }
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  try {
-  const response = await wordpressFetch(
+  const { items: teamMembers } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/equipo?_embed=wp:term,wp:featuredmedia&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
-  if (response.status === 404) return [];
-  const teamMembers: any[] = await response.json();
   const membersWithTerms = await Promise.all(teamMembers.map(async (member: any) => {
-      try {
-        const cargos = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'cargo') || [];
-        const roles = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'rol') || [];
-        const featuredMedia = member._embedded?.['wp:featuredmedia']?.[0];
-        const linkedinUrl = member.acf?.informacion?.linkedin_url || member.acf?.linkedin_url || '#';
-        const cargo = cargos.length > 0 ? cargos[0].name : (member.acf?.cargo || '');
-        return {
-          ...member,
-          acf: {
-            ...member.acf,
-            nombre: member.title?.rendered || member.acf?.nombre || '',
-            cargo: cargo,
-            cargoIds: cargos.map((c: any) => c.id),
-            habilidades: roles.map((r: any) => r.name) || member.acf?.habilidades || [],
-            descripcion: (() => {
-              const excerpt = member.excerpt?.rendered?.replace(/<[^>]*>?/gm, '').trim();
-              const acfDesc = member.acf?.descripcion?.trim();
-              return excerpt && excerpt !== '00' ? excerpt : (acfDesc || '');
-            })(),
-            linkedin_url: linkedinUrl,
-            imagen: {
-              url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/nosotros/placeholder-avatar.png',
-              alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
-            }
+    try {
+      const cargos = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'cargo') || [];
+      const roles = member._embedded?.['wp:term']?.find((t: any) => t[0]?.taxonomy === 'rol') || [];
+      const featuredMedia = member._embedded?.['wp:featuredmedia']?.[0];
+      const linkedinUrl = member.acf?.informacion?.linkedin_url || member.acf?.linkedin_url || '#';
+      const cargo = cargos.length > 0 ? cargos[0].name : (member.acf?.cargo || '');
+      return {
+        ...member,
+        acf: {
+          ...member.acf,
+          nombre: member.title?.rendered || member.acf?.nombre || '',
+          cargo: cargo,
+          cargoIds: cargos.map((c: any) => c.id),
+          habilidades: roles.map((r: any) => r.name) || member.acf?.habilidades || [],
+          descripcion: (() => {
+            const excerpt = member.excerpt?.rendered?.replace(/<[^>]*>?/gm, '').trim();
+            const acfDesc = member.acf?.descripcion?.trim();
+            return excerpt && excerpt !== '00' ? excerpt : (acfDesc || '');
+          })(),
+          linkedin_url: linkedinUrl,
+          imagen: {
+            url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/nosotros/placeholder-avatar.png',
+            alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
           }
-        };
-      } catch (error) {
-        console.error('Error procesando miembro del equipo:', error);
-        return null;
-      }
+        }
+      };
+    } catch (error) {
+      console.error('Error procesando miembro del equipo:', error);
+      return null;
+    }
   }));
   return membersWithTerms.filter((member: TeamMember | null): member is TeamMember => member !== null);
-  } catch (error) {
-    console.error('Error al obtener los miembros del equipo:', error);
-    return [];
-  }
 }
 
 export interface ACFSuccessStory {
@@ -753,12 +730,10 @@ export interface SuccessStory extends WPPost {
 }
 
 export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory | null> {
-  const response = await wordpressFetch(
+  const { items: stories } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } }
   );
-  if (response.status === 404) return null;
-  const stories: any[] = await response.json();
   if (!stories || stories.length === 0) return null;
   const story = stories[0];
   if (!story.acf) return null;
@@ -775,12 +750,10 @@ export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory 
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
-  const response = await wordpressFetch(
+  const { items: episodes } = await wordpressFetchCollection<PodcastEpisode>(
     `${WORDPRESS_API_URL}/wp/v2/podcast?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
-  if (response.status === 404) return null;
-  const episodes: PodcastEpisode[] = await response.json();
   const episode = episodes[0];
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
@@ -789,17 +762,10 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
 }
 
 export async function getAllCaseStudies(): Promise<any[]> {
-  try {
-  const response = await wordpressFetch(
+  const { items: casos } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
-  if (response.status === 404) return [];
-  const casos = await response.json();
   const sanitizedCases = sanitizeWpPayload(casos);
   return sanitizedCases.map(applyPublicCaseStudyOverrides);
-  } catch (error) {
-    console.error('Error en getAllCaseStudies:', error);
-    return [];
-  }
 }
