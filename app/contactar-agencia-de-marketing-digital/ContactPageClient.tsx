@@ -5,6 +5,12 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import {
+  clearSubmissionId,
+  getSubmissionAttribution,
+  getOrCreateSubmissionId,
+} from '@/lib/contact/client-attribution';
+import { pushGenerateLead } from '@/lib/contact/analytics';
 import { DIAGNOSTIC_CALL_COPY } from '@/utils/diagnostic-call-copy.mjs';
 
 interface ContactPageClientProps {
@@ -14,6 +20,7 @@ interface ContactPageClientProps {
 // Componente del formulario con reCAPTCHA V2
 function ContactForm({ casosDeExito }: ContactPageClientProps) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const submissionIdRef = useRef('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +30,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{success: boolean, message: string} | null>(null);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    success: boolean;
+    pending?: boolean;
+    message: string;
+  } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -52,7 +65,11 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
     try {
 
-      // Enviar el formulario a nuestra API con el token
+      if (!submissionIdRef.current) submissionIdRef.current = getOrCreateSubmissionId();
+      const attribution = getSubmissionAttribution();
+
+      // Enviar el formulario a nuestra API con el token. El identificador se
+      // conserva durante reintentos para impedir una segunda oportunidad.
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -64,13 +81,39 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           phone: formData.phone,
           business: formData.business,
           message: formData.message,
+          submissionId: submissionIdRef.current,
+          privacyConsent,
+          marketingConsent,
+          ...attribution,
           recaptchaToken,
         }),
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.status === 202 && data.pendingConfirmation === true) {
+        setSubmitStatus({
+          success: false,
+          pending: true,
+          message: data.message,
+        });
+
+        // The outcome is unresolved, but reusing or replacing the submission
+        // would risk a duplicate. Preserve the neutral receipt and stop retries.
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          business: '',
+          message: ''
+        });
+        setPrivacyConsent(false);
+        setMarketingConsent(false);
+      } else if (response.ok && data.success) {
+        if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
+          pushGenerateLead(data.analytics.formId);
+        }
         setSubmitStatus({
           success: true,
           message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
@@ -85,12 +128,20 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           business: '',
           message: ''
         });
+        setPrivacyConsent(false);
+        setMarketingConsent(false);
+        submissionIdRef.current = '';
+        clearSubmissionId();
         recaptchaRef.current?.reset();
       } else {
         setSubmitStatus({
           success: false,
           message: data.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
         });
+        // A deterministic rejection consumed the verifier token. Give the
+        // user a fresh challenge for a corrected manual attempt while keeping
+        // the stable submission id; this never triggers an automatic resend.
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
@@ -128,7 +179,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
             </div>
 
             {submitStatus && (
-              <div className={`mb-6 p-4 rounded-lg ${submitStatus.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              <div className={`mb-6 p-4 rounded-lg ${
+                submitStatus.pending
+                  ? 'bg-amber-100 text-amber-900'
+                  : submitStatus.success
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+              }`}>
                 {submitStatus.message}
               </div>
             )}
@@ -218,23 +275,27 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
               
               <div className="space-y-4">
                 <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                  <input
+                    type="checkbox"
+                    checked={privacyConsent}
+                    onChange={(event) => setPrivacyConsent(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                    required
+                  />
                   <span>
-                    Entérate de cómo usamos tus datos en
+                    Acepto el tratamiento de mis datos según la
                     <a href="/politica-de-privacidad" className="text-purple-700 font-semibold hover:underline ml-1">Política de Privacidad</a>
                   </span>
                 </label>
                 <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                  <input
+                    type="checkbox"
+                    checked={marketingConsent}
+                    onChange={(event) => setMarketingConsent(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  />
                   <span>
-                    Consiento recibir notificaciones, emails y alertas de Playful Agency, la recopilación de los mensajes, publicidad y valor.
-                    Puedes administrar tus preferencias desde los mensajes.
-                  </span>
-                </label>
-                <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
-                  <input type="checkbox" className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
-                  <span>
-                    Acepto recibir mensajes de marketing ocasionales de Playful Agency.
+                    Acepto recibir comunicaciones de marketing ocasionales. Puedo retirar este consentimiento en cualquier momento.
                   </span>
                 </label>
               </div>
