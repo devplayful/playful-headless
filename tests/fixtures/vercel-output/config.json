@@ -10,6 +10,10 @@
       "handle": "filesystem"
     },
     {
+      "src": "^/casos-de-exito/([^/]+?)(?:/)?$",
+      "dest": "/casos-de-exito/[slug]"
+    },
+    {
       "src": "^/([^/]+?)(?:/)?$",
       "dest": "/[slug]"
     }
