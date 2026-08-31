@@ -34,13 +34,33 @@ shell wrapper. The wrapper removes `.vercel/output` before invoking it:
 node scripts/build-and-verify-routes.mjs --artifact .vercel/output -- vercel build
 ```
 
-The Vercel adapter requires `.vercel/output/config.json`. A `routes[].src` to
-dynamic `routes[].dest` mapping is only a candidate source relationship; a
-concrete is accepted only when the same public path has either a static HTML
-asset or a Vercel Prerender Function described by a sibling
-`<name>.prerender-config.json`. Function symlinks are resolved to their source
-template and cross-checked against any exact route mapping. Arbitrary public
-assets and unbacked rewrites are not treated as prerenders.
+The Vercel adapter requires `.vercel/output/config.json` and follows Build
+Output API v3 filesystem semantics. Static paths retain their directory names
+and extensions exactly; only an explicit `config.overrides[filename].path`
+changes the public path. Function paths remove only the terminal `.func`
+suffix, so `functions/app/page.func` represents `/app/page`, not `/page`.
+
+Every `.func` is validated before inventorying routes. It must resolve to a
+directory inside `functions`, contain valid JSON in `.vc-config.json`, and its
+declared `handler` (or Edge `entrypoint`) must resolve to a real file inside the
+function. Function symlinks must remain inside `functions`, target another
+`.func` directory and cannot be dangling. Other symlinks below `functions` are
+rejected.
+
+A `routes[].src` to dynamic `routes[].dest` mapping is only a candidate source
+relationship; a concrete is accepted only when the same reachable public path
+has either a static HTML asset or a Vercel Prerender Function described by a
+sibling `<name>.prerender-config.json`. Prerender `expiration` must be `false`
+or a non-negative integer. Function symlinks are resolved to their source
+template and cross-checked against exact route mappings.
+
+Route order and phases are significant. An unconditional terminating rewrite
+before `handle: "filesystem"` makes a matching filesystem asset unreachable,
+so that asset cannot satisfy the inventory. Rules after that handler are
+treated as fallback rules after a filesystem miss. A matching `check: true`
+rule explicitly performs the filesystem check, while `continue: true` rules do
+not terminate reachability. Arbitrary assets, unreachable prerenders and
+unbacked rewrites are not accepted.
 
 For any non-standard `--artifact` path, the destination must not exist before
 the command starts. This prevents an old artifact from being stamped by a build
@@ -75,8 +95,10 @@ to pass, belongs in a separately reviewed dependency change with its own tests.
 The route gate fails for a dirty tree, wrong baseline lineage, source-manifest
 drift, any missing source template, a ghost template, unknown or missing
 concrete route/source pair, missing critical route, missing provenance, commit
-mismatch or artifact fingerprint mismatch. Next's generated `/_not-found` is
-the sole reviewed artifact-only exception.
+mismatch or artifact fingerprint mismatch. For Vercel output it also fails on
+invalid functions, handlers, symlinks, overrides, prerender configuration or
+ambiguous route provenance. Next's generated `/_not-found` is the sole reviewed
+artifact-only exception.
 
 The tooling changes no application route, handler, redirect, runtime setting or
 deployment state. Rollback is a revert of the tooling commits.
