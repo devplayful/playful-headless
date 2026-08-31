@@ -101,7 +101,7 @@ export async function verifyRecaptcha(token: unknown): Promise<void> {
   }
 }
 
-function wordpressConfiguration(): { wordpressUrl: string; token: string } {
+function wordpressConfiguration(): { wordpressUrl: string; token: string; basicAuth?: string } {
   const wordpressUrl = process.env.WORDPRESS_API_URL?.replace(/\/$/, '');
   const token = process.env.WORDPRESS_CONTACT_TOKEN;
   if (!wordpressUrl || !token) {
@@ -111,7 +111,19 @@ function wordpressConfiguration(): { wordpressUrl: string; token: string } {
       'El formulario no está disponible temporalmente.',
     );
   }
-  return { wordpressUrl, token };
+  // Preview may be protected by HTTP Basic Auth. This value is server-only and
+  // intentionally contains just the base64 credentials, never a URL credential.
+  const basicAuth = process.env.WORDPRESS_BASIC_AUTH?.trim() || undefined;
+  return { wordpressUrl, token, basicAuth };
+}
+
+function wordpressHeaders(config: { token: string; basicAuth?: string }, extra: Record<string, string>) {
+  return {
+    'Content-Type': 'application/json',
+    'X-Playful-Contact-Token': config.token,
+    ...(config.basicAuth ? { Authorization: `Basic ${config.basicAuth}` } : {}),
+    ...extra,
+  };
 }
 
 function requireReceiptProtocol(response: Response): void {
@@ -124,17 +136,16 @@ export async function checkWordPressReceipt(
   lead: Pick<WebsiteLead, 'submissionId'>,
   options: WordPressReceiptOptions = {},
 ): Promise<WordPressReceiptState> {
-  const { wordpressUrl, token } = wordpressConfiguration();
+  const config = wordpressConfiguration();
+  const { wordpressUrl } = config;
   const fetchImpl = options.fetchImpl || fetch;
   let response: Response;
   try {
     response = await fetchImpl(`${wordpressUrl}/playful/v1/contact-receipt`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Playful-Contact-Token': token,
+      headers: wordpressHeaders(config, {
         'X-Playful-Submission-Id': lead.submissionId,
-      },
+      }),
       body: JSON.stringify({ submission_id: lead.submissionId }),
       signal: AbortSignal.timeout(WORDPRESS_DELIVERY_TIMEOUT_MS),
     });
@@ -162,7 +173,8 @@ export async function deliverToWordPress(
   lead: WebsiteLead,
   options: WordPressDeliveryOptions = {},
 ): Promise<void> {
-  const { wordpressUrl, token } = wordpressConfiguration();
+  const config = wordpressConfiguration();
+  const { wordpressUrl } = config;
 
   const fetchImpl = options.fetchImpl || fetch;
   const wait = options.sleep || sleep;
@@ -188,11 +200,9 @@ export async function deliverToWordPress(
     try {
       const response = await fetchImpl(`${wordpressUrl}/playful/v1/contact`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Playful-Contact-Token': token,
+        headers: wordpressHeaders(config, {
           'X-Playful-Submission-Id': lead.submissionId,
-        },
+        }),
         body: JSON.stringify({
           submission_id: lead.submissionId,
           name: lead.name,
