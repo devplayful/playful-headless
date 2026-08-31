@@ -1,0 +1,123 @@
+{
+  "schema": "playful.highlevel.pipeline-map.v1",
+  "capturedAt": "2026-08-31T04:47:11+02:00",
+  "locationId": "3sc1AO5Eju01llYk7Qpr",
+  "legacy": {
+    "pipelineId": "Z1LJMEK3hq9xdHR5F44n",
+    "createdAt": "2026-08-27T21:32:00+02:00",
+    "createdName": "D2C",
+    "currentName": "D2C LEGACY - prospeccion fria (no usar)",
+    "auditLog": {
+      "onlySubsequentUpdateAt": "2026-08-30T18:14:00+02:00",
+      "onlySubsequentUpdateFields": [
+        "name"
+      ]
+    },
+    "stages": [
+      {
+        "order": 0,
+        "name": "Lupa",
+        "probability": 20,
+        "id": "2c00b304-8561-41dc-9df8-6cf1d98a8171"
+      },
+      {
+        "order": 1,
+        "name": "Toque 1",
+        "probability": 40,
+        "id": "e8b807eb-4955-48ea-b7c6-ee2f1852f721"
+      },
+      {
+        "order": 2,
+        "name": "Follow-up",
+        "probability": 60,
+        "id": "c677800a-97a9-4e12-a096-df2dbd463c04"
+      },
+      {
+        "order": 3,
+        "name": "Respondió",
+        "probability": 80,
+        "id": "59d3be04-ca39-4958-a257-5ef928ea5db3"
+      },
+      {
+        "order": 4,
+        "name": "Meeting",
+        "probability": 80,
+        "id": "f6799ce7-5883-40c9-9159-15cf47421ec1"
+      },
+      {
+        "order": 5,
+        "name": "Propuesta",
+        "probability": 80,
+        "id": "f7523a24-d2c6-493a-ad91-60817e8467ab"
+      },
+      {
+        "order": 6,
+        "name": "Cliente",
+        "probability": 80,
+        "id": "ad857c3e-f5cc-4d84-88a8-adb56e668863"
+      },
+      {
+        "order": 7,
+        "name": "No fit",
+        "probability": 80,
+        "id": "86065f16-1509-4871-ae24-9474b0f20ee0"
+      }
+    ]
+  },
+  "canonical": {
+    "pipelineId": "zXzvEbbEaOQqftHWZwoz",
+    "createdAt": "2026-08-30T18:15:00+02:00",
+    "createdName": "D2C",
+    "subsequentAuditLogUpdates": 0,
+    "stages": [
+      {
+        "order": 0,
+        "name": "Consulta",
+        "probability": 10,
+        "id": "42c02b84-2fc8-43c8-910f-268d00eb9fa0"
+      },
+      {
+        "order": 1,
+        "name": "Lead cualificado",
+        "probability": 25,
+        "id": "7a7d1c2b-a7d1-49c2-8db9-91ba104b2ba5"
+      },
+      {
+        "order": 2,
+        "name": "Reunión",
+        "probability": 40,
+        "id": "8f169c68-2d07-47ca-83e4-e8d18fa3edb3"
+      },
+      {
+        "order": 3,
+        "name": "Oportunidad",
+        "probability": 60,
+        "id": "3d2e3490-0bdd-4c88-96af-35b26ac59df6"
+      },
+      {
+        "order": 4,
+        "name": "Propuesta",
+        "probability": 80,
+        "id": "612569d1-4421-4083-b514-c606c7360164"
+      },
+      {
+        "order": 5,
+        "name": "Ganada",
+        "probability": 100,
+        "id": "c2c76fdc-f425-43db-86b3-f7707a347f98"
+      },
+      {
+        "order": 6,
+        "name": "Perdida",
+        "probability": 0,
+        "id": "7fbf1cab-05a0-43ab-a576-eb95fc794c98"
+      }
+    ]
+  },
+  "smartList": {
+    "id": "I2IO1LGYW0BkvTPcSvwc",
+    "createdAt": "2026-08-30T18:07:00+02:00",
+    "name": "Prospección fría — D2C legado (sin comunicaciones)"
+  },
+  "outputPolicy": "pipeline-and-stage-configuration-only"
+}
