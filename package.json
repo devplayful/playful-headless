@@ -10,7 +10,9 @@
     "lint": "next lint",
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
-    "test:wordpress": "node --test tests/wordpress-*.test.mjs"
+    "test:wordpress": "node --test tests/wordpress-*.test.mjs",
+    "test:route-integrity": "node --test tests/route-integrity.test.mjs",
+    "verify:routes": "node scripts/verify-route-artifact.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
