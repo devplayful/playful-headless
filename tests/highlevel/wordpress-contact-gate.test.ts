@@ -22,6 +22,29 @@ test('auth remains the final pre-dispatch gate before any receipt is claimed', (
     preDispatch.indexOf('playful_contact_gate_claim_submission')
       > preDispatch.indexOf("get_header('x-playful-contact-token')"),
   );
+  assert(preDispatch.includes('playful_contact_gate_is_receipt_request'));
+});
+
+test('exposes a protected side-effect-free receipt lookup with explicit states', () => {
+  const lookup = between(
+    gate,
+    'function playful_contact_gate_read_receipt',
+    "add_action('rest_api_init'",
+  );
+  const registration = between(
+    gate,
+    "add_action('rest_api_init'",
+    'register_activation_hook',
+  );
+
+  assert(registration.includes("'/contact-receipt'"));
+  assert(registration.includes("'methods' => 'POST'"));
+  assert(lookup.includes("array('state' => 'missing')"));
+  assert(lookup.includes("array('state' => 'completed')"));
+  assert(lookup.includes("array('state' => 'processing')"));
+  assert(lookup.includes('PLAYFUL_CONTACT_GATE_ENFORCE_OPTION'));
+  assert(!lookup.includes('wp_mail('));
+  assert(!lookup.includes('playful_handle_contact_form'));
 });
 
 test('legacy requests bypass receipts while supplied identifiers fail closed', () => {

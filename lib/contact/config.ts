@@ -13,6 +13,12 @@ export interface ContactPipelineConfig {
   redisRestToken: string;
 }
 
+export function isContactPipelineEnabled(
+  env: Environment = process.env,
+): boolean {
+  return env.CONTACT_PIPELINE_ENABLED === 'true';
+}
+
 export class ContactPipelineConfigurationError extends Error {
   constructor(message: string) {
     super(message);

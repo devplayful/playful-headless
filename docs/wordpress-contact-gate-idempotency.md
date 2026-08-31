@@ -15,6 +15,7 @@ Cuando existe identificador, el plugin valida que cuerpo y cabecera coincidan y 
 - Rechazo 4xx determinista: libera el claim para una corrección manual.
 - Timeout, 408/409/425/429, 5xx o respuesta no interpretable: conserva el claim; no presume que el callback careció de efectos.
 - Cada generación se limpia tras siete días mediante WP-Cron. La limpieza comprueba `created_at`, por lo que un evento antiguo no puede borrar otra generación.
+- Consulta autenticada `POST /playful/v1/contact-receipt`: devuelve `200 completed`, `202 processing` o `404 missing`, siempre con `X-Playful-Contact-Idempotency: v1` y sin ejecutar el callback ni leer/guardar PII. Si el enforcement no está activo, devuelve 503.
 
 ## Instalación WP-first
 
@@ -22,16 +23,19 @@ Cuando existe identificador, el plugin valida que cuerpo y cabecera coincidan y 
 2. Sustituir únicamente el archivo del plugin por `wordpress-contact-gate.php` 1.1.0. Mantener el plugin activo.
 3. Validar sintaxis PHP en el hosting y comprobar que WordPress sigue mostrando el plugin activo y el secreto configurado. No copiar código adicional a `functions.php`.
 4. Confirmar que un POST directo sin credencial sigue devolviendo `403 playful_contact_gate_forbidden`.
-5. En una prueba expresamente autorizada, enviar un identificador nuevo y confirmar `200` con `X-Playful-Contact-Idempotency: v1`; repetir el mismo identificador y confirmar `200`, `replayed: true` y un solo correo.
-6. Solo después de esa evidencia, establecer `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true` en el entorno Next.js correspondiente. Hasta entonces debe permanecer `false`.
+5. Antes de enviar PII, consultar un identificador nuevo y confirmar `404`, `state: missing` y `X-Playful-Contact-Idempotency: v1`.
+6. En una prueba expresamente autorizada, enviar ese identificador y confirmar `200` con el header; consultar y confirmar `completed`; repetir el mismo identificador y confirmar `200`, `replayed: true` y un solo correo.
+7. Solo después de esa evidencia, establecer `CONTACT_PIPELINE_ENABLED=true` y luego `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true` en el entorno Next.js correspondiente.
 
 La instalación del plugin no activa HighLevel, no cambia reCAPTCHA y no envía ninguna comunicación por sí sola. Las comprobaciones de los pasos 4–5 se realizan únicamente dentro de una ventana autorizada.
 
 ## Rollback
 
 1. Primero establecer `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=false` en Next.js. Esto devuelve el cliente a un único intento y evita confiar en un recibo que WordPress ya no serviría.
-2. Restaurar el archivo respaldado de Playful Contact Gate 1.0.1. No modificar el secreto ni el enforcement.
-3. Confirmar que el acceso directo continúa en `403` y que el flujo autenticado legacy conserva su comportamiento anterior.
-4. No borrar los options `playful_contact_receipt_*` durante el rollback. Son inertes, no contienen PII ni secretos y constituyen evidencia para reconciliar entregas inciertas. Su retirada posterior requiere una decisión separada; al mantener 1.1.0, WP-Cron los limpia a los siete días.
+2. Si Redis o el pipeline duradero forman parte de la incidencia, establecer `CONTACT_PIPELINE_ENABLED=false`; el formulario conserva un intento WordPress y no llama a Redis ni HighLevel.
+3. Mantener Playful Contact Gate 1.1.0: incluso en el flujo sin Redis, esta versión de Next exige el header v1 antes de aceptar un 2xx.
+4. Para restaurar Gate 1.0.1 es obligatorio redeployar primero la versión Next productiva anterior. No modificar el secreto ni el enforcement.
+5. Confirmar que el acceso directo continúa en `403` y que el flujo autenticado legacy conserva su comportamiento anterior.
+6. No borrar los options `playful_contact_receipt_*` durante el rollback. Son inertes, no contienen PII ni secretos y constituyen evidencia para reconciliar entregas inciertas. Su retirada posterior requiere una decisión separada; al mantener 1.1.0, WP-Cron los limpia a los siete días.
 
 El rollback no requiere editar `functions.php`, cambiar DNS, tocar correos ni eliminar respaldos.

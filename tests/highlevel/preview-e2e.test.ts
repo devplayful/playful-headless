@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { RedisRestIdempotencyStore } from '../../lib/contact/idempotency.ts';
+import {
+  IdempotencyStoreUnavailableError,
+  RedisRestIdempotencyStore,
+} from '../../lib/contact/idempotency.ts';
 import { processContactPipeline } from '../../lib/contact/orchestrator.ts';
 import { DryRunHighLevelGateway } from '../../lib/highlevel/client.ts';
 import { syncWebsiteLeadToHighLevel } from '../../lib/highlevel/workflow.ts';
@@ -43,6 +46,19 @@ function redisRestDouble() {
         if (records.get(firstKey) === owner) {
           if (script.includes("redis.call('DEL', KEYS[2])")) {
             records.delete(stateKey);
+          } else if (script.includes("value.state = 'delivered'")) {
+            const current = JSON.parse(records.get(stateKey) || '{}') as Record<string, unknown>;
+            records.set(stateKey, JSON.stringify({ ...current, state: 'delivered', crm: {} }));
+          } else if (script.includes("value.state = 'delivery_uncertain'")) {
+            const current = JSON.parse(records.get(stateKey) || '{}') as Record<string, unknown>;
+            delete current.crm;
+            records.set(stateKey, JSON.stringify({ ...current, state: 'delivery_uncertain' }));
+          } else if (script.includes('value.crm = cjson.decode(ARGV[2])')) {
+            const current = JSON.parse(records.get(stateKey) || '{}') as Record<string, unknown>;
+            records.set(stateKey, JSON.stringify({
+              ...current,
+              crm: JSON.parse(String(command[6])) as Record<string, unknown>,
+            }));
           } else {
             records.set(stateKey, String(command[6]));
           }
@@ -110,7 +126,7 @@ test('Preview E2E entrega una vez, simula CRM y no guarda PII en Redis', async (
   assert.equal(redisTraffic.includes('604800'), true);
 });
 
-test('Preview E2E conserva delivery_uncertain y no reenvía después de una respuesta perdida', async () => {
+test('Preview E2E conserva, consulta y reconcilia delivery_uncertain sin reenviar', async () => {
   const redis = redisRestDouble();
   const store = new RedisRestIdempotencyStore(
     'https://redis.test',
@@ -133,16 +149,47 @@ test('Preview E2E conserva delivery_uncertain y no reenvía después de una resp
   const replay = await processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
+    reconcileDelivery: async () => 'processing',
     dryRun: false,
     ownerId: 'uncertain-attempt-2',
+    reconcileOnly: true,
+  });
+  const recovered = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { deliveries += 1; },
+    reconcileDelivery: async () => 'completed',
+    dryRun: false,
+    ownerId: 'uncertain-attempt-3',
+    reconcileOnly: true,
   });
 
   assert.equal(first.deliveryStatus, 'pending_confirmation');
   assert.equal(replay.deliveryStatus, 'pending_confirmation');
   assert.equal(replay.replayed, true);
+  assert.equal(recovered.deliveryStatus, 'confirmed');
   assert.equal(deliveries, 1);
   const traffic = redis.bodies.join('\n');
   assert.match(traffic, /delivery_pending/);
   assert.match(traffic, /delivery_uncertain/);
   assert.equal(traffic.includes(lead.email), false);
+});
+
+test('estados Redis corruptos o incompatibles se clasifican antes de cualquier entrega', async () => {
+  for (const result of ['{not-json', '{"state":"unexpected"}', '604800']) {
+    const store = new RedisRestIdempotencyStore(
+      'https://redis.test',
+      'test-token',
+      config.idempotencyTtlSeconds,
+      config.leaseSeconds,
+      async () => new Response(JSON.stringify({ result }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    await assert.rejects(
+      () => store.begin('submission-key', 'owner', 'fingerprint'),
+      IdempotencyStoreUnavailableError,
+    );
+  }
 });
