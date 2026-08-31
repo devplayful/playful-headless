@@ -39,13 +39,19 @@ Output API v3 filesystem semantics. Static paths retain their directory names
 and extensions exactly; only an explicit `config.overrides[filename].path`
 changes the public path. Function paths remove only the terminal `.func`
 suffix, so `functions/app/page.func` represents `/app/page`, not `/page`.
+Every override key must name a physical static file. Only `path` and a
+syntactically valid `contentType` are accepted; unused keys, unknown fields,
+path traversal and public-path collisions fail the gate.
 
 Every `.func` is validated before inventorying routes. It must resolve to a
 directory inside `functions`, contain valid JSON in `.vc-config.json`, and its
 declared `handler` (or Edge `entrypoint`) must resolve to a real file inside the
 function. Function symlinks must remain inside `functions`, target another
-`.func` directory and cannot be dangling. Other symlinks below `functions` are
-rejected.
+physical `.func` directory directly and cannot be dangling or chained. The
+artifact, `functions` and `static` roots must be physical directories. Static
+entries, function configs, handlers, prerender configs and bundled function
+assets must also be physical and contained. The only accepted symlink shape is
+an in-artifact `.func` alias pointing directly to another `.func` directory.
 
 A `routes[].src` to dynamic `routes[].dest` mapping is only a candidate source
 relationship; a concrete is accepted only when the same reachable public path
@@ -54,13 +60,27 @@ sibling `<name>.prerender-config.json`. Prerender `expiration` must be `false`
 or a non-negative integer. Function symlinks are resolved to their source
 template and cross-checked against exact route mappings.
 
-Route order and phases are significant. An unconditional terminating rewrite
-before `handle: "filesystem"` makes a matching filesystem asset unreachable,
-so that asset cannot satisfy the inventory. Rules after that handler are
-treated as fallback rules after a filesystem miss. A matching `check: true`
-rule explicitly performs the filesystem check, while `continue: true` rules do
-not terminate reachability. Arbitrary assets, unreachable prerenders and
-unbacked rewrites are not accepted.
+A bracket in a `.func` filename is not routing evidence. A dynamic function is
+inventoried as a template only when an internal route demonstrably maps the
+template's public shape to that function for both `GET` and `HEAD`. A missing
+rewrite, a literal bracket-only source or a method-restricted rewrite does not
+make the dynamic template reachable.
+
+Route order, method and phase are significant. The adapter validates the full
+documented phase order (`rewrite`, `filesystem`, `resource`, `miss`, `hit`,
+`error`). Its locally provable subset is deliberately smaller: internal
+terminating routes in the prelude and after `handle: "filesystem"`. A matching
+pre-filesystem rewrite makes that public filesystem path unreachable; rules
+after the filesystem handler are evaluated as fallbacks after a miss. Method
+filters are evaluated separately for `GET` and `HEAD`.
+
+The local gate fails closed on route semantics it cannot prove without the
+Vercel runtime: source rules in the explicit `rewrite`, `resource`, `miss`,
+`hit` or `error` phases; handler actions; conditions (`has`/`missing`);
+`check`, `continue`, middleware, locale, transforms, response actions and
+external destinations. Arbitrary assets, unreachable prerenders and unbacked
+rewrites are not accepted. This conservative adapter is an offline integrity
+check, not a Vercel routing emulator and never contacts or deploys to Vercel.
 
 For any non-standard `--artifact` path, the destination must not exist before
 the command starts. This prevents an old artifact from being stamped by a build
@@ -97,8 +117,8 @@ drift, any missing source template, a ghost template, unknown or missing
 concrete route/source pair, missing critical route, missing provenance, commit
 mismatch or artifact fingerprint mismatch. For Vercel output it also fails on
 invalid functions, handlers, symlinks, overrides, prerender configuration or
-ambiguous route provenance. Next's generated `/_not-found` is the sole reviewed
-artifact-only exception.
+unsupported routing semantics, or ambiguous route provenance. Next's generated
+`/_not-found` is the sole reviewed artifact-only exception.
 
 The tooling changes no application route, handler, redirect, runtime setting or
 deployment state. Rollback is a revert of the tooling commits.

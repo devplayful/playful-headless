@@ -182,9 +182,14 @@ test('treats exact Vercel rewrites as candidates, not proof of ISR', () => {
     { route: '/agencia-seo', sourceTemplate: '/[slug]', filesystemReachable: false },
   ]);
   assert.equal(isFilesystemReachable([
-    { src: '^/agencia-seo$', check: true, dest: '/fallback' },
-    { src: '^/(.*)$', dest: '/runtime' },
+    { src: '^/agencia-seo$', methods: ['POST'], dest: '/fallback' },
   ], '/agencia-seo'), true);
+  assert.equal(isFilesystemReachable([
+    { src: '^/agencia-seo$', methods: ['GET'], dest: '/fallback' },
+  ], '/agencia-seo'), false);
+  assert.throws(() => isFilesystemReachable([
+    { src: '^/agencia-seo$', check: true, dest: '/fallback' },
+  ], '/agencia-seo'), /field check is not proven safe/);
 });
 
 test('loads a Vercel v3 ISR backed by a function and prerender config', async () => {
@@ -202,6 +207,85 @@ test('does not accept an exact Vercel rewrite without a prerender or static asse
   const artifact = await loadArtifactBundle(fixture);
   assert.deepEqual(artifact.templates, ['/[slug]']);
   assert.deepEqual(artifact.concreteRoutes, []);
+});
+
+test('counts a bracket-named function only with a reachable public GET and HEAD rewrite', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-dynamic-reachability-'));
+  try {
+    await writeNodeFunction(temporary, '[slug]');
+
+    await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+    assert.deepEqual((await loadArtifactBundle(temporary)).templates, []);
+
+    await writeJson(path.join(temporary, 'config.json'), {
+      version: 3,
+      routes: [
+        { handle: 'filesystem' },
+        { src: '^/([^/]+?)(?:/)?$', methods: ['GET'], dest: '/[slug]' },
+      ],
+    });
+    assert.deepEqual((await loadArtifactBundle(temporary)).templates, []);
+
+    await writeJson(path.join(temporary, 'config.json'), {
+      version: 3,
+      routes: [
+        { handle: 'filesystem' },
+        { src: '^/\\[slug\\]$', dest: '/[slug]' },
+      ],
+    });
+    assert.deepEqual((await loadArtifactBundle(temporary)).templates, []);
+
+    await writeJson(path.join(temporary, 'config.json'), {
+      version: 3,
+      routes: [
+        { handle: 'filesystem' },
+        { src: '^/([^/]+?)(?:/)?$', methods: ['GET', 'HEAD'], dest: '/[slug]' },
+      ],
+    });
+    assert.deepEqual((await loadArtifactBundle(temporary)).templates, ['/[slug]']);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+});
+
+test('fails closed on unproven Vercel phases, conditions, and route actions', () => {
+  for (const handle of ['rewrite', 'resource', 'miss', 'hit', 'error']) {
+    assert.throws(() => routesFromVercelConfig({
+      version: 3,
+      routes: [
+        { handle },
+        { src: '^/(.*)$', dest: '/[slug]' },
+      ],
+    }), new RegExp(`unsupported routing phase ${handle}`));
+  }
+
+  for (const condition of ['has', 'missing']) {
+    assert.throws(() => routesFromVercelConfig({
+      version: 3,
+      routes: [{
+        src: '^/(.*)$',
+        dest: '/[slug]',
+        [condition]: [{ type: 'header', key: 'x-preview' }],
+      }],
+    }), new RegExp(`field ${condition} is not proven safe`));
+  }
+
+  assert.throws(() => routesFromVercelConfig({
+    version: 3,
+    routes: [{ handle: 'hit' }, { handle: 'filesystem' }],
+  }), /moves routing phases backwards/);
+  assert.throws(() => routesFromVercelConfig({
+    version: 3,
+    routes: [{ handle: 'filesystem', src: '^/page$', dest: '/other' }],
+  }), /handler actions are not supported/);
+  assert.throws(() => routesFromVercelConfig({
+    version: 3,
+    routes: [{ src: '^/(.*)$', methods: ['GET', 'get'], dest: '/[slug]' }],
+  }), /methods must be unique/);
+  assert.throws(() => routesFromVercelConfig({
+    version: 3,
+    routes: [{ src: '^/(.*)$', methods: ['CUSTOM'], dest: '/[slug]' }],
+  }), /unsupported method CUSTOM/);
 });
 
 test('derives Vercel ISR provenance from a concrete function symlink', async () => {
@@ -248,7 +332,7 @@ test('rejects a dangling Vercel prerender function symlink', async () => {
   }
 });
 
-test('preserves Output v3 public paths and applies static overrides', async () => {
+test('preserves Output v3 public paths and applies validated static overrides', async () => {
   const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-paths-'));
   try {
     await mkdir(path.join(temporary, 'static/app'), { recursive: true });
@@ -258,13 +342,70 @@ test('preserves Output v3 public paths and applies static overrides', async () =
     await writeFile(path.join(temporary, 'static/blog.html'), 'blog');
     await writeJson(path.join(temporary, 'config.json'), {
       version: 3,
-      overrides: { 'blog.html': { path: 'blog' } },
+      overrides: { 'blog.html': { path: 'blog', contentType: 'text/html; charset=utf-8' } },
     });
     const artifact = await loadArtifactBundle(temporary);
     assert.deepEqual(artifact.templates, ['/app/page.html', '/blog', '/pages/about.html']);
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }
+});
+
+test('rejects unused, malformed, ambiguous, or unsupported static overrides', async (t) => {
+  const cases = [
+    {
+      name: 'unused key',
+      overrides: { 'missing.html': { path: 'missing' } },
+      error: /does not reference a physical static file/,
+    },
+    {
+      name: 'invalid contentType',
+      overrides: { 'page.html': { contentType: 'not-a-media-type' } },
+      error: /must be a valid media type/,
+    },
+    {
+      name: 'unknown field',
+      overrides: { 'page.html': { contentEncoding: 'gzip' } },
+      error: /unsupported field contentEncoding/,
+    },
+    {
+      name: 'traversing path',
+      overrides: { 'page.html': { path: '../page' } },
+      error: /must not traverse directories/,
+    },
+  ];
+  for (const fixture of cases) {
+    await t.test(fixture.name, async () => {
+      const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-override-'));
+      try {
+        await mkdir(path.join(temporary, 'static'), { recursive: true });
+        await writeFile(path.join(temporary, 'static/page.html'), 'page');
+        await writeJson(path.join(temporary, 'config.json'), { version: 3, overrides: fixture.overrides });
+        await assert.rejects(loadArtifactBundle(temporary), fixture.error);
+      } finally {
+        await rm(temporary, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test('public path collision', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-override-collision-'));
+    try {
+      await mkdir(path.join(temporary, 'static'), { recursive: true });
+      await writeFile(path.join(temporary, 'static/page.html'), 'page');
+      await writeFile(path.join(temporary, 'static/other.html'), 'other');
+      await writeJson(path.join(temporary, 'config.json'), {
+        version: 3,
+        overrides: {
+          'page.html': { path: 'same' },
+          'other.html': { path: 'same' },
+        },
+      });
+      await assert.rejects(loadArtifactBundle(temporary), /collides with/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+    }
+  });
 });
 
 test('preserves app and pages prefixes in public function paths', async () => {
@@ -363,6 +504,119 @@ test('rejects external and non-function symlink targets', async (t) => {
       await mkdir(path.join(temporary, 'functions/target'), { recursive: true });
       await symlink('target', path.join(temporary, 'functions/alias.func'));
       await assert.rejects(loadArtifactBundle(temporary), /target must be a \.func directory/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+    }
+  });
+});
+
+test('rejects symlinked roots, static entries, configs, handlers, and function assets', async (t) => {
+  await t.test('artifact root', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-artifact-target-'));
+    const aliasParent = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-artifact-alias-'));
+    try {
+      await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+      const alias = path.join(aliasParent, 'output');
+      await symlink(temporary, alias);
+      await assert.rejects(loadArtifactBundle(alias), /artifact directory must be physical/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+      await rm(aliasParent, { recursive: true, force: true });
+    }
+  });
+
+  for (const rootName of ['functions', 'static']) {
+    await t.test(`${rootName} root`, async () => {
+      const temporary = await mkdtemp(path.join(os.tmpdir(), `playful-vercel-${rootName}-root-`));
+      const outside = await mkdtemp(path.join(os.tmpdir(), `playful-vercel-${rootName}-outside-`));
+      try {
+        await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+        await symlink(outside, path.join(temporary, rootName));
+        await assert.rejects(loadArtifactBundle(temporary), new RegExp(`${rootName} must be a physical directory`));
+      } finally {
+        await rm(temporary, { recursive: true, force: true });
+        await rm(outside, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test('config.json', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-config-link-'));
+    const outside = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-config-source-'));
+    try {
+      await writeJson(path.join(outside, 'config.json'), { version: 3 });
+      await symlink(path.join(outside, 'config.json'), path.join(temporary, 'config.json'));
+      await assert.rejects(loadArtifactBundle(temporary), /config\.json must be a physical file/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  await t.test('static file', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-static-link-'));
+    const outside = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-static-source-'));
+    try {
+      await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+      await mkdir(path.join(temporary, 'static'), { recursive: true });
+      await writeFile(path.join(outside, 'page.html'), 'outside');
+      await symlink(path.join(outside, 'page.html'), path.join(temporary, 'static/page.html'));
+      await assert.rejects(loadArtifactBundle(temporary), /only \.func aliases may be symlinks/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  for (const linkedEntry of ['.vc-config.json', 'index.js', 'asset.txt']) {
+    await t.test(`function ${linkedEntry}`, async () => {
+      const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-function-link-'));
+      const outside = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-function-source-'));
+      try {
+        await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+        const functionDirectory = await writeNodeFunction(temporary, 'page');
+        const target = path.join(functionDirectory, linkedEntry);
+        await rm(target, { force: true });
+        if (linkedEntry === '.vc-config.json') {
+          await writeJson(path.join(outside, linkedEntry), { runtime: 'nodejs20.x', handler: 'index.js' });
+        } else {
+          await writeFile(path.join(outside, linkedEntry), 'outside');
+        }
+        await symlink(path.join(outside, linkedEntry), target);
+        await assert.rejects(loadArtifactBundle(temporary), /only \.func aliases may be symlinks/);
+      } finally {
+        await rm(temporary, { recursive: true, force: true });
+        await rm(outside, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test('prerender config', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-prerender-link-'));
+    const outside = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-prerender-source-'));
+    try {
+      await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+      await writeNodeFunction(temporary, 'page');
+      await writeJson(path.join(outside, 'page.prerender-config.json'), { expiration: 60 });
+      await symlink(
+        path.join(outside, 'page.prerender-config.json'),
+        path.join(temporary, 'functions/page.prerender-config.json'),
+      );
+      await assert.rejects(loadArtifactBundle(temporary), /symlink must have a \.func suffix/);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  await t.test('chained .func alias', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-function-chain-'));
+    try {
+      await writeJson(path.join(temporary, 'config.json'), { version: 3 });
+      await writeNodeFunction(temporary, 'target');
+      await symlink('target.func', path.join(temporary, 'functions/first.func'));
+      await symlink('first.func', path.join(temporary, 'functions/second.func'));
+      await assert.rejects(loadArtifactBundle(temporary), /must point directly to a physical \.func directory/);
     } finally {
       await rm(temporary, { recursive: true, force: true });
     }

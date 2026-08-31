@@ -6,7 +6,6 @@ import {
   readdir,
   readlink,
   realpath,
-  stat,
 } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -85,17 +84,6 @@ function normalizePublicPath(value) {
   return `/${route}`.replace(/\/{2,}/g, '/').replace(/\/$/, '') || '/';
 }
 
-async function walk(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = [];
-  for (const entry of entries) {
-    const absolute = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(absolute));
-    else files.push(absolute);
-  }
-  return files;
-}
-
 function exactRouteFromVercelSource(source) {
   if (typeof source !== 'string') return null;
   let candidate = source.trim().replace(/^\^/, '').replace(/\$$/, '');
@@ -111,52 +99,147 @@ function destinationRoute(destination) {
   return normalizePublicPath(destination);
 }
 
-function routeMatches(rule, route) {
-  if (typeof rule?.src !== 'string') return false;
-  if (rule.has || rule.missing || rule.methods) return false;
+const REQUEST_METHODS = ['GET', 'HEAD'];
+const HTTP_METHODS = new Set(['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE']);
+const VERCEL_PHASES = ['rewrite', 'filesystem', 'resource', 'miss', 'hit', 'error'];
+const SUPPORTED_SOURCE_PHASES = new Set(['prelude', 'filesystem']);
+const SUPPORTED_SOURCE_FIELDS = new Set(['src', 'dest', 'methods']);
+const CONTENT_TYPE_PATTERN = /^[A-Za-z0-9!#$%&'*+.^_`|~-]+\/[A-Za-z0-9!#$%&'*+.^_`|~-]+(?:\s*;\s*[A-Za-z0-9!#$%&'*+.^_`|~-]+\s*=\s*(?:[A-Za-z0-9!#$%&'*+.^_`|~-]+|"[^"\r\n]*"))*$/;
+
+function compileVercelRoute(source, origin) {
+  assert.equal(typeof source, 'string', `${origin} src must be a string`);
   try {
-    return new RegExp(rule.src).test(route);
+    return new RegExp(source);
   } catch (error) {
-    throw new Error(`invalid Vercel route regexp ${rule.src}: ${error.message}`);
+    throw new Error(`${origin} has invalid Vercel route regexp ${source}: ${error.message}`);
   }
 }
 
-export function isFilesystemReachable(routes, route) {
-  if (isDynamicRoute(route)) return true;
-  for (const rule of routes) {
-    if (rule?.handle === 'filesystem') return true;
-    if (!rule || rule.handle || !routeMatches(rule, route)) continue;
-    if (rule.check === true) return true;
-    if (rule.continue === true) continue;
-    return false;
+function validatedMethods(rule, origin) {
+  if (rule.methods === undefined) return null;
+  assert.ok(Array.isArray(rule.methods) && rule.methods.length > 0, `${origin} methods must be a non-empty array`);
+  const methods = rule.methods.map((method) => {
+    assert.ok(typeof method === 'string' && /^[A-Za-z]+$/.test(method), `${origin} has an invalid method`);
+    const normalized = method.toUpperCase();
+    assert.ok(HTTP_METHODS.has(normalized), `${origin} has unsupported method ${method}`);
+    return normalized;
+  });
+  assert.equal(new Set(methods).size, methods.length, `${origin} methods must be unique`);
+  return methods;
+}
+
+function planVercelRoutes(routes, origin) {
+  let phase = 'prelude';
+  let previousPhaseIndex = -1;
+  const sourceRoutes = [];
+  for (let index = 0; index < routes.length; index += 1) {
+    const item = routes[index];
+    const itemOrigin = `${origin} routes[${index}]`;
+    assert.ok(item && !Array.isArray(item) && typeof item === 'object', `${itemOrigin} must be an object`);
+    if (item.handle !== undefined) {
+      assert.ok(VERCEL_PHASES.includes(item.handle), `${itemOrigin} has unsupported handle ${item.handle}`);
+      assert.deepEqual(Object.keys(item).sort(), ['handle'], `${itemOrigin} handler actions are not supported`);
+      const phaseIndex = VERCEL_PHASES.indexOf(item.handle);
+      assert.ok(phaseIndex >= previousPhaseIndex, `${itemOrigin} moves routing phases backwards`);
+      assert.ok(item.handle !== phase, `${itemOrigin} repeats routing phase ${item.handle}`);
+      previousPhaseIndex = phaseIndex;
+      phase = item.handle;
+      continue;
+    }
+
+    for (const field of Object.keys(item)) {
+      assert.ok(SUPPORTED_SOURCE_FIELDS.has(field), `${itemOrigin} field ${field} is not proven safe by the local gate`);
+    }
+    assert.ok(SUPPORTED_SOURCE_PHASES.has(phase), `${itemOrigin} uses unsupported routing phase ${phase}`);
+    const regexp = compileVercelRoute(item.src, itemOrigin);
+    const destination = destinationRoute(item.dest);
+    assert.ok(destination, `${itemOrigin} must have an internal destination`);
+    sourceRoutes.push({
+      ...item,
+      destination,
+      index,
+      methods: validatedMethods(item, itemOrigin),
+      origin: itemOrigin,
+      phase,
+      regexp,
+    });
+  }
+  return { sourceRoutes };
+}
+
+function routeMatches(rule, route, method) {
+  if (rule.methods && !rule.methods.includes(method)) return false;
+  return rule.regexp.test(route);
+}
+
+function filesystemReachableForMethod(plan, route, method) {
+  for (const rule of plan.sourceRoutes) {
+    if (rule.phase !== 'prelude') continue;
+    if (routeMatches(rule, route, method)) return false;
   }
   return true;
+}
+
+function filesystemReachableFromPlan(plan, route) {
+  return REQUEST_METHODS.every((method) => filesystemReachableForMethod(plan, route, method));
+}
+
+export function isFilesystemReachable(routes, route) {
+  assert.ok(Array.isArray(routes), 'Vercel routes must be an array');
+  return filesystemReachableFromPlan(planVercelRoutes(routes, 'routes'), route);
+}
+
+function dynamicRouteWitnesses(route) {
+  assert.ok(isDynamicRoute(route), `${route} must be dynamic`);
+  const materialize = (single, catchAll) => normalizePublicPath(route
+    .replace(/\[\[\.\.\.[^\]]+\]\]/g, catchAll)
+    .replace(/\[\.\.\.[^\]]+\]/g, catchAll)
+    .replace(/\[[^\]]+\]/g, single));
+  return sortedUnique([
+    materialize('route-integrity-alpha', 'route-integrity-alpha'),
+    materialize('route-integrity-beta', 'route-integrity-beta/nested'),
+    materialize('123', '123/456'),
+  ]);
+}
+
+function sourceRuleReachable(plan, candidate, route, method) {
+  for (const rule of plan.sourceRoutes) {
+    if (candidate.phase === 'prelude' && rule.phase !== 'prelude') break;
+    if (!routeMatches(rule, route, method)) continue;
+    return rule.index === candidate.index;
+  }
+  return false;
+}
+
+function dynamicDestinationReachable(plan, destination) {
+  const witnesses = dynamicRouteWitnesses(destination);
+  return REQUEST_METHODS.every((method) => plan.sourceRoutes.some((candidate) => (
+    candidate.destination === destination
+    && witnesses.every((route) => sourceRuleReachable(plan, candidate, route, method))
+  )));
 }
 
 export function routesFromVercelConfig(payload, origin = 'config.json') {
   assert.equal(payload?.version, 3, `${origin} must use Vercel output version 3`);
   const routes = payload.routes ?? [];
   assert.ok(Array.isArray(routes), `${origin} routes must be an array`);
+  const routingPlan = planVercelRoutes(routes, origin);
   const exactDynamicMappings = [];
-  for (let index = 0; index < routes.length; index += 1) {
-    const item = routes[index];
-    if (!item || item.handle || typeof item !== 'object') continue;
-    const destination = destinationRoute(item.dest);
-    if (!destination) continue;
+  for (const item of routingPlan.sourceRoutes) {
     const exactSource = exactRouteFromVercelSource(item.src);
-    if (exactSource && isDynamicRoute(destination)) {
+    if (exactSource && isDynamicRoute(item.destination)) {
       exactDynamicMappings.push({
         route: exactSource,
-        sourceTemplate: destination,
+        sourceTemplate: item.destination,
         origin,
-        routeIndex: index,
-        filesystemReachable: isFilesystemReachable(routes, exactSource),
+        routeIndex: item.index,
+        filesystemReachable: filesystemReachableFromPlan(routingPlan, exactSource),
       });
     }
   }
   const overrides = payload.overrides ?? {};
   assert.ok(overrides && !Array.isArray(overrides) && typeof overrides === 'object', `${origin} overrides must be an object`);
-  return { routes, overrides, exactDynamicMappings };
+  return { routes, routingPlan, overrides, exactDynamicMappings };
 }
 
 async function readJson(file) {
@@ -177,44 +260,100 @@ async function loadNextArtifact(artifactDirectory) {
   };
 }
 
-async function listVercelFunctionAssets(directory, relativeDirectory = '') {
+async function lstatOrNull(file) {
+  try {
+    return await lstat(file);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+function pathIsInside(parent, candidate) {
+  const relative = path.relative(parent, candidate);
+  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+}
+
+async function assertPhysicalDirectory(directory, containmentRoot, label) {
+  const info = await lstatOrNull(directory);
+  if (!info) return null;
+  assert.ok(!info.isSymbolicLink(), `${label} must be a physical directory`);
+  assert.ok(info.isDirectory(), `${label} must be a directory`);
+  const realDirectory = await realpath(directory);
+  assert.ok(pathIsInside(containmentRoot, realDirectory), `${label} resolves outside the artifact`);
+  return realDirectory;
+}
+
+async function assertPhysicalFile(file, containmentRoot, label, missingMessage = `${label} is missing`) {
+  const info = await lstatOrNull(file);
+  if (!info) throw new Error(missingMessage);
+  assert.ok(!info.isSymbolicLink(), `${label} must be a physical file`);
+  assert.ok(info.isFile(), `${label} must be a file`);
+  const realFile = await realpath(file);
+  assert.ok(pathIsInside(containmentRoot, realFile), `${label} resolves outside its container`);
+  return realFile;
+}
+
+async function walkPhysicalFiles(directory, containmentRoot, label, relativeDirectory = '') {
+  const entries = await readdir(path.join(directory, relativeDirectory), { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const relative = path.posix.join(relativeDirectory.replaceAll('\\', '/'), entry.name);
+    const absolute = path.join(directory, relative);
+    const info = await lstat(absolute);
+    assert.ok(!info.isSymbolicLink(), `${label}/${relative} must be physical; only .func aliases may be symlinks`);
+    const realEntry = await realpath(absolute);
+    assert.ok(pathIsInside(containmentRoot, realEntry), `${label}/${relative} resolves outside its container`);
+    if (info.isDirectory()) files.push(...await walkPhysicalFiles(directory, containmentRoot, label, relative));
+    else {
+      assert.ok(info.isFile(), `${label}/${relative} must be a regular file or directory`);
+      files.push(absolute);
+    }
+  }
+  return files;
+}
+
+async function listVercelFunctionAssets(directory, realFunctionsDirectory, relativeDirectory = '') {
   const entries = await readdir(path.join(directory, relativeDirectory), { withFileTypes: true });
   const functions = [];
   const prerenderConfigs = [];
   for (const entry of entries) {
     const relative = path.posix.join(relativeDirectory.replaceAll('\\', '/'), entry.name);
     const absolute = path.join(directory, relative);
-    if (entry.isSymbolicLink() && !entry.name.endsWith('.func')) {
+    const info = await lstat(absolute);
+    if (info.isSymbolicLink() && !entry.name.endsWith('.func')) {
       assert.fail(`${relative} symlink must have a .func suffix`);
     }
     if (entry.name.endsWith('.func')) {
-      assert.ok(entry.isDirectory() || entry.isSymbolicLink(), `${relative} must be a function directory or symlink`);
+      assert.ok(info.isDirectory() || info.isSymbolicLink(), `${relative} must be a function directory or symlink`);
       functions.push({
         absolute,
         base: relative.slice(0, -'.func'.length),
-        isSymbolicLink: entry.isSymbolicLink(),
+        isSymbolicLink: info.isSymbolicLink(),
         relative,
         route: normalizePublicPath(relative.slice(0, -'.func'.length)),
       });
-    } else if (entry.isDirectory()) {
-      const nested = await listVercelFunctionAssets(directory, relative);
+    } else if (info.isDirectory()) {
+      const realEntry = await realpath(absolute);
+      assert.ok(pathIsInside(realFunctionsDirectory, realEntry), `${relative} resolves outside functions`);
+      const nested = await listVercelFunctionAssets(directory, realFunctionsDirectory, relative);
       functions.push(...nested.functions);
       prerenderConfigs.push(...nested.prerenderConfigs);
     } else if (entry.name.endsWith('.prerender-config.json')) {
+      await assertPhysicalFile(absolute, realFunctionsDirectory, relative);
       prerenderConfigs.push({
         absolute,
         base: relative.slice(0, -'.prerender-config.json'.length),
         relative,
         route: normalizePublicPath(relative.replace(/\.prerender-config\.json$/, '')),
       });
+    } else {
+      assert.ok(info.isFile(), `${relative} must be a regular file or directory`);
+      const realEntry = await realpath(absolute);
+      assert.ok(pathIsInside(realFunctionsDirectory, realEntry), `${relative} resolves outside functions`);
     }
   }
   return { functions, prerenderConfigs };
-}
-
-function pathIsInside(parent, candidate) {
-  const relative = path.relative(parent, candidate);
-  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
 }
 
 async function existingRealPath(file, missingMessage) {
@@ -237,6 +376,10 @@ async function validateVercelFunction(entry, functionsDirectory, realFunctionsDi
     const relativeTarget = path.relative(functionsDirectory, targetAbsolute).replaceAll('\\', '/');
     const targetMatch = relativeTarget.match(/^(.+?)\.func$/);
     assert.ok(targetMatch, `${entry.relative} symlink target must be a .func directory`);
+    const targetInfo = await lstatOrNull(targetAbsolute);
+    assert.ok(targetInfo, `${entry.relative} points to a missing function directory`);
+    assert.ok(!targetInfo.isSymbolicLink(), `${entry.relative} must point directly to a physical .func directory`);
+    assert.ok(targetInfo.isDirectory(), `${entry.relative} symlink target must be a .func directory`);
     symlinkTarget = {
       base: targetMatch[1],
       route: normalizePublicPath(targetMatch[1]),
@@ -248,18 +391,15 @@ async function validateVercelFunction(entry, functionsDirectory, realFunctionsDi
     `${entry.relative} points to a missing function directory`,
   );
   assert.ok(pathIsInside(realFunctionsDirectory, realFunctionDirectory), `${entry.relative} resolves outside functions`);
-  const functionInfo = await stat(entry.absolute);
-  assert.ok(functionInfo.isDirectory(), `${entry.relative} must resolve to a directory`);
+  await walkPhysicalFiles(realFunctionDirectory, realFunctionDirectory, entry.relative);
 
-  const configFile = path.join(entry.absolute, '.vc-config.json');
-  let configInfo;
-  try {
-    configInfo = await stat(configFile);
-  } catch (error) {
-    if (error?.code === 'ENOENT') throw new Error(`${entry.relative} is missing .vc-config.json`);
-    throw error;
-  }
-  assert.ok(configInfo.isFile(), `${entry.relative}/.vc-config.json must be a file`);
+  const configFile = path.join(realFunctionDirectory, '.vc-config.json');
+  await assertPhysicalFile(
+    configFile,
+    realFunctionDirectory,
+    `${entry.relative}/.vc-config.json`,
+    `${entry.relative} is missing .vc-config.json`,
+  );
   const config = await readJson(configFile);
   assert.ok(config && !Array.isArray(config) && typeof config === 'object', `${entry.relative}/.vc-config.json must be an object`);
   assert.ok(typeof config.runtime === 'string' && config.runtime, `${entry.relative} must declare a runtime`);
@@ -274,8 +414,8 @@ async function validateVercelFunction(entry, functionsDirectory, realFunctionsDi
     `${entry.relative} ${entrypointName} does not exist: ${entrypoint}`,
   );
   assert.ok(pathIsInside(realFunctionDirectory, realEntrypoint), `${entry.relative} ${entrypointName} resolves outside the function`);
-  const entrypointInfo = await stat(realEntrypoint);
-  assert.ok(entrypointInfo.isFile(), `${entry.relative} ${entrypointName} must be a file`);
+  await assertPhysicalFile(realEntrypoint, realFunctionDirectory, `${entry.relative} ${entrypointName}`);
+  assert.equal(realEntrypoint, entrypointPath, `${entry.relative} ${entrypointName} must be physical`);
   return { ...entry, config, realFunctionDirectory, symlinkTarget };
 }
 
@@ -289,32 +429,75 @@ function exactDynamicMappingForRoute(mappings, route) {
   return sourceTemplates[0] ?? null;
 }
 
-async function assertPrerenderConfig(config) {
+async function assertPrerenderConfig(config, realFunctionsDirectory) {
+  await assertPhysicalFile(config.absolute, realFunctionsDirectory, config.relative);
   const payload = await readJson(config.absolute);
   const expirationIsValid = payload?.expiration === false
     || (Number.isInteger(payload?.expiration) && payload.expiration >= 0);
   assert.ok(expirationIsValid, `${config.relative} must contain a valid expiration`);
 }
 
+function validateStaticOverrides(overrides, relativeFiles) {
+  const fileSet = new Set(relativeFiles);
+  const validated = new Map();
+  for (const [relative, override] of Object.entries(overrides)) {
+    assert.ok(
+      relative && !relative.startsWith('/') && !relative.includes('\\') && path.posix.normalize(relative) === relative,
+      `override key ${relative} must be a normalized relative static path`,
+    );
+    assert.ok(fileSet.has(relative), `override for ${relative} does not reference a physical static file`);
+    assert.ok(override && !Array.isArray(override) && typeof override === 'object', `override for ${relative} must be an object`);
+    for (const field of Object.keys(override)) {
+      assert.ok(['path', 'contentType'].includes(field), `override for ${relative} has unsupported field ${field}`);
+    }
+    if (override.path !== undefined) {
+      assert.equal(typeof override.path, 'string', `override path for ${relative} must be a string`);
+      assert.ok(!/[?#\\\0]/.test(override.path), `override path for ${relative} must be a pathname`);
+      assert.ok(
+        !override.path.split('/').some((segment) => segment === '.' || segment === '..'),
+        `override path for ${relative} must not traverse directories`,
+      );
+    }
+    if (override.contentType !== undefined) {
+      assert.ok(
+        typeof override.contentType === 'string'
+          && CONTENT_TYPE_PATTERN.test(override.contentType),
+        `override contentType for ${relative} must be a valid media type`,
+      );
+    }
+    validated.set(relative, override);
+  }
+
+  const publicPaths = new Map();
+  for (const relative of relativeFiles) {
+    const override = validated.get(relative);
+    const publicPath = normalizePublicPath(override?.path ?? relative);
+    assert.ok(!publicPaths.has(publicPath), `${relative} collides with ${publicPaths.get(publicPath)} at ${publicPath}`);
+    publicPaths.set(publicPath, relative);
+  }
+  return validated;
+}
+
 function publicStaticRoute(relative, overrides) {
-  const override = overrides[relative];
-  if (override === undefined) return normalizePublicPath(relative);
-  assert.ok(override && !Array.isArray(override) && typeof override === 'object', `override for ${relative} must be an object`);
-  if (override.path === undefined) return normalizePublicPath(relative);
-  assert.equal(typeof override.path, 'string', `override path for ${relative} must be a string`);
-  return normalizePublicPath(override.path);
+  return normalizePublicPath(overrides.get(relative)?.path ?? relative);
 }
 
 async function loadVercelArtifact(outputDirectory) {
+  const realOutputDirectory = await realpath(outputDirectory);
   const configFile = path.join(outputDirectory, 'config.json');
+  await assertPhysicalFile(configFile, realOutputDirectory, 'config.json');
   const configRoutes = routesFromVercelConfig(await readJson(configFile), configFile);
   const templates = [];
   const concreteRoutes = [];
   const functionsDirectory = path.join(outputDirectory, 'functions');
   const staticDirectory = path.join(outputDirectory, 'static');
-  try {
-    const assets = await listVercelFunctionAssets(functionsDirectory);
-    const realFunctionsDirectory = await realpath(functionsDirectory);
+  const realFunctionsDirectory = await assertPhysicalDirectory(
+    functionsDirectory,
+    realOutputDirectory,
+    'functions',
+  );
+  if (realFunctionsDirectory) {
+    const assets = await listVercelFunctionAssets(functionsDirectory, realFunctionsDirectory);
     const validatedFunctions = [];
     for (const entry of assets.functions) {
       validatedFunctions.push(await validateVercelFunction(entry, functionsDirectory, realFunctionsDirectory));
@@ -322,7 +505,7 @@ async function loadVercelArtifact(outputDirectory) {
     const functionsByBase = new Map(validatedFunctions.map((entry) => [entry.base, entry]));
     const concreteFunctionBases = new Set();
     for (const prerenderConfig of assets.prerenderConfigs) {
-      await assertPrerenderConfig(prerenderConfig);
+      await assertPrerenderConfig(prerenderConfig, realFunctionsDirectory);
       const functionEntry = functionsByBase.get(prerenderConfig.base);
       assert.ok(functionEntry, `${prerenderConfig.relative} must have a sibling .func`);
       const symlinkTarget = functionEntry.symlinkTarget;
@@ -350,7 +533,7 @@ async function loadVercelArtifact(outputDirectory) {
           validatedFunctions.some((entry) => entry.route === sourceTemplate),
           `${prerenderConfig.route} references a missing source function ${sourceTemplate}`,
         );
-        if (isFilesystemReachable(configRoutes.routes, prerenderConfig.route)) {
+        if (filesystemReachableFromPlan(configRoutes.routingPlan, prerenderConfig.route)) {
           concreteRoutes.push({
             route: prerenderConfig.route,
             sourceTemplate,
@@ -361,29 +544,35 @@ async function loadVercelArtifact(outputDirectory) {
       }
     }
     for (const functionEntry of validatedFunctions) {
-      if (
-        !concreteFunctionBases.has(functionEntry.base)
-        && isFilesystemReachable(configRoutes.routes, functionEntry.route)
-      ) templates.push(functionEntry.route);
+      if (concreteFunctionBases.has(functionEntry.base)) continue;
+      if (isDynamicRoute(functionEntry.route)) {
+        if (dynamicDestinationReachable(configRoutes.routingPlan, functionEntry.route)) {
+          templates.push(functionEntry.route);
+        }
+      } else if (filesystemReachableFromPlan(configRoutes.routingPlan, functionEntry.route)) {
+        templates.push(functionEntry.route);
+      }
     }
-  } catch (error) {
-    if (error?.code !== 'ENOENT') throw error;
   }
-  try {
-    const files = await walk(staticDirectory);
+
+  const realStaticDirectory = await assertPhysicalDirectory(staticDirectory, realOutputDirectory, 'static');
+  if (realStaticDirectory) {
+    const files = await walkPhysicalFiles(staticDirectory, realStaticDirectory, 'static');
+    const relativeFiles = files.map((file) => path.relative(staticDirectory, file).replaceAll('\\', '/'));
+    const overrides = validateStaticOverrides(configRoutes.overrides, relativeFiles);
     for (const file of files) {
       const relative = path.relative(staticDirectory, file).replaceAll('\\', '/');
       const isRouteFile = relative.endsWith('.html')
         || ['robots.txt', 'sitemap.xml', 'manifest.webmanifest'].includes(relative);
       if (!isRouteFile || relative.startsWith('_next/')) continue;
-      const route = publicStaticRoute(relative, configRoutes.overrides);
-      if (!isFilesystemReachable(configRoutes.routes, route)) continue;
+      const route = publicStaticRoute(relative, overrides);
+      if (!filesystemReachableFromPlan(configRoutes.routingPlan, route)) continue;
       const sourceTemplate = exactDynamicMappingForRoute(configRoutes.exactDynamicMappings, route);
       if (sourceTemplate) concreteRoutes.push({ route, sourceTemplate, origin: relative });
       else if (!concreteRoutes.some((item) => item.route === route)) templates.push(route);
     }
-  } catch (error) {
-    if (error?.code !== 'ENOENT') throw error;
+  } else {
+    validateStaticOverrides(configRoutes.overrides, []);
   }
   return {
     format: 'vercel-output-v3',
@@ -410,7 +599,8 @@ export function artifactFingerprint(bundle) {
 
 export async function loadArtifactBundle(inputPath) {
   const absolute = path.resolve(inputPath);
-  const inputStat = await stat(absolute);
+  const inputStat = await lstat(absolute);
+  assert.ok(!inputStat.isSymbolicLink(), 'artifact directory must be physical');
   assert.ok(inputStat.isDirectory(), 'artifact must be a .next or .vercel/output directory');
   let bundle;
   try {
