@@ -32,9 +32,9 @@
 
 Si WordPress puede haber procesado el POST pero la respuesta no llega, la API devuelve `202 Pending Confirmation`: no afirma éxito final, no emite `generate_lead` y pide expresamente no reenviar. El navegador conserva el mismo `submissionId` en `sessionStorage`, por lo que una repetición o recarga consulta el recibo durable en lugar de generar otra entrega. Redis solo conserva el hash del identificador y el estado; nunca PII.
 
-Si HighLevel falla después del paso 5, un reintento retoma el CRM sin volver a enviar WordPress. El endpoint WordPress incluido en este paquete acepta `submission_id`, conserva un recibo durante siete días y responde de forma idempotente a reintentos. El cliente servidor solo reintenta timeouts y respuestas transitorias cuando `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`.
+Si HighLevel falla después del paso 5, un reintento retoma el CRM sin volver a enviar WordPress. Playful Contact Gate 1.1.0 acepta `submission_id`, conserva un recibo sin PII durante siete días y responde de forma idempotente antes o después del callback existente. No requiere editar `functions.php`. El cliente servidor solo reintenta timeouts y respuestas transitorias cuando `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`.
 
-El despliegue debe hacerse en este orden: (1) instalar primero el endpoint WordPress con recibos; (2) configurar el almacén durable `CONTACT_IDEMPOTENCY_*`; (3) desplegar Next.js, que ya envía `submission_id` pero mantiene los reintentos desactivados; (4) verificar en una prueba autorizada que WordPress responde con `X-Playful-Contact-Idempotency: v1`; y solo entonces (5) activar `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`. Activar la variable antes de actualizar WordPress puede duplicar correos ante un timeout.
+El despliegue debe hacerse en este orden: (1) actualizar primero Playful Contact Gate a 1.1.0 siguiendo `docs/wordpress-contact-gate-idempotency.md`; (2) configurar el almacén durable `CONTACT_IDEMPOTENCY_*`; (3) desplegar Next.js, que ya envía `submission_id` pero mantiene los reintentos desactivados; (4) verificar en una prueba autorizada que WordPress responde con `X-Playful-Contact-Idempotency: v1`; y solo entonces (5) activar `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`. Activar la variable antes de actualizar WordPress puede duplicar correos ante un timeout.
 
 ## Estado de decisiones antes de activar
 
