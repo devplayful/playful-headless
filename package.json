@@ -10,7 +10,8 @@
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
     "test:diagnostic-copy": "node scripts/diagnostic-call-copy-smoke.mjs",
-    "test:diagnostic-preview": "node scripts/diagnostic-call-preview-smoke.mjs"
+    "test:diagnostic-preview": "node scripts/diagnostic-call-preview-smoke.mjs",
+    "test:diagnostic-wp-inventory": "node scripts/diagnostic-call-wordpress-inventory.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

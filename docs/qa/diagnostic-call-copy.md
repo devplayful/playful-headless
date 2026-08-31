@@ -16,7 +16,7 @@ Estado: **revisión interna**. Sin push, Preview ni despliegue.
 
 - Home: CTA del hero, CTA de las dos secciones de servicios y bloque final.
 - Formulario: introducción, encabezado, botón, apoyo y bloque final.
-- Servicios renderizados desde Elementor: solo los bloques finales verificados y únicamente cuando coinciden el slug y page ID aprobados: E-commerce (`agencia-e-commerce`, `85582`), SEO (`agencia-seo`, `83510`), SEM (`agencia-sem`, `83848`) y Diseño Web (`agencia-diseno-web`, `83849`). La sustitución de título, cuerpo y CTA es atómica; si falta una pieza, no cambia el HTML. Se conserva el enlace existente al formulario.
+- Servicios renderizados desde Elementor: solo los bloques finales verificados y únicamente cuando coinciden el slug y page ID aprobados: E-commerce (`agencia-e-commerce`, `85582`), SEO (`agencia-seo`, `83510`), SEM (`agencia-sem`, `83848`) y Diseño Web (`agencia-diseno-web`, `83849`). La sustitución es atómica con la cardinalidad real de Elementor: un título, un cuerpo y dos textos CTA (capas base y hover). Si falta una pieza o una capa, no cambia el HTML. Se conserva el enlace existente al formulario.
 - Casos: botón de los casos individuales y bloque final del listado.
 
 ## Superficies no forzadas
@@ -29,16 +29,17 @@ Estado: **revisión interna**. Sin push, Preview ni despliegue.
 ## Verificación
 
 1. Ejecutar `npm run test:diagnostic-copy`.
-2. Cuando exista Preview, añadir aquí su URL exacta y ejecutar `npm run test:diagnostic-preview` con `DIAGNOSTIC_COPY_BASE_URL` apuntando a esa URL.
-3. Ejecutar `npm run build` con acceso estable a WordPress.
-4. En Preview, revisar a 1440 px y aproximadamente 390 px:
+2. Con acceso de solo lectura a WordPress, ejecutar `npm run test:diagnostic-wp-inventory`.
+3. Cuando exista Preview, añadir aquí su URL exacta y ejecutar `npm run test:diagnostic-preview` con `DIAGNOSTIC_COPY_BASE_URL` apuntando a esa URL.
+4. Ejecutar `npm run build` con acceso estable a WordPress.
+5. En Preview, revisar a 1440 px y aproximadamente 390 px:
    - `/`
    - `/contactar-agencia-de-marketing-digital`
    - `/agencia-e-commerce`
    - `/casos-de-exito/odwalla-shopify-dtc-ecommerce`
-5. Confirmar texto exacto, 30 minutos, CTA y destino al formulario.
-6. Confirmar ausencia de rangos, métricas, testimonios o reserva inmediata dentro de estos bloques.
-7. No enviar el formulario durante esta revisión; el envío controlado pertenece a la tarea 1.3.
+6. Confirmar texto exacto, 30 minutos, CTA y destino al formulario.
+7. Confirmar ausencia de rangos, métricas, testimonios o reserva inmediata dentro de estos bloques.
+8. No enviar el formulario durante esta revisión; el envío controlado pertenece a la tarea 1.3.
 
 Rollback: revertir solo el commit de copy; la ruta del formulario permanece estable.
 
@@ -47,6 +48,7 @@ URL exacta de Preview: pendiente; se añadirá después de que Preview exista. N
 ## Resultado local 2026-08-31
 
 - `npm run test:diagnostic-copy`: PASS.
+- `npm run test:diagnostic-wp-inventory`: PASS sobre 31 páginas publicadas; cambian exactamente `agencia-e-commerce:85582`, `agencia-seo:83510`, `agencia-sem:83848` y `agencia-diseno-web:83849`, sin cambios adicionales.
 - `DIAGNOSTIC_COPY_BASE_URL=http://127.0.0.1:3100 npm run test:diagnostic-preview`: PASS; Home, formulario, cuatro servicios, caso Odwalla y listado de casos devolvieron 200.
 - `tsc --noEmit`: PASS.
 - `npm run build`: compila y supera la comprobación de tipos; falla después al recopilar `/blog/[...slug]` con `ReferenceError: File is not defined`. El mismo fallo se reprodujo sin este cambio en una worktree limpia de `origin/main`.

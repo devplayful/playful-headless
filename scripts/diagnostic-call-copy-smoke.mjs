@@ -52,6 +52,11 @@ for (const fixture of TARGET_SERVICE_FIXTURES) {
     );
   }
   assert.notEqual(transformed, fixture.html, `${fixture.slug} should transform`);
+  assert.equal(
+    transformed.split(DIAGNOSTIC_CALL_COPY.cta).length - 1,
+    2,
+    `${fixture.slug} should transform both base and hover CTA layers`,
+  );
 }
 
 for (const context of NON_TARGET_CONTEXTS) {
@@ -70,7 +75,10 @@ const partialFixtures = [
     variants: [
       COMMON_SERVICE_CTA_FIXTURE.replace(/<h2[\s\S]*?<\/h2>/, ''),
       COMMON_SERVICE_CTA_FIXTURE.replace(/<div[\s\S]*?<\/div>/, ''),
-      COMMON_SERVICE_CTA_FIXTURE.replace(/<a[\s\S]*?<\/a>/, ''),
+      COMMON_SERVICE_CTA_FIXTURE.replace(
+        '<span class="content-hover"><span class="text">¡Contáctanos y empieza ya!</span></span>',
+        '',
+      ),
     ],
   },
   {
@@ -78,7 +86,10 @@ const partialFixtures = [
     variants: [
       DESIGN_SERVICE_CTA_FIXTURE.replace(/<h2[\s\S]*?<\/h2>/, ''),
       DESIGN_SERVICE_CTA_FIXTURE.replace(/<div[\s\S]*?<\/div>/, ''),
-      DESIGN_SERVICE_CTA_FIXTURE.replace(/<a[\s\S]*?<\/a>/, ''),
+      DESIGN_SERVICE_CTA_FIXTURE.replace(
+        '<span class="content-hover"><span class="text">¡Hablemos!</span></span>',
+        '',
+      ),
     ],
   },
 ];

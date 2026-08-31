@@ -1,14 +1,20 @@
 export const COMMON_SERVICE_CTA_FIXTURE = [
   '<h2 class="main-heading">¡Es Hora de actuar y cambiar tu futuro digital! (sin necesidad de magia negra)</h2>',
   '<div class="sub-heading">No esperes más para dar el siguiente paso. tu próxima gran campaña comienza con una conversación.</div>',
-  '<a href="/contactar-agencia-de-marketing-digital/"><span class="text">¡Contáctanos y empieza ya!</span></a>',
+  '<a class="master-button btn-accent icon-none big btn-hover-2" href="/contactar-agencia-de-marketing-digital/">',
+  '<span class="inner"><span class="content-base"><span class="text">¡Contáctanos y empieza ya!</span></span>',
+  '<span class="content-hover"><span class="text">¡Contáctanos y empieza ya!</span></span></span>',
+  '<span class="bg-hover"></span></a>',
 ].join('');
 
 export const DESIGN_SERVICE_CTA_FIXTURE = [
   '<h2 class="main-heading">¡Conectemos y comencemos a trabajar!</h2>',
   '<div class="sub-heading">Ya sea que tengas preguntas, ideas o simplemente quieras conocer más sobre cómo podemos ayudarte a mejorar tu presencia en línea, estamos aquí para escucharte.<br>\n',
   'No esperes más: tu próxima gran campaña comienza con una conversación.</div>',
-  '<a href="/contactar-agencia-de-marketing-digital/"><span class="text">¡Hablemos!</span></a>',
+  '<a class="master-button btn-accent icon-none big btn-hover-2" href="/contactar-agencia-de-marketing-digital/">',
+  '<span class="inner"><span class="content-base"><span class="text">¡Hablemos!</span></span>',
+  '<span class="content-hover"><span class="text">¡Hablemos!</span></span></span>',
+  '<span class="bg-hover"></span></a>',
 ].join('');
 
 export const TARGET_SERVICE_FIXTURES = [

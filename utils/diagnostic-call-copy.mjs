@@ -19,14 +19,17 @@ export const DIAGNOSTIC_CALL_ELEMENTOR_SERVICES = Object.freeze({
 const COMMON_SERVICE_REPLACEMENTS = [
   {
     pattern: /(<h2 class="main-heading">)(¡Es Hora de actuar y cambiar tu futuro digital!\s*\(\s*sin necesidad de magia negra\s*\))(<\/h2>)/g,
+    expectedCount: 1,
     replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.title}$3`,
   },
   {
     pattern: /(<div class="sub-heading">)(No esperes más para dar el siguiente paso\.[\s\S]*?tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
+    expectedCount: 1,
     replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
   },
   {
     pattern: /<span class="text">¡Contáctanos y empieza ya!<\/span>/g,
+    expectedCount: 2,
     replacement: `<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
   },
 ];
@@ -34,24 +37,27 @@ const COMMON_SERVICE_REPLACEMENTS = [
 const DESIGN_SERVICE_REPLACEMENTS = [
   {
     pattern: /<h2 class="main-heading">¡Conectemos y comencemos a trabajar!<\/h2>/g,
+    expectedCount: 1,
     replacement: `<h2 class="main-heading"><span class="playful-magia-negra">¡Conectemos y comencemos a trabajar!</span>${DIAGNOSTIC_CALL_COPY.title}</h2>`,
   },
   {
     pattern: /(<div class="sub-heading">)(Ya sea que tengas preguntas, ideas o simplemente quieras conocer más sobre cómo podemos ayudarte a mejorar tu presencia en línea, estamos aquí para escucharte\.<br>\s*No esperes más: tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
+    expectedCount: 1,
     replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
   },
   {
     pattern: /<span class="text">¡Hablemos!<\/span>/g,
+    expectedCount: 2,
     replacement: `<span class="text playful-magia-negra">¡Hablemos!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
   },
 ];
 
 function applyAtomicReplacements(html, replacements) {
-  const hasOneCompleteBlock = replacements.every(
-    ({ pattern }) => Array.from(html.matchAll(pattern)).length === 1,
+  const hasCompleteBlock = replacements.every(
+    ({ pattern, expectedCount }) => Array.from(html.matchAll(pattern)).length === expectedCount,
   );
 
-  if (!hasOneCompleteBlock) return html;
+  if (!hasCompleteBlock) return html;
 
   return replacements.reduce(
     (out, { pattern, replacement }) => out.replace(pattern, replacement),
