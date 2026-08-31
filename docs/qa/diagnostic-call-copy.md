@@ -2,6 +2,8 @@
 
 Fuente aprobada: [ClickUp 86cb8rdfy](https://app.clickup.com/t/86cb8rdfy).
 
+Estado: **revisión interna**. Sin push, Preview ni despliegue.
+
 ## Copy canónico
 
 - Título: **Una llamada para revisar tu e-commerce**
@@ -14,7 +16,7 @@ Fuente aprobada: [ClickUp 86cb8rdfy](https://app.clickup.com/t/86cb8rdfy).
 
 - Home: CTA del hero, CTA de las dos secciones de servicios y bloque final.
 - Formulario: introducción, encabezado, botón, apoyo y bloque final.
-- Servicios renderizados desde Elementor: solo los bloques finales verificados. E-commerce, SEO y SEM comparten el patrón existente; Diseño Web usa una variante limitada a su page ID `83849`. Se conserva el enlace existente al formulario.
+- Servicios renderizados desde Elementor: solo los bloques finales verificados y únicamente cuando coinciden el slug y page ID aprobados: E-commerce (`agencia-e-commerce`, `85582`), SEO (`agencia-seo`, `83510`), SEM (`agencia-sem`, `83848`) y Diseño Web (`agencia-diseno-web`, `83849`). La sustitución de título, cuerpo y CTA es atómica; si falta una pieza, no cambia el HTML. Se conserva el enlace existente al formulario.
 - Casos: botón de los casos individuales y bloque final del listado.
 
 ## Superficies no forzadas
@@ -27,7 +29,7 @@ Fuente aprobada: [ClickUp 86cb8rdfy](https://app.clickup.com/t/86cb8rdfy).
 ## Verificación
 
 1. Ejecutar `npm run test:diagnostic-copy`.
-2. Ejecutar `DIAGNOSTIC_COPY_BASE_URL=https://preview.example npm run test:diagnostic-preview`.
+2. Cuando exista Preview, añadir aquí su URL exacta y ejecutar `npm run test:diagnostic-preview` con `DIAGNOSTIC_COPY_BASE_URL` apuntando a esa URL.
 3. Ejecutar `npm run build` con acceso estable a WordPress.
 4. En Preview, revisar a 1440 px y aproximadamente 390 px:
    - `/`
@@ -39,6 +41,8 @@ Fuente aprobada: [ClickUp 86cb8rdfy](https://app.clickup.com/t/86cb8rdfy).
 7. No enviar el formulario durante esta revisión; el envío controlado pertenece a la tarea 1.3.
 
 Rollback: revertir solo el commit de copy; la ruta del formulario permanece estable.
+
+URL exacta de Preview: pendiente; se añadirá después de que Preview exista. No se usa una URL de ejemplo durante revisión interna.
 
 ## Resultado local 2026-08-31
 

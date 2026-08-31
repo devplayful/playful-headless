@@ -47,7 +47,7 @@ function preserveMediaLineSeparators(html: string): string {
   });
 }
 
-function restoreOldBodyCopy(html: string, pageId: number): string {
+function restoreOldBodyCopy(html: string, pageId: number, slug: string): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
   // File on disk still has U+2028 in the name; clean URL 404s.
@@ -68,7 +68,7 @@ function restoreOldBodyCopy(html: string, pageId: number): string {
     + 'Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial. ¿Quieres ser el próximo?',
   );
 
-  out = applyDiagnosticCallCopyToElementor(out, pageId);
+  out = applyDiagnosticCallCopyToElementor(out, { pageId, slug });
 
   // /agencia-sem only: first heading is H2 in WP. Unique copy so SEO / diseño / e-commerce keep their H1s.
   out = out.replace(
@@ -82,15 +82,17 @@ function restoreOldBodyCopy(html: string, pageId: number): string {
 type ElementorPageContentProps = {
   html: string;
   pageId: number;
+  slug: string;
   stylesheetIds: number[];
 };
 
 export default function ElementorPageContent({
   html,
   pageId,
+  slug,
   stylesheetIds,
 }: ElementorPageContentProps) {
-  const bodyHtml = restoreOldBodyCopy(html, pageId);
+  const bodyHtml = restoreOldBodyCopy(html, pageId, slug);
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)

@@ -4,8 +4,15 @@ import { resolve } from 'node:path';
 
 import {
   DIAGNOSTIC_CALL_COPY,
+  DIAGNOSTIC_CALL_ELEMENTOR_SERVICES,
   applyDiagnosticCallCopyToElementor,
 } from '../utils/diagnostic-call-copy.mjs';
+import {
+  COMMON_SERVICE_CTA_FIXTURE,
+  DESIGN_SERVICE_CTA_FIXTURE,
+  NON_TARGET_CONTEXTS,
+  TARGET_SERVICE_FIXTURES,
+} from './fixtures/diagnostic-call-elementor.mjs';
 
 assert.deepEqual(DIAGNOSTIC_CALL_COPY, {
   title: 'Una llamada para revisar tu e-commerce',
@@ -18,41 +25,71 @@ assert.deepEqual(DIAGNOSTIC_CALL_COPY, {
   href: '/contactar-agencia-de-marketing-digital',
 });
 
-const legacyServiceCta = [
-  '<h2 class="main-heading">¡Es Hora de actuar y cambiar tu futuro digital! (sin necesidad de magia negra)</h2>',
-  '<div class="sub-heading">No esperes más para dar el siguiente paso. tu próxima gran campaña comienza con una conversación.</div>',
-  '<a href="/contactar-agencia-de-marketing-digital/"><span class="text">¡Contáctanos y empieza ya!</span></a>',
-].join('');
-const transformedServiceCta = applyDiagnosticCallCopyToElementor(legacyServiceCta);
+assert.deepEqual(
+  Object.fromEntries(
+    Object.entries(DIAGNOSTIC_CALL_ELEMENTOR_SERVICES)
+      .map(([slug, { pageId }]) => [slug, pageId]),
+  ),
+  {
+    'agencia-e-commerce': 85582,
+    'agencia-seo': 83510,
+    'agencia-sem': 83848,
+    'agencia-diseno-web': 83849,
+  },
+);
 
-for (const expected of [
-  DIAGNOSTIC_CALL_COPY.title,
-  DIAGNOSTIC_CALL_COPY.body,
-  DIAGNOSTIC_CALL_COPY.cta,
-  'href="/contactar-agencia-de-marketing-digital/"',
-]) {
-  assert.ok(transformedServiceCta.includes(expected), `service CTA should include: ${expected}`);
+for (const fixture of TARGET_SERVICE_FIXTURES) {
+  const transformed = applyDiagnosticCallCopyToElementor(fixture.html, fixture);
+  for (const expected of [
+    DIAGNOSTIC_CALL_COPY.title,
+    DIAGNOSTIC_CALL_COPY.body,
+    DIAGNOSTIC_CALL_COPY.cta,
+    'href="/contactar-agencia-de-marketing-digital/"',
+  ]) {
+    assert.ok(
+      transformed.includes(expected),
+      `${fixture.slug} should include the complete diagnostic CTA: ${expected}`,
+    );
+  }
+  assert.notEqual(transformed, fixture.html, `${fixture.slug} should transform`);
 }
-assert.ok(!transformedServiceCta.includes('Agenda una Reunión'));
-assert.ok(!transformedServiceCta.includes('Dejar de Perder Dinero'));
 
-const legacyDesignCta = [
-  '<h2 class="main-heading">¡Conectemos y comencemos a trabajar!</h2>',
-  '<div class="sub-heading">Ya sea que tengas preguntas, ideas o simplemente quieras conocer más sobre cómo podemos ayudarte a mejorar tu presencia en línea, estamos aquí para escucharte.<br>\n',
-  'No esperes más: tu próxima gran campaña comienza con una conversación.</div>',
-  '<a href="/contactar-agencia-de-marketing-digital/"><span class="text">¡Hablemos!</span></a>',
-].join('');
-const untouchedDesignCta = applyDiagnosticCallCopyToElementor(legacyDesignCta, 12345);
-assert.equal(untouchedDesignCta, legacyDesignCta, 'unrelated WordPress pages must stay untouched');
+for (const context of NON_TARGET_CONTEXTS) {
+  for (const fixture of TARGET_SERVICE_FIXTURES) {
+    assert.equal(
+      applyDiagnosticCallCopyToElementor(fixture.html, context),
+      fixture.html,
+      `${context.slug}/${context.pageId} must remain byte-for-byte`,
+    );
+  }
+}
 
-const transformedDesignCta = applyDiagnosticCallCopyToElementor(legacyDesignCta, 83849);
-for (const expected of [
-  DIAGNOSTIC_CALL_COPY.title,
-  DIAGNOSTIC_CALL_COPY.body,
-  DIAGNOSTIC_CALL_COPY.cta,
-  'href="/contactar-agencia-de-marketing-digital/"',
-]) {
-  assert.ok(transformedDesignCta.includes(expected), `design CTA should include: ${expected}`);
+const partialFixtures = [
+  {
+    context: TARGET_SERVICE_FIXTURES[0],
+    variants: [
+      COMMON_SERVICE_CTA_FIXTURE.replace(/<h2[\s\S]*?<\/h2>/, ''),
+      COMMON_SERVICE_CTA_FIXTURE.replace(/<div[\s\S]*?<\/div>/, ''),
+      COMMON_SERVICE_CTA_FIXTURE.replace(/<a[\s\S]*?<\/a>/, ''),
+    ],
+  },
+  {
+    context: TARGET_SERVICE_FIXTURES[3],
+    variants: [
+      DESIGN_SERVICE_CTA_FIXTURE.replace(/<h2[\s\S]*?<\/h2>/, ''),
+      DESIGN_SERVICE_CTA_FIXTURE.replace(/<div[\s\S]*?<\/div>/, ''),
+      DESIGN_SERVICE_CTA_FIXTURE.replace(/<a[\s\S]*?<\/a>/, ''),
+    ],
+  },
+];
+for (const { context, variants } of partialFixtures) {
+  for (const partial of variants) {
+    assert.equal(
+      applyDiagnosticCallCopyToElementor(partial, context),
+      partial,
+      `${context.slug} partial Elementor pattern must remain byte-for-byte`,
+    );
+  }
 }
 
 const targetedFiles = [

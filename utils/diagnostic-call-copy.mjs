@@ -9,47 +9,67 @@ export const DIAGNOSTIC_CALL_COPY = Object.freeze({
   href: '/contactar-agencia-de-marketing-digital',
 });
 
+export const DIAGNOSTIC_CALL_ELEMENTOR_SERVICES = Object.freeze({
+  'agencia-e-commerce': Object.freeze({ pageId: 85582, variant: 'common' }),
+  'agencia-seo': Object.freeze({ pageId: 83510, variant: 'common' }),
+  'agencia-sem': Object.freeze({ pageId: 83848, variant: 'common' }),
+  'agencia-diseno-web': Object.freeze({ pageId: 83849, variant: 'design' }),
+});
+
+const COMMON_SERVICE_REPLACEMENTS = [
+  {
+    pattern: /(<h2 class="main-heading">)(¡Es Hora de actuar y cambiar tu futuro digital!\s*\(\s*sin necesidad de magia negra\s*\))(<\/h2>)/g,
+    replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.title}$3`,
+  },
+  {
+    pattern: /(<div class="sub-heading">)(No esperes más para dar el siguiente paso\.[\s\S]*?tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
+    replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
+  },
+  {
+    pattern: /<span class="text">¡Contáctanos y empieza ya!<\/span>/g,
+    replacement: `<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
+  },
+];
+
+const DESIGN_SERVICE_REPLACEMENTS = [
+  {
+    pattern: /<h2 class="main-heading">¡Conectemos y comencemos a trabajar!<\/h2>/g,
+    replacement: `<h2 class="main-heading"><span class="playful-magia-negra">¡Conectemos y comencemos a trabajar!</span>${DIAGNOSTIC_CALL_COPY.title}</h2>`,
+  },
+  {
+    pattern: /(<div class="sub-heading">)(Ya sea que tengas preguntas, ideas o simplemente quieras conocer más sobre cómo podemos ayudarte a mejorar tu presencia en línea, estamos aquí para escucharte\.<br>\s*No esperes más: tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
+    replacement: `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
+  },
+  {
+    pattern: /<span class="text">¡Hablemos!<\/span>/g,
+    replacement: `<span class="text playful-magia-negra">¡Hablemos!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
+  },
+];
+
+function applyAtomicReplacements(html, replacements) {
+  const hasOneCompleteBlock = replacements.every(
+    ({ pattern }) => Array.from(html.matchAll(pattern)).length === 1,
+  );
+
+  if (!hasOneCompleteBlock) return html;
+
+  return replacements.reduce(
+    (out, { pattern, replacement }) => out.replace(pattern, replacement),
+    html,
+  );
+}
+
 /**
  * Replace only the known legacy service CTA block rendered from WordPress.
  * If the upstream markup changes, leave it untouched rather than guessing.
  */
-export function applyDiagnosticCallCopyToElementor(html, pageId) {
-  let out = html;
+export function applyDiagnosticCallCopyToElementor(html, { pageId, slug }) {
+  const service = DIAGNOSTIC_CALL_ELEMENTOR_SERVICES[slug];
+  if (!service || service.pageId !== pageId) return html;
 
-  out = out.replace(
-    /(<h2 class="main-heading">)(¡Es Hora de actuar y cambiar tu futuro digital!\s*\(\s*sin necesidad de magia negra\s*\))(<\/h2>)/g,
-    `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.title}$3`,
-  );
+  const replacements = service.variant === 'design'
+    ? DESIGN_SERVICE_REPLACEMENTS
+    : COMMON_SERVICE_REPLACEMENTS;
 
-  out = out.replace(
-    /(<div class="sub-heading">)(No esperes más para dar el siguiente paso\.[\s\S]*?tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
-    `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
-  );
-
-  out = out.split(
-    '<span class="text">¡Contáctanos y empieza ya!</span>',
-  ).join(
-    `<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
-  );
-
-  // Diseño Web uses a different verified Elementor block. Limit this variant
-  // to its public WordPress page ID so generic "¡Hablemos!" buttons elsewhere
-  // are never rewritten accidentally.
-  if (pageId === 83849) {
-    out = out.replace(
-      '<h2 class="main-heading">¡Conectemos y comencemos a trabajar!</h2>',
-      `<h2 class="main-heading"><span class="playful-magia-negra">¡Conectemos y comencemos a trabajar!</span>${DIAGNOSTIC_CALL_COPY.title}</h2>`,
-    );
-    out = out.replace(
-      /(<div class="sub-heading">)(Ya sea que tengas preguntas, ideas o simplemente quieras conocer más sobre cómo podemos ayudarte a mejorar tu presencia en línea, estamos aquí para escucharte\.<br>\s*No esperes más: tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
-      `$1<span class="playful-magia-negra">$2</span>${DIAGNOSTIC_CALL_COPY.body}$3`,
-    );
-    out = out.split(
-      '<span class="text">¡Hablemos!</span>',
-    ).join(
-      `<span class="text playful-magia-negra">¡Hablemos!</span><span class="text">${DIAGNOSTIC_CALL_COPY.cta}</span>`,
-    );
-  }
-
-  return out;
+  return applyAtomicReplacements(html, replacements);
 }
