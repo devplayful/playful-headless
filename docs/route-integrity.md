@@ -64,7 +64,21 @@ A bracket in a `.func` filename is not routing evidence. A dynamic function is
 inventoried as a template only when an internal route demonstrably maps the
 template's public shape to that function for both `GET` and `HEAD`. A missing
 rewrite, a literal bracket-only source or a method-restricted rewrite does not
-make the dynamic template reachable.
+make the dynamic template reachable. This proof is structural, not based on a
+small set of sampled path names: the closed source grammar accepts anchored
+literal segments, `[^/]+` single-segment captures, `.+` terminal catch-all
+captures and an optional trailing slash. Alternation, lookarounds, character
+classes other than `[^/]`, shorthand classes such as `\d`/`\w`, `.*`, optional
+catch-alls and any other unmodelled regular-expression syntax fail closed and
+cannot establish dynamic reachability.
+
+An exact source-to-dynamic mapping can attribute a concrete route only when
+that exact mapping is itself the first matching pre-filesystem rule for both
+`GET` and `HEAD`. A mapping restricted to another method, shadowed by an
+earlier rule or placed after `handle: "filesystem"` is not provenance merely
+because its regular expression is exact. A validated physical `.func` alias
+to an in-artifact dynamic `.func` remains independent source provenance, while
+the public route must still be reachable for both request methods.
 
 Route order, method and phase are significant. The adapter validates the full
 documented phase order (`rewrite`, `filesystem`, `resource`, `miss`, `hit`,

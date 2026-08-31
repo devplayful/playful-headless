@@ -86,7 +86,9 @@ function normalizePublicPath(value) {
 
 function exactRouteFromVercelSource(source) {
   if (typeof source !== 'string') return null;
-  let candidate = source.trim().replace(/^\^/, '').replace(/\$$/, '');
+  const trimmed = source.trim();
+  if (!trimmed.startsWith('^') || !trimmed.endsWith('$')) return null;
+  let candidate = trimmed.slice(1, -1);
   candidate = candidate.replace(/\(\?:\\?\/\)\?$/, '').replace(/\\?\/\?$/, '');
   candidate = candidate.replaceAll('\\/', '/').replaceAll('\\.', '.');
   if (!candidate.startsWith('/') || /[()[\]{}*+?|\\]/.test(candidate)) return null;
@@ -189,34 +191,140 @@ export function isFilesystemReachable(routes, route) {
   return filesystemReachableFromPlan(planVercelRoutes(routes, 'routes'), route);
 }
 
-function dynamicRouteWitnesses(route) {
-  assert.ok(isDynamicRoute(route), `${route} must be dynamic`);
-  const materialize = (single, catchAll) => normalizePublicPath(route
-    .replace(/\[\[\.\.\.[^\]]+\]\]/g, catchAll)
-    .replace(/\[\.\.\.[^\]]+\]/g, catchAll)
-    .replace(/\[[^\]]+\]/g, single));
-  return sortedUnique([
-    materialize('route-integrity-alpha', 'route-integrity-alpha'),
-    materialize('route-integrity-beta', 'route-integrity-beta/nested'),
-    materialize('123', '123/456'),
-  ]);
+function captureSegmentAt(source, index) {
+  const remaining = source.slice(index);
+  const namedSingle = remaining.match(/^\(\?<([A-Za-z][A-Za-z0-9_]*)>\[\^\/\]\+\??\)/);
+  if (namedSingle) return { length: namedSingle[0].length, type: 'single' };
+  const single = remaining.match(/^\(\[\^\/\]\+\??\)/);
+  if (single) return { length: single[0].length, type: 'single' };
+  const namedCatchAll = remaining.match(/^\(\?<([A-Za-z][A-Za-z0-9_]*)>\.\+\??\)/);
+  if (namedCatchAll) return { length: namedCatchAll[0].length, type: 'catchAll' };
+  const catchAll = remaining.match(/^\(\.\+\??\)/);
+  if (catchAll) return { length: catchAll[0].length, type: 'catchAll' };
+  return null;
 }
 
-function sourceRuleReachable(plan, candidate, route, method) {
+function parseSupportedSourceShape(source) {
+  if (typeof source !== 'string') return null;
+  let normalized = source.replaceAll('\\/', '/');
+  if (!normalized.startsWith('^') || !normalized.endsWith('$')) return null;
+  normalized = normalized.slice(1, -1);
+  if (normalized.endsWith('(?:/)?')) normalized = normalized.slice(0, -'(?:/)?'.length);
+  if (normalized === '/') return [];
+  if (!normalized.startsWith('/')) return null;
+
+  const segments = [];
+  let index = 1;
+  while (index < normalized.length) {
+    const capture = captureSegmentAt(normalized, index);
+    if (capture) {
+      segments.push({ type: capture.type });
+      index += capture.length;
+    } else {
+      let value = '';
+      while (index < normalized.length && normalized[index] !== '/') {
+        const character = normalized[index];
+        if (character === '\\') {
+          const escaped = normalized[index + 1];
+          if (!escaped || !'.[]{}()*+?|^$\\'.includes(escaped)) return null;
+          value += escaped;
+          index += 2;
+          continue;
+        }
+        if ('()[]{}*+?|^$.'.includes(character)) return null;
+        value += character;
+        index += 1;
+      }
+      if (!value) return null;
+      segments.push({ type: 'static', value });
+    }
+    if (index === normalized.length) break;
+    if (normalized[index] !== '/') return null;
+    if (segments.at(-1).type === 'catchAll') return null;
+    index += 1;
+    if (index === normalized.length) return null;
+  }
+  return segments;
+}
+
+function parseDynamicDestinationShape(destination) {
+  if (!isDynamicRoute(destination)) return null;
+  const segments = normalizePublicPath(destination).split('/').filter(Boolean);
+  const shape = [];
+  for (let index = 0; index < segments.length; index += 1) {
+    const segment = segments[index];
+    if (/^\[\[\.\.\.[^\]]+\]\]$/.test(segment)) return null;
+    if (/^\[\.\.\.[^\]]+\]$/.test(segment)) {
+      if (index !== segments.length - 1) return null;
+      shape.push({ type: 'catchAll' });
+    } else if (/^\[[^\]]+\]$/.test(segment)) {
+      shape.push({ type: 'single' });
+    } else if (segment.includes('[') || segment.includes(']')) {
+      return null;
+    } else {
+      shape.push({ type: 'static', value: segment });
+    }
+  }
+  return shape;
+}
+
+function sameRouteShape(left, right) {
+  return left.length === right.length && left.every((segment, index) => (
+    segment.type === right[index].type
+    && (segment.type !== 'static' || segment.value === right[index].value)
+  ));
+}
+
+function sourceShapeForDynamicDestination(source, destination) {
+  const sourceShape = parseSupportedSourceShape(source);
+  const destinationShape = parseDynamicDestinationShape(destination);
+  if (!sourceShape || !destinationShape || !sameRouteShape(sourceShape, destinationShape)) return null;
+  return sourceShape;
+}
+
+function routeShapeCovers(covering, candidate) {
+  for (let index = 0; index < covering.length; index += 1) {
+    const coveringSegment = covering[index];
+    const candidateSegment = candidate[index];
+    if (!candidateSegment) return false;
+    if (coveringSegment.type === 'catchAll') return true;
+    if (candidateSegment.type === 'catchAll') return false;
+    if (coveringSegment.type === 'static' && (
+      candidateSegment.type !== 'static' || coveringSegment.value !== candidateSegment.value
+    )) return false;
+  }
+  return covering.length === candidate.length;
+}
+
+function dynamicRuleReachable(plan, candidate, shape, method) {
+  if (candidate.methods && !candidate.methods.includes(method)) return false;
+  for (const earlier of plan.sourceRoutes) {
+    if (earlier.index >= candidate.index) break;
+    if (candidate.phase === 'prelude' && earlier.phase !== 'prelude') break;
+    if (earlier.methods && !earlier.methods.includes(method)) continue;
+    const earlierShape = parseSupportedSourceShape(earlier.src);
+    if (!earlierShape || routeShapeCovers(earlierShape, shape)) return false;
+  }
+  return true;
+}
+
+function dynamicDestinationReachable(plan, destination) {
+  return REQUEST_METHODS.every((method) => plan.sourceRoutes.some((candidate) => {
+    if (candidate.destination !== destination) return false;
+    const shape = sourceShapeForDynamicDestination(candidate.src, destination);
+    return shape && dynamicRuleReachable(plan, candidate, shape, method);
+  }));
+}
+
+function exactRuleAttributionReachable(plan, candidate, route, method) {
+  if (candidate.phase !== 'prelude') return false;
+  if (candidate.methods && !candidate.methods.includes(method)) return false;
   for (const rule of plan.sourceRoutes) {
-    if (candidate.phase === 'prelude' && rule.phase !== 'prelude') break;
+    if (rule.phase !== 'prelude') break;
     if (!routeMatches(rule, route, method)) continue;
     return rule.index === candidate.index;
   }
   return false;
-}
-
-function dynamicDestinationReachable(plan, destination) {
-  const witnesses = dynamicRouteWitnesses(destination);
-  return REQUEST_METHODS.every((method) => plan.sourceRoutes.some((candidate) => (
-    candidate.destination === destination
-    && witnesses.every((route) => sourceRuleReachable(plan, candidate, route, method))
-  )));
 }
 
 export function routesFromVercelConfig(payload, origin = 'config.json') {
@@ -233,7 +341,9 @@ export function routesFromVercelConfig(payload, origin = 'config.json') {
         sourceTemplate: item.destination,
         origin,
         routeIndex: item.index,
-        filesystemReachable: filesystemReachableFromPlan(routingPlan, exactSource),
+        provenanceMethods: REQUEST_METHODS.filter((method) => (
+          exactRuleAttributionReachable(routingPlan, item, exactSource, method)
+        )),
       });
     }
   }
@@ -420,11 +530,14 @@ async function validateVercelFunction(entry, functionsDirectory, realFunctionsDi
 }
 
 function exactDynamicMappingForRoute(mappings, route) {
-  const sourceTemplates = sortedUnique(
-    mappings
-      .filter((mapping) => mapping.route === route && mapping.filesystemReachable)
-      .map((mapping) => mapping.sourceTemplate),
-  );
+  const methodsByTemplate = new Map();
+  for (const mapping of mappings.filter((candidate) => candidate.route === route)) {
+    if (!methodsByTemplate.has(mapping.sourceTemplate)) methodsByTemplate.set(mapping.sourceTemplate, new Set());
+    for (const method of mapping.provenanceMethods) methodsByTemplate.get(mapping.sourceTemplate).add(method);
+  }
+  const sourceTemplates = sortedUnique([...methodsByTemplate]
+    .filter(([, methods]) => REQUEST_METHODS.every((method) => methods.has(method)))
+    .map(([sourceTemplate]) => sourceTemplate));
   assert.ok(sourceTemplates.length <= 1, `Vercel route ${route} maps to multiple dynamic templates`);
   return sourceTemplates[0] ?? null;
 }
@@ -533,7 +646,10 @@ async function loadVercelArtifact(outputDirectory) {
           validatedFunctions.some((entry) => entry.route === sourceTemplate),
           `${prerenderConfig.route} references a missing source function ${sourceTemplate}`,
         );
-        if (filesystemReachableFromPlan(configRoutes.routingPlan, prerenderConfig.route)) {
+        if (
+          configuredTemplate
+          || filesystemReachableFromPlan(configRoutes.routingPlan, prerenderConfig.route)
+        ) {
           concreteRoutes.push({
             route: prerenderConfig.route,
             sourceTemplate,
@@ -566,10 +682,12 @@ async function loadVercelArtifact(outputDirectory) {
         || ['robots.txt', 'sitemap.xml', 'manifest.webmanifest'].includes(relative);
       if (!isRouteFile || relative.startsWith('_next/')) continue;
       const route = publicStaticRoute(relative, overrides);
-      if (!filesystemReachableFromPlan(configRoutes.routingPlan, route)) continue;
       const sourceTemplate = exactDynamicMappingForRoute(configRoutes.exactDynamicMappings, route);
       if (sourceTemplate) concreteRoutes.push({ route, sourceTemplate, origin: relative });
-      else if (!concreteRoutes.some((item) => item.route === route)) templates.push(route);
+      else if (
+        filesystemReachableFromPlan(configRoutes.routingPlan, route)
+        && !concreteRoutes.some((item) => item.route === route)
+      ) templates.push(route);
     }
   } else {
     validateStaticOverrides(configRoutes.overrides, []);
