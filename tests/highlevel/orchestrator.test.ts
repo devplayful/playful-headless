@@ -6,12 +6,22 @@ import type {
   IdempotencyStore,
   SubmissionState,
 } from '../../lib/contact/idempotency.ts';
-import { SubmissionInProgressError } from '../../lib/contact/idempotency.ts';
+import {
+  IdempotencyStoreUnavailableError,
+  SubmissionInProgressError,
+  SubmissionPayloadMismatchError,
+} from '../../lib/contact/idempotency.ts';
 import {
   DeterministicContactDeliveryError,
   UncertainContactDeliveryError,
 } from '../../lib/contact/delivery.ts';
-import { processContactPipeline, submissionKey } from '../../lib/contact/orchestrator.ts';
+import {
+  ContactPipelineUnavailableBeforeDeliveryError,
+  DeliveryReceiptMissingError,
+  processContactPipeline,
+  submissionFingerprint,
+  submissionKey,
+} from '../../lib/contact/orchestrator.ts';
 import { lead } from './fixtures.ts';
 
 class TestStore implements IdempotencyStore {
@@ -32,44 +42,75 @@ class TestStore implements IdempotencyStore {
     if (this.leases.get(resource)?.owner === owner) this.leases.delete(resource);
   }
 
-  async begin(key: string, owner: string): Promise<BeginResult> {
+  async begin(key: string, owner: string, fingerprint?: string): Promise<BeginResult> {
     const record = this.records.get(key);
-    if (record) return { kind: 'existing', record };
+    if (record) {
+      if (record.fingerprint && fingerprint && record.fingerprint !== fingerprint) {
+        throw new SubmissionPayloadMismatchError();
+      }
+      return { kind: 'existing', record };
+    }
     if (!this.acquire(`delivery:${key}`, owner)) return { kind: 'busy' };
-    this.records.set(key, { state: 'delivery_pending' });
+    this.records.set(key, { state: 'delivery_pending', fingerprint });
     return { kind: 'acquired' };
+  }
+  async beginDeliveryReconciliation(key: string, owner: string) {
+    if (!this.acquire(`delivery:${key}`, owner)) throw new SubmissionInProgressError();
+    const record = this.records.get(key) || null;
+    if (!record || (record.state !== 'delivery_pending' && record.state !== 'delivery_uncertain')) {
+      this.release(`delivery:${key}`, owner);
+    }
+    return record;
   }
   async markDelivered(key: string, owner: string) {
     if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
-    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
-    this.records.set(key, { state: 'delivered', crm: {} });
+    const current = this.records.get(key);
+    const state = current?.state;
+    if (state !== 'delivery_pending' && state !== 'delivery_uncertain') throw new SubmissionInProgressError();
+    this.records.set(key, { state: 'delivered', fingerprint: current?.fingerprint, crm: {} });
     this.release(`delivery:${key}`, owner);
   }
   async markDeliveryUncertain(key: string, owner: string) {
     if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
-    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
-    this.records.set(key, { state: 'delivery_uncertain' });
+    const current = this.records.get(key);
+    if (current?.state !== 'delivery_pending' && current?.state !== 'delivery_uncertain') {
+      throw new SubmissionInProgressError();
+    }
+    this.records.set(key, { state: 'delivery_uncertain', fingerprint: current.fingerprint });
     this.release(`delivery:${key}`, owner);
   }
   async clearPendingDelivery(key: string, owner: string) {
     if (this.leases.get(`delivery:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
-    if (this.records.get(key)?.state !== 'delivery_pending') throw new SubmissionInProgressError();
+    const state = this.records.get(key)?.state;
+    if (state !== 'delivery_pending' && state !== 'delivery_uncertain') throw new SubmissionInProgressError();
     this.records.delete(key);
     this.release(`delivery:${key}`, owner);
   }
+  async releaseDelivery(key: string, owner: string) { this.release(`delivery:${key}`, owner); }
   async beginCrm(key: string, owner: string) {
     return this.records.get(key)?.state === 'delivered' && this.acquire(`crm:${key}`, owner);
   }
   async saveCrmProgress(key: string, owner: string, progress: CrmProgress) {
     if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
-    this.records.set(key, { state: 'delivered', crm: { ...progress } });
+    const current = this.records.get(key);
+    this.records.set(key, {
+      state: 'delivered',
+      fingerprint: current?.fingerprint,
+      crm: { ...progress },
+    });
     this.leases.set(`crm:${key}`, { owner, expiresAt: this.now + 30 });
   }
   async markCompleted(key: string, owner: string, crmSynced: boolean, dryRun: boolean) {
     if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
     const current = this.records.get(key);
     const crm = current?.state === 'delivered' ? current.crm : {};
-    this.records.set(key, { state: 'completed', crmSynced, dryRun, crm });
+    this.records.set(key, {
+      state: 'completed',
+      fingerprint: current?.fingerprint,
+      crmSynced,
+      dryRun,
+      crm,
+    });
     this.release(`crm:${key}`, owner);
   }
   async releaseCrm(key: string, owner: string) { this.release(`crm:${key}`, owner); }
@@ -166,6 +207,7 @@ test('does not redeliver when WordPress completed remotely but its response was 
   const retry = await processContactPipeline(lead, {
     store,
     deliver: async () => { remoteDeliveries += 1; },
+    reconcileDelivery: async () => 'completed',
     syncCrm: async () => { crmCalls += 1; },
     dryRun: false,
     ownerId: 'lost-response-2',
@@ -178,14 +220,14 @@ test('does not redeliver when WordPress completed remotely but its response was 
     dryRun: false,
     replayed: false,
   });
-  assert.equal(retry.deliveryStatus, 'pending_confirmation');
-  assert.equal(retry.replayed, true);
+  assert.equal(retry.deliveryStatus, 'confirmed');
+  assert.equal(retry.replayed, false);
   assert.equal(remoteDeliveries, 1);
-  assert.equal(crmCalls, 0);
-  assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'delivery_uncertain');
+  assert.equal(crmCalls, 1);
+  assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'completed');
 });
 
-test('does not blindly retry when WordPress may not have received the timed-out request', async () => {
+test('clears an unconfirmed reservation only after the safe receipt endpoint reports missing', async () => {
   const store = new TestStore();
   let attempts = 0;
 
@@ -198,16 +240,54 @@ test('does not blindly retry when WordPress may not have received the timed-out 
     dryRun: false,
     ownerId: 'not-received-1',
   });
-  const retry = await processContactPipeline(lead, {
+  await assert.rejects(() => processContactPipeline(lead, {
     store,
     deliver: async () => { attempts += 1; },
+    reconcileDelivery: async () => 'missing',
     dryRun: false,
     ownerId: 'not-received-2',
-  });
+    reconcileOnly: true,
+  }), DeliveryReceiptMissingError);
 
   assert.equal(first.deliveryStatus, 'pending_confirmation');
-  assert.equal(retry.deliveryStatus, 'pending_confirmation');
   assert.equal(attempts, 1);
+  assert.equal(store.records.has(submissionKey(lead.submissionId)), false);
+});
+
+test('keeps the reservation and performs no delivery while the receipt is still processing', async () => {
+  const store = new TestStore();
+  const key = submissionKey(lead.submissionId);
+  store.records.set(key, { state: 'delivery_uncertain' });
+  let deliveries = 0;
+
+  const result = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { deliveries += 1; },
+    reconcileDelivery: async () => 'processing',
+    dryRun: true,
+    ownerId: 'processing-receipt',
+    reconcileOnly: true,
+  });
+
+  assert.equal(result.deliveryStatus, 'pending_confirmation');
+  assert.equal(result.dryRun, true);
+  assert.equal(deliveries, 0);
+  assert.equal(store.records.get(key)?.state, 'delivery_uncertain');
+});
+
+test('classifies Redis failure before WordPress as a pre-delivery outage', async () => {
+  const store = new TestStore();
+  store.begin = async () => {
+    throw new IdempotencyStoreUnavailableError();
+  };
+  let deliveries = 0;
+
+  await assert.rejects(() => processContactPipeline(lead, {
+    store,
+    deliver: async () => { deliveries += 1; },
+    dryRun: false,
+  }), ContactPipelineUnavailableBeforeDeliveryError);
+  assert.equal(deliveries, 0);
 });
 
 test('clears only deterministic WordPress rejections so a corrected request can retry', async () => {
@@ -234,4 +314,57 @@ test('clears only deterministic WordPress rejections so a corrected request can 
   assert.equal(attempts, 2);
   assert.equal(retry.deliveryStatus, 'confirmed');
   assert.equal(retry.crmSynced, false);
+});
+
+test('binds a submission id to its original payload across explicit checks and reloads', async () => {
+  const store = new TestStore();
+  const key = submissionKey(lead.submissionId);
+  store.records.set(key, {
+    state: 'delivery_uncertain',
+    fingerprint: submissionFingerprint(lead),
+  });
+  let deliveries = 0;
+  let receiptChecks = 0;
+
+  await assert.rejects(() => processContactPipeline({
+    ...lead,
+    message: 'Contenido distinto después de una recarga.',
+  }, {
+    store,
+    deliver: async () => { deliveries += 1; },
+    reconcileDelivery: async () => {
+      receiptChecks += 1;
+      return 'completed';
+    },
+    dryRun: false,
+    ownerId: 'changed-payload',
+    reconcileOnly: true,
+  }), SubmissionPayloadMismatchError);
+
+  assert.equal(deliveries, 0);
+  assert.equal(receiptChecks, 0);
+  assert.equal(store.records.get(key)?.state, 'delivery_uncertain');
+});
+
+test('reconciles a WordPress receipt even when the Redis reservation was lost', async () => {
+  const store = new TestStore();
+  let deliveries = 0;
+  let receiptChecks = 0;
+
+  const result = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { deliveries += 1; },
+    reconcileDelivery: async () => {
+      receiptChecks += 1;
+      return 'completed';
+    },
+    dryRun: false,
+    ownerId: 'lost-redis-state',
+    reconcileOnly: true,
+  });
+
+  assert.equal(result.deliveryStatus, 'confirmed');
+  assert.equal(deliveries, 0);
+  assert.equal(receiptChecks, 1);
+  assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'completed');
 });

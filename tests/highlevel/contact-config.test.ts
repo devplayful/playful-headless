@@ -2,8 +2,15 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   ContactPipelineConfigurationError,
+  isContactPipelineEnabled,
   readContactPipelineConfig,
 } from '../../lib/contact/config.ts';
+
+test('keeps the durable pipeline off by default for a Redis-free rollback', () => {
+  assert.equal(isContactPipelineEnabled({}), false);
+  assert.equal(isContactPipelineEnabled({ CONTACT_PIPELINE_ENABLED: 'false' }), false);
+  assert.equal(isContactPipelineEnabled({ CONTACT_PIPELINE_ENABLED: 'true' }), true);
+});
 
 test('requires durable delivery state even while direct HighLevel sync is disabled', () => {
   assert.throws(

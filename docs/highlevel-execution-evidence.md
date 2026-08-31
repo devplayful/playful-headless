@@ -68,7 +68,7 @@ Los doce campos se agrupan en `GTM Web` y son de una sola línea para aceptar lo
 
 La activación queda bloqueada hasta disponer de una integración privada de HighLevel con alcance mínimo para contactos, oportunidades, etiquetas y tareas; un Redis REST duradero sin coste confirmado; y variables exclusivas de Preview. No se deben guardar secretos en Git.
 
-Rollback inmediato de la integración: fijar `HIGHLEVEL_ENABLED=false`. Esto conserva la entrega autenticada a WordPress y evita llamadas a HighLevel.
+Rollback CRM: fijar `HIGHLEVEL_ENABLED=false`. Rollback Redis/pipeline: fijar además `CONTACT_PIPELINE_ENABLED=false`, lo que conserva un solo intento autenticado a WordPress sin Redis ni HighLevel. Si el handler o frontend presenta una regresión, el rollback completo es redeploy de la versión productiva anterior; el flag de CRM por sí solo no cubre ese caso.
 
 Rollback exacto de la convención D2C, sin mover ni borrar registros:
 

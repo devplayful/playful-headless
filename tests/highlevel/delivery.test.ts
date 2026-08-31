@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   ContactDeliveryError,
+  checkWordPressReceipt,
   DeterministicContactDeliveryError,
   UncertainContactDeliveryError,
+  WordPressIdempotencyProtocolError,
   deliverToWordPress,
 } from '../../lib/contact/delivery.ts';
 import { lead } from './fixtures.ts';
@@ -23,6 +25,27 @@ function configuredEnvironment() {
   };
 }
 
+function receiptResponse(state: 'completed' | 'processing' | 'missing'): Response {
+  const status = state === 'completed' ? 200 : state === 'processing' ? 202 : 404;
+  return new Response(JSON.stringify({ state }), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Playful-Contact-Idempotency': 'v1',
+    },
+  });
+}
+
+function contactResponse(status = 200): Response {
+  return new Response(JSON.stringify({ success: status >= 200 && status < 300 }), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Playful-Contact-Idempotency': 'v1',
+    },
+  });
+}
+
 test('sends a stable submission receipt key to WordPress', async () => {
   const restore = configuredEnvironment();
   try {
@@ -30,7 +53,7 @@ test('sends a stable submission receipt key to WordPress', async () => {
     await deliverToWordPress(lead, {
       fetchImpl: async (_input, init) => {
         request = init;
-        return new Response(null, { status: 200 });
+        return contactResponse();
       },
     });
 
@@ -45,27 +68,30 @@ test('sends a stable submission receipt key to WordPress', async () => {
 test('recovers a lost success response by retrying the same idempotent submission', async () => {
   const restore = configuredEnvironment();
   try {
-    const ids: string[] = [];
+    const paths: string[] = [];
     const delays: number[] = [];
     let calls = 0;
 
     await deliverToWordPress(lead, {
       idempotentRetriesEnabled: true,
-      fetchImpl: async (_input, init) => {
+      fetchImpl: async (input) => {
         calls += 1;
-        ids.push(new Headers(init?.headers).get('X-Playful-Submission-Id') || '');
-        if (calls === 1) {
+        paths.push(String(input));
+        if (calls === 1) return receiptResponse('missing');
+        if (calls === 2) {
           const error = new Error('response lost after WordPress completed the request');
           error.name = 'TimeoutError';
           throw error;
         }
-        return new Response(JSON.stringify({ success: true, replayed: true }), { status: 200 });
+        return receiptResponse('completed');
       },
       sleep: async (delay) => { delays.push(delay); },
     });
 
-    assert.equal(calls, 2);
-    assert.deepEqual(ids, [lead.submissionId, lead.submissionId]);
+    assert.equal(calls, 3);
+    assert.match(paths[0], /contact-receipt$/);
+    assert.match(paths[1], /contact$/);
+    assert.match(paths[2], /contact-receipt$/);
     assert.deepEqual(delays, [500]);
   } finally {
     restore();
@@ -80,13 +106,36 @@ test('waits for an in-progress duplicate and then accepts its completed receipt'
       idempotentRetriesEnabled: true,
       fetchImpl: async () => {
         calls += 1;
-        return calls === 1
-          ? new Response(null, { status: 409 })
-          : new Response(null, { status: 200 });
+        if (calls === 1) return receiptResponse('missing');
+        return calls === 2 ? contactResponse(409) : receiptResponse('completed');
       },
       sleep: async () => {},
     });
-    assert.equal(calls, 2);
+    assert.equal(calls, 3);
+  } finally {
+    restore();
+  }
+});
+
+test('rechecks the v1 receipt before every retry and never performs a blind second write', async () => {
+  const restore = configuredEnvironment();
+  try {
+    const paths: string[] = [];
+    await assert.rejects(() => deliverToWordPress(lead, {
+      idempotentRetriesEnabled: true,
+      fetchImpl: async (input) => {
+        paths.push(String(input));
+        if (paths.length === 1) return receiptResponse('missing');
+        if (paths.length === 2) throw new Error('lost contact response');
+        return new Response(JSON.stringify({ state: 'missing' }), { status: 404 });
+      },
+      sleep: async () => {},
+    }), WordPressIdempotencyProtocolError);
+
+    assert.equal(paths.length, 3);
+    assert.match(paths[0], /contact-receipt$/);
+    assert.match(paths[1], /contact$/);
+    assert.match(paths[2], /contact-receipt$/);
   } finally {
     restore();
   }
@@ -138,12 +187,88 @@ test('classifies a 5xx after a write as uncertain even with receipt retries enab
         idempotentRetriesEnabled: true,
         fetchImpl: async () => {
           calls += 1;
-          return new Response(null, { status: 500 });
+          return calls === 1 ? receiptResponse('missing') : contactResponse(500);
         },
         sleep: async () => {},
       }),
       UncertainContactDeliveryError,
     );
+    assert.equal(calls, 2);
+  } finally {
+    restore();
+  }
+});
+
+test('checks completed, processing and missing receipts without sending contact PII', async () => {
+  const restore = configuredEnvironment();
+  try {
+    for (const state of ['completed', 'processing', 'missing'] as const) {
+      let body = '';
+      const result = await checkWordPressReceipt(lead, {
+        fetchImpl: async (_input, init) => {
+          body = String(init?.body || '');
+          return receiptResponse(state);
+        },
+      });
+      assert.equal(result, state);
+      assert.equal(body.includes(lead.email), false);
+      assert.equal(body.includes(lead.name), false);
+      assert.equal(body.includes(lead.phone), false);
+      assert.match(body, /submission_id/);
+    }
+  } finally {
+    restore();
+  }
+});
+
+test('fails before the contact write when the receipt capability header is absent', async () => {
+  const restore = configuredEnvironment();
+  try {
+    const paths: string[] = [];
+    await assert.rejects(() => deliverToWordPress(lead, {
+      idempotentRetriesEnabled: true,
+      fetchImpl: async (input) => {
+        paths.push(String(input));
+        return new Response(JSON.stringify({ state: 'missing' }), { status: 404 });
+      },
+    }), WordPressIdempotencyProtocolError);
+    assert.equal(paths.length, 1);
+    assert.match(paths[0], /contact-receipt$/);
+  } finally {
+    restore();
+  }
+});
+
+test('rejects a successful contact response without the v1 protocol header', async () => {
+  const restore = configuredEnvironment();
+  try {
+    let calls = 0;
+    await assert.rejects(() => deliverToWordPress(lead, {
+      idempotentRetriesEnabled: true,
+      fetchImpl: async () => {
+        calls += 1;
+        return calls === 1
+          ? receiptResponse('missing')
+          : new Response(JSON.stringify({ success: true }), { status: 200 });
+      },
+    }), WordPressIdempotencyProtocolError);
+    assert.equal(calls, 2);
+  } finally {
+    restore();
+  }
+});
+
+test('also rejects headerless 2xx on the single-attempt Redis-free rollback path', async () => {
+  const restore = configuredEnvironment();
+  try {
+    let calls = 0;
+    await assert.rejects(() => deliverToWordPress(lead, {
+      idempotentRetriesEnabled: false,
+      fetchImpl: async () => {
+        calls += 1;
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+      },
+    }), WordPressIdempotencyProtocolError);
     assert.equal(calls, 1);
   } finally {
     restore();

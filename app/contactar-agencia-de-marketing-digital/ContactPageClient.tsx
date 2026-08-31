@@ -16,18 +16,20 @@ interface ContactPageClientProps {
   casosDeExito: any[];
 }
 
+const EMPTY_FORM = {
+  name: '',
+  email: '',
+  phone: '',
+  subject: '',
+  business: '',
+  message: '',
+};
+
 // Componente del formulario con reCAPTCHA V2
 function ContactForm({ casosDeExito }: ContactPageClientProps) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const submissionIdRef = useRef('');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    business: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
@@ -36,6 +38,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     pending?: boolean;
     message: string;
   } | null>(null);
+  const isPendingConfirmation = submitStatus?.pending === true;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -45,22 +48,38 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const resetConfirmedForm = () => {
+    setFormData(EMPTY_FORM);
+    setPrivacyConsent(false);
+    setMarketingConsent(false);
+    submissionIdRef.current = '';
+    clearSubmissionId();
+    recaptchaRef.current?.reset();
+  };
+
+  const submitRequest = async (submissionAction: 'submit' | 'reconcile') => {
     // Obtener token de reCAPTCHA V2
     const recaptchaToken = recaptchaRef.current?.getValue();
     
     if (!recaptchaToken) {
       setSubmitStatus({
         success: false,
+        pending: submissionAction === 'reconcile',
         message: 'Por favor, completa el reCAPTCHA antes de enviar el formulario.'
       });
       return;
     }
 
     setIsSubmitting(true);
-    setSubmitStatus(null);
+    if (submissionAction === 'submit') {
+      setSubmitStatus(null);
+    } else {
+      setSubmitStatus((current) => ({
+        success: false,
+        pending: true,
+        message: current?.message || 'Comprobando el estado de la entrega…',
+      }));
+    }
 
     try {
 
@@ -83,6 +102,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           submissionId: submissionIdRef.current,
           privacyConsent,
           marketingConsent,
+          submissionAction,
           ...attribution,
           recaptchaToken,
         }),
@@ -96,19 +116,9 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           pending: true,
           message: data.message,
         });
-
-        // The outcome is unresolved, but reusing or replacing the submission
-        // would risk a duplicate. Preserve the neutral receipt and stop retries.
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          business: '',
-          message: ''
-        });
-        setPrivacyConsent(false);
-        setMarketingConsent(false);
+        // Keep the original values locked for an explicit receipt check. The
+        // consumed challenge is refreshed, but no request is sent automatically.
+        recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
           pushGenerateLead(data.analytics.formId);
@@ -118,23 +128,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
         });
         
-        // Limpiar el formulario y reCAPTCHA después de un envío exitoso
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          business: '',
-          message: ''
-        });
-        setPrivacyConsent(false);
-        setMarketingConsent(false);
-        submissionIdRef.current = '';
-        clearSubmissionId();
-        recaptchaRef.current?.reset();
+        resetConfirmedForm();
       } else {
         setSubmitStatus({
           success: false,
+          pending: submissionAction === 'reconcile'
+            || data.startNewSubmission === true
+            || data.retryable === true,
           message: data.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
         });
         // A deterministic rejection consumed the verifier token. Give the
@@ -146,12 +146,29 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       console.error('Error al enviar el formulario:', error);
       setSubmitStatus({
         success: false,
-        message: 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
+        pending: true,
+        message: 'No pudimos confirmar la respuesta. Comprueba el estado antes de iniciar otra solicitud.'
       });
       recaptchaRef.current?.reset();
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isPendingConfirmation) return;
+    await submitRequest('submit');
+  };
+
+  const handleReceiptCheck = async () => {
+    if (!isPendingConfirmation || isSubmitting) return;
+    await submitRequest('reconcile');
+  };
+
+  const startDifferentSubmission = () => {
+    resetConfirmedForm();
+    setSubmitStatus(null);
   };
 
   return (
@@ -202,6 +219,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    disabled={isPendingConfirmation || isSubmitting}
                     placeholder="Déjanos aquí tu nombre"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     required
@@ -218,6 +236,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    disabled={isPendingConfirmation || isSubmitting}
                     placeholder="Correo electrónico dónde te contactaremos"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     required
@@ -236,6 +255,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    disabled={isPendingConfirmation || isSubmitting}
                     placeholder="Escribe también tu número de contacto"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
@@ -252,6 +272,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   name="business"
                   value={formData.business}
                   onChange={handleChange}
+                  disabled={isPendingConfirmation || isSubmitting}
                   placeholder="Y... el nombre de tu empresa"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
@@ -267,6 +288,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
+                  disabled={isPendingConfirmation || isSubmitting}
                   placeholder="¡Por último! Cuéntanos ¿Qué quieres lograr?"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   required
@@ -279,6 +301,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     type="checkbox"
                     checked={privacyConsent}
                     onChange={(event) => setPrivacyConsent(event.target.checked)}
+                    disabled={isPendingConfirmation || isSubmitting}
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                     required
                   />
@@ -292,6 +315,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     type="checkbox"
                     checked={marketingConsent}
                     onChange={(event) => setMarketingConsent(event.target.checked)}
+                    disabled={isPendingConfirmation || isSubmitting}
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                   />
                   <span>
@@ -308,15 +332,36 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                 />
               </div>
               
-              <div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Enviando...' : '¡Quiero que conozcan mi caso!'}
-                </button>
-              </div>
+              {isPendingConfirmation ? (
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={handleReceiptCheck}
+                    disabled={isSubmitting}
+                    className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Comprobando...' : 'Comprobar estado de la entrega'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={startDifferentSubmission}
+                    disabled={isSubmitting}
+                    className="w-full border border-[#440099] text-[#440099] font-semibold py-3 px-6 rounded-full disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    Iniciar una solicitud distinta
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Enviando...' : '¡Quiero que conozcan mi caso!'}
+                  </button>
+                </div>
+              )}
               
               <p className="text-sm text-[#4A4453]">
                 Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.

@@ -20,6 +20,17 @@ function playful_contact_gate_is_contact_request($request) {
         && $request->get_method() === 'POST';
 }
 
+function playful_contact_gate_is_receipt_request($request) {
+    return $request instanceof WP_REST_Request
+        && $request->get_route() === '/playful/v1/contact-receipt'
+        && $request->get_method() === 'POST';
+}
+
+function playful_contact_gate_is_protected_request($request) {
+    return playful_contact_gate_is_contact_request($request)
+        || playful_contact_gate_is_receipt_request($request);
+}
+
 function playful_contact_gate_receipt_key($submission_id) {
     return PLAYFUL_CONTACT_RECEIPT_PREFIX . hash('sha256', $submission_id);
 }
@@ -202,13 +213,68 @@ function playful_contact_gate_protocol_response($status, $body) {
     return $response;
 }
 
+function playful_contact_gate_read_receipt($request) {
+    if (get_option(PLAYFUL_CONTACT_GATE_ENFORCE_OPTION, '0') !== '1') {
+        return playful_contact_gate_protocol_response(503, array(
+            'state' => 'unavailable',
+            'message' => 'Contact endpoint protection is not enforced.',
+        ));
+    }
+
+    $submission_id = playful_contact_gate_submission_id($request);
+    if (is_wp_error($submission_id)) {
+        return $submission_id;
+    }
+    if ($submission_id === '') {
+        return new WP_Error(
+            'playful_contact_gate_missing_submission_id',
+            'Missing submission identifier.',
+            array('status' => 400)
+        );
+    }
+
+    $current = (string) get_option(playful_contact_gate_receipt_key($submission_id), '');
+    if ($current === '') {
+        return playful_contact_gate_protocol_response(404, array('state' => 'missing'));
+    }
+
+    $decoded = json_decode($current, true);
+    $state = is_array($decoded) ? ($decoded['state'] ?? '') : '';
+    if ($state === 'completed') {
+        return playful_contact_gate_protocol_response(200, array('state' => 'completed'));
+    }
+    if ($state === 'processing') {
+        return playful_contact_gate_protocol_response(202, array('state' => 'processing'));
+    }
+
+    return playful_contact_gate_protocol_response(503, array('state' => 'unknown'));
+}
+
+add_action('rest_api_init', function () {
+    register_rest_route('playful/v1', '/contact-receipt', array(
+        'methods' => 'POST',
+        'callback' => 'playful_contact_gate_read_receipt',
+        'permission_callback' => '__return_true',
+        'args' => array(
+            'submission_id' => array(
+                'required' => true,
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'validate_callback' => function($param) {
+                    return preg_match('/\A[A-Za-z0-9_-]{20,100}\z/', $param) === 1;
+                }
+            ),
+        ),
+    ));
+});
+
 register_activation_hook(__FILE__, function () {
     add_option(PLAYFUL_CONTACT_GATE_ENFORCE_OPTION, '0');
 });
 
 // Ejecutar al final para que ningún plugin posterior pueda reabrir la solicitud.
 add_filter('rest_pre_dispatch', function ($result, $server, $request) {
-    if (!playful_contact_gate_is_contact_request($request)) {
+    if (!playful_contact_gate_is_protected_request($request)) {
         return $result;
     }
 
@@ -230,6 +296,10 @@ add_filter('rest_pre_dispatch', function ($result, $server, $request) {
                 array('status' => 403)
             );
         }
+    }
+
+    if (playful_contact_gate_is_receipt_request($request)) {
+        return $result;
     }
 
     if ($result !== null) {

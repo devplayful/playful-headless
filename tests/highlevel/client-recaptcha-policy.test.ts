@@ -21,7 +21,7 @@ test('resets a consumed reCAPTCHA token after a deterministic rejection', () => 
   );
 });
 
-test('does not reset or retry automatically while delivery confirmation is pending', () => {
+test('refreshes the consumed challenge without retrying automatically while confirmation is pending', () => {
   const pendingBranch = clientSource.indexOf(
     'if (response.status === 202 && data.pendingConfirmation === true)',
   );
@@ -30,7 +30,7 @@ test('does not reset or retry automatically while delivery confirmation is pendi
 
   assert(pendingBranch >= 0, 'the contact client must retain a pending-confirmation branch');
   assert(successBranch > pendingBranch, 'the pending-confirmation branch must be bounded');
-  assert(!pendingSource.includes('recaptchaRef.current?.reset();'));
+  assert(pendingSource.includes('recaptchaRef.current?.reset();'));
   assert(!pendingSource.includes("fetch('/api/contact'"));
 });
 
@@ -40,4 +40,14 @@ test('also resets reCAPTCHA when the response cannot be obtained or parsed', () 
 
   assert(catchBranch >= 0, 'the contact request must retain a catch branch');
   assert(catchReset > catchBranch, 'transport and parse failures must reset reCAPTCHA');
+});
+
+test('locks ambiguous values behind explicit receipt-check and new-submission actions', () => {
+  assert(clientSource.includes("await submitRequest('reconcile')"));
+  assert(clientSource.includes('Comprobar estado de la entrega'));
+  assert(clientSource.includes('Iniciar una solicitud distinta'));
+  assert(clientSource.includes('disabled={isPendingConfirmation || isSubmitting}'));
+  assert(clientSource.includes('data.retryable === true'));
+  assert(clientSource.includes('data.startNewSubmission === true'));
+  assert(clientSource.includes('clearSubmissionId();'));
 });
