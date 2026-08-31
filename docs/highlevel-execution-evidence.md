@@ -15,7 +15,12 @@ Fecha: 30 de agosto de 2026 (Europe/Madrid)
 - Las seis oportunidades abiertas y su historial permanecen en el pipeline legado.
 - Export: `/Users/josemreyes/Downloads/opportunities.csv`.
 - SHA-256 del export: `61653a6ff1c3e66aeb2aecb3732dd101e8c8534d00a387a078d94c8812d52e9c`.
+- Manifiesto agregado sin PII: `docs/qa/highlevel-d2c-legacy-export-evidence.json`.
+- Auditor reproducible: `npm run audit:highlevel-export -- /ruta/al/opportunities.csv`; solo emite hash, tamaño y conteos por pipeline, etapa y estado.
+- La revalidación del 31 de agosto de 2026 confirma seis filas: pipeline `D2C`, etapa `Toque 1`, estado `open`; no imprime nombres, emails, teléfonos, notas ni IDs de contacto/oportunidad.
 - Smart List: `Prospección fría — D2C legado (sin comunicaciones)` (`I2IO1LGYW0BkvTPcSvwc`), con seis contactos.
+- Mapa redacted antes→actual, extraído del Audit Log sin PII: `docs/qa/highlevel-d2c-pipeline-map.json`.
+- El Audit Log prueba que el pipeline legado fue creado como `D2C` el 27 de agosto, conserva sus ocho etapas/IDs originales y solo recibió un cambio posterior de nombre. El pipeline canónico fue creado como un objeto nuevo el 30 de agosto y no tiene actualizaciones posteriores.
 
 ## Pipeline canónico
 
@@ -63,6 +68,17 @@ Los doce campos se agrupan en `GTM Web` y son de una sola línea para aceptar lo
 
 La activación queda bloqueada hasta disponer de una integración privada de HighLevel con alcance mínimo para contactos, oportunidades, etiquetas y tareas; un Redis REST duradero sin coste confirmado; y variables exclusivas de Preview. No se deben guardar secretos en Git.
 
-Rollback inmediato: fijar `HIGHLEVEL_ENABLED=false`. Esto conserva la entrega autenticada a WordPress y evita llamadas a HighLevel. El pipeline legado, el export y la Smart List permiten recuperar o revisar los seis prospectos sin migrarlos ni borrarlos. Los commits locales pueden revertirse sin afectar HighLevel porque aún no se han publicado.
+Rollback inmediato de la integración: fijar `HIGHLEVEL_ENABLED=false`. Esto conserva la entrega autenticada a WordPress y evita llamadas a HighLevel.
+
+Rollback exacto de la convención D2C, sin mover ni borrar registros:
+
+1. Mantener `HIGHLEVEL_ENABLED=false` y confirmar que no hay workflows nuevos publicados.
+2. Consultar `zXzvEbbEaOQqftHWZwoz` sin filtro de estado y comprobar cero oportunidades totales y cero dependencias. Si aparece cualquier registro o dependencia, abortar el rollback y documentarlo; el export histórico no prueba este conteo porque es anterior a la creación del pipeline.
+3. Solo después de cumplir esa precondición, renombrar `zXzvEbbEaOQqftHWZwoz` a `D2C CANONICAL - rollback hold (no usar)` sin eliminar etapas.
+4. Renombrar el pipeline legado preservado `Z1LJMEK3hq9xdHR5F44n` de `D2C LEGACY - prospeccion fria (no usar)` a `D2C`.
+5. Verificar contra el manifiesto que siguen existiendo seis oportunidades históricas en el pipeline restaurado, etapa `Toque 1`, estado `open`, y seis contactos en la Smart List.
+6. No eliminar el pipeline canónico en espera ni el export; para rehacer la reconversión basta con restaurar ambos nombres. No es necesario reconstruir etapas previas porque el pipeline histórico permanece intacto.
+
+Los commits locales pueden revertirse sin afectar HighLevel porque aún no se han publicado.
 
 Antes de activar, también es obligatorio completar `docs/highlevel-workflow-audit.md`. Esta evidencia no afirma que los workflows existentes sean inocuos: esa conclusión requiere inventario, prueba controlada y logs de la subcuenta.
