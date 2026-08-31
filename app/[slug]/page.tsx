@@ -56,6 +56,7 @@ export default async function WordPressPage({
     <ElementorPageContent
       html={page.html}
       pageId={page.id}
+      slug={page.slug}
       stylesheetIds={page.stylesheetIds}
     />
   );

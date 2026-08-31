@@ -75,6 +75,7 @@ import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { getAllCaseStudies } from "@/services/wordpress";
+import { DIAGNOSTIC_CALL_COPY } from "@/utils/diagnostic-call-copy.mjs";
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
@@ -110,8 +111,8 @@ async function HomeContent() {
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton">
-                    Completa el formulario y cuéntanos tu idea
+                  <Link href={DIAGNOSTIC_CALL_COPY.href} className="playful-boton">
+                    {DIAGNOSTIC_CALL_COPY.cta}
                   </Link>
                 </div>
               </div>
@@ -168,11 +169,14 @@ async function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <TwoColumnCtaSection 
+          <TwoColumnCtaSection
             contentBgColor="#B3FFF3"
             imageUrl="/images/imagen-nueva-cta-home.png"
-            buttonText="Llena el formulario y hablemos sobre tu web"
-            buttonLink="/contactar-agencia-de-marketing-digital"
+            title={DIAGNOSTIC_CALL_COPY.title}
+            subtitle={DIAGNOSTIC_CALL_COPY.body}
+            ctaTitle={DIAGNOSTIC_CALL_COPY.support}
+            buttonText={DIAGNOSTIC_CALL_COPY.cta}
+            buttonLink={DIAGNOSTIC_CALL_COPY.href}
           />
         </div>
       </section>

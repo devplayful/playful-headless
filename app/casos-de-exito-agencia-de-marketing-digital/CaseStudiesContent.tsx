@@ -6,6 +6,7 @@ import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
+import { DIAGNOSTIC_CALL_COPY } from "@/utils/diagnostic-call-copy.mjs";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -383,7 +384,14 @@ export default function CaseStudiesContent() {
 
         {/* Sección de dos columnas */}
         <div className="my-16">
-          <TwoColumnCtaSection contentBgColor="#FFEFD1" />
+          <TwoColumnCtaSection
+            contentBgColor="#FFEFD1"
+            title={DIAGNOSTIC_CALL_COPY.title}
+            subtitle={DIAGNOSTIC_CALL_COPY.body}
+            ctaTitle={DIAGNOSTIC_CALL_COPY.support}
+            buttonText={DIAGNOSTIC_CALL_COPY.cta}
+            buttonLink={DIAGNOSTIC_CALL_COPY.href}
+          />
         </div>
       </div>
     </div>

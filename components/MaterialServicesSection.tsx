@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { DIAGNOSTIC_CALL_COPY } from "@/utils/diagnostic-call-copy.mjs";
 
 const cardData = [
   {
@@ -61,8 +62,8 @@ export default function MaterialServicesSection({
         </div>
 
         <div className="text-center mt-12">
-          <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
-          Escríbenos para conversar sobre tu página web.
+          <Link href={DIAGNOSTIC_CALL_COPY.href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+          {DIAGNOSTIC_CALL_COPY.cta}
           </Link>
         </div>
       </div>
