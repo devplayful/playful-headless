@@ -29,12 +29,14 @@ class TestStore implements IdempotencyStore {
   leases = new Map<string, { owner: string; expiresAt: number }>();
   now = 0;
 
+  constructor(private readonly leaseSeconds = 30) {}
+
   advance(seconds: number) { this.now += seconds; }
 
   private acquire(resource: string, owner: string) {
     const current = this.leases.get(resource);
     if (current && current.expiresAt > this.now) return false;
-    this.leases.set(resource, { owner, expiresAt: this.now + 30 });
+    this.leases.set(resource, { owner, expiresAt: this.now + this.leaseSeconds });
     return true;
   }
 
@@ -98,7 +100,7 @@ class TestStore implements IdempotencyStore {
       fingerprint: current?.fingerprint,
       crm: { ...progress },
     });
-    this.leases.set(`crm:${key}`, { owner, expiresAt: this.now + 30 });
+    this.leases.set(`crm:${key}`, { owner, expiresAt: this.now + this.leaseSeconds });
   }
   async markCompleted(key: string, owner: string, crmSynced: boolean, dryRun: boolean) {
     if (this.leases.get(`crm:${key}`)?.owner !== owner) throw new SubmissionInProgressError();
@@ -225,6 +227,50 @@ test('does not redeliver when WordPress completed remotely but its response was 
   assert.equal(remoteDeliveries, 1);
   assert.equal(crmCalls, 1);
   assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'completed');
+});
+
+test('at t=33s a concurrent missing receipt cannot clear while the original worker may write', async () => {
+  const store = new TestStore(103);
+  const key = submissionKey(lead.submissionId);
+  let originalWrites = 0;
+  let receiptChecks = 0;
+  let releaseOriginal!: () => void;
+  let signalStarted!: () => void;
+  const started = new Promise<void>((resolve) => { signalStarted = resolve; });
+  const holdOriginal = new Promise<void>((resolve) => { releaseOriginal = resolve; });
+
+  const original = processContactPipeline(lead, {
+    store,
+    deliver: async () => {
+      originalWrites += 1;
+      signalStarted();
+      await holdOriginal;
+    },
+    dryRun: false,
+    ownerId: 'long-running-original',
+  });
+
+  await started;
+  store.advance(33);
+  await assert.rejects(() => processContactPipeline(lead, {
+    store,
+    deliver: async () => { throw new Error('must not write concurrently'); },
+    reconcileDelivery: async () => {
+      receiptChecks += 1;
+      return 'missing';
+    },
+    dryRun: false,
+    ownerId: 't33-reconciler',
+    reconcileOnly: true,
+  }), SubmissionInProgressError);
+
+  assert.equal(receiptChecks, 0);
+  assert.equal(store.records.get(key)?.state, 'delivery_pending');
+  releaseOriginal();
+  const result = await original;
+  assert.equal(result.deliveryStatus, 'confirmed');
+  assert.equal(originalWrites, 1);
+  assert.equal(store.records.get(key)?.state, 'completed');
 });
 
 test('clears an unconfirmed reservation only after the safe receipt endpoint reports missing', async () => {

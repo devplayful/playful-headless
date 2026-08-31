@@ -1,7 +1,5 @@
 import {
-  IDEMPOTENCY_REQUEST_TIMEOUT_MS,
-  LEASE_SAFETY_MARGIN_MS,
-  WORDPRESS_DELIVERY_TIMEOUT_MS,
+  contactDeliveryLeaseMinimumMs,
 } from './timeouts.ts';
 
 type Environment = Readonly<Record<string, string | undefined>>;
@@ -66,12 +64,12 @@ export function readContactPipelineConfig(
     10,
     300,
   );
-  const deliveryCriticalSectionMs = WORDPRESS_DELIVERY_TIMEOUT_MS
-    + IDEMPOTENCY_REQUEST_TIMEOUT_MS
-    + LEASE_SAFETY_MARGIN_MS;
+  const idempotentRetriesEnabled = env.WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED === 'true';
+  const deliveryCriticalSectionMs = contactDeliveryLeaseMinimumMs(idempotentRetriesEnabled);
   if (leaseSeconds * 1000 < deliveryCriticalSectionMs) {
+    const minimumSeconds = Math.ceil(deliveryCriticalSectionMs / 1000);
     throw new ContactPipelineConfigurationError(
-      'CONTACT_PROCESSING_LEASE_SECONDS debe cubrir la entrega WordPress, el checkpoint Redis y el margen de seguridad.',
+      `CONTACT_PROCESSING_LEASE_SECONDS debe ser al menos ${minimumSeconds} para cubrir el protocolo WordPress completo, sus checkpoints Redis y el margen de seguridad.`,
     );
   }
 

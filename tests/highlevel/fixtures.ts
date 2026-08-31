@@ -28,7 +28,7 @@ export const config: EnabledHighLevelConfig = {
   slaHours: 24,
   timeoutMs: 8000,
   idempotencyTtlSeconds: 604800,
-  leaseSeconds: 30,
+  leaseSeconds: 105,
   redisRestUrl: 'https://redis.invalid',
   redisRestToken: 'redis-test-token',
   customFieldIds,

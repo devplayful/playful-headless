@@ -25,7 +25,7 @@ Cuando existe identificador, el plugin valida que cuerpo y cabecera coincidan y 
 4. Confirmar que un POST directo sin credencial sigue devolviendo `403 playful_contact_gate_forbidden`.
 5. Antes de enviar PII, consultar un identificador nuevo y confirmar `404`, `state: missing` y `X-Playful-Contact-Idempotency: v1`.
 6. En una prueba expresamente autorizada, enviar ese identificador y confirmar `200` con el header; consultar y confirmar `completed`; repetir el mismo identificador y confirmar `200`, `replayed: true` y un solo correo.
-7. Solo después de esa evidencia, establecer `CONTACT_PIPELINE_ENABLED=true` y luego `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true` en el entorno Next.js correspondiente.
+7. Configurar `CONTACT_PROCESSING_LEASE_SECONDS=105`. Solo después de esa evidencia, establecer `CONTACT_PIPELINE_ENABLED=true` y luego `WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED=true`; con reintentos activos, un valor inferior a 103 falla cerrado antes de WordPress.
 
 La instalación del plugin no activa HighLevel, no cambia reCAPTCHA y no envía ninguna comunicación por sí sola. Las comprobaciones de los pasos 4–5 se realizan únicamente dentro de una ventana autorizada.
 
