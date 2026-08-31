@@ -66,7 +66,7 @@ Los doce campos se agrupan en `GTM Web` y son de una sola línea para aceptar lo
 
 ## Activación y rollback
 
-La activación queda bloqueada hasta disponer de una integración privada de HighLevel con alcance mínimo para contactos, oportunidades, etiquetas y tareas; un Redis REST duradero sin coste confirmado; y variables exclusivas de Preview. No se deben guardar secretos en Git.
+La activación queda bloqueada hasta disponer de una integración privada de HighLevel con alcance mínimo para contactos, oportunidades, etiquetas y tareas; un Redis REST duradero sin coste confirmado; variables exclusivas de Preview; y `CONTACT_PROCESSING_LEASE_SECONDS=105` antes de activar los reintentos Gate 1.1. El mínimo calculado es 103 segundos y la configuración falla cerrado por debajo. No se deben guardar secretos en Git.
 
 Rollback CRM: fijar `HIGHLEVEL_ENABLED=false`. Rollback Redis/pipeline: fijar además `CONTACT_PIPELINE_ENABLED=false`, lo que conserva un solo intento autenticado a WordPress sin Redis ni HighLevel. Si el handler o frontend presenta una regresión, el rollback completo es redeploy de la versión productiva anterior; el flag de CRM por sí solo no cubre ese caso.
 

@@ -1,8 +1,9 @@
 import type { WebsiteLead } from './types.ts';
-import { WORDPRESS_DELIVERY_TIMEOUT_MS } from './timeouts.ts';
-
-const WORDPRESS_DELIVERY_MAX_ATTEMPTS = 4;
-const WORDPRESS_DELIVERY_RETRY_DELAY_MS = 500;
+import {
+  WORDPRESS_DELIVERY_MAX_ATTEMPTS,
+  WORDPRESS_DELIVERY_RETRY_DELAY_MS,
+  WORDPRESS_DELIVERY_TIMEOUT_MS,
+} from './timeouts.ts';
 
 export class ContactDeliveryError extends Error {
   constructor(public readonly status: number, message: string) {

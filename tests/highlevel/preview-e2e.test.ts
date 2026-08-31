@@ -122,7 +122,7 @@ test('Preview E2E entrega una vez, simula CRM y no guarda PII en Redis', async (
   assert.equal(redisTraffic.includes(lead.email), false);
   assert.equal(redisTraffic.includes(lead.phone || ''), false);
   assert.equal(redisTraffic.includes(lead.name), false);
-  assert.equal(redisTraffic.includes('"NX","EX",30'), true);
+  assert.equal(redisTraffic.includes(`"NX","EX",${config.leaseSeconds}`), true);
   assert.equal(redisTraffic.includes('604800'), true);
 });
 
