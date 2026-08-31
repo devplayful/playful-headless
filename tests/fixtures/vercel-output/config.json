@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "overrides": {
+    "index.html": {
+      "path": ""
+    }
+  },
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/casos-de-exito/([^/]+?)(?:/)?$",
+      "dest": "/casos-de-exito/[slug]"
+    },
+    {
+      "src": "^/([^/]+?)(?:/)?$",
+      "dest": "/[slug]"
+    }
+  ]
+}

@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "clean": "rimraf .next",
-    "test:seo": "node scripts/seo-smoke.mjs"
+    "test:seo": "node scripts/seo-smoke.mjs",
+    "test:route-integrity": "node --test tests/route-integrity.test.mjs",
+    "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
+    "verify:routes": "node scripts/verify-route-artifact.mjs",
+    "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
