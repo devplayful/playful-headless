@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "routes": [
+    {
+      "src": "^/([^/]+?)(?:/)?$",
+      "dest": "/[slug]"
+    },
+    {
+      "src": "^/agencia-seo(?:/)?$",
+      "dest": "/[slug]"
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}
