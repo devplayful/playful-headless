@@ -109,7 +109,6 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
         });
         setPrivacyConsent(false);
         setMarketingConsent(false);
-        recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
           pushGenerateLead(data.analytics.formId);
@@ -138,6 +137,10 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           success: false,
           message: data.message || 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.'
         });
+        // A deterministic rejection consumed the verifier token. Give the
+        // user a fresh challenge for a corrected manual attempt while keeping
+        // the stable submission id; this never triggers an automatic resend.
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
