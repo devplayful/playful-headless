@@ -14,6 +14,7 @@ function configuredEnvironment() {
   const previous = {
     url: process.env.WORDPRESS_API_URL,
     token: process.env.WORDPRESS_CONTACT_TOKEN,
+    basicAuth: process.env.WORDPRESS_BASIC_AUTH,
   };
   process.env.WORDPRESS_API_URL = 'https://wordpress.invalid/wp-json';
   process.env.WORDPRESS_CONTACT_TOKEN = 'test-token';
@@ -22,6 +23,8 @@ function configuredEnvironment() {
     else process.env.WORDPRESS_API_URL = previous.url;
     if (previous.token === undefined) delete process.env.WORDPRESS_CONTACT_TOKEN;
     else process.env.WORDPRESS_CONTACT_TOKEN = previous.token;
+    if (previous.basicAuth === undefined) delete process.env.WORDPRESS_BASIC_AUTH;
+    else process.env.WORDPRESS_BASIC_AUTH = previous.basicAuth;
   };
 }
 
@@ -60,6 +63,26 @@ test('sends a stable submission receipt key to WordPress', async () => {
     const headers = new Headers(request?.headers);
     assert.equal(headers.get('X-Playful-Submission-Id'), lead.submissionId);
     assert.equal(JSON.parse(String(request?.body)).submission_id, lead.submissionId);
+  } finally {
+    restore();
+  }
+});
+
+test('adds optional HTTP Basic Auth only for a protected Preview endpoint', async () => {
+  const restore = configuredEnvironment();
+  try {
+    process.env.WORDPRESS_BASIC_AUTH = 'dGVzdDpzZWNyZXQ=';
+    let request: RequestInit | undefined;
+    await deliverToWordPress(lead, {
+      fetchImpl: async (_input, init) => {
+        request = init;
+        return contactResponse();
+      },
+    });
+
+    const headers = new Headers(request?.headers);
+    assert.equal(headers.get('Authorization'), 'Basic dGVzdDpzZWNyZXQ=');
+    assert.equal(headers.get('X-Playful-Contact-Token'), 'test-token');
   } finally {
     restore();
   }
