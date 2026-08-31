@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "a108e172b7d03eb612082ee222cb6ebc750d5fec",
+  "sourceRoutes": [
+    "/",
+    "/[slug]",
+    "/api/blog-posts",
+    "/api/contact",
+    "/blog",
+    "/blog/[...slug]",
+    "/casos-de-exito-agencia-de-marketing-digital",
+    "/casos-de-exito/[slug]",
+    "/contactar-agencia-de-marketing-digital",
+    "/nosotros",
+    "/podcast",
+    "/podcast/[slug]",
+    "/politica-de-privacidad",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/test-blog"
+  ],
+  "criticalRoutes": [
+    "/",
+    "/api/blog-posts",
+    "/api/contact",
+    "/blog",
+    "/casos-de-exito-agencia-de-marketing-digital",
+    "/contactar-agencia-de-marketing-digital",
+    "/nosotros",
+    "/podcast",
+    "/politica-de-privacidad",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/test-blog"
+  ],
+  "allowedArtifactOnlyRoutes": [
+    "/_not-found"
+  ]
+}
