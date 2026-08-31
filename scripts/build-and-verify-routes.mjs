@@ -52,7 +52,7 @@ async function main() {
     artifactFingerprint: artifact.fingerprint,
     artifactFormat: artifact.format,
     generator: 'build-and-verify-routes.mjs',
-    buildCommand,
+    buildExecutable: path.basename(buildCommand[0]),
     startedAt,
     finishedAt: new Date().toISOString(),
   };
