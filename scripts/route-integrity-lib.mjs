@@ -242,6 +242,9 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
   const ghostTemplateRoutes = artifactTemplates.filter((route) => (
     !allowedArtifactOnly.has(route) && !actualSource.includes(route)
   ));
+  const ghostPrerenderTemplates = sortedUnique(artifact.prerenderDynamicTemplates.filter((route) => (
+    !actualSource.includes(route)
+  )));
   const expectedConcretePairs = governedConcretePairs(manifest);
   const actualConcretePairs = sortedUnique(artifact.concreteRoutes.map(({ route, sourceTemplate }) => (
     `${sourceTemplate}:${route}`
@@ -260,6 +263,7 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
   if (staleGovernedTemplates.length) errors.push(`governed concrete inventory has no dynamic source: ${staleGovernedTemplates.join(', ')}`);
   if (missingArtifactTemplates.length) errors.push(`source templates missing from artifact: ${missingArtifactTemplates.join(', ')}`);
   if (ghostTemplateRoutes.length) errors.push(`artifact ghost templates without exact source: ${ghostTemplateRoutes.join(', ')}`);
+  if (ghostPrerenderTemplates.length) errors.push(`prerender manifest has ghost dynamic templates: ${ghostPrerenderTemplates.join(', ')}`);
   if (invalidConcreteSources.length) errors.push(`prerenders reference invalid source templates: ${invalidConcreteSources.join(', ')}`);
   if (unexpectedConcreteRoutes.length) errors.push(`artifact has ungoverned concrete routes: ${unexpectedConcreteRoutes.join(', ')}`);
   if (missingConcreteRoutes.length) errors.push(`governed concrete routes missing from artifact: ${missingConcreteRoutes.join(', ')}`);
@@ -272,6 +276,7 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
     missingSourceRoutes,
     missingArtifactTemplates,
     ghostTemplateRoutes,
+    ghostPrerenderTemplates,
     unexpectedConcreteRoutes,
     missingConcreteRoutes,
     missingCriticalRoutes,

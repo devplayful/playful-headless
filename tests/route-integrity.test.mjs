@@ -106,6 +106,14 @@ test('rejects an exact ghost template even when root dynamic routing exists', ()
   assert.deepEqual(result.ghostTemplateRoutes, ['/agencia-ecommerce']);
 });
 
+test('rejects a dynamic template present only in prerender-manifest', () => {
+  const artifact = validArtifact();
+  artifact.prerenderDynamicTemplates.push('/ghost/[slug]');
+  const result = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact, manifest });
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.ghostPrerenderTemplates, ['/ghost/[slug]']);
+});
+
 test('rejects an ungoverned root concrete instead of allowing /[slug] to cover it', () => {
   const artifact = validArtifact();
   artifact.concreteRoutes.push({
