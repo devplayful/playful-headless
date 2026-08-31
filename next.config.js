@@ -7,6 +7,10 @@ async function fetchWordPressPage(page, attempts = 3) {
   url.searchParams.set('page', String(page));
   url.searchParams.set('per_page', '100');
   url.searchParams.set('_embed', 'wp:term');
+  // WordPress requires `_links` for `_embedded` expansion. These are the only
+  // response fields needed to derive category redirects; excluding full post
+  // bodies keeps the response safely below Next's 2 MB data-cache ceiling.
+  url.searchParams.set('_fields', 'slug,_links,_embedded');
 
   let lastError;
 

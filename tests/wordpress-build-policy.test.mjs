@@ -5,6 +5,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import {
   BUILD_BUDGET_MS,
+  BUILD_INACTIVITY_MS,
+  BUILD_WARNING_MS,
   runGuardedCommand,
 } from '../scripts/build-with-budget.mjs';
 
@@ -16,7 +18,116 @@ test('bounds WordPress-backed static generation and avoids nested page retries',
   assert.ok(nextConfig.experimental.staticGenerationMaxConcurrency <= 2);
   assert.equal(nextConfig.experimental.staticGenerationMinPagesPerWorker, 1_000);
   assert.equal(nextConfig.experimental.staticGenerationRetryCount, 1);
-  assert.equal(BUILD_BUDGET_MS, 90_000);
+  assert.equal(BUILD_WARNING_MS, 90_000);
+  assert.equal(BUILD_INACTIVITY_MS, 90_000);
+  assert.equal(BUILD_BUDGET_MS, 300_000);
+});
+
+test('redirect inventory requests only the fields consumed by the build', async () => {
+  const originalFetch = globalThis.fetch;
+  let requestedUrl;
+  globalThis.fetch = async (input) => {
+    requestedUrl = new URL(String(input));
+    return new Response(JSON.stringify([{
+      slug: 'sample-post',
+      _links: {},
+      _embedded: {
+        'wp:term': [[
+          { taxonomy: 'category', slug: 'primary' },
+          { taxonomy: 'category', slug: 'secondary' },
+        ]],
+      },
+    }]), {
+      status: 200,
+      headers: { 'x-wp-totalpages': '1', 'content-type': 'application/json' },
+    });
+  };
+
+  try {
+    const redirects = await nextConfig.redirects();
+    assert.equal(requestedUrl.searchParams.get('_embed'), 'wp:term');
+    assert.equal(requestedUrl.searchParams.get('_fields'), 'slug,_links,_embedded');
+    assert.deepEqual(redirects, [{
+      source: '/blog/secondary/sample-post',
+      destination: '/blog/primary/sample-post',
+      permanent: true,
+    }]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('warning budget reports slow progress without terminating a healthy command', async () => {
+  const warnings = [];
+  const result = await runGuardedCommand(
+    process.execPath,
+    ['-e', 'setTimeout(() => process.exit(0), 40)'],
+    {
+      warningMs: 10,
+      budgetMs: 250,
+      onWarning(message) {
+        warnings.push(message);
+      },
+    },
+  );
+
+  assert.equal(result, 0);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /continuing/);
+  assert.match(warnings[0], /hard limit/);
+});
+
+test('inactivity budget stops a command that makes no observable progress', async () => {
+  const result = await runGuardedCommand(
+    process.execPath,
+    ['-e', 'setTimeout(() => process.exit(0), 250)'],
+    {
+      warningMs: 500,
+      inactivityMs: 30,
+      budgetMs: 500,
+      forceKillGraceMs: 25,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+
+  assert.equal(result, 124);
+});
+
+test('inactivity shutdown suppresses a simultaneous continuing warning', async () => {
+  const warnings = [];
+  const result = await runGuardedCommand(
+    process.execPath,
+    ['-e', 'setTimeout(() => process.exit(0), 250)'],
+    {
+      warningMs: 30,
+      inactivityMs: 30,
+      budgetMs: 500,
+      forceKillGraceMs: 25,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      onWarning(message) {
+        warnings.push(message);
+      },
+    },
+  );
+
+  assert.equal(result, 124);
+  assert.deepEqual(warnings, []);
+});
+
+test('observable progress extends the inactivity budget', async () => {
+  const result = await runGuardedCommand(
+    process.execPath,
+    ['-e', 'let count = 0; const timer = setInterval(() => { console.log(++count); if (count === 5) { clearInterval(timer); process.exit(0); } }, 40)'],
+    {
+      warningMs: 500,
+      inactivityMs: 100,
+      budgetMs: 500,
+      forceKillGraceMs: 25,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+
+  assert.equal(result, 0);
 });
 
 test('build timeout kills the complete process group without an orphan', {

@@ -2,7 +2,9 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-export const BUILD_BUDGET_MS = 90_000;
+export const BUILD_WARNING_MS = 90_000;
+export const BUILD_INACTIVITY_MS = 90_000;
+export const BUILD_BUDGET_MS = 300_000;
 export const FORCE_KILL_GRACE_MS = 5_000;
 
 function killProcessTree(child, signal) {
@@ -25,6 +27,8 @@ function killProcessTree(child, signal) {
 
 export async function runGuardedCommand(command, args, options = {}) {
   const budgetMs = options.budgetMs ?? BUILD_BUDGET_MS;
+  const warningMs = options.warningMs ?? BUILD_WARNING_MS;
+  const inactivityMs = options.inactivityMs ?? BUILD_INACTIVITY_MS;
   const forceKillGraceMs = options.forceKillGraceMs ?? FORCE_KILL_GRACE_MS;
   const stdio = options.stdio ?? ['ignore', 'pipe', 'pipe'];
   const child = spawn(
@@ -44,6 +48,7 @@ export async function runGuardedCommand(command, args, options = {}) {
   }
   options.onSpawn?.(child);
   let exceededBudget = false;
+  let inactivityTimer;
   let forwardedSignal;
   let forceKillPromise = Promise.resolve();
   let forceKillTimer;
@@ -64,10 +69,10 @@ export async function runGuardedCommand(command, args, options = {}) {
   process.on('SIGTERM', onSigterm);
   process.on('SIGINT', onSigint);
 
-  const timer = setTimeout(() => {
+  const stopForBudget = (message) => {
     if (forwardedSignal || exceededBudget) return;
     exceededBudget = true;
-    console.error(`Build exceeded the ${budgetMs / 1_000}s resilience budget.`);
+    console.error(message);
     killProcessTree(child, 'SIGTERM');
     forceKillPromise = new Promise((resolve) => {
       forceKillTimer = setTimeout(() => {
@@ -75,6 +80,30 @@ export async function runGuardedCommand(command, args, options = {}) {
         resolve();
       }, forceKillGraceMs);
     });
+  };
+
+  const trackActivity = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      stopForBudget(`Build produced no output for ${inactivityMs / 1_000}s; stopping the stalled process group.`);
+    }, inactivityMs);
+  };
+  const tracksOutput = Boolean(child.stdout || child.stderr);
+  if (tracksOutput) {
+    child.stdout?.on('data', trackActivity);
+    child.stderr?.on('data', trackActivity);
+    trackActivity();
+  }
+
+  const warningTimer = setTimeout(() => {
+    if (forwardedSignal || exceededBudget) return;
+    const message = `Build passed the ${warningMs / 1_000}s warning budget; continuing to the ${budgetMs / 1_000}s hard limit.`;
+    if (options.onWarning) options.onWarning(message);
+    else console.warn(message);
+  }, warningMs);
+
+  const timer = setTimeout(() => {
+    stopForBudget(`Build exceeded the ${budgetMs / 1_000}s absolute resilience budget.`);
   }, budgetMs);
 
   let exitCode;
@@ -83,6 +112,8 @@ export async function runGuardedCommand(command, args, options = {}) {
       child.once('exit', (code) => resolve(code));
       child.once('error', () => resolve(1));
     });
+    clearTimeout(inactivityTimer);
+    clearTimeout(warningTimer);
     clearTimeout(timer);
 
     if (exceededBudget || forwardedSignal) {
@@ -91,7 +122,11 @@ export async function runGuardedCommand(command, args, options = {}) {
       await forceKillPromise;
     }
   } finally {
+    clearTimeout(inactivityTimer);
+    clearTimeout(warningTimer);
     clearTimeout(timer);
+    child.stdout?.removeListener('data', trackActivity);
+    child.stderr?.removeListener('data', trackActivity);
     if (!exceededBudget && !forwardedSignal && forceKillTimer) {
       clearTimeout(forceKillTimer);
     }
