@@ -164,7 +164,7 @@ test('rejects a missing governed concrete and a wrong source-template mapping', 
   assert.deepEqual(wrong.missingConcreteRoutes, ['/[slug]:/agencia-seo']);
 });
 
-test('treats exact Vercel rewrites as candidates, not proof of ISR', () => {
+test('treats only reachable GET and HEAD exact Vercel rewrites as provenance candidates', () => {
   const parsed = routesFromVercelConfig({
     version: 3,
     routes: [
@@ -174,12 +174,12 @@ test('treats exact Vercel rewrites as candidates, not proof of ISR', () => {
       { handle: 'filesystem' },
     ],
   });
-  assert.deepEqual(parsed.exactDynamicMappings.map(({ route, sourceTemplate, filesystemReachable }) => ({
+  assert.deepEqual(parsed.exactDynamicMappings.map(({ route, sourceTemplate, provenanceMethods }) => ({
     route,
     sourceTemplate,
-    filesystemReachable,
+    provenanceMethods,
   })), [
-    { route: '/agencia-seo', sourceTemplate: '/[slug]', filesystemReachable: false },
+    { route: '/agencia-seo', sourceTemplate: '/[slug]', provenanceMethods: [] },
   ]);
   assert.equal(isFilesystemReachable([
     { src: '^/agencia-seo$', methods: ['POST'], dest: '/fallback' },
@@ -239,6 +239,15 @@ test('counts a bracket-named function only with a reachable public GET and HEAD 
       version: 3,
       routes: [
         { handle: 'filesystem' },
+        { src: '^/(route-integrity-alpha|route-integrity-beta|123)$', dest: '/[slug]' },
+      ],
+    });
+    assert.deepEqual((await loadArtifactBundle(temporary)).templates, []);
+
+    await writeJson(path.join(temporary, 'config.json'), {
+      version: 3,
+      routes: [
+        { handle: 'filesystem' },
         { src: '^/([^/]+?)(?:/)?$', methods: ['GET', 'HEAD'], dest: '/[slug]' },
       ],
     });
@@ -246,6 +255,84 @@ test('counts a bracket-named function only with a reachable public GET and HEAD 
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }
+});
+
+test('requires exact rewrite provenance itself to be reachable for GET and HEAD', async (t) => {
+  async function writeFixture(temporary, routes) {
+    await writeNodeFunction(temporary, '[slug]');
+    await mkdir(path.join(temporary, 'static'), { recursive: true });
+    await writeFile(path.join(temporary, 'static/agencia-seo.html'), 'agency');
+    await writeJson(path.join(temporary, 'config.json'), {
+      version: 3,
+      overrides: { 'agencia-seo.html': { path: 'agencia-seo' } },
+      routes,
+    });
+  }
+
+  await t.test('reachable exact GET and HEAD mapping', async () => {
+    const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-exact-reachable-'));
+    try {
+      await writeFixture(temporary, [
+        { src: '^/agencia-seo(?:/)?$', dest: '/[slug]' },
+        { handle: 'filesystem' },
+        { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
+      ]);
+      const artifact = await loadArtifactBundle(temporary);
+      assert.deepEqual(artifact.templates, ['/[slug]']);
+      assert.deepEqual(artifact.concreteRoutes.map(({ route, sourceTemplate }) => ({ route, sourceTemplate })), [
+        { route: '/agencia-seo', sourceTemplate: '/[slug]' },
+      ]);
+    } finally {
+      await rm(temporary, { recursive: true, force: true });
+    }
+  });
+
+  for (const fixture of [
+    {
+      name: 'POST-only exact mapping',
+      routes: [
+        { src: '^/agencia-seo(?:/)?$', methods: ['POST'], dest: '/[slug]' },
+        { handle: 'filesystem' },
+        { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
+      ],
+    },
+    {
+      name: 'post-filesystem exact mapping',
+      routes: [
+        { handle: 'filesystem' },
+        { src: '^/agencia-seo(?:/)?$', dest: '/[slug]' },
+        { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
+      ],
+    },
+  ]) {
+    await t.test(fixture.name, async () => {
+      const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-exact-unreachable-'));
+      try {
+        await writeFixture(temporary, fixture.routes);
+        const artifact = await loadArtifactBundle(temporary);
+        assert.deepEqual(artifact.templates, ['/[slug]', '/agencia-seo']);
+        assert.deepEqual(artifact.concreteRoutes, []);
+      } finally {
+        await rm(temporary, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test('shadowed exact mapping', () => {
+    const parsed = routesFromVercelConfig({
+      version: 3,
+      routes: [
+        { src: '^/(.+?)$', dest: '/runtime' },
+        { src: '^/agencia-seo(?:/)?$', dest: '/[slug]' },
+        { handle: 'filesystem' },
+      ],
+    });
+    assert.deepEqual(parsed.exactDynamicMappings[0].provenanceMethods, []);
+    assert.deepEqual(routesFromVercelConfig({
+      version: 3,
+      routes: [{ src: '/agencia-seo', dest: '/[slug]' }],
+    }).exactDynamicMappings, []);
+  });
 });
 
 test('fails closed on unproven Vercel phases, conditions, and route actions', () => {
@@ -297,6 +384,7 @@ test('derives Vercel ISR provenance from a concrete function symlink', async () 
       version: 3,
       routes: [
         { handle: 'filesystem' },
+        { src: '^/agencia-seo(?:/)?$', dest: '/[slug]' },
         { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
       ],
     });
@@ -633,8 +721,9 @@ test('does not count a prerender shadowed by a pre-filesystem runtime rewrite', 
     await writeJson(path.join(temporary, 'config.json'), {
       version: 3,
       routes: [
-        { src: '^/(.*)$', dest: '/[slug]' },
+        { src: '^/agencia-seo(?:/)?$', dest: '/runtime' },
         { handle: 'filesystem' },
+        { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
       ],
     });
     const artifact = await loadArtifactBundle(temporary);
