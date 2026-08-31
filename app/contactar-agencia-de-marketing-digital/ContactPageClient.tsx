@@ -5,6 +5,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { DIAGNOSTIC_CALL_COPY } from '@/utils/diagnostic-call-copy.mjs';
 
 interface ContactPageClientProps {
   casosDeExito: any[];
@@ -111,10 +112,9 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           {/* Columna Izquierda: textos e ilustración */}
           <div className="flex flex-col justify-center items-start text-left">
             <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
-            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Hablemos de tu próximo proyecto</h2>
-            <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[28px] leading-[36px] text-[#453A53] mb-2">¡Explícanos tu caso!</h3>
+            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">{DIAGNOSTIC_CALL_COPY.title}</h2>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px]">
-            ¿Tienes un proyecto en la mira o una pregunta técnica que necesita respuesta? Estamos listos para escuchar. Completa el formulario o escríbenos directamente. Analizaremos tu necesidad y nos pondremos en contacto contigo lo antes posible. <strong className="font-bold">Empecemos a planificar tus resultados.</strong>
+            {DIAGNOSTIC_CALL_COPY.body}
             </p>
             <div className="mt-8 hidden lg:block">
               <img src="/images/contacto-imagen.png" alt="Ilustración de contacto" className="w-full max-w-[620px] h-auto object-contain" />
@@ -124,7 +124,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
           {/* Columna Derecha: tarjeta de formulario */}
           <div className="bg-[#FF9294] rounded-[32px] shadow-xl p-8 md:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] text-center w-[60%] mx-auto">Hablemos sobre tu Proyecto</h2>
+              <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] text-center w-[60%] mx-auto">{DIAGNOSTIC_CALL_COPY.title}</h2>
             </div>
 
             {submitStatus && (
@@ -253,9 +253,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   disabled={isSubmitting}
                   className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Enviando...' : '¡Quiero que conozcan mi caso!'}
+                  {isSubmitting ? 'Enviando...' : DIAGNOSTIC_CALL_COPY.cta}
                 </button>
               </div>
+
+              <p className="text-sm text-[#4A4453]">
+                {DIAGNOSTIC_CALL_COPY.support}
+              </p>
               
               <p className="text-sm text-[#4A4453]">
                 Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.
@@ -277,7 +281,13 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
       
       {/* CTA Section */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-8 mb-20">
-        <TwoColumnCtaSection />
+        <TwoColumnCtaSection
+          title={DIAGNOSTIC_CALL_COPY.title}
+          subtitle={DIAGNOSTIC_CALL_COPY.body}
+          ctaTitle={DIAGNOSTIC_CALL_COPY.support}
+          buttonText={DIAGNOSTIC_CALL_COPY.cta}
+          buttonLink={DIAGNOSTIC_CALL_COPY.href}
+        />
       </section>
     </main>
   );

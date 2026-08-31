@@ -1,6 +1,7 @@
 import styles from './ElementorPageContent.module.css';
 import './ElementorPageHeaderFix.css';
 import ElementorPageScripts from './ElementorPageScripts';
+import { applyDiagnosticCallCopyToElementor } from '@/utils/diagnostic-call-copy.mjs';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -46,7 +47,7 @@ function preserveMediaLineSeparators(html: string): string {
   });
 }
 
-function restoreOldBodyCopy(html: string): string {
+function restoreOldBodyCopy(html: string, pageId: number): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
   // File on disk still has U+2028 in the name; clean URL 404s.
@@ -67,21 +68,7 @@ function restoreOldBodyCopy(html: string): string {
     + 'Nuestros clientes han logrado resultados impactantes gracias a nuestras estrategias innovadoras y personalizadas. Hemos ayudado a empresas a alcanzar sus metas y a crecer de forma exponencial. ¿Quieres ser el próximo?',
   );
 
-  out = out.replace(
-    /(<h2 class="main-heading">)(¡Es Hora de actuar y cambiar tu futuro digital!\s*\(\s*sin necesidad de magia negra\s*\))(<\/h2>)/g,
-    '$1<span class="playful-magia-negra">$2</span>¡Es Hora de Dejar de Perder Dinero y Empezar a Vender Más!$3',
-  );
-
-  out = out.replace(
-    /(<div class="sub-heading">)(No esperes más para dar el siguiente paso\.[\s\S]*?tu próxima gran campaña comienza con una conversación\.)(<\/div>)/g,
-    '$1<span class="playful-magia-negra">$2</span>Deja de arreglar tu web con parches. Como tu Agencia de E-commerce especializada, te ofrecemos una propuestas profesionales e innovadoras, enfocadas en la conversión.$3',
-  );
-
-  out = out.split(
-    '<span class="text">¡Contáctanos y empieza ya!</span>',
-  ).join(
-    '<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">Agenda una Reunión</span>',
-  );
+  out = applyDiagnosticCallCopyToElementor(out, pageId);
 
   // /agencia-sem only: first heading is H2 in WP. Unique copy so SEO / diseño / e-commerce keep their H1s.
   out = out.replace(
@@ -103,7 +90,7 @@ export default function ElementorPageContent({
   pageId,
   stylesheetIds,
 }: ElementorPageContentProps) {
-  const bodyHtml = restoreOldBodyCopy(html);
+  const bodyHtml = restoreOldBodyCopy(html, pageId);
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
