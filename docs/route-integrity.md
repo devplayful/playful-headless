@@ -18,25 +18,33 @@ exact route/source pair is reviewed in the expected manifest.
 
 ## Required same-job command
 
-Use Node 20.18 or newer. The canonical command builds, confirms that `HEAD` and
-the clean worktree did not change, fingerprints the route inventory, writes an
-ignored provenance file inside the artifact, and immediately runs the gate:
+Use Node 20.18 or newer. The canonical command removes the generated `.next`
+directory before starting, builds, confirms that `HEAD` and the clean worktree
+did not change, fingerprints the route inventory, writes an ignored provenance
+file inside the newly created artifact, and immediately runs the gate:
 
 ```sh
 npm run verify:routes:build
 ```
 
 For a local Vercel Build Output v3 artifact, pass the build command without a
-shell wrapper:
+shell wrapper. The wrapper removes `.vercel/output` before invoking it:
 
 ```sh
 node scripts/build-and-verify-routes.mjs --artifact .vercel/output -- vercel build
 ```
 
-The Vercel adapter requires `.vercel/output/config.json`. It uses `routes[].src`
-and `routes[].dest` to distinguish a dynamic template from an exact ISR
-concrete, then cross-checks function directories and static route files. It does
-not treat arbitrary public assets as routes.
+The Vercel adapter requires `.vercel/output/config.json`. A `routes[].src` to
+dynamic `routes[].dest` mapping is only a candidate source relationship; a
+concrete is accepted only when the same public path has either a static HTML
+asset or a Vercel Prerender Function described by a sibling
+`<name>.prerender-config.json`. Function symlinks are resolved to their source
+template and cross-checked against any exact route mapping. Arbitrary public
+assets and unbacked rewrites are not treated as prerenders.
+
+For any non-standard `--artifact` path, the destination must not exist before
+the command starts. This prevents an old artifact from being stamped by a build
+command that exits successfully without producing output.
 
 `npm run verify:routes -- --artifact PATH` only rechecks an artifact already
 stamped by the same-job command. It rejects a missing stamp, a different HEAD or
@@ -50,14 +58,17 @@ Dependency reproducibility is intentionally separate from route integrity:
 npm run verify:lockfile
 ```
 
-At this baseline the command fails closed because `package.json` and
-`package-lock.json` are already out of sync (`yaml@2.9.0` is missing from the
-lock). The gate copies only both package files into a disposable directory and runs a
-real `npm ci` there, so existing `node_modules` cannot mask the mismatch and the
-worktree remains untouched. This branch records the red gate and does not edit
-the lockfile. Repair
-must happen in a separate dependency-only change before CI can require both
-gates as green.
+The gate copies only both package files into a disposable directory and runs a
+real `npm ci` there, so existing `node_modules` cannot affect the result and the
+worktree remains untouched. With Node 24.6.0 and npm 11.5.1 at this baseline,
+`npm ci` exits successfully and the gate is green. npm does emit an
+`ERESOLVE overriding peer dependency` warning for Tailwind's optional
+`yaml@^2.4.2` peer because the installed root package is `yaml@1.10.2`.
+
+This gate intentionally follows the `npm ci` exit status and does not turn
+successful-install warnings into errors. Resolving that optional-peer warning,
+or adopting a stricter dependency-tree policy such as requiring `npm ls --all`
+to pass, belongs in a separately reviewed dependency change with its own tests.
 
 ## Failure conditions
 
