@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, readdir, readlink, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROUTE_SOURCE_PATTERN = /\/(page|route)\.(?:js|jsx|ts|tsx)$/;
@@ -108,22 +108,23 @@ function destinationRoute(destination) {
 
 export function routesFromVercelConfig(payload, origin = 'config.json') {
   assert.equal(payload?.version, 3, `${origin} must use Vercel output version 3`);
-  assert.ok(Array.isArray(payload.routes), `${origin} must contain routes`);
+  const routes = payload.routes ?? [];
+  assert.ok(Array.isArray(routes), `${origin} routes must be an array`);
   const templates = [];
-  const concreteRoutes = [];
-  for (const item of payload.routes) {
+  const exactDynamicMappings = [];
+  for (const item of routes) {
     if (!item || item.handle || typeof item !== 'object') continue;
     const destination = destinationRoute(item.dest);
     if (!destination) continue;
     const exactSource = exactRouteFromVercelSource(item.src);
     if (isDynamicRoute(destination)) {
       templates.push(destination);
-      if (exactSource) concreteRoutes.push({ route: exactSource, sourceTemplate: destination, origin });
+      if (exactSource) exactDynamicMappings.push({ route: exactSource, sourceTemplate: destination, origin });
     } else if (exactSource && exactSource === destination) {
       templates.push(destination);
     }
   }
-  return { templates: sortedUnique(templates), concreteRoutes };
+  return { templates: sortedUnique(templates), exactDynamicMappings };
 }
 
 async function readJson(file) {
@@ -144,19 +145,112 @@ async function loadNextArtifact(artifactDirectory) {
   };
 }
 
+async function listVercelFunctionAssets(directory, relativeDirectory = '') {
+  const entries = await readdir(path.join(directory, relativeDirectory), { withFileTypes: true });
+  const functions = [];
+  const prerenderConfigs = [];
+  for (const entry of entries) {
+    const relative = path.posix.join(relativeDirectory.replaceAll('\\', '/'), entry.name);
+    const absolute = path.join(directory, relative);
+    if (entry.name.endsWith('.func') && (entry.isDirectory() || entry.isSymbolicLink())) {
+      functions.push({
+        absolute,
+        base: relative.slice(0, -'.func'.length),
+        isSymbolicLink: entry.isSymbolicLink(),
+        relative,
+        route: normalizePublicPath(relative),
+      });
+    } else if (entry.isDirectory()) {
+      const nested = await listVercelFunctionAssets(directory, relative);
+      functions.push(...nested.functions);
+      prerenderConfigs.push(...nested.prerenderConfigs);
+    } else if (entry.name.endsWith('.prerender-config.json')) {
+      prerenderConfigs.push({
+        absolute,
+        base: relative.slice(0, -'.prerender-config.json'.length),
+        relative,
+        route: normalizePublicPath(relative.replace(/\.prerender-config\.json$/, '')),
+      });
+    }
+  }
+  return { functions, prerenderConfigs };
+}
+
+function exactDynamicMappingForRoute(mappings, route) {
+  const sourceTemplates = sortedUnique(
+    mappings.filter((mapping) => mapping.route === route).map((mapping) => mapping.sourceTemplate),
+  );
+  assert.ok(sourceTemplates.length <= 1, `Vercel route ${route} maps to multiple dynamic templates`);
+  return sourceTemplates[0] ?? null;
+}
+
+async function sourceTemplateFromFunctionSymlink(entry, functionsDirectory) {
+  if (!entry.isSymbolicLink) return null;
+  const target = await readlink(entry.absolute);
+  const targetAbsolute = path.resolve(path.dirname(entry.absolute), target);
+  const relativeTarget = path.relative(functionsDirectory, targetAbsolute).replaceAll('\\', '/');
+  if (relativeTarget.startsWith('../') || path.isAbsolute(relativeTarget)) return null;
+  const match = relativeTarget.match(/^(.+?)\.func(?:\/|$)/);
+  return match ? { base: match[1], route: normalizePublicPath(match[1]) } : null;
+}
+
+async function assertPrerenderConfig(config) {
+  const payload = await readJson(config.absolute);
+  const expirationIsValid = payload?.expiration === false
+    || (typeof payload?.expiration === 'number' && payload.expiration >= 0);
+  assert.ok(expirationIsValid, `${config.relative} must contain a valid expiration`);
+}
+
 async function loadVercelArtifact(outputDirectory) {
   const configFile = path.join(outputDirectory, 'config.json');
   const configRoutes = routesFromVercelConfig(await readJson(configFile), configFile);
   const templates = [...configRoutes.templates];
-  const concreteRoutes = [...configRoutes.concreteRoutes];
+  const concreteRoutes = [];
   const functionsDirectory = path.join(outputDirectory, 'functions');
   const staticDirectory = path.join(outputDirectory, 'static');
   try {
-    const files = await walk(functionsDirectory);
-    for (const file of files) {
-      const relative = path.relative(functionsDirectory, file).replaceAll('\\', '/');
-      const match = relative.match(/^(.+?)\.func\//);
-      if (match) templates.push(normalizePublicPath(match[1]));
+    const assets = await listVercelFunctionAssets(functionsDirectory);
+    const functionsByBase = new Map(assets.functions.map((entry) => [entry.base, entry]));
+    const concreteFunctionBases = new Set();
+    for (const prerenderConfig of assets.prerenderConfigs) {
+      await assertPrerenderConfig(prerenderConfig);
+      const functionEntry = functionsByBase.get(prerenderConfig.base);
+      assert.ok(functionEntry, `${prerenderConfig.relative} must have a sibling .func`);
+      const symlinkTarget = await sourceTemplateFromFunctionSymlink(functionEntry, functionsDirectory);
+      if (symlinkTarget) {
+        assert.ok(
+          functionsByBase.has(symlinkTarget.base),
+          `${functionEntry.relative} points to a missing source function`,
+        );
+      }
+      const symlinkTemplate = symlinkTarget?.route ?? null;
+      const configuredTemplate = exactDynamicMappingForRoute(
+        configRoutes.exactDynamicMappings,
+        prerenderConfig.route,
+      );
+      if (symlinkTemplate && configuredTemplate) {
+        assert.equal(
+          symlinkTemplate,
+          configuredTemplate,
+          `${prerenderConfig.route} symlink and Vercel route disagree on source template`,
+        );
+      }
+      const sourceTemplate = symlinkTemplate ?? configuredTemplate;
+      if (!isDynamicRoute(prerenderConfig.route) && isDynamicRoute(sourceTemplate ?? '')) {
+        assert.ok(
+          assets.functions.some((entry) => entry.route === sourceTemplate),
+          `${prerenderConfig.route} references a missing source function ${sourceTemplate}`,
+        );
+        concreteRoutes.push({
+          route: prerenderConfig.route,
+          sourceTemplate,
+          origin: prerenderConfig.relative,
+        });
+        concreteFunctionBases.add(prerenderConfig.base);
+      }
+    }
+    for (const functionEntry of assets.functions) {
+      if (!concreteFunctionBases.has(functionEntry.base)) templates.push(functionEntry.route);
     }
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error;
@@ -169,7 +263,9 @@ async function loadVercelArtifact(outputDirectory) {
         || ['robots.txt', 'sitemap.xml', 'manifest.webmanifest'].includes(relative);
       if (!isRouteFile || relative.startsWith('_next/')) continue;
       const route = normalizePublicPath(relative);
-      if (!concreteRoutes.some((item) => item.route === route)) templates.push(route);
+      const sourceTemplate = exactDynamicMappingForRoute(configRoutes.exactDynamicMappings, route);
+      if (sourceTemplate) concreteRoutes.push({ route, sourceTemplate, origin: relative });
+      else if (!concreteRoutes.some((item) => item.route === route)) templates.push(route);
     }
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error;

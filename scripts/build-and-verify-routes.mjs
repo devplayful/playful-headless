@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { writeFile } from 'node:fs/promises';
+import { lstat, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import { loadArtifactBundle } from './route-integrity-lib.mjs';
 import {
@@ -32,10 +33,28 @@ function parseArgs(argv) {
   };
 }
 
-async function main() {
-  const { artifactPath, buildCommand } = parseArgs(process.argv.slice(2));
-  const before = await resolveCleanHead();
-  const startedAt = new Date().toISOString();
+const canonicalGeneratedArtifacts = new Set([
+  path.join(repositoryRoot, '.next'),
+  path.join(repositoryRoot, '.vercel/output'),
+]);
+
+async function prepareArtifactDestination(artifactPath) {
+  const absolute = path.resolve(repositoryRoot, artifactPath);
+  try {
+    await lstat(absolute);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return absolute;
+    throw error;
+  }
+  if (!canonicalGeneratedArtifacts.has(absolute)) {
+    throw new Error(`artifact destination must be absent before build: ${absolute}`);
+  }
+  await rm(absolute, { recursive: true, force: true });
+  return absolute;
+}
+
+export async function runBuildProducingArtifact({ artifactPath, buildCommand }) {
+  const absoluteArtifact = await prepareArtifactDestination(artifactPath);
   const build = spawnSync(buildCommand[0], buildCommand.slice(1), {
     cwd: repositoryRoot,
     stdio: 'inherit',
@@ -43,9 +62,26 @@ async function main() {
   });
   if (build.error) throw build.error;
   if (build.status !== 0) throw new Error(`build command failed with exit ${build.status}`);
+  try {
+    const artifactStat = await lstat(absoluteArtifact);
+    if (!artifactStat.isDirectory()) throw new Error('build output is not a directory');
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      throw new Error(`build command did not recreate artifact directory: ${absoluteArtifact}`);
+    }
+    throw error;
+  }
+  return absoluteArtifact;
+}
+
+async function main() {
+  const { artifactPath, buildCommand } = parseArgs(process.argv.slice(2));
+  const before = await resolveCleanHead();
+  const startedAt = new Date().toISOString();
+  const absoluteArtifact = await runBuildProducingArtifact({ artifactPath, buildCommand });
   const after = await resolveCleanHead();
   if (after.commit !== before.commit) throw new Error('HEAD changed during build');
-  const artifact = await loadArtifactBundle(path.resolve(repositoryRoot, artifactPath));
+  const artifact = await loadArtifactBundle(absoluteArtifact);
   const provenance = {
     schemaVersion: 1,
     commit: after.commit,
@@ -71,7 +107,9 @@ async function main() {
   })}\n`);
 }
 
-main().catch((error) => {
-  process.stderr.write(`route-integrity-build: ${error.message}\n`);
-  process.exitCode = 1;
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    process.stderr.write(`route-integrity-build: ${error.message}\n`);
+    process.exitCode = 1;
+  });
+}

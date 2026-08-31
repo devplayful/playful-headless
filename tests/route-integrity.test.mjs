@@ -1,9 +1,18 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { runBuildProducingArtifact } from '../scripts/build-and-verify-routes.mjs';
 import {
   appManifestKeyToRoute,
   artifactFingerprint,
@@ -142,7 +151,7 @@ test('rejects a missing governed concrete and a wrong source-template mapping', 
   assert.deepEqual(wrong.missingConcreteRoutes, ['/[slug]:/agencia-seo']);
 });
 
-test('models Vercel config routes as templates or exact ISR concretes', () => {
+test('treats exact Vercel rewrites as candidates, not proof of ISR', () => {
   const parsed = routesFromVercelConfig({
     version: 3,
     routes: [
@@ -153,12 +162,12 @@ test('models Vercel config routes as templates or exact ISR concretes', () => {
     ],
   });
   assert.deepEqual(parsed.templates, ['/[slug]', '/api/contact']);
-  assert.deepEqual(parsed.concreteRoutes.map(({ route, sourceTemplate }) => ({ route, sourceTemplate })), [
+  assert.deepEqual(parsed.exactDynamicMappings.map(({ route, sourceTemplate }) => ({ route, sourceTemplate })), [
     { route: '/agencia-seo', sourceTemplate: '/[slug]' },
   ]);
 });
 
-test('loads a realistic Vercel output v3 fixture using config routes and files', async () => {
+test('loads a Vercel v3 ISR backed by a function and prerender config', async () => {
   const fixture = path.join(root, 'tests/fixtures/vercel-output');
   const artifact = await loadArtifactBundle(fixture);
   assert.equal(artifact.format, 'vercel-output-v3');
@@ -166,6 +175,73 @@ test('loads a realistic Vercel output v3 fixture using config routes and files',
   assert.deepEqual(artifact.concreteRoutes.map(({ route, sourceTemplate }) => ({ route, sourceTemplate })), [
     { route: '/agencia-seo', sourceTemplate: '/[slug]' },
   ]);
+});
+
+test('does not accept an exact Vercel rewrite without a prerender or static asset', async () => {
+  const fixture = path.join(root, 'tests/fixtures/vercel-output-unbacked-rewrite');
+  const artifact = await loadArtifactBundle(fixture);
+  assert.deepEqual(artifact.templates, ['/[slug]']);
+  assert.deepEqual(artifact.concreteRoutes, []);
+});
+
+test('derives Vercel ISR provenance from a concrete function symlink', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-symlink-'));
+  try {
+    const functions = path.join(temporary, 'functions/app');
+    await mkdir(path.join(functions, '[slug].func'), { recursive: true });
+    await writeFile(path.join(temporary, 'config.json'), JSON.stringify({
+      version: 3,
+      routes: [
+        { src: '^/([^/]+?)(?:/)?$', dest: '/[slug]' },
+        { handle: 'filesystem' },
+      ],
+    }));
+    await writeFile(path.join(functions, '[slug].func/.vc-config.json'), '{}');
+    await symlink('[slug].func', path.join(functions, 'agencia-seo.func'));
+    await writeFile(
+      path.join(functions, 'agencia-seo.prerender-config.json'),
+      JSON.stringify({ expiration: 3600 }),
+    );
+    const artifact = await loadArtifactBundle(temporary);
+    assert.deepEqual(artifact.templates, ['/[slug]']);
+    assert.deepEqual(artifact.concreteRoutes.map(({ route, sourceTemplate }) => ({ route, sourceTemplate })), [
+      { route: '/agencia-seo', sourceTemplate: '/[slug]' },
+    ]);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+});
+
+test('rejects a dangling Vercel prerender function symlink', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-vercel-dangling-'));
+  try {
+    const functions = path.join(temporary, 'functions/app');
+    await mkdir(functions, { recursive: true });
+    await writeFile(path.join(temporary, 'config.json'), JSON.stringify({ version: 3 }));
+    await symlink('[slug].func', path.join(functions, 'agencia-seo.func'));
+    await writeFile(
+      path.join(functions, 'agencia-seo.prerender-config.json'),
+      JSON.stringify({ expiration: 3600 }),
+    );
+    await assert.rejects(loadArtifactBundle(temporary), /points to a missing source function/);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+});
+
+test('rejects a no-op build that does not recreate the artifact directory', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'playful-noop-build-'));
+  try {
+    await assert.rejects(
+      runBuildProducingArtifact({
+        artifactPath: path.join(temporary, 'artifact'),
+        buildCommand: ['/usr/bin/true'],
+      }),
+      /did not recreate artifact directory/,
+    );
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
 });
 
 test('provenance rejects a different HEAD or artifact fingerprint', () => {
