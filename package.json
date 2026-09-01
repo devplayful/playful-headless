@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build-with-budget.mjs",
+    "build:direct": "next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "rimraf .next",
-    "test:seo": "node scripts/seo-smoke.mjs"
+    "test:seo": "node scripts/seo-smoke.mjs",
+    "test:wordpress": "node --test tests/wordpress-*.test.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
