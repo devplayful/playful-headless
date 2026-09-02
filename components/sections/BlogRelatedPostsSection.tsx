@@ -14,9 +14,10 @@ interface BlogPost {
   href: string;
 }
 
-export default function BlogRelatedPostsSection() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts?: BlogPost[] } = {}) {
+  const hasServerPosts = initialPosts !== undefined;
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts ?? []);
+  const [loading, setLoading] = useState(!hasServerPosts);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -34,6 +35,7 @@ export default function BlogRelatedPostsSection() {
   const postsPerPage = isMobile ? 1 : 3;
 
   useEffect(() => {
+    if (hasServerPosts) return;
     const fetchPosts = async () => {
       try {
         const res = await fetch('/api/blog-posts');
@@ -47,7 +49,7 @@ export default function BlogRelatedPostsSection() {
       }
     };
     fetchPosts();
-  }, []);
+  }, [hasServerPosts]);
 
   const totalPages = Math.ceil(posts.length / postsPerPage);
   const currentPosts = posts.slice(currentIndex * postsPerPage, (currentIndex + 1) * postsPerPage);
