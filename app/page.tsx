@@ -74,13 +74,16 @@ import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
-import { getAllCaseStudies } from "@/services/wordpress";
+import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
 async function HomeContent() {
-  // Obtener casos de éxito una sola vez en el servidor
-  const casosDeExito = await getAllCaseStudies();
+  // Obtener casos de éxito y posts del bloque de blog una sola vez en el servidor
+  const [casosDeExito, blogPosts] = await Promise.all([
+    getAllCaseStudies(),
+    getLatestBlogPosts(6).catch(() => []),
+  ]);
   return (
     <div className="">
       {/* Hero Section */}
@@ -162,7 +165,7 @@ async function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <BlogRelatedPostsSection />
+          <BlogRelatedPostsSection posts={blogPosts} />
         </div>
       </section>
 
