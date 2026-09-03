@@ -42,6 +42,17 @@ add_action('rest_api_init', function () {
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_textarea_field',
             ),
+            // Optional for the Playful Contact Gate receipt protocol. The
+            // endpoint callback remains legacy-compatible and does not own
+            // idempotency state; version 1.1.0+ of the gate does.
+            'submission_id' => array(
+                'required' => false,
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'validate_callback' => function($param) {
+                    return preg_match('/\A[A-Za-z0-9_-]{20,100}\z/', $param) === 1;
+                }
+            ),
         ),
     ));
 });
@@ -100,7 +111,7 @@ function playful_handle_contact_form($request) {
     
     // Registrar en logs para debugging (opcional)
     if (!$sent) {
-        error_log('Error al enviar email de contacto para: ' . $email);
+        error_log('Error al enviar email de contacto.');
     }
     
     // Responder al cliente
@@ -108,6 +119,7 @@ function playful_handle_contact_form($request) {
         return new WP_REST_Response(array(
             'success' => true,
             'message' => 'Mensaje enviado correctamente',
+            'replayed' => false,
         ), 200);
     } else {
         return new WP_REST_Response(array(
