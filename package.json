@@ -11,7 +11,7 @@
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
     "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs",
-    "test:wordpress": "node --test tests/wordpress-*.test.mjs"
+    "test:wordpress": "node --test tests/wordpress-*.test.mjs tests/page-seo-overrides.test.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
