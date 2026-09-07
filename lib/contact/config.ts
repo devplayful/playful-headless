@@ -24,12 +24,16 @@ export class ContactPipelineConfigurationError extends Error {
   }
 }
 
-function configured(env: Environment, primary: string, legacy: string): string | undefined {
-  return env[primary]?.trim() || env[legacy]?.trim();
+function configured(env: Environment, ...names: string[]): string | undefined {
+  for (const name of names) {
+    const value = env[name]?.trim();
+    if (value) return value;
+  }
+  return undefined;
 }
 
-function required(env: Environment, primary: string, legacy: string): string {
-  const value = configured(env, primary, legacy);
+function required(env: Environment, primary: string, ...fallbacks: string[]): string {
+  const value = configured(env, primary, ...fallbacks);
   if (!value) throw new ContactPipelineConfigurationError(`${primary} no está configurada.`);
   return value;
 }
@@ -86,11 +90,13 @@ export function readContactPipelineConfig(
     redisRestUrl: required(
       env,
       'CONTACT_IDEMPOTENCY_REDIS_REST_URL',
+      'CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_URL',
       'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL',
     ),
     redisRestToken: required(
       env,
       'CONTACT_IDEMPOTENCY_REDIS_REST_TOKEN',
+      'CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_TOKEN',
       'HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN',
     ),
   };

@@ -42,6 +42,24 @@ test('uses generic contact storage settings and validates the full delivery leas
   });
 });
 
+test('accepts Vercel Upstash prefixed credentials without dropping canonical compatibility', () => {
+  const vercelUpstash = readContactPipelineConfig({
+    CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_URL: 'https://vercel-upstash.invalid',
+    CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_TOKEN: 'vercel-upstash-token',
+  });
+  assert.equal(vercelUpstash.redisRestUrl, 'https://vercel-upstash.invalid');
+  assert.equal(vercelUpstash.redisRestToken, 'vercel-upstash-token');
+
+  const canonical = readContactPipelineConfig({
+    CONTACT_IDEMPOTENCY_REDIS_REST_URL: 'https://canonical.invalid',
+    CONTACT_IDEMPOTENCY_REDIS_REST_TOKEN: 'canonical-token',
+    CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_URL: 'https://vercel-upstash.invalid',
+    CONTACT_IDEMPOTENCY_REDIS_REST_KV_REST_API_TOKEN: 'vercel-upstash-token',
+  });
+  assert.equal(canonical.redisRestUrl, 'https://canonical.invalid');
+  assert.equal(canonical.redisRestToken, 'canonical-token');
+});
+
 test('derives the idempotent protocol lease from every bounded request and backoff', () => {
   assert.equal(contactDeliveryLeaseMinimumMs(false), 30_000);
   assert.equal(contactDeliveryLeaseMinimumMs(true), 103_000);
