@@ -151,6 +151,8 @@ export const CTA = {
   formButton: 'Agenda tu llamada de 30 a 40 minutos',
 } as const;
 
+export const PLAYFUL_URL_RE = /(https:\/\/playfulagency\.com\/[^\s).,;]+)/g;
+
 export function buildFaqPageJsonLd() {
   return {
     '@context': 'https://schema.org',

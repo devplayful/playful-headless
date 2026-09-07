@@ -11,6 +11,7 @@ import {
   SHOPIFY_META,
   SOCIAL_PROOF,
   WHY_US,
+  PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
 } from './copy';
 
@@ -51,7 +52,7 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
 }
 
 function LinkedCopy({ text }: { text: string }) {
-  const parts = text.split(/(https:\/\/playfulagency\.com\/[^\s)]+)/g);
+    const parts = text.split(PLAYFUL_URL_RE);
   return (
     <>
       {parts.map((part, index) => {

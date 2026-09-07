@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { FAQ_ITEMS, SHOPIFY_META, HERO, CTA, SERVICES, buildFaqPageJsonLd } = await import(
+const { FAQ_ITEMS, SHOPIFY_META, HERO, CTA, SERVICES, PLAYFUL_URL_RE, buildFaqPageJsonLd } = await import(
   '../app/agencia-shopify/copy.ts'
 );
 
@@ -66,6 +66,14 @@ test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
   assert.doesNotMatch(published, /Cocina/);
   assert.doesNotMatch(published, /surtido/i);
   assert.doesNotMatch(published, /\$\d/);
+});
+
+test('FAQ case URLs keep the trailing period outside the link', () => {
+  const jumexFaq = FAQ_ITEMS.find((item) => item.question.includes('trabajo en Shopify'));
+  const parts = jumexFaq.answer.split(PLAYFUL_URL_RE);
+  assert.ok(parts.includes('https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce'));
+  assert.ok(parts.some((part) => part.startsWith('. En las dos páginas')));
+  assert.ok(!parts.some((part) => part.endsWith('ecommerce.')));
 });
 
 test('shared High Level form still owns qualification and receipt recovery', () => {

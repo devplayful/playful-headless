@@ -547,15 +547,17 @@ export default function ContactLeadForm({
           </label>
         </div>
         
-        {/* Preview simulator never requests a real reCAPTCHA token. */}
-        {!previewSimulation && (
+        {/* Preview simulator never requests a real reCAPTCHA token.
+            An empty sitekey crashes react-google-recaptcha; the API already
+            fails closed if the token is missing. */}
+        {!previewSimulation && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
           <div className="flex justify-center">
             <ReCAPTCHA
               ref={recaptchaRef}
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
             />
           </div>
-        )}
+        ) : null}
         
         {isPendingConfirmation ? (
           <div className="space-y-3">
