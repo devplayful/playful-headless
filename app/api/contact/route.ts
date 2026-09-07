@@ -40,6 +40,7 @@ import {
   AmbiguousOpportunityError,
   syncWebsiteLeadToHighLevel,
 } from '@/lib/highlevel/workflow';
+import { previewContactSubmissionsEnabled } from '@/lib/contact/preview-guard';
 
 function success(crmSynced: boolean, dryRun: boolean, replayed: boolean) {
   return NextResponse.json({
@@ -92,6 +93,16 @@ async function processRedisFreeRollback(
 }
 
 export async function POST(request: NextRequest) {
+  if (!previewContactSubmissionsEnabled()) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'El envío está deshabilitado en este entorno de prueba. No se contactó WordPress, correo ni HighLevel.',
+      },
+      { status: 503 },
+    );
+  }
+
   try {
     let body: Record<string, unknown>;
     try {
