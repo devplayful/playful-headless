@@ -381,14 +381,14 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                   required
                 >
                   <option value="" disabled>Selecciona una opción</option>
-                  <option value="d2c">Vendemos principalmente D2C desde nuestra tienda online</option>
+                  <option value="d2c">Vendemos principalmente D2C</option>
                   <option value="d2c_b2b">Combinamos D2C y B2B</option>
                   <option value="amazon">Vendemos principalmente en Amazon</option>
                   <option value="mercado_libre">Vendemos principalmente en Mercado Libre</option>
                   <option value="marketplaces_other">Vendemos principalmente en otros marketplaces</option>
                   <option value="marketplace_to_d2c">Vendemos en marketplaces y queremos dar el salto a D2C</option>
                   <option value="pre_d2c">Estamos preparando nuestra primera venta directa D2C</option>
-                  <option value="not_online_or_unsure">No vendemos online todavía / no estoy seguro</option>
+                  <option value="not_online_or_unsure">No vendemos D2C / no estoy seguro</option>
                   <option value="other">Otro</option>
                 </select>
                 {formData.salesModel === 'other' && (
