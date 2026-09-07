@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   isAllowedCaseStudyMediaUrl,
   preserveFeaturedMediaUrl,
+  selectCaseStudyCardMediaUrl,
 } from '../services/case-study-media-policy.mjs';
 
 const allowedUrl = 'https://endpoint.playfulagency.com/wp-content/uploads/2026/09/jumex.png';
@@ -38,4 +39,19 @@ test('rejects media URLs outside the HTTPS WordPress uploads allowlist', () => {
       { slug: 'case' }
     );
   }
+});
+
+test('carousel selection ignores unsafe legacy media fallbacks', () => {
+  const externalUrl = 'https://evil.example/wp-content/uploads/case.png';
+  const payload = {
+    featured_media_url: externalUrl,
+    _embedded: { 'wp:featuredmedia': [{ source_url: externalUrl }] },
+    acf: { imagen_destacada: externalUrl },
+  };
+
+  assert.equal(selectCaseStudyCardMediaUrl(payload), '');
+  assert.equal(
+    selectCaseStudyCardMediaUrl({ featured_media_url: allowedUrl }),
+    allowedUrl
+  );
 });

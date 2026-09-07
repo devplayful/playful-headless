@@ -30,3 +30,8 @@ export function preserveFeaturedMediaUrl(source, sanitized) {
     featured_media_url: sourceUrl,
   };
 }
+
+export function selectCaseStudyCardMediaUrl(source) {
+  const sourceUrl = source?.featured_media_url;
+  return isAllowedCaseStudyMediaUrl(sourceUrl) ? sourceUrl : '';
+}
