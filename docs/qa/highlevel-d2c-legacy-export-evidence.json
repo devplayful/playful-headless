@@ -1,0 +1,18 @@
+{
+  "schema": "playful.highlevel.opportunity-export.redacted.v1",
+  "sourceType": "HighLevel opportunities CSV",
+  "sourceModifiedAt": "2026-08-30T16:05:35.713Z",
+  "sha256": "61653a6ff1c3e66aeb2aecb3732dd101e8c8534d00a387a078d94c8812d52e9c",
+  "bytes": 3854,
+  "rows": 6,
+  "pipelineCounts": {
+    "D2C": 6
+  },
+  "stageCounts": {
+    "Toque 1": 6
+  },
+  "statusCounts": {
+    "open": 6
+  },
+  "outputPolicy": "closed-allowlist-aggregates-only"
+}
