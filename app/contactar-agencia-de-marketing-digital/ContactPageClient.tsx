@@ -318,17 +318,23 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   <option value="other">Otro</option>
                 </select>
                 {formData.decisionRole === 'other' && (
-                  <input
-                    type="text"
-                    name="decisionRoleOther"
-                    value={formData.decisionRoleOther}
-                    onChange={handleChange}
-                    disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="Cuéntanos cuál aplica"
-                    className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    maxLength={250}
-                    required
-                  />
+                  <div className="mt-3">
+                    <label htmlFor="decisionRoleOther" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                      Aclara tu papel en el proyecto <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="decisionRoleOther"
+                      name="decisionRoleOther"
+                      value={formData.decisionRoleOther}
+                      onChange={handleChange}
+                      disabled={isPendingConfirmation || isSubmitting}
+                      placeholder="Describe tu papel en el proyecto"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      maxLength={250}
+                      required
+                    />
+                  </div>
                 )}
               </div>
 
@@ -357,17 +363,23 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   <option value="other">Otro</option>
                 </select>
                 {formData.salesModel === 'other' && (
-                  <input
-                    type="text"
-                    name="salesModelOther"
-                    value={formData.salesModelOther}
-                    onChange={handleChange}
-                    disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="Cuéntanos cuál aplica"
-                    className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    maxLength={250}
-                    required
-                  />
+                  <div className="mt-3">
+                    <label htmlFor="salesModelOther" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                      Aclara tu modelo de venta <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="salesModelOther"
+                      name="salesModelOther"
+                      value={formData.salesModelOther}
+                      onChange={handleChange}
+                      disabled={isPendingConfirmation || isSubmitting}
+                      placeholder="Describe tu modelo de venta principal"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      maxLength={250}
+                      required
+                    />
+                  </div>
                 )}
                 {MARKETPLACE_MODELS.has(formData.salesModel) && (
                   <input
@@ -405,17 +417,23 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   <option value="other">Otro</option>
                 </select>
                 {formData.monthlyRevenue === 'other' && (
-                  <input
-                    type="text"
-                    name="monthlyRevenueOther"
-                    value={formData.monthlyRevenueOther}
-                    onChange={handleChange}
-                    disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="Cuéntanos cuál aplica"
-                    className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    maxLength={250}
-                    required
-                  />
+                  <div className="mt-3">
+                    <label htmlFor="monthlyRevenueOther" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                      Aclara tu facturación mensual online <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="monthlyRevenueOther"
+                      name="monthlyRevenueOther"
+                      value={formData.monthlyRevenueOther}
+                      onChange={handleChange}
+                      disabled={isPendingConfirmation || isSubmitting}
+                      placeholder="Indica tu facturación mensual aproximada"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      maxLength={250}
+                      required
+                    />
+                  </div>
                 )}
               </div>
 
@@ -440,17 +458,23 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                   <option value="other">Otro</option>
                 </select>
                 {formData.projectTiming === 'other' && (
-                  <input
-                    type="text"
-                    name="projectTimingOther"
-                    value={formData.projectTimingOther}
-                    onChange={handleChange}
-                    disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="Cuéntanos cuál aplica"
-                    className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    maxLength={250}
-                    required
-                  />
+                  <div className="mt-3">
+                    <label htmlFor="projectTimingOther" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                      Aclara el momento de tu proyecto <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="projectTimingOther"
+                      name="projectTimingOther"
+                      value={formData.projectTimingOther}
+                      onChange={handleChange}
+                      disabled={isPendingConfirmation || isSubmitting}
+                      placeholder="Indica cuándo quieres avanzar"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      maxLength={250}
+                      required
+                    />
+                  </div>
                 )}
               </div>
               
