@@ -26,6 +26,11 @@ export interface CrmSyncResult {
   taskId?: string;
 }
 
+export interface CrmSyncOptions {
+  /** Avoid an extra CRM side effect during the one-contact production canary. */
+  skipSlaTask?: boolean;
+}
+
 export type QualificationLevel = 'priority' | 'transition' | 'review';
 
 export function qualificationLevel(lead: WebsiteLead): QualificationLevel {
@@ -117,6 +122,7 @@ export async function syncWebsiteLeadToHighLevel(
   config: EnabledHighLevelConfig,
   now = new Date(),
   suppliedControl?: CrmSyncControl,
+  options: CrmSyncOptions = {},
 ): Promise<CrmSyncResult> {
   const control = suppliedControl || localControl(lead);
   const fit = qualificationLevel(lead);
@@ -220,6 +226,10 @@ export async function syncWebsiteLeadToHighLevel(
         }
       },
     );
+  }
+
+  if (options.skipSlaTask) {
+    return { contactId, opportunityId, opportunityCreated };
   }
 
   let taskId = control.progress.taskId;

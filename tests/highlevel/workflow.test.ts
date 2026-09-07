@@ -182,6 +182,23 @@ test('retains marketplace-transition contacts without creating an opportunity or
   )));
 });
 
+test('the production canary creates Consulta once without a follow-up task', async () => {
+  const gateway = new GatewayMock();
+  const result = await syncWebsiteLeadToHighLevel(
+    lead,
+    gateway,
+    config,
+    new Date('2026-08-30T12:00:00.000Z'),
+    undefined,
+    { skipSlaTask: true },
+  );
+
+  assert.equal(result.opportunityCreated, true);
+  assert(!gateway.calls.some((call) => call.operation === 'find-tasks'));
+  assert(!gateway.calls.some((call) => call.operation === 'create-task'));
+  assert.equal(gateway.opportunities.length, 1);
+});
+
 test('fills only blank original attribution fields for existing contacts', async () => {
   const gateway = new GatewayMock();
   gateway.contact = { id: 'contact-1', isNew: false };

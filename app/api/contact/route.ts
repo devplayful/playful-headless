@@ -45,6 +45,10 @@ import {
   previewContactSubmissionsEnabled,
 } from '@/lib/contact/preview-guard';
 import { simulatePreviewContact } from '@/lib/contact/preview-simulator';
+import {
+  isProductionCanaryLead,
+  ProductionCanaryConfigurationError,
+} from '@/lib/contact/production-canary';
 
 function success(crmSynced: boolean, dryRun: boolean, replayed: boolean) {
   return NextResponse.json({
@@ -135,7 +139,9 @@ export async function POST(request: NextRequest) {
     }
     await verifyRecaptcha(body.recaptchaToken);
 
-    if (!isContactPipelineEnabled()) {
+    const productionCanary = isProductionCanaryLead(lead.email);
+
+    if (!isContactPipelineEnabled() && !productionCanary) {
       return await processRedisFreeRollback(lead, reconcileOnly);
     }
 
@@ -174,6 +180,7 @@ export async function POST(request: NextRequest) {
         highLevel,
         new Date(),
         control,
+        { skipSlaTask: productionCanary },
       ).then(() => undefined),
       dryRun: highLevel.testMode,
       reconcileOnly,
@@ -218,6 +225,13 @@ export async function POST(request: NextRequest) {
       console.error('Configuración del pipeline de contacto incompleta:', error.message);
       return NextResponse.json(
         { success: false, message: 'La integración comercial no está configurada completamente.' },
+        { status: 503 },
+      );
+    }
+    if (error instanceof ProductionCanaryConfigurationError) {
+      console.error('Canario de producción incompleto:', error.message);
+      return NextResponse.json(
+        { success: false, message: 'El canario de integración no está configurado completamente.' },
         { status: 503 },
       );
     }
