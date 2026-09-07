@@ -94,6 +94,8 @@ function extractOgTitle(html) {
 const expectedTitles = {
   '/agencia-e-commerce':
     'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+  '/agencia-shopify':
+    'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   '/pasarela-de-pago-ecommerce':
@@ -115,5 +117,26 @@ for (const [pathname, expected] of Object.entries(expectedTitles)) {
   observedTitles.push(title);
 }
 assert.equal(new Set(observedTitles).size, observedTitles.length, 'each QA URL must have a distinct title');
+
+assert.ok(
+  urls.includes('https://playfulagency.com/agencia-shopify'),
+  'sitemap must include /agencia-shopify without a trailing slash',
+);
+
+const shopifyResponse = await request('/agencia-shopify', { redirect: 'follow' });
+assert.equal(shopifyResponse.status, 200, '/agencia-shopify should return 200');
+const shopifyHtml = await shopifyResponse.text();
+const shopifyCanonicals = [...shopifyHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(shopifyCanonicals.length, 1, '/agencia-shopify should emit exactly one canonical');
+assert.equal(shopifyCanonicals[0][1], 'https://playfulagency.com/agencia-shopify');
+assert.match(
+  shopifyHtml,
+  /name=["']description["'][^>]*content=["']Agencia Shopify para marcas que ya venden: implementamos y migramos tu tienda para un checkout optimizado y mejor conversión\. Agenda una llamada\./i,
+);
+assert.match(shopifyHtml, /"@type"\s*:\s*"FAQPage"/);
+assert.match(shopifyHtml, /<h1[^>]*>Agencia Shopify\. Playful Agency, expertos en ecommerce<\/h1>/);
+assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
+assert.doesNotMatch(shopifyHtml, /Cocina/i);
+assert.match(shopifyHtml, /Agenda tu llamada de 30 a 40 minutos/);
 
 console.log(`SEO smoke passed against ${origin}`);

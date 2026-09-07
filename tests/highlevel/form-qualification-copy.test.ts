@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const form = readFileSync(
-  new URL('../../app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
+  new URL('../../components/ContactLeadForm.tsx', import.meta.url),
   'utf8',
 );
 const endpoint = readFileSync(
