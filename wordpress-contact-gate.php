@@ -122,6 +122,28 @@ function playful_contact_gate_validate_qualification($request) {
     return true;
 }
 
+function playful_contact_gate_sanitize_qualification($qualification) {
+    if (!is_array($qualification)) {
+        return null;
+    }
+
+    $sanitized = array();
+    foreach (playful_contact_gate_allowed_qualification_values() as $field => $allowed) {
+        $value = isset($qualification[$field]) ? (string) $qualification[$field] : '';
+        $other_field = $field . 'Other';
+        $sanitized[$field] = $value;
+        $sanitized[$other_field] = $value === 'other' && isset($qualification[$other_field])
+            ? sanitize_text_field((string) $qualification[$other_field])
+            : '';
+    }
+
+    $sanitized['secondaryMarketplaces'] = isset($qualification['secondaryMarketplaces'])
+        ? sanitize_text_field((string) $qualification['secondaryMarketplaces'])
+        : '';
+
+    return $sanitized;
+}
+
 function playful_contact_gate_request_context($request, $context = null, $remove = false) {
     static $contexts = array();
     $request_key = spl_object_hash($request);
@@ -351,6 +373,12 @@ add_filter('rest_pre_dispatch', function ($result, $server, $request) {
     $qualification = playful_contact_gate_validate_qualification($request);
     if (is_wp_error($qualification)) {
         return $qualification;
+    }
+    if ($request->get_param('qualification') !== null) {
+        $request->set_param(
+            'qualification',
+            playful_contact_gate_sanitize_qualification($request->get_param('qualification'))
+        );
     }
 
     $submission_id = playful_contact_gate_submission_id($request);

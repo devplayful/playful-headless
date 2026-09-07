@@ -76,6 +76,45 @@ test('validates versioned qualification selections before it claims a receipt', 
     < preDispatch.indexOf('playful_contact_gate_claim_submission'));
 });
 
+test('sanitizes qualification details before the legacy callback renders them', () => {
+  const sanitization = between(
+    gate,
+    'function playful_contact_gate_sanitize_qualification',
+    'function playful_contact_gate_request_context',
+  );
+  const preDispatch = between(gate, "add_filter('rest_pre_dispatch'", "add_filter('rest_post_dispatch'");
+
+  assert(sanitization.includes('sanitize_text_field'));
+  assert(sanitization.includes("$sanitized['secondaryMarketplaces']"));
+  assert(preDispatch.indexOf('playful_contact_gate_validate_qualification')
+    < preDispatch.indexOf('playful_contact_gate_sanitize_qualification'));
+  assert(preDispatch.includes("$request->set_param(\n            'qualification'"));
+});
+
+test('renders validated qualification in the contact email without changing legacy delivery', () => {
+  const labels = between(
+    endpoint,
+    'function playful_contact_qualification_labels',
+    'function playful_contact_qualification_summary',
+  );
+  const summary = between(
+    endpoint,
+    'function playful_contact_qualification_summary',
+    '/**\n * Maneja el envío del formulario de contacto',
+  );
+
+  assert(endpoint.includes("'qualification' => array("));
+  assert(labels.includes("'decisionRole'"));
+  assert(labels.includes("'salesModel'"));
+  assert(labels.includes("'monthlyRevenue'"));
+  assert(labels.includes("'projectTiming'"));
+  assert(summary.includes('sanitize_text_field'));
+  assert(summary.includes("return '';"));
+  assert(endpoint.includes('CUALIFICACIÓN DEL PROYECTO'));
+  assert(endpoint.includes("if ($qualification !== '')"));
+  assert(endpoint.includes('wp_mail($to, $subject, $body, $headers)'));
+});
+
 test('claims atomically using a hash-only, non-autoloaded option', () => {
   const receiptKey = between(
     gate,
