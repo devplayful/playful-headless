@@ -14,6 +14,16 @@ import { pushGenerateLead } from '@/lib/contact/analytics';
 
 interface ContactPageClientProps {
   casosDeExito: any[];
+  previewSimulation: boolean;
+}
+
+interface PreviewEvidence {
+  submissionRef: string;
+  gate: string;
+  email: string;
+  highLevel: { contact: string; opportunity: string; nextAction: string };
+  storage: string;
+  externalRequests: boolean;
 }
 
 const EMPTY_FORM = {
@@ -37,7 +47,7 @@ const EMPTY_FORM = {
 const MARKETPLACE_MODELS = new Set(['amazon', 'mercado_libre', 'marketplaces_other', 'marketplace_to_d2c']);
 
 // Componente del formulario con reCAPTCHA V2
-function ContactForm({ casosDeExito }: ContactPageClientProps) {
+function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const submissionIdRef = useRef('');
   const [formData, setFormData] = useState(EMPTY_FORM);
@@ -48,6 +58,7 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
     success: boolean;
     pending?: boolean;
     message: string;
+    previewEvidence?: PreviewEvidence;
   } | null>(null);
   const isPendingConfirmation = submitStatus?.pending === true;
 
@@ -70,9 +81,9 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 
   const submitRequest = async (submissionAction: 'submit' | 'reconcile') => {
     // Obtener token de reCAPTCHA V2
-    const recaptchaToken = recaptchaRef.current?.getValue();
+    const recaptchaToken = previewSimulation ? undefined : recaptchaRef.current?.getValue();
     
-    if (!recaptchaToken) {
+    if (!previewSimulation && !recaptchaToken) {
       setSubmitStatus({
         success: false,
         pending: submissionAction === 'reconcile',
@@ -145,7 +156,10 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
         }
         setSubmitStatus({
           success: true,
-          message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.'
+          message: data.message || '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.',
+          ...(data.simulated === true && data.previewEvidence
+            ? { previewEvidence: data.previewEvidence as PreviewEvidence }
+            : {}),
         });
         
         resetConfirmedForm();
@@ -215,6 +229,12 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
               <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] text-[#453A53] text-center w-[60%] mx-auto">Hablemos sobre tu Proyecto</h2>
             </div>
 
+            {previewSimulation && (
+              <div className="mb-6 rounded-lg bg-blue-100 p-4 text-sm text-blue-900" role="status">
+                <strong>Modo de prueba aislado.</strong> Este formulario valida el recorrido completo, pero no enviará correo ni creará registros reales en WordPress o HighLevel.
+              </div>
+            )}
+
             {submitStatus && (
               <div className={`mb-6 p-4 rounded-lg ${
                 submitStatus.pending
@@ -224,6 +244,15 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     : 'bg-red-100 text-red-800'
               }`}>
                 {submitStatus.message}
+                {submitStatus.previewEvidence && (
+                  <dl className="mt-3 space-y-1 text-sm" aria-label="Evidencia de simulación aislada">
+                    <div><dt className="inline font-semibold">Referencia:</dt> <dd className="inline">{submitStatus.previewEvidence.submissionRef}</dd></div>
+                    <div><dt className="inline font-semibold">Gate:</dt> <dd className="inline">{submitStatus.previewEvidence.gate}</dd></div>
+                    <div><dt className="inline font-semibold">Correo:</dt> <dd className="inline">{submitStatus.previewEvidence.email}</dd></div>
+                    <div><dt className="inline font-semibold">HighLevel:</dt> <dd className="inline">{submitStatus.previewEvidence.highLevel.contact}; {submitStatus.previewEvidence.highLevel.opportunity}</dd></div>
+                    <div><dt className="inline font-semibold">Almacenamiento:</dt> <dd className="inline">{submitStatus.previewEvidence.storage}; solicitudes externas: {String(submitStatus.previewEvidence.externalRequests)}</dd></div>
+                  </dl>
+                )}
               </div>
             )}
 
@@ -525,13 +554,15 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                 </label>
               </div>
               
-              {/* reCAPTCHA V2 Checkbox */}
-              <div className="flex justify-center">
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                />
-              </div>
+              {/* Preview simulator never requests a real reCAPTCHA token. */}
+              {!previewSimulation && (
+                <div className="flex justify-center">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                  />
+                </div>
+              )}
               
               {isPendingConfirmation ? (
                 <div className="space-y-3">
@@ -559,13 +590,15 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
                     disabled={isSubmitting}
                     className="w-full bg-[#39DDCB] hover:bg-[#0c8966] text-[#440099] font-semibold py-3 px-6 rounded-full shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Enviando...' : '¡Quiero que conozcan mi caso!'}
+                    {isSubmitting ? 'Enviando...' : previewSimulation ? 'Ejecutar simulación segura' : '¡Quiero que conozcan mi caso!'}
                   </button>
                 </div>
               )}
               
               <p className="text-sm text-[#4A4453]">
-                Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.
+                {previewSimulation
+                  ? 'La simulación no guarda ni envía los datos introducidos.'
+                  : 'Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.'}
               </p>
             </form>
           </div>
@@ -591,6 +624,6 @@ function ContactForm({ casosDeExito }: ContactPageClientProps) {
 }
 
 // Componente principal
-export default function ContactPageClient({ casosDeExito }: ContactPageClientProps) {
-  return <ContactForm casosDeExito={casosDeExito} />;
+export default function ContactPageClient({ casosDeExito, previewSimulation }: ContactPageClientProps) {
+  return <ContactForm casosDeExito={casosDeExito} previewSimulation={previewSimulation} />;
 }

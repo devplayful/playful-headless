@@ -1,6 +1,25 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { previewContactSubmissionsEnabled } from '../../lib/contact/preview-guard.ts';
+import {
+  previewContactSimulatorEnabled,
+  previewContactSubmissionsEnabled,
+} from '../../lib/contact/preview-guard.ts';
+
+test('simulator is opt-in and cannot be enabled outside Vercel Preview', () => {
+  assert.equal(previewContactSimulatorEnabled({}), false);
+  assert.equal(previewContactSimulatorEnabled({
+    VERCEL_ENV: 'production',
+    PREVIEW_CONTACT_SIMULATOR_ENABLED: 'true',
+  }), false);
+  assert.equal(previewContactSimulatorEnabled({
+    VERCEL_ENV: 'preview',
+    PREVIEW_CONTACT_SIMULATOR_ENABLED: 'false',
+  }), false);
+  assert.equal(previewContactSimulatorEnabled({
+    VERCEL_ENV: 'preview',
+    PREVIEW_CONTACT_SIMULATOR_ENABLED: 'true',
+  }), true);
+});
 
 test('blocks Preview submissions unless the isolated backend is explicitly enabled', () => {
   assert.equal(previewContactSubmissionsEnabled({ VERCEL_ENV: 'preview' }), false);

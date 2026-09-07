@@ -23,6 +23,11 @@ export const metadata: Metadata = {
 export default async function ContactPage() {
   // Obtener casos de éxito una sola vez en el servidor
   const casosDeExito = await getAllCaseStudies();
-  
-  return <ContactPageClient casosDeExito={casosDeExito} />;
+  const previewSimulation = process.env.VERCEL_ENV === 'preview'
+    && process.env.PREVIEW_CONTACT_SIMULATOR_ENABLED === 'true';
+
+  return <ContactPageClient
+    casosDeExito={casosDeExito}
+    previewSimulation={previewSimulation}
+  />;
 }

@@ -40,7 +40,11 @@ import {
   AmbiguousOpportunityError,
   syncWebsiteLeadToHighLevel,
 } from '@/lib/highlevel/workflow';
-import { previewContactSubmissionsEnabled } from '@/lib/contact/preview-guard';
+import {
+  previewContactSimulatorEnabled,
+  previewContactSubmissionsEnabled,
+} from '@/lib/contact/preview-guard';
+import { simulatePreviewContact } from '@/lib/contact/preview-simulator';
 
 function success(crmSynced: boolean, dryRun: boolean, replayed: boolean) {
   return NextResponse.json({
@@ -93,7 +97,8 @@ async function processRedisFreeRollback(
 }
 
 export async function POST(request: NextRequest) {
-  if (!previewContactSubmissionsEnabled()) {
+  const simulatorEnabled = previewContactSimulatorEnabled();
+  if (!simulatorEnabled && !previewContactSubmissionsEnabled()) {
     return NextResponse.json(
       {
         success: false,
@@ -115,6 +120,19 @@ export async function POST(request: NextRequest) {
     }
     const lead = normalizeWebsiteLead(body);
     const reconcileOnly = requestedReconciliation(body);
+    if (simulatorEnabled) {
+      return NextResponse.json({
+        success: true,
+        simulated: true,
+        message: 'La simulación aislada se completó. No se contactó WordPress, correo ni HighLevel.',
+        previewEvidence: simulatePreviewContact(lead),
+        analytics: {
+          generateLead: false,
+          formId: CONTACT_FORM_ID,
+        },
+        replayed: reconcileOnly,
+      });
+    }
     await verifyRecaptcha(body.recaptchaToken);
 
     if (!isContactPipelineEnabled()) {

@@ -26,9 +26,9 @@ export interface CrmSyncResult {
   taskId?: string;
 }
 
-type QualificationLevel = 'priority' | 'transition' | 'review';
+export type QualificationLevel = 'priority' | 'transition' | 'review';
 
-function qualificationLevel(lead: WebsiteLead): QualificationLevel {
+export function qualificationLevel(lead: WebsiteLead): QualificationLevel {
   const qualification = lead.qualification;
   const isDecisionMaker = qualification.decisionRole === 'owner'
     || qualification.decisionRole === 'decision_lead';
