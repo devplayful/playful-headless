@@ -29,7 +29,7 @@ function parseArgs(argv) {
     artifactPath,
     buildCommand: buildCommand.length
       ? buildCommand
-      : [process.execPath, 'node_modules/next/dist/bin/next', 'build'],
+      : [process.execPath, 'scripts/build-with-budget.mjs'],
   };
 }
 

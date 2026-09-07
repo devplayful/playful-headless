@@ -18,7 +18,8 @@ exact route/source pair is reviewed in the expected manifest.
 
 ## Required same-job command
 
-Use Node 20.18 or newer. The canonical command removes the generated `.next`
+Use Node 22.x and npm 10.9.x, pinned by `package.json` and by the route-integrity
+CI job. The canonical command removes the generated `.next`
 directory before starting, builds, confirms that `HEAD` and the clean worktree
 did not change, fingerprints the route inventory, writes an ignored provenance
 file inside the newly created artifact, and immediately runs the gate:
@@ -26,6 +27,9 @@ file inside the newly created artifact, and immediately runs the gate:
 ```sh
 npm run verify:routes:build
 ```
+
+The default build also retains the repository's inactivity and absolute-time
+budgets, so route verification cannot bypass the existing stalled-build guard.
 
 For a local Vercel Build Output v3 artifact, pass the build command without a
 shell wrapper. The wrapper removes `.vercel/output` before invoking it:
@@ -114,15 +118,16 @@ npm run verify:lockfile
 
 The gate copies only both package files into a disposable directory and runs a
 real `npm ci` there, so existing `node_modules` cannot affect the result and the
-worktree remains untouched. With Node 24.6.0 and npm 11.5.1 at this baseline,
-`npm ci` exits successfully and the gate is green. npm does emit an
-`ERESOLVE overriding peer dependency` warning for Tailwind's optional
-`yaml@^2.4.2` peer because the installed root package is `yaml@1.10.2`.
+worktree remains untouched. With Node 22.23.2 and npm 10.9.8, `npm ci` exits
+successfully and the gate is green. The lockfile contains Tailwind's optional
+`yaml@^2.4.2` peer at its nested path as well as the existing root
+`yaml@1.10.2`, so clean installs do not depend on npm repairing the dependency
+tree.
 
-This gate intentionally follows the `npm ci` exit status and does not turn
-successful-install warnings into errors. Resolving that optional-peer warning,
-or adopting a stricter dependency-tree policy such as requiring `npm ls --all`
-to pass, belongs in a separately reviewed dependency change with its own tests.
+The GitHub Actions job installs the exact declared npm version, performs a
+clean install, reruns the disposable lockfile gate, executes the adversarial
+route tests and produces and verifies a fresh route artifact. It uses no
+secrets and has read-only repository permissions.
 
 ## Failure conditions
 
