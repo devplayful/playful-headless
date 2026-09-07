@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import test from 'node:test';
 import {
   isProductionCanaryLead,
+  productionCanaryGlobalConflict,
   ProductionCanaryConfigurationError,
 } from '../../lib/contact/production-canary.ts';
 
@@ -46,6 +47,12 @@ test('an absent or malformed hash never changes the stable route', () => {
   assert.equal(isProductionCanaryLead(CANARY_EMAIL, canaryEnvironment({
     CONTACT_E2E_CANARY_EMAIL_SHA256: 'not-a-sha256',
   })), false);
+});
+
+test('a contradictory global rollout blocks every request before allowlist routing', () => {
+  const env = canaryEnvironment({ CONTACT_PIPELINE_ENABLED: 'true' });
+  assert.equal(productionCanaryGlobalConflict(env), true);
+  assert.equal(isProductionCanaryLead('other@example.invalid', env), false);
 });
 
 test('a hash-matched request fails closed unless every communication guard is attested', () => {

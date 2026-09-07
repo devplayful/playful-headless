@@ -47,6 +47,7 @@ import {
 import { simulatePreviewContact } from '@/lib/contact/preview-simulator';
 import {
   isProductionCanaryLead,
+  productionCanaryGlobalConflict,
   ProductionCanaryConfigurationError,
 } from '@/lib/contact/production-canary';
 
@@ -102,6 +103,15 @@ async function processRedisFreeRollback(
 
 export async function POST(request: NextRequest) {
   const simulatorEnabled = previewContactSimulatorEnabled();
+  if (productionCanaryGlobalConflict()) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'La configuración de activación del formulario es contradictoria. No se contactó ningún servicio.',
+      },
+      { status: 503 },
+    );
+  }
   if (!simulatorEnabled && !previewContactSubmissionsEnabled()) {
     return NextResponse.json(
       {

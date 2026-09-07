@@ -14,6 +14,18 @@ function productionCanaryRequested(env: Environment): boolean {
     && env.CONTACT_PIPELINE_PRODUCTION_CANARY_ENABLED === 'true';
 }
 
+/**
+ * A canary and global rollout are mutually exclusive. Evaluate this before
+ * parsing a lead or making a network request so a bad flag combination cannot
+ * widen delivery to non-allowlisted contacts.
+ */
+export function productionCanaryGlobalConflict(
+  env: Environment = process.env,
+): boolean {
+  return productionCanaryRequested(env)
+    && env.CONTACT_PIPELINE_ENABLED === 'true';
+}
+
 function isSha256(value: string | undefined): value is string {
   return Boolean(value && /^[a-f0-9]{64}$/.test(value));
 }
