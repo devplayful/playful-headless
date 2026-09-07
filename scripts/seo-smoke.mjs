@@ -61,6 +61,16 @@ const unknownCategoryResponse = await request(
 );
 assert.equal(unknownCategoryResponse.status, 404, 'unknown category aliases must not drop attribution');
 
+const homeResponse = await request('/', { redirect: 'follow' });
+assert.equal(homeResponse.status, 200);
+const homeHtml = await homeResponse.text();
+const homeCanonicals = [...homeHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(homeCanonicals.length, 1, 'home should emit exactly one canonical');
+assert.equal(homeCanonicals[0][1], 'https://playfulagency.com/');
+const homeOgUrls = [...homeHtml.matchAll(/<meta[^>]+property=["']og:url["'][^>]+content=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(homeOgUrls.length, 1, 'home should emit exactly one og:url');
+assert.equal(homeOgUrls[0][1], 'https://playfulagency.com/');
+
 const sitemapResponse = await request('/sitemap.xml', { redirect: 'follow' });
 assert.equal(sitemapResponse.status, 200);
 const sitemap = await sitemapResponse.text();

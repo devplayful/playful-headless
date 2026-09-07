@@ -2,12 +2,16 @@ import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 
+const HOME_CANONICAL = canonicalForPath('/');
+
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
   const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
   const defaultOgImage = 'https://playfulagency.com/og.jpg';
-  const url = canonicalForPath('/');
 
+  // Next.js 15 resolveAbsoluteUrlWithPathname collapses pathname `/` to origin
+  // (no trailing slash). Home canonical + og:url are emitted as raw tags below
+  // so they stay exactly `https://playfulagency.com/` to match the sitemap.
   try {
     const yoastData = await getHomePageMetadata();
     return {
@@ -18,7 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url,
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -33,7 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         images: [defaultOgImage],
       },
-      alternates: { canonical: url },
     };
   } catch {
     return {
@@ -44,7 +46,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url,
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -59,7 +60,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: defaultDescription,
         images: [defaultOgImage],
       },
-      alternates: { canonical: url },
     };
   }
 }
@@ -186,6 +186,8 @@ async function HomeContent() {
 export default function Home() {
   return (
     <>
+      <link rel="canonical" href={HOME_CANONICAL} />
+      <meta property="og:url" content={HOME_CANONICAL} />
       <h1 className="sr-only">
         ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
       </h1>
