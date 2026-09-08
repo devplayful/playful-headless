@@ -2,9 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { FAQ_ITEMS, SHOPIFY_META, HERO, CTA, SERVICES, PLAYFUL_URL_RE, buildFaqPageJsonLd } = await import(
-  '../app/agencia-shopify/copy.ts'
-);
+const {
+  FAQ_ITEMS,
+  SHOPIFY_META,
+  HERO,
+  CTA,
+  SERVICES,
+  SERVICE_GRID_ITEMS,
+  SERVICE_BAND_ITEMS,
+  SOCIAL_PROOF,
+  PLAYFUL_URL_RE,
+  buildFaqPageJsonLd,
+} = await import('../app/agencia-shopify/copy.ts');
 
 const landing = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 const sitemap = readFileSync(new URL('../app/sitemap.xml/route.ts', import.meta.url), 'utf8');
@@ -33,17 +42,28 @@ test('FAQPage JSON-LD uses the seven signed questions and answers exactly', () =
   );
 });
 
-test('landing keeps one H1, signed CTAs, High Level form and empty illustration slots', () => {
+test('landing keeps one H1, signed CTAs, shared closing sections and five illustration slots', () => {
   assert.equal((landing.match(/<h1\b/g) || []).length, 1);
   assert.match(landing, /{HERO\.h1}/);
-  assert.match(landing, /submitLabel=\{CTA\.formButton\}/);
-  assert.match(landing, /<ContactLeadForm/);
-  assert.match(landing, /heading=\{null\}/);
+  assert.match(landing, /TwoColumnCtaSection/);
+  assert.match(landing, /buttonText=\{CTA\.cta\}/);
+  assert.match(landing, /buttonLink=\{CONTACT_HREF\}/);
+  assert.doesNotMatch(landing, /ContactLeadForm/);
+  assert.doesNotMatch(landing, /servicio-operar/);
   assert.equal(CTA.formButton, 'Agenda tu llamada de 30 a 40 minutos');
   assert.equal(HERO.cta, '¿Hablamos?');
   const contentSlots = SERVICES.items.filter((item) => item.slot);
-  assert.equal(contentSlots.length, 5);
+  assert.equal(contentSlots.length, 4);
+  assert.deepEqual(
+    contentSlots.map((item) => item.slot),
+    ['servicio-diseno', 'servicio-desarrollo', 'servicio-catalogo', 'servicio-checkout'],
+  );
   assert.match(landing, /data-illustration-slot=\{id\}/);
+  assert.match(landing, /id="hero"/);
+  assert.match(landing, /TestimonialsSection/);
+  assert.match(landing, /CaseStudyCard/);
+  assert.match(landing, /BlogRelatedPostsSection/);
+  assert.match(landing, /ServiceFaqAccordion/);
   assert.doesNotMatch(landing, /Shopify Plus/i);
   assert.doesNotMatch(landing, /Cocina/i);
   assert.doesNotMatch(landing, /magnific/i);
@@ -74,6 +94,22 @@ test('FAQ case URLs keep the trailing period outside the link', () => {
   assert.ok(parts.includes('https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce'));
   assert.ok(parts.some((part) => part.startsWith('. En las dos páginas')));
   assert.ok(!parts.some((part) => part.endsWith('ecommerce.')));
+});
+
+test('Odwalla and Jumex cards keep v9 lines and never expose raw case URLs', () => {
+  assert.equal(SERVICE_GRID_ITEMS.length, 4);
+  assert.equal(SERVICE_BAND_ITEMS.length, 2);
+  assert.ok(landing.includes('toShopifyCaseCards'));
+  assert.deepEqual(
+    SOCIAL_PROOF.cases.map((item) => item.line),
+    [
+      'Odwalla — implementación de ecommerce en Shopify. Ver el caso:',
+      'Jumex — implementación de ecommerce en Shopify. Ver el caso:',
+    ],
+  );
+  for (const item of SOCIAL_PROOF.cases) {
+    assert.doesNotMatch(item.line, /https:\/\//);
+  }
 });
 
 test('shared High Level form still owns qualification and receipt recovery', () => {

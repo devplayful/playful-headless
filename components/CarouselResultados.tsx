@@ -98,7 +98,7 @@ interface WPCaseStudy {
 }
 
 // Interfaz para los casos de estudio transformados
-interface CaseStudy {
+export interface CaseStudy {
   id: number;
   title: string;
   slug: string;
@@ -129,8 +129,8 @@ interface CarouselResultadosProps {
   actionButtonColor?: string;
 }
 
-// Componente para la tarjeta de caso de estudio
-const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
+// Componente para la tarjeta de caso de estudio (mismo patrón que home)
+export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const hasImage = caseStudy.image && !imageError;

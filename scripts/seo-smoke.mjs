@@ -137,6 +137,8 @@ assert.match(shopifyHtml, /"@type"\s*:\s*"FAQPage"/);
 assert.match(shopifyHtml, /<h1[^>]*>Agencia Shopify\. Playful Agency, expertos en ecommerce<\/h1>/);
 assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
 assert.doesNotMatch(shopifyHtml, /Cocina/i);
-assert.match(shopifyHtml, /Agenda tu llamada de 30 a 40 minutos/);
+assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
+assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
+assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
 console.log(`SEO smoke passed against ${origin}`);

@@ -40,7 +40,7 @@ export const SERVICES = {
     {
       title: 'Operar tu tienda día a día',
       body: 'Una tienda se pone a prueba el día que hay que cambiar una variante, subir un precio o revisar un pago que no cuadró. El panel de Shopify está pensado justo para eso, porque desde el mismo administrador gestionas productos, pedidos y contenido sin tocar código, y cuando el cambio es grande exportas el catálogo a CSV para revisarlo con calma o actualizar cientos de referencias de una vez. Montamos tu tienda para que esa operación sea tuya, sin montajes frágiles que solo entiende quien los construyó, y en la llamada vemos si prefieres que además te acompañemos en el día a día.',
-      slot: 'servicio-operar',
+      slot: null,
     },
     {
       title: 'Consultoría para migrar o montar en Shopify',
@@ -49,6 +49,15 @@ export const SERVICES = {
     },
   ],
 } as const;
+
+type ServiceItem = (typeof SERVICES.items)[number];
+type ServiceCardItem = ServiceItem & { slot: Exclude<ServiceItem['slot'], null> };
+
+export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
+  (item): item is ServiceCardItem => item.slot !== null,
+);
+export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
+export const CONTACT_HREF = '/contactar-agencia-de-marketing-digital';
 
 export const MIGRATION = {
   h2: 'Migración a Shopify',
