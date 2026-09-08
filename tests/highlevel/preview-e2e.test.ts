@@ -48,7 +48,8 @@ function redisRestDouble() {
             records.delete(stateKey);
           } else if (script.includes("value.state = 'delivered'")) {
             const current = JSON.parse(records.get(stateKey) || '{}') as Record<string, unknown>;
-            records.set(stateKey, JSON.stringify({ ...current, state: 'delivered', crm: {} }));
+            // Mirrors Redis Lua cjson, which can encode an empty table as [].
+            records.set(stateKey, JSON.stringify({ ...current, state: 'delivered', crm: [] }));
           } else if (script.includes("value.state = 'delivery_uncertain'")) {
             const current = JSON.parse(records.get(stateKey) || '{}') as Record<string, unknown>;
             delete current.crm;
