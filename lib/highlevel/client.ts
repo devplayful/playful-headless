@@ -38,6 +38,7 @@ export interface CreateOpportunityInput {
   status: 'open';
   contactId: string;
   assignedTo: string;
+  customFields: HighLevelCustomFieldValue[];
 }
 
 export interface CreateTaskInput {
@@ -55,6 +56,7 @@ export interface HighLevelGateway {
   addContactTags(contactId: string, tags: string[]): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
+  updateOpportunityCustomFields(opportunityId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
   findTasks(contactId: string): Promise<HighLevelTask[]>;
   createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }>;
 }
@@ -154,6 +156,16 @@ export class HighLevelApiClient implements HighLevelGateway {
     return { id: result.opportunity.id };
   }
 
+  async updateOpportunityCustomFields(
+    opportunityId: string,
+    customFields: HighLevelCustomFieldValue[],
+  ): Promise<void> {
+    await this.request('update opportunity qualification', `/opportunities/${encodeURIComponent(opportunityId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ customFields }),
+    });
+  }
+
   async findTasks(contactId: string): Promise<HighLevelTask[]> {
     const result = await this.request<{ tasks?: HighLevelTask[] }>(
       'search follow-up tasks',
@@ -190,6 +202,7 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
   async addContactTags(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
   async createOpportunity(): Promise<{ id: string }> { return { id: 'preview-opportunity' }; }
+  async updateOpportunityCustomFields(): Promise<void> {}
   async findTasks(): Promise<HighLevelTask[]> { return [...this.tasks]; }
   async createTask(_contactId: string, input: CreateTaskInput): Promise<{ id: string }> {
     const task = { id: 'preview-task', title: input.title, body: input.body };

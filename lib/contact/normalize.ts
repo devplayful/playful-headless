@@ -99,15 +99,25 @@ function normalizeEmail(value: unknown): string {
   return email;
 }
 
-function normalizePhone(value: unknown): string {
+function normalizePhone(value: unknown, countryCodeValue: unknown): string {
   const raw = text(value, 40);
   if (!raw) return '';
-  const prefix = raw.startsWith('+') ? '+' : '';
-  const digits = raw.replace(/\D/g, '').slice(0, 15);
+
+  const international = raw.startsWith('+') || raw.startsWith('00');
+  const countryCode = text(countryCodeValue, 6);
+  if (!international && !/^\+\d{1,4}$/.test(countryCode)) {
+    throw new SubmissionValidationError('Selecciona el código de país del teléfono.');
+  }
+
+  const normalizedRaw = raw.startsWith('00') ? `+${raw.slice(2)}` : raw;
+  const localDigits = normalizedRaw.replace(/\D/g, '').replace(/^0+/, '');
+  const digits = international
+    ? normalizedRaw.replace(/\D/g, '').slice(0, 15)
+    : `${countryCode.replace(/\D/g, '')}${localDigits}`.slice(0, 15);
   if (digits.length < 7) {
     throw new SubmissionValidationError('El teléfono no es válido.');
   }
-  return `${prefix}${digits}`;
+  return `+${digits}`;
 }
 
 function normalizeSubmissionId(value: unknown): string {
@@ -169,7 +179,7 @@ export function normalizeWebsiteLead(value: unknown, now = new Date()): WebsiteL
     submissionId: normalizeSubmissionId(input.submissionId),
     name: requiredText(input.name, 'name', 120),
     email: normalizeEmail(input.email),
-    phone: normalizePhone(input.phone),
+    phone: normalizePhone(input.phone, input.phoneCountryCode),
     business: text(input.business, 160),
     message: requiredText(input.message, 'message', 1000),
     qualification: qualification(input),

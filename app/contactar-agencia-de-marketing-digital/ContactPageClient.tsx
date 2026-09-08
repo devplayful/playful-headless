@@ -30,6 +30,7 @@ const EMPTY_FORM = {
   name: '',
   email: '',
   phone: '',
+  phoneCountryCode: '',
   subject: '',
   business: '',
   decisionRole: '',
@@ -119,6 +120,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
+          phoneCountryCode: formData.phoneCountryCode,
           business: formData.business,
           decisionRole: formData.decisionRole,
           decisionRoleOther: formData.decisionRoleOther,
@@ -293,7 +295,43 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-4">
+                <div>
+                  <label htmlFor="phoneCountryCode" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                    Código de país
+                  </label>
+                  <select
+                    id="phoneCountryCode"
+                    name="phoneCountryCode"
+                    value={formData.phoneCountryCode}
+                    onChange={handleChange}
+                    disabled={isPendingConfirmation || isSubmitting}
+                    required={Boolean(formData.phone)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="">Selecciona</option>
+                    <option value="+58">Venezuela (+58)</option>
+                    <option value="+34">España (+34)</option>
+                    <option value="+52">México (+52)</option>
+                    <option value="+57">Colombia (+57)</option>
+                    <option value="+1">Estados Unidos / Canadá (+1)</option>
+                    <option value="+54">Argentina (+54)</option>
+                    <option value="+55">Brasil (+55)</option>
+                    <option value="+56">Chile (+56)</option>
+                    <option value="+51">Perú (+51)</option>
+                    <option value="+593">Ecuador (+593)</option>
+                    <option value="+591">Bolivia (+591)</option>
+                    <option value="+595">Paraguay (+595)</option>
+                    <option value="+598">Uruguay (+598)</option>
+                    <option value="+507">Panamá (+507)</option>
+                    <option value="+506">Costa Rica (+506)</option>
+                    <option value="+502">Guatemala (+502)</option>
+                    <option value="+503">El Salvador (+503)</option>
+                    <option value="+504">Honduras (+504)</option>
+                    <option value="+505">Nicaragua (+505)</option>
+                    <option value="+1">República Dominicana / Puerto Rico (+1)</option>
+                  </select>
+                </div>
                 <div>
                   <label htmlFor="phone" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
                     Número de teléfono
@@ -305,7 +343,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                     value={formData.phone}
                     onChange={handleChange}
                     disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="Escribe también tu número de contacto"
+                    placeholder="Número sin el cero inicial"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>

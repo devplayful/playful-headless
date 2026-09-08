@@ -4,7 +4,11 @@ import {
   RetainResourceLeaseError,
 } from '../contact/orchestrator.ts';
 import type { WebsiteLead } from '../contact/types.ts';
-import type { EnabledHighLevelConfig, HighLevelCustomFieldKey } from './config.ts';
+import type {
+  EnabledHighLevelConfig,
+  HighLevelCustomFieldKey,
+  HighLevelOpportunityCustomFieldKey,
+} from './config.ts';
 import type {
   HighLevelCustomFieldValue,
   HighLevelGateway,
@@ -56,6 +60,93 @@ function field(
   value: string | boolean,
 ): HighLevelCustomFieldValue {
   return { id: config.customFieldIds[key], fieldValue: String(value) };
+}
+
+function opportunityField(
+  config: EnabledHighLevelConfig,
+  key: HighLevelOpportunityCustomFieldKey,
+  value: string,
+): HighLevelCustomFieldValue {
+  return { id: config.opportunityCustomFieldIds[key], fieldValue: value };
+}
+
+const DECISION_ROLE_LABELS = {
+  owner: 'Dueño/a, socio/a o cofundador/a',
+  decision_lead: 'Lidera e-commerce, marketing u operaciones y participa en la decisión',
+  researching_for_other: 'Investiga para otra persona o equipo',
+  other: 'Otro',
+} as const;
+
+const SALES_MODEL_LABELS = {
+  d2c: 'Principalmente D2C',
+  d2c_b2b: 'D2C y B2B',
+  amazon: 'Marketplace: Amazon',
+  mercado_libre: 'Marketplace: Mercado Libre',
+  marketplaces_other: 'Otros marketplaces',
+  marketplace_to_d2c: 'Marketplace con intención de dar el salto a venta directa',
+  pre_d2c: 'Preparando venta D2C',
+  not_online_or_unsure: 'No vende D2C o no está seguro',
+  other: 'Otro',
+} as const;
+
+const MONTHLY_REVENUE_LABELS = {
+  over_100k: 'Más de US$100.000',
+  '50k_100k': 'US$50.000–100.000',
+  '10k_50k': 'US$10.000–50.000',
+  under_10k: 'Menos de US$10.000',
+  prefer_not_to_say: 'Prefiere no compartirlo',
+  other: 'Otro',
+} as const;
+
+const PROJECT_TIMING_LABELS = {
+  '0_30_days': 'Próximos 30 días',
+  '1_3_months': 'Próximos 1–3 meses',
+  evaluating: 'Evaluando opciones',
+  researching: 'Solo investigando',
+  other: 'Otro',
+} as const;
+
+function clarified(label: string, detail: string): string {
+  return detail.trim() ? `${label}: ${detail.trim()}` : label;
+}
+
+function opportunityFields(
+  lead: WebsiteLead,
+  config: EnabledHighLevelConfig,
+): HighLevelCustomFieldValue[] {
+  const qualification = lead.qualification;
+  const fit = qualificationLevel(lead);
+  const marketplace = qualification.secondaryMarketplaces.trim()
+    || (['amazon', 'mercado_libre', 'marketplaces_other', 'marketplace_to_d2c']
+      .includes(qualification.salesModel)
+      ? SALES_MODEL_LABELS[qualification.salesModel]
+      : '');
+
+  return [
+    opportunityField(config, 'decision_role', clarified(
+      DECISION_ROLE_LABELS[qualification.decisionRole],
+      qualification.decisionRoleOther,
+    )),
+    opportunityField(config, 'sales_model', clarified(
+      SALES_MODEL_LABELS[qualification.salesModel],
+      qualification.salesModelOther,
+    )),
+    opportunityField(config, 'marketplaces', marketplace),
+    opportunityField(config, 'monthly_revenue', clarified(
+      MONTHLY_REVENUE_LABELS[qualification.monthlyRevenue],
+      qualification.monthlyRevenueOther,
+    )),
+    opportunityField(config, 'project_timing', clarified(
+      PROJECT_TIMING_LABELS[qualification.projectTiming],
+      qualification.projectTimingOther,
+    )),
+    opportunityField(config, 'qualification_level', {
+      priority: 'Prioritario',
+      transition: 'Transición a D2C',
+      review: 'Revisar',
+    }[fit]),
+    opportunityField(config, 'project_context', lead.message),
+  ];
 }
 
 function recentFields(lead: WebsiteLead, config: EnabledHighLevelConfig): HighLevelCustomFieldValue[] {
@@ -199,6 +290,14 @@ export async function syncWebsiteLeadToHighLevel(
         let createdRemotely = false;
         if (existing) {
           resolvedOpportunityId = existing.id;
+          try {
+            await gateway.updateOpportunityCustomFields(
+              resolvedOpportunityId,
+              opportunityFields(lead, config),
+            );
+          } catch (error) {
+            retainLeaseForUncertainWrite(error);
+          }
         } else {
           try {
             const created = await gateway.createOpportunity({
@@ -209,6 +308,7 @@ export async function syncWebsiteLeadToHighLevel(
               status: 'open',
               contactId,
               assignedTo: config.ownerId,
+              customFields: opportunityFields(lead, config),
             });
             resolvedOpportunityId = created.id;
             createdRemotely = true;
