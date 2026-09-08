@@ -1,0 +1,19 @@
+{
+  "/api/contact/route": "app/api/contact/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/api/blog-posts/route": "app/api/blog-posts/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/casos-de-exito-agencia-de-marketing-digital/page": "app/casos-de-exito-agencia-de-marketing-digital/page.js",
+  "/casos-de-exito/[slug]/page": "app/casos-de-exito/[slug]/page.js",
+  "/nosotros/page": "app/nosotros/page.js",
+  "/page": "app/page.js",
+  "/[slug]/page": "app/[slug]/page.js",
+  "/contactar-agencia-de-marketing-digital/page": "app/contactar-agencia-de-marketing-digital/page.js",
+  "/blog/[...slug]/page": "app/blog/[...slug]/page.js",
+  "/test-blog/page": "app/test-blog/page.js",
+  "/politica-de-privacidad/page": "app/politica-de-privacidad/page.js",
+  "/podcast/page": "app/podcast/page.js",
+  "/podcast/[slug]/page": "app/podcast/[slug]/page.js"
+}

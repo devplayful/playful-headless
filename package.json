@@ -2,6 +2,11 @@
   "name": "nextjs-blog",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.8",
+  "engines": {
+    "node": "24.x",
+    "npm": "10.9.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/build-with-budget.mjs",
@@ -10,7 +15,16 @@
     "lint": "next lint",
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
-    "test:wordpress": "node --test tests/wordpress-*.test.mjs"
+    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs",
+    "test:wordpress": "node --test tests/wordpress-*.test.mjs tests/page-seo-overrides.test.mjs",
+    "test:highlevel": "node --experimental-transform-types --test tests/highlevel/*.test.ts",
+    "test:highlevel-evidence": "node --test tests/highlevel/redacted-export-audit.test.mjs",
+    "audit:highlevel-export": "node scripts/highlevel-redacted-export-audit.mjs",
+    "typecheck": "tsc --noEmit",
+    "test:route-integrity": "node --test tests/route-integrity.test.mjs",
+    "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
+    "verify:routes": "node scripts/verify-route-artifact.mjs",
+    "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -31,7 +45,8 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "lottie-react": "^2.4.1",
-    "next": "15.1.9",
+    "next": "15.5.25",
+    "postcss": "8.5.28",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-google-recaptcha": "^3.1.0",
@@ -41,6 +56,9 @@
     "slick-carousel": "^1.8.1",
     "swiper": "^12.1.2"
   },
+  "overrides": {
+    "postcss": "$postcss"
+  },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20.0.0",
@@ -48,8 +66,7 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8.0.0",
-    "eslint-config-next": "15.1.9",
-    "postcss": "^8.0.0",
+    "eslint-config-next": "15.5.25",
     "rimraf": "^6.1.2",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.0"
