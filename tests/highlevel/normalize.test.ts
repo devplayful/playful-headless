@@ -71,6 +71,10 @@ test('requires a country code for local phone numbers and stores E.164', () => {
   assert.throws(() => normalizeWebsiteLead(base), SubmissionValidationError);
   assert.equal(normalizeWebsiteLead({ ...base, phoneCountryCode: '+34' }).phone, '+34658093580');
   assert.equal(normalizeWebsiteLead({ ...base, phone: '0414 123 4567', phoneCountryCode: '+58' }).phone, '+584141234567');
+  assert.throws(() => normalizeWebsiteLead({ ...base, phoneCountryCode: '+9999' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+0000000' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '658A093580', phoneCountryCode: '+34' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+341234567890123456' }), SubmissionValidationError);
 });
 
 test('rejects a submission without explicit privacy consent', () => {
