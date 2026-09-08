@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import MetaPixel from '@/components/MetaPixel';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -103,6 +104,7 @@ export default function RootLayout({
 }) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || '853899051744740';
 
   return (
     <html lang="es" suppressHydrationWarning>
@@ -110,6 +112,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         {gaId && <GoogleAnalytics gaId={gaId} />}
+        {metaPixelId && <MetaPixel pixelId={metaPixelId} />}
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
