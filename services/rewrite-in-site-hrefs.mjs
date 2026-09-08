@@ -32,3 +32,26 @@ export function rewriteInSitePageHrefs(html) {
     return `href=${quote}${rewritePageHref(href)}${quote}`;
   });
 }
+
+function rewriteRenderedField(field) {
+  if (!field || typeof field !== 'object' || typeof field.rendered !== 'string') {
+    return field;
+  }
+  return {
+    ...field,
+    rendered: rewriteInSitePageHrefs(field.rendered),
+  };
+}
+
+/**
+ * Maps WP REST `content.rendered` / `excerpt.rendered` through rewriteInSitePageHrefs.
+ * Used by listing and single-post pipelines so RSC/client payloads do not keep
+ * endpoint.playfulagency.com navigation hrefs.
+ */
+export function rewriteWpRenderedHtmlFields(item) {
+  if (!item || typeof item !== 'object') return item;
+  const next = { ...item };
+  if ('content' in item) next.content = rewriteRenderedField(item.content);
+  if ('excerpt' in item) next.excerpt = rewriteRenderedField(item.excerpt);
+  return next;
+}
