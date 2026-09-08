@@ -45,16 +45,35 @@ export const metadata: Metadata = {
   },
 };
 
+const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
+const HERO_ART_2X = '/images/agencia-shopify/hero-gORwV7MSXO@2x.png';
+
 function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | 'card' }) {
+  if (size === 'hero') {
+    return (
+      <div
+        data-illustration-slot={id}
+        className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
+      >
+        <Image
+          src={HERO_ART_1X}
+          alt=""
+          width={552}
+          height={360}
+          priority
+          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+          className="absolute inset-0 h-full w-full object-cover"
+          loader={({ width }) => (width > 552 ? HERO_ART_2X : HERO_ART_1X)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       data-illustration-slot={id}
       aria-hidden="true"
-      className={
-        size === 'hero'
-          ? 'w-full min-h-[280px] md:min-h-[360px] rounded-[32px] border border-dashed border-[#C4B5D4] bg-[#FEF7FF]'
-          : 'w-full max-w-[200px] h-[180px] mx-auto rounded-2xl border border-dashed border-[#C4B5D4] bg-white/50'
-      }
+      className="w-full max-w-[200px] h-[180px] mx-auto rounded-2xl border border-dashed border-[#C4B5D4] bg-white/50"
     />
   );
 }

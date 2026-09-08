@@ -60,6 +60,8 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   );
   assert.match(landing, /data-illustration-slot=\{id\}/);
   assert.match(landing, /id="hero"/);
+  assert.match(landing, /\/images\/agencia-shopify\/hero-gORwV7MSXO@1x\.png/);
+  assert.match(landing, /\/images\/agencia-shopify\/hero-gORwV7MSXO@2x\.png/);
   assert.match(landing, /TestimonialsSection/);
   assert.match(landing, /CaseStudyCard/);
   assert.match(landing, /BlogRelatedPostsSection/);
