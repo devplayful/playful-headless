@@ -55,15 +55,16 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
         data-illustration-slot={id}
         className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
       >
-        <Image
+        <img
           src={HERO_ART_1X}
+          srcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
+          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
           alt=""
           width={552}
           height={360}
-          priority
-          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+          decoding="async"
+          fetchPriority="high"
           className="absolute inset-0 h-full w-full object-cover"
-          loader={({ width }) => (width > 552 ? HERO_ART_2X : HERO_ART_1X)}
         />
       </div>
     );
