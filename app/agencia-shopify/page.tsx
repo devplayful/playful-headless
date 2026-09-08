@@ -53,6 +53,8 @@ const DESARROLLO_ART_1X = '/images/agencia-shopify/servicio-desarrollo-ovqEk5082
 const DESARROLLO_ART_2X = '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@2x.png';
 const CATALOGO_ART_1X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@1x.png';
 const CATALOGO_ART_2X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@2x.png';
+const CHECKOUT_ART_1X = '/images/agencia-shopify/servicio-checkout-SyZ2uJkUb8@1x.png';
+const CHECKOUT_ART_2X = '/images/agencia-shopify/servicio-checkout-SyZ2uJkUb8@2x.png';
 
 function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | 'card' }) {
   if (size === 'hero') {
@@ -76,19 +78,28 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
     );
   }
 
-  if (id === 'servicio-diseno' || id === 'servicio-desarrollo' || id === 'servicio-catalogo') {
+  if (
+    id === 'servicio-diseno' ||
+    id === 'servicio-desarrollo' ||
+    id === 'servicio-catalogo' ||
+    id === 'servicio-checkout'
+  ) {
     const src1x =
       id === 'servicio-diseno'
         ? DISENO_ART_1X
         : id === 'servicio-desarrollo'
           ? DESARROLLO_ART_1X
-          : CATALOGO_ART_1X;
+          : id === 'servicio-catalogo'
+            ? CATALOGO_ART_1X
+            : CHECKOUT_ART_1X;
     const src2x =
       id === 'servicio-diseno'
         ? DISENO_ART_2X
         : id === 'servicio-desarrollo'
           ? DESARROLLO_ART_2X
-          : CATALOGO_ART_2X;
+          : id === 'servicio-catalogo'
+            ? CATALOGO_ART_2X
+            : CHECKOUT_ART_2X;
     return (
       <div
         data-illustration-slot={id}
