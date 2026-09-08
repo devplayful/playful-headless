@@ -64,7 +64,8 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /\/images\/agencia-shopify\/hero-gORwV7MSXO@2x\.png/);
   assert.match(landing, /\/images\/agencia-shopify\/servicio-diseno-ovqmfMO829@1x\.png/);
   assert.match(landing, /\/images\/agencia-shopify\/servicio-diseno-ovqmfMO829@2x\.png/);
-  assert.doesNotMatch(landing, /servicio-desarrollo-.*@1x/);
+  assert.match(landing, /\/images\/agencia-shopify\/servicio-desarrollo-ovqEk50829@1x\.png/);
+  assert.match(landing, /\/images\/agencia-shopify\/servicio-desarrollo-ovqEk50829@2x\.png/);
   assert.doesNotMatch(landing, /servicio-catalogo-.*@1x/);
   assert.doesNotMatch(landing, /servicio-checkout-.*@1x/);
   assert.match(landing, /TestimonialsSection/);
