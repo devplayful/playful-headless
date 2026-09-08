@@ -182,7 +182,7 @@ test('retains marketplace-transition contacts without creating an opportunity or
 
   assert.deepEqual(result, { contactId: 'contact-1', opportunityCreated: false });
   assert.deepEqual(gateway.calls.map((call) => call.operation), [
-    'upsert', 'get-fields', 'update-original', 'tag',
+    'upsert', 'get-fields', 'update-original', 'tag', 'search',
   ]);
   const upsert = gateway.calls[0].value as UpsertContactInput;
   assert(upsert.customFields.some((item) => (
@@ -190,6 +190,39 @@ test('retains marketplace-transition contacts without creating an opportunity or
   )));
   assert(upsert.customFields.some((item) => (
     item.id === config.customFieldIds.qualification_level && item.fieldValue === 'transition'
+  )));
+});
+
+test('updates an existing canonical opportunity when a later submission needs review', async () => {
+  const gateway = new GatewayMock();
+  gateway.opportunities = [{ id: 'opportunity-existing', status: 'open' }];
+  const reviewLead = {
+    ...lead,
+    qualification: {
+      ...lead.qualification,
+      salesModel: 'd2c_b2b' as const,
+      monthlyRevenue: '50k_100k' as const,
+    },
+  };
+
+  const result = await syncWebsiteLeadToHighLevel(reviewLead, gateway, config);
+
+  assert.deepEqual(result, {
+    contactId: 'contact-1',
+    opportunityId: 'opportunity-existing',
+    opportunityCreated: false,
+  });
+  assert.deepEqual(gateway.calls.map((call) => call.operation), [
+    'upsert', 'get-fields', 'update-original', 'tag', 'search', 'update-opportunity',
+  ]);
+  const update = gateway.calls[5].value as {
+    opportunityId: string;
+    customFields: HighLevelCustomFieldValue[];
+  };
+  assert.equal(update.opportunityId, 'opportunity-existing');
+  assert(update.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.qualification_level
+      && item.fieldValue === 'Revisar'
   )));
 });
 
