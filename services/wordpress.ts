@@ -1,12 +1,20 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
-import { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields } from './rewrite-in-site-hrefs.mjs';
+import {
+  rewriteInSitePageHrefs,
+  rewriteWpRenderedHtmlFields,
+  rewriteWpYoastFields,
+} from './rewrite-in-site-hrefs.mjs';
 import {
   isAllowedCaseStudyMediaUrl,
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 
-export { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields };
+export {
+  rewriteInSitePageHrefs,
+  rewriteWpRenderedHtmlFields,
+  rewriteWpYoastFields,
+};
 
 const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
 
@@ -460,13 +468,13 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } },
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-  const processedPosts = posts.map(post => rewriteWpRenderedHtmlFields({
+  const processedPosts = posts.map(post => rewriteWpYoastFields(rewriteWpRenderedHtmlFields({
     ...post,
     featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
     featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
     categories: post._embedded?.['wp:term']?.[0] || [],
     author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
-  }));
+  })));
   return { posts: processedPosts, totalPages };
 }
 
