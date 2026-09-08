@@ -47,6 +47,8 @@ export const metadata: Metadata = {
 
 const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
 const HERO_ART_2X = '/images/agencia-shopify/hero-gORwV7MSXO@2x.png';
+const DISENO_ART_1X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@1x.png';
+const DISENO_ART_2X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@2x.png';
 
 function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | 'card' }) {
   if (size === 'hero') {
@@ -64,6 +66,26 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
           height={360}
           decoding="async"
           fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (id === 'servicio-diseno') {
+    return (
+      <div
+        data-illustration-slot={id}
+        className="relative w-full max-w-[200px] h-[180px] mx-auto overflow-hidden rounded-2xl"
+      >
+        <img
+          src={DISENO_ART_1X}
+          srcSet={`${DISENO_ART_1X} 200w, ${DISENO_ART_2X} 400w`}
+          sizes="200px"
+          alt=""
+          width={200}
+          height={180}
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
