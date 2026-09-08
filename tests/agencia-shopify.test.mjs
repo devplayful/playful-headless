@@ -118,6 +118,33 @@ test('Odwalla and Jumex cards keep v9 lines and never expose raw case URLs', () 
   }
 });
 
+test('Shopify case cards reuse Casos de Éxito featured tapas', async () => {
+  const {
+    CASOS_DE_EXITO_FEATURED_TAPAS,
+    featuredTapaForSlug,
+    resolveCaseStudyListingImage,
+  } = await import('../lib/case-study-listing-image.ts');
+  assert.equal(
+    CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'],
+    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png',
+  );
+  assert.equal(
+    CASOS_DE_EXITO_FEATURED_TAPAS['odwalla-shopify-dtc-ecommerce'],
+    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png',
+  );
+  assert.equal(
+    resolveCaseStudyListingImage({
+      _embedded: { 'wp:featuredmedia': [{ source_url: CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'] }] },
+    }),
+    CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'],
+  );
+  assert.equal(featuredTapaForSlug('odwalla-shopify-dtc-ecommerce'), CASOS_DE_EXITO_FEATURED_TAPAS['odwalla-shopify-dtc-ecommerce']);
+  const casesSource = readFileSync(new URL('../app/agencia-shopify/shopify-cases.ts', import.meta.url), 'utf8');
+  assert.match(casesSource, /featuredTapaForSlug/);
+  assert.match(casesSource, /jumex-shopify-dtc-ecommerce/);
+  assert.match(casesSource, /odwalla-shopify-dtc-ecommerce/);
+});
+
 test('shared High Level form still owns qualification and receipt recovery', () => {
   assert.match(form, /name="decisionRole"/);
   assert.match(form, /name="salesModel"/);
