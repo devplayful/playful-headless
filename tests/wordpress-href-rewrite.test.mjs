@@ -2,7 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-import { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields } from '../services/rewrite-in-site-hrefs.mjs';
+import {
+  rewriteInSitePageHrefs,
+  rewriteInSiteUrlToApex,
+  rewriteWpRenderedHtmlFields,
+  rewriteWpYoastFields,
+} from '../services/rewrite-in-site-hrefs.mjs';
 
 const LINKEDIN_POST =
   'https://endpoint.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin';
@@ -112,4 +117,102 @@ test('getLatestBlogPosts rewrites excerpt HTML before stripping tags', async () 
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   const body = functionBody(source, 'getLatestBlogPosts');
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
+});
+
+test('rewriteInSiteUrlToApex maps endpoint/old/www page URLs to apex same-path', () => {
+  assert.equal(
+    rewriteInSiteUrlToApex(`${LINKEDIN_POST}/`),
+    'https://playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin',
+  );
+  assert.equal(
+    rewriteInSiteUrlToApex('https://old.playfulagency.com/blog/'),
+    'https://playfulagency.com/blog',
+  );
+  assert.equal(
+    rewriteInSiteUrlToApex('https://www.playfulagency.com/blog/seo/tendencias-seo-2020/#breadcrumb'),
+    'https://playfulagency.com/blog/seo/tendencias-seo-2020#breadcrumb',
+  );
+  assert.equal(rewriteInSiteUrlToApex(MEDIA_SRC), MEDIA_SRC);
+  assert.equal(
+    rewriteInSiteUrlToApex('https://linkedin.com/company/playful'),
+    'https://linkedin.com/company/playful',
+  );
+});
+
+test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-content', () => {
+  const ogUrl = 'https://endpoint.playfulagency.com/blog/seo/tendencias-seo-2020/';
+  const listingOg = 'https://endpoint.playfulagency.com/blog/';
+  const oldOg = 'https://old.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin/';
+  const yoastHead = [
+    `<meta property="og:url" content="${ogUrl}" />`,
+    `<link rel="canonical" href="${listingOg}" />`,
+    `<script type="application/ld+json" class="yoast-schema-graph">${JSON.stringify({
+      '@graph': [
+        {
+          '@type': 'BreadcrumbList',
+          '@id': `${ogUrl}#breadcrumb`,
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Portada', item: 'https://endpoint.playfulagency.com/' },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: listingOg },
+            { '@type': 'ListItem', position: 3, name: 'SEO' },
+          ],
+        },
+      ],
+    })}</script>`,
+    `<meta property="og:image" content="${MEDIA_SRC}" />`,
+  ].join('');
+
+  const post = rewriteWpYoastFields({
+    id: 68047,
+    excerpt: { rendered: `<p><a href="${LINKEDIN_POST}">keep excerpt for later</a></p>` },
+    yoast_head: yoastHead,
+    yoast_head_json: {
+      og_url: ogUrl,
+      canonical: oldOg,
+      og_image: [{ url: MEDIA_SRC, width: 1200, height: 630 }],
+      schema: {
+        '@graph': [
+          {
+            '@type': 'BreadcrumbList',
+            '@id': `${ogUrl}#breadcrumb`,
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Portada', item: 'https://endpoint.playfulagency.com/' },
+              { '@type': 'ListItem', position: 2, name: 'Blog', item: listingOg },
+            ],
+          },
+        ],
+      },
+    },
+  });
+
+  assert.equal(post.yoast_head.includes('endpoint.playfulagency.com/blog'), false);
+  assert.equal(JSON.stringify(post.yoast_head_json).includes('endpoint.playfulagency.com/blog'), false);
+  assert.match(post.yoast_head, /content="https:\/\/playfulagency\.com\/blog\/seo\/tendencias-seo-2020"/);
+  assert.match(post.yoast_head, /#breadcrumb/);
+  assert.match(post.yoast_head, new RegExp(`content="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
+  assert.equal(
+    post.yoast_head_json.og_url,
+    'https://playfulagency.com/blog/seo/tendencias-seo-2020',
+  );
+  assert.equal(
+    post.yoast_head_json.canonical,
+    'https://playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin',
+  );
+  assert.equal(post.yoast_head_json.og_image[0].url, MEDIA_SRC);
+  assert.equal(
+    post.yoast_head_json.schema['@graph'][0]['@id'],
+    'https://playfulagency.com/blog/seo/tendencias-seo-2020#breadcrumb',
+  );
+  assert.equal(
+    post.yoast_head_json.schema['@graph'][0].itemListElement[1].item,
+    'https://playfulagency.com/blog',
+  );
+  assert.match(post.excerpt.rendered, new RegExp(LINKEDIN_POST.replaceAll('/', '\\/')));
+});
+
+test('getBlogPosts rewrites Yoast og:url / breadcrumb fields in the listing pipeline', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const body = functionBody(source, 'getBlogPosts');
+  assert.match(body, /rewriteWpRenderedHtmlFields\(/);
+  assert.match(body, /rewriteWpYoastFields\(/);
 });
