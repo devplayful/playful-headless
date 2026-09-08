@@ -99,15 +99,42 @@ function normalizeEmail(value: unknown): string {
   return email;
 }
 
-function normalizePhone(value: unknown): string {
-  const raw = text(value, 40);
+function normalizePhone(value: unknown, countryCodeValue: unknown): string {
+  if (typeof value !== 'string') return '';
+  const raw = value.trim().replace(/\u0000/g, '');
   if (!raw) return '';
-  const prefix = raw.startsWith('+') ? '+' : '';
-  const digits = raw.replace(/\D/g, '').slice(0, 15);
-  if (digits.length < 7) {
+  if (raw.length > 40 || !/^[+0-9()\s.-]+$/.test(raw)) {
     throw new SubmissionValidationError('El teléfono no es válido.');
   }
-  return `${prefix}${digits}`;
+
+  const international = raw.startsWith('+') || raw.startsWith('00');
+  const countryCode = text(countryCodeValue, 6);
+  const allowedCountryCodes = new Set([
+    '+1', '+34', '+51', '+52', '+54', '+55', '+56', '+57', '+58',
+    '+502', '+503', '+504', '+505', '+506', '+507', '+591', '+593',
+    '+595', '+598',
+  ]);
+  if (!international && !allowedCountryCodes.has(countryCode)) {
+    throw new SubmissionValidationError('Selecciona el código de país del teléfono.');
+  }
+
+  if (
+    (raw.startsWith('+') && !/^\+[0-9()\s.-]+$/.test(raw))
+    || (raw.startsWith('00') && !/^00[0-9()\s.-]+$/.test(raw))
+  ) {
+    throw new SubmissionValidationError('El teléfono no es válido.');
+  }
+
+  const normalizedRaw = raw.startsWith('00') ? `+${raw.slice(2)}` : raw;
+  const localDigits = normalizedRaw.replace(/\D/g, '').replace(/^0+/, '');
+  const digits = international
+    ? normalizedRaw.replace(/\D/g, '')
+    : `${countryCode.replace(/\D/g, '')}${localDigits}`;
+  const e164 = `+${digits}`;
+  if (!/^\+[1-9]\d{6,14}$/.test(e164)) {
+    throw new SubmissionValidationError('El teléfono no es válido.');
+  }
+  return e164;
 }
 
 function normalizeSubmissionId(value: unknown): string {
@@ -169,7 +196,7 @@ export function normalizeWebsiteLead(value: unknown, now = new Date()): WebsiteL
     submissionId: normalizeSubmissionId(input.submissionId),
     name: requiredText(input.name, 'name', 120),
     email: normalizeEmail(input.email),
-    phone: normalizePhone(input.phone),
+    phone: normalizePhone(input.phone, input.phoneCountryCode),
     business: text(input.business, 160),
     message: requiredText(input.message, 'message', 1000),
     qualification: qualification(input),

@@ -89,6 +89,18 @@ function isSubmissionState(value: unknown): value is SubmissionState {
     && isCrmProgress(value.crm);
 }
 
+function normalizeSubmissionState(value: unknown): unknown {
+  if (!isRecord(value)) return value;
+  if ((value.state === 'delivered' || value.state === 'completed')
+    && Array.isArray(value.crm)
+    && value.crm.length === 0) {
+    // Redis Lua cjson can round-trip an empty object as an empty array. Treat
+    // that representation as the intended empty CRM checkpoint object.
+    return { ...value, crm: {} };
+  }
+  return value;
+}
+
 export class RedisRestIdempotencyStore implements IdempotencyStore {
   constructor(
     private readonly url: string,
@@ -140,7 +152,7 @@ export class RedisRestIdempotencyStore implements IdempotencyStore {
     const result = await this.command<string | null>(['GET', this.stateKey(key)]);
     if (!result) return null;
     try {
-      const record = JSON.parse(result) as unknown;
+      const record = normalizeSubmissionState(JSON.parse(result) as unknown);
       if (!isSubmissionState(record)) throw new IdempotencyStoreUnavailableError();
       return record;
     } catch {

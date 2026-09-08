@@ -54,6 +54,29 @@ test('requires a clarification only when Otro is selected', () => {
   assert.equal(result.qualification.decisionRoleOther, 'Socia operativa');
 });
 
+test('requires a country code for local phone numbers and stores E.164', () => {
+  const base = {
+    submissionId: '00000000-0000-4000-8000-000000000000',
+    name: 'Ada',
+    email: 'ada@example.com',
+    phone: '658 093 580',
+    message: 'Hola',
+    privacyConsent: true,
+    decisionRole: 'owner',
+    salesModel: 'd2c',
+    monthlyRevenue: 'over_100k',
+    projectTiming: '0_30_days',
+  };
+
+  assert.throws(() => normalizeWebsiteLead(base), SubmissionValidationError);
+  assert.equal(normalizeWebsiteLead({ ...base, phoneCountryCode: '+34' }).phone, '+34658093580');
+  assert.equal(normalizeWebsiteLead({ ...base, phone: '0414 123 4567', phoneCountryCode: '+58' }).phone, '+584141234567');
+  assert.throws(() => normalizeWebsiteLead({ ...base, phoneCountryCode: '+9999' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+0000000' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '658A093580', phoneCountryCode: '+34' }), SubmissionValidationError);
+  assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+341234567890123456' }), SubmissionValidationError);
+});
+
 test('rejects a submission without explicit privacy consent', () => {
   assert.throws(() => normalizeWebsiteLead({
     submissionId: '00000000-0000-4000-8000-000000000000',

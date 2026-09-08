@@ -36,6 +36,19 @@ const CUSTOM_FIELD_KEYS = [
 export type HighLevelCustomFieldKey = (typeof CUSTOM_FIELD_KEYS)[number];
 export type HighLevelCustomFieldIds = Record<HighLevelCustomFieldKey, string>;
 
+const OPPORTUNITY_CUSTOM_FIELD_KEYS = [
+  'decision_role',
+  'sales_model',
+  'marketplaces',
+  'monthly_revenue',
+  'project_timing',
+  'qualification_level',
+  'project_context',
+] as const;
+
+export type HighLevelOpportunityCustomFieldKey = (typeof OPPORTUNITY_CUSTOM_FIELD_KEYS)[number];
+export type HighLevelOpportunityCustomFieldIds = Record<HighLevelOpportunityCustomFieldKey, string>;
+
 export interface DisabledHighLevelConfig {
   enabled: false;
 }
@@ -56,6 +69,7 @@ export interface EnabledHighLevelConfig {
   redisRestUrl: string;
   redisRestToken: string;
   customFieldIds: HighLevelCustomFieldIds;
+  opportunityCustomFieldIds: HighLevelOpportunityCustomFieldIds;
 }
 
 export type HighLevelConfig = DisabledHighLevelConfig | EnabledHighLevelConfig;
@@ -103,6 +117,31 @@ function customFields(env: Environment): HighLevelCustomFieldIds {
     const value = record[key];
     if (typeof value !== 'string' || !value.trim()) {
       throw new HighLevelConfigurationError(`Falta el ID del campo HighLevel: ${key}.`);
+    }
+    result[key] = value.trim();
+  }
+  return result;
+}
+
+function opportunityCustomFields(env: Environment): HighLevelOpportunityCustomFieldIds {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(required(env, 'HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON'));
+  } catch (error) {
+    if (error instanceof HighLevelConfigurationError) throw error;
+    throw new HighLevelConfigurationError('HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON no contiene JSON válido.');
+  }
+
+  if (!parsed || typeof parsed !== 'object') {
+    throw new HighLevelConfigurationError('HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON debe ser un objeto.');
+  }
+
+  const record = parsed as Record<string, unknown>;
+  const result = {} as HighLevelOpportunityCustomFieldIds;
+  for (const key of OPPORTUNITY_CUSTOM_FIELD_KEYS) {
+    const value = record[key];
+    if (typeof value !== 'string' || !value.trim()) {
+      throw new HighLevelConfigurationError(`Falta el ID del campo de oportunidad HighLevel: ${key}.`);
     }
     result[key] = value.trim();
   }
@@ -157,5 +196,6 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
     redisRestUrl: contactPipeline.redisRestUrl,
     redisRestToken: contactPipeline.redisRestToken,
     customFieldIds: customFields(env),
+    opportunityCustomFieldIds: opportunityCustomFields(env),
   };
 }

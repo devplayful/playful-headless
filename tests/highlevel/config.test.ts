@@ -4,7 +4,7 @@ import {
   HighLevelConfigurationError,
   readHighLevelConfig,
 } from '../../lib/highlevel/config.ts';
-import { customFieldIds } from './fixtures.ts';
+import { customFieldIds, opportunityCustomFieldIds } from './fixtures.ts';
 
 test('is fail-safe and needs no credentials while disabled', () => {
   assert.deepEqual(readHighLevelConfig({ HIGHLEVEL_ENABLED: 'false' }), { enabled: false });
@@ -45,6 +45,7 @@ test('uses a short processing lease independently from the durable result TTL', 
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
     HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify(opportunityCustomFieldIds),
   });
 
   assert.equal(enabled.enabled, true);
@@ -70,6 +71,7 @@ test('rejects a lease shorter than the longest two-call CRM critical section', (
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
     HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify(opportunityCustomFieldIds),
   }), HighLevelConfigurationError);
 });
 
@@ -88,6 +90,7 @@ test('includes WordPress delivery and its Redis checkpoint in lease validation',
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
     HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify(opportunityCustomFieldIds),
   };
 
   assert.throws(() => readHighLevelConfig({
@@ -118,6 +121,7 @@ test('fails closed below the complete Gate 1.1 retry horizon', () => {
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
     HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
     HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify(opportunityCustomFieldIds),
   };
 
   assert.throws(() => readHighLevelConfig({
