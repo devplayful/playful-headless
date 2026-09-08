@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Playful Contact Gate
  * Description: Protege el endpoint de contacto de Playful y evita entregas duplicadas.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Playful Agency
  */
 
@@ -143,6 +143,139 @@ function playful_contact_gate_sanitize_qualification($qualification) {
 
     return $sanitized;
 }
+
+function playful_contact_gate_qualification_labels() {
+    return array(
+        'decisionRole' => array(
+            'label' => 'Papel en el proyecto',
+            'values' => array(
+                'owner' => 'Soy dueño/a, socio/a o cofundador/a',
+                'decision_lead' => 'Lidero e-commerce, marketing u operaciones y participo en la decisión',
+                'researching_for_other' => 'Estoy investigando para otra persona/equipo',
+            ),
+        ),
+        'salesModel' => array(
+            'label' => 'Modelo de venta principal',
+            'values' => array(
+                'd2c' => 'Vendemos principalmente D2C',
+                'd2c_b2b' => 'Combinamos D2C y B2B',
+                'amazon' => 'Vendemos principalmente en Amazon',
+                'mercado_libre' => 'Vendemos principalmente en Mercado Libre',
+                'marketplaces_other' => 'Vendemos principalmente en otros marketplaces',
+                'marketplace_to_d2c' => 'Vendemos en marketplaces y queremos dar el salto a D2C',
+                'pre_d2c' => 'Estamos preparando nuestra primera venta directa D2C',
+                'not_online_or_unsure' => 'No vendemos D2C / no estoy seguro',
+            ),
+        ),
+        'monthlyRevenue' => array(
+            'label' => 'Facturación mensual online aproximada',
+            'values' => array(
+                'over_100k' => 'Más de US$100.000',
+                '50k_100k' => 'US$50.000–100.000',
+                '10k_50k' => 'US$10.000–50.000',
+                'under_10k' => 'Menos de US$10.000',
+                'prefer_not_to_say' => 'Prefiero no compartirlo',
+            ),
+        ),
+        'projectTiming' => array(
+            'label' => 'Momento del proyecto',
+            'values' => array(
+                '0_30_days' => 'Quiero iniciar un proyecto en los próximos 30 días',
+                '1_3_months' => 'Estoy preparando un proyecto para los próximos 1–3 meses',
+                'evaluating' => 'Estoy evaluando opciones',
+                'researching' => 'Solo estoy investigando',
+            ),
+        ),
+    );
+}
+
+function playful_contact_gate_qualification_summary($qualification) {
+    if (!is_array($qualification)) {
+        return '';
+    }
+
+    $lines = array();
+    foreach (playful_contact_gate_qualification_labels() as $field => $definition) {
+        $value = isset($qualification[$field]) ? (string) $qualification[$field] : '';
+        $other_field = $field . 'Other';
+
+        if ($value === 'other') {
+            $display = isset($qualification[$other_field])
+                ? sanitize_text_field((string) $qualification[$other_field])
+                : '';
+            if ($display === '') {
+                return '';
+            }
+            $display = 'Otro: ' . $display;
+        } elseif (isset($definition['values'][$value])) {
+            $display = $definition['values'][$value];
+        } else {
+            return '';
+        }
+
+        $lines[] = '• ' . $definition['label'] . ': ' . $display;
+    }
+
+    $marketplaces = isset($qualification['secondaryMarketplaces'])
+        ? sanitize_text_field((string) $qualification['secondaryMarketplaces'])
+        : '';
+    if ($marketplaces !== '') {
+        $lines[] = '• Otros marketplaces: ' . $marketplaces;
+    }
+
+    return implode("\n\n", $lines);
+}
+
+function playful_contact_gate_mail_context($qualification = null, $remove = false) {
+    static $current = null;
+
+    if ($remove) {
+        $previous = $current;
+        $current = null;
+        return $previous;
+    }
+
+    if (is_array($qualification)) {
+        $current = $qualification;
+    }
+
+    return $current;
+}
+
+add_filter('wp_mail', function ($args) {
+    $qualification = playful_contact_gate_mail_context();
+    if (!is_array($qualification)) {
+        return $args;
+    }
+
+    $recipients = isset($args['to']) ? (array) $args['to'] : array();
+    $is_contact_email = in_array('hello@playfulagency.com', $recipients, true)
+        && isset($args['subject'])
+        && strpos((string) $args['subject'], 'Nuevo contacto desde el sitio web - ') === 0;
+    if (!$is_contact_email || !isset($args['message']) || !is_string($args['message'])) {
+        return $args;
+    }
+
+    $summary = playful_contact_gate_qualification_summary($qualification);
+    if ($summary === '') {
+        return $args;
+    }
+
+    $block = "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    $block .= "CUALIFICACIÓN DEL PROYECTO\n";
+    $block .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+    $block .= $summary . "\n";
+
+    // Detect only the complete generated block. A lead may legitimately type
+    // the visible heading in the free-text message without suppressing data.
+    if (strpos($args['message'], $block) !== false) {
+        return $args;
+    }
+
+    $args['message'] .= $block;
+
+    return $args;
+}, PHP_INT_MAX);
 
 function playful_contact_gate_request_context($request, $context = null, $remove = false) {
     static $contexts = array();
@@ -370,15 +503,23 @@ add_filter('rest_pre_dispatch', function ($result, $server, $request) {
         return $result;
     }
 
+    // PHP workers may be reused. Clear any prior request state before
+    // accepting qualification data for this contact submission.
+    playful_contact_gate_mail_context(null, true);
+
     $qualification = playful_contact_gate_validate_qualification($request);
     if (is_wp_error($qualification)) {
         return $qualification;
     }
     if ($request->get_param('qualification') !== null) {
+        $sanitized_qualification = playful_contact_gate_sanitize_qualification(
+            $request->get_param('qualification')
+        );
         $request->set_param(
             'qualification',
-            playful_contact_gate_sanitize_qualification($request->get_param('qualification'))
+            $sanitized_qualification
         );
+        playful_contact_gate_mail_context($sanitized_qualification);
     }
 
     $submission_id = playful_contact_gate_submission_id($request);
@@ -417,6 +558,8 @@ add_filter('rest_post_dispatch', function ($response, $server, $request) {
     if (!playful_contact_gate_is_contact_request($request)) {
         return $response;
     }
+
+    playful_contact_gate_mail_context(null, true);
 
     $context = playful_contact_gate_request_context($request, null, true);
     if (!is_array($context) || ($context['kind'] ?? '') !== 'acquired') {
