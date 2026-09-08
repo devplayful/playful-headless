@@ -95,8 +95,8 @@ function PurpleBand({ title, body }: { title: string; body: string }) {
     <div className="relative overflow-hidden rounded-[32px] bg-[#440099] p-8 md:p-[60px]">
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat opacity-40" />
       <div className="relative z-10 max-w-4xl">
-        <h2 className="playful-h2 text-white mb-6">{title}</h2>
-        <p className="playful-contenido-p text-[#E9D7FF]">{body}</p>
+        <h2 className="playful-h2 mb-6" style={{ color: '#FFFFFF' }}>{title}</h2>
+        <p className="playful-contenido-p" style={{ color: '#E9D7FF' }}>{body}</p>
       </div>
     </div>
   );
