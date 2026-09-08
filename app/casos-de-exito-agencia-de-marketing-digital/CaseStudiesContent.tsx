@@ -6,6 +6,7 @@ import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
+import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -135,12 +136,7 @@ export default function CaseStudiesContent() {
               "...";
           }
 
-          let image = "";
-          if (item._embedded?.["wp:featuredmedia"]?.[0]?.source_url) {
-            image = item._embedded["wp:featuredmedia"][0].source_url;
-          } else if (item.featured_media_url) {
-            image = item.featured_media_url;
-          }
+          const image = resolveCaseStudyListingImage(item);
 
           const categories = [
             item.acf?.categoria1,
