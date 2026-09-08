@@ -2,8 +2,10 @@
   "name": "nextjs-blog",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.8",
   "engines": {
-    "node": "24.x"
+    "node": "24.x",
+    "npm": "10.9.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -18,7 +20,11 @@
     "test:highlevel": "node --experimental-transform-types --test tests/highlevel/*.test.ts",
     "test:highlevel-evidence": "node --test tests/highlevel/redacted-export-audit.test.mjs",
     "audit:highlevel-export": "node scripts/highlevel-redacted-export-audit.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:route-integrity": "node --test tests/route-integrity.test.mjs",
+    "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
+    "verify:routes": "node scripts/verify-route-artifact.mjs",
+    "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
