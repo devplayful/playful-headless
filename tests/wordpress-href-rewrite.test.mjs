@@ -216,3 +216,92 @@ test('getBlogPosts rewrites Yoast og:url / breadcrumb fields in the listing pipe
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
   assert.match(body, /rewriteWpYoastFields\(/);
 });
+
+test('rewriteWpYoastFields clears live /blog payload: escaped category og:url + breadcrumb @id', () => {
+  const listingOg = 'https://endpoint.playfulagency.com/blog/';
+  const listingBreadcrumb = `${listingOg}#breadcrumb`;
+  const postOg = 'https://endpoint.playfulagency.com/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/';
+
+  // Same encoding the /blog RSC stream uses for category yoast_head.
+  const rscEscapedYoastHead =
+    '\\u003cmeta property="og:url" content="https:\\u002f\\u002fendpoint.playfulagency.com\\u002fblog\\u002f" /\\u003e' +
+    '\\u003cscript type="application/ld+json"\\u003e{"@id":"https:\\u002f\\u002fendpoint.playfulagency.com\\u002fblog\\u002f#breadcrumb"}\\u003c/script\\u003e' +
+    `\\u003cmeta property="og:image" content="${MEDIA_SRC}" /\\u003e`;
+  assert.match(rscEscapedYoastHead, /\\u003cmeta property="og:url"/);
+  assert.match(rscEscapedYoastHead, /endpoint\.playfulagency\.com\\u002fblog/);
+  assert.equal(rscEscapedYoastHead.includes('<meta'), false);
+
+  const slashEscapedHead =
+    '<meta property="og:url" content="https:\\/\\/endpoint.playfulagency.com\\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce\\/" />' +
+    '<script type="application/ld+json">{"@id":"https:\\/\\/endpoint.playfulagency.com\\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce\\/#breadcrumb"}</script>';
+
+  const liveCategory = {
+    id: 24,
+    name: 'Tecnología',
+    slug: 'tecnologia',
+    taxonomy: 'category',
+    link: 'https://endpoint.playfulagency.com/category/tecnologia/',
+    yoast_head: rscEscapedYoastHead,
+    yoast_head_json: {
+      title: 'Tecnología - Playful Agency',
+      og_url: listingOg,
+      og_image: [{ url: MEDIA_SRC, width: 1200, height: 630 }],
+      schema: {
+        '@graph': [
+          {
+            '@type': 'CollectionPage',
+            '@id': 'https://endpoint.playfulagency.com/category/tecnologia/',
+            url: listingOg,
+            breadcrumb: { '@id': listingBreadcrumb },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            '@id': listingBreadcrumb,
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Portada', item: 'https://endpoint.playfulagency.com/' },
+              { '@type': 'ListItem', position: 2, name: 'Tecnología' },
+            ],
+          },
+        ],
+      },
+    },
+  };
+
+  const livePost = {
+    id: 86152,
+    slug: 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    yoast_head: slashEscapedHead,
+    yoast_head_json: { og_url: postOg, og_image: [{ url: MEDIA_SRC }] },
+    categories: [liveCategory],
+    _embedded: { 'wp:term': [[liveCategory]] },
+  };
+
+  assert.match(JSON.stringify(livePost), /endpoint\.playfulagency\.com/);
+  assert.match(livePost.categories[0].yoast_head, /\\u003cmeta property="og:url"/);
+
+  const rewritten = rewriteWpYoastFields(livePost);
+  const payload = JSON.stringify(rewritten);
+
+  assert.equal(payload.includes('endpoint.playfulagency.com/blog'), false);
+  assert.equal((payload.match(/og:url/g) || []).length > 0, true);
+  assert.equal((payload.match(/#breadcrumb/g) || []).length > 0, true);
+  assert.match(rewritten.categories[0].yoast_head, /content="https:\/\/playfulagency\.com\/blog"/);
+  assert.match(rewritten.categories[0].yoast_head, /https:\/\/playfulagency\.com\/blog#breadcrumb/);
+  assert.equal(rewritten.categories[0].yoast_head_json.og_url, 'https://playfulagency.com/blog');
+  assert.equal(
+    rewritten.categories[0].yoast_head_json.schema['@graph'][0].url,
+    'https://playfulagency.com/blog',
+  );
+  assert.equal(
+    rewritten.categories[0].yoast_head_json.schema['@graph'][1]['@id'],
+    'https://playfulagency.com/blog#breadcrumb',
+  );
+  assert.equal(
+    rewritten._embedded['wp:term'][0][0].yoast_head_json.og_url,
+    'https://playfulagency.com/blog',
+  );
+  assert.match(rewritten.yoast_head, /content="https:\/\/playfulagency\.com\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"/);
+  assert.match(rewritten.yoast_head, /https:\/\/playfulagency\.com\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce#breadcrumb/);
+  assert.equal(rewritten.categories[0].yoast_head_json.og_image[0].url, MEDIA_SRC);
+  assert.match(rewritten.categories[0].yoast_head, new RegExp(MEDIA_SRC.replaceAll('/', '\\/')));
+});

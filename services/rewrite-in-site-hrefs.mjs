@@ -50,10 +50,20 @@ export function rewriteInSiteUrlToApex(url) {
   return `${APEX_ORIGIN}${rewritten}`;
 }
 
+/**
+ * RSC / JSON-LD often store Yoast HTML with `\u003c` tags or `\/` slashes.
+ * Decode those so IN_SITE_URL_RE can see `https://endpoint.../blog/`.
+ */
+function decodeLiveEscapes(text) {
+  return text
+    .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\\//g, '/');
+}
+
 /** Rewrites every in-site page URL inside a string (og:url, JSON-LD, etc.). */
 export function rewriteInSiteUrlsInText(text) {
   if (typeof text !== 'string') return text;
-  return text.replace(IN_SITE_URL_RE, (match) => rewriteInSiteUrlToApex(match));
+  return decodeLiveEscapes(text).replace(IN_SITE_URL_RE, (match) => rewriteInSiteUrlToApex(match));
 }
 
 function rewriteYoastJsonValue(value) {
@@ -73,20 +83,41 @@ function rewriteYoastJsonValue(value) {
   return value;
 }
 
+function isYoastKey(key) {
+  return typeof key === 'string' && key.toLowerCase().includes('yoast');
+}
+
 /**
- * Rewrites endpoint/old/www page URLs inside Yoast HTML + JSON.
- * Listing RSC serializes these fields; /wp-content media URLs are left alone.
+ * Walk arrays/objects so listing copies (`categories`, `_embedded['wp:term']`)
+ * get the same Yoast rewrite as the top-level post.
+ */
+function rewriteYoastTree(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => rewriteYoastTree(item));
+  }
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const [key, nested] of Object.entries(value)) {
+      if (isYoastKey(key)) {
+        out[key] = typeof nested === 'string'
+          ? rewriteInSiteUrlsInText(nested)
+          : rewriteYoastJsonValue(nested);
+      } else {
+        out[key] = rewriteYoastTree(nested);
+      }
+    }
+    return out;
+  }
+  return value;
+}
+
+/**
+ * Rewrites endpoint/old/www page URLs inside Yoast HTML + JSON, including
+ * nested term/category copies that /blog serializes into the RSC payload.
+ * /wp-content media URLs are left alone.
  */
 export function rewriteWpYoastFields(item) {
-  if (!item || typeof item !== 'object') return item;
-  const next = { ...item };
-  if (typeof item.yoast_head === 'string') {
-    next.yoast_head = rewriteInSiteUrlsInText(item.yoast_head);
-  }
-  if (item.yoast_head_json && typeof item.yoast_head_json === 'object') {
-    next.yoast_head_json = rewriteYoastJsonValue(item.yoast_head_json);
-  }
-  return next;
+  return rewriteYoastTree(item);
 }
 
 function rewriteRenderedField(field) {
