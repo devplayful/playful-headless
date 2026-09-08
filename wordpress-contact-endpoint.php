@@ -42,9 +42,113 @@ add_action('rest_api_init', function () {
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_textarea_field',
             ),
+            // Versioned qualification data is optional so integrations using
+            // the legacy contact contract continue to work. Gate 1.1
+            // validates its allowed values before this callback runs.
+            'qualification' => array(
+                'required' => false,
+                'type' => 'object',
+                'validate_callback' => function($param) {
+                    return is_array($param);
+                }
+            ),
+            // Optional for the Playful Contact Gate receipt protocol. The
+            // endpoint callback remains legacy-compatible and does not own
+            // idempotency state; version 1.1.0+ of the gate does.
+            'submission_id' => array(
+                'required' => false,
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'validate_callback' => function($param) {
+                    return preg_match('/\A[A-Za-z0-9_-]{20,100}\z/', $param) === 1;
+                }
+            ),
         ),
     ));
 });
+
+function playful_contact_qualification_labels() {
+    return array(
+        'decisionRole' => array(
+            'label' => 'Papel en el proyecto',
+            'values' => array(
+                'owner' => 'Soy dueño/a, socio/a o cofundador/a',
+                'decision_lead' => 'Lidero e-commerce, marketing u operaciones y participo en la decisión',
+                'researching_for_other' => 'Estoy investigando para otra persona/equipo',
+            ),
+        ),
+        'salesModel' => array(
+            'label' => 'Modelo de venta principal',
+            'values' => array(
+                'd2c' => 'Vendemos principalmente D2C',
+                'd2c_b2b' => 'Combinamos D2C y B2B',
+                'amazon' => 'Vendemos principalmente en Amazon',
+                'mercado_libre' => 'Vendemos principalmente en Mercado Libre',
+                'marketplaces_other' => 'Vendemos principalmente en otros marketplaces',
+                'marketplace_to_d2c' => 'Vendemos en marketplaces y queremos dar el salto a D2C',
+                'pre_d2c' => 'Estamos preparando nuestra primera venta directa D2C',
+                'not_online_or_unsure' => 'No vendemos D2C / no estoy seguro',
+            ),
+        ),
+        'monthlyRevenue' => array(
+            'label' => 'Facturación mensual online aproximada',
+            'values' => array(
+                'over_100k' => 'Más de US$100.000',
+                '50k_100k' => 'US$50.000–100.000',
+                '10k_50k' => 'US$10.000–50.000',
+                'under_10k' => 'Menos de US$10.000',
+                'prefer_not_to_say' => 'Prefiero no compartirlo',
+            ),
+        ),
+        'projectTiming' => array(
+            'label' => 'Momento del proyecto',
+            'values' => array(
+                '0_30_days' => 'Quiero iniciar un proyecto en los próximos 30 días',
+                '1_3_months' => 'Estoy preparando un proyecto para los próximos 1–3 meses',
+                'evaluating' => 'Estoy evaluando opciones',
+                'researching' => 'Solo estoy investigando',
+            ),
+        ),
+    );
+}
+
+function playful_contact_qualification_summary($qualification) {
+    if (!is_array($qualification)) {
+        return '';
+    }
+
+    $lines = array();
+    foreach (playful_contact_qualification_labels() as $field => $definition) {
+        $value = isset($qualification[$field]) ? (string) $qualification[$field] : '';
+        $other_field = $field . 'Other';
+
+        if ($value === 'other') {
+            $display = isset($qualification[$other_field])
+                ? sanitize_text_field((string) $qualification[$other_field])
+                : '';
+            if ($display === '') {
+                return '';
+            }
+            $display = 'Otro: ' . $display;
+        } elseif (isset($definition['values'][$value])) {
+            $display = $definition['values'][$value];
+        } else {
+            // Do not render a partial or unknown qualification in the email.
+            return '';
+        }
+
+        $lines[] = '• ' . $definition['label'] . ': ' . $display;
+    }
+
+    $marketplaces = isset($qualification['secondaryMarketplaces'])
+        ? sanitize_text_field((string) $qualification['secondaryMarketplaces'])
+        : '';
+    if ($marketplaces !== '') {
+        $lines[] = '• Otros marketplaces: ' . $marketplaces;
+    }
+
+    return implode("\n\n", $lines);
+}
 
 /**
  * Maneja el envío del formulario de contacto
@@ -56,6 +160,7 @@ function playful_handle_contact_form($request) {
     $phone = $request->get_param('phone');
     $business = $request->get_param('business');
     $message = $request->get_param('message');
+    $qualification = playful_contact_qualification_summary($request->get_param('qualification'));
 
     // Configurar el destinatario
     $to = 'hello@playfulagency.com';
@@ -79,7 +184,14 @@ function playful_handle_contact_form($request) {
     if (!empty($business)) {
         $body .= "• Nombre del negocio: " . $business . "\n\n";
     }
-    
+
+    if ($qualification !== '') {
+        $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        $body .= "CUALIFICACIÓN DEL PROYECTO\n";
+        $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+        $body .= $qualification . "\n\n";
+    }
+
     $body .= "• Mensaje del campo '¿Cómo podemos ayudarte?':\n";
     $body .= $message . "\n\n";
     
@@ -100,7 +212,7 @@ function playful_handle_contact_form($request) {
     
     // Registrar en logs para debugging (opcional)
     if (!$sent) {
-        error_log('Error al enviar email de contacto para: ' . $email);
+        error_log('Error al enviar email de contacto.');
     }
     
     // Responder al cliente
@@ -108,6 +220,7 @@ function playful_handle_contact_form($request) {
         return new WP_REST_Response(array(
             'success' => true,
             'message' => 'Mensaje enviado correctamente',
+            'replayed' => false,
         ), 200);
     } else {
         return new WP_REST_Response(array(

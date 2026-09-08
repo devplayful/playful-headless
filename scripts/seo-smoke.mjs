@@ -61,6 +61,16 @@ const unknownCategoryResponse = await request(
 );
 assert.equal(unknownCategoryResponse.status, 404, 'unknown category aliases must not drop attribution');
 
+const homeResponse = await request('/', { redirect: 'follow' });
+assert.equal(homeResponse.status, 200);
+const homeHtml = await homeResponse.text();
+const homeCanonicals = [...homeHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(homeCanonicals.length, 1, 'home should emit exactly one canonical');
+assert.equal(homeCanonicals[0][1], 'https://playfulagency.com/');
+const homeOgUrls = [...homeHtml.matchAll(/<meta[^>]+property=["']og:url["'][^>]+content=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(homeOgUrls.length, 1, 'home should emit exactly one og:url');
+assert.equal(homeOgUrls[0][1], 'https://playfulagency.com/');
+
 const sitemapResponse = await request('/sitemap.xml', { redirect: 'follow' });
 assert.equal(sitemapResponse.status, 200);
 const sitemap = await sitemapResponse.text();
@@ -68,5 +78,42 @@ const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[
 assert.equal(new Set(urls).size, urls.length, 'sitemap must not contain duplicate URLs');
 assert.ok(urls.every((url) => url.startsWith('https://playfulagency.com')));
 assert.ok(urls.every((url) => !url.includes('endpoint.playfulagency.com') && !url.includes('www.playfulagency.com')));
+
+function extractTitle(html) {
+  return html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? '';
+}
+
+function extractOgTitle(html) {
+  return (
+    html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i)?.[1] ??
+    html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+property=["']og:title["']/i)?.[1] ??
+    ''
+  );
+}
+
+const expectedTitles = {
+  '/agencia-e-commerce':
+    'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+  '/pagos-online-ecommerce':
+    'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
+  '/pasarela-de-pago-ecommerce':
+    'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  '/marketing-internacional':
+    'Marketing Internacional: Lleva tu negocio al mundo (sin complicaciones)',
+};
+
+const observedTitles = [];
+for (const [pathname, expected] of Object.entries(expectedTitles)) {
+  const response = await request(pathname, { redirect: 'follow' });
+  assert.equal(response.status, 200, `${pathname} should return 200`);
+  const html = await response.text();
+  const title = extractTitle(html);
+  const ogTitle = extractOgTitle(html);
+  assert.equal(title, expected, `${pathname} <title>`);
+  assert.equal(ogTitle, expected, `${pathname} og:title`);
+  assert.doesNotMatch(html, /name=["']robots["'][^>]*content=["'][^"']*noindex/i);
+  observedTitles.push(title);
+}
+assert.equal(new Set(observedTitles).size, observedTitles.length, 'each QA URL must have a distinct title');
 
 console.log(`SEO smoke passed against ${origin}`);
