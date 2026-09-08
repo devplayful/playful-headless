@@ -1,8 +1,8 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
-import { rewriteInSitePageHrefs } from './rewrite-in-site-hrefs.mjs';
+import { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields } from './rewrite-in-site-hrefs.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 
-export { rewriteInSitePageHrefs };
+export { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields };
 
 const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
 
@@ -472,7 +472,7 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } },
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-  const processedPosts = posts.map(post => ({
+  const processedPosts = posts.map(post => rewriteWpRenderedHtmlFields({
     ...post,
     featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
     featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
@@ -493,19 +493,20 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
   );
   return posts.map(post => {
+    const rewritten = rewriteWpRenderedHtmlFields(post);
     let category = 'Sin categoría';
-    const categories = post._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
+    const categories = rewritten._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
     if (categories && categories.length > 0) category = categories[0].name;
     let imageUrl = '/images/blog/placeholder.jpg';
-    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+    const featuredMedia = rewritten._embedded?.['wp:featuredmedia']?.[0];
     if (featuredMedia) {
       imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
     }
-    const date = new Date(post.date);
+    const date = new Date(rewritten.date);
     const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
-    const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
+    const excerpt = (rewritten.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
     const categorySlug = categories?.[0]?.slug || 'sin-categoria';
-    return { id: post.id, title: post.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: post.slug, href: `/blog/${categorySlug}/${post.slug}` };
+    return { id: rewritten.id, title: rewritten.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: rewritten.slug, href: `/blog/${categorySlug}/${rewritten.slug}` };
   });
 }
 
@@ -529,13 +530,7 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     }
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
-  if (post.content?.rendered) {
-    post.content = {
-      ...post.content,
-      rendered: rewriteInSitePageHrefs(post.content.rendered),
-    };
-  }
-  return post;
+  return rewriteWpRenderedHtmlFields(post);
 }
 
 export interface TeamMember {

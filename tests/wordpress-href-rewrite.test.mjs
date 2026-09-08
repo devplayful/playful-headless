@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
+import { rewriteInSitePageHrefs, rewriteWpRenderedHtmlFields } from '../services/rewrite-in-site-hrefs.mjs';
 
 const LINKEDIN_POST =
   'https://endpoint.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin';
@@ -70,12 +70,46 @@ test('does not rewrite external or already-relative hrefs', () => {
   assert.equal(rewriteInSitePageHrefs(html), html);
 });
 
-test('getBlogPostBySlug maps content.rendered through rewriteInSitePageHrefs', async () => {
-  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const start = source.indexOf('export async function getBlogPostBySlug');
-  assert.notEqual(start, -1);
+test('rewriteWpRenderedHtmlFields rewrites excerpt and content hrefs; leaves wp-content', () => {
+  const post = rewriteWpRenderedHtmlFields({
+    id: 1,
+    excerpt: {
+      rendered: `<p>Lee <a href="${LINKEDIN_POST}">LinkedIn</a> y <a href="${MEDIA_HREF}">PDF</a>.</p>`,
+    },
+    content: {
+      rendered: `<p><a href="${BLACK_FRIDAY_POST}">Black Friday</a><img src="${MEDIA_SRC}" alt=""></p>`,
+    },
+  });
+
+  assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/anuncios-en-linkedin"/);
+  assert.match(post.excerpt.rendered, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
+  assert.match(post.content.rendered, /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/);
+  assert.match(post.content.rendered, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
+  assert.equal(countHostHrefs(post.excerpt.rendered, 'endpoint.playfulagency.com'), 1);
+  assert.equal(countHostHrefs(post.content.rendered, 'endpoint.playfulagency.com'), 0);
+});
+
+function functionBody(source, name) {
+  const start = source.indexOf(`export async function ${name}`);
+  assert.notEqual(start, -1, `missing ${name}`);
   const nextExport = source.indexOf('\nexport ', start + 1);
-  const body = nextExport === -1 ? source.slice(start) : source.slice(start, nextExport);
-  assert.match(body, /rewriteInSitePageHrefs\(/);
-  assert.match(body, /content\.rendered/);
+  return nextExport === -1 ? source.slice(start) : source.slice(start, nextExport);
+}
+
+test('getBlogPostBySlug maps content.rendered and excerpt.rendered through the rewriter', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const body = functionBody(source, 'getBlogPostBySlug');
+  assert.match(body, /rewriteWpRenderedHtmlFields\(/);
+});
+
+test('getBlogPosts rewrites listing excerpt.rendered and content.rendered', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const body = functionBody(source, 'getBlogPosts');
+  assert.match(body, /rewriteWpRenderedHtmlFields\(/);
+});
+
+test('getLatestBlogPosts rewrites excerpt HTML before stripping tags', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const body = functionBody(source, 'getLatestBlogPosts');
+  assert.match(body, /rewriteWpRenderedHtmlFields\(/);
 });
