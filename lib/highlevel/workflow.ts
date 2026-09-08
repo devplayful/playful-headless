@@ -272,7 +272,27 @@ export async function syncWebsiteLeadToHighLevel(
   }
 
   if (fit !== 'priority') {
-    return { contactId, opportunityCreated: false };
+    const existing = selectOrReject(await gateway.findOpenOpportunities(
+      config.locationId,
+      config.pipelineId,
+      contactId,
+    ));
+    if (!existing) return { contactId, opportunityCreated: false };
+
+    await control.withResourceLease(
+      `opportunity:${config.locationId}:${config.pipelineId}:${contactId}`,
+      async () => {
+        try {
+          await gateway.updateOpportunityCustomFields(
+            existing.id,
+            opportunityFields(lead, config),
+          );
+        } catch (error) {
+          retainLeaseForUncertainWrite(error);
+        }
+      },
+    );
+    return { contactId, opportunityId: existing.id, opportunityCreated: false };
   }
 
   let opportunityId = control.progress.opportunityId;
