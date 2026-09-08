@@ -5,16 +5,28 @@ and an artifact produced in the same local job. It does not call the Vercel API
 and needs no secrets. The reviewed baseline is
 `a108e172b7d03eb612082ee222cb6ebc750d5fec`.
 
-`config/expected-routes.json` governs three independent inventories:
+`config/expected-routes.json` governs four independent inventories:
 
 - all 16 source templates, including the four dynamic templates;
 - 12 critical routes that must exist in the artifact;
 - every concrete ISR/SSG route and its exact source template (108 at the
-  baseline build).
+  baseline build);
+- the complete ordered redirect and rewrite configuration emitted by Next's
+  `routes-manifest.json`.
 
 The concrete list is deliberate. In particular, `/[slug]` cannot legitimize an
 arbitrary root route. A new WordPress page or blog prerender fails until its
 exact route/source pair is reviewed in the expected manifest.
+
+Next redirects and all three rewrite phases (`beforeFiles`, `afterFiles` and
+`fallback`) are canonicalized and fingerprinted as part of the artifact. Any
+change to source, destination, regex, status, condition or ordering fails until
+the reviewed manifest is updated. The gate separately rejects a redirect or
+`beforeFiles` rewrite whose generated regex can shadow a critical route.
+
+App Router route groups remain transparent, but intercepting-route conventions
+such as `(.)`, `(..)` and `(...)` are rejected explicitly. They cannot disappear
+from the source or artifact inventory through generic parenthesis filtering.
 
 ## Required same-job command
 
@@ -27,6 +39,11 @@ file inside the newly created artifact, and immediately runs the gate:
 ```sh
 npm run verify:routes:build
 ```
+
+Before removing either canonical generated directory, the wrapper verifies
+every existing ancestor with `lstat` and `realpath`. A symlinked `.vercel`,
+`.next` or repository root is rejected before recursive deletion, and the same
+physical-path check runs again after the build.
 
 The default build also retains the repository's inactivity and absolute-time
 budgets, so route verification cannot bypass the existing stalled-build guard.
@@ -134,9 +151,11 @@ secrets and has read-only repository permissions.
 The route gate fails for a dirty tree, wrong baseline lineage, source-manifest
 drift, any missing source template, a ghost template, unknown or missing
 concrete route/source pair, missing critical route, missing provenance, commit
-mismatch or artifact fingerprint mismatch. For Vercel output it also fails on
-invalid functions, handlers, symlinks, overrides, prerender configuration or
-unsupported routing semantics, or ambiguous route provenance. Next's generated
+mismatch, artifact fingerprint mismatch, unreviewed Next redirect/rewrite
+drift, critical-route shadowing or unsupported intercepting routes. For Vercel
+output it also fails on invalid functions, handlers, symlinks, overrides,
+prerender configuration, unsupported routing semantics or ambiguous route
+provenance. Next's generated
 `/_not-found` is the sole reviewed artifact-only exception.
 
 The tooling changes no application route, handler, redirect, runtime setting or

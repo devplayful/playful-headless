@@ -28,7 +28,19 @@ export function sortedUnique(values) {
 }
 
 function publicSegments(segments) {
-  return segments.filter((segment) => segment && !segment.startsWith('(') && !segment.startsWith('@'));
+  const publicRouteSegments = [];
+  for (const segment of segments) {
+    if (!segment || segment.startsWith('@')) continue;
+    if (/^(?:\(\.\)|(?:\(\.\.\))+|\(\.\.\.\))/.test(segment)) {
+      throw new Error(`intercepting route segment is not supported by route integrity: ${segment}`);
+    }
+    if (/^\([^/()]+\)$/.test(segment)) continue;
+    if (segment.startsWith('(')) {
+      throw new Error(`unrecognized parenthesized route segment: ${segment}`);
+    }
+    publicRouteSegments.push(segment);
+  }
+  return publicRouteSegments;
 }
 
 export function sourceFileToRoute(file) {
@@ -75,6 +87,56 @@ export function routesFromPrerenderManifest(payload, origin = 'prerender-manifes
     concreteRoutes: concreteRoutes.sort((left, right) => (
       compareStrings(`${left.sourceTemplate}:${left.route}`, `${right.sourceTemplate}:${right.route}`)
     )),
+  };
+}
+
+function canonicalJson(value, origin) {
+  if (value === null || ['string', 'boolean'].includes(typeof value)) return value;
+  if (typeof value === 'number') {
+    assert.ok(Number.isFinite(value), `${origin} must contain finite JSON numbers`);
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item, index) => canonicalJson(item, `${origin}[${index}]`));
+  }
+  assert.ok(value && typeof value === 'object', `${origin} must contain JSON-compatible values`);
+  return Object.fromEntries(Object.keys(value).sort(compareStrings).map((key) => (
+    [key, canonicalJson(value[key], `${origin}.${key}`)]
+  )));
+}
+
+function compileNextRoutingRegexp(rule, origin) {
+  assert.equal(typeof rule.regex, 'string', `${origin}.regex must be a string`);
+  try {
+    return new RegExp(rule.regex);
+  } catch (error) {
+    throw new Error(`${origin}.regex is invalid: ${error.message}`);
+  }
+}
+
+function validateNextRoutingRules(rules, origin) {
+  assert.ok(Array.isArray(rules), `${origin} must be an array`);
+  for (let index = 0; index < rules.length; index += 1) {
+    const rule = rules[index];
+    const ruleOrigin = `${origin}[${index}]`;
+    assert.ok(rule && !Array.isArray(rule) && typeof rule === 'object', `${ruleOrigin} must be an object`);
+    assert.equal(typeof rule.source, 'string', `${ruleOrigin}.source must be a string`);
+    assert.equal(typeof rule.destination, 'string', `${ruleOrigin}.destination must be a string`);
+    compileNextRoutingRegexp(rule, ruleOrigin);
+  }
+  return canonicalJson(rules, origin);
+}
+
+export function routesFromNextRoutesManifest(payload, origin = 'routes-manifest.json') {
+  assert.equal(payload?.version, 3, `${origin} must use routes schema version 3`);
+  assert.ok(payload.rewrites && !Array.isArray(payload.rewrites) && typeof payload.rewrites === 'object', `${origin} must contain rewrites`);
+  const rewritePhases = ['beforeFiles', 'afterFiles', 'fallback'];
+  assert.deepEqual(Object.keys(payload.rewrites).sort(compareStrings), [...rewritePhases].sort(compareStrings), `${origin} has unsupported rewrite phases`);
+  return {
+    redirects: validateNextRoutingRules(payload.redirects, `${origin}.redirects`),
+    rewrites: Object.fromEntries(rewritePhases.map((phase) => (
+      [phase, validateNextRoutingRules(payload.rewrites[phase], `${origin}.rewrites.${phase}`)]
+    ))),
   };
 }
 
@@ -359,14 +421,17 @@ async function readJson(file) {
 async function loadNextArtifact(artifactDirectory) {
   const appPathsFile = path.join(artifactDirectory, 'server/app-paths-manifest.json');
   const prerenderFile = path.join(artifactDirectory, 'prerender-manifest.json');
+  const routesFile = path.join(artifactDirectory, 'routes-manifest.json');
   const templates = routesFromAppPathsManifest(await readJson(appPathsFile), appPathsFile);
   const prerender = routesFromPrerenderManifest(await readJson(prerenderFile), prerenderFile);
+  const nextRouting = routesFromNextRoutesManifest(await readJson(routesFile), routesFile);
   return {
     format: 'next',
     artifactDirectory,
     templates,
     concreteRoutes: prerender.concreteRoutes,
     prerenderDynamicTemplates: prerender.dynamicTemplates,
+    nextRouting,
   };
 }
 
@@ -700,7 +765,12 @@ async function loadVercelArtifact(outputDirectory) {
       compareStrings(`${left.sourceTemplate}:${left.route}`, `${right.sourceTemplate}:${right.route}`)
     )),
     prerenderDynamicTemplates: sortedUnique(templates.filter(isDynamicRoute)),
+    nextRouting: null,
   };
+}
+
+export function nextRoutingFingerprint(nextRouting) {
+  return createHash('sha256').update(JSON.stringify(nextRouting)).digest('hex');
 }
 
 export function artifactFingerprint(bundle) {
@@ -711,6 +781,7 @@ export function artifactFingerprint(bundle) {
       .map(({ route, sourceTemplate }) => ({ route, sourceTemplate }))
       .sort((left, right) => compareStrings(`${left.sourceTemplate}:${left.route}`, `${right.sourceTemplate}:${right.route}`)),
     prerenderDynamicTemplates: sortedUnique(bundle.prerenderDynamicTemplates),
+    nextRouting: bundle.nextRouting ?? null,
   });
   return createHash('sha256').update(canonical).digest('hex');
 }
@@ -744,7 +815,7 @@ function governedConcretePairs(manifest) {
 }
 
 export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
-  assert.equal(manifest.schemaVersion, 2, 'unsupported expected-route manifest schema');
+  assert.equal(manifest.schemaVersion, 3, 'unsupported expected-route manifest schema');
   const expectedSource = sortedUnique(manifest.sourceRoutes ?? []);
   const criticalRoutes = sortedUnique(manifest.criticalRoutes ?? []);
   const allowedArtifactOnly = new Set(manifest.allowedArtifactOnlyRoutes ?? []);
@@ -774,6 +845,21 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
     .filter(({ sourceTemplate }) => !actualSource.includes(sourceTemplate) || !isDynamicRoute(sourceTemplate))
     .map(({ route, sourceTemplate }) => `${sourceTemplate}:${route}`);
   const missingCriticalRoutes = criticalRoutes.filter((route) => !artifactTemplates.includes(route));
+  assert.ok(manifest.nextRouting && typeof manifest.nextRouting === 'object', 'expected-route manifest must govern Next redirects and rewrites');
+  const actualNextRoutingFingerprint = artifact.nextRouting
+    ? nextRoutingFingerprint(artifact.nextRouting)
+    : null;
+  const nextRoutingMismatch = artifact.format === 'next'
+    && actualNextRoutingFingerprint !== nextRoutingFingerprint(manifest.nextRouting);
+  const preFilesystemNextRules = artifact.nextRouting
+    ? [
+        ...artifact.nextRouting.redirects,
+        ...artifact.nextRouting.rewrites.beforeFiles,
+      ]
+    : [];
+  const shadowedCriticalRoutes = criticalRoutes.filter((route) => preFilesystemNextRules.some((rule, index) => (
+    compileNextRoutingRegexp(rule, `generated routing rule ${index}`).test(route)
+  )));
   const errors = [];
   if (unexpectedSourceRoutes.length) errors.push(`source routes not in expected manifest: ${unexpectedSourceRoutes.join(', ')}`);
   if (missingSourceRoutes.length) errors.push(`expected source routes missing from commit: ${missingSourceRoutes.join(', ')}`);
@@ -787,6 +873,8 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
   if (unexpectedConcreteRoutes.length) errors.push(`artifact has ungoverned concrete routes: ${unexpectedConcreteRoutes.join(', ')}`);
   if (missingConcreteRoutes.length) errors.push(`governed concrete routes missing from artifact: ${missingConcreteRoutes.join(', ')}`);
   if (missingCriticalRoutes.length) errors.push(`critical routes missing from artifact: ${missingCriticalRoutes.join(', ')}`);
+  if (nextRoutingMismatch) errors.push('generated Next redirects or rewrites differ from the reviewed manifest');
+  if (shadowedCriticalRoutes.length) errors.push(`critical routes shadowed before filesystem routing: ${shadowedCriticalRoutes.join(', ')}`);
   return {
     ok: errors.length === 0,
     sourceRoutes: actualSource,
@@ -799,6 +887,8 @@ export function verifyRouteInventory({ sourceRoutes, artifact, manifest }) {
     unexpectedConcreteRoutes,
     missingConcreteRoutes,
     missingCriticalRoutes,
+    nextRoutingMismatch,
+    shadowedCriticalRoutes,
     errors,
   };
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from 'node:child_process';
-import { lstat, rm, writeFile } from 'node:fs/promises';
+import { lstat, realpath, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -38,8 +38,60 @@ const canonicalGeneratedArtifacts = new Set([
   path.join(repositoryRoot, '.vercel/output'),
 ]);
 
+function pathIsInside(parent, candidate) {
+  const relative = path.relative(parent, candidate);
+  return relative === '' || (
+    relative !== '..'
+    && !relative.startsWith(`..${path.sep}`)
+    && !path.isAbsolute(relative)
+  );
+}
+
+async function lstatOrNull(candidate) {
+  try {
+    return await lstat(candidate);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+export async function assertPhysicalArtifactAncestors(rootDirectory, artifactPath) {
+  const absoluteRoot = path.resolve(rootDirectory);
+  const absoluteArtifact = path.resolve(artifactPath);
+  if (!pathIsInside(absoluteRoot, absoluteArtifact) || absoluteRoot === absoluteArtifact) {
+    throw new Error(`artifact destination must be below repository root: ${absoluteArtifact}`);
+  }
+  const rootInfo = await lstat(absoluteRoot);
+  if (rootInfo.isSymbolicLink() || !rootInfo.isDirectory()) {
+    throw new Error(`repository root must be a physical directory: ${absoluteRoot}`);
+  }
+  const physicalRoot = await realpath(absoluteRoot);
+  const segments = path.relative(absoluteRoot, absoluteArtifact).split(path.sep);
+  let current = absoluteRoot;
+  for (let index = 0; index < segments.length; index += 1) {
+    current = path.join(current, segments[index]);
+    const info = await lstatOrNull(current);
+    if (!info) break;
+    if (info.isSymbolicLink()) {
+      throw new Error(`artifact destination ancestor must be physical: ${current}`);
+    }
+    if (index < segments.length - 1 && !info.isDirectory()) {
+      throw new Error(`artifact destination ancestor must be a directory: ${current}`);
+    }
+    const physicalCurrent = await realpath(current);
+    if (!pathIsInside(physicalRoot, physicalCurrent)) {
+      throw new Error(`artifact destination resolves outside repository root: ${current}`);
+    }
+  }
+  return absoluteArtifact;
+}
+
 async function prepareArtifactDestination(artifactPath) {
   const absolute = path.resolve(repositoryRoot, artifactPath);
+  if (canonicalGeneratedArtifacts.has(absolute)) {
+    await assertPhysicalArtifactAncestors(repositoryRoot, absolute);
+  }
   try {
     await lstat(absolute);
   } catch (error) {
@@ -62,6 +114,9 @@ export async function runBuildProducingArtifact({ artifactPath, buildCommand }) 
   });
   if (build.error) throw build.error;
   if (build.status !== 0) throw new Error(`build command failed with exit ${build.status}`);
+  if (canonicalGeneratedArtifacts.has(absoluteArtifact)) {
+    await assertPhysicalArtifactAncestors(repositoryRoot, absoluteArtifact);
+  }
   try {
     const artifactStat = await lstat(absoluteArtifact);
     if (!artifactStat.isDirectory()) throw new Error('build output is not a directory');

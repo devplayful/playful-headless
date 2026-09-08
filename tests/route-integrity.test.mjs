@@ -12,7 +12,10 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { runBuildProducingArtifact } from '../scripts/build-and-verify-routes.mjs';
+import {
+  assertPhysicalArtifactAncestors,
+  runBuildProducingArtifact,
+} from '../scripts/build-and-verify-routes.mjs';
 import {
   appManifestKeyToRoute,
   artifactFingerprint,
@@ -20,6 +23,7 @@ import {
   discoverSourceRoutes,
   isFilesystemReachable,
   loadArtifactBundle,
+  routesFromNextRoutesManifest,
   routesFromPrerenderManifest,
   routesFromVercelConfig,
   verifyRouteInventory,
@@ -52,6 +56,7 @@ function validArtifact() {
     templates: [...manifest.sourceRoutes, '/_not-found'],
     concreteRoutes: governedConcreteRoutes(),
     prerenderDynamicTemplates: ['/[slug]', '/blog/[...slug]'],
+    nextRouting: structuredClone(manifest.nextRouting),
   };
   return { ...bundle, fingerprint: artifactFingerprint(bundle) };
 }
@@ -76,6 +81,70 @@ test('discovers baseline App Router sources including metadata routes', () => {
   ]);
   assert.equal(appManifestKeyToRoute('/page'), '/');
   assert.equal(appManifestKeyToRoute('/(group)/blog/[...slug]/page'), '/blog/[...slug]');
+});
+
+test('rejects App Router interceptors explicitly instead of hiding them', () => {
+  for (const interceptor of ['(.)contact', '(..)contact', '(..)(..)contact', '(...)contact']) {
+    assert.throws(
+      () => discoverSourceRoutes([`app/${interceptor}/page.tsx`]),
+      /intercepting route segment is not supported/,
+    );
+    assert.throws(
+      () => appManifestKeyToRoute(`/${interceptor}/page`),
+      /intercepting route segment is not supported/,
+    );
+  }
+  assert.deepEqual(discoverSourceRoutes(['app/(marketing)/contact/page.tsx']), ['/contact']);
+});
+
+test('governs generated Next redirects and rewrites and detects critical shadowing', () => {
+  const artifact = validArtifact();
+  artifact.nextRouting.redirects[1].destination = '/changed';
+  let result = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact, manifest });
+  assert.equal(result.ok, false);
+  assert.equal(result.nextRoutingMismatch, true);
+
+  const shadowingRule = {
+    destination: '/maintenance',
+    regex: '^/contactar-agencia-de-marketing-digital$',
+    source: '/contactar-agencia-de-marketing-digital',
+    statusCode: 307,
+  };
+  const shadowedArtifact = validArtifact();
+  shadowedArtifact.nextRouting.redirects.push(shadowingRule);
+  const shadowedManifest = structuredClone(manifest);
+  shadowedManifest.nextRouting.redirects.push(shadowingRule);
+  result = verifyRouteInventory({
+    sourceRoutes: shadowedManifest.sourceRoutes,
+    artifact: shadowedArtifact,
+    manifest: shadowedManifest,
+  });
+  assert.equal(result.nextRoutingMismatch, false);
+  assert.deepEqual(result.shadowedCriticalRoutes, ['/contactar-agencia-de-marketing-digital']);
+  assert.match(result.errors.join('\n'), /critical routes shadowed before filesystem routing/);
+});
+
+test('validates the closed Next routes-manifest shape', () => {
+  const parsed = routesFromNextRoutesManifest({
+    version: 3,
+    redirects: [{ source: '/old', destination: '/new', regex: '^/old$' }],
+    rewrites: {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: [],
+    },
+  });
+  assert.equal(parsed.redirects[0].source, '/old');
+  assert.throws(() => routesFromNextRoutesManifest({
+    version: 3,
+    redirects: [],
+    rewrites: { beforeFiles: [], afterFiles: [], fallback: [], middleware: [] },
+  }), /unsupported rewrite phases/);
+  assert.throws(() => routesFromNextRoutesManifest({
+    version: 3,
+    redirects: [{ source: '/old', destination: '/new', regex: '[' }],
+    rewrites: { beforeFiles: [], afterFiles: [], fallback: [] },
+  }), /regex is invalid/);
 });
 
 test('reads concrete route provenance from Next prerender-manifest', () => {
@@ -758,6 +827,21 @@ test('rejects a no-op build that does not recreate the artifact directory', asyn
     );
   } finally {
     await rm(temporary, { recursive: true, force: true });
+  }
+});
+
+test('rejects a symlinked parent before a canonical artifact can be removed', async () => {
+  const repository = await mkdtemp(path.join(os.tmpdir(), 'playful-artifact-root-'));
+  const outside = await mkdtemp(path.join(os.tmpdir(), 'playful-artifact-outside-'));
+  try {
+    await symlink(outside, path.join(repository, '.vercel'));
+    await assert.rejects(
+      assertPhysicalArtifactAncestors(repository, path.join(repository, '.vercel/output')),
+      /artifact destination ancestor must be physical/,
+    );
+  } finally {
+    await rm(repository, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
   }
 });
 
