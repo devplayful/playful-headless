@@ -18,7 +18,7 @@ exact route/source pair is reviewed in the expected manifest.
 
 ## Required same-job command
 
-Use Node 22.x and npm 10.9.x, pinned by `package.json` and by the route-integrity
+Use Node 24.x and npm 10.9.x, pinned by `package.json`, `.nvmrc` and by the route-integrity
 CI job. The canonical command removes the generated `.next`
 directory before starting, builds, confirms that `HEAD` and the clean worktree
 did not change, fingerprints the route inventory, writes an ignored provenance
@@ -118,10 +118,10 @@ npm run verify:lockfile
 
 The gate copies only both package files into a disposable directory and runs a
 real `npm ci` there, so existing `node_modules` cannot affect the result and the
-worktree remains untouched. With Node 22.23.2 and npm 10.9.8, `npm ci` exits
+worktree remains untouched. With Node 24.6.0 and npm 10.9.8, `npm ci` exits
 successfully and the gate is green. The lockfile contains Tailwind's optional
 `yaml@^2.4.2` peer at its nested path as well as the existing root
-`yaml@1.10.2`, so clean installs do not depend on npm repairing the dependency
+`yaml@1.10.3`, so clean installs do not depend on npm repairing the dependency
 tree.
 
 The GitHub Actions job installs the exact declared npm version, performs a
