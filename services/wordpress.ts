@@ -1,5 +1,9 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
 import { rewriteInSitePageHrefs } from './rewrite-in-site-hrefs.mjs';
+import {
+  isAllowedCaseStudyMediaUrl,
+  preserveFeaturedMediaUrl,
+} from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 
 export { rewriteInSitePageHrefs };
@@ -93,22 +97,6 @@ const CASE_STUDY_MEDIA_FIELDS = [
   'telefonos',
   'testimonial_foto',
 ] as const;
-
-function isAllowedCaseStudyMediaUrl(value: unknown): value is string {
-  if (typeof value !== 'string') return false;
-  try {
-    const url = new URL(value);
-    return (
-      url.protocol === 'https:' &&
-      url.hostname === WP_ENDPOINT_HOST &&
-      !url.username &&
-      !url.password &&
-      url.pathname.startsWith('/wp-content/uploads/')
-    );
-  } catch {
-    return false;
-  }
-}
 
 function preserveCaseStudyMediaValue(value: unknown): unknown {
   if (isAllowedCaseStudyMediaUrl(value)) return value;
@@ -740,6 +728,8 @@ export async function getAllCaseStudies(): Promise<any[]> {
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
-  const sanitizedCases = sanitizeWpPayload(casos);
-  return sanitizedCases.map(applyPublicCaseStudyOverrides);
+  return casos.map((caso: Record<string, unknown>) => {
+    const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
+    return applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized));
+  });
 }
