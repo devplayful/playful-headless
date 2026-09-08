@@ -115,6 +115,49 @@ test('renders validated qualification in the contact email without changing lega
   assert(endpoint.includes('wp_mail($to, $subject, $body, $headers)'));
 });
 
+test('gate enriches the live legacy contact email with sanitized qualification exactly once', () => {
+  const labels = between(
+    gate,
+    'function playful_contact_gate_qualification_labels',
+    'function playful_contact_gate_qualification_summary',
+  );
+  const mailFilter = between(
+    gate,
+    "add_filter('wp_mail'",
+    'function playful_contact_gate_request_context',
+  );
+  const preDispatch = between(gate, "add_filter('rest_pre_dispatch'", "add_filter('rest_post_dispatch'");
+  const postDispatch = between(gate, "add_filter('rest_post_dispatch'", "add_action('admin_init'");
+
+  assert(labels.includes("'decisionRole'"));
+  assert(labels.includes("'salesModel'"));
+  assert(labels.includes("'monthlyRevenue'"));
+  assert(labels.includes("'projectTiming'"));
+  assert(mailFilter.includes("in_array('hello@playfulagency.com'"));
+  assert(mailFilter.includes("strpos($args['message'], $block) !== false"));
+  assert(mailFilter.includes("$args['message'] .= $block"));
+  assert(
+    mailFilter.indexOf('$summary = playful_contact_gate_qualification_summary')
+      < mailFilter.indexOf("strpos($args['message'], $block)"),
+  );
+  assert(preDispatch.includes('playful_contact_gate_mail_context($sanitized_qualification)'));
+  assert(postDispatch.includes('playful_contact_gate_mail_context(null, true)'));
+});
+
+test('a lead typing the qualification heading cannot suppress the generated block', () => {
+  const marker = 'CUALIFICACIÓN DEL PROYECTO';
+  const summary = '• Papel en el proyecto: Soy dueño/a, socio/a o cofundador/a';
+  const block = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${marker}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${summary}\n`;
+  const enrich = (message: string) => (message.includes(block) ? message : message + block);
+
+  const freeText = `Quiero revisar ${marker} con el equipo.`;
+  const once = enrich(freeText);
+  const twice = enrich(once);
+
+  assert.equal(once, freeText + block);
+  assert.equal(twice, once);
+});
+
 test('claims atomically using a hash-only, non-autoloaded option', () => {
   const receiptKey = between(
     gate,
