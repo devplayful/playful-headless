@@ -40,6 +40,7 @@
     "jspdf": "^4.2.1",
     "lottie-react": "^2.4.1",
     "next": "15.5.25",
+    "postcss": "8.5.28",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-google-recaptcha": "^3.1.0",
@@ -49,6 +50,9 @@
     "slick-carousel": "^1.8.1",
     "swiper": "^12.1.2"
   },
+  "overrides": {
+    "postcss": "$postcss"
+  },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20.0.0",
@@ -57,7 +61,6 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8.0.0",
     "eslint-config-next": "15.5.25",
-    "postcss": "^8.0.0",
     "rimraf": "^6.1.2",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.0"
