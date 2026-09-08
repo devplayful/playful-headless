@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
+import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -90,11 +91,7 @@ interface WPCaseStudy {
     categoria4?: string;
     categoria5?: string;
   };
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-    }>;
-  };
+  featured_media_url?: string;
 }
 
 // Interfaz para los casos de estudio transformados
@@ -304,12 +301,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           }
 
           // Extraer imagen destacada
-          let image = '';
-          if (item._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-            image = item._embedded['wp:featuredmedia'][0].source_url;
-          } else if (item.acf?.imagen_destacada) {
-            image = item.acf.imagen_destacada;
-          }
+          const image = selectCaseStudyCardMediaUrl(item);
 
           // Construir array de categorías
           const categories: string[] = [];
