@@ -1,5 +1,9 @@
 import type { WebsiteLead } from '../../lib/contact/types.ts';
-import type { EnabledHighLevelConfig, HighLevelCustomFieldIds } from '../../lib/highlevel/config.ts';
+import type {
+  EnabledHighLevelConfig,
+  HighLevelCustomFieldIds,
+  HighLevelOpportunityCustomFieldIds,
+} from '../../lib/highlevel/config.ts';
 
 export const customFieldIds: HighLevelCustomFieldIds = {
   original_source: 'field-original-source',
@@ -27,6 +31,16 @@ export const customFieldIds: HighLevelCustomFieldIds = {
   project_context: 'field-project-context',
 };
 
+export const opportunityCustomFieldIds: HighLevelOpportunityCustomFieldIds = {
+  decision_role: 'opportunity-field-decision-role',
+  sales_model: 'opportunity-field-sales-model',
+  marketplaces: 'opportunity-field-marketplaces',
+  monthly_revenue: 'opportunity-field-monthly-revenue',
+  project_timing: 'opportunity-field-project-timing',
+  qualification_level: 'opportunity-field-qualification-level',
+  project_context: 'opportunity-field-project-context',
+};
+
 export const config: EnabledHighLevelConfig = {
   enabled: true,
   testMode: true,
@@ -43,6 +57,7 @@ export const config: EnabledHighLevelConfig = {
   redisRestUrl: 'https://redis.invalid',
   redisRestToken: 'redis-test-token',
   customFieldIds,
+  opportunityCustomFieldIds,
 };
 
 export const lead: WebsiteLead = {
