@@ -51,6 +51,8 @@ const DISENO_ART_1X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@1x.png
 const DISENO_ART_2X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@2x.png';
 const DESARROLLO_ART_1X = '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@1x.png';
 const DESARROLLO_ART_2X = '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@2x.png';
+const CATALOGO_ART_1X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@1x.png';
+const CATALOGO_ART_2X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@2x.png';
 
 function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | 'card' }) {
   if (size === 'hero') {
@@ -74,9 +76,19 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
     );
   }
 
-  if (id === 'servicio-diseno' || id === 'servicio-desarrollo') {
-    const src1x = id === 'servicio-diseno' ? DISENO_ART_1X : DESARROLLO_ART_1X;
-    const src2x = id === 'servicio-diseno' ? DISENO_ART_2X : DESARROLLO_ART_2X;
+  if (id === 'servicio-diseno' || id === 'servicio-desarrollo' || id === 'servicio-catalogo') {
+    const src1x =
+      id === 'servicio-diseno'
+        ? DISENO_ART_1X
+        : id === 'servicio-desarrollo'
+          ? DESARROLLO_ART_1X
+          : CATALOGO_ART_1X;
+    const src2x =
+      id === 'servicio-diseno'
+        ? DISENO_ART_2X
+        : id === 'servicio-desarrollo'
+          ? DESARROLLO_ART_2X
+          : CATALOGO_ART_2X;
     return (
       <div
         data-illustration-slot={id}
