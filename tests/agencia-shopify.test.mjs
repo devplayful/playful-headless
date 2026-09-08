@@ -64,6 +64,12 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /CaseStudyCard/);
   assert.match(landing, /BlogRelatedPostsSection/);
   assert.match(landing, /ServiceFaqAccordion/);
+  assert.match(landing, /function PurpleBand/);
+  assert.match(landing, /!text-white/);
+  assert.match(landing, /!text-\[#E9D7FF\]/);
+  const purpleBand = landing.slice(landing.indexOf('function PurpleBand'), landing.indexOf('export default'));
+  assert.doesNotMatch(purpleBand, /playful-h2/);
+  assert.doesNotMatch(purpleBand, /playful-contenido-p/);
   assert.doesNotMatch(landing, /Shopify Plus/i);
   assert.doesNotMatch(landing, /Cocina/i);
   assert.doesNotMatch(landing, /magnific/i);
