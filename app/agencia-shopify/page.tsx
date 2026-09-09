@@ -9,7 +9,9 @@ import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
+import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
 import {
+  BOOKING_HREF,
   CONTACT_HREF,
   CTA,
   FAQ,
@@ -151,11 +153,11 @@ function LinkedCopy({ text }: { text: string }) {
   );
 }
 
-function TalkCta({ href = CONTACT_HREF }: { href?: string }) {
+function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
   return (
-    <Link href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+    <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}
-    </Link>
+    </a>
   );
 }
 
@@ -202,6 +204,14 @@ export default async function AgenciaShopifyPage() {
                 <div className="space-y-3">
                   <TalkCta />
                   <p className="playful-contenido-p">{HERO.subline}</p>
+                  <p className="playful-contenido-p">
+                    <Link
+                      href={CONTACT_HREF}
+                      className="text-[#440099] font-semibold underline underline-offset-2"
+                    >
+                      O escríbenos por el formulario
+                    </Link>
+                  </p>
                 </div>
               </div>
               <IllustrationSlot id="hero" size="hero" />
@@ -213,6 +223,16 @@ export default async function AgenciaShopifyPage() {
           <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px]">
             <h2 className="playful-h2 text-center">{SERVICES.h2}</h2>
             <p className="playful-contenido-p max-w-3xl mx-auto text-center">{SERVICES.intro}</p>
+            <p className="playful-contenido-p max-w-3xl mx-auto text-center">
+              Si tu checkout también cobra en Venezuela, te contamos cómo integrar{' '}
+              <Link
+                href={ZELLE_BLOG_POST_HREF}
+                className="text-[#440099] font-semibold underline underline-offset-2"
+              >
+                Zelle como método de pago en tu ecommerce
+              </Link>
+              .
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-4">
               {SERVICE_GRID_ITEMS.map((item, index) => (
                 <article
@@ -318,7 +338,7 @@ export default async function AgenciaShopifyPage() {
               subtitle={CTA.body}
               ctaTitle={CTA.question}
               buttonText={CTA.cta}
-              buttonLink={CONTACT_HREF}
+              buttonLink={BOOKING_HREF}
             />
           </div>
         </section>

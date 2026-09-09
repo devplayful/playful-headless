@@ -38,6 +38,17 @@ await expectRedirect(
   '/contactar-agencia-de-marketing-digital',
   301,
 );
+
+{
+  const reunion = await request('/reunion-playful?utm_source=seo-smoke');
+  assert.equal(reunion.status, 301, '/reunion-playful should return 301');
+  const location = reunion.headers.get('location');
+  assert.ok(location, '/reunion-playful should include a Location header');
+  const target = new URL(location);
+  assert.equal(target.origin, 'https://api.playfulagency.com');
+  assert.equal(target.pathname, '/widget/bookings/reunion-playful');
+  assert.equal(target.search, '?utm_source=seo-smoke');
+}
 await expectRedirect(
   '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke&utm_medium=organic&utm_campaign=canonical-alias&utm_content=one&utm_content=two',
   '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',
@@ -138,6 +149,8 @@ assert.match(shopifyHtml, /<h1[^>]*>Agencia Shopify\. Playful Agency, expertos e
 assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
 assert.doesNotMatch(shopifyHtml, /Cocina/i);
 assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
+assert.match(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
+assert.match(shopifyHtml, /Agendar Reunión con Playful/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
