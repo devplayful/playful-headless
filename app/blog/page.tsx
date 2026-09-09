@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { canonicalForPath } from '@/utils/canonical';
+import { shouldNoindexBlogListing } from '@/utils/blog-listing-robots';
 import { getBlogPosts } from '@/services/wordpress';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -344,11 +345,7 @@ export async function generateMetadata({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const resolved = await searchParams;
-  const pageRaw = resolved?.page;
-  const parsedPage = typeof pageRaw === 'string' && /^\d+$/.test(pageRaw)
-    ? Number.parseInt(pageRaw, 10)
-    : 1;
-  const noindexFollow = parsedPage >= 2;
+  const noindexFollow = shouldNoindexBlogListing(resolved);
 
   const url = canonicalForPath('/blog');
   return {

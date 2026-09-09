@@ -154,4 +154,41 @@ assert.match(shopifyHtml, /Agendar Reunión con Playful/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
+function extractRobots(html) {
+  return (
+    html.match(/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']*)["']/i)?.[1] ??
+    html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']robots["']/i)?.[1] ??
+    ''
+  );
+}
+
+const blogCleanResponse = await request('/blog', { redirect: 'follow' });
+assert.equal(blogCleanResponse.status, 200, '/blog should return 200');
+const blogCleanHtml = await blogCleanResponse.text();
+const blogCleanCanonicals = [...blogCleanHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(blogCleanCanonicals.length, 1, '/blog should emit exactly one canonical');
+assert.equal(blogCleanCanonicals[0][1], 'https://playfulagency.com/blog');
+assert.doesNotMatch(blogCleanHtml, /name=["']robots["'][^>]*content=["'][^"']*noindex/i);
+
+const blogQueryPaths = [
+  '/blog?page=1',
+  '/blog?page=2',
+  '/blog?category=seo',
+  '/blog?page=2&category=seo',
+];
+for (const pathname of blogQueryPaths) {
+  const response = await request(pathname, { redirect: 'follow' });
+  assert.equal(response.status, 200, `${pathname} should return 200`);
+  const html = await response.text();
+  const robots = extractRobots(html);
+  assert.match(robots, /noindex/i, `${pathname} must be noindex`);
+  assert.match(robots, /follow/i, `${pathname} must remain follow`);
+  const canonicals = [...html.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+  assert.equal(canonicals.length, 1, `${pathname} should emit exactly one canonical`);
+  assert.equal(canonicals[0][1], 'https://playfulagency.com/blog');
+}
+
+const invalidBlogPage = await request('/blog?page=-2&category=seo', { redirect: 'manual' });
+assert.equal(invalidBlogPage.status, 404, 'invalid/negative blog page stays 404');
+
 console.log(`SEO smoke passed against ${origin}`);
