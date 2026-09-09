@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
+import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -90,15 +91,11 @@ interface WPCaseStudy {
     categoria4?: string;
     categoria5?: string;
   };
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-    }>;
-  };
+  featured_media_url?: string;
 }
 
 // Interfaz para los casos de estudio transformados
-interface CaseStudy {
+export interface CaseStudy {
   id: number;
   title: string;
   slug: string;
@@ -129,11 +126,19 @@ interface CarouselResultadosProps {
   actionButtonColor?: string;
 }
 
-// Componente para la tarjeta de caso de estudio
-const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
+// Componente para la tarjeta de caso de estudio (mismo patrón que home)
+export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
   const hasImage = caseStudy.image && !imageError;
+
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [caseStudy.image]);
 
   return (
     <div className="px-2 h-full">
@@ -143,6 +148,7 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
             {hasImage ? (
               <img
+                ref={imageRef}
                 src={caseStudy.image}
                 alt={caseStudy.title}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${
@@ -295,12 +301,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           }
 
           // Extraer imagen destacada
-          let image = '';
-          if (item._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-            image = item._embedded['wp:featuredmedia'][0].source_url;
-          } else if (item.acf?.imagen_destacada) {
-            image = item.acf.imagen_destacada;
-          }
+          const image = selectCaseStudyCardMediaUrl(item);
 
           // Construir array de categorías
           const categories: string[] = [];

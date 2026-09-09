@@ -4,6 +4,10 @@ import { canonicalForPath } from '@/utils/canonical';
 const TEST_BLOG_URL = canonicalForPath('/test-blog');
 
 export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
   alternates: { canonical: TEST_BLOG_URL },
   openGraph: { url: TEST_BLOG_URL },
 };

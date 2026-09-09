@@ -2,12 +2,16 @@ import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 
+const HOME_CANONICAL = canonicalForPath('/');
+
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
   const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
   const defaultOgImage = 'https://playfulagency.com/og.jpg';
-  const url = canonicalForPath('/');
 
+  // Next.js 15 resolveAbsoluteUrlWithPathname collapses pathname `/` to origin
+  // (no trailing slash). Home canonical + og:url are emitted as raw tags below
+  // so they stay exactly `https://playfulagency.com/` to match the sitemap.
   try {
     const yoastData = await getHomePageMetadata();
     return {
@@ -18,7 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url,
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -33,7 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
         images: [defaultOgImage],
       },
-      alternates: { canonical: url },
     };
   } catch {
     return {
@@ -44,7 +46,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: defaultDescription,
         type: 'website',
         locale: 'es_ES',
-        url,
         siteName: 'Playful Agency',
         images: [{
           url: defaultOgImage,
@@ -59,7 +60,6 @@ export async function generateMetadata(): Promise<Metadata> {
         description: defaultDescription,
         images: [defaultOgImage],
       },
-      alternates: { canonical: url },
     };
   }
 }
@@ -74,14 +74,17 @@ import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
-import { getAllCaseStudies } from "@/services/wordpress";
+import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
 import { DIAGNOSTIC_CALL_COPY } from "@/utils/diagnostic-call-copy.mjs";
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
 async function HomeContent() {
-  // Obtener casos de éxito una sola vez en el servidor
-  const casosDeExito = await getAllCaseStudies();
+  // Obtener casos de éxito y posts del bloque de blog una sola vez en el servidor
+  const [casosDeExito, blogPosts] = await Promise.all([
+    getAllCaseStudies(),
+    getLatestBlogPosts(6).catch(() => []),
+  ]);
   return (
     <div className="">
       {/* Hero Section */}
@@ -163,7 +166,7 @@ async function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <BlogRelatedPostsSection />
+          <BlogRelatedPostsSection posts={blogPosts} />
         </div>
       </section>
 
@@ -187,6 +190,8 @@ async function HomeContent() {
 export default function Home() {
   return (
     <>
+      <link rel="canonical" href={HOME_CANONICAL} />
+      <meta property="og:url" content={HOME_CANONICAL} />
       <h1 className="sr-only">
         ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
       </h1>

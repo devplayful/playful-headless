@@ -1,0 +1,33 @@
+name: Route integrity
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.6.0
+          cache: npm
+      - name: Use the declared npm version
+        run: npm install --global npm@10.9.8
+      - name: Install the locked dependency tree
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify lockfile reproducibility
+        run: npm run verify:lockfile
+      - name: Run adversarial route tests
+        run: npm run test:route-integrity
+      - name: Type-check
+        run: npx tsc --noEmit
+      - name: Build and verify a fresh route artifact
+        run: npm run verify:routes:build
