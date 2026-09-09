@@ -5,6 +5,10 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
+import {
+  getBlogServiceCta,
+  linkFirstUnlinkedServiceMention,
+} from '@/utils/blog-service-cta';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
 import { BlogPostContent } from './BlogPostContent';
@@ -83,7 +87,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       };
     })
     .get() as Array<{ text: string; slug: string }>;
-  
+
+  const serviceCta = getBlogServiceCta(postSlug);
+  if (serviceCta) {
+    linkFirstUnlinkedServiceMention($, serviceCta);
+  }
+
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
 
@@ -264,6 +273,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
             dangerouslySetInnerHTML={{ __html: contentWithIds }} 
           />
+
+          {serviceCta ? (
+            <p className="mt-8">
+              <Link
+                href={serviceCta.href}
+                className="font-medium text-[#440099] hover:underline"
+              >
+                {serviceCta.label}
+              </Link>
+            </p>
+          ) : null}
           
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
