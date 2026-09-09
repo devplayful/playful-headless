@@ -14,6 +14,7 @@ const {
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
 } = await import('../app/agencia-shopify/copy.ts');
+const { ZELLE_BLOG_POST_HREF } = await import('../utils/blog-service-cta.ts');
 
 const landing = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 const sitemap = readFileSync(new URL('../app/sitemap.xml/route.ts', import.meta.url), 'utf8');
@@ -153,6 +154,15 @@ test('Shopify case cards reuse Casos de Éxito featured tapas', async () => {
   assert.match(casesSource, /featuredTapaForSlug/);
   assert.match(casesSource, /jumex-shopify-dtc-ecommerce/);
   assert.match(casesSource, /odwalla-shopify-dtc-ecommerce/);
+});
+
+test('landing includes exactly one contextual href to the Zelle blog post', () => {
+  assert.equal(
+    ZELLE_BLOG_POST_HREF,
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.match(landing, /href=\{ZELLE_BLOG_POST_HREF\}/);
+  assert.equal((landing.match(/ZELLE_BLOG_POST_HREF/g) || []).length, 2);
 });
 
 test('shared High Level form still owns qualification and receipt recovery', () => {

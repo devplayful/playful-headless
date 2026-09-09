@@ -12,11 +12,22 @@ export type BlogServiceCta = {
  * Post slug → service landing. Only mapped posts get the compact CTA
  * and the first-mention internal link. Canonical stays on the post.
  */
+export const ZELLE_BLOG_POST_HREF =
+  '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+
 export const BLOG_SERVICE_CTAS: Record<string, BlogServiceCta> = {
   'que-es-una-agencia-de-sem': {
     href: '/agencia-sem',
     label: 'Conoce nuestro servicio de Agencia SEM',
     mentionRe: /agencia(?:\s+de)?\s+SEM/i,
+  },
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
+    href: '/agencia-shopify',
+    label: 'Conoce nuestro servicio Shopify',
+    // Only wrap a Shopify-service mention. The live Zelle post talks about
+    // WooCommerce / pasarela, so linking the first "Zelle" or "pagos" to
+    // /agencia-shopify would read as forced copy.
+    mentionRe: /agencia Shopify|tienda Shopify/i,
   },
 };
 

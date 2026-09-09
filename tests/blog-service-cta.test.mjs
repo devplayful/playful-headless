@@ -19,6 +19,15 @@ test('mapped slug produces the Agencia SEM service href', () => {
   assert.match(cta.label, /Agencia SEM/i);
 });
 
+test('Zelle slug produces the Agencia Shopify service href', () => {
+  const cta = getBlogServiceCta(
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.ok(cta, 'expected a CTA for the Zelle post slug');
+  assert.equal(cta.href, '/agencia-shopify');
+  assert.match(cta.label, /Shopify/i);
+});
+
 test('other slugs do not add the SEM CTA', () => {
   assert.equal(getBlogServiceCta('actualizar-tu-e-commerce'), null);
   assert.equal(getBlogServiceCta('cintillos-de-promocion'), null);
@@ -37,10 +46,11 @@ test('blog post page renders the mapped CTA after article HTML', () => {
   assert.ok(tagsIdx > ctaIdx, 'CTA must come before tags');
 });
 
-test('post canonical stays on the blog post, not /agencia-sem', () => {
+test('post canonical stays on the blog post, not a service landing', () => {
   assert.match(blogPage, /canonicalForPath\(blogPostPath\(post\)\)/);
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.doesNotMatch(metadataFn, /agencia-sem/);
+  assert.doesNotMatch(metadataFn, /agencia-shopify/);
   assert.doesNotMatch(metadataFn, /BLOG_SERVICE_CTAS|getBlogServiceCta/);
 });
 
@@ -84,4 +94,18 @@ test('does not wrap a mention already inside an anchor', () => {
 test('other slugs do not wrap SEM mentions', () => {
   const input = '<p>Una agencia SEM gestiona anuncios.</p>';
   assert.equal(applyBlogServiceMentionLink(input, 'otro-articulo'), input);
+});
+
+test('Zelle slug wraps a natural Shopify mention, not a forced Zelle word', () => {
+  const shopify = applyBlogServiceMentionLink(
+    '<p>Montamos tu tienda Shopify para cobrar sin fricción.</p>',
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.match(shopify, /<a href="\/agencia-shopify">tienda Shopify<\/a>/);
+
+  const zelleOnly = applyBlogServiceMentionLink(
+    '<p>Zelle es un método de pago popular en Venezuela.</p>',
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.doesNotMatch(zelleOnly, /href="\/agencia-shopify"/);
 });
