@@ -22,6 +22,9 @@
     "audit:highlevel-export": "node scripts/highlevel-redacted-export-audit.mjs",
     "typecheck": "tsc --noEmit",
     "test:route-integrity": "node --test tests/route-integrity.test.mjs",
+    "test:diagnostic-copy": "node scripts/diagnostic-call-copy-smoke.mjs",
+    "test:diagnostic-preview": "node scripts/diagnostic-call-preview-smoke.mjs",
+    "test:diagnostic-wp-inventory": "node scripts/diagnostic-call-wordpress-inventory.mjs",
     "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
     "verify:routes": "node scripts/verify-route-artifact.mjs",
     "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
