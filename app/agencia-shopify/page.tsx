@@ -11,6 +11,7 @@ import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
 import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
 import {
+  BOOKING_HREF,
   CONTACT_HREF,
   CTA,
   FAQ,
@@ -152,11 +153,11 @@ function LinkedCopy({ text }: { text: string }) {
   );
 }
 
-function TalkCta({ href = CONTACT_HREF }: { href?: string }) {
+function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
   return (
-    <Link href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+    <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}
-    </Link>
+    </a>
   );
 }
 
@@ -203,6 +204,14 @@ export default async function AgenciaShopifyPage() {
                 <div className="space-y-3">
                   <TalkCta />
                   <p className="playful-contenido-p">{HERO.subline}</p>
+                  <p className="playful-contenido-p">
+                    <Link
+                      href={CONTACT_HREF}
+                      className="text-[#440099] font-semibold underline underline-offset-2"
+                    >
+                      O escríbenos por el formulario
+                    </Link>
+                  </p>
                 </div>
               </div>
               <IllustrationSlot id="hero" size="hero" />
@@ -329,7 +338,7 @@ export default async function AgenciaShopifyPage() {
               subtitle={CTA.body}
               ctaTitle={CTA.question}
               buttonText={CTA.cta}
-              buttonLink={CONTACT_HREF}
+              buttonLink={BOOKING_HREF}
             />
           </div>
         </section>

@@ -7,6 +7,8 @@ const {
   SHOPIFY_META,
   HERO,
   CTA,
+  BOOKING_HREF,
+  CONTACT_HREF,
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
@@ -19,6 +21,7 @@ const { ZELLE_BLOG_POST_HREF } = await import('../utils/blog-service-cta.ts');
 const landing = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 const sitemap = readFileSync(new URL('../app/sitemap.xml/route.ts', import.meta.url), 'utf8');
 const form = readFileSync(new URL('../components/ContactLeadForm.tsx', import.meta.url), 'utf8');
+const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 
 test('meta title, description and path match the signed v9 copy', () => {
   assert.equal(SHOPIFY_META.title, 'Agencia Shopify para marcas que ya venden | Playful Agency');
@@ -48,11 +51,13 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /{HERO\.h1}/);
   assert.match(landing, /TwoColumnCtaSection/);
   assert.match(landing, /buttonText=\{CTA\.cta\}/);
-  assert.match(landing, /buttonLink=\{CONTACT_HREF\}/);
+  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.doesNotMatch(landing, /buttonLink=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /servicio-operar/);
-  assert.equal(CTA.formButton, 'Agenda tu llamada de 30 a 40 minutos');
-  assert.equal(HERO.cta, '¿Hablamos?');
+  assert.equal(CTA.formButton, 'Reservar llamada diagnóstica 30–40 min');
+  assert.equal(HERO.cta, 'Agendar Reunión con Playful');
+  assert.equal(CTA.cta, 'Agendar Reunión con Playful');
   const contentSlots = SERVICES.items.filter((item) => item.slot);
   assert.equal(contentSlots.length, 4);
   assert.deepEqual(
@@ -154,6 +159,32 @@ test('Shopify case cards reuse Casos de Éxito featured tapas', async () => {
   assert.match(casesSource, /featuredTapaForSlug/);
   assert.match(casesSource, /jumex-shopify-dtc-ecommerce/);
   assert.match(casesSource, /odwalla-shopify-dtc-ecommerce/);
+});
+
+test('primary Shopify CTAs book the GHL reunion widget, not the contact form', () => {
+  assert.equal(
+    BOOKING_HREF,
+    'https://api.playfulagency.com/widget/bookings/reunion-playful',
+  );
+  assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
+  assert.match(landing, /href = BOOKING_HREF/);
+  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.match(landing, /href=\{CONTACT_HREF\}/);
+  assert.doesNotMatch(landing, /TalkCta\(\{ href = CONTACT_HREF/);
+  assert.doesNotMatch(HERO.cta, /contactar|llena el formulario|¿Hablamos\?/i);
+  assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
+  assert.match(HERO.cta, /Agendar|Reservar/i);
+  assert.match(CTA.cta, /Agendar|Reservar/i);
+});
+
+test('middleware 301s /reunion-playful to the GHL booking widget', () => {
+  assert.match(
+    middleware,
+    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
+  );
+  assert.match(middleware, /'\/reunion-playful'/);
+  assert.match(middleware, /'\/reunion-playful\/'/);
+  assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);
 });
 
 test('landing includes exactly one contextual href to the Zelle blog post', () => {

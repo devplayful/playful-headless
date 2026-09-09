@@ -8,7 +8,7 @@ export const SHOPIFY_META = {
 export const HERO = {
   h1: 'Agencia Shopify. Playful Agency, expertos en ecommerce',
   body: 'Somos una agencia Shopify para marcas que ya venden y quieren un canal propio, donde el catálogo y el pago sean suyos y no de un tercero. Implementamos tu tienda desde cero o migramos la que ya tienes, y dejamos las colecciones, las páginas de producto y el checkout listos para que tus clientes encuentren lo que buscan y terminen la compra sin fricción. Si ya vendes y quieres ordenar ese canal antes de hacerlo crecer, reservamos 30 a 40 minutos para revisar tu web contigo y proponerte por dónde empezar.',
-  cta: '¿Hablamos?',
+  cta: 'Agendar Reunión con Playful',
   subline: 'Una llamada de 30 a 40 minutos para revisar tu tienda, sin compromiso.',
 } as const;
 
@@ -58,6 +58,8 @@ export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
 );
 export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
 export const CONTACT_HREF = '/contactar-agencia-de-marketing-digital';
+export const BOOKING_HREF =
+  'https://api.playfulagency.com/widget/bookings/reunion-playful';
 
 export const MIGRATION = {
   h2: 'Migración a Shopify',
@@ -156,8 +158,8 @@ export const CTA = {
   h2: 'Conversemos sobre tu tienda Shopify',
   body: 'Reserva 30 a 40 minutos y miramos tu web juntos. Sales con una lectura clara de qué habría que construir o migrar a Shopify para que venda mejor, sin compromiso de seguir con nosotros.',
   question: '¿Quieres que revisemos si tu web deja comprar a quien ya te eligió?',
-  cta: '¿Hablamos?',
-  formButton: 'Agenda tu llamada de 30 a 40 minutos',
+  cta: 'Agendar Reunión con Playful',
+  formButton: 'Reservar llamada diagnóstica 30–40 min',
 } as const;
 
 export const PLAYFUL_URL_RE = /(https:\/\/playfulagency\.com\/[^\s).,;]+)/g;

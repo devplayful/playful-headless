@@ -7,6 +7,7 @@ const PERMANENT_301: Record<string, string> = {
   '/contacto': '/contactar-agencia-de-marketing-digital',
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito-agencia-de-marketing-digital',
+  '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
 };
 
 export function middleware(request: NextRequest) {
@@ -14,6 +15,13 @@ export function middleware(request: NextRequest) {
   const path = raw.length > 1 ? raw.replace(/\/+$/, '') : raw;
   const dest = PERMANENT_301[path];
   if (!dest) return NextResponse.next();
+
+  if (/^https?:\/\//i.test(dest)) {
+    const target = new URL(dest);
+    target.search = request.nextUrl.search;
+    return NextResponse.redirect(target, 301);
+  }
+
   const target = request.nextUrl.clone();
   target.pathname = dest;
   return NextResponse.redirect(target, 301);
@@ -31,5 +39,7 @@ export const config = {
     '/contactanos/',
     '/casos',
     '/casos/',
+    '/reunion-playful',
+    '/reunion-playful/',
   ],
 };
