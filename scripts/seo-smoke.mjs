@@ -222,8 +222,13 @@ for (const pathname of serviceBookingPaths) {
   assert.ok(content, `${pathname} should render Elementor page content`);
   assert.match(
     content,
+    /href=["']\/reunion-playful["']/,
+    `${pathname} content must book via /reunion-playful`,
+  );
+  assert.doesNotMatch(
+    content,
     /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/,
-    `${pathname} content must book GHL`,
+    `${pathname} content must not expose the GHL widget API URL`,
   );
   assert.match(content, /Agendar Reunión/, `${pathname} content must show Agendar Reunión`);
   assert.doesNotMatch(

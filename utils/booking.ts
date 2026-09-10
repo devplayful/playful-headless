@@ -1,5 +1,12 @@
+/** Shopify CTAs keep the GHL widget URL. Middleware 301s the apex path there. */
 export const BOOKING_HREF =
   'https://api.playfulagency.com/widget/bookings/reunion-playful';
+
+/**
+ * Visible/canonical href on the four GO service landings.
+ * Copy (e-com PR #21) and web must match; `/reunion-playful` 301s to BOOKING_HREF.
+ */
+export const SERVICE_BOOKING_HREF = '/reunion-playful';
 
 export const BOOKING_CTA_LABEL = 'Agendar Reunión con Playful';
 
@@ -123,8 +130,8 @@ function isGlobalChromeAnchor(pre: string, post: string): boolean {
 
 /**
  * On the four GO service landings, rewrite body anchors that point at the
- * contact page to the shared GHL booking widget. Header/footer live outside
- * this HTML; `playful-boton-header` is skipped as a belt-and-suspenders guard.
+ * contact page to the canonical `/reunion-playful` path (301 → GHL widget).
+ * Header/footer live outside this HTML; `playful-boton-header` is skipped.
  */
 export function rewriteServiceBookingCtas(html: string, slug: string): string {
   if (!html || !isServiceBookingCtaSlug(slug)) return html;
@@ -134,6 +141,6 @@ export function rewriteServiceBookingCtas(html: string, slug: string): string {
       return full;
     }
 
-    return `<a${pre}href=${quote}${BOOKING_HREF}${quote}${post}>${rewriteContactCtaLabels(inner)}</a>`;
+    return `<a${pre}href=${quote}${SERVICE_BOOKING_HREF}${quote}${post}>${rewriteContactCtaLabels(inner)}</a>`;
   });
 }
