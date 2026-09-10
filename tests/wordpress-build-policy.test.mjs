@@ -12,6 +12,10 @@ import {
 
 const require = createRequire(import.meta.url);
 const nextConfig = require('../next.config.js');
+const {
+  buildBlogCategoryRedirects,
+  getBlogCategoryRedirects,
+} = require('../lib/blog-category-redirects');
 
 test('bounds WordPress-backed static generation and avoids nested page retries', () => {
   assert.equal(nextConfig.experimental.staticGenerationMaxConcurrency, 2);
@@ -44,7 +48,7 @@ test('redirect inventory requests only the fields consumed by the build', async 
   };
 
   try {
-    const redirects = await nextConfig.redirects();
+    const redirects = await getBlogCategoryRedirects();
     assert.equal(requestedUrl.searchParams.get('_embed'), 'wp:term');
     assert.equal(requestedUrl.searchParams.get('_fields'), 'slug,_links,_embedded');
     assert.deepEqual(redirects, [{
@@ -52,6 +56,16 @@ test('redirect inventory requests only the fields consumed by the build', async 
       destination: '/blog/primary/sample-post',
       permanent: true,
     }]);
+    assert.deepEqual(buildBlogCategoryRedirects([{
+      slug: 'sample-post',
+      _embedded: {
+        'wp:term': [[
+          { taxonomy: 'category', slug: 'primary' },
+          { taxonomy: 'category', slug: 'secondary' },
+        ]],
+      },
+    }]), redirects);
+    assert.deepEqual(await nextConfig.redirects(), []);
   } finally {
     globalThis.fetch = originalFetch;
   }

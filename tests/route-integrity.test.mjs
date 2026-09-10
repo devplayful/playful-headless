@@ -99,7 +99,7 @@ test('rejects App Router interceptors explicitly instead of hiding them', () => 
 
 test('governs generated Next redirects and rewrites and detects critical shadowing', () => {
   const artifact = validArtifact();
-  artifact.nextRouting.redirects[1].destination = '/changed';
+  artifact.nextRouting.redirects[0].destination = '/changed';
   let result = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact, manifest });
   assert.equal(result.ok, false);
   assert.equal(result.nextRoutingMismatch, true);

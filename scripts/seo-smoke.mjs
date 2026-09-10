@@ -54,6 +54,25 @@ await expectRedirect(
   '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',
   308,
 );
+{
+  const oneHop = await expectRedirect(
+    '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?noamp=mobile',
+    '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',
+    308,
+    { preserveQuery: false },
+  );
+  assert.equal(oneHop.search, '');
+}
+{
+  const oneHop = await expectRedirect(
+    '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?noamp=mobile&utm_source=seo-smoke',
+    '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',
+    308,
+    { preserveQuery: false },
+  );
+  assert.equal(oneHop.searchParams.get('utm_source'), 'seo-smoke');
+  assert.equal(oneHop.searchParams.has('noamp'), false);
+}
 
 const canonicalPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
 {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { blogAmpJunkDecision } from './utils/amp-junk-query';
+import { blogSeoRedirectDecision } from './utils/amp-junk-query';
+import categoryRedirects from './utils/blog-category-redirect-map.json';
 
 const PERMANENT_301: Record<string, string> = {
   '/servicios': '/agencia-e-commerce',
@@ -18,12 +19,16 @@ function normalizePath(pathname: string): string {
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
 
-  const ampJunk = blogAmpJunkDecision(request.nextUrl.pathname, request.nextUrl.searchParams);
-  if (ampJunk.type === 'redirect') {
+  const blogSeo = blogSeoRedirectDecision(
+    request.nextUrl.pathname,
+    request.nextUrl.searchParams,
+    categoryRedirects,
+  );
+  if (blogSeo.type === 'redirect') {
     const target = request.nextUrl.clone();
-    target.pathname = ampJunk.pathname;
-    target.search = ampJunk.search;
-    return NextResponse.redirect(target, ampJunk.status);
+    target.pathname = blogSeo.pathname;
+    target.search = blogSeo.search;
+    return NextResponse.redirect(target, blogSeo.status);
   }
 
   const dest = PERMANENT_301[path];
