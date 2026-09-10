@@ -57,9 +57,7 @@ export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
   (item): item is ServiceCardItem => item.slot !== null,
 );
 export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
-export const CONTACT_HREF = '/contactar-agencia-de-marketing-digital';
-export const BOOKING_HREF =
-  'https://api.playfulagency.com/widget/bookings/reunion-playful';
+export { BOOKING_HREF, CONTACT_HREF } from '../../utils/booking.ts';
 
 export const MIGRATION = {
   h2: 'Migración a Shopify',
