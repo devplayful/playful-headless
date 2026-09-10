@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { blogAmpJunkDecision } from './utils/amp-junk-query';
 
 const PERMANENT_301: Record<string, string> = {
   '/servicios': '/agencia-e-commerce',
@@ -10,9 +11,21 @@ const PERMANENT_301: Record<string, string> = {
   '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
 };
 
+function normalizePath(pathname: string): string {
+  return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+}
+
 export function middleware(request: NextRequest) {
-  const raw = request.nextUrl.pathname;
-  const path = raw.length > 1 ? raw.replace(/\/+$/, '') : raw;
+  const path = normalizePath(request.nextUrl.pathname);
+
+  const ampJunk = blogAmpJunkDecision(request.nextUrl.pathname, request.nextUrl.searchParams);
+  if (ampJunk.type === 'redirect') {
+    const target = request.nextUrl.clone();
+    target.pathname = ampJunk.pathname;
+    target.search = ampJunk.search;
+    return NextResponse.redirect(target, ampJunk.status);
+  }
+
   const dest = PERMANENT_301[path];
   if (!dest) return NextResponse.next();
 
@@ -41,5 +54,8 @@ export const config = {
     '/casos/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/blog',
+    '/blog/',
+    '/blog/:path*',
   ],
 };

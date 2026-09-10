@@ -15,7 +15,7 @@
     "lint": "next lint",
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
-    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs",
+    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs tests/amp-junk-query.test.mjs",
     "test:wordpress": "node --test tests/wordpress-*.test.mjs tests/page-seo-overrides.test.mjs",
     "test:highlevel": "node --experimental-transform-types --test tests/highlevel/*.test.ts",
     "test:highlevel-evidence": "node --test tests/highlevel/redacted-export-audit.test.mjs",

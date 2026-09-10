@@ -56,6 +56,34 @@ await expectRedirect(
 );
 
 const canonicalPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
+{
+  const stripped = await expectRedirect(`${canonicalPath}?amp=1`, canonicalPath, 301, {
+    preserveQuery: false,
+  });
+  assert.equal(stripped.search, '');
+}
+{
+  const stripped = await expectRedirect('/blog?noamp=mobile', '/blog', 301, {
+    preserveQuery: false,
+  });
+  assert.equal(stripped.search, '');
+}
+{
+  const stripped = await expectRedirect(`${canonicalPath}?noamp=mobile`, canonicalPath, 301, {
+    preserveQuery: false,
+  });
+  assert.equal(stripped.search, '');
+}
+{
+  const stripped = await expectRedirect(
+    `${canonicalPath}?noamp=mobile&utm_source=x`,
+    canonicalPath,
+    301,
+    { preserveQuery: false },
+  );
+  assert.equal(stripped.searchParams.get('utm_source'), 'x');
+  assert.equal(stripped.searchParams.has('noamp'), false);
+}
 const canonicalResponse = await request(`${canonicalPath}?amp=1`, { redirect: 'follow' });
 assert.equal(canonicalResponse.status, 200);
 const canonicalHtml = await canonicalResponse.text();
