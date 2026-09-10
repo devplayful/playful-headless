@@ -11,10 +11,26 @@ const MARKETING_TITLE =
 const SHARED_PAGOS_TITLE =
   'Pagos Online para E-commerce | Haz tu Integración con Playful Agency';
 
-test('the three QA URLs have distinct hardcoded titles', () => {
+const AGENCIA_SEO_TITLE =
+  'Agencia SEO Playful Agency | Mejora tu Posicionamiento';
+const AGENCIA_SEO_YOAST_TITLE =
+  'Agencia SEO Playful Agency | Mejóra tu Posicionamiento';
+
+test('hardcoded titles stay unique', () => {
   const titles = Object.values(PAGE_TITLE_OVERRIDES);
-  assert.equal(titles.length, 3);
+  assert.equal(titles.length, 4);
   assert.equal(new Set(titles).size, titles.length);
+});
+
+test('agencia-seo drops the erroneous accent on Mejora', () => {
+  const { title, ogTitle } = applyPageTitleOverride(
+    'agencia-seo',
+    AGENCIA_SEO_YOAST_TITLE,
+    AGENCIA_SEO_YOAST_TITLE,
+  );
+  assert.equal(title, AGENCIA_SEO_TITLE);
+  assert.equal(ogTitle, AGENCIA_SEO_TITLE);
+  assert.doesNotMatch(title, /Mejóra/);
 });
 
 test('agencia-e-commerce no longer inherits the marketing-internacional title', () => {

@@ -8,6 +8,8 @@
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
     'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+  'agencia-seo':
+    'Agencia SEO Playful Agency | Mejora tu Posicionamiento',
   'pagos-online-ecommerce':
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   'pasarela-de-pago-ecommerce':
