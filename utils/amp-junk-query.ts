@@ -40,24 +40,50 @@ export type AmpJunkDecision =
   | { type: 'next' }
   | { type: 'redirect'; pathname: string; search: string; status: 301 };
 
+export type BlogCategoryRedirectMap = Record<string, string>;
+
+export type BlogSeoDecision =
+  | { type: 'next' }
+  | { type: 'redirect'; pathname: string; search: string; status: 301 | 308 };
+
 export function blogAmpJunkDecision(
   pathname: string,
   searchParams: URLSearchParams,
 ): AmpJunkDecision {
+  const decision = blogSeoRedirectDecision(pathname, searchParams, {});
+  if (decision.type === 'redirect') {
+    return { ...decision, status: 301 };
+  }
+  return decision;
+}
+
+/**
+ * One hop for blog SEO: apply the category alias map and strip AMP junk
+ * together. Path changes stay 308 (same as the previous next.config rules);
+ * junk-only stays 301.
+ */
+export function blogSeoRedirectDecision(
+  pathname: string,
+  searchParams: URLSearchParams,
+  categoryRedirects: BlogCategoryRedirectMap,
+): BlogSeoDecision {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   if (!isBlogPath(path)) {
     return { type: 'next' };
   }
 
   const { stripped, params } = stripAmpJunkParams(searchParams);
-  if (!stripped) {
+  const canonicalPath = categoryRedirects[path] ?? path;
+  const pathChanged = canonicalPath !== path;
+
+  if (!pathChanged && !stripped) {
     return { type: 'next' };
   }
 
   return {
     type: 'redirect',
-    pathname: path,
+    pathname: canonicalPath,
     search: searchFromParams(params),
-    status: 301,
+    status: pathChanged ? 308 : 301,
   };
 }

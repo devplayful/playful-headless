@@ -61,9 +61,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const postCategory = getPrimaryCategorySlug(post);
 
   if (postCategory !== category) {
-    // Known WordPress category aliases are compiled into Next redirects at
-    // build time. Unknown categories should be a 404 instead of a redirect
-    // that silently drops attribution parameters.
+    // Known WordPress category aliases redirect in middleware (one hop,
+    // including AMP junk). Unknown categories stay 404 so attribution
+    // query params are not silently dropped.
     notFound();
   }
 

@@ -106,8 +106,9 @@ test('also strips amp=1 and mixed-case AMP keys, keeps gclid', () => {
 });
 
 test('middleware wires the helper and matches /blog plus /blog/:path*', () => {
-  assert.match(middlewareSource, /blogAmpJunkDecision/);
-  assert.match(middlewareSource, /NextResponse\.redirect\(target, ampJunk\.status\)/);
+  assert.match(middlewareSource, /blogSeoRedirectDecision/);
+  assert.match(middlewareSource, /blog-category-redirect-map\.json/);
+  assert.match(middlewareSource, /NextResponse\.redirect\(target, blogSeo\.status\)/);
   assert.match(middlewareSource, /'\/blog'/);
   assert.match(middlewareSource, /'\/blog\/'/);
   assert.match(middlewareSource, /'\/blog\/:path\*'/);
