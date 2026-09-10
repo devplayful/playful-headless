@@ -1,4 +1,5 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
+import { rewriteServiceBookingCtas } from '@/utils/booking';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -351,7 +352,10 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = rewriteInSitePageHrefs(stripScripts(rawHtml));
+  const html = rewriteServiceBookingCtas(
+    rewriteInSitePageHrefs(stripScripts(rawHtml)),
+    slug,
+  );
   const title = stripHtml(page.title?.rendered || slug);
   const stylesheetIds = collectStylesheetIds(html, page.id);
   return { id: page.id, slug: page.slug, title, html, stylesheetIds };

@@ -63,6 +63,7 @@ export default async function WordPressPage({
       html={page.html}
       pageId={page.id}
       stylesheetIds={page.stylesheetIds}
+      slug={slug}
     />
   );
 }

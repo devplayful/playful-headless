@@ -201,6 +201,48 @@ assert.match(shopifyHtml, /Agendar Reunión con Playful/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
+function extractElementorContent(html) {
+  const pageIdx = html.search(/\bplayful-wp-page\b/);
+  const endIdx = html.indexOf('id="playful-qa2-ssr"');
+  if (pageIdx === -1) return '';
+  return html.slice(pageIdx, endIdx === -1 ? html.length : endIdx);
+}
+
+const serviceBookingPaths = [
+  '/agencia-e-commerce',
+  '/agencia-seo',
+  '/agencia-sem',
+  '/agencia-diseno-web',
+];
+for (const pathname of serviceBookingPaths) {
+  const response = await request(pathname, { redirect: 'follow' });
+  assert.equal(response.status, 200, `${pathname} should return 200`);
+  const html = await response.text();
+  const content = extractElementorContent(html);
+  assert.ok(content, `${pathname} should render Elementor page content`);
+  assert.match(
+    content,
+    /href=["']\/reunion-playful["']/,
+    `${pathname} content must book via /reunion-playful`,
+  );
+  assert.doesNotMatch(
+    content,
+    /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/,
+    `${pathname} content must not expose the GHL widget API URL`,
+  );
+  assert.match(content, /Agendar Reunión/, `${pathname} content must show Agendar Reunión`);
+  assert.doesNotMatch(
+    content,
+    /contactar-agencia-de-marketing-digital/,
+    `${pathname} content must not keep page CTAs to /contactar`,
+  );
+  assert.match(
+    html,
+    /playful-boton-header[\s\S]*?href="\/contactar-agencia-de-marketing-digital"/,
+    `${pathname} header Contáctanos may still go to contactar`,
+  );
+}
+
 function extractRobots(html) {
   return (
     html.match(/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']*)["']/i)?.[1] ??
