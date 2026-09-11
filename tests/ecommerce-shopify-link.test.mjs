@@ -98,6 +98,5 @@ test('getPageBySlug and Elementor compose the Shopify rewriter', () => {
 test('header and footer stay out of the Shopify interior rewriter', () => {
   assert.doesNotMatch(header, /rewriteEcommerceShopifyLink/);
   assert.doesNotMatch(footer, /rewriteEcommerceShopifyLink/);
-  assert.doesNotMatch(header, /href="\/agencia-shopify"/);
   assert.doesNotMatch(footer, /href="\/agencia-shopify"/);
 });

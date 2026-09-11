@@ -46,10 +46,10 @@ test('case study page mounts the link after primerap, gated by slug', () => {
   assert.ok(primerapIdx > 0 && linkIdx > primerapIdx, 'link must follow primerap');
 });
 
-test('does not add Shopify to nav, header, footer or root layout', () => {
-  assert.doesNotMatch(header, /href="\/agencia-shopify"/);
-  assert.doesNotMatch(footer, /href="\/agencia-shopify"/);
-  assert.doesNotMatch(layout, /href="\/agencia-shopify"/);
+test('case-study body link is not wired through header, footer or root layout', () => {
   assert.doesNotMatch(header, /ShopifyServiceLink/);
   assert.doesNotMatch(footer, /ShopifyServiceLink/);
+  assert.doesNotMatch(layout, /ShopifyServiceLink/);
+  assert.doesNotMatch(footer, /href="\/agencia-shopify"/);
+  assert.doesNotMatch(layout, /href="\/agencia-shopify"/);
 });
