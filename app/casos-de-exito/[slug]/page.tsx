@@ -12,6 +12,7 @@ import SoyTechnoSectionE from '@/components/soytechno/SoyTechnoSectionE';
 import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
+import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 
 
 
@@ -112,6 +113,7 @@ export default async function SuccessStoryPage({
                 className="text-base sm:text-lg text-[#4A4453]"
                 dangerouslySetInnerHTML={{ __html: story.acf.primerap || '' }}
               />
+              {isShopifyCaseStudySlug(slug) ? <ShopifyServiceLink /> : null}
             </div>
             <div>
               <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] rounded-lg overflow-hidden bg-gray-100">

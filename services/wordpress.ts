@@ -1,5 +1,6 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
+import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -353,7 +354,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
   const html = rewriteElementorBodyHrefs(
-    rewriteInSitePageHrefs(stripScripts(rawHtml)),
+    rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml)), slug),
     slug,
   );
   const title = stripHtml(page.title?.rendered || slug);

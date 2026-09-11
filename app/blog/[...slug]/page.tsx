@@ -99,6 +99,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <>
     <h1 className="sr-only">{post.title.rendered}</h1>
+    {serviceCta ? (
+      <p data-playful-service-cta="" className="sr-only">
+        <a href={serviceCta.href}>{serviceCta.label}</a>
+      </p>
+    ) : null}
     <BlogPostContent 
       title={post.title.rendered}
       featuredImage={post.featured_media_url}
@@ -276,12 +281,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {serviceCta ? (
             <p className="mt-8">
-              <Link
+              <a
                 href={serviceCta.href}
                 className="font-medium text-[#440099] hover:underline"
               >
                 {serviceCta.label}
-              </Link>
+              </a>
             </p>
           ) : null}
           

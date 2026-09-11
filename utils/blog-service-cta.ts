@@ -24,10 +24,9 @@ export const BLOG_SERVICE_CTAS: Record<string, BlogServiceCta> = {
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
     href: '/agencia-shopify',
     label: 'Conoce nuestro servicio Shopify',
-    // Only wrap a Shopify-service mention. The live Zelle post talks about
-    // WooCommerce / pasarela, so linking the first "Zelle" or "pagos" to
-    // /agencia-shopify would read as forced copy.
-    mentionRe: /agencia Shopify|tienda Shopify/i,
+    // Prefer a Shopify-service mention. The live Zelle post is WooCommerce /
+    // pasarela copy — do not wrap the first "Zelle". Longer phrases first.
+    mentionRe: /tienda Shopify|agencia Shopify|Shopify/i,
   },
 };
 
@@ -100,11 +99,40 @@ export function linkFirstUnlinkedServiceMention(
   return linked;
 }
 
+/**
+ * If the article has no href to the service landing, append a compact CTA.
+ * Used when mentionRe does not match (Zelle live copy never says Shopify).
+ */
+export function appendBlogServiceCtaIfMissing($: CheerioRoot, cta: BlogServiceCta): boolean {
+  if (htmlAlreadyLinksToService($, cta.href)) return false;
+  const $root = $('body').length ? $('body') : $.root();
+  $root.append(
+    `<p class="playful-blog-service-cta"><a href="${cta.href}">${cta.label}</a></p>`,
+  );
+  return true;
+}
+
+/** Wrap the first mention, or append the compact CTA so curl always sees an href. */
+export function ensureBlogServiceLink($: CheerioRoot, cta: BlogServiceCta): boolean {
+  if (htmlAlreadyLinksToService($, cta.href)) return false;
+  if (linkFirstUnlinkedServiceMention($, cta)) return true;
+  return appendBlogServiceCtaIfMissing($, cta);
+}
+
 /** Test helper: apply mention linking for a post slug on an HTML fragment. */
 export function applyBlogServiceMentionLink(html: string, postSlug: string): string {
   const cta = getBlogServiceCta(postSlug);
   if (!cta) return html;
   const $ = cheerio.load(html);
   linkFirstUnlinkedServiceMention($, cta);
+  return $.html();
+}
+
+/** Test helper: mention wrap or compact CTA fallback. */
+export function applyBlogServiceEnsureLink(html: string, postSlug: string): string {
+  const cta = getBlogServiceCta(postSlug);
+  if (!cta) return html;
+  const $ = cheerio.load(html);
+  ensureBlogServiceLink($, cta);
   return $.html();
 }

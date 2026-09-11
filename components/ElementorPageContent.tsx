@@ -2,6 +2,7 @@ import styles from './ElementorPageContent.module.css';
 import './ElementorPageHeaderFix.css';
 import ElementorPageScripts from './ElementorPageScripts';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
+import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -106,7 +107,10 @@ export default function ElementorPageContent({
   stylesheetIds,
   slug = '',
 }: ElementorPageContentProps) {
-  const bodyHtml = rewriteElementorBodyHrefs(restoreOldBodyCopy(html), slug);
+  const bodyHtml = rewriteElementorBodyHrefs(
+    rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+    slug,
+  );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)

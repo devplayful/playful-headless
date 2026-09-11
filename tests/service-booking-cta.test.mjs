@@ -191,7 +191,8 @@ test('getPageBySlug maps Elementor HTML through the booking rewriter', () => {
 
 test('slug page passes the WP slug into ElementorPageContent', () => {
   assert.match(slugPage, /slug=\{slug\}/);
-  assert.match(elementor, /rewriteElementorBodyHrefs\(restoreOldBodyCopy\(html\), slug\)/);
+  assert.match(elementor, /rewriteElementorBodyHrefs\(/);
+  assert.match(elementor, /rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\)/);
   assert.match(slugPage, /'marketing-internacional'/);
   assert.match(slugPage, /'agencia-e-commerce'/);
 });
