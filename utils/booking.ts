@@ -12,6 +12,9 @@ export const BOOKING_CTA_LABEL = 'Agendar Reunión con Playful';
 
 export const CONTACT_HREF = '/contactar-agencia-de-marketing-digital';
 
+/** Next /nosotros is the live about page; WP `/about` 404s on apex. */
+export const NOSOTROS_HREF = '/nosotros';
+
 /** Apex landings whose Elementor body CTAs book GHL instead of the contact form. */
 export const SERVICE_BOOKING_CTA_SLUGS = [
   'agencia-e-commerce',
@@ -20,11 +23,28 @@ export const SERVICE_BOOKING_CTA_SLUGS = [
   'agencia-diseno-web',
 ] as const;
 
+/**
+ * Elementor landings that still ship WP `/about` anchors in the body.
+ * e-com / Shopify have none — keep them off the allowlist.
+ */
+export const ABOUT_HREF_REWRITE_SLUGS = [
+  'agencia-seo',
+  'agencia-sem',
+  'agencia-diseno-web',
+] as const;
+
 export type ServiceBookingCtaSlug = (typeof SERVICE_BOOKING_CTA_SLUGS)[number];
+export type AboutHrefRewriteSlug = (typeof ABOUT_HREF_REWRITE_SLUGS)[number];
 
 const SERVICE_BOOKING_CTA_SLUG_SET: ReadonlySet<string> = new Set(
   SERVICE_BOOKING_CTA_SLUGS,
 );
+
+const ABOUT_HREF_REWRITE_SLUG_SET: ReadonlySet<string> = new Set(
+  ABOUT_HREF_REWRITE_SLUGS,
+);
+
+const ABOUT_PATH = '/about';
 
 const CONTACT_PATH = CONTACT_HREF;
 const IN_SITE_PAGE_HOSTS = new Set([
@@ -39,6 +59,10 @@ const ANCHOR_RE =
 
 export function isServiceBookingCtaSlug(slug: string): slug is ServiceBookingCtaSlug {
   return SERVICE_BOOKING_CTA_SLUG_SET.has(slug);
+}
+
+export function isAboutHrefRewriteSlug(slug: string): slug is AboutHrefRewriteSlug {
+  return ABOUT_HREF_REWRITE_SLUG_SET.has(slug);
 }
 
 function decodeBasicEntities(text: string): string {
@@ -75,6 +99,11 @@ function pathnameOfHref(href: string): string | null {
 /** True for relative, apex, www, endpoint, or old host URLs to the contact page. */
 export function isContactPageHref(href: string): boolean {
   return pathnameOfHref(href) === CONTACT_PATH;
+}
+
+/** True for relative, apex, www, endpoint, or old host URLs to the legacy WP about page. */
+export function isAboutPageHref(href: string): boolean {
+  return pathnameOfHref(href) === ABOUT_PATH;
 }
 
 function normalizeCtaLabel(text: string): string {
@@ -143,4 +172,26 @@ export function rewriteServiceBookingCtas(html: string, slug: string): string {
 
     return `<a${pre}href=${quote}${SERVICE_BOOKING_HREF}${quote}${post}>${rewriteContactCtaLabels(inner)}</a>`;
   });
+}
+
+/**
+ * On SEO / SEM / diseño landings, rewrite body anchors that point at the
+ * dead WP `/about` page to the live `/nosotros` path.
+ * Header/footer already use `/nosotros`; `playful-boton-header` is skipped.
+ */
+export function rewriteAboutHrefs(html: string, slug: string): string {
+  if (!html || !isAboutHrefRewriteSlug(slug)) return html;
+
+  return html.replace(ANCHOR_RE, (full, pre: string, quote: string, href: string, post: string, inner: string) => {
+    if (isGlobalChromeAnchor(pre, post) || !isAboutPageHref(href)) {
+      return full;
+    }
+
+    return `<a${pre}href=${quote}${NOSOTROS_HREF}${quote}${post}>${inner}</a>`;
+  });
+}
+
+/** Elementor body pipeline: booking CTAs, then leftover `/about` anchors. */
+export function rewriteElementorBodyHrefs(html: string, slug: string): string {
+  return rewriteAboutHrefs(rewriteServiceBookingCtas(html, slug), slug);
 }

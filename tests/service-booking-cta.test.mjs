@@ -186,12 +186,12 @@ test('rewriter is idempotent on already-booked CTAs', () => {
 test('getPageBySlug maps Elementor HTML through the booking rewriter', () => {
   const body = functionBody(wordpress, 'getPageBySlug');
   assert.match(body, /rewriteInSitePageHrefs\(/);
-  assert.match(body, /rewriteServiceBookingCtas\(/);
+  assert.match(body, /rewriteElementorBodyHrefs\(/);
 });
 
 test('slug page passes the WP slug into ElementorPageContent', () => {
   assert.match(slugPage, /slug=\{slug\}/);
-  assert.match(elementor, /rewriteServiceBookingCtas\(restoreOldBodyCopy\(html\), slug\)/);
+  assert.match(elementor, /rewriteElementorBodyHrefs\(restoreOldBodyCopy\(html\), slug\)/);
   assert.match(slugPage, /'marketing-internacional'/);
   assert.match(slugPage, /'agencia-e-commerce'/);
 });
@@ -201,6 +201,6 @@ test('header and footer Contáctanos still go to the contact page', () => {
   assert.match(header, /Contáctanos/);
   assert.match(footer, /href="\/contactar-agencia-de-marketing-digital"/);
   assert.match(footer, /Contáctanos/);
-  assert.doesNotMatch(header, /BOOKING_HREF|rewriteServiceBookingCtas/);
-  assert.doesNotMatch(footer, /BOOKING_HREF|rewriteServiceBookingCtas/);
+  assert.doesNotMatch(header, /BOOKING_HREF|rewriteServiceBookingCtas|rewriteElementorBodyHrefs/);
+  assert.doesNotMatch(footer, /BOOKING_HREF|rewriteServiceBookingCtas|rewriteElementorBodyHrefs/);
 });
