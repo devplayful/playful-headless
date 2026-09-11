@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 const {
   getBlogServiceCta,
   applyBlogServiceMentionLink,
+  applyBlogServiceEnsureLink,
 } = await import('../utils/blog-service-cta.ts');
 
 const blogPage = readFileSync(
@@ -37,13 +38,21 @@ test('other slugs do not add the SEM CTA', () => {
 
 test('blog post page renders the mapped CTA after article HTML', () => {
   assert.match(blogPage, /getBlogServiceCta\(postSlug\)/);
-  assert.match(blogPage, /serviceCta\.href/);
   assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
   const contentIdx = blogPage.indexOf('dangerouslySetInnerHTML={{ __html: contentWithIds }}');
-  const ctaIdx = blogPage.indexOf('serviceCta.href');
+  const afterContent = blogPage.slice(contentIdx);
+  assert.match(afterContent, /<a\s+href=\{serviceCta\.href\}/);
+  const ctaIdx = contentIdx + afterContent.indexOf('<a');
   const tagsIdx = blogPage.indexOf('{/* Tags */}');
   assert.ok(contentIdx > 0 && ctaIdx > contentIdx, 'CTA must come after article HTML');
   assert.ok(tagsIdx > ctaIdx, 'CTA must come before tags');
+});
+
+test('mapped service CTA is SSR outside BlogPostContent so curl sees href', () => {
+  const beforeLoader = blogPage.slice(0, blogPage.indexOf('<BlogPostContent'));
+  assert.match(beforeLoader, /data-playful-service-cta/);
+  assert.match(beforeLoader, /<a href=\{serviceCta\.href\}>/);
+  assert.match(beforeLoader, /\{serviceCta\.label\}/);
 });
 
 test('post canonical stays on the blog post, not a service landing', () => {
@@ -103,9 +112,25 @@ test('Zelle slug wraps a natural Shopify mention, not a forced Zelle word', () =
   );
   assert.match(shopify, /<a href="\/agencia-shopify">tienda Shopify<\/a>/);
 
+  const bareShopify = applyBlogServiceMentionLink(
+    '<p>El checkout en Shopify queda listo para cobrar.</p>',
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.match(bareShopify, /<a href="\/agencia-shopify">Shopify<\/a>/);
+
   const zelleOnly = applyBlogServiceMentionLink(
     '<p>Zelle es un método de pago popular en Venezuela.</p>',
     'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   );
   assert.doesNotMatch(zelleOnly, /href="\/agencia-shopify"/);
+});
+
+test('Zelle fallback appends a compact CTA when the post never says Shopify', () => {
+  const html = applyBlogServiceEnsureLink(
+    '<p>Si tu tienda en línea trabaja con WooCommerce, puedes integrar Zelle.</p>',
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  );
+  assert.match(html, /href="\/agencia-shopify"/);
+  assert.match(html, /Conoce nuestro servicio Shopify/);
+  assert.doesNotMatch(html, /<a href="\/agencia-shopify">Zelle<\/a>/);
 });

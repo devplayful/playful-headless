@@ -158,7 +158,9 @@ test('composed Elementor rewriter still books contact CTAs and remaps /about', (
 test('getPageBySlug and ElementorPageContent use the composed body rewriter', () => {
   const body = functionBody(wordpress, 'getPageBySlug');
   assert.match(body, /rewriteElementorBodyHrefs\(/);
-  assert.match(elementor, /rewriteElementorBodyHrefs\(restoreOldBodyCopy\(html\), slug\)/);
+  assert.match(body, /rewriteEcommerceShopifyLink\(/);
+  assert.match(elementor, /rewriteElementorBodyHrefs\(/);
+  assert.match(elementor, /rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\)/);
   assert.match(slugPage, /slug=\{slug\}/);
   assert.match(booking, /export function rewriteAboutHrefs/);
   assert.match(booking, /export function rewriteElementorBodyHrefs/);
