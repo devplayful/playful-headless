@@ -1,7 +1,7 @@
 import styles from './ElementorPageContent.module.css';
 import './ElementorPageHeaderFix.css';
 import ElementorPageScripts from './ElementorPageScripts';
-import { rewriteServiceBookingCtas } from '@/utils/booking';
+import { rewriteElementorBodyHrefs } from '@/utils/booking';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -106,7 +106,7 @@ export default function ElementorPageContent({
   stylesheetIds,
   slug = '',
 }: ElementorPageContentProps) {
-  const bodyHtml = rewriteServiceBookingCtas(restoreOldBodyCopy(html), slug);
+  const bodyHtml = rewriteElementorBodyHrefs(restoreOldBodyCopy(html), slug);
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
