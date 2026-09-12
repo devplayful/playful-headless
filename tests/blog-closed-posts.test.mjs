@@ -132,6 +132,16 @@ test('listing helpers drop closed cards that still arrive from WordPress', () =>
   assert.deepEqual(posts.map((post) => post.slug), ['ecosistema-digital-de-tu-marca']);
 });
 
+test('route-integrity inventory no longer governs the 31 closed posts', () => {
+  const manifest = require('../config/expected-routes.json');
+  const governed = new Set(manifest.governedConcreteRoutes['/blog/[...slug]']);
+  for (const path of JOSE_V2_CLOSED_PATHS) {
+    assert.equal(governed.has(path), false, path);
+  }
+  assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
+  assert.equal(governed.size, 73);
+});
+
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {
   const body = middlewareSource.slice(middlewareSource.indexOf('export function middleware'));
   const closedIdx = body.indexOf('blogClosedDecision');
