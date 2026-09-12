@@ -15,10 +15,10 @@ for (const file of ['app/contactar-agencia-de-marketing-digital/ContactPageClien
   test(`${file}: navigate only within successful receipt branch, not simulator or pending`, () => {
     const code = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
     const success = code.indexOf('else if (response.ok && data.success)');
-    const navigation = code.indexOf("window.location.assign('/gracias')");
+    const navigation = code.indexOf("window.location.assign('/gracias?conv=Lead')");
     assert(success > 0 && navigation > success);
     assert(code.slice(success, navigation).includes('resetConfirmedForm();'));
     assert.match(code.slice(success, navigation), /data.simulated !== true && !previewSimulation/);
-    assert(!code.slice(0, success).includes("window.location.assign('/gracias')"));
+    assert(!code.slice(0, success).includes("window.location.assign('/gracias?conv=Lead')"));
   });
 }
