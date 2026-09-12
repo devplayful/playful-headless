@@ -74,7 +74,17 @@ await expectRedirect(
   assert.equal(oneHop.searchParams.has('noamp'), false);
 }
 
-const canonicalPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
+const closedPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
+{
+  const gone = await request(closedPath);
+  assert.equal(gone.status, 410, `${closedPath} should return 410`);
+}
+{
+  const goneSlash = await request(`${closedPath}/`);
+  assert.equal(goneSlash.status, 410, `${closedPath}/ should return 410`);
+}
+
+const canonicalPath = '/blog/mas-vistos/ecosistema-digital-de-tu-marca';
 {
   const stripped = await expectRedirect(`${canonicalPath}?amp=1`, canonicalPath, 301, {
     preserveQuery: false,
@@ -179,6 +189,10 @@ assert.equal(new Set(observedTitles).size, observedTitles.length, 'each QA URL m
 assert.ok(
   urls.includes('https://playfulagency.com/agencia-shopify'),
   'sitemap must include /agencia-shopify without a trailing slash',
+);
+assert.ok(
+  !urls.includes('https://playfulagency.com/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical'),
+  'sitemap must exclude closed José v2 posts',
 );
 
 const shopifyResponse = await request('/agencia-shopify', { redirect: 'follow' });

@@ -1,5 +1,6 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
+import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import {
   rewriteInSitePageHrefs,
@@ -480,20 +481,20 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
     categories: post._embedded?.['wp:term']?.[0] || [],
     author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
   })));
-  return { posts: processedPosts, totalPages };
+  return { posts: filterOpenBlogPosts(processedPosts), totalPages };
 }
 
 export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ id: number; title: string; excerpt: string; category: string; date: string; imageUrl: string; slug: string; href: string }>> {
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
   url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
-  url.searchParams.append('per_page', Math.min(perPage, 10).toString());
+  url.searchParams.append('per_page', String(Math.min(100, Math.max(perPage + 40, perPage))));
   url.searchParams.append('orderby', 'date');
   url.searchParams.append('order', 'desc');
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     url.toString(),
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
   );
-  return posts.map(post => {
+  return filterOpenBlogPosts(posts.map(post => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
     let category = 'Sin categoría';
     const categories = rewritten._embedded?.['wp:term']?.[0]?.filter(t => t.taxonomy === 'category');
@@ -508,7 +509,7 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
     const excerpt = (rewritten.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
     const categorySlug = categories?.[0]?.slug || 'sin-categoria';
     return { id: rewritten.id, title: rewritten.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: rewritten.slug, href: `/blog/${categorySlug}/${rewritten.slug}` };
-  });
+  })).slice(0, perPage);
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {

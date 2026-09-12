@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
+import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 
 const PERMANENT_301: Record<string, string> = {
@@ -18,6 +19,14 @@ function normalizePath(pathname: string): string {
 
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
+
+  const closed = blogClosedDecision(path);
+  if (closed.type === 'gone') {
+    return new NextResponse('Gone', {
+      status: 410,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  }
 
   const blogSeo = blogSeoRedirectDecision(
     request.nextUrl.pathname,

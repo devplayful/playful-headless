@@ -17,6 +17,7 @@ import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 export async function generateStaticParams() {
+  // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
   const { posts } = await getBlogPosts(1, 100);
   return posts.map((post) => ({
     slug: [getPrimaryCategorySlug(post), post.slug],
