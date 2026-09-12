@@ -4,11 +4,11 @@ import { readFileSync } from 'node:fs';
 
 const page = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
 test('thank-you page has one safe booking CTA, noindex and navigation intact', () => {
-  assert.equal((page.match(/widget\/bookings\/reunion-playful/g) || []).length, 1);
+  assert.equal(page.split('href="https://playfulagency.com/reunion-playful"').length - 1, 1);
   assert.match(page, /target="_blank" rel="noopener noreferrer"/);
   assert.match(page, /index: false/);
   assert.doesNotMatch(page, /display: none|<form|fetch\(/);
-  assert(page.indexOf('widget/bookings') < page.indexOf('Una conversación para evaluar'));
+  assert(page.indexOf('https://playfulagency.com/reunion-playful') < page.indexOf('Una conversación para evaluar'));
   assert.match(page, /sesión es gratuita/);
 });
 for (const file of ['app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', 'components/ContactLeadForm.tsx']) {
