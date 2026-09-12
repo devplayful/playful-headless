@@ -15,7 +15,7 @@
     "lint": "next lint",
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
-    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs tests/amp-junk-query.test.mjs tests/blog-seo-redirect.test.mjs tests/service-booking-cta.test.mjs tests/about-href.test.mjs tests/ecommerce-shopify-link.test.mjs tests/case-study-shopify-link.test.mjs tests/header-shopify-nav.test.mjs",
+    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs tests/blog-listing-pagination.test.mjs tests/amp-junk-query.test.mjs tests/blog-seo-redirect.test.mjs tests/service-booking-cta.test.mjs tests/about-href.test.mjs tests/ecommerce-shopify-link.test.mjs tests/case-study-shopify-link.test.mjs tests/header-shopify-nav.test.mjs",
     "test:service-booking": "node --experimental-strip-types --test tests/service-booking-cta.test.mjs",
     "test:about-hrefs": "node --experimental-strip-types --test tests/about-href.test.mjs",
     "smoke:service-booking": "node --experimental-strip-types scripts/service-booking-cta-curl.mjs",

@@ -5,6 +5,7 @@ import { getBlogPosts } from '@/services/wordpress';
 import Link from 'next/link';
 import Image from 'next/image';
 import BlogCategories from './BlogCategories';
+import BlogListingPagination from './BlogListingPagination';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -290,42 +291,11 @@ export default async function BlogPage({
                 ))}
               </div>
 
-              {/* Paginación */}
-              {totalPages > 1 && (
-                <div className="mt-12 mb-10 flex justify-center items-center gap-4">
-                  <Link
-                    href={`/blog?page=${currentPage - 1}${category ? `&category=${category}` : ''}`}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md ${
-                      currentPage === 1
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
-                        : 'bg-white text-[#440099] hover:bg-[#440099] hover:text-white'
-                    }`}
-                    aria-label="Página anterior"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </Link>
-                  
-                  <span className="text-lg font-bold text-[#440099]">
-                    {currentPage} / {totalPages}
-                  </span>
-                  
-                  <Link
-                    href={`/blog?page=${currentPage + 1}${category ? `&category=${category}` : ''}`}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md ${
-                      currentPage === totalPages
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
-                        : 'bg-[#440099] text-white hover:bg-[#5500BB]'
-                    }`}
-                    aria-label="Página siguiente"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              )}
+              <BlogListingPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                category={category}
+              />
             </>
           )}
         </div>

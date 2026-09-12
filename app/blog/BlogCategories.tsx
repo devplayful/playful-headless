@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { blogListingPath } from '@/utils/blog-url';
 
 interface Category {
   id: number;
@@ -27,9 +28,8 @@ const colorPalette = [
 ];
 
 export default function BlogCategories({ currentCategory }: BlogCategoriesProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  
+  const router = useRouter();
+
   // Categorías predefinidas
   const predefinedCategories = [
     { id: 1, name: 'E-commerce', slug: 'e-commerce', count: 0 },
@@ -46,18 +46,6 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
   ] as Array<Category & { color: string }>);
   
   const [loading, setLoading] = useState(true);
-
-  const createQueryString = (name: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(name, value);
-    } else {
-      params.delete(name);
-    }
-    // Reset page to 1 when changing category
-    params.delete('page');
-    return params.toString();
-  };
 
   useEffect(() => {
     const initializeCategories = async () => {
@@ -99,19 +87,39 @@ export default function BlogCategories({ currentCategory }: BlogCategoriesProps)
   return (
     <div className="bg-[#2A0064] rounded-full py-4 px-6 overflow-hidden">
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide sm:flex-nowrap sm:justify-start lg:flex-wrap lg:justify-center whitespace-nowrap">
-        {categories.map((cat) => (
-          <Link
-            key={cat.id}
-            href={`/blog${cat.slug ? `?category=${cat.slug}` : ''}`}
-            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all flex-shrink-0 ${
-              currentCategory === (cat.slug === '' ? '' : cat.slug)
-                ? 'bg-[#72E3D8] text-[#2A0064] shadow-md'
-                : 'bg-white text-[#2A0064] hover:bg-[#72E3D8] hover:text-[#2A0064]'
-            }`}
-          >
-            {cat.name}
-          </Link>
-        ))}
+        {categories.map((cat) => {
+          const isActive = currentCategory === (cat.slug === '' ? '' : cat.slug);
+          const className = `px-6 py-2.5 rounded-full text-sm font-bold transition-all flex-shrink-0 ${
+            isActive
+              ? 'bg-[#72E3D8] text-[#2A0064] shadow-md'
+              : 'bg-white text-[#2A0064] hover:bg-[#72E3D8] hover:text-[#2A0064]'
+          }`;
+
+          if (!cat.slug) {
+            return (
+              <Link
+                key={cat.id}
+                href="/blog"
+                className={className}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {cat.name}
+              </Link>
+            );
+          }
+
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => router.push(blogListingPath({ category: cat.slug }))}
+              className={className}
+              aria-pressed={isActive}
+            >
+              {cat.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
