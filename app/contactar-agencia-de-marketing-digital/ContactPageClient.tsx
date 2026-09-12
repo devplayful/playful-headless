@@ -165,6 +165,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         });
         
         resetConfirmedForm();
+        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias');
       } else {
         setSubmitStatus({
           success: false,

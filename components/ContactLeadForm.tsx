@@ -172,6 +172,7 @@ export default function ContactLeadForm({
         });
         
         resetConfirmedForm();
+        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias');
       } else {
         setSubmitStatus({
           success: false,
