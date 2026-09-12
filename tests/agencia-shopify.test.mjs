@@ -17,9 +17,10 @@ const {
   buildFaqPageJsonLd,
 } = await import('../app/agencia-shopify/copy.ts');
 const { ZELLE_BLOG_POST_HREF } = await import('../utils/blog-service-cta.ts');
+const { buildSitemapXml } = await import('../utils/apex-sitemap.ts');
 
 const landing = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-const sitemap = readFileSync(new URL('../app/sitemap.xml/route.ts', import.meta.url), 'utf8');
+const sitemap = buildSitemapXml();
 const form = readFileSync(new URL('../components/ContactLeadForm.tsx', import.meta.url), 'utf8');
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 

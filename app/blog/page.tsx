@@ -9,6 +9,7 @@ import BlogListingPagination from './BlogListingPagination';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { blogPostPath } from '@/utils/blog-url';
 
 // Función para formatear la fecha
@@ -53,7 +54,7 @@ export default async function BlogPage({
   const { posts: allPosts, totalPages } = await getBlogPosts(currentPage, perPage, category);
   
   // Filtrar posts por búsqueda si existe query
-  let posts = allPosts;
+  let posts = filterOpenBlogPosts(allPosts);
   if (searchQuery) {
     const query = searchQuery.toLowerCase();
     posts = allPosts.filter(post => {
