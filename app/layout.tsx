@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import { isReadOnlySeoPreview } from '@/utils/seo-preview.mjs';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -103,13 +104,14 @@ export default function RootLayout({
 }) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+  const readOnlySeoPreview = isReadOnlySeoPreview();
 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        {gtmId && <GoogleTagManager gtmId={gtmId} />}
-        {gaId && <GoogleAnalytics gaId={gaId} />}
+        {!readOnlySeoPreview && gtmId && <GoogleTagManager gtmId={gtmId} />}
+        {!readOnlySeoPreview && gaId && <GoogleAnalytics gaId={gaId} />}
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
@@ -119,7 +121,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <ChatWidget />
+          {!readOnlySeoPreview && <ChatWidget />}
         </ThemeProvider>
       </body>
     </html>
