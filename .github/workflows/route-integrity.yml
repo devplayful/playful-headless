@@ -27,6 +27,8 @@ jobs:
         run: npm run verify:lockfile
       - name: Run adversarial route tests
         run: npm run test:route-integrity
+      - name: Verify article content is present in server HTML
+        run: node --test tests/blog-post-content-ssr.test.mjs
       - name: Type-check
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact
