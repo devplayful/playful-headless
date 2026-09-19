@@ -25,6 +25,12 @@ export const SOYTECHNO_CASE_STUDY_SLUG = 'soytechno-ecommerce-venezuela';
 export const SOYTECHNO_CASE_TITLE =
   'SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela';
 
+/** Stable public asset; do not use endpoint.playfulagency.com (stripped in RSC). */
+export const SOYTECHNO_LOGO = {
+  url: '/images/logos/soytechno.png',
+  alt: 'SoyTechno',
+};
+
 const CIMA = {
   reto:
     'Tras su soft launch, SoyTechno debía consolidar su eCommerce en un mercado donde la industria asumía que el consumidor no confía y solo compra por WhatsApp. El reto 2025: demostrar que el venezolano sí transacciona masivamente online cuando se le brinda una infraestructura formal, segura y transparente.',
@@ -82,6 +88,8 @@ export function getSoyTechnoSyntheticStory() {
     title: { rendered: SOYTECHNO_CASE_TITLE },
     excerpt: { rendered: CIMA.idea },
     content: { rendered: '' },
+    featured_media_url: SOYTECHNO_LOGO.url,
+    featured_media_alt: SOYTECHNO_LOGO.alt,
     status: 'publish',
     type: 'casos-de-exito',
     acf: {
@@ -92,7 +100,7 @@ export function getSoyTechnoSyntheticStory() {
       categoria5: '',
       h1: SOYTECHNO_CASE_TITLE,
       primerap: cimaHtml(CIMA.idea),
-      imagenbanner: false,
+      imagenbanner: SOYTECHNO_LOGO,
       primerh2: '',
       segundap: '',
       imagenminuta1: false,
@@ -140,7 +148,7 @@ export function getSoyTechnoSyntheticStory() {
             imagen_3: null,
             imagen_4: null,
             imagen_del_telefono: null,
-            imagen_del_logo: null,
+            imagen_del_logo: SOYTECHNO_LOGO,
           },
           titulo_1: 'Reto',
           parrafo1: cimaPlain(CIMA.reto),

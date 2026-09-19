@@ -54,4 +54,16 @@ test('carousel selection ignores unsafe legacy media fallbacks', () => {
     selectCaseStudyCardMediaUrl({ featured_media_url: allowedUrl }),
     allowedUrl
   );
+  assert.equal(
+    selectCaseStudyCardMediaUrl({
+      featured_media_url: '/images/logos/soytechno.png',
+    }),
+    '/images/logos/soytechno.png',
+  );
+  assert.equal(
+    selectCaseStudyCardMediaUrl({
+      featured_media_url: '/images/../etc/passwd',
+    }),
+    '',
+  );
 });

@@ -18,6 +18,14 @@ export function isAllowedCaseStudyMediaUrl(value) {
   }
 }
 
+export function isAllowedLocalCaseStudyImageUrl(value) {
+  return (
+    typeof value === 'string' &&
+    /^\/images\/[A-Za-z0-9._/-]+$/.test(value) &&
+    !value.includes('..')
+  );
+}
+
 export function preserveFeaturedMediaUrl(source, sanitized) {
   const featuredMedia = source?._embedded?.['wp:featuredmedia'];
   const firstMedia = Array.isArray(featuredMedia) ? featuredMedia[0] : undefined;
@@ -33,5 +41,8 @@ export function preserveFeaturedMediaUrl(source, sanitized) {
 
 export function selectCaseStudyCardMediaUrl(source) {
   const sourceUrl = source?.featured_media_url;
-  return isAllowedCaseStudyMediaUrl(sourceUrl) ? sourceUrl : '';
+  if (isAllowedCaseStudyMediaUrl(sourceUrl) || isAllowedLocalCaseStudyImageUrl(sourceUrl)) {
+    return sourceUrl;
+  }
+  return '';
 }

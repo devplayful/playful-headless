@@ -59,15 +59,19 @@ test('Contento map: A is §3 Desafío, B is §2 Resumen', () => {
   assert.doesNotMatch(sectionB, /titulo_4:/);
 });
 
-test('ACF keys match Contento and images stay null', () => {
+test('ACF keys match Contento; only the SoyTechno logo is filled', () => {
   assert.match(storySource, /imagen_izquierda: null/);
   assert.match(storySource, /imagen_derecha: null/);
   assert.match(storySource, /imagenes_collage: \{/);
   assert.match(storySource, /imagen_del_telefono: null/);
-  assert.match(storySource, /imagen_del_logo: null/);
+  assert.match(storySource, /imagen_del_logo: SOYTECHNO_LOGO/);
+  assert.match(storySource, /url: '\/images\/logos\/soytechno\.png'/);
+  assert.match(storySource, /imagenbanner: SOYTECHNO_LOGO/);
+  assert.match(storySource, /featured_media_url: SOYTECHNO_LOGO\.url/);
   assert.match(storySource, /subtitulo_ingenieria: ''/);
   assert.match(storySource, /imagen_pantalla_1: null/);
   assert.doesNotMatch(storySource, /seccion_b:[\s\S]*titulo_4:/);
+  assert.doesNotMatch(storySource, /url: 'https:\/\/endpoint\.playfulagency\.com/);
 });
 
 test('body copy is verbatim CIMA, including the Como quirk', () => {
@@ -129,8 +133,7 @@ test('body copy is verbatim CIMA, including the Como quirk', () => {
   );
 });
 
-test('images, SEO and CTA add-ons stay empty', () => {
-  assert.match(storySource, /imagenbanner: false/);
+test('non-logo image slots and invented CMS add-ons stay empty', () => {
   assert.match(storySource, /imagen_izquierda: null/);
   assert.doesNotMatch(storySource, /mostrar_cta_final/);
   assert.doesNotMatch(storySource, /PUBLIC_CASE_STUDY_SEO/);
