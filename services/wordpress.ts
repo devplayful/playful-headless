@@ -1,4 +1,9 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
+import {
+  appendSoyTechnoCaseStudy,
+  getSoyTechnoSyntheticStory,
+  isSoyTechnoCaseStudySlug,
+} from '@/utils/soytechno-case-study';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
@@ -701,6 +706,9 @@ export interface SuccessStory extends WPPost {
 }
 
 export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory | null> {
+  if (isSoyTechnoCaseStudySlug(slug)) {
+    return getSoyTechnoSyntheticStory() as SuccessStory;
+  }
   const { items: stories } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } }
@@ -737,8 +745,9 @@ export async function getAllCaseStudies(): Promise<any[]> {
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
-  return casos.map((caso: Record<string, unknown>) => {
+  const mapped = casos.map((caso: Record<string, unknown>) => {
     const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
     return applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized));
   });
+  return appendSoyTechnoCaseStudy(mapped);
 }

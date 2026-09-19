@@ -14,6 +14,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/casos-de-exito-agencia-de-marketing-digital",
   "/casos-de-exito/jumex-shopify-dtc-ecommerce",
   "/casos-de-exito/odwalla-shopify-dtc-ecommerce",
+  "/casos-de-exito/soytechno-ecommerce-venezuela",
   "/blog",
   "/politica-de-privacidad",
 ] as const;

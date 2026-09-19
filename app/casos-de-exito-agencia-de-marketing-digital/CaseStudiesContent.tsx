@@ -6,6 +6,7 @@ import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
+import { appendSoyTechnoCaseStudy } from "@/utils/soytechno-case-study";
 import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
 
 // Importación dinámica para evitar problemas de hidratación
@@ -119,7 +120,9 @@ export default function CaseStudiesContent() {
         if (!response.ok) {
           throw new Error("Error al cargar los casos de éxito");
         }
-        const data = (await response.json()).map(applyPublicCaseStudyOverrides);
+        const data = appendSoyTechnoCaseStudy(
+          (await response.json()).map(applyPublicCaseStudyOverrides),
+        );
 
         const transformedData: CaseStudy[] = data.map((item: any) => {
           const title = item.title?.rendered || "Sin título";
