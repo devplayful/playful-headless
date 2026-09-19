@@ -57,9 +57,11 @@ declare module '@/services/wordpress' {
     seccion_f?: SoyTechnoSeccionF;
   }
 
+  type SoyTechnoImage = { url: string; alt?: string; ID?: number } | null;
+
   interface SoyTechnoSeccionA {
     titulo_de_esta_seccion_a?: string;
-    imagen_izquierda?: { url: string; alt?: string };
+    imagen_izquierda?: SoyTechnoImage;
     titulo_1?: string;
     titulo_2?: string;
     titulo_3?: string;
@@ -73,12 +75,12 @@ declare module '@/services/wordpress' {
   interface SoyTechnoSeccionB {
     titulo_de_la_seccion_b?: string;
     imagenes_collage?: {
-      imagen_1?: { url: string; alt?: string; ID?: number };
-      imagen_2?: { url: string; alt?: string; ID?: number };
-      imagen_3?: { url: string; alt?: string; ID?: number };
-      imagen_4?: { url: string; alt?: string; ID?: number };
-      imagen_del_telefono?: { url: string; alt?: string; ID?: number };
-      imagen_del_logo?: { url: string; alt?: string; ID?: number };
+      imagen_1?: SoyTechnoImage;
+      imagen_2?: SoyTechnoImage;
+      imagen_3?: SoyTechnoImage;
+      imagen_4?: SoyTechnoImage;
+      imagen_del_telefono?: SoyTechnoImage;
+      imagen_del_logo?: SoyTechnoImage;
     };
     titulo_1?: string;
     parrafo1?: string;
@@ -86,13 +88,11 @@ declare module '@/services/wordpress' {
     parrafo2?: string;
     titulo_3?: string;
     parrafo3?: string;
-    titulo_4?: string;
-    parrafo4?: string;
   }
 
   interface SoyTechnoSeccionC {
     titulo_de_la_seccion_c?: string;
-    imagen_izquierda?: { url: string; alt?: string };
+    imagen_izquierda?: SoyTechnoImage;
     titulo_1?: string;
     parrafo1?: string;
     titulo_2?: string;
@@ -101,15 +101,15 @@ declare module '@/services/wordpress' {
     parrafo3?: string;
     subtitulo_ingenieria?: string;
     parrafo_ingenieria?: string;
-    imagen_pantalla_1?: { url: string; alt?: string; ID?: number };
-    imagen_pantalla_2?: { url: string; alt?: string; ID?: number };
-    imagen_pantalla_3?: { url: string; alt?: string; ID?: number };
-    imagen_pantalla_4?: { url: string; alt?: string; ID?: number };
+    imagen_pantalla_1?: SoyTechnoImage;
+    imagen_pantalla_2?: SoyTechnoImage;
+    imagen_pantalla_3?: SoyTechnoImage;
+    imagen_pantalla_4?: SoyTechnoImage;
   }
 
   interface SoyTechnoSeccionD {
     titulo_de_la_seccion_d?: string;
-    imagen_derecha?: { url: string; alt?: string };
+    imagen_derecha?: SoyTechnoImage;
     titulo_1?: string;
     parrafo1?: string;
     titulo_2?: string;
@@ -120,7 +120,7 @@ declare module '@/services/wordpress' {
 
   interface SoyTechnoSeccionE {
     titulo_de_la_seccion_e?: string;
-    imagen_izquierda?: { url: string; alt?: string };
+    imagen_izquierda?: SoyTechnoImage;
     parrafo?: string;
     titulo_1?: string;
     parrafo1?: string;
@@ -132,7 +132,7 @@ declare module '@/services/wordpress' {
 
   interface SoyTechnoSeccionF {
     titulo_de_la_seccion_f?: string;
-    imagen_derecha?: { url: string; alt?: string };
+    imagen_derecha?: SoyTechnoImage;
     parrafo?: string;
     titulo_1?: string;
     parrafo1?: string;

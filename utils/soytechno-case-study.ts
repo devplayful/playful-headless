@@ -8,7 +8,7 @@
  *   hero title/h1     ← Título de la pieza
  *   hero primerap     ← §2 Idea
  *   seccion_a         ← §3 El Desafío y el Contexto Estratégico
- *   seccion_b         ← §2 Resumen Ejecutivo (Reto, Insight, Idea, Resultados)
+ *   seccion_b         ← §2 Resumen (Reto, Insight, Resultados; Idea is primerap)
  *   seccion_c         ← §4 Estrategia y Ejecución (entire section)
  *   seccion_d         ← empty
  *   seccion_e         ← §5 Resultados y KPIs
@@ -113,6 +113,7 @@ export function getSoyTechnoSyntheticStory() {
         seccion_a: {
           titulo_de_esta_seccion_a:
             'El Desafío y el Contexto Estratégico (La Misión)',
+          imagen_izquierda: null,
           titulo_1:
             '¿Cuál era el panorama del mercado y la competencia antes de iniciar el proyecto? ¿Cuál era el desafío a superar?',
           parrafo1: cimaHtml(CIMA.panorama),
@@ -121,35 +122,54 @@ export function getSoyTechnoSyntheticStory() {
           parrafo2: cimaHtml(CIMA.audiencia),
           titulo_3: '¿Cuáles eran los objetivos de negocio medibles?',
           parrafo3: cimaHtml(CIMA.objetivos),
+          titulo_4: '',
+          parrafo4: '',
         },
         seccion_b: {
           titulo_de_la_seccion_b: 'Resumen Ejecutivo',
+          imagenes_collage: {
+            imagen_1: null,
+            imagen_2: null,
+            imagen_3: null,
+            imagen_4: null,
+            imagen_del_telefono: null,
+            imagen_del_logo: null,
+          },
           titulo_1: 'Reto',
           parrafo1: cimaPlain(CIMA.reto),
           titulo_2: 'Insight',
           parrafo2: cimaPlain(CIMA.insight),
-          titulo_3: 'Idea',
-          parrafo3: cimaPlain(CIMA.idea),
-          titulo_4: 'Resultados',
-          parrafo4: cimaPlain(CIMA.resultadosEjecutivo),
+          titulo_3: 'Resultados',
+          parrafo3: cimaPlain(CIMA.resultadosEjecutivo),
         },
         seccion_c: {
           titulo_de_la_seccion_c: 'Estrategia y Ejecución (La Solución)',
+          imagen_izquierda: null,
+          titulo_1: '',
           parrafo1: cimaHtml(CIMA.estrategia),
           titulo_2:
             '¿Como su idea estratégica abordó directamente el insight y el desafío planteado?',
           parrafo2: cimaHtml(CIMA.comoIdeaEstrategica),
           titulo_3: 'Por favor mencione cuáles fueron sus medios claves.',
           parrafo3: cimaHtml(CIMA.mediosClaves),
+          subtitulo_ingenieria: '',
+          parrafo_ingenieria: '',
+          imagen_pantalla_1: null,
+          imagen_pantalla_2: null,
+          imagen_pantalla_3: null,
+          imagen_pantalla_4: null,
         },
         seccion_e: {
           titulo_de_la_seccion_e: 'Resultados y KPIs (La Prueba del Éxito)',
+          imagen_izquierda: null,
           parrafo: cimaHtml(CIMA.resultadosPrueba),
           titulo_1: '¿Cómo sabe que la estrategia funcionó?',
           parrafo1: cimaHtml(CIMA.comoSabe),
           titulo_2:
             '¿Cómo se relacionaron estos resultados con sus KPIs y cómo cambiaron frente a los datos iniciales?',
           parrafo2: cimaHtml(CIMA.relacionKpis),
+          titulo_3: '',
+          parrafo3: '',
         },
         seccion_f: {
           titulo_de_la_seccion_f:
@@ -161,6 +181,7 @@ export function getSoyTechnoSyntheticStory() {
           titulo_2:
             '¿Cómo ha contribuido su estrategia al mercado o a la sociedad en general?',
           parrafo2: cimaHtml(CIMA.contribucion),
+          imagen_derecha: null,
         },
       },
     },

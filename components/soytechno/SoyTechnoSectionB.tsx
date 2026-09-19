@@ -20,8 +20,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
   const hasPuntos = 
     data?.titulo_1 || data?.parrafo1 ||
     data?.titulo_2 || data?.parrafo2 ||
-    data?.titulo_3 || data?.parrafo3 ||
-    data?.titulo_4 || data?.parrafo4;
+    data?.titulo_3 || data?.parrafo3;
 
   const hasContent = data?.titulo_de_la_seccion_b || hasCollageImages || hasPuntos;
 
@@ -32,7 +31,6 @@ export default function SoyTechnoSectionB({ data }: Props) {
     { titulo: data?.titulo_1, parrafo: data?.parrafo1 },
     { titulo: data?.titulo_2, parrafo: data?.parrafo2 },
     { titulo: data?.titulo_3, parrafo: data?.parrafo3 },
-    { titulo: data?.titulo_4, parrafo: data?.parrafo4 },
   ].filter(item => item.titulo || item.parrafo);
 
   return (

@@ -55,7 +55,19 @@ test('Contento map: A is §3 Desafío, B is §2 Resumen', () => {
   assert.doesNotMatch(sectionA, /titulo_de_esta_seccion_a: 'Resumen Ejecutivo'/);
   assert.match(sectionB, /titulo_de_la_seccion_b: 'Resumen Ejecutivo'/);
   assert.match(sectionB, /cimaPlain\(CIMA\.reto\)/);
-  assert.match(sectionB, /titulo_4: 'Resultados'/);
+  assert.match(sectionB, /titulo_3: 'Resultados'/);
+  assert.doesNotMatch(sectionB, /titulo_4:/);
+});
+
+test('ACF keys match Contento and images stay null', () => {
+  assert.match(storySource, /imagen_izquierda: null/);
+  assert.match(storySource, /imagen_derecha: null/);
+  assert.match(storySource, /imagenes_collage: \{/);
+  assert.match(storySource, /imagen_del_telefono: null/);
+  assert.match(storySource, /imagen_del_logo: null/);
+  assert.match(storySource, /subtitulo_ingenieria: ''/);
+  assert.match(storySource, /imagen_pantalla_1: null/);
+  assert.doesNotMatch(storySource, /seccion_b:[\s\S]*titulo_4:/);
 });
 
 test('body copy is verbatim CIMA, including the Como quirk', () => {
@@ -119,7 +131,7 @@ test('body copy is verbatim CIMA, including the Como quirk', () => {
 
 test('images, SEO and CTA add-ons stay empty', () => {
   assert.match(storySource, /imagenbanner: false/);
-  assert.doesNotMatch(storySource, /imagen_izquierda:/);
+  assert.match(storySource, /imagen_izquierda: null/);
   assert.doesNotMatch(storySource, /mostrar_cta_final/);
   assert.doesNotMatch(storySource, /PUBLIC_CASE_STUDY_SEO/);
 });
