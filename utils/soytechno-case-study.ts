@@ -5,8 +5,8 @@
  * Body copy is verbatim from the CIMA Doc (Versión 9). Do not rewrite.
  *
  * CIMA paragraphs → default Jumex/Odwalla ACF (José GO 19 sep 2026).
- * Headlines are short editorial H2s. Form-questionnaire titles are not used.
- *   hero h1 / title   ← título de la pieza (provisional; SEO agent TBD)
+ * Display H2s are the locked SEO section headlines, not CIMA form questions.
+ *   hero h1 / title   ← SOYTECHNO_H1 (document title is SOYTECHNO_SEO)
  *   primerap          ← §2 Idea
  *   primerh2 + body   ← §3 Desafío
  *   grid cuartap…     ← insight / audiencia / objetivos
@@ -16,13 +16,13 @@
  */
 
 import {
+  SOYTECHNO_H1,
   SOYTECHNO_TESTIMONIAL,
 } from './soytechno-addons';
 
 export const SOYTECHNO_CASE_STUDY_SLUG = 'soytechno-ecommerce-venezuela';
 
-export const SOYTECHNO_CASE_TITLE =
-  'SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela';
+export const SOYTECHNO_CASE_TITLE = SOYTECHNO_H1;
 
 /** Stable public asset; do not use endpoint.playfulagency.com (stripped in RSC). */
 export const SOYTECHNO_LOGO = {
@@ -95,14 +95,14 @@ export function getSoyTechnoSyntheticStory() {
       h1: SOYTECHNO_CASE_TITLE,
       primerap: cimaHtml(CIMA.idea),
       imagenbanner: SOYTECHNO_LOGO,
-      primerh2: 'El desafío',
+      primerh2: 'El desafío: formalizar la compra de tecnología en Venezuela',
       segundap: `<p>${cimaHtml(CIMA.panorama)}</p><p>${cimaHtml(CIMA.reto)}</p>`,
       imagenminuta1: false,
       imagenminuta2: false,
       imagenminuta3: false,
       segundoh2: '',
       tercerap: '',
-      cuartap: 'Insight',
+      cuartap: 'Insight: el comprador planifica; la fricción está en pago y logística',
       quintap: cimaHtml(CIMA.insight),
       sextap: 'La audiencia',
       septimap: cimaHtml(CIMA.audiencia),
@@ -112,17 +112,17 @@ export function getSoyTechnoSyntheticStory() {
       desafioimagen2: false,
       desafioimagen3: false,
       desafioimagen4: false,
-      tercerh2: 'La solución',
+      tercerh2: 'La solución: ecosistema Mobile-First (pagos, envíos, atención)',
       decima: cimaHtml(CIMA.estrategia),
       otroh2st: 'La idea estratégica',
       otropst: cimaHtml(CIMA.comoIdeaEstrategica),
       primerah3desarrollo: 'Los medios',
       primerapdesarrollo: cimaHtml(CIMA.mediosClaves),
-      segundah3desarrollo: 'Innovación',
+      segundah3desarrollo: 'Innovación: Smart Checkout, Cashea y atención con IA',
       segundapdesarrollo: `<p>${cimaHtml(CIMA.innovacion)}</p><p>${cimaHtml(CIMA.recursos)}</p>`,
       tercerh3desarrollo: 'El aporte',
       tercerapdesarrollo: cimaHtml(CIMA.contribucion),
-      resultadotitulo: 'Los resultados',
+      resultadotitulo: 'Resultados: escala y conversión en 2025',
       resultadodescripcion: cimaHtml(CIMA.resultadosPrueba),
       resultado1: 'Tráfico',
       resultadop1: cimaHtml(CIMA.comoSabe),

@@ -2,15 +2,18 @@
  * SoyTechno page wrap from Contento add-ons (playful-copy PR #54).
  * Recommendation A. Do not invent copy. CIMA body stays in soytechno-case-study.ts.
  *
- * TODO(SEO): keep these provisional Contento A title/meta until the SEO agent
- * sends final titulares. Do not treat them as the CIMA piece title.
+ * SEO title / meta / H1 locked 19 sep 2026. No Shopify in the SoyTechno title.
  */
 
 export const SOYTECHNO_SEO = {
-  title: 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela',
+  title: 'SoyTechno: eCommerce en Venezuela que paga y genera confianza',
   description:
-    'Caso de éxito: SoyTechno consolidó un eCommerce D2C en Venezuela con Smart Checkout multimoneda, integración Cashea y 2,8 millones de usuarios activos en 2025.',
+    'Caso SoyTechno: eCommerce D2C en Venezuela con Smart Checkout multimoneda, Cashea y logística rastreable. Confianza y conversión donde antes mandaba el WhatsApp.',
 };
+
+/** Visible H1. Distinct from the document title. */
+export const SOYTECHNO_H1 =
+  'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
 
 export const SOYTECHNO_CTA = {
   preamble:
@@ -40,7 +43,7 @@ export const SOYTECHNO_TESTIMONIAL = {
 export const SOYTECHNO_ARTICLE_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela',
+  headline: SOYTECHNO_H1,
   description: SOYTECHNO_SEO.description,
   author: {
     '@type': 'Organization',

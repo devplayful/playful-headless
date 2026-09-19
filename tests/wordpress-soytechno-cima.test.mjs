@@ -39,13 +39,32 @@ test('SoyTechno uses the default Jumex/Odwalla case layout', () => {
 });
 
 test('editorial H2s replace CIMA form-questionnaire titles', () => {
-  assert.match(storySource, /primerh2: 'El desafío'/);
-  assert.match(storySource, /tercerh2: 'La solución'/);
-  assert.match(storySource, /resultadotitulo: 'Los resultados'/);
-  assert.match(storySource, /segundah3desarrollo: 'Innovación'/);
-  assert.doesNotMatch(storySource, /Por favor mencione cuáles fueron sus medios claves/);
+  assert.match(
+    storySource,
+    /primerh2: 'El desafío: formalizar la compra de tecnología en Venezuela'/,
+  );
+  assert.match(
+    storySource,
+    /cuartap: 'Insight: el comprador planifica; la fricción está en pago y logística'/,
+  );
+  assert.match(
+    storySource,
+    /tercerh2: 'La solución: ecosistema Mobile-First \(pagos, envíos, atención\)'/,
+  );
+  assert.match(
+    storySource,
+    /resultadotitulo: 'Resultados: escala y conversión en 2025'/,
+  );
+  assert.match(
+    storySource,
+    /segundah3desarrollo: 'Innovación: Smart Checkout, Cashea y atención con IA'/,
+  );
+  assert.doesNotMatch(storySource, /Por favor mencione/);
+  assert.doesNotMatch(storySource, /Datos de contacto/);
+  assert.doesNotMatch(storySource, /Resumen [Ee]jecutivo/);
+  assert.doesNotMatch(storySource, /¿Cuál era el panorama/);
+  assert.doesNotMatch(storySource, /POSTULACIÓN PREMIOS/);
   assert.doesNotMatch(storySource, /¿Cuáles eran los objetivos de negocio medibles\?/);
-  assert.doesNotMatch(storySource, /Resumen Ejecutivo/);
   assert.doesNotMatch(storySource, /La Prueba del Éxito/);
   assert.doesNotMatch(storySource, /\(La Misión\)/);
   assert.doesNotMatch(storySource, /¿Como su idea estratégica abordó/);
@@ -53,10 +72,7 @@ test('editorial H2s replace CIMA form-questionnaire titles', () => {
 });
 
 test('body copy is verbatim CIMA paragraphs', () => {
-  assert.match(
-    storySource,
-    /SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela/,
-  );
+  assert.match(storySource, /SOYTECHNO_CASE_TITLE = SOYTECHNO_H1/);
   assert.match(
     storySource,
     /Mientras la categoría asumía que el venezolano vivía con miedo de comprar online, Soytechno asumió lo contrario/,

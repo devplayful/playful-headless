@@ -23,19 +23,22 @@ const story = readFileSync(
   'utf8',
 );
 
-test('recommendation A SEO and H1 stay distinct and literal', () => {
+test('locked SEO title, meta and H1 stay distinct and literal', () => {
   assert.match(
     addons,
-    /SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela/,
-  );
-  assert.match(
-    story,
-    /SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela/,
+    /SoyTechno: eCommerce en Venezuela que paga y genera confianza/,
   );
   assert.match(
     addons,
-    /Caso de éxito: SoyTechno consolidó un eCommerce D2C en Venezuela con Smart Checkout multimoneda, integración Cashea y 2,8 millones de usuarios activos en 2025\./,
+    /Caso SoyTechno: eCommerce D2C en Venezuela con Smart Checkout multimoneda, Cashea y logística rastreable\. Confianza y conversión donde antes mandaba el WhatsApp\./,
   );
+  assert.match(
+    addons,
+    /export const SOYTECHNO_H1 =\n  'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela'/,
+  );
+  assert.match(story, /SOYTECHNO_CASE_TITLE = SOYTECHNO_H1/);
+  assert.doesNotMatch(addons, /title: '.*Shopify/);
+  assert.doesNotMatch(addons, /SOYTECHNO_H1 =\n  '.*Shopify/);
   assert.match(overrides, /SOYTECHNO_SEO/);
 });
 
