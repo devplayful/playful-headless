@@ -30,51 +30,29 @@ test('SoyTechno code override uses the José GO slug, not soytechno', () => {
   assert.doesNotMatch(sitemap, /\/casos-de-exito\/soytechno'/);
 });
 
-test('synthetic story uses soytechno_extended and leaves seccion_d empty', () => {
-  assert.match(storySource, /template: 'soytechno_extended'/);
-  assert.match(storySource, /seccion_a:/);
-  assert.match(storySource, /seccion_b:/);
-  assert.match(storySource, /seccion_c:/);
-  assert.match(storySource, /seccion_e:/);
-  assert.match(storySource, /seccion_f:/);
-  assert.doesNotMatch(storySource, /seccion_d:/);
+test('SoyTechno uses the default Jumex/Odwalla case layout', () => {
+  assert.match(storySource, /template: 'default'/);
+  assert.doesNotMatch(storySource, /template: 'soytechno_extended'/);
+  assert.doesNotMatch(storySource, /seccion_a:/);
+  assert.doesNotMatch(storySource, /titulo_de_esta_seccion_a/);
+  assert.match(page, /isSoyTechnoCaseStudySlug\(slug\) \? <SoyTechnoAddons \/>/);
 });
 
-test('Contento map: A is §3 Desafío, B is §2 Resumen', () => {
-  const sectionA = storySource.slice(
-    storySource.indexOf('seccion_a:'),
-    storySource.indexOf('seccion_b:'),
-  );
-  const sectionB = storySource.slice(
-    storySource.indexOf('seccion_b:'),
-    storySource.indexOf('seccion_c:'),
-  );
-  assert.match(sectionA, /El Desafío y el Contexto Estratégico \(La Misión\)/);
-  assert.match(sectionA, /cimaHtml\(CIMA\.panorama\)/);
-  assert.match(sectionA, /cimaHtml\(CIMA\.objetivos\)/);
-  assert.doesNotMatch(sectionA, /titulo_de_esta_seccion_a: 'Resumen Ejecutivo'/);
-  assert.match(sectionB, /titulo_de_la_seccion_b: 'Resumen Ejecutivo'/);
-  assert.match(sectionB, /cimaPlain\(CIMA\.reto\)/);
-  assert.match(sectionB, /titulo_3: 'Resultados'/);
-  assert.doesNotMatch(sectionB, /titulo_4:/);
+test('editorial H2s replace CIMA form-questionnaire titles', () => {
+  assert.match(storySource, /primerh2: 'El desafío'/);
+  assert.match(storySource, /tercerh2: 'La solución'/);
+  assert.match(storySource, /resultadotitulo: 'Los resultados'/);
+  assert.match(storySource, /segundah3desarrollo: 'Innovación'/);
+  assert.doesNotMatch(storySource, /Por favor mencione cuáles fueron sus medios claves/);
+  assert.doesNotMatch(storySource, /¿Cuáles eran los objetivos de negocio medibles\?/);
+  assert.doesNotMatch(storySource, /Resumen Ejecutivo/);
+  assert.doesNotMatch(storySource, /La Prueba del Éxito/);
+  assert.doesNotMatch(storySource, /\(La Misión\)/);
+  assert.doesNotMatch(storySource, /¿Como su idea estratégica abordó/);
+  assert.doesNotMatch(storySource, /¿Cómo sabe que la estrategia funcionó\?/);
 });
 
-test('ACF keys match Contento; only the SoyTechno logo is filled', () => {
-  assert.match(storySource, /imagen_izquierda: null/);
-  assert.match(storySource, /imagen_derecha: null/);
-  assert.match(storySource, /imagenes_collage: \{/);
-  assert.match(storySource, /imagen_del_telefono: null/);
-  assert.match(storySource, /imagen_del_logo: SOYTECHNO_LOGO/);
-  assert.match(storySource, /url: '\/images\/logos\/soytechno\.png'/);
-  assert.match(storySource, /imagenbanner: SOYTECHNO_LOGO/);
-  assert.match(storySource, /featured_media_url: SOYTECHNO_LOGO\.url/);
-  assert.match(storySource, /subtitulo_ingenieria: ''/);
-  assert.match(storySource, /imagen_pantalla_1: null/);
-  assert.doesNotMatch(storySource, /seccion_b:[\s\S]*titulo_4:/);
-  assert.doesNotMatch(storySource, /url: 'https:\/\/endpoint\.playfulagency\.com/);
-});
-
-test('body copy is verbatim CIMA, including the Como quirk', () => {
+test('body copy is verbatim CIMA paragraphs', () => {
   assert.match(
     storySource,
     /SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela/,
@@ -82,18 +60,6 @@ test('body copy is verbatim CIMA, including the Como quirk', () => {
   assert.match(
     storySource,
     /Mientras la categoría asumía que el venezolano vivía con miedo de comprar online, Soytechno asumió lo contrario/,
-  );
-  assert.match(
-    storySource,
-    /¿Como su idea estratégica abordó directamente el insight y el desafío planteado\?/,
-  );
-  assert.doesNotMatch(
-    storySource,
-    /¿Cómo su idea estratégica abordó directamente el insight y el desafío planteado\?/,
-  );
-  assert.match(
-    storySource,
-    /Por favor mencione cuáles fueron sus medios claves\./,
   );
   assert.match(
     storySource,
@@ -108,8 +74,7 @@ test('body copy is verbatim CIMA, including the Como quirk', () => {
     /En 2025, el eCommerce venezolano creció \+125% \(Cavecom-e\)/,
   );
   assert.match(
-    storySource,
-    /SoyTechno definió cinco objetivos para 2025/,
+    storySource, /SoyTechno definió cinco objetivos para 2025/,
   );
   assert.match(
     storySource,
@@ -133,10 +98,13 @@ test('body copy is verbatim CIMA, including the Como quirk', () => {
   );
 });
 
-test('non-logo image slots and invented CMS add-ons stay empty', () => {
-  assert.match(storySource, /imagen_izquierda: null/);
-  assert.doesNotMatch(storySource, /mostrar_cta_final/);
-  assert.doesNotMatch(storySource, /PUBLIC_CASE_STUDY_SEO/);
+test('only the SoyTechno logo is filled; other image slots stay empty', () => {
+  assert.match(storySource, /url: '\/images\/logos\/soytechno\.png'/);
+  assert.match(storySource, /imagenbanner: SOYTECHNO_LOGO/);
+  assert.match(storySource, /featured_media_url: SOYTECHNO_LOGO\.url/);
+  assert.match(storySource, /imagenminuta1: false/);
+  assert.match(storySource, /desafioimagen1: false/);
+  assert.doesNotMatch(storySource, /url: 'https:\/\/endpoint\.playfulagency\.com/);
 });
 
 test('getSuccessStoryBySlug and listings serve the synthetic story', () => {
@@ -144,11 +112,4 @@ test('getSuccessStoryBySlug and listings serve the synthetic story', () => {
   assert.match(wordpress, /getSoyTechnoSyntheticStory\(\) as SuccessStory/);
   assert.match(wordpress, /return appendSoyTechnoCaseStudy\(mapped\)/);
   assert.match(listing, /appendSoyTechnoCaseStudy/);
-});
-
-test('soytechno_extended page skips default fallback headings', () => {
-  assert.match(page, /acf\?\.template === "soytechno_extended"/);
-  assert.match(page, /\{!isSoyTechno && \(/);
-  assert.match(page, /SoyTechnoSectionA/);
-  assert.match(page, /SoyTechnoSectionF/);
 });

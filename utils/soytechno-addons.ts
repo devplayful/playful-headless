@@ -1,6 +1,9 @@
 /**
  * SoyTechno page wrap from Contento add-ons (playful-copy PR #54).
  * Recommendation A. Do not invent copy. CIMA body stays in soytechno-case-study.ts.
+ *
+ * TODO(SEO): keep these provisional Contento A title/meta until the SEO agent
+ * sends final titulares. Do not treat them as the CIMA piece title.
  */
 
 export const SOYTECHNO_SEO = {

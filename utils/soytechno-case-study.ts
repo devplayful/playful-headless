@@ -4,15 +4,14 @@
  *
  * Body copy is verbatim from the CIMA Doc (Versión 9). Do not rewrite.
  *
- * CIMA → ACF (Contento map 2026-09-19, slug José GO):
- *   hero title/h1     ← Título de la pieza
- *   hero primerap     ← §2 Idea
- *   seccion_a         ← §3 El Desafío y el Contexto Estratégico
- *   seccion_b         ← §2 Resumen (Reto, Insight, Resultados; Idea is primerap)
- *   seccion_c         ← §4 Estrategia y Ejecución (entire section)
- *   seccion_d         ← empty
- *   seccion_e         ← §5 Resultados y KPIs
- *   seccion_f         ← §6 Innovación y Aporte
+ * CIMA paragraphs → default Jumex/Odwalla ACF (José GO 19 sep 2026).
+ * Headlines are short editorial H2s. Form-questionnaire titles are not used.
+ *   hero h1 / title   ← título de la pieza (provisional; SEO agent TBD)
+ *   primerap          ← §2 Idea
+ *   primerh2 + body   ← §3 Desafío
+ *   grid cuartap…     ← insight / audiencia / objetivos
+ *   tercerh2 + desarrollo ← §4 Estrategia / medios + §6 innovación
+ *   resultados*       ← §5 KPIs, split into cards without rewriting sentences
  * Page wrap (SEO, CTA, siblings, schema, quote) lives in soytechno-addons.ts.
  */
 
@@ -70,11 +69,6 @@ function cimaHtml(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
-/** Section B renders plain text, not HTML. Keep CIMA words; drop markdown markers. */
-function cimaPlain(text: string): string {
-  return text.replace(/\*\*(.+?)\*\*/g, '$1');
-}
-
 export function isSoyTechnoCaseStudySlug(slug: string): boolean {
   return slug === SOYTECHNO_CASE_STUDY_SLUG;
 }
@@ -101,104 +95,45 @@ export function getSoyTechnoSyntheticStory() {
       h1: SOYTECHNO_CASE_TITLE,
       primerap: cimaHtml(CIMA.idea),
       imagenbanner: SOYTECHNO_LOGO,
-      primerh2: '',
-      segundap: '',
+      primerh2: 'El desafío',
+      segundap: `<p>${cimaHtml(CIMA.panorama)}</p><p>${cimaHtml(CIMA.reto)}</p>`,
       imagenminuta1: false,
       imagenminuta2: false,
       imagenminuta3: false,
       segundoh2: '',
       tercerap: '',
-      cuartap: '',
-      quintap: '',
-      sextap: '',
-      septimap: '',
-      octavap: '',
-      novenap: '',
+      cuartap: 'Insight',
+      quintap: cimaHtml(CIMA.insight),
+      sextap: 'La audiencia',
+      septimap: cimaHtml(CIMA.audiencia),
+      octavap: 'Los objetivos',
+      novenap: cimaHtml(CIMA.objetivos),
       desafioimagen1: false,
       desafioimagen2: false,
       desafioimagen3: false,
       desafioimagen4: false,
-      tercerh2: '',
-      decima: '',
+      tercerh2: 'La solución',
+      decima: cimaHtml(CIMA.estrategia),
+      otroh2st: 'La idea estratégica',
+      otropst: cimaHtml(CIMA.comoIdeaEstrategica),
+      primerah3desarrollo: 'Los medios',
+      primerapdesarrollo: cimaHtml(CIMA.mediosClaves),
+      segundah3desarrollo: 'Innovación',
+      segundapdesarrollo: `<p>${cimaHtml(CIMA.innovacion)}</p><p>${cimaHtml(CIMA.recursos)}</p>`,
+      tercerh3desarrollo: 'El aporte',
+      tercerapdesarrollo: cimaHtml(CIMA.contribucion),
+      resultadotitulo: 'Los resultados',
+      resultadodescripcion: cimaHtml(CIMA.resultadosPrueba),
+      resultado1: 'Tráfico',
+      resultadop1: cimaHtml(CIMA.comoSabe),
+      resultado2: 'Crecimiento',
+      resultadop2: cimaHtml(CIMA.relacionKpis),
+      resultado3: 'Ventas',
+      resultadop3: cimaHtml(CIMA.resultadosEjecutivo),
       testimonialnombre: SOYTECHNO_TESTIMONIAL.name,
       testimonialcargo: SOYTECHNO_TESTIMONIAL.role,
       testimonio: SOYTECHNO_TESTIMONIAL.quote,
-      template: 'soytechno_extended' as const,
-      soytechno: {
-        seccion_a: {
-          titulo_de_esta_seccion_a:
-            'El Desafío y el Contexto Estratégico (La Misión)',
-          imagen_izquierda: null,
-          titulo_1:
-            '¿Cuál era el panorama del mercado y la competencia antes de iniciar el proyecto? ¿Cuál era el desafío a superar?',
-          parrafo1: cimaHtml(CIMA.panorama),
-          titulo_2:
-            '¿Cuál era la audiencia objetivo y por qué es relevante para la marca?',
-          parrafo2: cimaHtml(CIMA.audiencia),
-          titulo_3: '¿Cuáles eran los objetivos de negocio medibles?',
-          parrafo3: cimaHtml(CIMA.objetivos),
-          titulo_4: '',
-          parrafo4: '',
-        },
-        seccion_b: {
-          titulo_de_la_seccion_b: 'Resumen Ejecutivo',
-          imagenes_collage: {
-            imagen_1: null,
-            imagen_2: null,
-            imagen_3: null,
-            imagen_4: null,
-            imagen_del_telefono: null,
-            imagen_del_logo: SOYTECHNO_LOGO,
-          },
-          titulo_1: 'Reto',
-          parrafo1: cimaPlain(CIMA.reto),
-          titulo_2: 'Insight',
-          parrafo2: cimaPlain(CIMA.insight),
-          titulo_3: 'Resultados',
-          parrafo3: cimaPlain(CIMA.resultadosEjecutivo),
-        },
-        seccion_c: {
-          titulo_de_la_seccion_c: 'Estrategia y Ejecución (La Solución)',
-          imagen_izquierda: null,
-          titulo_1: '',
-          parrafo1: cimaHtml(CIMA.estrategia),
-          titulo_2:
-            '¿Como su idea estratégica abordó directamente el insight y el desafío planteado?',
-          parrafo2: cimaHtml(CIMA.comoIdeaEstrategica),
-          titulo_3: 'Por favor mencione cuáles fueron sus medios claves.',
-          parrafo3: cimaHtml(CIMA.mediosClaves),
-          subtitulo_ingenieria: '',
-          parrafo_ingenieria: '',
-          imagen_pantalla_1: null,
-          imagen_pantalla_2: null,
-          imagen_pantalla_3: null,
-          imagen_pantalla_4: null,
-        },
-        seccion_e: {
-          titulo_de_la_seccion_e: 'Resultados y KPIs (La Prueba del Éxito)',
-          imagen_izquierda: null,
-          parrafo: cimaHtml(CIMA.resultadosPrueba),
-          titulo_1: '¿Cómo sabe que la estrategia funcionó?',
-          parrafo1: cimaHtml(CIMA.comoSabe),
-          titulo_2:
-            '¿Cómo se relacionaron estos resultados con sus KPIs y cómo cambiaron frente a los datos iniciales?',
-          parrafo2: cimaHtml(CIMA.relacionKpis),
-          titulo_3: '',
-          parrafo3: '',
-        },
-        seccion_f: {
-          titulo_de_la_seccion_f:
-            'Innovación y Aporte (Técnica y Trascendencia)',
-          parrafo: cimaHtml(CIMA.innovacion),
-          titulo_1:
-            '¿Qué recursos creativos, técnicas o herramientas especiales usaron en este caso? Si usó AI, mencione las herramientas específicas y cómo ayudaron a alcanzar los objetivos de la campaña.',
-          parrafo1: cimaHtml(CIMA.recursos),
-          titulo_2:
-            '¿Cómo ha contribuido su estrategia al mercado o a la sociedad en general?',
-          parrafo2: cimaHtml(CIMA.contribucion),
-          imagen_derecha: null,
-        },
-      },
+      template: 'default' as const,
     },
   };
 }

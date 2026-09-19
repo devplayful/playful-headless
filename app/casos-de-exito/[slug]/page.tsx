@@ -14,6 +14,7 @@ import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoAddons from './SoyTechnoAddons';
+import { isSoyTechnoCaseStudySlug } from '@/utils/soytechno-case-study';
 
 
 
@@ -465,8 +466,8 @@ export default async function SuccessStoryPage({
           <div className="max-w-[1200px] mx-auto px-4 md:px-6">
             <div className="relative">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
+                {story.acf?.imagendesarrollo ? (
                 <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[800px] rounded-xl overflow-hidden">
-                  {story.acf?.imagendesarrollo ? (
                     <Image
                       src={
                         typeof story.acf.imagendesarrollo === 'string'
@@ -478,12 +479,8 @@ export default async function SuccessStoryPage({
                       sizes="(max-width: 1024px) 100vw, 50%"
                       className="object-contain"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                      <span className="text-gray-500">Imagen no disponible</span>
-                    </div>
-                  )}
                 </div>
+                ) : null}
 
                 <div className="space-y-6 sm:space-y-8">
                   <div className="hidden">
@@ -879,7 +876,7 @@ export default async function SuccessStoryPage({
         );
       })()}
 
-      {isSoyTechno ? <SoyTechnoAddons /> : null}
+      {isSoyTechnoCaseStudySlug(slug) ? <SoyTechnoAddons /> : null}
     </div>
   );
 }
