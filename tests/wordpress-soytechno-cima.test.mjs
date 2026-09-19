@@ -40,6 +40,24 @@ test('synthetic story uses soytechno_extended and leaves seccion_d empty', () =>
   assert.doesNotMatch(storySource, /seccion_d:/);
 });
 
+test('Contento map: A is §3 Desafío, B is §2 Resumen', () => {
+  const sectionA = storySource.slice(
+    storySource.indexOf('seccion_a:'),
+    storySource.indexOf('seccion_b:'),
+  );
+  const sectionB = storySource.slice(
+    storySource.indexOf('seccion_b:'),
+    storySource.indexOf('seccion_c:'),
+  );
+  assert.match(sectionA, /El Desafío y el Contexto Estratégico \(La Misión\)/);
+  assert.match(sectionA, /cimaHtml\(CIMA\.panorama\)/);
+  assert.match(sectionA, /cimaHtml\(CIMA\.objetivos\)/);
+  assert.doesNotMatch(sectionA, /titulo_de_esta_seccion_a: 'Resumen Ejecutivo'/);
+  assert.match(sectionB, /titulo_de_la_seccion_b: 'Resumen Ejecutivo'/);
+  assert.match(sectionB, /cimaPlain\(CIMA\.reto\)/);
+  assert.match(sectionB, /titulo_4: 'Resultados'/);
+});
+
 test('body copy is verbatim CIMA, including the Como quirk', () => {
   assert.match(
     storySource,

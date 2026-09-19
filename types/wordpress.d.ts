@@ -86,6 +86,8 @@ declare module '@/services/wordpress' {
     parrafo2?: string;
     titulo_3?: string;
     parrafo3?: string;
+    titulo_4?: string;
+    parrafo4?: string;
   }
 
   interface SoyTechnoSeccionC {

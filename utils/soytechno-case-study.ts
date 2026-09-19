@@ -4,11 +4,11 @@
  *
  * Body copy is verbatim from the CIMA Doc (Versión 9). Do not rewrite.
  *
- * CIMA → ACF (MAP-soytechno-cima-to-acf, slug adapted):
+ * CIMA → ACF (Contento map 2026-09-19, slug José GO):
  *   hero title/h1     ← Título de la pieza
  *   hero primerap     ← §2 Idea
- *   seccion_a         ← §2 Resumen Ejecutivo (Reto, Insight, Idea, Resultados)
- *   seccion_b         ← §3 El Desafío y el Contexto Estratégico
+ *   seccion_a         ← §3 El Desafío y el Contexto Estratégico
+ *   seccion_b         ← §2 Resumen Ejecutivo (Reto, Insight, Idea, Resultados)
  *   seccion_c         ← §4 Estrategia y Ejecución (entire section)
  *   seccion_d         ← empty
  *   seccion_e         ← §5 Resultados y KPIs
@@ -60,6 +60,11 @@ function cimaHtml(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
+/** Section B renders plain text, not HTML. Keep CIMA words; drop markdown markers. */
+function cimaPlain(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '$1');
+}
+
 export function isSoyTechnoCaseStudySlug(slug: string): boolean {
   return slug === SOYTECHNO_CASE_STUDY_SLUG;
 }
@@ -106,18 +111,7 @@ export function getSoyTechnoSyntheticStory() {
       template: 'soytechno_extended' as const,
       soytechno: {
         seccion_a: {
-          titulo_de_esta_seccion_a: 'Resumen Ejecutivo',
-          titulo_1: 'Reto',
-          parrafo1: cimaHtml(CIMA.reto),
-          titulo_2: 'Insight',
-          parrafo2: cimaHtml(CIMA.insight),
-          titulo_3: 'Idea',
-          parrafo3: cimaHtml(CIMA.idea),
-          titulo_4: 'Resultados',
-          parrafo4: cimaHtml(CIMA.resultadosEjecutivo),
-        },
-        seccion_b: {
-          titulo_de_la_seccion_b:
+          titulo_de_esta_seccion_a:
             'El Desafío y el Contexto Estratégico (La Misión)',
           titulo_1:
             '¿Cuál era el panorama del mercado y la competencia antes de iniciar el proyecto? ¿Cuál era el desafío a superar?',
@@ -127,6 +121,17 @@ export function getSoyTechnoSyntheticStory() {
           parrafo2: cimaHtml(CIMA.audiencia),
           titulo_3: '¿Cuáles eran los objetivos de negocio medibles?',
           parrafo3: cimaHtml(CIMA.objetivos),
+        },
+        seccion_b: {
+          titulo_de_la_seccion_b: 'Resumen Ejecutivo',
+          titulo_1: 'Reto',
+          parrafo1: cimaPlain(CIMA.reto),
+          titulo_2: 'Insight',
+          parrafo2: cimaPlain(CIMA.insight),
+          titulo_3: 'Idea',
+          parrafo3: cimaPlain(CIMA.idea),
+          titulo_4: 'Resultados',
+          parrafo4: cimaPlain(CIMA.resultadosEjecutivo),
         },
         seccion_c: {
           titulo_de_la_seccion_c: 'Estrategia y Ejecución (La Solución)',
