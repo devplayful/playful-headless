@@ -13,8 +13,12 @@
  *   seccion_d         ← empty
  *   seccion_e         ← §5 Resultados y KPIs
  *   seccion_f         ← §6 Innovación y Aporte
- * Images, SEO, CTA and sibling add-ons are left empty for later owners.
+ * Page wrap (SEO, CTA, siblings, schema, quote) lives in soytechno-addons.ts.
  */
+
+import {
+  SOYTECHNO_TESTIMONIAL,
+} from './soytechno-addons';
 
 export const SOYTECHNO_CASE_STUDY_SLUG = 'soytechno-ecommerce-venezuela';
 
@@ -108,6 +112,9 @@ export function getSoyTechnoSyntheticStory() {
       desafioimagen4: false,
       tercerh2: '',
       decima: '',
+      testimonialnombre: SOYTECHNO_TESTIMONIAL.name,
+      testimonialcargo: SOYTECHNO_TESTIMONIAL.role,
+      testimonio: SOYTECHNO_TESTIMONIAL.quote,
       template: 'soytechno_extended' as const,
       soytechno: {
         seccion_a: {

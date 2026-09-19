@@ -13,6 +13,7 @@ import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
+import SoyTechnoAddons from './SoyTechnoAddons';
 
 
 
@@ -877,6 +878,8 @@ export default async function SuccessStoryPage({
           </section>
         );
       })()}
+
+      {isSoyTechno ? <SoyTechnoAddons /> : null}
     </div>
   );
 }
