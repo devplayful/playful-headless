@@ -110,6 +110,7 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | 5 | `4be3dcd` | re-QA 01–25 vs crops + live | PASS (14 residual) |
 | 6 | `8aa553a` | FAIL-14 tight vs 2×2 | **PASS** (25/25) |
 | 7 | plan B grouped 2× | HTML copy + export shell; Block B HTML grid | preview only |
+| 8 | grouped @2× rasters | hero / desafío / logística / phones wired from Figma 1440 crop (MCP raster down) | preview only |
 
 No merge.
 

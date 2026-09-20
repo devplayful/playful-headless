@@ -164,14 +164,16 @@ export default function SoyTechnoFigmaBody() {
           <BrandMarks third="circuit" />
           <div
             id="soytechno-desafio"
-            className="grid grid-cols-2 gap-8 items-start bg-[#EADDFF] rounded-[36px] p-8 scroll-mt-[168px]"
+            className="relative bg-[#EADDFF] rounded-[36px] overflow-hidden scroll-mt-[168px]"
           >
-            <div className="bg-white rounded-[28px] px-10 py-10 space-y-8">
-              {FIGMA.desafioItems.map((item) => (
-                <Feature key={item.title} title={item.title} body={item.body} />
-              ))}
-            </div>
             <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
+            <div className="absolute left-[6%] top-[4%] w-[44%] h-[52%] bg-white rounded-[28px] px-8 py-7 overflow-y-auto">
+              <div className="space-y-6">
+                {FIGMA.desafioItems.map((item) => (
+                  <Feature key={item.title} title={item.title} body={item.body} />
+                ))}
+              </div>
+            </div>
           </div>
           <div className="pt-8 scroll-mt-[168px]">
             <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>

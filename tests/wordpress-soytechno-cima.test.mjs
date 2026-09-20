@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const storySource = readFileSync(
   new URL('../utils/soytechno-case-study.ts', import.meta.url),
@@ -43,6 +45,18 @@ test('SoyTechno detail renders the literal Figma body, not Jumex or CIMA', () =>
   assert.doesNotMatch(figma, /Tienda online en Venezuela: del chat informal/);
   assert.doesNotMatch(figma, /de comprar tech por WhatsApp/);
   assert.doesNotMatch(body, /SoyTechnoSectionA/);
+});
+
+test('SoyTechno grouped 2x PNGs are on disk', () => {
+  const dir = fileURLToPath(new URL('../public/images/casos/soytechno', import.meta.url));
+  for (const file of [
+    'soytechno-hero-art@2x.png',
+    'soytechno-desafio-art@2x.png',
+    'soytechno-logistica-art@2x.png',
+    'soytechno-phones-strip@2x.png',
+  ]) {
+    assert.equal(existsSync(path.join(dir, file)), true, file);
+  }
 });
 
 test('SoyTechno wires grouped 2x exports and an HTML Block B grid', () => {
