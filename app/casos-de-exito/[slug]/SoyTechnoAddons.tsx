@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {
   SOYTECHNO_ARTICLE_JSON_LD,
   SOYTECHNO_CTA,
@@ -32,16 +33,32 @@ export default function SoyTechnoAddons() {
       </nav>
 
       <section className="py-0 pb-20 bg-[#FEF7FF]">
-        <div className="max-w-[800px] mx-auto px-4 md:px-6 text-center">
-          <p className="text-lg text-[#4A4453] leading-relaxed mb-8">
-            {SOYTECHNO_CTA.preamble}
-          </p>
-          <a
-            href={SOYTECHNO_CTA.href}
-            className="inline-block bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 no-underline"
-          >
-            {SOYTECHNO_CTA.buttonLabel}
-          </a>
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="relative w-full h-[280px] sm:h-[360px]">
+              <Image
+                src={SOYTECHNO_CTA.illustration}
+                alt=""
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain"
+              />
+            </div>
+            <div className="text-center lg:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#2A0064] mb-6">
+                {SOYTECHNO_CTA.headline}
+              </h2>
+              <p className="text-lg text-[#4A4453] leading-relaxed mb-8">
+                {SOYTECHNO_CTA.preamble}
+              </p>
+              <a
+                href={SOYTECHNO_CTA.href}
+                className="inline-block bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 no-underline"
+              >
+                {SOYTECHNO_CTA.buttonLabel}
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </>

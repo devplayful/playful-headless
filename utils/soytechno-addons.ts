@@ -2,24 +2,28 @@
  * SoyTechno page wrap from Contento add-ons (playful-copy PR #54).
  * Recommendation A. Do not invent copy. CIMA body stays in soytechno-case-study.ts.
  *
- * SEO title / meta / H1 locked 19 sep 2026. No Shopify in the SoyTechno title.
+ * SEO pack v4 locked 20 sep 2026. Title/H1 unchanged from v3; meta and H2s replaced.
+ * Do not use the rejected WhatsApp→formal pack or v3 H2s.
  */
 
 export const SOYTECHNO_SEO = {
-  title: 'SoyTechno: eCommerce en Venezuela que paga y genera confianza',
+  title: 'SoyTechno: el eCommerce que entendió cómo compra Venezuela',
   description:
-    'Caso SoyTechno: eCommerce D2C en Venezuela con Smart Checkout multimoneda, Cashea y logística rastreable. Confianza y conversión donde antes mandaba el WhatsApp.',
+    'Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra el mercado fuera del chat informal.',
 };
 
-/** Visible H1. Distinct from the document title. */
+/** Visible H1. Same string as the document title. */
 export const SOYTECHNO_H1 =
-  'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
+  'SoyTechno: el eCommerce que entendió cómo compra Venezuela';
 
 export const SOYTECHNO_CTA = {
+  headline:
+    'Crear tienda online en Venezuela cuando tu marca aún vende fuera de plataforma',
   preamble:
     'Si tu marca vende online en Venezuela y necesita una plataforma que resuelva pagos multimoneda, logística rastreable y atención automatizada, podemos revisar juntos cómo construirla.',
   buttonLabel: 'Agenda una reunión con Playful',
   href: 'https://playfulagency.com/reunion-playful',
+  illustration: '/images/casos/soytechno/cta-illustration.png',
 };
 
 export const SOYTECHNO_SIBLING_LINKS = [

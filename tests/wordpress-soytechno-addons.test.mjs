@@ -23,22 +23,25 @@ const story = readFileSync(
   'utf8',
 );
 
-test('locked SEO title, meta and H1 stay distinct and literal', () => {
+test('SEO pack v4 title, meta and H1 stay literal', () => {
   assert.match(
     addons,
-    /SoyTechno: eCommerce en Venezuela que paga y genera confianza/,
+    /SoyTechno: el eCommerce que entendió cómo compra Venezuela/,
   );
   assert.match(
     addons,
-    /Caso SoyTechno: eCommerce D2C en Venezuela con Smart Checkout multimoneda, Cashea y logística rastreable\. Confianza y conversión donde antes mandaba el WhatsApp\./,
+    /Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo\. Cómo compra el mercado fuera del chat informal\./,
   );
   assert.match(
     addons,
-    /export const SOYTECHNO_H1 =\n  'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela'/,
+    /Crear tienda online en Venezuela cuando tu marca aún vende fuera de plataforma/,
   );
   assert.match(story, /SOYTECHNO_CASE_TITLE = SOYTECHNO_H1/);
+  assert.doesNotMatch(addons, /de comprar tech por WhatsApp/);
+  assert.doesNotMatch(addons, /de WhatsApp e Instagram/);
+  assert.doesNotMatch(addons, /Si tu marca aún vende fuera de una tienda formal/);
+  assert.doesNotMatch(addons, /eCommerce en Venezuela que paga y genera confianza/);
   assert.doesNotMatch(addons, /title: '.*Shopify/);
-  assert.doesNotMatch(addons, /SOYTECHNO_H1 =\n  '.*Shopify/);
   assert.match(overrides, /SOYTECHNO_SEO/);
 });
 
@@ -63,8 +66,11 @@ test('CTA, siblings, schema and Eva Cristina quote are the add-ons text', () => 
     addons,
     /Se ve que la página está hecha en base a los requerimientos que nosotros teníamos y más/,
   );
+  assert.match(addons, /cta-illustration\.png/);
   assert.match(story, /SOYTECHNO_TESTIMONIAL/);
   assert.match(page, /<SoyTechnoAddons \/>/);
   assert.match(wrap, /SOYTECHNO_ARTICLE_JSON_LD/);
+  assert.match(wrap, /SOYTECHNO_CTA\.headline/);
   assert.doesNotMatch(addons, /¡Hablemos de tu proyecto!/);
+  assert.doesNotMatch(addons, /¿Tu E-commerce está listo/);
 });

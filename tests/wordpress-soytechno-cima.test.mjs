@@ -30,35 +30,37 @@ test('SoyTechno code override uses the José GO slug, not soytechno', () => {
   assert.doesNotMatch(sitemap, /\/casos-de-exito\/soytechno'/);
 });
 
-test('SoyTechno uses the default Jumex/Odwalla case layout', () => {
-  assert.match(storySource, /template: 'default'/);
-  assert.doesNotMatch(storySource, /template: 'soytechno_extended'/);
-  assert.doesNotMatch(storySource, /seccion_a:/);
-  assert.doesNotMatch(storySource, /titulo_de_esta_seccion_a/);
+test('SoyTechno restores the published soytechno_extended body', () => {
+  assert.match(storySource, /template: 'soytechno_extended'/);
+  assert.doesNotMatch(storySource, /template: 'default'/);
+  assert.match(storySource, /seccion_a:/);
+  assert.match(page, /isSoyTechno && st\?\.seccion_a && <SoyTechnoSectionA/);
   assert.match(page, /isSoyTechnoCaseStudySlug\(slug\) \? <SoyTechnoAddons \/>/);
 });
 
-test('editorial H2s replace CIMA form-questionnaire titles', () => {
+test('editorial H2s use SEO pack v4, not form questions or leftover packs', () => {
   assert.match(
     storySource,
-    /primerh2: 'El desafío: formalizar la compra de tecnología en Venezuela'/,
+    /Tienda online en Venezuela: del chat informal a comprar en plataforma/,
   );
   assert.match(
     storySource,
-    /cuartap: 'Insight: el comprador planifica; la fricción está en pago y logística'/,
+    /Cashea y pasarela de pagos en Venezuela en el mismo checkout/,
   );
   assert.match(
     storySource,
-    /tercerh2: 'La solución: ecosistema Mobile-First \(pagos, envíos, atención\)'/,
+    /MRW rastreo dentro de la compra, no después del ticket/,
   );
   assert.match(
     storySource,
-    /resultadotitulo: 'Resultados: escala y conversión en 2025'/,
+    /Ecommerce Venezuela a escala: qué aguantó la plataforma en 2025/,
   );
-  assert.match(
-    storySource,
-    /segundah3desarrollo: 'Innovación: Smart Checkout, Cashea y atención con IA'/,
-  );
+  assert.doesNotMatch(storySource, /Cómo compra Venezuela online/);
+  assert.doesNotMatch(storySource, /Pago como lo busca el mercado/);
+  assert.doesNotMatch(storySource, /Envío que se puede seguir/);
+  assert.doesNotMatch(storySource, /Qué pasó cuando la plataforma aguantó/);
+  assert.doesNotMatch(storySource, /de comprar tech por WhatsApp/);
+  assert.doesNotMatch(storySource, /de WhatsApp e Instagram/);
   assert.doesNotMatch(storySource, /Por favor mencione/);
   assert.doesNotMatch(storySource, /Datos de contacto/);
   assert.doesNotMatch(storySource, /Resumen [Ee]jecutivo/);
@@ -114,12 +116,15 @@ test('body copy is verbatim CIMA paragraphs', () => {
   );
 });
 
-test('only the SoyTechno logo is filled; other image slots stay empty', () => {
+test('handoff assets fill SoyTechno slots beyond the listing logo', () => {
   assert.match(storySource, /url: '\/images\/logos\/soytechno\.png'/);
-  assert.match(storySource, /imagenbanner: SOYTECHNO_LOGO/);
   assert.match(storySource, /featured_media_url: SOYTECHNO_LOGO\.url/);
-  assert.match(storySource, /imagenminuta1: false/);
-  assert.match(storySource, /desafioimagen1: false/);
+  assert.match(storySource, /lifestyle-f\.jpg/);
+  assert.match(storySource, /giffycanvas-01\.gif/);
+  assert.match(storySource, /iphone-mockup\.gif/);
+  assert.match(storySource, /mobile-screen-01\.png/);
+  assert.match(storySource, /testimonial-avatar\.png/);
+  assert.doesNotMatch(storySource, /imagen_izquierda: null/);
   assert.doesNotMatch(storySource, /url: 'https:\/\/endpoint\.playfulagency\.com/);
 });
 

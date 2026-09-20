@@ -4,14 +4,16 @@
  *
  * Body copy is verbatim from the CIMA Doc (Versión 9). Do not rewrite.
  *
- * CIMA paragraphs → default Jumex/Odwalla ACF (José GO 19 sep 2026).
- * Display H2s are the locked SEO section headlines, not CIMA form questions.
- *   hero h1 / title   ← SOYTECHNO_H1 (document title is SOYTECHNO_SEO)
+ * Layout: published soytechno_extended body (José 20 sep 2026), not Jumex default.
+ * SEO pack v4 section H2s. Form-questionnaire titles are not used.
+ *   hero h1 / title   ← SOYTECHNO_H1
  *   primerap          ← §2 Idea
- *   primerh2 + body   ← §3 Desafío
- *   grid cuartap…     ← insight / audiencia / objetivos
- *   tercerh2 + desarrollo ← §4 Estrategia / medios + §6 innovación
- *   resultados*       ← §5 KPIs, split into cards without rewriting sentences
+ *   seccion_a         ← H2#1 panorama / reto / insight / audiencia
+ *   seccion_b         ← collage (no extra H2)
+ *   seccion_c         ← H2#2 checkout / Cashea / estrategia
+ *   seccion_d         ← H2#3 MRW / medios / rastreo
+ *   seccion_e         ← H2#4 resultados KPIs
+ *   seccion_f         ← leftover innovación / aporte (no extra H2)
  * Page wrap (SEO, CTA, siblings, schema, quote) lives in soytechno-addons.ts.
  */
 
@@ -24,11 +26,17 @@ export const SOYTECHNO_CASE_STUDY_SLUG = 'soytechno-ecommerce-venezuela';
 
 export const SOYTECHNO_CASE_TITLE = SOYTECHNO_H1;
 
-/** Stable public asset; do not use endpoint.playfulagency.com (stripped in RSC). */
+/** Listing card mark. Hero uses the richer lifestyle still. */
 export const SOYTECHNO_LOGO = {
   url: '/images/logos/soytechno.png',
   alt: 'SoyTechno',
 };
+
+const ASSET = '/images/casos/soytechno';
+
+function caseImg(file: string, alt = 'SoyTechno') {
+  return { url: `${ASSET}/${file}`, alt };
+}
 
 const CIMA = {
   reto:
@@ -69,6 +77,11 @@ function cimaHtml(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
+/** Section B renders plain text, not HTML. Keep CIMA words; drop markdown markers. */
+function cimaPlain(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '$1');
+}
+
 export function isSoyTechnoCaseStudySlug(slug: string): boolean {
   return slug === SOYTECHNO_CASE_STUDY_SLUG;
 }
@@ -94,46 +107,112 @@ export function getSoyTechnoSyntheticStory() {
       categoria5: '',
       h1: SOYTECHNO_CASE_TITLE,
       primerap: cimaHtml(CIMA.idea),
-      imagenbanner: SOYTECHNO_LOGO,
-      primerh2: 'El desafío: formalizar la compra de tecnología en Venezuela',
-      segundap: `<p>${cimaHtml(CIMA.panorama)}</p><p>${cimaHtml(CIMA.reto)}</p>`,
+      imagenbanner: caseImg('lifestyle-f.jpg'),
+      primerh2: '',
+      segundap: '',
       imagenminuta1: false,
       imagenminuta2: false,
       imagenminuta3: false,
       segundoh2: '',
       tercerap: '',
-      cuartap: 'Insight: el comprador planifica; la fricción está en pago y logística',
-      quintap: cimaHtml(CIMA.insight),
-      sextap: 'La audiencia',
-      septimap: cimaHtml(CIMA.audiencia),
-      octavap: 'Los objetivos',
-      novenap: cimaHtml(CIMA.objetivos),
+      cuartap: '',
+      quintap: '',
+      sextap: '',
+      septimap: '',
+      octavap: '',
+      novenap: '',
       desafioimagen1: false,
       desafioimagen2: false,
       desafioimagen3: false,
       desafioimagen4: false,
-      tercerh2: 'La solución: ecosistema Mobile-First (pagos, envíos, atención)',
-      decima: cimaHtml(CIMA.estrategia),
-      otroh2st: 'La idea estratégica',
-      otropst: cimaHtml(CIMA.comoIdeaEstrategica),
-      primerah3desarrollo: 'Los medios',
-      primerapdesarrollo: cimaHtml(CIMA.mediosClaves),
-      segundah3desarrollo: 'Innovación: Smart Checkout, Cashea y atención con IA',
-      segundapdesarrollo: `<p>${cimaHtml(CIMA.innovacion)}</p><p>${cimaHtml(CIMA.recursos)}</p>`,
-      tercerh3desarrollo: 'El aporte',
-      tercerapdesarrollo: cimaHtml(CIMA.contribucion),
-      resultadotitulo: 'Resultados: escala y conversión en 2025',
-      resultadodescripcion: cimaHtml(CIMA.resultadosPrueba),
-      resultado1: 'Tráfico',
-      resultadop1: cimaHtml(CIMA.comoSabe),
-      resultado2: 'Crecimiento',
-      resultadop2: cimaHtml(CIMA.relacionKpis),
-      resultado3: 'Ventas',
-      resultadop3: cimaHtml(CIMA.resultadosEjecutivo),
+      tercerh2: '',
+      decima: '',
       testimonialnombre: SOYTECHNO_TESTIMONIAL.name,
       testimonialcargo: SOYTECHNO_TESTIMONIAL.role,
       testimonio: SOYTECHNO_TESTIMONIAL.quote,
-      template: 'default' as const,
+      testimonial_foto: caseImg('testimonial-avatar.png', SOYTECHNO_TESTIMONIAL.name),
+      template: 'soytechno_extended' as const,
+      soytechno: {
+        seccion_a: {
+          titulo_de_esta_seccion_a:
+            'Tienda online en Venezuela: del chat informal a comprar en plataforma',
+          imagen_izquierda: caseImg('giffycanvas-01.gif'),
+          titulo_1: '',
+          parrafo1: cimaHtml(CIMA.panorama),
+          titulo_2: 'El reto',
+          parrafo2: cimaHtml(CIMA.reto),
+          titulo_3: '',
+          parrafo3: cimaHtml(CIMA.insight),
+          titulo_4: 'La audiencia',
+          parrafo4: cimaHtml(CIMA.audiencia),
+        },
+        seccion_b: {
+          titulo_de_la_seccion_b: '',
+          imagenes_collage: {
+            imagen_1: caseImg('electrodomesticos-01.png'),
+            imagen_2: caseImg('electrodomesticos-02.png'),
+            imagen_3: caseImg('electrodomesticos-03.png'),
+            imagen_4: caseImg('circuito.png'),
+            imagen_del_telefono: caseImg('iphone-mockup.gif'),
+            imagen_del_logo: SOYTECHNO_LOGO,
+          },
+          titulo_1: 'Los objetivos',
+          parrafo1: cimaPlain(CIMA.objetivos),
+          titulo_2: '',
+          parrafo2: '',
+          titulo_3: '',
+          parrafo3: '',
+        },
+        seccion_c: {
+          titulo_de_la_seccion_c:
+            'Cashea y pasarela de pagos en Venezuela en el mismo checkout',
+          imagen_izquierda: caseImg('giffycanvas-02.gif'),
+          titulo_1: '',
+          parrafo1: cimaHtml(CIMA.estrategia),
+          titulo_2: '',
+          parrafo2: cimaHtml(CIMA.recursos),
+          titulo_3: '',
+          parrafo3: cimaHtml(CIMA.comoIdeaEstrategica),
+          subtitulo_ingenieria: '',
+          parrafo_ingenieria: '',
+          imagen_pantalla_1: caseImg('mobile-screen-01.png'),
+          imagen_pantalla_2: caseImg('mobile-screen-02.png'),
+          imagen_pantalla_3: caseImg('mobile-screen-03.png'),
+          imagen_pantalla_4: caseImg('mobile-screen-04.png'),
+        },
+        seccion_d: {
+          titulo_de_la_seccion_d:
+            'MRW rastreo dentro de la compra, no después del ticket',
+          imagen_derecha: caseImg('rectangle-147.gif'),
+          titulo_1: '',
+          parrafo1: cimaHtml(CIMA.mediosClaves),
+          titulo_2: '',
+          parrafo2: '',
+          titulo_3: '',
+          parrafo3: '',
+        },
+        seccion_e: {
+          titulo_de_la_seccion_e:
+            'Ecommerce Venezuela a escala: qué aguantó la plataforma en 2025',
+          imagen_izquierda: caseImg('rectangle-146.png'),
+          parrafo: cimaHtml(CIMA.resultadosPrueba),
+          titulo_1: 'Tráfico',
+          parrafo1: cimaHtml(CIMA.comoSabe),
+          titulo_2: 'Crecimiento',
+          parrafo2: cimaHtml(CIMA.relacionKpis),
+          titulo_3: 'Ventas',
+          parrafo3: cimaHtml(CIMA.resultadosEjecutivo),
+        },
+        seccion_f: {
+          titulo_de_la_seccion_f: '',
+          parrafo: cimaHtml(CIMA.innovacion),
+          titulo_1: '',
+          parrafo1: cimaHtml(CIMA.contribucion),
+          titulo_2: '',
+          parrafo2: '',
+          imagen_derecha: caseImg('ipad-mockup-01.png'),
+        },
+      },
     },
   };
 }
