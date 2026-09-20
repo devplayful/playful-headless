@@ -93,7 +93,7 @@ function Board({
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-paytone text-[47px] leading-[1.2] text-[#4A4453] text-center max-w-[920px] mx-auto scroll-mt-[168px]">
+    <h2 className="font-paytone-lock text-[47px] leading-[1.2] text-[#4A4453] text-center max-w-[920px] mx-auto scroll-mt-[168px]">
       {children}
     </h2>
   );
@@ -111,7 +111,7 @@ function Lead({ children }: { children: React.ReactNode }) {
 function ChapterBar({ children }: { children: React.ReactNode }) {
   return (
     <Board height={128} className="flex items-center justify-center bg-[#EADDFF] rounded-[36px] px-10">
-      <h2 className="font-paytone text-[32px] leading-[1.2] text-[#4A4453] text-center">{children}</h2>
+      <h2 className="font-paytone-lock text-[32px] leading-[1.2] text-[#4A4453] text-center">{children}</h2>
     </Board>
   );
 }
@@ -127,7 +127,7 @@ function Feature({
 }) {
   return (
     <div className="space-y-3">
-      <h3 className="font-sans font-bold text-[22px] leading-[1.35] text-[#4A4453]">{title}</h3>
+      <h3 className="font-paytone-lock text-[20px] leading-[1.25] text-[#4A4453]">{title}</h3>
       <p className="font-sans text-[18px] leading-[1.5] text-[#4A4453]">{body}</p>
       {bullets && (
         <ul className="list-disc pl-5 space-y-2 font-sans text-[18px] leading-[1.5] text-[#4A4453]">
@@ -137,6 +137,16 @@ function Feature({
         </ul>
       )}
     </div>
+  );
+}
+
+function WhitePhoneIcon() {
+  return (
+    <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm" aria-hidden>
+      <rect x="18" y="6" width="28" height="52" rx="6" fill="white" />
+      <rect x="28" y="10" width="8" height="3" rx="1.5" fill="#00193F" />
+      <circle cx="32" cy="52" r="2.2" fill="#00193F" />
+    </svg>
   );
 }
 
@@ -166,7 +176,7 @@ function IMacComposite() {
 
 function BrandMarks({ third }: { third: 'circuit' | 'people' }) {
   return (
-    <div className="mt-16 mb-20">
+    <div className="mt-10 mb-8">
     <Board width={448} height={112}>
       <Abs x={0} y={8} w={96} h={96}>
         <Asset file="lifestyle-i.png" alt="100% originales" />
@@ -207,7 +217,7 @@ function ChromaCard({
     <div className="relative w-full h-full rounded-[20px] overflow-hidden px-8 pt-8" style={{ backgroundColor: bg, color: ink }}>
       <p className="font-sans font-bold text-[18px] leading-[1.25]">{name}</p>
       <p className="font-sans font-bold text-[18px] leading-[1.35] whitespace-pre-line mt-2">{meta}</p>
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-8 w-[168px] h-[168px]">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-6 w-[120px] h-[120px]">
         <img src={img(icon)} alt="" className="w-full h-full object-contain" />
       </div>
     </div>
@@ -234,11 +244,15 @@ export default function SoyTechnoFigmaBody() {
       </div>
 
       <div className="hidden lg:block">
-      {/* 1. Hero — 1200×656 lavender card; lock from lg up */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0">
+      {/* 1. Hero — lavender card in purple patterned frame; tight collage */}
+      <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-20"
+          style={{ backgroundImage: `url(${img('background-texture.png')})`, backgroundSize: 'cover' }}
+        />
         <Board id="soytechno-hero" height={656} className="bg-[#EADDFF] rounded-[36px]">
           <Abs x={80} y={88} w={560}>
-            <h1 className="font-paytone text-[47px] leading-[1.2] text-[#4A4453] mb-10">
+            <h1 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.02em] text-[#4A4453] mb-10">
               {FIGMA.heroTitle}
             </h1>
             <p className="font-sans text-[18px] leading-[1.5] mb-6">
@@ -249,7 +263,7 @@ export default function SoyTechnoFigmaBody() {
             </p>
           </Abs>
           <Abs x={680} y={48} w={480} h={560}>
-            <div className="absolute left-[8%] top-[30%] w-[72%] h-[42%] rounded-[20px] overflow-hidden bg-[#00193F] z-10">
+            <div className="absolute left-[8%] top-[30%] w-[80%] h-[46%] rounded-[20px] overflow-hidden bg-[#00193F] z-10">
               <Asset file="circuito.png" alt="" className="object-cover opacity-40 invert" />
               <div className="absolute inset-0 flex items-center justify-center px-8">
                 <Image
@@ -261,19 +275,22 @@ export default function SoyTechnoFigmaBody() {
                 />
               </div>
             </div>
-            <div className="absolute left-[46%] top-[10%] w-[210px] h-[210px] rounded-full overflow-hidden ring-4 ring-white z-20">
+            <div className="absolute left-[40%] top-[10%] w-[196px] h-[196px] rounded-full overflow-hidden ring-4 ring-white z-20">
               <Asset file="lifestyle-f.jpg" alt="SoyTechno" className="object-cover object-[55%_28%]" />
             </div>
-            <div className="absolute left-[50%] top-0 w-[76px] h-[76px] z-30">
+            <div className="absolute left-[36%] top-[2%] w-[72px] h-[72px] z-30">
               <Asset file="cashea-badge.png" alt="Cashea" />
             </div>
-            <div className="absolute left-[74%] top-[4%] w-[64px] h-[64px] z-30">
+            <div className="absolute left-[74%] top-[22%] w-[58px] h-[58px] z-30">
               <Asset file="delivery-icon-3.png" alt="" />
             </div>
-            <div className="absolute left-[12%] top-[66%] w-[92px] h-[92px] z-30">
+            <div className="absolute left-[4%] top-[58%] w-[84px] h-[84px] z-30">
+              <WhitePhoneIcon />
+            </div>
+            <div className="absolute left-[56%] top-[66%] w-[84px] h-[84px] z-30">
               <Asset file="lifestyle-1.png" alt="" />
             </div>
-            <div className="absolute left-[36%] top-[68%] w-[120px] h-[120px] z-30">
+            <div className="absolute left-[74%] top-[68%] w-[76px] h-[76px] z-30">
               <Asset file="lifestyle-i.png" alt="Productos 100% originales" />
             </div>
           </Abs>
@@ -286,30 +303,30 @@ export default function SoyTechnoFigmaBody() {
         <Lead>{FIGMA.desafioLead}</Lead>
         <BrandMarks third="circuit" />
         <Board id="soytechno-desafio" height={1196} className="bg-[#EADDFF] rounded-[36px]">
-          <Abs x={64} y={64} w={520}>
-            <div className="space-y-10">
+          <Abs x={48} y={48} w={540} h={620} className="bg-white rounded-[28px] px-10 py-10">
+            <div className="space-y-8">
               {FIGMA.desafioItems.map((item) => (
                 <Feature key={item.title} title={item.title} body={item.body} />
               ))}
             </div>
           </Abs>
-          <Abs x={640} y={64} w={496} h={200} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
+          <Abs x={640} y={48} w={512} h={176} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
             <Asset file="circuito.png" alt="" className="object-cover opacity-30 invert" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-[148px] h-[148px] rounded-full overflow-hidden bg-[#00193F]">
+              <div className="relative w-[132px] h-[132px] rounded-full overflow-hidden bg-[#00193F]">
                 <Asset file="website-capture-01.png" alt="SoyTechno" />
               </div>
             </div>
           </Abs>
-          <Abs x={760} y={284} w={280} h={514}>
+          <Abs x={760} y={360} w={250} h={458} className="z-20">
             <IPhoneFrame screen="iphone-frame-01.png" alt="Catálogo móvil SoyTechno" />
           </Abs>
-          <Abs x={48} y={680} w={580} h={460}>
+          <Abs x={48} y={690} w={640} h={460} className="bg-[#FFF4C4] rounded-[28px] px-5 py-5">
             <Asset file="rectangle-147-catalog.png" alt="Catálogo SoyTechno" />
           </Abs>
-          <Abs x={656} y={820} w={480} h={320} className="rounded-[36px] overflow-hidden bg-[#00193F]">
+          <Abs x={720} y={790} w={432} h={360} className="rounded-[28px] overflow-hidden bg-[#00193F]">
             <Asset file="circuito.png" alt="" className="object-cover opacity-40 invert" />
-            <div className="absolute inset-0 flex items-end justify-center gap-4 p-6">
+            <div className="absolute inset-0 flex items-end justify-center gap-3 p-5">
               <div className="relative w-[26%] h-[70%]">
                 <Asset file="electrodomesticos-01.png" alt="" />
               </div>
@@ -324,7 +341,7 @@ export default function SoyTechnoFigmaBody() {
         </Board>
       </section>
 
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[140px] scroll-mt-[168px]">
+      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[64px] scroll-mt-[168px]">
         <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
         <Lead>{FIGMA.checkoutLead}</Lead>
         <BrandMarks third="people" />
@@ -360,18 +377,18 @@ export default function SoyTechnoFigmaBody() {
         <div className="mt-16">
           <Board id="soytechno-section-b" height={1400} className="bg-[#EADDFF] rounded-[36px]">
             {FIGMA.swatches.map((swatch, i) => (
-              <Abs key={swatch.name} x={48} y={48 + i * 448} w={336} h={408}>
+              <Abs key={swatch.name} x={40} y={48 + i * 300} w={300} h={280}>
                 <ChromaCard bg={swatch.card} ink={swatch.ink} name={swatch.name} meta={swatch.meta} icon={swatch.icon} />
               </Abs>
             ))}
-            <Abs x={424} y={48} w={353} h={856}>
-              <Asset file="iphone-mockup.gif" alt="Interfaz SoyTechno" />
+            <Abs x={360} y={48} w={340} h={624}>
+              <Asset file="section-b-phone.png" alt="LG SoyTechno / Zona LG" />
             </Abs>
-            <Abs x={424} y={944} w={336} h={408} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
+            <Abs x={360} y={648} w={300} h={280} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
               <Asset file="circuito.png" alt="Circuito" className="object-cover opacity-40 invert" />
-              <span className="absolute left-6 top-5 font-sans font-bold text-white text-[18px]">Circuito</span>
+              <span className="absolute left-6 top-5 font-paytone-lock text-white text-[18px]">Circuito</span>
             </Abs>
-            <Abs x={817} y={48} w={335} h={200} className="rounded-[20px] overflow-hidden bg-[#003896]">
+            <Abs x={720} y={48} w={440} h={160} className="rounded-[20px] overflow-hidden bg-[#003896]">
               <Asset file="circuito.png" alt="" className="object-cover opacity-35 invert" />
               <div className="absolute inset-0 flex items-center justify-center px-8">
                 <Image
@@ -383,8 +400,8 @@ export default function SoyTechnoFigmaBody() {
                 />
               </div>
             </Abs>
-            <Abs x={817} y={272} w={335} h={1080}>
-              <div className="flex flex-col justify-between h-full py-2">
+            <Abs x={720} y={224} w={440} h={700}>
+              <div className="flex flex-col gap-8 h-full">
                 {FIGMA.visualItems.map((item) => (
                   <Feature key={item.title} title={item.title} body={item.body} />
                 ))}
@@ -426,7 +443,7 @@ export default function SoyTechnoFigmaBody() {
         <div className="mt-16">
           <Board id="soytechno-cashea" height={900}>
             <Abs x={0} y={20} w={520}>
-              <h3 className="font-paytone text-[36px] leading-[1.2] text-[#4A4453] mb-8">{FIGMA.casheaTitle}</h3>
+              <h3 className="font-paytone-lock text-[36px] leading-[1.2] text-[#4A4453] mb-8">{FIGMA.casheaTitle}</h3>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.casheaLead}</p>
               <div className="space-y-10">
                 {FIGMA.casheaItems.map((item) => (
@@ -468,7 +485,7 @@ export default function SoyTechnoFigmaBody() {
         <ChapterBar>{FIGMA.logisticsPill}</ChapterBar>
         <div className="mt-16">
           <Board id="soytechno-logistics" height={760}>
-            <Abs x={0} y={40} w={520}>
+            <Abs x={0} y={40} w={500}>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.logisticsLead}</p>
               <div className="space-y-10">
                 {FIGMA.logisticsItems.map((item) => (
@@ -481,11 +498,11 @@ export default function SoyTechnoFigmaBody() {
                 ))}
               </div>
             </Abs>
-            <Abs x={560} y={0} w={640} h={760}>
-              <Abs x={150} y={0} w={340} h={210} className="z-10 rounded-[12px] overflow-hidden bg-white shadow-md">
+            <Abs x={620} y={80} w={520} h={620}>
+              <Abs x={150} y={0} w={220} h={136} className="z-10 rounded-[12px] overflow-hidden bg-white shadow-md">
                 <Asset file="rectangle-144.jpg" alt="Envíos a nivel nacional" className="object-contain" />
               </Abs>
-              <Abs x={30} y={160} w={580} h={523}>
+              <Abs x={40} y={200} w={440} h={396}>
                 <IMacComposite />
               </Abs>
             </Abs>
@@ -501,7 +518,7 @@ export default function SoyTechnoFigmaBody() {
           <Board id="soytechno-results" height={380}>
             {FIGMA.resultCards.map((card, i) => (
               <Abs key={card.title} x={i * 408} y={0} w={384} h={380} className="bg-[#EADDFF] rounded-[36px] p-10">
-                <h3 className="font-sans font-bold text-[20px] leading-[1.4] text-[#4A4453] mb-5">{card.title}</h3>
+                <h3 className="font-paytone-lock text-[20px] leading-[1.3] text-[#4A4453] mb-5">{card.title}</h3>
                 <p className="font-sans text-[18px] leading-[1.5] text-[#4A4453]">{card.body}</p>
               </Abs>
             ))}
@@ -535,7 +552,7 @@ export default function SoyTechnoFigmaBody() {
             <div className="relative w-[160px] h-[160px] rounded-full overflow-hidden mx-auto mb-8">
               <Asset file="testimonial-avatar.png" alt={FIGMA.testimonialName} className="object-cover" />
             </div>
-            <p className="font-paytone text-[32px] text-[#2A0064] text-center">{FIGMA.testimonialName}</p>
+            <p className="font-paytone-lock text-[32px] text-[#2A0064] text-center">{FIGMA.testimonialName}</p>
             <p className="font-sans text-[18px] text-[#2A0064]/80 text-center mt-2">{FIGMA.testimonialRole}</p>
           </Abs>
           <Abs x={380} y={200} w={700}>
@@ -553,7 +570,7 @@ export default function SoyTechnoFigmaBody() {
             <Asset file="cta-illustration.png" alt="" />
           </Abs>
           <Abs x={500} y={140} w={660}>
-            <h2 className="font-paytone text-[47px] leading-[1.15] tracking-[-0.03em] text-[#453A53] mb-8">
+            <h2 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.03em] text-[#453A53] mb-8">
               <span className="block">¿Tu E-commerce está listo</span>
               <span className="block whitespace-nowrap">para el nivel de un Web App?</span>
             </h2>

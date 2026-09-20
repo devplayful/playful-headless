@@ -53,6 +53,11 @@ test('SoyTechno is mobile-first with a desktop Figma lock from lg up', () => {
   assert.match(body, /section-c-ipad\.png/);
   assert.doesNotMatch(body, /soytechno-section-c[\s\S]{0,400}giffycanvas-01/);
   assert.match(body, /rectangle-147-catalog\.png/);
+  assert.match(body, /font-paytone-lock/);
+  assert.match(body, /section-b-phone\.png/);
+  assert.match(body, /#440099/);
+  assert.match(body, /bg-white rounded-\[28px\]/);
+  assert.doesNotMatch(body, /<h3 className="font-sans font-bold/);
 });
 
 test('SoyTechno mobile stack covers the Figma narrative', () => {
@@ -77,4 +82,10 @@ test('SoyTechno mobile stack covers the Figma narrative', () => {
   assert.match(mobile, /mobile-screen-04\.png/);
   assert.match(mobile, /min-h-\[48px\]/);
   assert.doesNotMatch(mobile, /100cqw/);
+  assert.match(mobile, /font-paytone-lock/);
+  assert.match(mobile, /grid-cols-2/);
+  assert.match(mobile, /bg-white rounded-\[24px\]/);
+  assert.match(mobile, /section-b-phone\.png/);
+  assert.doesNotMatch(mobile, /<h3 className="font-sans font-bold/);
+  assert.doesNotMatch(mobile, /space-y-12 max-w-\[720px\]/);
 });
