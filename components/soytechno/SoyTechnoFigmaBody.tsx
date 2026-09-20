@@ -247,8 +247,11 @@ export default function SoyTechnoFigmaBody() {
       {/* 1. Hero — lavender card in purple patterned frame; tight collage */}
       <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
         <div
-          className="pointer-events-none absolute inset-0 opacity-20"
-          style={{ backgroundImage: `url(${img('background-texture.png')})`, backgroundSize: 'cover' }}
+          className="pointer-events-none absolute inset-0 opacity-50"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.4) 1.2px, transparent 1.6px), url(${img('background-texture.png')})`,
+            backgroundSize: '22px 22px, cover',
+          }}
         />
         <Board id="soytechno-hero" height={656} className="bg-[#EADDFF] rounded-[36px]">
           <Abs x={80} y={88} w={560}>
@@ -302,7 +305,7 @@ export default function SoyTechnoFigmaBody() {
         <SectionTitle>{FIGMA.desafioTitle}</SectionTitle>
         <Lead>{FIGMA.desafioLead}</Lead>
         <BrandMarks third="circuit" />
-        <Board id="soytechno-desafio" height={1196} className="bg-[#EADDFF] rounded-[36px]">
+        <Board id="soytechno-desafio" height={1152} className="bg-[#EADDFF] rounded-[36px]">
           <Abs x={48} y={48} w={540} h={620} className="bg-white rounded-[28px] px-10 py-10">
             <div className="space-y-8">
               {FIGMA.desafioItems.map((item) => (
@@ -339,12 +342,11 @@ export default function SoyTechnoFigmaBody() {
             </div>
           </Abs>
         </Board>
-      </section>
-
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[64px] scroll-mt-[168px]">
-        <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
-        <Lead>{FIGMA.checkoutLead}</Lead>
-        <BrandMarks third="people" />
+        <div className="pt-8 scroll-mt-[168px]">
+          <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
+          <Lead>{FIGMA.checkoutLead}</Lead>
+          <BrandMarks third="people" />
+        </div>
       </section>
 
       <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">

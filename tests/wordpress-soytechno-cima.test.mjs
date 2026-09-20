@@ -46,7 +46,8 @@ test('SoyTechno is mobile-first with a desktop Figma lock from lg up', () => {
   assert.match(body, /className="lg:hidden"/);
   assert.match(body, /className="hidden lg:block"/);
   assert.match(body, /height=\{656\}/);
-  assert.match(body, /height=\{1196\}/);
+  assert.match(body, /height=\{1152\}/);
+  assert.doesNotMatch(body, /pt-\[64px\]/);
   assert.match(body, /height=\{1400\}/);
   assert.doesNotMatch(body, /x=\{-349\}/);
   assert.match(body, /mobile-screen-04\.png/);

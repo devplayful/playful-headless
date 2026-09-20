@@ -128,8 +128,11 @@ export default function SoyTechnoMobile() {
     <div className="pb-28">
       <section id="soytechno-m-hero" className="relative bg-[#440099] px-4 pt-4 pb-6 scroll-mt-[120px]">
         <div
-          className="pointer-events-none absolute inset-0 opacity-20"
-          style={{ backgroundImage: `url(${src('background-texture.png')})`, backgroundSize: 'cover' }}
+          className="pointer-events-none absolute inset-0 opacity-50"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.4) 1.2px, transparent 1.6px), url(${src('background-texture.png')})`,
+            backgroundSize: '22px 22px, cover',
+          }}
         />
         <div className="relative bg-[#EADDFF] rounded-[24px] px-5 py-7 max-w-[720px] mx-auto">
           <h1 className="font-paytone-lock text-[28px] sm:text-[34px] leading-[1.15] tracking-[-0.02em] text-[#4A4453]">
@@ -216,7 +219,7 @@ export default function SoyTechnoMobile() {
           </div>
         </section>
 
-        <section id="soytechno-m-checkout" className="scroll-mt-[120px] pt-10">
+        <section id="soytechno-m-checkout" className="scroll-mt-[120px] pt-6">
           <Title>{FIGMA.checkoutTitle}</Title>
           <Lead>{FIGMA.checkoutLead}</Lead>
           <Marks third="people" />
