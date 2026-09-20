@@ -1,16 +1,16 @@
 # QA visual SoyTechno — Figma 3798:11672 vs preview
 
-**Veredicto: PASS** (ronda 5, SHA `4be3dcd`) — 24/25 tickets cerrados. Residual: FAIL-14 (aire antes de Ingeniería).
+**Veredicto: PASS** (ronda 6, SHA `8aa553a`) — 25/25. FAIL-14 cerrado.
 
 Agente: solo QA (sin rediseño, sin merge, sin implementar).  
 Implementer: CA `bc-a0a75e4a` · PR #70 draft.  
 Canon: 6 crops de José (IZQ = Figma). DER = capturas **live** de este agente.
 
 Target: https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.app/casos-de-exito/soytechno-ecommerce-venezuela  
-Share usado: `_vercel_share=8B1FeeUuMl9f5oeaqDCTwTYQ3jC4ylLo` (el `jdjwDr2…` de José redirigió a login Vercel).  
-SHA: **`4be3dcdc6226f06568fadc71289f1510863a91fd`**  
-Deploy: READY `dpl_5arUPiSqPWs3LUD4f9tmbShzAMSD`  
-Viewports: **1440 × 900** (crops) y **375 × 812** (spot Paytone + composición mobile).
+Share ronda 6: `_vercel_share=Bl7WYT4yUPye5X4s6JJa5qaFxS646tLr`  
+SHA: **`8aa553a4c2cd48ea987cb32af04d9b8359726b7b`**  
+Deploy: READY `dpl_3SLZ1RCeEwiLG9nz3GKgrJCXdJEY`  
+Viewports: **1440 × 900** (FAIL-14) + ronda 5 a 375.
 
 ---
 
@@ -31,7 +31,7 @@ Viewports: **1440 × 900** (crops) y **375 × 812** (spot Paytone + composición
 | **11** | Tira azul + círculo logo | **PASS** | Barra `#0063FC` + círculo logo centrado sobre el phone. |
 | **12** | Laptop + phone + electrodomésticos | **PASS** | Una pieza: laptop crema a la izq., navy a la der., phone solapado. `qa_r5_1440_desafio_lower.png`. |
 | **13** | Phone no descolgado | **PASS** | El phone pertenece al 2×2 (se ve el overlap). El peek superior es recorte de scroll, no un asset suelto sobre Ingeniería. |
-| **14** | Aire antes de Ingeniería | **FAIL** | `pt-[64px]` + banda vacía entre el 2×2 y el h2. Figma pega el título al collage. Mejoró (antes 140 px) pero el crop 3 sigue fallando. |
+| **14** | Aire antes de Ingeniería | **PASS** | `8aa553a`: board 1152 (sin banda lavanda), `pt-[64px]` fuera. Gap medido **32 px** (`pt-8`) entre bottom del 2×2 y h2. `qa_r6_1440_fail14.png`. |
 | **15** | Phone B = banner LG | **PASS** | `section-b-phone.png`: header amarillo + **LG SoyTechno / Zona LG**. Ya no es `iphone-mockup.gif` de cámaras. `qa_r5_1440_section_b.png`. |
 | **16** | Proporciones 3 col | **PASS** | Croma \| phone \| logo+copy. Residual: cromas más bajos (300×280 vs Figma ~408). |
 | **17** | Texto vs logo | **PASS** | `CROMÁTICA CONTROLADA` arranca justo bajo la card logo, no a media altura del phone. |
@@ -54,13 +54,12 @@ Viewports: **1440 × 900** (crops) y **375 × 812** (spot Paytone + composición
 
 ---
 
-## Residual (no revierte el PASS de composición)
+## Residual (no reabre tickets)
 
-1. **FAIL-14** — hueco entre el 2×2 del desafío y “Ingeniería de Checkout”.
-2. Patrón de puntos de la orla púrpura poco visible.
-3. Phone del desafío muestra 4 tiles; Figma recorta 2.
-4. Widget LeadConnector tapa copy (375/1440). Sticky ~144 px.
-5. Breadcrumb sigue en `#FEF7FF` encima de la orla (Figma lo pone sobre el púrpura). No era el núcleo de 03.
+1. ~~FAIL-14~~ — **cerrado** en `8aa553a` (gap 32 px, sin banda lavanda / sin `pt-[64px]`).
+2. Phone del desafío muestra 4 tiles; Figma recorta 2.
+3. Widget LeadConnector tapa copy. Sticky ~144 px.
+4. Breadcrumb en `#FEF7FF` encima de la orla (Figma lo pone sobre el púrpura).
 
 ---
 
@@ -96,6 +95,7 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | `/opt/cursor/artifacts/qa_r5_375_hero_collage.png` | Collage superpuesto 375 |
 | `/opt/cursor/artifacts/qa_r5_375_desafio.png` | 2×2 mobile + Paytone |
 | `/opt/cursor/artifacts/qa_r5_375_section_b.png` | Grid B + phone LG |
+| `/opt/cursor/artifacts/qa_r6_1440_fail14.png` | 2×2 + Ingeniería pegados (`8aa553a`) |
 
 ---
 
@@ -107,6 +107,7 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | 2 | `fb1c43e` | 375/768 no artboard 1200 | FAIL (`transform: none`) |
 | 3 | `1b63fb8` | stack mobile legible | PASS (ese criterio) |
 | 4 | `1b63fb8` + crops José | pixel + Paytone h3 + mobile compuesto | FAIL (01–25) |
-| **5** | **`4be3dcd`** | re-QA 01–25 vs crops + live | **PASS** (14 residual) |
+| 5 | `4be3dcd` | re-QA 01–25 vs crops + live | PASS (14 residual) |
+| **6** | **`8aa553a`** | FAIL-14 tight vs 2×2 | **PASS** (25/25) |
 
 No merge.
