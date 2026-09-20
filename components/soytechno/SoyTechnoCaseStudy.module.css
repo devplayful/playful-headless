@@ -1,0 +1,459 @@
+.page {
+  --ink: #453a53;
+  --surface: #fef7ff;
+  --lavender: #eaddff;
+  background: var(--surface);
+  color: var(--ink);
+  overflow: clip;
+  padding-bottom: 120px;
+}
+
+.page,
+.page * {
+  box-sizing: border-box;
+}
+
+.page h1,
+.page h2,
+.page h3 {
+  font-family: var(--font-paytone-one), sans-serif;
+  font-weight: 400;
+}
+
+.page p,
+.page li,
+.page a,
+.page blockquote {
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 10px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 36px 0 28px;
+  font-size: 14px;
+}
+
+.hero {
+  align-items: center;
+  background: var(--lavender);
+  border-radius: 36px 36px 0 0;
+  display: grid;
+  gap: 36px;
+  grid-template-columns: 547px 1fr;
+  margin: 0 auto;
+  max-width: 1142px;
+  min-height: 659px;
+  padding: 80px 120px;
+}
+
+.heroCopy h1 {
+  font-size: 47px;
+  line-height: 1.2;
+  margin: 0 0 26px;
+}
+
+.heroCopy p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.heroArtwork {
+  align-items: center;
+  display: flex;
+  height: 499px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.heroArtwork img {
+  height: 499px;
+  object-fit: contain;
+  width: 319px;
+}
+
+.introSection,
+.introSectionSmall,
+.resultsIntro {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 120px 120px 40px;
+  text-align: center;
+}
+
+.introSectionSmall { padding-top: 80px; }
+.introSection h2,
+.introSectionSmall h2,
+.resultsIntro > h2 {
+  font-size: 47px;
+  line-height: 1.2;
+  margin: 0 auto 24px;
+  max-width: 900px;
+}
+
+.introSection > p,
+.introSectionSmall > p,
+.resultsIntro > p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.introIcons {
+  align-items: center;
+  display: flex;
+  gap: 42px;
+  justify-content: center;
+  margin-top: 52px;
+}
+
+.introIcons > img,
+.blueIcon {
+  height: 96px;
+  object-fit: contain;
+  width: 96px;
+}
+
+.blueIcon {
+  align-items: center;
+  background: #0063fd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.blueIcon img { height: 58px; object-fit: contain; width: 58px; }
+.roundPhoto { border-radius: 50%; object-fit: cover !important; }
+
+.challenge {
+  background: var(--lavender);
+  border-radius: 20px;
+  display: grid;
+  gap: 20px 36px;
+  grid-template-columns: 627px 1fr;
+  grid-template-rows: 239px 547px 290px;
+  margin: 64px auto 0;
+  max-width: 1196px;
+  padding: 40px;
+}
+
+.challengeCopy {
+  align-self: stretch;
+  background: var(--surface);
+  border-radius: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  justify-content: center;
+  padding: 40px 64px;
+}
+
+.contentItem h3 {
+  font-size: 22px;
+  line-height: 1.414;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.contentItem p,
+.textStack > p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.challengeCopy .contentItem:nth-child(1) h3 { color: #00193f; }
+.challengeCopy .contentItem:nth-child(2) h3 { color: #297dff; }
+.challengeCopy .contentItem:nth-child(3) h3 { color: #3a0ca3; }
+
+.challengeLogo {
+  align-items: center;
+  background: #0063fd;
+  border-radius: 36px;
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.challengeLogo img { border-radius: 50%; height: 190px; object-fit: cover; width: 190px; }
+
+.challengeLaptop {
+  align-items: center;
+  background: #ffefd1;
+  border-radius: 36px;
+  display: flex;
+  grid-column: 1;
+  grid-row: 3;
+  justify-content: center;
+  overflow: hidden;
+  padding: 24px 36px;
+}
+
+.challengeLaptop img { height: 100%; object-fit: contain; width: 100%; }
+
+.challengePhone {
+  align-items: flex-start;
+  border-radius: 36px;
+  display: flex;
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  justify-content: center;
+  justify-self: center;
+  overflow: visible;
+  transform: translateY(-34px);
+  width: 340px;
+  z-index: 2;
+}
+
+.challengePhone img { height: auto; object-fit: contain; width: 100%; }
+
+.challengeProducts {
+  background: linear-gradient(155deg, #3a0ca3, #4cc9f0);
+  background-image: linear-gradient(155deg, rgba(58,12,163,.9), rgba(76,201,240,.9)), url('/images/casos/soytechno/images/background-section-01.png');
+  background-size: cover;
+  border-radius: 36px;
+  grid-column: 2;
+  grid-row: 3;
+  overflow: hidden;
+  position: relative;
+}
+
+.challengeProducts img { object-fit: contain; position: absolute; }
+.fridge { height: 80%; left: 25%; top: 4%; width: 34%; }
+.tv { bottom: 4%; height: 65%; left: 31%; width: 45%; }
+.washer { bottom: 2%; height: 48%; right: 8%; width: 30%; }
+
+.standardSection {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-top: 100px;
+}
+
+.sectionTitle {
+  align-items: center;
+  background: var(--lavender);
+  border-radius: 36px;
+  display: flex;
+  justify-content: center;
+  min-height: 118px;
+  padding: 36px 120px;
+  width: 100%;
+}
+
+.sectionTitle h2 { font-size: 34px; line-height: 1.2; margin: 0; text-align: center; }
+
+.mediaTextGrid {
+  align-items: center;
+  display: grid;
+  gap: 36px;
+  grid-template-columns: 650px 1fr;
+  padding-top: 40px;
+}
+
+.tallMedia { height: auto; object-fit: contain; width: 650px; }
+.textStack { display: flex; flex-direction: column; gap: 30px; }
+.subTitle { font-size: 36px; line-height: 1.2; margin: 0; }
+
+.brandPanel {
+  background: var(--lavender);
+  border-radius: 20px;
+  display: grid;
+  gap: 36px;
+  grid-template-columns: 350px 350px minmax(0, 1fr);
+  margin-top: 40px;
+  padding: 40px;
+}
+
+.paletteColumn,
+.brandMediaColumn,
+.brandCopyColumn { display: flex; flex-direction: column; gap: 36px; }
+
+.paletteCard {
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 18px;
+  height: 304px;
+  padding: 36px;
+}
+
+.paletteCard img { align-self: center; height: 120px; margin-top: auto; object-fit: contain; width: 120px; }
+.darkCard { background: #00193f; color: white; }
+.greenCard { background: #297dff; color: white; }
+.orangeCard { background: #d4e5ff; color: #00193f; }
+.brandPhone { height: 644px; object-fit: contain; width: 340px; }
+
+.circuitCard {
+  background: #0063fd;
+  border-radius: 20px;
+  height: 304px;
+  overflow: hidden;
+  position: relative;
+}
+
+.circuitCard span { color: white; font: 700 18px var(--font-dm-sans), sans-serif; left: 20px; position: absolute; top: 18px; z-index: 1; }
+.circuitCard img { height: 100%; object-fit: cover; width: 100%; }
+
+.logoCard {
+  align-items: center;
+  background: linear-gradient(145deg, #0063fd, #001e58);
+  border-radius: 20px;
+  display: flex;
+  height: 216px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 40px 36px;
+  position: relative;
+}
+
+.logoCard::after { background: url('/images/casos/soytechno/images/circuito.png') center/cover; content: ''; inset: 0; mix-blend-mode: soft-light; opacity: .8; position: absolute; }
+.logoCard img { height: auto; position: relative; width: 100%; z-index: 1; }
+.brandText { display: flex; flex-direction: column; gap: 30px; }
+.brandText .contentItem h3 { font-size: 22px; }
+.brandText .contentItem p { font-size: 18px; }
+
+.divider { background: #d5cdd8; height: 1px; margin: 100px auto 0; max-width: 1235px; }
+.ipadComposite { align-items: center; display: flex; min-height: 600px; }
+.ipadComposite img { height: auto; width: 100%; }
+.logisticsMedia { height: auto; justify-self: center; max-width: 650px; width: 100%; }
+
+.resultsIntro { padding-top: 120px; }
+.resultsGrid { display: grid; gap: 36px; grid-template-columns: repeat(3, 1fr); margin-top: 52px; }
+.resultsGrid .contentItem { background: var(--lavender); border-radius: 20px; min-height: 330px; padding: 40px 36px; text-align: left; }
+.resultsGrid .contentItem h3 { font-size: 20px; }
+
+.phonesSection { margin: 0 auto; max-width: 1200px; padding: 40px 0; }
+.phonesSection img { display: block; height: auto; width: 100%; }
+
+.testimonial {
+  align-items: center;
+  background: #ffdad6;
+  border-radius: 36px;
+  display: grid;
+  gap: 80px;
+  grid-template-columns: 260px 1fr;
+  margin: 80px auto 0;
+  max-width: 1200px;
+  min-height: 600px;
+  overflow: hidden;
+  padding: 120px;
+  position: relative;
+}
+
+.quoteArt { height: 599px; left: 315px; position: absolute; top: 0; width: 841px; }
+.client { align-items: center; display: flex; flex-direction: column; position: relative; z-index: 1; }
+.client img { border-radius: 50%; height: 130px; object-fit: cover; width: 130px; }
+.client h2 { font-size: 36px; line-height: 44px; margin: 4px 0 0; white-space: nowrap; }
+.client p { font-size: 22px; margin: 0; }
+.testimonial blockquote { font-size: 26px; font-style: italic; font-weight: 500; line-height: 1.55; margin: 0; position: relative; z-index: 1; }
+
+.cta {
+  align-items: center;
+  background: #b3fff3 url('/images/casos/soytechno/images/cta-background.png') center/cover;
+  border-radius: 36px;
+  display: grid;
+  grid-template-columns: 497px 1fr;
+  margin: 80px auto 0;
+  max-width: 1200px;
+  min-height: 650px;
+  overflow: hidden;
+}
+
+.ctaArt { height: 590px; object-fit: contain; padding: 30px 50px; width: 497px; }
+.ctaCopy { align-items: center; display: flex; flex-direction: column; gap: 28px; padding: 80px 40px; text-align: center; }
+.ctaCopy h2 { font-size: 45px; line-height: 52px; margin: 0; max-width: 602px; }
+.ctaCopy p { font-size: 16px; line-height: 22px; margin: 0; max-width: 602px; }
+.ctaCopy a { background: #440099; border-radius: 999px; color: #f1f1f1; font-size: 22px; line-height: 1.5; padding: 12px 44px; text-decoration: none; }
+
+@media (max-width: 1023px) {
+  .page { padding-bottom: 64px; }
+  .breadcrumb { padding: 22px 20px; }
+  .hero { border-radius: 24px 24px 0 0; gap: 28px; grid-template-columns: 1fr; margin: 0 16px; min-height: 0; padding: 36px 20px 28px; }
+  .heroCopy h1 { font-size: 32px; line-height: 1.18; margin-bottom: 22px; }
+  .heroCopy p { font-size: 16px; line-height: 1.55; }
+  .heroArtwork { height: auto; }
+  .heroArtwork img { height: auto; max-width: 290px; width: 100%; }
+  .introSection,
+  .introSectionSmall,
+  .resultsIntro { padding: 72px 20px 28px; }
+  .introSection h2,
+  .introSectionSmall h2,
+  .resultsIntro > h2 { font-size: 30px; line-height: 1.2; }
+  .introSection > p,
+  .introSectionSmall > p,
+  .resultsIntro > p { font-size: 16px; line-height: 1.55; }
+  .introIcons { gap: 24px; margin-top: 36px; }
+  .introIcons > img,
+  .blueIcon { height: 72px; width: 72px; }
+  .blueIcon img { height: 44px; width: 44px; }
+
+  .challenge { display: flex; flex-direction: column; gap: 16px; margin: 36px 16px 0; padding: 16px; }
+  .challengeCopy { gap: 22px; order: 1; padding: 28px 22px; }
+  .challengeLogo { height: 150px; order: 2; }
+  .challengeLogo img { height: 118px; width: 118px; }
+  .challengePhone { height: 470px; order: 3; overflow: hidden; transform: none; width: 100%; }
+  .challengePhone img { height: 100%; width: 100%; }
+  .challengeLaptop { height: 235px; order: 4; padding: 18px; }
+  .challengeProducts { height: 210px; order: 5; }
+  .contentItem h3 { font-size: 18px; }
+  .contentItem p,
+  .textStack > p { font-size: 16px; }
+
+  .standardSection { padding: 72px 20px 0; }
+  .sectionTitle { border-radius: 24px; min-height: 0; padding: 18px 20px; }
+  .sectionTitle h2 { font-size: 20px; }
+  .mediaTextGrid { gap: 32px; grid-template-columns: 1fr; padding-top: 28px; }
+  .reverseMobile .textStack { order: 2; }
+  .reverseMobile > img { order: 1; }
+  .tallMedia { height: auto; max-height: 760px; width: 100%; }
+  .textStack { gap: 26px; }
+  .subTitle { font-size: 28px; }
+
+  .brandPanel { display: flex; flex-direction: column; gap: 24px; margin-top: 28px; padding: 16px; }
+  .brandMediaColumn { align-items: center; order: 1; }
+  .brandPhone { height: auto; max-height: 610px; width: min(100%, 330px); }
+  .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); order: 2; }
+  .paletteCard { font-size: 13px; height: 230px; padding: 18px 14px; }
+  .paletteCard img { height: 84px; width: 84px; }
+  .paletteCard:last-child { grid-column: 1 / -1; }
+  .circuitCard { height: 220px; width: 100%; }
+  .brandCopyColumn { order: 3; }
+  .logoCard { height: 150px; }
+  .brandText .contentItem h3 { font-size: 18px; }
+  .brandText .contentItem p { font-size: 16px; }
+  .divider { margin-top: 72px; }
+  .ipadComposite { min-height: 0; }
+  .logisticsMedia { max-width: 520px; }
+
+  .resultsGrid { grid-template-columns: 1fr; margin-top: 36px; }
+  .resultsGrid .contentItem { min-height: 0; padding: 28px 24px; }
+  .phonesSection { overflow-x: auto; padding: 28px 20px; scrollbar-width: none; }
+  .phonesSection::-webkit-scrollbar { display: none; }
+  .phonesSection img { max-width: none; width: 760px; }
+
+  .testimonial { gap: 32px; grid-template-columns: 1fr; margin: 56px 20px 0; min-height: 0; padding: 56px 28px; text-align: center; }
+  .quoteArt { height: 100%; left: 0; object-fit: cover; top: 0; width: 100%; }
+  .client h2 { font-size: 30px; }
+  .client p { font-size: 18px; }
+  .testimonial blockquote { font-size: 21px; }
+
+  .cta { grid-template-columns: 1fr; margin: 56px 20px 0; min-height: 0; }
+  .ctaArt { height: auto; padding: 28px 28px 0; width: 100%; }
+  .ctaCopy { gap: 22px; padding: 28px 24px 44px; }
+  .ctaCopy h2 { font-size: 32px; line-height: 1.2; }
+  .ctaCopy a { font-size: 17px; padding: 12px 24px; }
+}
+
+@media (max-width: 480px) {
+  .challengePhone { height: 430px; }
+  .phonesSection img { width: 690px; }
+}

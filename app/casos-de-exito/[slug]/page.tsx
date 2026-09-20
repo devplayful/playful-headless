@@ -13,6 +13,7 @@ import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
+import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
 
 
 
@@ -79,6 +80,12 @@ export default async function SuccessStoryPage({
     notFound();
   }
 
+  // This case study is intentionally self-contained so its Figma-faithful
+  // layout and media do not depend on the legacy WordPress field structure.
+  if (slug === 'soytechno-ecommerce-venezuela') {
+    return <SoyTechnoCaseStudy />;
+  }
+
   const story = await getSuccessStoryBySlug(slug);
 
   if (!story) {
@@ -88,7 +95,7 @@ export default async function SuccessStoryPage({
   // SoyTechno template detection
   const isSoyTechno = story.acf?.template === "soytechno_extended";
   const st = story.acf?.soytechno;
-  
+
   // Debug logs
   console.log('=== SOYTECHNO DEBUG ===');
   console.log('isSoyTechno:', isSoyTechno);
