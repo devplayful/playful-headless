@@ -40,3 +40,19 @@ test('SoyTechno detail renders the literal Figma body, not Jumex or CIMA', () =>
   assert.doesNotMatch(figma, /de comprar tech por WhatsApp/);
   assert.doesNotMatch(body, /SoyTechnoSectionA/);
 });
+
+test('SoyTechno boards stay visible below lg and keep hero title in flow', () => {
+  assert.doesNotMatch(body, /hidden lg:block/);
+  assert.doesNotMatch(body, /hidden lg:flex/);
+  assert.match(body, /container-type:inline-size/);
+  assert.match(body, /<h1>\{FIGMA\.heroTitle\}<\/h1>/);
+  assert.match(body, /FIGMA\.heroTitle/);
+  assert.doesNotMatch(body, /x=\{-349\}/);
+  assert.match(body, /mobile-screen-04\.png/);
+  assert.match(body, /whitespace-nowrap/);
+  assert.match(body, /para el nivel de un Web App\?/);
+  assert.match(body, /section-c-ipad\.png/);
+  assert.doesNotMatch(body, /soytechno-section-c[\s\S]{0,400}giffycanvas-01/);
+  assert.match(body, /rectangle-147-catalog\.png/);
+  assert.match(body, /scroll-mt-\[168px\]/);
+});
