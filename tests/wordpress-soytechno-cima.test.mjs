@@ -41,18 +41,40 @@ test('SoyTechno detail renders the literal Figma body, not Jumex or CIMA', () =>
   assert.doesNotMatch(body, /SoyTechnoSectionA/);
 });
 
-test('SoyTechno boards stay visible below lg and keep hero title in flow', () => {
-  assert.doesNotMatch(body, /hidden lg:block/);
-  assert.doesNotMatch(body, /hidden lg:flex/);
-  assert.match(body, /container-type:inline-size/);
-  assert.match(body, /<h1>\{FIGMA\.heroTitle\}<\/h1>/);
-  assert.match(body, /FIGMA\.heroTitle/);
+test('SoyTechno is mobile-first with a desktop Figma lock from lg up', () => {
+  assert.match(body, /SoyTechnoMobile/);
+  assert.match(body, /className="lg:hidden"/);
+  assert.match(body, /className="hidden lg:block"/);
+  assert.match(body, /height=\{656\}/);
+  assert.match(body, /height=\{1196\}/);
+  assert.match(body, /height=\{1400\}/);
   assert.doesNotMatch(body, /x=\{-349\}/);
   assert.match(body, /mobile-screen-04\.png/);
-  assert.match(body, /whitespace-nowrap/);
-  assert.match(body, /para el nivel de un Web App\?/);
   assert.match(body, /section-c-ipad\.png/);
   assert.doesNotMatch(body, /soytechno-section-c[\s\S]{0,400}giffycanvas-01/);
   assert.match(body, /rectangle-147-catalog\.png/);
-  assert.match(body, /scroll-mt-\[168px\]/);
+});
+
+test('SoyTechno mobile stack covers the Figma narrative', () => {
+  const mobile = readFileSync(
+    new URL('../components/soytechno/SoyTechnoMobile.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(mobile, /id="soytechno-m-hero"/);
+  assert.match(mobile, /<h1 className=/);
+  assert.match(mobile, /id="soytechno-m-desafio"/);
+  assert.match(mobile, /id="soytechno-m-a"/);
+  assert.match(mobile, /id="soytechno-m-b"/);
+  assert.match(mobile, /id="soytechno-m-c"/);
+  assert.match(mobile, /id="soytechno-m-cashea"/);
+  assert.match(mobile, /id="soytechno-m-wizard"/);
+  assert.match(mobile, /id="soytechno-m-logistics"/);
+  assert.match(mobile, /id="soytechno-m-results"/);
+  assert.match(mobile, /id="soytechno-m-phones"/);
+  assert.match(mobile, /id="soytechno-m-testimonial"/);
+  assert.match(mobile, /id="soytechno-m-cta"/);
+  assert.match(mobile, /snap-x/);
+  assert.match(mobile, /mobile-screen-04\.png/);
+  assert.match(mobile, /min-h-\[48px\]/);
+  assert.doesNotMatch(mobile, /100cqw/);
 });

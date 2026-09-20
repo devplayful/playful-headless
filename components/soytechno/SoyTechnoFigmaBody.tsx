@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FIGMA } from '@/utils/soytechno-figma-copy';
+import SoyTechnoMobile from '@/components/soytechno/SoyTechnoMobile';
 
 const A = '/images/casos/soytechno';
 
@@ -215,7 +216,7 @@ function ChromaCard({
 
 export default function SoyTechnoFigmaBody() {
   return (
-    <div className="bg-[#FEF7FF] text-[#4A4453]">
+    <div className="bg-[#FEF7FF] text-[#4A4453] overflow-x-hidden">
       <div className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-10">
         <nav aria-label="Breadcrumb" className="font-sans text-[14px] text-[#4A4453]/70 mb-10">
           <a href="/" className="hover:underline">
@@ -228,22 +229,22 @@ export default function SoyTechnoFigmaBody() {
         </nav>
       </div>
 
-      {/* 1. Hero — h1 + leads always in flow; 1200×656 lavender card scales, never hides */}
+      <div className="lg:hidden">
+        <SoyTechnoMobile />
+      </div>
+
+      <div className="hidden lg:block">
+      {/* 1. Hero — 1200×656 lavender card; lock from lg up */}
       <section className="max-w-[1200px] mx-auto px-5 lg:px-0">
-        <div className="sr-only">
-          <h1>{FIGMA.heroTitle}</h1>
-          <p className="font-sans text-[18px] leading-[1.5] mb-4">{FIGMA.heroP1}</p>
-          <p className="font-sans text-[18px] leading-[1.5]">{FIGMA.heroP2}</p>
-        </div>
         <Board id="soytechno-hero" height={656} className="bg-[#EADDFF] rounded-[36px]">
           <Abs x={80} y={88} w={560}>
-            <p className="font-paytone text-[47px] leading-[1.2] text-[#4A4453] mb-10" aria-hidden="true">
+            <h1 className="font-paytone text-[47px] leading-[1.2] text-[#4A4453] mb-10">
               {FIGMA.heroTitle}
-            </p>
-            <p className="font-sans text-[18px] leading-[1.5] mb-6" aria-hidden="true">
+            </h1>
+            <p className="font-sans text-[18px] leading-[1.5] mb-6">
               {FIGMA.heroP1}
             </p>
-            <p className="font-sans text-[18px] leading-[1.5]" aria-hidden="true">
+            <p className="font-sans text-[18px] leading-[1.5]">
               {FIGMA.heroP2}
             </p>
           </Abs>
@@ -566,6 +567,7 @@ export default function SoyTechnoFigmaBody() {
           </Abs>
         </Board>
       </section>
+      </div>
     </div>
   );
 }
