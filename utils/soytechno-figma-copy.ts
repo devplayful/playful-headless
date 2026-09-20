@@ -172,6 +172,7 @@ export const FIGMA = {
     },
   ],
 
+  // 3× crop of José’s PNG (s14) + tesseract spa: ending “va el proyecto.” is readable.
   testimonialQuote:
     'No tenemos que estar detrás de ustedes para que nos den respuesta o para nosotros poder ver cómo va el proyecto.',
   testimonialName: 'Eva Luciani',
