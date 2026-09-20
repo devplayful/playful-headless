@@ -7,14 +7,13 @@
  */
 
 export const SOYTECHNO_SEO = {
-  title: 'SoyTechno: el eCommerce que entendió cómo compra Venezuela',
+  title: 'SOYTECHNO: Transformación 100% Centrada en el Usuario',
   description:
-    'Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra el mercado fuera del chat informal.',
+    'SOYTECHNO necesitaba transformar su presencia digital en una plataforma de alto rendimiento. El desafío no era solo vender, sino crear una experiencia de E-commerce con la funcionalidad y la robustez de una aplicación.',
 };
 
-/** Visible H1. Same string as the document title. */
-export const SOYTECHNO_H1 =
-  'SoyTechno: el eCommerce que entendió cómo compra Venezuela';
+/** Visible H1 from Figma node 3798:11672. */
+export const SOYTECHNO_H1 = 'SOYTECHNO: Transformación 100% Centrada en el Usuario';
 
 export const SOYTECHNO_CTA = {
   headline:

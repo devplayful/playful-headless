@@ -15,6 +15,7 @@ import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoAddons from './SoyTechnoAddons';
 import { isSoyTechnoCaseStudySlug } from '@/utils/soytechno-case-study';
+import SoyTechnoFigmaBody from '@/components/soytechno/SoyTechnoFigmaBody';
 
 
 
@@ -79,6 +80,10 @@ export default async function SuccessStoryPage({
 
   if (!slug) {
     notFound();
+  }
+
+  if (isSoyTechnoCaseStudySlug(slug)) {
+    return <SoyTechnoFigmaBody />;
   }
 
   const story = await getSuccessStoryBySlug(slug);
