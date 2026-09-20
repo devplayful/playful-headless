@@ -849,3 +849,45 @@ body.bg-other-page {
 .blog-card:hover {
   animation: blog-card-hover 0.3s ease forwards;
 }
+
+/* SoyTechno plan B — compact mobile header, hidden snap scrollbar, chat floater */
+@media (max-width: 1023px) {
+  body.soytechno-case .playful-header {
+    padding: 8px 12px 0;
+    max-height: 80px;
+  }
+  body.soytechno-case .playful-header nav {
+    padding: 8px 12px;
+    max-height: 72px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.soytechno-snap-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.soytechno-snap-row::-webkit-scrollbar {
+  display: none;
+}
+
+body.soytechno-case #lc_text-widget,
+body.soytechno-case .lc_text-widget,
+body.soytechno-case [id*="lc_text-widget"],
+body.soytechno-case [class*="lc_text-widget"] {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  right: 16px !important;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  left: auto !important;
+}
+
+body.soytechno-case [class*="lc_text-widget"] [class*="bubble"],
+body.soytechno-case [class*="lc_text-widget"] [class*="message"],
+body.soytechno-case [class*="lc_text-widget"] [class*="intro"],
+body.soytechno-case .lc_text-widget--message {
+  display: none !important;
+}

@@ -108,6 +108,22 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | 3 | `1b63fb8` | stack mobile legible | PASS (ese criterio) |
 | 4 | `1b63fb8` + crops José | pixel + Paytone h3 + mobile compuesto | FAIL (01–25) |
 | 5 | `4be3dcd` | re-QA 01–25 vs crops + live | PASS (14 residual) |
-| **6** | **`8aa553a`** | FAIL-14 tight vs 2×2 | **PASS** (25/25) |
+| 6 | `8aa553a` | FAIL-14 tight vs 2×2 | **PASS** (25/25) |
+| 7 | plan B grouped 2× | HTML copy + export shell; Block B HTML grid | preview only |
 
 No merge.
+
+---
+
+## Plan B (José) — grouped 2× exports
+
+Stop rebuilding overlapping collages in HTML. Copy stays in HTML. Graphics:
+
+| Slot | Expected drop-in | Temporary fallback |
+|---|---|---|
+| Hero right art | `soytechno-hero-art@2x.png\|.webp` | `lifestyle-f.jpg` |
+| Desafío visual | `soytechno-desafio-art@2x.png\|.webp` | `rectangle-147-catalog.png` |
+| Logística banner+iMac | `soytechno-logistica-art@2x.png\|.webp` | `rectangle-148.png` |
+| Phones strip | `soytechno-phones-strip@2x.png\|.webp` | clipped row / 78vw snap carousel |
+
+Block B is HTML (`1196` / `p-40` / `350 / 350 / 1fr` / icons `120` / phone `340`). Overlay-at-1440 of hero/desafío/logística/phones **waits on Diseño exports**.

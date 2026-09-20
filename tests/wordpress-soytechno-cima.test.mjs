@@ -18,6 +18,10 @@ const body = readFileSync(
   new URL('../components/soytechno/SoyTechnoFigmaBody.tsx', import.meta.url),
   'utf8',
 );
+const grouped = readFileSync(
+  new URL('../utils/soytechno-grouped-art.ts', import.meta.url),
+  'utf8',
+);
 const sitemap = readFileSync(
   new URL('../utils/apex-sitemap.ts', import.meta.url),
   'utf8',
@@ -41,24 +45,33 @@ test('SoyTechno detail renders the literal Figma body, not Jumex or CIMA', () =>
   assert.doesNotMatch(body, /SoyTechnoSectionA/);
 });
 
-test('SoyTechno is mobile-first with a desktop Figma lock from lg up', () => {
+test('SoyTechno wires grouped 2x exports and an HTML Block B grid', () => {
   assert.match(body, /SoyTechnoMobile/);
   assert.match(body, /className="lg:hidden"/);
   assert.match(body, /className="hidden lg:block"/);
-  assert.match(body, /height=\{656\}/);
-  assert.match(body, /height=\{1152\}/);
-  assert.doesNotMatch(body, /pt-\[64px\]/);
-  assert.match(body, /height=\{1400\}/);
-  assert.doesNotMatch(body, /x=\{-349\}/);
-  assert.match(body, /mobile-screen-04\.png/);
-  assert.match(body, /section-c-ipad\.png/);
-  assert.doesNotMatch(body, /soytechno-section-c[\s\S]{0,400}giffycanvas-01/);
-  assert.match(body, /rectangle-147-catalog\.png/);
+  assert.match(grouped, /soytechno-hero-art@2x/);
+  assert.match(grouped, /soytechno-desafio-art@2x/);
+  assert.match(grouped, /soytechno-logistica-art@2x/);
+  assert.match(grouped, /soytechno-phones-strip@2x/);
+  assert.match(body, /slot="hero"/);
+  assert.match(body, /slot="desafio"/);
+  assert.match(body, /slot="logistica"/);
+  assert.match(body, /slot="phones"/);
+  assert.match(body, /object-contain/);
+  assert.match(body, /\[grid-template-columns:minmax\(0,350px\)_minmax\(0,350px\)_minmax\(0,1fr\)\]/);
+  assert.match(body, /w-\[120px\] h-\[120px\]/);
+  assert.match(body, /w-\[340px\]/);
+  assert.match(body, /max-w-\[1196px\]/);
   assert.match(body, /font-paytone-lock/);
   assert.match(body, /section-b-phone\.png/);
   assert.match(body, /#440099/);
   assert.match(body, /bg-white rounded-\[28px\]/);
+  assert.match(body, /section-c-ipad\.png/);
+  assert.doesNotMatch(body, /soytechno-section-c[\s\S]{0,400}giffycanvas-01/);
   assert.doesNotMatch(body, /<h3 className="font-sans font-bold/);
+  assert.doesNotMatch(body, /function Abs\(/);
+  assert.doesNotMatch(body, /100cqw/);
+  assert.doesNotMatch(body, /pt-\[64px\]/);
 });
 
 test('SoyTechno mobile stack covers the Figma narrative', () => {
@@ -68,6 +81,9 @@ test('SoyTechno mobile stack covers the Figma narrative', () => {
   );
   assert.match(mobile, /id="soytechno-m-hero"/);
   assert.match(mobile, /<h1 className=/);
+  assert.match(mobile, /text-\[32px\] leading-\[38px\]/);
+  assert.match(mobile, /text-\[28px\] leading-\[34px\]/);
+  assert.match(mobile, /scroll-mt-\[88px\]/);
   assert.match(mobile, /id="soytechno-m-desafio"/);
   assert.match(mobile, /id="soytechno-m-a"/);
   assert.match(mobile, /id="soytechno-m-b"/);
@@ -80,6 +96,7 @@ test('SoyTechno mobile stack covers the Figma narrative', () => {
   assert.match(mobile, /id="soytechno-m-testimonial"/);
   assert.match(mobile, /id="soytechno-m-cta"/);
   assert.match(mobile, /snap-x/);
+  assert.match(mobile, /w-\[78vw\]/);
   assert.match(mobile, /mobile-screen-04\.png/);
   assert.match(mobile, /min-h-\[48px\]/);
   assert.doesNotMatch(mobile, /100cqw/);
@@ -87,6 +104,10 @@ test('SoyTechno mobile stack covers the Figma narrative', () => {
   assert.match(mobile, /grid-cols-2/);
   assert.match(mobile, /bg-white rounded-\[24px\]/);
   assert.match(mobile, /section-b-phone\.png/);
+  assert.match(mobile, /slot="hero"/);
+  assert.match(mobile, /slot="desafio"/);
+  assert.match(mobile, /slot="logistica"/);
   assert.doesNotMatch(mobile, /<h3 className="font-sans font-bold/);
   assert.doesNotMatch(mobile, /space-y-12 max-w-\[720px\]/);
+  assert.doesNotMatch(mobile, /left-\[8%\] top-\[32%\]/);
 });

@@ -1,94 +1,13 @@
 import Image from 'next/image';
 import { FIGMA } from '@/utils/soytechno-figma-copy';
 import SoyTechnoMobile from '@/components/soytechno/SoyTechnoMobile';
+import SoyTechnoGroupedArt from '@/components/soytechno/SoyTechnoGroupedArt';
+import SoyTechnoChrome from '@/components/soytechno/SoyTechnoChrome';
 
 const A = '/images/casos/soytechno';
 
 function img(file: string) {
   return `${A}/${file}`;
-}
-
-function Asset({
-  file,
-  alt,
-  className,
-  sizes,
-}: {
-  file: string;
-  alt: string;
-  className?: string;
-  sizes?: string;
-}) {
-  const src = img(file);
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      fill
-      sizes={sizes || '50vw'}
-      className={className || 'object-contain'}
-      unoptimized={src.endsWith('.gif')}
-    />
-  );
-}
-
-function Abs({
-  x,
-  y,
-  w,
-  h,
-  className,
-  children,
-}: {
-  x: number;
-  y: number;
-  w: number;
-  h?: number;
-  className?: string;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className={`absolute ${className || ''}`} style={{ left: x, top: y, width: w, height: h }}>
-      {children}
-    </div>
-  );
-}
-
-/**
- * Locked Figma composition that stays pixel-identical at 1200 and
- * scales with container query units below that. Never display:none.
- */
-function Board({
-  id,
-  width = 1200,
-  height,
-  className,
-  children,
-}: {
-  id?: string;
-  width?: number;
-  height: number;
-  className?: string;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div
-      id={id}
-      className="relative mx-auto w-full [container-type:inline-size] scroll-mt-[168px]"
-      style={{ maxWidth: width, aspectRatio: `${width} / ${height}` }}
-    >
-      <div
-        className={`absolute left-0 top-0 origin-top-left ${className || ''}`}
-        style={{
-          width,
-          height,
-          transform: `scale(calc(100cqw / ${width}))`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -107,12 +26,11 @@ function Lead({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Figma chapter bar: 1200 × 128, radius 36, 40px vertical padding. Not a pill. */
 function ChapterBar({ children }: { children: React.ReactNode }) {
   return (
-    <Board height={128} className="flex items-center justify-center bg-[#EADDFF] rounded-[36px] px-10">
-      <h2 className="font-paytone-lock text-[32px] leading-[1.2] text-[#4A4453] text-center">{children}</h2>
-    </Board>
+    <div className="w-full rounded-[36px] bg-[#EADDFF] px-10 py-10 text-center scroll-mt-[168px]">
+      <h2 className="font-paytone-lock text-[32px] leading-[1.2] text-[#4A4453]">{children}</h2>
+    </div>
   );
 }
 
@@ -140,85 +58,53 @@ function Feature({
   );
 }
 
-function WhitePhoneIcon() {
+function BrandMarks({ third }: { third: 'circuit' | 'people' }) {
   return (
-    <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm" aria-hidden>
-      <rect x="18" y="6" width="28" height="52" rx="6" fill="white" />
-      <rect x="28" y="10" width="8" height="3" rx="1.5" fill="#00193F" />
-      <circle cx="32" cy="52" r="2.2" fill="#00193F" />
-    </svg>
+    <div className="flex items-center justify-center gap-10 mt-10 mb-8">
+      <img src={img('lifestyle-i.png')} alt="100% originales" className="w-24 h-24 object-contain" />
+      <img src={img('lifestyle-1.png')} alt="" className="w-24 h-24 object-contain" />
+      {third === 'circuit' ? (
+        <div className="w-24 h-24 rounded-full bg-[#0063FC] overflow-hidden p-3">
+          <img src={img('lifestyle-f-alt.png')} alt="SoyTechno" className="w-full h-full object-contain" />
+        </div>
+      ) : (
+        <img
+          src={img('lifestyle-f.jpg')}
+          alt="SoyTechno"
+          className="w-24 h-24 rounded-full object-cover object-[60%_30%]"
+        />
+      )}
+    </div>
   );
 }
 
 function IPhoneFrame({ screen, alt }: { screen: string; alt: string }) {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full aspect-[276/577]">
       <div className="absolute inset-x-[3.6%] top-[1.8%] bottom-[1.8%] overflow-hidden rounded-[18%/9%] bg-black">
-        <Asset file={screen} alt={alt} className="object-cover object-top" />
+        <img src={img(screen)} alt={alt} className="w-full h-full object-cover object-top" />
       </div>
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        <Asset file="iphone-frame-02.png" alt="" className="object-contain" />
-      </div>
+      <img src={img('iphone-frame-02.png')} alt="" className="absolute inset-0 w-full h-full object-contain pointer-events-none" />
     </div>
   );
 }
 
-function IMacComposite() {
-  return (
-    <div className="relative w-full h-full">
-      <Asset file="rectangle-148.png" alt="" className="object-contain" />
-      <div className="absolute left-[5%] top-[3.2%] w-[90%] h-[46%] overflow-hidden rounded-sm">
-        <Image src={img('rectangle-146.png')} alt="Rastreo MRW" fill className="object-cover object-top" sizes="40vw" />
-      </div>
-    </div>
-  );
-}
+const PHONES = [
+  { file: 'mobile-screen-04.png', alt: 'Selección de moneda SoyTechno' },
+  { file: 'mobile-screen-01.png', alt: 'Pantalla móvil SoyTechno' },
+  { file: 'mobile-screen-02.png', alt: 'Pantalla móvil SoyTechno' },
+  { file: 'mobile-screen-03.png', alt: 'Pantalla móvil SoyTechno' },
+] as const;
 
-function BrandMarks({ third }: { third: 'circuit' | 'people' }) {
+function DesktopPhonesFallback() {
   return (
-    <div className="mt-10 mb-8">
-    <Board width={448} height={112}>
-      <Abs x={0} y={8} w={96} h={96}>
-        <Asset file="lifestyle-i.png" alt="100% originales" />
-      </Abs>
-      <Abs x={176} y={8} w={96} h={96}>
-        <Asset file="lifestyle-1.png" alt="" />
-      </Abs>
-      <Abs x={352} y={8} w={96} h={96}>
-        {third === 'circuit' ? (
-          <div className="relative w-full h-full rounded-full bg-[#0063FC] overflow-hidden">
-            <Asset file="lifestyle-f-alt.png" alt="SoyTechno" className="object-contain p-3" />
+    <div className="overflow-hidden">
+      <div className="flex gap-8 -ml-[18%]">
+        {PHONES.map((phone) => (
+          <div key={phone.file} className="w-[276px] shrink-0">
+            <IPhoneFrame screen={phone.file} alt={phone.alt} />
           </div>
-        ) : (
-          <div className="relative w-full h-full rounded-full overflow-hidden">
-            <Asset file="lifestyle-f.jpg" alt="SoyTechno" className="object-cover object-[60%_30%]" />
-          </div>
-        )}
-      </Abs>
-    </Board>
-    </div>
-  );
-}
-
-function ChromaCard({
-  bg,
-  ink,
-  name,
-  meta,
-  icon,
-}: {
-  bg: string;
-  ink: string;
-  name: string;
-  meta: string;
-  icon: string;
-}) {
-  return (
-    <div className="relative w-full h-full rounded-[20px] overflow-hidden px-8 pt-8" style={{ backgroundColor: bg, color: ink }}>
-      <p className="font-sans font-bold text-[18px] leading-[1.25]">{name}</p>
-      <p className="font-sans font-bold text-[18px] leading-[1.35] whitespace-pre-line mt-2">{meta}</p>
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-6 w-[120px] h-[120px]">
-        <img src={img(icon)} alt="" className="w-full h-full object-contain" />
+        ))}
       </div>
     </div>
   );
@@ -227,6 +113,7 @@ function ChromaCard({
 export default function SoyTechnoFigmaBody() {
   return (
     <div className="bg-[#FEF7FF] text-[#4A4453] overflow-x-hidden">
+      <SoyTechnoChrome />
       <div className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-10">
         <nav aria-label="Breadcrumb" className="font-sans text-[14px] text-[#4A4453]/70 mb-10">
           <a href="/" className="hover:underline">
@@ -244,207 +131,177 @@ export default function SoyTechnoFigmaBody() {
       </div>
 
       <div className="hidden lg:block">
-      {/* 1. Hero — lavender card in purple patterned frame; tight collage */}
-      <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-50"
-          style={{
-            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.4) 1.2px, transparent 1.6px), url(${img('background-texture.png')})`,
-            backgroundSize: '22px 22px, cover',
-          }}
-        />
-        <Board id="soytechno-hero" height={656} className="bg-[#EADDFF] rounded-[36px]">
-          <Abs x={80} y={88} w={560}>
-            <h1 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.02em] text-[#4A4453] mb-10">
-              {FIGMA.heroTitle}
-            </h1>
-            <p className="font-sans text-[18px] leading-[1.5] mb-6">
-              {FIGMA.heroP1}
-            </p>
-            <p className="font-sans text-[18px] leading-[1.5]">
-              {FIGMA.heroP2}
-            </p>
-          </Abs>
-          <Abs x={680} y={48} w={480} h={560}>
-            <div className="absolute left-[8%] top-[30%] w-[80%] h-[46%] rounded-[20px] overflow-hidden bg-[#00193F] z-10">
-              <Asset file="circuito.png" alt="" className="object-cover opacity-40 invert" />
-              <div className="absolute inset-0 flex items-center justify-center px-8">
-                <Image
-                  src={img('soytechno-logo-white.png')}
-                  alt="SoyTechno"
-                  width={280}
-                  height={50}
-                  className="object-contain w-[88%] h-auto"
-                />
+        {/* 1. Hero — HTML copy + one grouped image */}
+        <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-50"
+            style={{
+              backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.4) 1.2px, transparent 1.6px), url(${img('background-texture.png')})`,
+              backgroundSize: '22px 22px, cover',
+            }}
+          />
+          <div
+            id="soytechno-hero"
+            className="relative mx-auto max-w-[1200px] rounded-[36px] bg-[#EADDFF] px-12 py-14 scroll-mt-[168px]"
+          >
+            <div className="grid grid-cols-2 gap-12 items-center">
+              <div>
+                <h1 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.02em] text-[#4A4453] mb-10">
+                  {FIGMA.heroTitle}
+                </h1>
+                <p className="font-sans text-[18px] leading-[1.5] mb-6">{FIGMA.heroP1}</p>
+                <p className="font-sans text-[18px] leading-[1.5]">{FIGMA.heroP2}</p>
               </div>
+              <SoyTechnoGroupedArt slot="hero" alt="Collage SoyTechno" />
             </div>
-            <div className="absolute left-[40%] top-[10%] w-[196px] h-[196px] rounded-full overflow-hidden ring-4 ring-white z-20">
-              <Asset file="lifestyle-f.jpg" alt="SoyTechno" className="object-cover object-[55%_28%]" />
-            </div>
-            <div className="absolute left-[36%] top-[2%] w-[72px] h-[72px] z-30">
-              <Asset file="cashea-badge.png" alt="Cashea" />
-            </div>
-            <div className="absolute left-[74%] top-[22%] w-[58px] h-[58px] z-30">
-              <Asset file="delivery-icon-3.png" alt="" />
-            </div>
-            <div className="absolute left-[4%] top-[58%] w-[84px] h-[84px] z-30">
-              <WhitePhoneIcon />
-            </div>
-            <div className="absolute left-[56%] top-[66%] w-[84px] h-[84px] z-30">
-              <Asset file="lifestyle-1.png" alt="" />
-            </div>
-            <div className="absolute left-[74%] top-[68%] w-[76px] h-[76px] z-30">
-              <Asset file="lifestyle-i.png" alt="Productos 100% originales" />
-            </div>
-          </Abs>
-        </Board>
-      </section>
+          </div>
+        </section>
 
-      {/* 2. Desafío — ONE 1200×1196 lavender 2×2 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <SectionTitle>{FIGMA.desafioTitle}</SectionTitle>
-        <Lead>{FIGMA.desafioLead}</Lead>
-        <BrandMarks third="circuit" />
-        <Board id="soytechno-desafio" height={1152} className="bg-[#EADDFF] rounded-[36px]">
-          <Abs x={48} y={48} w={540} h={620} className="bg-white rounded-[28px] px-10 py-10">
-            <div className="space-y-8">
+        {/* 2. Desafío — HTML text card + one grouped visual */}
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <SectionTitle>{FIGMA.desafioTitle}</SectionTitle>
+          <Lead>{FIGMA.desafioLead}</Lead>
+          <BrandMarks third="circuit" />
+          <div
+            id="soytechno-desafio"
+            className="grid grid-cols-2 gap-8 items-start bg-[#EADDFF] rounded-[36px] p-8 scroll-mt-[168px]"
+          >
+            <div className="bg-white rounded-[28px] px-10 py-10 space-y-8">
               {FIGMA.desafioItems.map((item) => (
                 <Feature key={item.title} title={item.title} body={item.body} />
               ))}
             </div>
-          </Abs>
-          <Abs x={640} y={48} w={512} h={176} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
-            <Asset file="circuito.png" alt="" className="object-cover opacity-30 invert" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-[132px] h-[132px] rounded-full overflow-hidden bg-[#00193F]">
-                <Asset file="website-capture-01.png" alt="SoyTechno" />
-              </div>
-            </div>
-          </Abs>
-          <Abs x={760} y={360} w={250} h={458} className="z-20">
-            <IPhoneFrame screen="iphone-frame-01.png" alt="Catálogo móvil SoyTechno" />
-          </Abs>
-          <Abs x={48} y={690} w={640} h={460} className="bg-[#FFF4C4] rounded-[28px] px-5 py-5">
-            <Asset file="rectangle-147-catalog.png" alt="Catálogo SoyTechno" />
-          </Abs>
-          <Abs x={720} y={790} w={432} h={360} className="rounded-[28px] overflow-hidden bg-[#00193F]">
-            <Asset file="circuito.png" alt="" className="object-cover opacity-40 invert" />
-            <div className="absolute inset-0 flex items-end justify-center gap-3 p-5">
-              <div className="relative w-[26%] h-[70%]">
-                <Asset file="electrodomesticos-01.png" alt="" />
-              </div>
-              <div className="relative w-[42%] h-[80%]">
-                <Asset file="electrodomesticos-02.png" alt="" />
-              </div>
-              <div className="relative w-[26%] h-[70%]">
-                <Asset file="electrodomesticos-03.png" alt="" />
-              </div>
-            </div>
-          </Abs>
-        </Board>
-        <div className="pt-8 scroll-mt-[168px]">
-          <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
-          <Lead>{FIGMA.checkoutLead}</Lead>
-          <BrandMarks third="people" />
-        </div>
-      </section>
+            <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
+          </div>
+          <div className="pt-8 scroll-mt-[168px]">
+            <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
+            <Lead>{FIGMA.checkoutLead}</Lead>
+            <BrandMarks third="people" />
+          </div>
+        </section>
 
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
-        <SectionTitle>{FIGMA.uxTitle}</SectionTitle>
-        <Lead>{FIGMA.uxLead}</Lead>
-      </section>
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
+          <SectionTitle>{FIGMA.uxTitle}</SectionTitle>
+          <Lead>{FIGMA.uxLead}</Lead>
+        </section>
 
-      {/* 4. A — iPad 650×892 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.archPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-section-a" height={892}>
-            <Abs x={0} y={0} w={650} h={892}>
-              <Asset file="giffycanvas-01.gif" alt="Ficha de producto" />
-            </Abs>
-            <Abs x={690} y={40} w={510}>
-              <div className="space-y-10">
-                {FIGMA.archItems.map((item) => (
-                  <Feature key={item.title} title={item.title} body={item.body} />
+        {/* A — single device image + HTML */}
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.archPill}</ChapterBar>
+          <div id="soytechno-section-a" className="mt-16 grid grid-cols-2 gap-10 items-start">
+            <img
+              src={img('giffycanvas-01.gif')}
+              alt="Ficha de producto"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
+            <div className="space-y-10">
+              {FIGMA.archItems.map((item) => (
+                <Feature key={item.title} title={item.title} body={item.body} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* B — HTML grid 350 / 350 / 1fr, not a raster collage */}
+        <section className="max-w-[1196px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.visualPill}</ChapterBar>
+          <div
+            id="soytechno-section-b"
+            className="mt-16 w-full max-w-[1196px] mx-auto rounded-[20px] bg-[#EADDFF] p-10"
+          >
+            <div className="grid gap-9 [grid-template-columns:minmax(0,350px)_minmax(0,350px)_minmax(0,1fr)]">
+              <div className="flex flex-col gap-9">
+                {FIGMA.swatches.map((swatch) => (
+                  <div
+                    key={swatch.name}
+                    className="relative rounded-[20px] overflow-hidden p-9 min-h-[280px]"
+                    style={{ backgroundColor: swatch.card, color: swatch.ink }}
+                  >
+                    <p className="font-sans font-bold text-[18px] leading-[1.25]">{swatch.name}</p>
+                    <p className="font-sans font-bold text-[18px] leading-[1.35] whitespace-pre-line mt-2">
+                      {swatch.meta}
+                    </p>
+                    <img
+                      src={img(swatch.icon)}
+                      alt=""
+                      className="w-[120px] h-[120px] object-contain mt-6"
+                    />
+                  </div>
                 ))}
               </div>
-            </Abs>
-          </Board>
-        </div>
-      </section>
-
-      {/* 5. B — 1200×1400, cards 336×408, phone 353×856 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.visualPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-section-b" height={1400} className="bg-[#EADDFF] rounded-[36px]">
-            {FIGMA.swatches.map((swatch, i) => (
-              <Abs key={swatch.name} x={40} y={48 + i * 300} w={300} h={280}>
-                <ChromaCard bg={swatch.card} ink={swatch.ink} name={swatch.name} meta={swatch.meta} icon={swatch.icon} />
-              </Abs>
-            ))}
-            <Abs x={360} y={48} w={340} h={624}>
-              <Asset file="section-b-phone.png" alt="LG SoyTechno / Zona LG" />
-            </Abs>
-            <Abs x={360} y={648} w={300} h={280} className="rounded-[20px] overflow-hidden bg-[#0063FC]">
-              <Asset file="circuito.png" alt="Circuito" className="object-cover opacity-40 invert" />
-              <span className="absolute left-6 top-5 font-paytone-lock text-white text-[18px]">Circuito</span>
-            </Abs>
-            <Abs x={720} y={48} w={440} h={160} className="rounded-[20px] overflow-hidden bg-[#003896]">
-              <Asset file="circuito.png" alt="" className="object-cover opacity-35 invert" />
-              <div className="absolute inset-0 flex items-center justify-center px-8">
-                <Image
-                  src={img('soytechno-logo-white.png')}
-                  alt="SoyTechno"
-                  width={260}
-                  height={46}
-                  className="object-contain w-[82%] h-auto"
+              <div className="flex flex-col gap-9">
+                <img
+                  src={img('section-b-phone.png')}
+                  alt="LG SoyTechno / Zona LG"
+                  width={340}
+                  height={644}
+                  className="w-[340px] max-w-full h-auto object-contain"
                 />
+                <div className="relative rounded-[20px] overflow-hidden bg-[#0063FC] min-h-[200px]">
+                  <img
+                    src={img('circuito.png')}
+                    alt="Circuito"
+                    className="absolute inset-0 w-full h-full object-cover opacity-40 invert"
+                  />
+                  <span className="relative z-10 block font-paytone-lock text-white text-[18px] p-6">
+                    Circuito
+                  </span>
+                </div>
               </div>
-            </Abs>
-            <Abs x={720} y={224} w={440} h={700}>
-              <div className="flex flex-col gap-8 h-full">
+              <div className="flex flex-col gap-8 min-w-0">
+                <div className="relative rounded-[20px] overflow-hidden bg-[#003896] min-h-[160px] flex items-center justify-center px-8">
+                  <img
+                    src={img('circuito.png')}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover opacity-35 invert"
+                  />
+                  <Image
+                    src={img('soytechno-logo-white.png')}
+                    alt="SoyTechno"
+                    width={260}
+                    height={46}
+                    className="relative z-10 object-contain w-[82%] h-auto"
+                  />
+                </div>
                 {FIGMA.visualItems.map((item) => (
                   <Feature key={item.title} title={item.title} body={item.body} />
                 ))}
               </div>
-            </Abs>
-          </Board>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
 
-      {/* 6. C — tablets still from Figma (not Section A GIF) */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.emptyPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-section-c" height={892}>
-            <Abs x={0} y={0} w={650} h={892}>
-              <Asset file="section-c-ipad.png" alt="Pantallas de categoría y estados de sistema" />
-            </Abs>
-            <Abs x={690} y={80} w={510}>
-              <div className="space-y-12">
-                {FIGMA.emptyItems.map((item) => (
-                  <Feature key={item.title} title={item.title} body={item.body} />
-                ))}
-              </div>
-            </Abs>
-          </Board>
-        </div>
-      </section>
+        {/* C — single device image + HTML */}
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.emptyPill}</ChapterBar>
+          <div id="soytechno-section-c" className="mt-16 grid grid-cols-2 gap-10 items-start">
+            <img
+              src={img('section-c-ipad.png')}
+              alt="Pantallas de categoría y estados de sistema"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
+            <div className="space-y-12">
+              {FIGMA.emptyItems.map((item) => (
+                <Feature key={item.title} title={item.title} body={item.body} />
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* 7. Separator + second Ingeniería */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <hr className="border-0 border-t border-[#D0C4DE] mb-[120px]" />
-        <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
-        <Lead>{FIGMA.checkoutLead}</Lead>
-      </section>
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <hr className="border-0 border-t border-[#D0C4DE] mb-[120px]" />
+          <SectionTitle>{FIGMA.checkoutTitle}</SectionTitle>
+          <Lead>{FIGMA.checkoutLead}</Lead>
+        </section>
 
-      {/* 8. Cashea — text 520 / GIF 620×850 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.casheaPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-cashea" height={900}>
-            <Abs x={0} y={20} w={520}>
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.casheaPill}</ChapterBar>
+          <div id="soytechno-cashea" className="mt-16 grid grid-cols-2 gap-10 items-start">
+            <div>
               <h3 className="font-paytone-lock text-[36px] leading-[1.2] text-[#4A4453] mb-8">{FIGMA.casheaTitle}</h3>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.casheaLead}</p>
               <div className="space-y-10">
@@ -452,42 +309,43 @@ export default function SoyTechnoFigmaBody() {
                   <Feature key={item.title} title={item.title} body={item.body} />
                 ))}
               </div>
-            </Abs>
-            <Abs x={560} y={0} w={640} h={878}>
-              <Asset file="giffycanvas-02.gif" alt="Integración Cashea" />
-            </Abs>
-          </Board>
-        </div>
-      </section>
+            </div>
+            <img
+              src={img('giffycanvas-02.gif')}
+              alt="Integración Cashea"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
+          </div>
+        </section>
 
-      {/* 8. Wizard — portrait screenshot so store block is visible */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.wizardPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-wizard" height={960}>
-            <Abs x={0} y={0} w={560} h={806} className="rounded-[28px] overflow-hidden bg-black p-[12px]">
-              <div className="relative w-full h-full overflow-hidden rounded-[18px] bg-white">
-                <Asset file="ipad-mockup-01.png" alt="Checkout wizard" className="object-contain object-top" />
-              </div>
-            </Abs>
-            <Abs x={600} y={20} w={580}>
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.wizardPill}</ChapterBar>
+          <div id="soytechno-wizard" className="mt-16 grid grid-cols-2 gap-10 items-start">
+            <img
+              src={img('ipad-mockup-01.png')}
+              alt="Checkout wizard"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain rounded-[18px]"
+            />
+            <div>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.wizardLead}</p>
               <div className="space-y-10">
                 {FIGMA.wizardItems.map((item) => (
                   <Feature key={item.title} title={item.title} body={item.body} />
                 ))}
               </div>
-            </Abs>
-          </Board>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
 
-      {/* 8. Logística — copy 520 / iMac 620×640 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <ChapterBar>{FIGMA.logisticsPill}</ChapterBar>
-        <div className="mt-16">
-          <Board id="soytechno-logistics" height={760}>
-            <Abs x={0} y={40} w={500}>
+        {/* Logística — HTML copy + one grouped banner/iMac image */}
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <ChapterBar>{FIGMA.logisticsPill}</ChapterBar>
+          <div id="soytechno-logistics" className="mt-16 grid grid-cols-2 gap-12 items-start">
+            <div>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.logisticsLead}</p>
               <div className="space-y-10">
                 {FIGMA.logisticsItems.map((item) => (
@@ -499,93 +357,83 @@ export default function SoyTechnoFigmaBody() {
                   />
                 ))}
               </div>
-            </Abs>
-            <Abs x={620} y={80} w={520} h={620}>
-              <Abs x={150} y={0} w={220} h={136} className="z-10 rounded-[12px] overflow-hidden bg-white shadow-md">
-                <Asset file="rectangle-144.jpg" alt="Envíos a nivel nacional" className="object-contain" />
-              </Abs>
-              <Abs x={40} y={200} w={440} h={396}>
-                <IMacComposite />
-              </Abs>
-            </Abs>
-          </Board>
-        </div>
-      </section>
+            </div>
+            <SoyTechnoGroupedArt slot="logistica" alt="Sistema logístico SoyTechno" />
+          </div>
+        </section>
 
-      {/* 9. Results — 384×380 cards */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[140px] scroll-mt-[168px]">
-        <SectionTitle>{FIGMA.resultsTitle}</SectionTitle>
-        <Lead>{FIGMA.resultsLead}</Lead>
-        <div className="mt-16">
-          <Board id="soytechno-results" height={380}>
-            {FIGMA.resultCards.map((card, i) => (
-              <Abs key={card.title} x={i * 408} y={0} w={384} h={380} className="bg-[#EADDFF] rounded-[36px] p-10">
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[140px] scroll-mt-[168px]">
+          <SectionTitle>{FIGMA.resultsTitle}</SectionTitle>
+          <Lead>{FIGMA.resultsLead}</Lead>
+          <div id="soytechno-results" className="mt-16 grid grid-cols-3 gap-6">
+            {FIGMA.resultCards.map((card) => (
+              <div key={card.title} className="bg-[#EADDFF] rounded-[36px] p-10">
                 <h3 className="font-paytone-lock text-[20px] leading-[1.3] text-[#4A4453] mb-5">{card.title}</h3>
                 <p className="font-sans text-[18px] leading-[1.5] text-[#4A4453]">{card.body}</p>
-              </Abs>
+              </div>
             ))}
-          </Board>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* 9. Phones — four readable frames including mobile-screen-04 */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <Board id="soytechno-phones" height={577}>
-          <Abs x={0} y={0} w={276} h={577}>
-            <IPhoneFrame screen="mobile-screen-04.png" alt="Selección de moneda SoyTechno" />
-          </Abs>
-          <Abs x={308} y={0} w={276} h={577}>
-            <IPhoneFrame screen="mobile-screen-01.png" alt="Pantalla móvil SoyTechno" />
-          </Abs>
-          <Abs x={616} y={0} w={276} h={577}>
-            <IPhoneFrame screen="mobile-screen-02.png" alt="Pantalla móvil SoyTechno" />
-          </Abs>
-          <Abs x={924} y={0} w={276} h={577}>
-            <IPhoneFrame screen="mobile-screen-03.png" alt="Pantalla móvil SoyTechno" />
-          </Abs>
-        </Board>
-      </section>
+        {/* Phones — Figma strip export, or clipped fallback (not 4 equal phones) */}
+        <section
+          id="soytechno-phones"
+          className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]"
+        >
+          <SoyTechnoGroupedArt
+            slot="phones"
+            alt="Galería de pantallas móviles SoyTechno"
+            fallback={<DesktopPhonesFallback />}
+          />
+        </section>
 
-      {/* 10. Testimonial — 1200×600, 120px padding */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
-        <Board id="soytechno-testimonial" height={600} className="bg-[#FFDAD6] rounded-[36px] overflow-hidden">
-          <img src={img('quote-background.svg')} alt="" className="absolute inset-0 w-full h-full object-contain pointer-events-none" />
-          <Abs x={120} y={120} w={220} h={360}>
-            <div className="relative w-[160px] h-[160px] rounded-full overflow-hidden mx-auto mb-8">
-              <Asset file="testimonial-avatar.png" alt={FIGMA.testimonialName} className="object-cover" />
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
+          <div
+            id="soytechno-testimonial"
+            className="bg-[#FFDAD6] rounded-[36px] overflow-hidden px-[80px] py-[80px] grid grid-cols-[220px_1fr] gap-12 items-center"
+          >
+            <div className="text-center">
+              <img
+                src={img('testimonial-avatar.png')}
+                alt={FIGMA.testimonialName}
+                className="w-[160px] h-[160px] rounded-full object-cover mx-auto mb-8"
+              />
+              <p className="font-paytone-lock text-[32px] text-[#2A0064]">{FIGMA.testimonialName}</p>
+              <p className="font-sans text-[18px] text-[#2A0064]/80 mt-2">{FIGMA.testimonialRole}</p>
             </div>
-            <p className="font-paytone-lock text-[32px] text-[#2A0064] text-center">{FIGMA.testimonialName}</p>
-            <p className="font-sans text-[18px] text-[#2A0064]/80 text-center mt-2">{FIGMA.testimonialRole}</p>
-          </Abs>
-          <Abs x={380} y={200} w={700}>
             <p className="font-sans italic text-[24px] leading-[1.5] text-[#2A0064] text-center">
               “{FIGMA.testimonialQuote}”
             </p>
-          </Abs>
-        </Board>
-      </section>
+          </div>
+        </section>
 
-      {/* 11. CTA — 1200×650, title forced to 2 lines */}
-      <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] pb-[120px] scroll-mt-[168px]">
-        <Board id="soytechno-cta" height={650} className="bg-[#B3FFF3] rounded-[36px] overflow-hidden">
-          <Abs x={40} y={80} w={480} h={490}>
-            <Asset file="cta-illustration.png" alt="" />
-          </Abs>
-          <Abs x={500} y={140} w={660}>
-            <h2 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.03em] text-[#453A53] mb-8">
-              <span className="block">¿Tu E-commerce está listo</span>
-              <span className="block whitespace-nowrap">para el nivel de un Web App?</span>
-            </h2>
-            <p className="font-sans text-[18px] leading-[1.5] text-[#453A53] mb-10">{FIGMA.ctaBody}</p>
-            <a
-              href={FIGMA.ctaHref}
-              className="inline-block bg-[#440099] text-white font-sans font-semibold py-3 px-8 rounded-full no-underline"
-            >
-              {FIGMA.ctaButton}
-            </a>
-          </Abs>
-        </Board>
-      </section>
+        <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[100px] pb-[120px] scroll-mt-[168px]">
+          <div
+            id="soytechno-cta"
+            className="bg-[#B3FFF3] rounded-[36px] overflow-hidden grid grid-cols-2 gap-10 items-center px-12 py-16 min-h-[650px]"
+          >
+            <img
+              src={img('cta-illustration.png')}
+              alt=""
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
+            <div>
+              <h2 className="font-paytone-lock text-[47px] leading-[1.15] tracking-[-0.03em] text-[#453A53] mb-8">
+                <span className="block">¿Tu E-commerce está listo</span>
+                <span className="block whitespace-nowrap">para el nivel de un Web App?</span>
+              </h2>
+              <p className="font-sans text-[18px] leading-[1.5] text-[#453A53] mb-10">{FIGMA.ctaBody}</p>
+              <a
+                href={FIGMA.ctaHref}
+                className="inline-block bg-[#440099] text-white font-sans font-semibold py-3 px-8 rounded-full no-underline"
+              >
+                {FIGMA.ctaButton}
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
