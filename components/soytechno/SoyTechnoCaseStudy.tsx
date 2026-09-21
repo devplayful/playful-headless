@@ -72,7 +72,8 @@ export default function SoyTechnoCaseStudy() {
           <Image src={image('rectangle-147.gif')} width={918} height={560} unoptimized alt="Sitio anterior de SoyTechno" />
         </div>
         <div className={styles.challengePhone}>
-          <Image src={image('iphone-frame-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno" />
+          <Image className={styles.challengePhoneScreen} src={image('iphone-frame-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno" />
+          <Image className={styles.challengePhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt="" aria-hidden="true" />
         </div>
         <div className={styles.challengeProducts} aria-label="Categorías de electrodomésticos de SoyTechno">
           <Image className={styles.fridge} src={image('electrodomesticos-01.png')} width={720} height={720} alt="Nevera" />
@@ -118,7 +119,12 @@ export default function SoyTechnoCaseStudy() {
             <div className={`${styles.paletteCard} ${styles.orangeCard}`}><b>CADMIUM ORANGE</b><span>HEX: F78D2B</span><span>RGB: 247 / 141 / 43</span><span>CMYK: 0 / 43 / 83 / 3</span><Image src={vector('delivery-caracas.svg')} width={120} height={120} alt="Entrega rápida" /></div>
           </div>
           <div className={styles.brandMediaColumn}>
-            <Image className={styles.brandPhone} src={image('iphone-mockup.gif')} width={353} height={647} unoptimized alt="Interfaz móvil de SoyTechno" />
+            <div className={styles.brandPhoneMask}>
+              <div className={styles.brandPhoneScreen}>
+                <Image className={styles.brandPhoneContent} src={image('iphone-mockup.gif')} width={353} height={647} unoptimized alt="Interfaz móvil de SoyTechno" />
+              </div>
+              <Image className={styles.brandPhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt="" aria-hidden="true" />
+            </div>
             <div className={styles.circuitCard}><span>Circuito</span><Image src={image('circuito.png')} width={720} height={786} alt="Elemento gráfico Circuito" /></div>
           </div>
           <div className={styles.brandCopyColumn}>

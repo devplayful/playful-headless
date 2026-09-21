@@ -202,19 +202,40 @@
 
 .challengePhone {
   align-items: flex-start;
+  aspect-ratio: 720 / 1558;
   border-radius: 36px;
   display: flex;
   grid-column: 2;
-  grid-row: 2 / span 2;
+  grid-row: 2;
   justify-content: center;
   justify-self: center;
-  overflow: visible;
-  transform: translateY(-18px);
-  width: 300px;
+  overflow: hidden;
+  position: relative;
+  width: 250px;
   z-index: 2;
 }
 
-.challengePhone img { height: auto; object-fit: contain; width: 100%; }
+.challengePhoneScreen,
+.challengePhoneFrame {
+  object-fit: contain;
+  position: absolute;
+}
+
+.challengePhoneScreen {
+  border-radius: 32px;
+  height: 96%;
+  left: 5%;
+  top: 2%;
+  width: 90%;
+  z-index: 1;
+}
+
+.challengePhoneFrame {
+  height: 100%;
+  inset: 0;
+  width: 100%;
+  z-index: 2;
+}
 
 .challengeProducts {
   background: linear-gradient(155deg, #3a0ca3, #4cc9f0);
@@ -291,7 +312,45 @@
 .darkCard { background: #00193f; color: white; }
 .greenCard { background: #297dff; color: white; }
 .orangeCard { background: #d4e5ff; color: #00193f; }
-.brandPhone { height: 644px; object-fit: contain; width: 340px; }
+.brandPhoneMask {
+  align-self: center;
+  aspect-ratio: 720 / 1558;
+  border-radius: 50px;
+  height: 649px;
+  overflow: hidden;
+  position: relative;
+  width: 300px;
+}
+
+.brandPhoneScreen {
+  border-radius: 42px;
+  height: 92%;
+  left: 5%;
+  overflow: hidden;
+  position: absolute;
+  top: 4%;
+  width: 90%;
+  z-index: 1;
+}
+
+.brandPhoneContent {
+  height: 116%;
+  left: -12%;
+  max-width: none;
+  object-fit: fill;
+  position: absolute;
+  top: -8%;
+  width: 124%;
+}
+
+.brandPhoneFrame {
+  height: 100%;
+  inset: 0;
+  object-fit: contain;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+}
 
 .circuitCard {
   background: #0063fd;
@@ -442,8 +501,7 @@
   .challengeCopy { gap: 22px; order: 1; padding: 28px 22px; }
   .challengeLogo { height: 150px; order: 2; }
   .challengeLogo img { height: 118px; width: 118px; }
-  .challengePhone { height: 470px; order: 3; overflow: hidden; transform: none; width: 100%; }
-  .challengePhone img { height: 100%; width: 100%; }
+  .challengePhone { aspect-ratio: auto; height: 470px; order: 3; width: 100%; }
   .challengeLaptop { height: 235px; order: 4; padding: 18px; }
   .challengeProducts { height: 210px; order: 5; }
   .contentItem h3 { font-size: 18px; }
@@ -462,7 +520,7 @@
 
   .brandPanel { display: flex; flex-direction: column; gap: 24px; margin-top: 28px; padding: 16px; }
   .brandMediaColumn { align-items: center; order: 1; }
-  .brandPhone { height: auto; max-height: 610px; width: min(100%, 330px); }
+  .brandPhoneMask { height: auto; max-width: 300px; width: 100%; }
   .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); order: 2; }
   .paletteCard { font-size: 13px; height: 230px; padding: 18px 14px; }
   .paletteCard img { height: 84px; width: 84px; }
@@ -497,5 +555,6 @@
 
 @media (max-width: 480px) {
   .challengePhone { height: 430px; }
+  .brandPhoneMask { max-width: 280px; }
   .phonesSection img { width: 706px; }
 }
