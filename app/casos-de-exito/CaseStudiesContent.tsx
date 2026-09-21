@@ -8,6 +8,7 @@ import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSecti
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
 import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
 import { mergePublicCaseStudies } from "@/lib/public-case-studies";
+import { CASE_STUDIES_HUB_H1, CASE_STUDIES_HUB_LEAD } from "@/utils/case-study-hub";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -252,14 +253,10 @@ export default function CaseStudiesContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">
           <div>
             <h1 className="text-[50px] lg:text-[57px] font-normal text-white mb-6 leading-tight">
-              Resultados que hablan por sí solos
+              {CASE_STUDIES_HUB_H1}
             </h1>
             <p className="text-white text-lg leading-relaxed opacity-90">
-              Detrás de cada proyecto hay una historia de transformación.
-              Nuestro trabajo se centra en identificar los puntos de dolor de tu
-              negocio para luego aplicar la tecnología y la creatividad
-              necesarias para generar resultados que no sólo resuelvan un
-              problema, sino que impulsen tu crecimiento de manera sostenible.
+              {CASE_STUDIES_HUB_LEAD}
             </p>
           </div>
 

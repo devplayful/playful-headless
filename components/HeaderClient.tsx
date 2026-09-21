@@ -204,7 +204,7 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                 
                 <div className={`absolute left-0 top-full mt-2 w-64 bg-white rounded-lg shadow-2xl transition-all duration-200 z-[99999] py-2 border border-gray-100 max-h-96 overflow-y-auto ${isCasesOpen ? 'opacity-100 visible md:opacity-0 md:invisible' : 'opacity-0 invisible'} md:group-hover:opacity-100 md:group-hover:visible`}>
                   <Link
-                    href="/casos-de-exito-agencia-de-marketing-digital"
+                    href="/casos-de-exito"
                     className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors font-semibold border-b border-gray-100"
                   >
                     Ver todos los casos
@@ -345,7 +345,7 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                     {isCasesOpen && (
                       <div className="bg-[#3D006B] border-b border-white/10">
                         <Link
-                          href="/casos-de-exito-agencia-de-marketing-digital"
+                          href="/casos-de-exito"
                           className="block px-10 py-3 text-sm hover:bg-white/5 transition-colors"
                           onClick={() => setIsMenuOpen(false)}
                         >

@@ -1,4 +1,4 @@
-/** Same listing endpoint and featured-media resolver as /casos-de-exito-agencia-de-marketing-digital. */
+/** Same listing endpoint and featured-media resolver as /casos-de-exito. */
 export const CASE_STUDIES_LISTING_EMBED_URL =
   'https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed';
 

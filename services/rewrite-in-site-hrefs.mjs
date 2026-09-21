@@ -8,14 +8,29 @@ const IN_SITE_PAGE_HOSTS = new Set([
 const WP_ASSET_PATH_PREFIXES = ['/wp-content', '/wp-includes', '/wp-json', '/wp-admin'];
 
 const APEX_ORIGIN = 'https://playfulagency.com';
+const LEGACY_CASE_STUDIES_HUB_PATH = '/casos-de-exito-agencia-de-marketing-digital';
+const CASE_STUDIES_HUB_PATH = '/casos-de-exito';
 
 /** Absolute or protocol-relative in-site page URLs (not /wp-* assets). */
 const IN_SITE_URL_RE = /(?:https?:)?\/\/(?:endpoint\.|old\.|www\.)?playfulagency\.com[^\s"'<>]*/gi;
 
+export function remapLegacyCaseStudiesHubHref(href) {
+  if (typeof href !== 'string' || !href) return href;
+  return href.replace(
+    /^(\/casos-de-exito-agencia-de-marketing-digital)(?=\/|$|\?|#)/,
+    CASE_STUDIES_HUB_PATH,
+  ).replace(/^\/casos-de-exito\/(?=\?|#|$)/, `${CASE_STUDIES_HUB_PATH}`);
+}
+
+function remapLegacyHubPathname(pathname) {
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/+$/, '');
+  return normalized === LEGACY_CASE_STUDIES_HUB_PATH ? CASE_STUDIES_HUB_PATH : normalized;
+}
+
 export function rewritePageHref(url) {
   const trimmed = url.trim();
   const parsed = trimmed.match(/^(https?:)?\/\/([^/]+)(\/[^?#]*)?(\?[^#]*)?(#.*)?$/i);
-  if (!parsed) return url;
+  if (!parsed) return remapLegacyCaseStudiesHubHref(url);
 
   const host = parsed[2].toLowerCase();
   if (!IN_SITE_PAGE_HOSTS.has(host)) return url;
@@ -27,14 +42,14 @@ export function rewritePageHref(url) {
 
   const query = parsed[4] || '';
   const hash = parsed[5] || '';
-  const normalized = path === '/' ? '/' : path.replace(/\/+$/, '');
+  const normalized = remapLegacyHubPathname(path);
   return `${normalized}${query}${hash}`;
 }
 
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
 export function rewriteInSitePageHrefs(html) {
   return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
-    return `href=${quote}${rewritePageHref(href)}${quote}`;
+    return `href=${quote}${remapLegacyCaseStudiesHubHref(rewritePageHref(href))}${quote}`;
   });
 }
 

@@ -94,7 +94,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/casos-de-exito-agencia-de-marketing-digital" className="body-text text-white/80 hover:text-white transition-colors">
+                  <Link href="/casos-de-exito" className="body-text text-white/80 hover:text-white transition-colors">
                     Casos de éxito
                   </Link>
                 </li>

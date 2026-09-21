@@ -65,6 +65,29 @@ test('leaves /wp-content media srcs and hrefs on the WordPress endpoint', () => 
   assert.equal(countHostHrefs(rewritten, 'endpoint.playfulagency.com'), 1);
 });
 
+test('remaps the legacy casos hub path to /casos-de-exito', () => {
+  const html = [
+    `<a href="/casos-de-exito-agencia-de-marketing-digital">hub</a>`,
+    `<a href="/casos-de-exito-agencia-de-marketing-digital/">slash</a>`,
+    `<a href="https://playfulagency.com/casos-de-exito-agencia-de-marketing-digital/">apex</a>`,
+    `<a href="https://endpoint.playfulagency.com/casos-de-exito-agencia-de-marketing-digital/?utm=1">wp</a>`,
+    `<a href="/casos-de-exito/jumex-shopify-dtc-ecommerce">child</a>`,
+  ].join('');
+
+  const rewritten = rewriteInSitePageHrefs(html);
+
+  assert.match(rewritten, /href="\/casos-de-exito">hub</);
+  assert.match(rewritten, /href="\/casos-de-exito">slash</);
+  assert.match(rewritten, /href="\/casos-de-exito">apex</);
+  assert.match(rewritten, /href="\/casos-de-exito\?utm=1">wp</);
+  assert.match(rewritten, /href="\/casos-de-exito\/jumex-shopify-dtc-ecommerce">child</);
+  assert.doesNotMatch(rewritten, /casos-de-exito-agencia-de-marketing-digital/);
+  assert.equal(
+    rewriteInSiteUrlToApex('https://old.playfulagency.com/casos-de-exito-agencia-de-marketing-digital/'),
+    'https://playfulagency.com/casos-de-exito',
+  );
+});
+
 test('does not rewrite external or already-relative hrefs', () => {
   const html = [
     `<a href="https://linkedin.com/company/playful">external</a>`,

@@ -15,7 +15,7 @@ const {
 
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 const listing = readFileSync(
-  new URL('../app/casos-de-exito-agencia-de-marketing-digital/CaseStudiesContent.tsx', import.meta.url),
+  new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
   'utf8',
 );
 const header = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');

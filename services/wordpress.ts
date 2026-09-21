@@ -389,7 +389,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     title: 'Casos de Éxito',
-    slug: 'casos-de-exito-agencia-de-marketing-digital',
+    slug: 'casos-de-exito',
     children: [
       { title: 'Policlínica Metropolitana', slug: 'policlinica-metropolitana' },
       { title: 'Mercantil Servicios Financieros', slug: 'mercantil-servicios-financieros-internacional' },
