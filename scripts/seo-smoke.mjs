@@ -294,4 +294,48 @@ for (const pathname of blogQueryPaths) {
 const invalidBlogPage = await request('/blog?page=-2&category=seo', { redirect: 'manual' });
 assert.equal(invalidBlogPage.status, 404, 'invalid/negative blog page stays 404');
 
+const gsc301 = [
+  [
+    '/blog/email-marketing/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+  ],
+  [
+    '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads',
+    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+  ],
+  [
+    '/otros/conoce-todo-sobre-instagram-ads',
+    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+  ],
+  [
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+    'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+  ],
+];
+for (const [source, dest] of gsc301) {
+  for (const pathname of [source, `${source}/`]) {
+    const response = await request(pathname);
+    assert.equal(response.status, 301, `${pathname} should return 301`);
+    assert.equal(response.headers.get('location'), dest, `${pathname} Location`);
+  }
+  const destResponse = await fetch(dest, { redirect: 'manual' });
+  assert.equal(destResponse.status, 200, `${dest} should stay 200`);
+}
+
+for (const gonePath of ['/project/bottle-mockup', '/agencylog']) {
+  for (const pathname of [gonePath, `${gonePath}/`]) {
+    const response = await request(pathname);
+    assert.equal(response.status, 410, `${pathname} should return 410`);
+  }
+}
+
+{
+  const temporada = await request('/blog/categoria/temporada-2');
+  assert.ok(
+    temporada.status === 404 || temporada.status === 410,
+    '/blog/categoria/temporada-2 must stay 404 or 410',
+  );
+  assert.equal(temporada.headers.get('location'), null);
+}
+
 console.log(`SEO smoke passed against ${origin}`);

@@ -12,6 +12,14 @@ const PERMANENT_301: Record<string, string> = {
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
   '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
+  '/blog/email-marketing/tipos-de-publicidad-online':
+    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+  '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
+    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+  '/otros/conoce-todo-sobre-instagram-ads':
+    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+  '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
+    'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
 };
 
 function normalizePath(pathname: string): string {
@@ -29,6 +37,19 @@ export function middleware(request: NextRequest) {
     });
   }
 
+  const dest = PERMANENT_301[path];
+  if (dest) {
+    if (/^https?:\/\//i.test(dest)) {
+      const target = new URL(dest);
+      target.search = request.nextUrl.search;
+      return NextResponse.redirect(target, 301);
+    }
+
+    const target = request.nextUrl.clone();
+    target.pathname = dest;
+    return NextResponse.redirect(target, 301);
+  }
+
   const blogSeo = blogSeoRedirectDecision(
     request.nextUrl.pathname,
     request.nextUrl.searchParams,
@@ -41,18 +62,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(target, blogSeo.status);
   }
 
-  const dest = PERMANENT_301[path];
-  if (!dest) return NextResponse.next();
-
-  if (/^https?:\/\//i.test(dest)) {
-    const target = new URL(dest);
-    target.search = request.nextUrl.search;
-    return NextResponse.redirect(target, 301);
-  }
-
-  const target = request.nextUrl.clone();
-  target.pathname = dest;
-  return NextResponse.redirect(target, 301);
+  return NextResponse.next();
 }
 
 export const config = {
@@ -71,6 +81,14 @@ export const config = {
     '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/otros/conoce-todo-sobre-instagram-ads',
+    '/otros/conoce-todo-sobre-instagram-ads/',
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad/',
+    '/project/bottle-mockup',
+    '/project/bottle-mockup/',
+    '/agencylog',
+    '/agencylog/',
     '/blog',
     '/blog/',
     '/blog/:path*',
