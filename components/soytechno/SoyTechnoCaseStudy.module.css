@@ -187,8 +187,8 @@
 .challengeLogo img { border-radius: 50%; height: 190px; object-fit: cover; width: 190px; }
 
 .challengeLogo img {
-  clip-path: circle(42% at 50% 50%);
-  transform: scale(1.12);
+  clip-path: circle(39.5% at 50% 50%);
+  transform: scale(1.2);
 }
 
 .challengeLaptop {
@@ -257,8 +257,10 @@
 }
 
 .challengeProducts img {
-  height: 88.3%;
+  display: block;
+  height: 94%;
   object-fit: contain;
+  transform: translateY(1%);
   width: auto;
 }
 
