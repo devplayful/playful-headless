@@ -32,7 +32,7 @@ test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => 
   );
 });
 
-test('SoyTechno H1, title and og:title share the signed José GO string', () => {
+test('SoyTechno H1 uses CIMA casing and SERP title stays on the envelope string', () => {
   assert.match(
     overrides,
     /'soytechno-ecommerce-venezuela':/,
@@ -43,11 +43,11 @@ test('SoyTechno H1, title and og:title share the signed José GO string', () => 
   );
   assert.match(
     overrides,
-    /Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo/,
+    /Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo\. Cómo compra y confía el mercado fuera del chat informal/,
   );
   assert.match(
     soytechnoBody,
-    /<h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela<\/h1>/,
+    /<h1>SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela<\/h1>/,
   );
   assert.doesNotMatch(
     soytechnoBody,
@@ -57,17 +57,31 @@ test('SoyTechno H1, title and og:title share the signed José GO string', () => 
   assert.doesNotMatch(soytechnoBody, /Tienda online en Venezuela/);
 });
 
-test('SoyTechno Figma body keeps the Contento literals that PR #71 had condensed', () => {
-  assert.match(soytechnoBody, /Si el usuario está en Teléfonos, los filtros muestran RAM/);
-  assert.match(soytechnoBody, /lateral izquierdo en escritorio/);
-  assert.match(soytechnoBody, /un detalle que casi nunca se trabaja/);
-  assert.match(soytechnoBody, /consumiendo el precio vía método GET/);
-  assert.match(soytechnoBody, /La carga de asesores es asíncrona/);
-  assert.match(soytechnoBody, /nunca se ha tenido queja de que el producto se perdió/);
+test('SoyTechno body is CIMA verbatim in the existing Figma slots', () => {
+  assert.match(soytechnoBody, /cansado de la informalidad/);
+  assert.match(soytechnoBody, /El Desafío y el Contexto Estratégico \(La Misión\)/);
+  assert.match(soytechnoBody, /67% de compras en divisas, BNPL creciendo \+250%/);
+  assert.match(soytechnoBody, /eCommerce venezolano creció \+125% \(Cavecom-e\)/);
+  assert.match(soytechnoBody, /Estrategia y Ejecución \(La Solución\)/);
+  assert.match(soytechnoBody, /¿Como su idea estratégica abordó directamente el insight/);
+  assert.match(soytechnoBody, /primera integración nativa de Cashea/);
+  assert.match(soytechnoBody, /picos de 31\.000 usuarios diarios/);
+  assert.match(soytechnoBody, /816\.000 vistas en el año/);
+  assert.match(soytechnoBody, /Innovación y Aporte \(Técnica y Trascendencia\)/);
+  assert.match(soytechnoBody, /filtros adaptativos bajaron el rebote a 11%/);
+  assert.match(soytechnoBody, /2,8 millones de usuarios activos/);
+  assert.match(soytechnoBody, /tasa de conversión global del 2,57%/);
+  assert.match(soytechnoBody, /99\.384 usuarios activos mensuales/);
+  assert.match(soytechnoBody, /Eva Cristina Luciani/);
+  assert.match(soytechnoBody, /e-Commerce Manager de Soytechno\.com/);
+  assert.match(soytechnoBody, /comparador de productos/);
+  assert.match(soytechnoBody, /Agenda una reunión/);
   assert.match(soytechnoBody, /<span>SoyTechno<\/span>/);
   assert.match(soytechnoBody, /href="\/reunion-playful"/);
   assert.match(soytechnoBody, /jumex-shopify-dtc-ecommerce/);
   assert.match(soytechnoBody, /odwalla-shopify-dtc-ecommerce/);
+  assert.doesNotMatch(soytechnoBody, /consumiendo el precio vía método GET/);
+  assert.doesNotMatch(soytechnoBody, /No tenemos que estar detrás de ustedes/);
   assert.doesNotMatch(soytechnoBody, />Odwalla<\/span>/);
 });
 

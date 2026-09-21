@@ -33,12 +33,12 @@ export default function SoyTechnoCaseStudy() {
 
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela</h1>
+            <h1>SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela</h1>
             <p>
-              SOYTECHNO necesitaba transformar su presencia digital en una plataforma de alto rendimiento. El desafío no era solo vender, sino crear una experiencia de <em>E-commerce</em> con la <strong>funcionalidad y la robustez de una aplicación</strong>, capaz de manejar un catálogo variado y métodos de pago complejos como el cambio de moneda y <strong>Cashea</strong>.
+              Mientras la categoría asumía que el venezolano vivía con miedo de comprar online, Soytechno asumió lo contrario —que estaba cansado de la informalidad— y lo trató como comprador real dándole un ecosistema con autonomía y transparencia, cuando la industria todavía lo trata como seguidor.
             </p>
             <p>
-              En <strong>Playful Agency</strong>, demostramos que la <strong>personalización radical</strong> del <em>User Experience (UX)</em> y la <em>User Interface (UI)</em> era la clave para la conversión masiva.
+              Tras su soft launch, SoyTechno debía consolidar su eCommerce en un mercado donde la industria asumía que el consumidor no confía y solo compra por WhatsApp. El reto 2025: demostrar que el venezolano sí transacciona masivamente online cuando se le brinda una infraestructura formal, segura y transparente.
             </p>
           </div>
           <div className={styles.heroArtwork}>
@@ -48,8 +48,8 @@ export default function SoyTechnoCaseStudy() {
       </div>
 
       <section className={styles.introSection}>
-        <h2>El Desafío UX/UI: De un Catálogo Inusable a una Navegación Intuitiva</h2>
-        <p>El reto principal era transformar un sitio web no centrado en el usuario a una plataforma pensada 100% para la conversión, que pudiera gestionar un catálogo gigante, priorizando la experiencia móvil.</p>
+        <h2>El Desafío y el Contexto Estratégico (La Misión)</h2>
+        <p>El venezolano no compra tecnología; la planifica. Con 67% de compras en divisas, BNPL creciendo +250% y 43% estirando cada dólar, el ganador no es el más barato: es quien ofrece catálogo, cuotas y autonomía. El consumidor no abandona por desinterés, sino por fricción logística y de pago.</p>
         <div className={styles.introIcons} aria-hidden="true">
           <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
           <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
@@ -59,14 +59,14 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.challenge}>
         <div className={styles.challengeCopy}>
-          <ContentItem title="PRIORIDAD MÓVIL COMO MANDATO:">
-            <p>La directriz de Playful Agency fue innovadora: La presentación del pitch de negocio y los bocetos se hicieron primeramente móvil, garantizando que el E-commerce estuviera <strong>“muy, muy, muy bien resuelto en móvil”.</strong></p>
+          <ContentItem title="¿Cuál era el panorama del mercado y la competencia antes de iniciar el proyecto? ¿Cuál era el desafío a superar?">
+            <p>En 2025, el eCommerce venezolano creció +125% (Cavecom-e), pero la industria seguía operando en la informalidad: ventas por mensaje directo, precios ocultos y un mercado con solo 18,5% de bancarización crediticia. El reto de SoyTechno no era tecnológico, era de confianza. Debía demostrar que el venezolano sí transacciona masivamente online cuando se le ofrece una infraestructura formal, segura y transparente, en un entorno donde la categoría asumía que el consumidor prefería el WhatsApp y donde las opciones de pago digital eran escasas o inexistentes.</p>
           </ContentItem>
-          <ContentItem title="FILTROS INEFICACES:">
-            <p>El sitio anterior presentaba un <strong>filtro global que era inusable</strong>, lo que obstaculizaba la navegación en un catálogo con múltiples categorías (teléfonos, hogar, etc.).</p>
+          <ContentItem title="¿Cuál era la audiencia objetivo y por qué es relevante para la marca?">
+            <p>La audiencia son consumidores venezolanos de 18 a 45 años, hiperconectados, con acceso a smartphones y poder adquisitivo limitado: ya compraban tecnología en redes informales (Instagram, WhatsApp), enfrentando fricción de pagos multimoneda, desconfianza en envíos y exposición a estafas. Navegan en su mayoría desde dispositivos móviles con Android. Geográficamente está distribuida en 7 ciudades clave (Caracas, Valencia, Maracaibo, Barquisimeto, Guayana, Maracay, Barcelona). Su relevancia para SoyTechno es directa: es el segmento que ya existe digitalmente, que concentra la demanda real de tecnología en Venezuela y que ya estaba comprando online.</p>
           </ContentItem>
-          <ContentItem title="DISEÑO NO HOMOLOGADO:">
-            <p>La falta de estándares de marca y accesibilidad generaba desconfianza y confusión en el proceso de compra.</p>
+          <ContentItem title="¿Cuáles eran los objetivos de negocio medibles?">
+            <p>SoyTechno definió cinco objetivos para 2025: (1) Dar a conocer la plataforma a nivel nacional y posicionarla como opción moderna, segura y automatizada para comprar tecnología. (2) Educar al consumidor venezolano sobre el uso de métodos de pago digitales —bolívares, divisas y financiamiento en cuotas— para reducir la fricción y mejorar la conversión. (3) Incrementar las ventas online mediante optimización de la experiencia de usuario y cobertura de envíos en todo el país. (4) Fortalecer la reputación digital de la marca como referente confiable del sector tecnológico venezolano. (5) Automatizar la atención al cliente para escalar sin perder calidad de respuesta.</p>
           </ContentItem>
         </div>
         <div className={styles.challengeLogo}>
@@ -85,8 +85,8 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.introSection}>
-        <h2>Ingeniería de Checkout: La Duplicidad de Lógica y el Desafío Cashea</h2>
-        <p>El checkout de SOYTECHNO no fue una configuración; fue una proeza de ingeniería que transformó la pasarela de pagos de WooCommerce en un sistema financiero altamente adaptado y de precisión milimétrica. Este desarrollo representa el punto de inflexión donde el E-commerce superó la funcionalidad estándar para convertirse en una solución empresarial.</p>
+        <h2>Estrategia y Ejecución (La Solución)</h2>
+        <p>Con un enfoque trimestral (Q1: Reconocimiento, Q2: Expansión, Q3: Escalabilidad, Q4: Fidelización), SoyTechno consolidó un ecosistema Mobile-First basado en tres pilares. <strong>(1) Autonomía Financiera:</strong> Primera integración nativa con Cashea en un eCommerce venezolano y Smart Checkout que elimina la fricción multimoneda.</p>
         <div className={styles.introIcons} aria-hidden="true">
           <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
           <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
@@ -95,25 +95,25 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.introSectionSmall}>
-        <h2>UX/UI: Personalización Holística y Navegación de Alta Conversión</h2>
-        <p>El diseño se enfocó en hacer el viaje del usuario lo más práctico posible, cumpliendo con los estándares de accesibilidad y evitando todos los niveles de frustración.</p>
+        <h2>¿Como su idea estratégica abordó directamente el insight y el desafío planteado?</h2>
+        <p>El mercado asumía que el venezolano no compraba online por desconfianza. El insight real era otro: no le faltaba disposición, le faltaba una plataforma que lo tratara como comprador real.</p>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>A. Arquitectura de Producto y Filtros Inteligentes</SectionTitle>
+        <SectionTitle>Resumen Ejecutivo</SectionTitle>
         <div className={styles.mediaTextGrid}>
           <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Ficha de producto y ofertas de SoyTechno" />
           <div className={styles.textStack}>
-            <ContentItem title="FICHA DE PRODUCTO (PDP) COMPLETA:"><p>La ficha o tarjeta de producto fue explotada al 100% para ser completa, incluyendo todas las características para que el usuario solo tenga que añadir al carrito y pagar.</p></ContentItem>
-            <ContentItem title="CATEGORIZACIÓN POR SLIDER:"><p>El Home presenta las categorías principales en un slider que permite al usuario un acceso rápido a una categoría específica, logrando que el producto se adquiera en menos de tres clics.</p></ContentItem>
-            <ContentItem title="FILTROS ADAPTATIVOS Y ESPECÍFICOS:"><p>Se personalizó el filtro para que cambiara según la categoría. Si el usuario está en Teléfonos, los filtros muestran RAM, almacenamiento y color. Si está en Hogar (televisores), el filtro se adapta a pulgadas, tipo de pantalla, color y tamaño.</p></ContentItem>
-            <ContentItem title="DISEÑO DE OFERTAS ESTRATÉGICO:"><p>Se personalizó la sección de ofertas llamando a categorías mediante un tag o etiqueta. Las ofertas se visualizan cómodamente con tabs en el Home y en la gaveta de categorías (lateral izquierdo en escritorio).</p></ContentItem>
+            <ContentItem title="Transparencia Logística"><p><strong>(2) Transparencia Logística:</strong> Filtros dinámicos de MRW y rastreo en tiempo real, capitalizando la Semana Cosecha Cashea con picos de 31.000 usuarios diarios.</p></ContentItem>
+            <ContentItem title="Arquitectura de Confianza"><p><strong>(3) Arquitectura de Confianza:</strong> Asistente IA entrenado con miles de consultas reales que absorbió picos de hasta 1.500 chats acumulados, reduciendo tiempos de respuesta de horas a segundos.</p></ContentItem>
+            <ContentItem title="Ecosistema Mobile-First"><p>La respuesta fue diseñar un ecosistema Mobile-First que eliminó cada punto de fricción del comercio informal: precios publicados en múltiples monedas, financiamiento en cuotas disponible desde el mismo checkout, logística rastreable en tiempo real y atención automatizada disponible las 24 horas.</p></ContentItem>
+            <ContentItem title="Confianza como consecuencia"><p>No se le pidió al usuario que confiara primero. Se le dio la infraestructura para que la confianza fuera la consecuencia natural de cada interacción.</p></ContentItem>
           </div>
         </div>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>B. Coherencia Visual y Diseño de Interfaz (UI)</SectionTitle>
+        <SectionTitle>Por favor mencione cuáles fueron sus medios claves.</SectionTitle>
         <div className={styles.brandPanel}>
           <div className={styles.paletteColumn}>
             <div className={`${styles.paletteCard} ${styles.darkCard}`}><b>DARK BLUE-GRAY</b><span>HEX: 686EA0</span><span>RGB: 104 / 110 / 160</span><span>CMYK: 35 / 31 / 0 / 37</span><Image src={vector('shipping-national.svg')} width={120} height={120} alt="Envíos nacionales" /></div>
@@ -132,46 +132,46 @@ export default function SoyTechnoCaseStudy() {
           <div className={styles.brandCopyColumn}>
             <div className={styles.logoCard}><Image src={image('soytechno-logo-white.png')} width={384} height={69} alt="SoyTechno" /></div>
             <div className={styles.brandText}>
-              <ContentItem title="CROMÁTICA CONTROLADA:"><p>El principal desafío fue garantizar que la cromática estuviera atada al color principal de la marca, evitando un “arco iris de colores” y buscando el contraste directo con el azul de SOYTECHNO.</p></ContentItem>
-              <ContentItem title="ELEMENTOS GRÁFICOS DE MARCA:"><p>El diseño se homologó a un mismo concepto, utilizando el elemento de branding llamado “Circuito” para dar personalidad a las pantallas y secciones.</p></ContentItem>
-              <ContentItem title="BOTONES DE ALTA HEURÍSTICA:"><p>Los botones de acciones estándar en el sitio son azules, mientras que el botón de Comprar tiene un tono verde que lo hace característico y un punto de atención que cumple la intención automáticamente.</p></ContentItem>
+              <ContentItem title="Plataforma / Smart Checkout / Cashea"><p>La plataforma fue el medio principal. SoyTechno.com concentró toda la experiencia de compra: un Smart Checkout con soporte multimoneda (bolívares y divisas) y la primera integración nativa de Cashea en un eCommerce venezolano para compras en cuotas.</p></ContentItem>
+              <ContentItem title="Rastreo MRW"><p>El módulo de rastreo MRW en tiempo real —con 816.000 vistas en el año— operó como herramienta de confianza postventa.</p></ContentItem>
+              <ContentItem title="Freshchat / Freddy AI"><p>Freshchat con inteligencia artificial Freddy AI gestionó la atención al cliente, absorbiendo picos de hasta 1.500 chats acumulados por jornada y reduciendo los tiempos de respuesta de horas a segundos. Todo dentro de un solo ecosistema digital, sin canales externos.</p></ContentItem>
             </div>
           </div>
         </div>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>C. Pantallas Vacías y Notificaciones de Sistema</SectionTitle>
+        <SectionTitle>Innovación y Aporte (Técnica y Trascendencia)</SectionTitle>
         <div className={styles.mediaTextGrid}>
           <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Pantallas vacías y estados de SoyTechno" />
           <div className={styles.textStack}>
-            <ContentItem title="PERSONALIZACIÓN DE ESTADOS:"><p>Se diseñaron y personalizaron las pantallas vacías (favoritos, comparar y el error 404), un detalle que casi nunca se trabaja, para que cumplieran cromáticamente con los estándares de la marca. Las pantallas vacías y los banners son el punto de mayor orgullo del diseño.</p></ContentItem>
-            <ContentItem title="MENSAJES DE NOTIFICACIÓN:"><p>Se personalizó la heurística de las notificaciones del sistema (&quot;esto se ha añadido al carrito&quot;, &quot;este correo es incorrecto&quot;), usando colores acordes a éxito, advertencia y error para guiar al usuario.</p></ContentItem>
+            <ContentItem title="Smart Checkout / Cashea / Freddy AI"><p>La innovación fue adaptar tecnología global a la hipercomplejidad venezolana. Desarrollamos un <strong>Smart Checkout propietario</strong> que resuelve la dualidad cambiaria y logramos la primera integración de Cashea en web. Implementamos <strong>Freshchat (Freshworks) con IA Freddy</strong>, entrenado con miles de consultas reales de visitantes, que gestionó picos de hasta 1.500 chats acumulados por jornada, reduciendo tiempos de respuesta de horas a segundos y liberando al equipo para cerrar ventas.</p></ContentItem>
+            <ContentItem title="Filtros adaptativos / aporte"><p>Los filtros adaptativos bajaron el rebote a 11% en celulares. El aporte: SoyTechno demostró que el eCommerce formal, automatizado y de alta gama sí es viable en Venezuela.</p></ContentItem>
           </div>
         </div>
       </section>
 
       <div className={styles.divider} />
       <section className={styles.introSection}>
-        <h2>Ingeniería de Checkout: La Duplicidad de Lógica y el Desafío Cashea</h2>
-        <p>El checkout de SOYTECHNO no fue una configuración; fue una proeza de ingeniería que transformó la pasarela de pagos de WooCommerce en un sistema financiero altamente adaptado y de precisión milimétrica. Este desarrollo representa el punto de inflexión donde el E-commerce superó la funcionalidad estándar para convertirse en una solución empresarial.</p>
+        <h2>¿Qué recursos creativos, técnicas o herramientas especiales usaron en este caso? Si usó AI, mencione las herramientas específicas y cómo ayudaron a alcanzar los objetivos de la campaña.</h2>
+        <p>Se desarrolló un Smart Checkout propietario que resuelve la dualidad cambiaria venezolana, permitiendo al usuario pagar en bolívares o divisas desde una sola pantalla. Se logró la primera integración nativa de Cashea en un eCommerce venezolano, habilitando compras en cuotas directamente en el flujo de pago.</p>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>1. Integración Cashea:</SectionTitle>
+        <SectionTitle>1. Integración Cashea</SectionTitle>
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
-            <h2 className={styles.subTitle}>Un Desarrollo Vanguardista para la Financiación</h2>
-            <p>Este plugin ad hoc es la joya técnica del proyecto, construido en colaboración con la API de Cashea para manejar el alto riesgo y la complejidad de los pagos fraccionados.</p>
-            <ContentItem title="DUPLICIDAD CRÍTICA DE LA LÓGICA:"><p>La solución exigió la duplicación total de la lógica interna de checkout de WooCommerce. Esto fue esencial para controlar y validar la transacción específica de Cashea, asegurando que el sistema interpretara correctamente el regreso del cliente desde la web app (consumiendo el precio vía método GET).</p></ContentItem>
-            <ContentItem title="GESTIÓN ASÍNCRONA DE LA INICIAL:"><p>El plugin maneja con precisión el pago de la inicial, la notificación de éxito por correo, y garantiza la sincronización total del estado de la compra, con la capacidad única de cancelación bidireccional.</p></ContentItem>
+            <h2 className={styles.subTitle}>Primera integración nativa de Cashea en un eCommerce venezolano</h2>
+            <p>Para la atención al cliente se implementó Freshchat de Freshworks con el motor de inteligencia artificial Freddy AI, entrenado con miles de consultas reales de visitantes de la plataforma. El resultado: gestión de picos de hasta 1.500 chats acumulados por jornada, con tiempos de respuesta reducidos de horas a segundos.</p>
+            <ContentItem title="¿Cómo ha contribuido su estrategia al mercado o a la sociedad en general?"><p>SoyTechno demostró que el eCommerce formal, automatizado y de alta gama es viable en Venezuela. En un mercado donde la industria operaba por mensaje directo y sin precios publicados, la plataforma estableció un nuevo estándar: catálogo transparente, métodos de pago digitales accesibles y logística rastreable.</p></ContentItem>
+            <ContentItem title="Educación al consumidor / informalidad"><p>Eso no solo benefició a SoyTechno, educó al consumidor venezolano sobre cómo comprar tecnología online con autonomía y seguridad. Cada transacción completada en la plataforma es una demostración práctica de que la informalidad no es una condición permanente del mercado venezolano, sino un problema de infraestructura que tiene solución.</p></ContentItem>
           </div>
           <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
         </div>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>2. Arquitectura Wizard (Multistep) y Lógica de Facturación</SectionTitle>
+        <SectionTitle>Resultados y KPIs (La Prueba del Éxito)</SectionTitle>
         <div className={styles.mediaTextGrid}>
           <div className={styles.ipadComposite}>
             <div className={styles.ipadScreen}>
@@ -180,33 +180,33 @@ export default function SoyTechnoCaseStudy() {
             <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
-            <p>La idea de afrontar el checkout de forma distinta, como un wizard, se implementó contratando un plugin multistep y personalizándolo al extremo para la regla de negocio de SOYTECHNO.</p>
-            <ContentItem title="FLUJO MULTISTEP (WIZARD):"><p>Se migró del flujo lineal a un proceso de pasos (wizard), dividiendo el llenado en Facturación (datos del comprador) y Envío (datos del receptor), que puede ser una persona distinta (familiar, amigo, etc.).</p></ContentItem>
-            <ContentItem title="REGLA DE NEGOCIO:"><p>Se añadió una personalización crucial: un campo que valida si el cliente tiene determinadas características y en caso de poseerlas, no se procede con la compra.</p></ContentItem>
-            <ContentItem title="GESTIÓN DE ASESORES Y TRAZABILIDAD:"><p>Desarrollamos un script para que el cliente pueda asociar su compra a un asesor. La carga de asesores es asíncrona (elige tienda, y luego el asesor de esa tienda). Creamos un plugin adicional que permite la sincronización masiva de tiendas y asesores a través de la carga de un Excel.</p></ContentItem>
+            <p>Los resultados validan la transformación del hábito de consumo. Alcanzamos <strong>2,8 millones de usuarios activos</strong> (+711% de Q1 a Q3), 5,2 millones de sesiones y 7,6 millones de interacciones.</p>
+            <ContentItem title="Conversión / Semana Cosecha"><p>Logramos una <strong>tasa de conversión global del 2,57%</strong> sobre los 495.000 usuarios recurrentes —por encima del promedio mundial del eCommerce (1,5–2%)—. La Semana Cosecha Cashea concentró <strong>4.043 ventas en un solo mes, el 32% de las ventas totales del año</strong>.</p></ContentItem>
+            <ContentItem title="Cierre 2025"><p>Cerramos 2025 con <strong>12.722 ventas</strong>, un ticket promedio de <strong>$450–$600</strong> (+125–200% vs 2024) y 31.259 usuarios registrados, confirmando que la plataforma desbloqueó la compra de tecnología de alto valor en Venezuela.</p></ContentItem>
+            <ContentItem title="1. ¿Cómo sabe que la estrategia funcionó?"><p>El indicador más contundente no es el volumen de tráfico, sino su origen: el 44,48% de las sesiones llegó de forma directa, sin publicidad. Los usuarios buscaban a SoyTechno por nombre. El tráfico orgánico, con una tasa de interacción del 66,54%, fue el canal de mayor intención de compra de todo el ecosistema.</p></ContentItem>
           </div>
         </div>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>3. Sistema Logístico Predictivo: Cero Errores en la Entrega</SectionTitle>
+        <SectionTitle>2. ¿Cómo se relacionaron estos resultados con sus KPIs y cómo cambiaron frente a los datos iniciales?</SectionTitle>
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
-            <p>Este sistema elimina el error humano y automatiza las reglas de negocio de SOYTECHNO, logrando un margen de error mínimo.</p>
-            <ContentItem title="ALGORITMO DE FILTRADO MRW AVANZADO:"><p>Al seleccionar un estado (ej. Zulia), el sistema filtra dinámicamente solo las agencias MRW disponibles, garantizando que &quot;nunca se ha tenido queja de que el producto se perdió o llegó a otra agencia&quot;.</p></ContentItem>
-            <ContentItem title="APLICACIÓN DE CONDICIONALES GEOGRÁFICAS:"><p>El sistema aplica condicionales estrictas por ubicación: Distrito Capital: El cliente solo puede elegir entre Delivery o Retiro en Almacén (regla de negocio). Guarenas/Guatire: Se habilita la opción de &quot;Punto de Entrega&quot; para entregas semanales en puntos específicos.</p></ContentItem>
+            <p>La Semana Cosecha Cashea concentró 4.043 ventas en un solo mes, el 32% de las ventas totales del año. Cerramos 2025 con 12.722 ventas, un ticket promedio de $450–$600 (+125–200% vs 2024) y 31.259 usuarios registrados, confirmando que la plataforma desbloqueó la compra de tecnología de alto valor en Venezuela.</p>
+            <ContentItem title="Crecimiento usuarios"><p>SoyTechno arrancó diciembre de 2024 con 99.384 usuarios activos mensuales. En julio de 2025 registró 685.732: un crecimiento de ×6,9 en ocho meses.</p></ContentItem>
+            <ContentItem title="Objetivos → datos"><p>Cada objetivo declarado al inicio del año tuvo su respuesta en datos: la consolidación de marca se tradujo en 2,8 millones de usuarios activos y 2,7 millones de usuarios nuevos; la educación en métodos de pago se reflejó en una tasa de conversión del 2,57%, por encima del promedio mundial del eCommerce (1,5–2%); y la automatización de la atención permitió gestionar picos de hasta 1.500 chats acumulados por jornada sin escalar el equipo humano.</p></ContentItem>
           </div>
           <Image className={styles.logisticsMedia} src={image('logistics-composition.png')} width={1300} height={1458} alt="Sistema de envíos y rastreo MRW de SoyTechno" />
         </div>
       </section>
 
       <section className={styles.resultsIntro}>
-        <h2>Los Resultados que Posicionan a SOYTECHNO</h2>
-        <p>La implementación tecnológica en WooCommerce no solo mejoró la apariencia del sitio, sino que transformó la operación de venta de SOYTECHNO, consolidando un E-commerce que cumple estándares de conversión al 100%.</p>
+        <h2>Resultados</h2>
+        <p>Alcanzamos 2,8 millones de usuarios activos y 5,2 millones de sesiones. Logramos una <strong>tasa de conversión del 2,57%</strong> sobre usuarios recurrentes —por encima del promedio global del eCommerce (1,5–2%)—, cerrando el año con 12.722 ventas, +65% vs 2024 y un ticket promedio de $450–$600.</p>
         <div className={styles.resultsGrid}>
-          <ContentItem title="LIDERAZGO EN MÉTODOS DE PAGO:"><p>SOYTECHNO es un referente con una integración de Cashea que otras grandes marcas han intentado y no han podido replicar.</p></ContentItem>
-          <ContentItem title="CONVERSIÓN SIMPLIFICADA:"><p>El diseño móvil y la fluidez del checkout garantizan que el viaje del usuario sea lo más práctico posible, transformando la experiencia de compra en una conversión fluida.</p></ContentItem>
-          <ContentItem title="ROBUSTEZ DE WEB APP:"><p>El uso de WoodMart sobre WooCommerce nos permitió crear un E-commerce con la funcionalidad de una aplicación, capaz de manejar la lógica de transacciones complejas y la sincronización de inventario/asesores en tiempo real.</p></ContentItem>
+          <ContentItem title="Usuarios y sesiones"><p>Alcanzamos 2,8 millones de usuarios activos y 5,2 millones de sesiones.</p></ContentItem>
+          <ContentItem title="Conversión 2,57%"><p>Logramos una <strong>tasa de conversión del 2,57%</strong> sobre usuarios recurrentes —por encima del promedio global del eCommerce (1,5–2%)—.</p></ContentItem>
+          <ContentItem title="Ventas y ticket"><p>Cerrando el año con 12.722 ventas, +65% vs 2024 y un ticket promedio de $450–$600.</p></ContentItem>
         </div>
       </section>
 
@@ -217,26 +217,24 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.testimonial}>
         <Image className={styles.quoteArt} src={vector('quote-background.svg')} width={841} height={599} alt="" aria-hidden="true" />
         <div className={styles.client}>
-          <Image src={image('testimonial-avatar.png')} width={249} height={249} alt="Eva Luciani" />
-          <h2>Eva Luciani</h2>
-          <p>Grupo SoyTechno</p>
+          <Image src={image('testimonial-avatar.png')} width={249} height={249} alt="Eva Cristina Luciani" />
+          <h2>Eva Cristina Luciani</h2>
+          <p>e-Commerce Manager de Soytechno.com</p>
         </div>
-        <blockquote>“No tenemos que estar detrás de ustedes para que nos den respuesta o para nosotros poder ver cómo va el proyecto.”</blockquote>
+        <blockquote>“Se ve que la página está hecha en base a los requerimientos que nosotros teníamos y más. No sólo se quedaron con la idea de vender el producto, sino que también buscaron más soluciones, como agregar un comparador de productos para que la gente pueda verlo.”</blockquote>
       </section>
 
       <section className={styles.cta}>
         <Image className={styles.ctaArt} src={image('cta-illustration.png')} width={720} height={720} alt="Equipo de comercio electrónico" />
         <div className={styles.ctaCopy}>
           <h2>¿Tu E-commerce está listo para el nivel de un Web App?</h2>
-          <p>Si tu plataforma necesita una personalización radical para manejar métodos de pago complejos y asegurar una experiencia móvil de primera, hablemos.</p>
-          <p>¡Contáctanos y descubre cómo podemos llevar tu E-commerce a un nuevo nivel de robustez y diseño!</p>
-          <Link href="/reunion-playful">¡Hablemos de tu proyecto!</Link>
+          <p>Si tu marca vende online en Venezuela y necesita una plataforma que resuelva pagos multimoneda, logística rastreable y atención automatizada, podemos revisar juntos cómo construirla.</p>
+          <p>Agenda una reunión con Playful y descubre cómo llevar tu tienda online al siguiente nivel.</p>
+          <Link href="/reunion-playful">Agenda una reunión</Link>
         </div>
       </section>
 
       <nav className={styles.breadcrumb} aria-label="Más casos de éxito">
-        <Link href="/reunion-playful">Agenda una reunión</Link>
-        <span>/</span>
         <Link href="/casos-de-exito/jumex-shopify-dtc-ecommerce">Jumex Shopify DTC: canal propio para un catálogo grande</Link>
         <span>/</span>
         <Link href="/casos-de-exito/odwalla-shopify-dtc-ecommerce">Odwalla Shopify DTC: de sitio informativo a tienda</Link>

@@ -24,7 +24,7 @@ const PUBLIC_CASE_STUDY_SEO: Record<string, { title: string; description: string
   'soytechno-ecommerce-venezuela': {
     title: 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela',
     description:
-      'Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra el mercado fuera del chat informal.',
+      'Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra y confía el mercado fuera del chat informal.',
   },
 };
 
