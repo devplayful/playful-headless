@@ -24,6 +24,10 @@ const grouped = readFileSync(
   new URL('../utils/soytechno-grouped-art.ts', import.meta.url),
   'utf8',
 );
+const nativeArt = readFileSync(
+  new URL('../components/soytechno/SoyTechnoNativeArt.tsx', import.meta.url),
+  'utf8',
+);
 const sitemap = readFileSync(
   new URL('../utils/apex-sitemap.ts', import.meta.url),
   'utf8',
@@ -47,33 +51,34 @@ test('SoyTechno detail renders the literal Figma body, not Jumex or CIMA', () =>
   assert.doesNotMatch(body, /SoyTechnoSectionA/);
 });
 
-test('SoyTechno grouped 2x PNGs are on disk', () => {
+test('SoyTechno logística grouped 2x PNG is on disk', () => {
   const dir = fileURLToPath(new URL('../public/images/casos/soytechno', import.meta.url));
-  for (const file of [
-    'soytechno-hero-art@2x.png',
-    'soytechno-desafio-art@2x.png',
-    'soytechno-logistica-art@2x.png',
-    'soytechno-phones-strip@2x.png',
-    'soytechno-wizard-ipad.png',
-  ]) {
-    const filePath = path.join(dir, file);
-    assert.equal(existsSync(filePath), true, file);
-    assert.ok(readFileSync(filePath).length > 200_000, `${file} too small to be a 2x raster`);
-  }
+  const filePath = path.join(dir, 'soytechno-logistica-art@2x.png');
+  assert.equal(existsSync(filePath), true, 'soytechno-logistica-art@2x.png');
+  assert.ok(readFileSync(filePath).length > 200_000, 'logistica 2x raster too small');
 });
 
-test('SoyTechno wires grouped 2x exports and an HTML Block B grid', () => {
+test('SoyTechno wires native HTML art for soft slots and grouped logística', () => {
   assert.match(body, /SoyTechnoMobile/);
   assert.match(body, /className="lg:hidden"/);
   assert.match(body, /className="hidden lg:block"/);
-  assert.match(grouped, /soytechno-hero-art@2x/);
-  assert.match(grouped, /soytechno-desafio-art@2x/);
-  assert.match(grouped, /soytechno-logistica-art@2x/);
-  assert.match(grouped, /soytechno-phones-strip@2x/);
-  assert.match(body, /slot="hero"/);
-  assert.match(body, /slot="desafio"/);
+  assert.match(body, /HeroCollage/);
+  assert.match(body, /DesafioArt/);
+  assert.match(body, /IPadPortrait/);
+  assert.match(body, /DesktopPhonesRow/);
   assert.match(body, /slot="logistica"/);
-  assert.match(body, /slot="phones"/);
+  assert.match(grouped, /soytechno-logistica-art@2x/);
+  assert.match(nativeArt, /soytechno-logo-white\.png/);
+  assert.match(nativeArt, /lifestyle-f\.jpg/);
+  assert.match(nativeArt, /rectangle-147-catalog\.png/);
+  assert.match(nativeArt, /electrodomesticos-02\.png/);
+  assert.match(body, /ipad-mockup-01\.png/);
+  assert.match(nativeArt, /mobile-screen-01\.png/);
+  assert.match(nativeArt, /iphone-frame-02\.png/);
+  assert.doesNotMatch(body, /slot="hero"/);
+  assert.doesNotMatch(body, /slot="desafio"/);
+  assert.doesNotMatch(body, /slot="phones"/);
+  assert.doesNotMatch(body, /soytechno-wizard-ipad/);
   assert.match(body, /object-contain/);
   assert.match(body, /\[grid-template-columns:minmax\(0,350px\)_minmax\(0,350px\)_minmax\(0,1fr\)\]/);
   assert.match(body, /w-\[120px\] h-\[120px\]/);
@@ -112,17 +117,19 @@ test('SoyTechno mobile stack covers the Figma narrative', () => {
   assert.match(mobile, /id="soytechno-m-phones"/);
   assert.match(mobile, /id="soytechno-m-testimonial"/);
   assert.match(mobile, /id="soytechno-m-cta"/);
-  assert.match(mobile, /snap-x/);
-  assert.match(mobile, /w-\[78vw\]/);
-  assert.match(mobile, /mobile-screen-04\.png/);
+  assert.match(nativeArt, /snap-x/);
+  assert.match(nativeArt, /w-\[78vw\]/);
+  assert.match(nativeArt, /mobile-screen-04\.png/);
   assert.match(mobile, /min-h-\[48px\]/);
   assert.doesNotMatch(mobile, /100cqw/);
   assert.match(mobile, /font-paytone-lock/);
   assert.match(mobile, /grid-cols-2/);
   assert.match(mobile, /bg-white rounded-\[24px\]/);
   assert.match(mobile, /section-b-phone\.png/);
-  assert.match(mobile, /slot="hero"/);
-  assert.match(mobile, /slot="desafio"/);
+  assert.match(mobile, /HeroCollage/);
+  assert.match(mobile, /DesafioArt/);
+  assert.match(mobile, /IPadPortrait/);
+  assert.match(mobile, /MobilePhonesCarousel/);
   assert.match(mobile, /slot="logistica"/);
   assert.doesNotMatch(mobile, /<h3 className="font-sans font-bold/);
   assert.doesNotMatch(mobile, /space-y-12 max-w-\[720px\]/);

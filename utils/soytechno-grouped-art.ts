@@ -5,9 +5,9 @@
  *   soytechno-desafio-art@2x.png|.webp
  *   soytechno-logistica-art@2x.png|.webp
  *   soytechno-phones-strip@2x.png|.webp
- * Bare names (no @2x) are also accepted. Files are opaque RGB composites from
- * native handoff assets (not the 720→1440 screenshot upscale). DOM: width 100%
- * / height auto / contain.
+ * Bare names (no @2x) are also accepted. Only logística stays as a grouped
+ * raster (iMac + MRW are already native-sharp). Hero / desafío / phones /
+ * wizard are HTML of the original files so UI text is not resampled.
  */
 
 import { existsSync } from 'node:fs';

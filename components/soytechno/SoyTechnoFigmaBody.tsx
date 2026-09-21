@@ -3,6 +3,12 @@ import { FIGMA } from '@/utils/soytechno-figma-copy';
 import SoyTechnoMobile from '@/components/soytechno/SoyTechnoMobile';
 import SoyTechnoGroupedArt from '@/components/soytechno/SoyTechnoGroupedArt';
 import SoyTechnoChrome from '@/components/soytechno/SoyTechnoChrome';
+import {
+  DesafioArt,
+  DesktopPhonesRow,
+  HeroCollage,
+  IPadPortrait,
+} from '@/components/soytechno/SoyTechnoNativeArt';
 
 const A = '/images/casos/soytechno';
 
@@ -78,38 +84,6 @@ function BrandMarks({ third }: { third: 'circuit' | 'people' }) {
   );
 }
 
-function IPhoneFrame({ screen, alt }: { screen: string; alt: string }) {
-  return (
-    <div className="relative w-full aspect-[276/577]">
-      <div className="absolute inset-x-[3.6%] top-[1.8%] bottom-[1.8%] overflow-hidden rounded-[18%/9%] bg-black">
-        <img src={img(screen)} alt={alt} className="w-full h-full object-cover object-top" />
-      </div>
-      <img src={img('iphone-frame-02.png')} alt="" className="absolute inset-0 w-full h-full object-contain pointer-events-none" />
-    </div>
-  );
-}
-
-const PHONES = [
-  { file: 'mobile-screen-04.png', alt: 'Selección de moneda SoyTechno' },
-  { file: 'mobile-screen-01.png', alt: 'Pantalla móvil SoyTechno' },
-  { file: 'mobile-screen-02.png', alt: 'Pantalla móvil SoyTechno' },
-  { file: 'mobile-screen-03.png', alt: 'Pantalla móvil SoyTechno' },
-] as const;
-
-function DesktopPhonesFallback() {
-  return (
-    <div className="overflow-hidden">
-      <div className="flex gap-8 -ml-[18%]">
-        {PHONES.map((phone) => (
-          <div key={phone.file} className="w-[276px] shrink-0">
-            <IPhoneFrame screen={phone.file} alt={phone.alt} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function SoyTechnoFigmaBody() {
   return (
     <div className="bg-[#FEF7FF] text-[#4A4453] overflow-x-hidden">
@@ -131,7 +105,7 @@ export default function SoyTechnoFigmaBody() {
       </div>
 
       <div className="hidden lg:block">
-        {/* 1. Hero — HTML copy + one grouped image */}
+        {/* 1. Hero — HTML copy + native collage (not a flattened PNG) */}
         <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
           <div
             className="pointer-events-none absolute inset-0 opacity-50"
@@ -152,12 +126,12 @@ export default function SoyTechnoFigmaBody() {
                 <p className="font-sans text-[18px] leading-[1.5] mb-6">{FIGMA.heroP1}</p>
                 <p className="font-sans text-[18px] leading-[1.5]">{FIGMA.heroP2}</p>
               </div>
-              <SoyTechnoGroupedArt slot="hero" alt="Collage SoyTechno" />
+              <HeroCollage />
             </div>
           </div>
         </section>
 
-        {/* 2. Desafío — HTML text card + one grouped visual */}
+        {/* 2. Desafío — HTML text card + native 2×2 visual */}
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
           <SectionTitle>{FIGMA.desafioTitle}</SectionTitle>
           <Lead>{FIGMA.desafioLead}</Lead>
@@ -166,7 +140,7 @@ export default function SoyTechnoFigmaBody() {
             id="soytechno-desafio"
             className="relative bg-[#EADDFF] rounded-[36px] overflow-hidden scroll-mt-[168px]"
           >
-            <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
+            <DesafioArt />
             <div className="absolute left-[4%] top-[2.5%] w-[48%] h-[54%] bg-white rounded-[28px] px-8 py-8">
               <div className="space-y-6">
                 {FIGMA.desafioItems.map((item) => (
@@ -325,13 +299,7 @@ export default function SoyTechnoFigmaBody() {
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
           <ChapterBar>{FIGMA.wizardPill}</ChapterBar>
           <div id="soytechno-wizard" className="mt-16 grid grid-cols-2 gap-10 items-start">
-            <img
-              src={img('soytechno-wizard-ipad.png')}
-              alt="Checkout wizard"
-              width="100%"
-              height="auto"
-              className="w-full h-auto object-contain"
-            />
+            <IPadPortrait screen="ipad-mockup-01.png" alt="Checkout wizard" />
             <div>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.wizardLead}</p>
               <div className="space-y-10">
@@ -377,16 +345,12 @@ export default function SoyTechnoFigmaBody() {
           </div>
         </section>
 
-        {/* Phones — Figma strip export, or clipped fallback (not 4 equal phones) */}
+        {/* Phones — native 1170 screens in IPhoneFrame, peek first */}
         <section
           id="soytechno-phones"
           className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]"
         >
-          <SoyTechnoGroupedArt
-            slot="phones"
-            alt="Galería de pantallas móviles SoyTechno"
-            fallback={<DesktopPhonesFallback />}
-          />
+          <DesktopPhonesRow />
         </section>
 
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
