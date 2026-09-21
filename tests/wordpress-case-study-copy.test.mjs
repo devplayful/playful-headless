@@ -58,6 +58,20 @@ test('SoyTechno keeps the approved CIMA title and SEO override', () => {
   assert.doesNotMatch(soytechnoBody, /Tienda online en Venezuela/);
 });
 
+test('SoyTechno editorial H2/H3 labels match the signed SEO set', () => {
+  assert.match(soytechnoBody, /Panorama del eCommerce en Venezuela y el desafío de confianza/);
+  assert.match(soytechnoBody, /Audiencia: quién compra tecnología online en Venezuela/);
+  assert.match(soytechnoBody, /Objetivos de negocio 2025/);
+  assert.match(soytechnoBody, /Cómo la estrategia respondió al insight/);
+  assert.match(soytechnoBody, /Medios clave: Cashea, MRW y checkout/);
+  assert.match(soytechnoBody, /Recursos, técnicas y herramientas/);
+  assert.match(soytechnoBody, /Aporte al eCommerce formal en Venezuela/);
+  assert.match(soytechnoBody, /Prueba de que la estrategia funcionó/);
+  assert.match(soytechnoBody, /Resultados frente a los KPIs iniciales/);
+  assert.doesNotMatch(soytechnoBody, /¿Como su idea estratégica abordó directamente el insight/);
+  assert.doesNotMatch(soytechnoBody, /Por favor mencione cuáles fueron sus medios claves/);
+});
+
 test('SoyTechno body uses the approved CIMA case-study copy', () => {
   assert.match(soytechnoBody, /Tras su soft launch, SoyTechno debía consolidar su eCommerce/);
   assert.match(soytechnoBody, /El venezolano no compra tecnología; la planifica/);

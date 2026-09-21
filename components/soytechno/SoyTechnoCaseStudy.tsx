@@ -75,13 +75,13 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.challenge}>
         <div className={styles.challengeCopy}>
-          <ContentItem title="La idea: tratar al venezolano como comprador real">
+          <ContentItem title="Panorama del eCommerce en Venezuela y el desafío de confianza">
             <p>{approvedCopy.idea}</p>
           </ContentItem>
-          <ContentItem title="Una audiencia que ya compraba online">
+          <ContentItem title="Audiencia: quién compra tecnología online en Venezuela">
             <p>{approvedCopy.audience}</p>
           </ContentItem>
-          <ContentItem title="Cinco objetivos para consolidar la plataforma">
+          <ContentItem title="Objetivos de negocio 2025">
             <p>{approvedCopy.objectives}</p>
           </ContentItem>
         </div>
@@ -111,7 +111,7 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.introSectionSmall}>
-        <h2>La confianza como consecuencia de cada interacción</h2>
+        <h2>Cómo la estrategia respondió al insight</h2>
         <p>{approvedCopy.strategicResponse}</p>
       </section>
 
@@ -129,7 +129,7 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>B. Resultados que validan el cambio de hábito</SectionTitle>
+        <SectionTitle>Medios clave: Cashea, MRW y checkout</SectionTitle>
         <div className={styles.brandPanel}>
           <div className={styles.paletteColumn}>
             <div className={`${styles.paletteCard} ${styles.darkCard}`}><b>DARK BLUE-GRAY</b><span>HEX: 686EA0</span><span>RGB: 104 / 110 / 160</span><span>CMYK: 35 / 31 / 0 / 37</span><Image src={vector('shipping-national.svg')} width={120} height={120} alt="Envíos nacionales" /></div>
@@ -169,7 +169,7 @@ export default function SoyTechnoCaseStudy() {
 
       <div className={styles.divider} />
       <section className={styles.introSection}>
-        <h2>La prueba del éxito: resultados y KPIs</h2>
+        <h2>Recursos, técnicas y herramientas</h2>
         <p>{approvedCopy.results}</p>
       </section>
 
@@ -179,7 +179,7 @@ export default function SoyTechnoCaseStudy() {
           <div className={styles.textStack}>
             <h2 className={styles.subTitle}>Financiamiento y moneda sin salir del flujo de compra</h2>
             <p>{approvedCopy.resources}</p>
-            <ContentItem title="El medio principal fue la plataforma"><p>{approvedCopy.media}</p></ContentItem>
+            <ContentItem title="Aporte al eCommerce formal en Venezuela"><p>{approvedCopy.media}</p></ContentItem>
             <ContentItem title="Una innovación diseñada para Venezuela"><p>{approvedCopy.innovation}</p></ContentItem>
           </div>
           <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
@@ -199,13 +199,13 @@ export default function SoyTechnoCaseStudy() {
             <p>{approvedCopy.strategicResponse}</p>
             <ContentItem title="Objetivos para consolidar la plataforma"><p>{approvedCopy.objectives}</p></ContentItem>
             <ContentItem title="Una audiencia móvil e hiperconectada"><p>{approvedCopy.audience}</p></ContentItem>
-            <ContentItem title="La idea que cambió el enfoque"><p>{approvedCopy.idea}</p></ContentItem>
+            <ContentItem title="Prueba de que la estrategia funcionó"><p>{approvedCopy.idea}</p></ContentItem>
           </div>
         </div>
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>3. Transparencia logística y confianza postventa</SectionTitle>
+        <SectionTitle>Resultados frente a los KPIs iniciales</SectionTitle>
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
             <p>{approvedCopy.media}</p>
