@@ -32,14 +32,14 @@ test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => 
   );
 });
 
-test('SoyTechno SEO wrap stays on SERP slots and does not replace Figma H1', () => {
+test('SoyTechno H1, title and og:title share the signed José GO string', () => {
   assert.match(
     overrides,
     /'soytechno-ecommerce-venezuela':/,
   );
   assert.match(
     overrides,
-    /SoyTechno: el eCommerce que entendió cómo compra Venezuela/,
+    /SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela/,
   );
   assert.match(
     overrides,
@@ -47,12 +47,13 @@ test('SoyTechno SEO wrap stays on SERP slots and does not replace Figma H1', () 
   );
   assert.match(
     soytechnoBody,
-    /<h1>SOYTECHNO: Transformación 100% Centrada en el Usuario<\/h1>/,
+    /<h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela<\/h1>/,
   );
   assert.doesNotMatch(
     soytechnoBody,
-    /<h1>SoyTechno: el eCommerce que entendió cómo compra Venezuela<\/h1>/,
+    /<h1>SOYTECHNO: Transformación 100% Centrada en el Usuario<\/h1>/,
   );
+  assert.doesNotMatch(overrides, /entendió cómo compra Venezuela/);
   assert.doesNotMatch(soytechnoBody, /Tienda online en Venezuela/);
 });
 

@@ -32,7 +32,7 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <h1>SOYTECHNO: Transformación 100% Centrada en el Usuario</h1>
+          <h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela</h1>
           <p>
             SOYTECHNO necesitaba transformar su presencia digital en una plataforma de alto rendimiento. El desafío no era solo vender, sino crear una experiencia de <em>E-commerce</em> con la <strong>funcionalidad y la robustez de una aplicación</strong>, capaz de manejar un catálogo variado y métodos de pago complejos como el cambio de moneda y <strong>Cashea</strong>.
           </p>

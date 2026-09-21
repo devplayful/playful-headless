@@ -22,7 +22,7 @@ const PUBLIC_CASE_STUDY_SEO: Record<string, { title: string; description: string
       'Odwalla tenía web y visitas, no carrito. En Shopify armamos el canal DTC en odwalladrinks.com para que el pedido no se fuera a un tercero.',
   },
   'soytechno-ecommerce-venezuela': {
-    title: 'SoyTechno: el eCommerce que entendió cómo compra Venezuela',
+    title: 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela',
     description:
       'Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra el mercado fuera del chat informal.',
   },
