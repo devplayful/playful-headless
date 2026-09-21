@@ -112,7 +112,7 @@ export default function NotFound() {
             {/* Primera fila: 3 botones */}
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full">
               <Link 
-                href="/casos-de-exito-agencia-de-marketing-digital"
+                href="/casos-de-exito"
                 className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-white transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
                 style={{ backgroundColor: '#5724AB' }}
                 aria-label="Ver casos de éxito"

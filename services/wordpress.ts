@@ -1,4 +1,5 @@
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
+import { mergePublicCaseStudies } from '@/lib/public-case-studies';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
@@ -388,7 +389,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     title: 'Casos de Éxito',
-    slug: 'casos-de-exito-agencia-de-marketing-digital',
+    slug: 'casos-de-exito',
     children: [
       { title: 'Policlínica Metropolitana', slug: 'policlinica-metropolitana' },
       { title: 'Mercantil Servicios Financieros', slug: 'mercantil-servicios-financieros-internacional' },
@@ -737,8 +738,9 @@ export async function getAllCaseStudies(): Promise<any[]> {
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
-  return casos.map((caso: Record<string, unknown>) => {
+  const published = casos.map((caso: Record<string, unknown>) => {
     const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
     return applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized));
   });
+  return mergePublicCaseStudies(published);
 }

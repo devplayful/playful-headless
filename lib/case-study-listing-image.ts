@@ -1,4 +1,4 @@
-/** Same listing endpoint and featured-media resolver as /casos-de-exito-agencia-de-marketing-digital. */
+/** Same listing endpoint and featured-media resolver as /casos-de-exito. */
 export const CASE_STUDIES_LISTING_EMBED_URL =
   'https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed';
 
@@ -8,9 +8,12 @@ export const CASOS_DE_EXITO_FEATURED_TAPAS = {
     'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png',
   'odwalla-shopify-dtc-ecommerce':
     'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png',
+  'soytechno-ecommerce-venezuela':
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
 } as const;
 
 export function resolveCaseStudyListingImage(item: {
+  slug?: string;
   featured_media_url?: string;
   _embedded?: { 'wp:featuredmedia'?: Array<{ source_url?: string }> };
 } | null | undefined): string {
@@ -19,6 +22,9 @@ export function resolveCaseStudyListingImage(item: {
   }
   if (typeof item?.featured_media_url === 'string' && item.featured_media_url) {
     return item.featured_media_url;
+  }
+  if (typeof item?.slug === 'string' && item.slug) {
+    return featuredTapaForSlug(item.slug);
   }
   return '';
 }

@@ -9,7 +9,8 @@ const PERMANENT_301: Record<string, string> = {
   '/services': '/agencia-e-commerce',
   '/contacto': '/contactar-agencia-de-marketing-digital',
   '/contactanos': '/contactar-agencia-de-marketing-digital',
-  '/casos': '/casos-de-exito-agencia-de-marketing-digital',
+  '/casos': '/casos-de-exito',
+  '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
   '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
 };
 
@@ -66,6 +67,8 @@ export const config = {
     '/contactanos/',
     '/casos',
     '/casos/',
+    '/casos-de-exito-agencia-de-marketing-digital',
+    '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
     '/blog',

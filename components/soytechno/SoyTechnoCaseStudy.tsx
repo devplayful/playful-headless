@@ -78,7 +78,7 @@ export default function SoyTechnoCaseStudy() {
       <div className={styles.heroBackdrop}>
         <div className={styles.breadcrumb}>
           <Link href="/">Home</Link><span>/</span>
-          <Link href="/casos-de-exito-agencia-de-marketing-digital">Casos de éxito</Link>
+          <Link href="/casos-de-exito">Casos de éxito</Link>
           <span>/</span>
           <span>SoyTechno</span>
         </div>

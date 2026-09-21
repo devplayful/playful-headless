@@ -23,7 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Actualizar los colores basados en la ruta
   useEffect(() => {
-    if (pathname === '/casos-de-exito-agencia-de-marketing-digital' || 
+    if (pathname === '/casos-de-exito' ||
         (pathname && pathname.startsWith('/casos-de-exito/'))) {
       setHeaderColor('playful-header-mora');
       setFooterColor('playful-footer-mora');
