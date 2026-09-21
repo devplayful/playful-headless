@@ -111,6 +111,7 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | 6 | `8aa553a` | FAIL-14 tight vs 2×2 | **PASS** (25/25) |
 | 7 | plan B grouped 2× | HTML copy + export shell; Block B HTML grid | preview only |
 | 8 | grouped @2× rasters | hero / desafío / logística / phones wired from Figma 1440 crop (MCP raster down) | preview only |
+| 9 | native 2× composites | `jose-1440` was a 720 upscale; rasters rebuilt from handoff (logo 4096, screens 1170×2532, rect-146 1920×2663). Script: `scripts/build-soytechno-grouped-art.py` | preview only |
 
 No merge.
 
@@ -127,4 +128,6 @@ Stop rebuilding overlapping collages in HTML. Copy stays in HTML. Graphics:
 | Logística banner+iMac | `soytechno-logistica-art@2x.png\|.webp` | `rectangle-148.png` |
 | Phones strip | `soytechno-phones-strip@2x.png\|.webp` | clipped row / 78vw snap carousel |
 
-Block B is HTML (`1196` / `p-40` / `350 / 350 / 1fr` / icons `120` / phone `340`). Overlay-at-1440 of hero/desafío/logística/phones **waits on Diseño exports**.
+Block B is HTML (`1196` / `p-40` / `350 / 350 / 1fr` / icons `120` / phone `340`).
+
+Ronda 9: grouped arts are **native composites** (`scripts/build-soytechno-grouped-art.py`), not crops of `jose-1440.png` (that file is a 2× upscale of a 720 screenshot and stays soft at retina). Diseño can still drop official exports over the same filenames.

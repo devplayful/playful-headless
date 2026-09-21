@@ -56,7 +56,9 @@ test('SoyTechno grouped 2x PNGs are on disk', () => {
     'soytechno-phones-strip@2x.png',
     'soytechno-wizard-ipad.png',
   ]) {
-    assert.equal(existsSync(path.join(dir, file)), true, file);
+    const filePath = path.join(dir, file);
+    assert.equal(existsSync(filePath), true, file);
+    assert.ok(readFileSync(filePath).length > 200_000, `${file} too small to be a 2x raster`);
   }
 });
 

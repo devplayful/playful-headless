@@ -5,8 +5,9 @@
  *   soytechno-desafio-art@2x.png|.webp
  *   soytechno-logistica-art@2x.png|.webp
  *   soytechno-phones-strip@2x.png|.webp
- * Bare names (no @2x) are also accepted. Files are opaque RGB crops from the
- * 1440 Figma frame (no chroma-key). DOM: width 100% / height auto / contain.
+ * Bare names (no @2x) are also accepted. Files are opaque RGB composites from
+ * native handoff assets (not the 720→1440 screenshot upscale). DOM: width 100%
+ * / height auto / contain.
  */
 
 import { existsSync } from 'node:fs';
