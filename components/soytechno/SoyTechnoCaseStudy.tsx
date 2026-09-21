@@ -166,7 +166,10 @@ export default function SoyTechnoCaseStudy() {
         <SectionTitle>2. Arquitectura Wizard (Multistep) y Lógica de Facturación</SectionTitle>
         <div className={styles.mediaTextGrid}>
           <div className={styles.ipadComposite}>
-            <Image src={image('ipad-mockup-02.png')} width={750} height={541} alt="Checkout wizard" />
+            <div className={styles.ipadScreen}>
+              <Image src={image('ipad-mockup-01.png')} width={1640} height={2360} alt="Formulario del checkout multistep de SoyTechno" />
+            </div>
+            <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
             <p>La idea de afrontar el checkout de forma distinta, como un wizard, se implementó contratando un plugin multistep y personalizándolo al extremo para la regla de negocio de SOYTECHNO.</p>

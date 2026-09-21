@@ -138,6 +138,7 @@
   grid-template-rows: 239px 547px 290px;
   margin: 64px auto 0;
   max-width: 1196px;
+  overflow: hidden;
   padding: 40px;
 }
 
@@ -208,8 +209,8 @@
   justify-content: center;
   justify-self: center;
   overflow: visible;
-  transform: translateY(-34px);
-  width: 340px;
+  transform: translateY(-18px);
+  width: 300px;
   z-index: 2;
 }
 
@@ -322,8 +323,43 @@
 .brandText .contentItem p { font-size: 18px; }
 
 .divider { background: #d5cdd8; height: 1px; margin: 100px auto 0; max-width: 1235px; }
-.ipadComposite { align-items: center; display: flex; min-height: 600px; }
-.ipadComposite img { height: auto; width: 100%; }
+.ipadComposite {
+  align-items: center;
+  aspect-ratio: 750 / 541;
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.ipadScreen {
+  background: #f7f7f7;
+  height: 87.5%;
+  left: 4.55%;
+  overflow: hidden;
+  position: absolute;
+  top: 6.25%;
+  width: 90.9%;
+  z-index: 1;
+}
+
+.ipadScreen img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  width: 100%;
+}
+
+.ipadFrame {
+  height: 100%;
+  inset: 0;
+  object-fit: contain;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+}
 .logisticsMedia { height: auto; justify-self: center; max-width: 650px; width: 100%; }
 
 .resultsIntro { padding-top: 120px; }
@@ -331,8 +367,14 @@
 .resultsGrid .contentItem { background: var(--lavender); border-radius: 20px; min-height: 330px; padding: 40px 36px; text-align: left; }
 .resultsGrid .contentItem h3 { font-size: 20px; }
 
-.phonesSection { margin: 0 auto; max-width: 1200px; padding: 40px 0; }
-.phonesSection img { display: block; height: auto; width: 100%; }
+.phonesSection { margin: 0 auto; max-width: 1200px; overflow: hidden; padding: 40px 0; }
+.phonesSection img {
+  display: block;
+  height: auto;
+  margin-left: -2.2%;
+  max-width: none;
+  width: 102.2%;
+}
 
 .testimonial {
   align-items: center;
@@ -438,7 +480,7 @@
   .resultsGrid .contentItem { min-height: 0; padding: 28px 24px; }
   .phonesSection { overflow-x: auto; padding: 28px 20px; scrollbar-width: none; }
   .phonesSection::-webkit-scrollbar { display: none; }
-  .phonesSection img { max-width: none; width: 760px; }
+  .phonesSection img { margin-left: -16px; max-width: none; width: 776px; }
 
   .testimonial { gap: 32px; grid-template-columns: 1fr; margin: 56px 20px 0; min-height: 0; padding: 56px 28px; text-align: center; }
   .quoteArt { height: 100%; left: 0; object-fit: cover; top: 0; width: 100%; }
@@ -455,5 +497,5 @@
 
 @media (max-width: 480px) {
   .challengePhone { height: 430px; }
-  .phonesSection img { width: 690px; }
+  .phonesSection img { width: 706px; }
 }
