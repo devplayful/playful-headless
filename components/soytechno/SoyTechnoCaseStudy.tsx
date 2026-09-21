@@ -75,10 +75,8 @@ export default function SoyTechnoCaseStudy() {
           <Image className={styles.challengePhoneScreen} src={image('iphone-frame-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno" />
           <Image className={styles.challengePhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt="" aria-hidden="true" />
         </div>
-        <div className={styles.challengeProducts} aria-label="Categorías de electrodomésticos de SoyTechno">
-          <Image className={styles.fridge} src={image('electrodomesticos-01.png')} width={720} height={720} alt="Nevera" />
-          <Image className={styles.tv} src={image('electrodomesticos-02.png')} width={720} height={720} alt="Televisor" />
-          <Image className={styles.washer} src={image('electrodomesticos-03.png')} width={720} height={720} alt="Lavadora" />
+        <div className={styles.challengeProducts}>
+          <Image src={image('electrodomesticos-composition.png')} width={386} height={512} alt="Composición de electrodomésticos de SoyTechno" />
         </div>
       </section>
 

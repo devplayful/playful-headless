@@ -186,6 +186,11 @@
 
 .challengeLogo img { border-radius: 50%; height: 190px; object-fit: cover; width: 190px; }
 
+.challengeLogo img {
+  clip-path: circle(42% at 50% 50%);
+  transform: scale(1.12);
+}
+
 .challengeLaptop {
   align-items: center;
   background: #ffefd1;
@@ -238,20 +243,24 @@
 }
 
 .challengeProducts {
+  align-items: center;
   background: linear-gradient(155deg, #3a0ca3, #4cc9f0);
   background-image: linear-gradient(155deg, rgba(58,12,163,.9), rgba(76,201,240,.9)), url('/images/casos/soytechno/images/background-section-01.png');
   background-size: cover;
   border-radius: 36px;
+  display: flex;
   grid-column: 2;
   grid-row: 3;
+  justify-content: center;
   overflow: hidden;
   position: relative;
 }
 
-.challengeProducts img { object-fit: contain; position: absolute; }
-.fridge { height: 80%; left: 25%; top: 4%; width: 34%; }
-.tv { bottom: 4%; height: 65%; left: 31%; width: 45%; }
-.washer { bottom: 2%; height: 48%; right: 8%; width: 30%; }
+.challengeProducts img {
+  height: 88.3%;
+  object-fit: contain;
+  width: auto;
+}
 
 .standardSection {
   margin: 0 auto;
@@ -405,10 +414,27 @@
 }
 
 .ipadScreen img {
-  height: 100%;
+  animation: tabletFormScroll 16s cubic-bezier(.65, 0, .35, 1) infinite;
+  height: auto;
+  left: 0;
+  min-height: 100%;
   object-fit: cover;
-  object-position: center 55%;
+  position: absolute;
+  top: 0;
   width: 100%;
+}
+
+@keyframes tabletFormScroll {
+  0%, 12% { transform: translateY(0); }
+  46%, 56% { transform: translateY(-49%); }
+  90%, 100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ipadScreen img {
+    animation: none;
+    transform: translateY(-24%);
+  }
 }
 
 .ipadFrame {
