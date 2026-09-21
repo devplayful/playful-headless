@@ -7,6 +7,7 @@ import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
 import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
+import { mergePublicCaseStudies } from "@/lib/public-case-studies";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -113,13 +114,28 @@ export default function CaseStudiesContent() {
   useEffect(() => {
     const fetchCaseStudies = async () => {
       try {
-        const response = await fetch(
-          "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed"
-        );
-        if (!response.ok) {
-          throw new Error("Error al cargar los casos de éxito");
+        let wpItems: any[] = [];
+        try {
+          const response = await fetch(
+            "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed"
+          );
+          if (response.ok) {
+            const payload = await response.json();
+            if (Array.isArray(payload)) {
+              wpItems = payload.map(applyPublicCaseStudyOverrides);
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching case studies:", err);
         }
-        const data = (await response.json()).map(applyPublicCaseStudyOverrides);
+
+        const data = mergePublicCaseStudies(wpItems);
+        if (data.length === 0) {
+          setError(
+            "No se pudieron cargar los casos de estudio. Por favor, intente nuevamente más tarde."
+          );
+          return;
+        }
 
         const transformedData: CaseStudy[] = data.map((item: any) => {
           const title = item.title?.rendered || "Sin título";

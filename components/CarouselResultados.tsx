@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
 import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
+import { featuredTapaForSlug } from "@/lib/case-study-listing-image";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -301,7 +302,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
           }
 
           // Extraer imagen destacada
-          const image = selectCaseStudyCardMediaUrl(item);
+          const image = selectCaseStudyCardMediaUrl(item) || featuredTapaForSlug(item.slug || '');
 
           // Construir array de categorías
           const categories: string[] = [];
