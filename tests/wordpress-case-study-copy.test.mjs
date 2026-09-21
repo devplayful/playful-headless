@@ -6,6 +6,10 @@ const overrides = readFileSync(
   new URL('../utils/public-case-study-overrides.ts', import.meta.url),
   'utf8',
 );
+const soytechnoBody = readFileSync(
+  new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url),
+  'utf8',
+);
 
 test('Jumex and Odwalla no longer ship the PR #27 technical-scope rewrite', () => {
   assert.doesNotMatch(overrides, /JUMEX: implementación de ecommerce en Shopify/);
@@ -26,6 +30,44 @@ test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => 
     overrides,
     /Odwalla tenía web y visitas, no carrito\. En Shopify armamos el canal DTC en odwalladrinks\.com/,
   );
+});
+
+test('SoyTechno SEO wrap stays on SERP slots and does not replace Figma H1', () => {
+  assert.match(
+    overrides,
+    /'soytechno-ecommerce-venezuela':/,
+  );
+  assert.match(
+    overrides,
+    /SoyTechno: el eCommerce que entendió cómo compra Venezuela/,
+  );
+  assert.match(
+    overrides,
+    /Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo/,
+  );
+  assert.match(
+    soytechnoBody,
+    /<h1>SOYTECHNO: Transformación 100% Centrada en el Usuario<\/h1>/,
+  );
+  assert.doesNotMatch(
+    soytechnoBody,
+    /<h1>SoyTechno: el eCommerce que entendió cómo compra Venezuela<\/h1>/,
+  );
+  assert.doesNotMatch(soytechnoBody, /Tienda online en Venezuela/);
+});
+
+test('SoyTechno Figma body keeps the Contento literals that PR #71 had condensed', () => {
+  assert.match(soytechnoBody, /Si el usuario está en Teléfonos, los filtros muestran RAM/);
+  assert.match(soytechnoBody, /lateral izquierdo en escritorio/);
+  assert.match(soytechnoBody, /un detalle que casi nunca se trabaja/);
+  assert.match(soytechnoBody, /consumiendo el precio vía método GET/);
+  assert.match(soytechnoBody, /La carga de asesores es asíncrona/);
+  assert.match(soytechnoBody, /nunca se ha tenido queja de que el producto se perdió/);
+  assert.match(soytechnoBody, /<span>SoyTechno<\/span>/);
+  assert.match(soytechnoBody, /href="\/reunion-playful"/);
+  assert.match(soytechnoBody, /jumex-shopify-dtc-ecommerce/);
+  assert.match(soytechnoBody, /odwalla-shopify-dtc-ecommerce/);
+  assert.doesNotMatch(soytechnoBody, />Odwalla<\/span>/);
 });
 
 test('applyPublicCaseStudyOverrides is a pass-through so WordPress ACF is used', () => {

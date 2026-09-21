@@ -26,6 +26,8 @@ export default function SoyTechnoCaseStudy() {
       <div className={styles.breadcrumb}>
         <Link href="/">Home</Link><span>/</span>
         <Link href="/casos-de-exito-agencia-de-marketing-digital">Casos de éxito</Link>
+        <span>/</span>
+        <span>SoyTechno</span>
       </div>
 
       <section className={styles.hero}>
@@ -56,7 +58,7 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.challenge}>
         <div className={styles.challengeCopy}>
           <ContentItem title="PRIORIDAD MÓVIL COMO MANDATO:">
-            <p>La directriz de Playful Agency fue innovadora: la presentación del pitch de negocio y los bocetos se hicieron primeramente móvil, garantizando que el E-commerce estuviera <strong>“muy, muy, muy bien resuelto en móvil”.</strong></p>
+            <p>La directriz de Playful Agency fue innovadora: La presentación del pitch de negocio y los bocetos se hicieron primeramente móvil, garantizando que el E-commerce estuviera <strong>“muy, muy, muy bien resuelto en móvil”.</strong></p>
           </ContentItem>
           <ContentItem title="FILTROS INEFICACES:">
             <p>El sitio anterior presentaba un <strong>filtro global que era inusable</strong>, lo que obstaculizaba la navegación en un catálogo con múltiples categorías (teléfonos, hogar, etc.).</p>
@@ -102,8 +104,8 @@ export default function SoyTechnoCaseStudy() {
           <div className={styles.textStack}>
             <ContentItem title="FICHA DE PRODUCTO (PDP) COMPLETA:"><p>La ficha o tarjeta de producto fue explotada al 100% para ser completa, incluyendo todas las características para que el usuario solo tenga que añadir al carrito y pagar.</p></ContentItem>
             <ContentItem title="CATEGORIZACIÓN POR SLIDER:"><p>El Home presenta las categorías principales en un slider que permite al usuario un acceso rápido a una categoría específica, logrando que el producto se adquiera en menos de tres clics.</p></ContentItem>
-            <ContentItem title="FILTROS ADAPTATIVOS Y ESPECÍFICOS:"><p>Se personalizó el filtro para que cambiara según la categoría. En Teléfonos muestra RAM, almacenamiento y color; en Hogar se adapta a pulgadas, tipo de pantalla, color y tamaño.</p></ContentItem>
-            <ContentItem title="DISEÑO DE OFERTAS ESTRATÉGICO:"><p>Se personalizó la sección de ofertas llamando a categorías mediante un tag o etiqueta. Las ofertas se visualizan cómodamente con tabs en el Home y en la gaveta de categorías.</p></ContentItem>
+            <ContentItem title="FILTROS ADAPTATIVOS Y ESPECÍFICOS:"><p>Se personalizó el filtro para que cambiara según la categoría. Si el usuario está en Teléfonos, los filtros muestran RAM, almacenamiento y color. Si está en Hogar (televisores), el filtro se adapta a pulgadas, tipo de pantalla, color y tamaño.</p></ContentItem>
+            <ContentItem title="DISEÑO DE OFERTAS ESTRATÉGICO:"><p>Se personalizó la sección de ofertas llamando a categorías mediante un tag o etiqueta. Las ofertas se visualizan cómodamente con tabs en el Home y en la gaveta de categorías (lateral izquierdo en escritorio).</p></ContentItem>
           </div>
         </div>
       </section>
@@ -130,7 +132,7 @@ export default function SoyTechnoCaseStudy() {
             <div className={styles.brandText}>
               <ContentItem title="CROMÁTICA CONTROLADA:"><p>El principal desafío fue garantizar que la cromática estuviera atada al color principal de la marca, evitando un “arco iris de colores” y buscando el contraste directo con el azul de SOYTECHNO.</p></ContentItem>
               <ContentItem title="ELEMENTOS GRÁFICOS DE MARCA:"><p>El diseño se homologó a un mismo concepto, utilizando el elemento de branding llamado “Circuito” para dar personalidad a las pantallas y secciones.</p></ContentItem>
-              <ContentItem title="BOTONES DE ALTA HEURÍSTICA:"><p>Los botones de acciones estándar son azules, mientras que el botón de Comprar tiene un tono verde que lo hace característico y un punto de atención automático.</p></ContentItem>
+              <ContentItem title="BOTONES DE ALTA HEURÍSTICA:"><p>Los botones de acciones estándar en el sitio son azules, mientras que el botón de Comprar tiene un tono verde que lo hace característico y un punto de atención que cumple la intención automáticamente.</p></ContentItem>
             </div>
           </div>
         </div>
@@ -141,8 +143,8 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.mediaTextGrid}>
           <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Pantallas vacías y estados de SoyTechno" />
           <div className={styles.textStack}>
-            <ContentItem title="PERSONALIZACIÓN DE ESTADOS:"><p>Se diseñaron y personalizaron las pantallas vacías —favoritos, comparar y error 404— para que cumplieran cromáticamente con los estándares de la marca.</p></ContentItem>
-            <ContentItem title="MENSAJES DE NOTIFICACIÓN:"><p>Se personalizó la heurística de las notificaciones del sistema usando colores acordes a éxito, advertencia y error para guiar al usuario.</p></ContentItem>
+            <ContentItem title="PERSONALIZACIÓN DE ESTADOS:"><p>Se diseñaron y personalizaron las pantallas vacías (favoritos, comparar y el error 404), un detalle que casi nunca se trabaja, para que cumplieran cromáticamente con los estándares de la marca. Las pantallas vacías y los banners son el punto de mayor orgullo del diseño.</p></ContentItem>
+            <ContentItem title="MENSAJES DE NOTIFICACIÓN:"><p>Se personalizó la heurística de las notificaciones del sistema (&quot;esto se ha añadido al carrito&quot;, &quot;este correo es incorrecto&quot;), usando colores acordes a éxito, advertencia y error para guiar al usuario.</p></ContentItem>
           </div>
         </div>
       </section>
@@ -159,8 +161,8 @@ export default function SoyTechnoCaseStudy() {
           <div className={styles.textStack}>
             <h2 className={styles.subTitle}>Un Desarrollo Vanguardista para la Financiación</h2>
             <p>Este plugin ad hoc es la joya técnica del proyecto, construido en colaboración con la API de Cashea para manejar el alto riesgo y la complejidad de los pagos fraccionados.</p>
-            <ContentItem title="DUPLICIDAD CRÍTICA DE LA LÓGICA:"><p>La solución exigió la duplicación total de la lógica interna de checkout de WooCommerce. Esto fue esencial para controlar y validar la transacción específica de Cashea, asegurando que el sistema interpretara correctamente el regreso del cliente desde la web app.</p></ContentItem>
-            <ContentItem title="GESTIÓN ASÍNCRONA DE LA INICIAL:"><p>El plugin maneja con precisión el pago de la inicial, la notificación de éxito por correo y la sincronización total del estado de la compra, con capacidad de cancelación bidireccional.</p></ContentItem>
+            <ContentItem title="DUPLICIDAD CRÍTICA DE LA LÓGICA:"><p>La solución exigió la duplicación total de la lógica interna de checkout de WooCommerce. Esto fue esencial para controlar y validar la transacción específica de Cashea, asegurando que el sistema interpretara correctamente el regreso del cliente desde la web app (consumiendo el precio vía método GET).</p></ContentItem>
+            <ContentItem title="GESTIÓN ASÍNCRONA DE LA INICIAL:"><p>El plugin maneja con precisión el pago de la inicial, la notificación de éxito por correo, y garantiza la sincronización total del estado de la compra, con la capacidad única de cancelación bidireccional.</p></ContentItem>
           </div>
           <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
         </div>
@@ -177,9 +179,9 @@ export default function SoyTechnoCaseStudy() {
           </div>
           <div className={styles.textStack}>
             <p>La idea de afrontar el checkout de forma distinta, como un wizard, se implementó contratando un plugin multistep y personalizándolo al extremo para la regla de negocio de SOYTECHNO.</p>
-            <ContentItem title="FLUJO MULTISTEP (WIZARD):"><p>Se migró del flujo lineal a un proceso de pasos, dividiendo el llenado en Facturación y Envío, que puede ser una persona distinta.</p></ContentItem>
-            <ContentItem title="REGLA DE NEGOCIO:"><p>Se añadió un campo que valida si el cliente tiene determinadas características y, en caso de poseerlas, no se procede con la compra.</p></ContentItem>
-            <ContentItem title="GESTIÓN DE ASESORES Y TRAZABILIDAD:"><p>Desarrollamos un script para asociar la compra a un asesor, con sincronización masiva de tiendas y asesores mediante la carga de un Excel.</p></ContentItem>
+            <ContentItem title="FLUJO MULTISTEP (WIZARD):"><p>Se migró del flujo lineal a un proceso de pasos (wizard), dividiendo el llenado en Facturación (datos del comprador) y Envío (datos del receptor), que puede ser una persona distinta (familiar, amigo, etc.).</p></ContentItem>
+            <ContentItem title="REGLA DE NEGOCIO:"><p>Se añadió una personalización crucial: un campo que valida si el cliente tiene determinadas características y en caso de poseerlas, no se procede con la compra.</p></ContentItem>
+            <ContentItem title="GESTIÓN DE ASESORES Y TRAZABILIDAD:"><p>Desarrollamos un script para que el cliente pueda asociar su compra a un asesor. La carga de asesores es asíncrona (elige tienda, y luego el asesor de esa tienda). Creamos un plugin adicional que permite la sincronización masiva de tiendas y asesores a través de la carga de un Excel.</p></ContentItem>
           </div>
         </div>
       </section>
@@ -189,8 +191,8 @@ export default function SoyTechnoCaseStudy() {
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
             <p>Este sistema elimina el error humano y automatiza las reglas de negocio de SOYTECHNO, logrando un margen de error mínimo.</p>
-            <ContentItem title="ALGORITMO DE FILTRADO MRW AVANZADO:"><p>Al seleccionar un estado, el sistema filtra dinámicamente solo las agencias MRW disponibles, garantizando que el producto llegue a la agencia correcta.</p></ContentItem>
-            <ContentItem title="APLICACIÓN DE CONDICIONALES GEOGRÁFICAS:"><p>Distrito Capital permite Delivery o Retiro en Almacén. Guarenas y Guatire habilitan la opción de Punto de Entrega para entregas semanales.</p></ContentItem>
+            <ContentItem title="ALGORITMO DE FILTRADO MRW AVANZADO:"><p>Al seleccionar un estado (ej. Zulia), el sistema filtra dinámicamente solo las agencias MRW disponibles, garantizando que &quot;nunca se ha tenido queja de que el producto se perdió o llegó a otra agencia&quot;.</p></ContentItem>
+            <ContentItem title="APLICACIÓN DE CONDICIONALES GEOGRÁFICAS:"><p>El sistema aplica condicionales estrictas por ubicación: Distrito Capital: El cliente solo puede elegir entre Delivery o Retiro en Almacén (regla de negocio). Guarenas/Guatire: Se habilita la opción de &quot;Punto de Entrega&quot; para entregas semanales en puntos específicos.</p></ContentItem>
           </div>
           <Image className={styles.logisticsMedia} src={image('logistics-composition.png')} width={1300} height={1458} alt="Sistema de envíos y rastreo MRW de SoyTechno" />
         </div>
@@ -201,8 +203,8 @@ export default function SoyTechnoCaseStudy() {
         <p>La implementación tecnológica en WooCommerce no solo mejoró la apariencia del sitio, sino que transformó la operación de venta de SOYTECHNO, consolidando un E-commerce que cumple estándares de conversión al 100%.</p>
         <div className={styles.resultsGrid}>
           <ContentItem title="LIDERAZGO EN MÉTODOS DE PAGO:"><p>SOYTECHNO es un referente con una integración de Cashea que otras grandes marcas han intentado y no han podido replicar.</p></ContentItem>
-          <ContentItem title="CONVERSIÓN SIMPLIFICADA:"><p>El diseño móvil y la fluidez del checkout garantizan que el viaje del usuario sea práctico, transformando la experiencia de compra en una conversión fluida.</p></ContentItem>
-          <ContentItem title="ROBUSTEZ DE WEB APP:"><p>El uso de WoodMart sobre WooCommerce permitió crear un E-commerce con la funcionalidad de una aplicación capaz de manejar transacciones complejas.</p></ContentItem>
+          <ContentItem title="CONVERSIÓN SIMPLIFICADA:"><p>El diseño móvil y la fluidez del checkout garantizan que el viaje del usuario sea lo más práctico posible, transformando la experiencia de compra en una conversión fluida.</p></ContentItem>
+          <ContentItem title="ROBUSTEZ DE WEB APP:"><p>El uso de WoodMart sobre WooCommerce nos permitió crear un E-commerce con la funcionalidad de una aplicación, capaz de manejar la lógica de transacciones complejas y la sincronización de inventario/asesores en tiempo real.</p></ContentItem>
         </div>
       </section>
 
@@ -226,9 +228,17 @@ export default function SoyTechnoCaseStudy() {
           <h2>¿Tu E-commerce está listo para el nivel de un Web App?</h2>
           <p>Si tu plataforma necesita una personalización radical para manejar métodos de pago complejos y asegurar una experiencia móvil de primera, hablemos.</p>
           <p>¡Contáctanos y descubre cómo podemos llevar tu E-commerce a un nuevo nivel de robustez y diseño!</p>
-          <Link href="/contactar-agencia-de-marketing-digital">¡Hablemos de tu proyecto!</Link>
+          <Link href="/reunion-playful">¡Hablemos de tu proyecto!</Link>
         </div>
       </section>
+
+      <nav className={styles.breadcrumb} aria-label="Más casos de éxito">
+        <Link href="/reunion-playful">Agenda una reunión</Link>
+        <span>/</span>
+        <Link href="/casos-de-exito/jumex-shopify-dtc-ecommerce">Jumex Shopify DTC: canal propio para un catálogo grande</Link>
+        <span>/</span>
+        <Link href="/casos-de-exito/odwalla-shopify-dtc-ecommerce">Odwalla Shopify DTC: de sitio informativo a tienda</Link>
+      </nav>
     </article>
   )
 }
