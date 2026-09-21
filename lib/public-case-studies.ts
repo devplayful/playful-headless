@@ -1,5 +1,5 @@
-import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
-import { featuredTapaForSlug } from '@/lib/case-study-listing-image';
+import { getPublicCaseStudySeoOverride } from '../utils/public-case-study-overrides.ts';
+import { featuredTapaForSlug } from './case-study-listing-image.ts';
 
 export const SOYTECHNO_CASE_SLUG = 'soytechno-ecommerce-venezuela';
 
