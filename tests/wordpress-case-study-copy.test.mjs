@@ -59,17 +59,30 @@ test('SoyTechno keeps the approved CIMA title and SEO override', () => {
 });
 
 test('SoyTechno editorial H2/H3 labels match the signed SEO set', () => {
-  assert.match(soytechnoBody, /Panorama del eCommerce en Venezuela y el desafío de confianza/);
-  assert.match(soytechnoBody, /Audiencia: quién compra tecnología online en Venezuela/);
-  assert.match(soytechnoBody, /Objetivos de negocio 2025/);
+  assert.match(soytechnoBody, /La fricción detrás del abandono/);
+  assert.match(soytechnoBody, /Un mercado todavía informal/);
+  assert.match(soytechnoBody, /El desafío era la confianza/);
   assert.match(soytechnoBody, /Cómo la estrategia respondió al insight/);
   assert.match(soytechnoBody, /Medios clave: Cashea, MRW y checkout/);
-  assert.match(soytechnoBody, /Recursos, técnicas y herramientas/);
-  assert.match(soytechnoBody, /Aporte al eCommerce formal en Venezuela/);
-  assert.match(soytechnoBody, /Prueba de que la estrategia funcionó/);
+  assert.match(soytechnoBody, /Herramientas para resolver la complejidad local/);
+  assert.match(soytechnoBody, /Arquitectura de confianza/);
+  assert.match(soytechnoBody, /El hábito de consumo cambió/);
   assert.match(soytechnoBody, /Resultados frente a los KPIs iniciales/);
   assert.doesNotMatch(soytechnoBody, /¿Como su idea estratégica abordó directamente el insight/);
   assert.doesNotMatch(soytechnoBody, /Por favor mencione cuáles fueron sus medios claves/);
+});
+
+test('SoyTechno distributes 32 unique source fragments without repeating them', () => {
+  const renderedBody = soytechnoBody.split('export default function', 2)[1];
+  const fragments = [...renderedBody.matchAll(/caseCopy\.([A-Za-z]+)\[(\d+)\]/g)]
+    .map((match) => `${match[1]}:${match[2]}`);
+
+  assert.equal(fragments.length, 32);
+  assert.equal(new Set(fragments).size, 32);
+  assert.doesNotMatch(renderedBody, /approvedCopy\.(?!title)/);
+  assert.match(soytechnoBody, /Eva Cristina Luciani/);
+  assert.match(soytechnoBody, /comparador de productos/);
+  assert.match(soytechnoBody, /Diseñemos un eCommerce preparado para pagos, logística y atención/);
 });
 
 test('SoyTechno body uses the approved CIMA case-study copy', () => {

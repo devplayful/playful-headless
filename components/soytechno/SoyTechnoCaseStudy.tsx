@@ -27,6 +27,38 @@ const approvedCopy = {
   contribution: 'SoyTechno demostró que el eCommerce formal, automatizado y de alta gama es viable en Venezuela. En un mercado donde la industria operaba por mensaje directo y sin precios publicados, la plataforma estableció un nuevo estándar: catálogo transparente, métodos de pago digitales accesibles y logística rastreable. Eso no solo benefició a SoyTechno, educó al consumidor venezolano sobre cómo comprar tecnología online con autonomía y seguridad. Cada transacción completada en la plataforma es una demostración práctica de que la informalidad no es una condición permanente del mercado venezolano, sino un problema de infraestructura que tiene solución.',
 } as const
 
+const splitCopy = (text: string, boundaries: string[]) => {
+  let start = 0
+  const fragments = boundaries.map((boundary) => {
+    const boundaryIndex = text.indexOf(boundary, start)
+    if (boundaryIndex === -1) throw new Error(`Missing copy boundary: ${boundary}`)
+    const fragment = text.slice(start, boundaryIndex).trim()
+    start = boundaryIndex
+    return fragment
+  })
+
+  return [...fragments, text.slice(start).trim()]
+}
+
+const caseCopy = {
+  executiveChallenge: splitCopy(approvedCopy.executiveChallenge, ['El reto 2025:']),
+  insight: splitCopy(approvedCopy.insight, ['El consumidor no abandona']),
+  idea: [approvedCopy.idea],
+  executiveResults: splitCopy(approvedCopy.executiveResults, ['Logramos una tasa']),
+  challenge: splitCopy(approvedCopy.challenge, ['El reto de SoyTechno no era tecnológico']),
+  audience: splitCopy(approvedCopy.audience, ['Navegan en su mayoría']),
+  objectives: splitCopy(approvedCopy.objectives, ['(3) Incrementar']),
+  strategy: splitCopy(approvedCopy.strategy, ['(1) Autonomía Financiera:', '(3) Arquitectura de Confianza:']),
+  strategicResponse: splitCopy(approvedCopy.strategicResponse, ['La respuesta fue diseñar']),
+  media: splitCopy(approvedCopy.media, ['El módulo de rastreo MRW']),
+  results: splitCopy(approvedCopy.results, ['Logramos una tasa de conversión global']),
+  evidence: splitCopy(approvedCopy.evidence, ['La Semana Cosecha Cashea']),
+  baseline: splitCopy(approvedCopy.baseline, ['Cada objetivo declarado']),
+  innovation: splitCopy(approvedCopy.innovation, ['Implementamos Freshchat']),
+  resources: splitCopy(approvedCopy.resources, ['Para la atención al cliente']),
+  contribution: splitCopy(approvedCopy.contribution, ['Eso no solo benefició']),
+} as const
+
 const SectionTitle = ({ children }: { children: ReactNode }) => (
   <div className={styles.sectionTitle}>
     <h2>{children}</h2>
@@ -54,8 +86,8 @@ export default function SoyTechnoCaseStudy() {
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
             <h1>{approvedCopy.title}</h1>
-            <p>{approvedCopy.executiveChallenge}</p>
-            <p>{approvedCopy.insight}</p>
+            <p>{caseCopy.executiveChallenge[0]}</p>
+            <p>{caseCopy.executiveChallenge[1]}</p>
           </div>
           <div className={styles.heroArtwork}>
             <Image src={image('hero-composition.png')} width={638} height={998} priority alt="Composición visual de SoyTechno, Cashea, WordPress y comercio electrónico" />
@@ -65,7 +97,7 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.introSection}>
         <h2>El desafío no era tecnológico, era de confianza</h2>
-        <p>{approvedCopy.challenge}</p>
+        <p>{caseCopy.insight[0]}</p>
         <div className={styles.introIcons} aria-hidden="true">
           <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
           <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
@@ -75,14 +107,14 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.challenge}>
         <div className={styles.challengeCopy}>
-          <ContentItem title="Panorama del eCommerce en Venezuela y el desafío de confianza">
-            <p>{approvedCopy.idea}</p>
+          <ContentItem title="La fricción detrás del abandono">
+            <p>{caseCopy.insight[1]}</p>
           </ContentItem>
-          <ContentItem title="Audiencia: quién compra tecnología online en Venezuela">
-            <p>{approvedCopy.audience}</p>
+          <ContentItem title="Un mercado todavía informal">
+            <p>{caseCopy.challenge[0]}</p>
           </ContentItem>
-          <ContentItem title="Objetivos de negocio 2025">
-            <p>{approvedCopy.objectives}</p>
+          <ContentItem title="El desafío era la confianza">
+            <p>{caseCopy.challenge[1]}</p>
           </ContentItem>
         </div>
         <div className={styles.challengeLogo}>
@@ -102,7 +134,7 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.introSection}>
         <h2>Una estrategia trimestral para construir autonomía y confianza</h2>
-        <p>{approvedCopy.strategy}</p>
+        <p>{caseCopy.strategy[0]}</p>
         <div className={styles.introIcons} aria-hidden="true">
           <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
           <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
@@ -112,7 +144,7 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.introSectionSmall}>
         <h2>Cómo la estrategia respondió al insight</h2>
-        <p>{approvedCopy.strategicResponse}</p>
+        <p>{caseCopy.strategicResponse[0]}</p>
       </section>
 
       <section className={styles.standardSection}>
@@ -120,10 +152,10 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.mediaTextGrid}>
           <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Ficha de producto y ofertas de SoyTechno" />
           <div className={styles.textStack}>
-            <ContentItem title="Un solo ecosistema de compra"><p>{approvedCopy.media}</p></ContentItem>
-            <ContentItem title="Innovación adaptada a Venezuela"><p>{approvedCopy.innovation}</p></ContentItem>
-            <ContentItem title="Herramientas para reducir la fricción"><p>{approvedCopy.resources}</p></ContentItem>
-            <ContentItem title="Un nuevo estándar para el mercado"><p>{approvedCopy.contribution}</p></ContentItem>
+            <ContentItem title="Una audiencia hiperconectada"><p>{caseCopy.audience[0]}</p></ContentItem>
+            <ContentItem title="Compra móvil en siete ciudades"><p>{caseCopy.audience[1]}</p></ContentItem>
+            <ContentItem title="Educación y conversión"><p>{caseCopy.objectives[0]}</p></ContentItem>
+            <ContentItem title="Escala, reputación y atención"><p>{caseCopy.objectives[1]}</p></ContentItem>
           </div>
         </div>
       </section>
@@ -148,9 +180,9 @@ export default function SoyTechnoCaseStudy() {
           <div className={styles.brandCopyColumn}>
             <div className={styles.logoCard}><Image src={image('soytechno-logo-white.png')} width={384} height={69} alt="SoyTechno" /></div>
             <div className={styles.brandText}>
-              <ContentItem title="Escala y conversión"><p>{approvedCopy.executiveResults}</p></ContentItem>
-              <ContentItem title="La intención llegó por canales propios"><p>{approvedCopy.evidence}</p></ContentItem>
-              <ContentItem title="Crecimiento frente al punto de partida"><p>{approvedCopy.baseline}</p></ContentItem>
+              <ContentItem title="La plataforma como medio principal"><p>{caseCopy.media[0]}</p></ContentItem>
+              <ContentItem title="Confianza después de la compra"><p>{caseCopy.media[1]}</p></ContentItem>
+              <ContentItem title="Transparencia logística"><p>{caseCopy.strategy[1]}</p></ContentItem>
             </div>
           </div>
         </div>
@@ -161,16 +193,16 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.mediaTextGrid}>
           <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Pantallas vacías y estados de SoyTechno" />
           <div className={styles.textStack}>
-            <ContentItem title="Tecnología global para la hipercomplejidad venezolana"><p>{approvedCopy.innovation}</p></ContentItem>
-            <ContentItem title="Una infraestructura que educó al mercado"><p>{approvedCopy.contribution}</p></ContentItem>
+            <ContentItem title="Tecnología adaptada a Venezuela"><p>{caseCopy.innovation[0]}</p></ContentItem>
+            <ContentItem title="IA y filtros que reducen la fricción"><p>{caseCopy.innovation[1]}</p></ContentItem>
           </div>
         </div>
       </section>
 
       <div className={styles.divider} />
       <section className={styles.introSection}>
-        <h2>Recursos, técnicas y herramientas</h2>
-        <p>{approvedCopy.results}</p>
+        <h2>Herramientas para resolver la complejidad local</h2>
+        <p>{caseCopy.resources[0]}</p>
       </section>
 
       <section className={styles.standardSection}>
@@ -178,9 +210,9 @@ export default function SoyTechnoCaseStudy() {
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
             <h2 className={styles.subTitle}>Financiamiento y moneda sin salir del flujo de compra</h2>
-            <p>{approvedCopy.resources}</p>
-            <ContentItem title="Aporte al eCommerce formal en Venezuela"><p>{approvedCopy.media}</p></ContentItem>
-            <ContentItem title="Una innovación diseñada para Venezuela"><p>{approvedCopy.innovation}</p></ContentItem>
+            <p>{caseCopy.resources[1]}</p>
+            <ContentItem title="Arquitectura de confianza"><p>{caseCopy.strategy[2]}</p></ContentItem>
+            <ContentItem title="Confianza como consecuencia"><p>{caseCopy.strategicResponse[1]}</p></ContentItem>
           </div>
           <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
         </div>
@@ -196,10 +228,10 @@ export default function SoyTechnoCaseStudy() {
             <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
-            <p>{approvedCopy.strategicResponse}</p>
-            <ContentItem title="Objetivos para consolidar la plataforma"><p>{approvedCopy.objectives}</p></ContentItem>
-            <ContentItem title="Una audiencia móvil e hiperconectada"><p>{approvedCopy.audience}</p></ContentItem>
-            <ContentItem title="Prueba de que la estrategia funcionó"><p>{approvedCopy.idea}</p></ContentItem>
+            <p>{caseCopy.idea[0]}</p>
+            <ContentItem title="Escala alcanzada"><p>{caseCopy.executiveResults[0]}</p></ContentItem>
+            <ContentItem title="Conversión por encima del promedio"><p>{caseCopy.executiveResults[1]}</p></ContentItem>
+            <ContentItem title="El hábito de consumo cambió"><p>{caseCopy.results[0]}</p></ContentItem>
           </div>
         </div>
       </section>
@@ -208,9 +240,9 @@ export default function SoyTechnoCaseStudy() {
         <SectionTitle>Resultados frente a los KPIs iniciales</SectionTitle>
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
-            <p>{approvedCopy.media}</p>
-            <ContentItem title="La confianza era el verdadero reto"><p>{approvedCopy.challenge}</p></ContentItem>
-            <ContentItem title="El aporte al mercado venezolano"><p>{approvedCopy.contribution}</p></ContentItem>
+            <p>{caseCopy.evidence[0]}</p>
+            <ContentItem title="La Semana Cosecha Cashea"><p>{caseCopy.evidence[1]}</p></ContentItem>
+            <ContentItem title="Un nuevo estándar para el mercado"><p>{caseCopy.contribution[0]}</p></ContentItem>
           </div>
           <Image className={styles.logisticsMedia} src={image('logistics-composition.png')} width={1300} height={1458} alt="Sistema de envíos y rastreo MRW de SoyTechno" />
         </div>
@@ -218,11 +250,11 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.resultsIntro}>
         <h2>Resultados que cambiaron la categoría</h2>
-        <p>{approvedCopy.results}</p>
+        <p>{caseCopy.results[1]}</p>
         <div className={styles.resultsGrid}>
-          <ContentItem title="Escala y conversión"><p>{approvedCopy.executiveResults}</p></ContentItem>
-          <ContentItem title="La evidencia de una marca buscada por nombre"><p>{approvedCopy.evidence}</p></ContentItem>
-          <ContentItem title="Del punto de partida al crecimiento ×6,9"><p>{approvedCopy.baseline}</p></ContentItem>
+          <ContentItem title="Del punto de partida al crecimiento ×6,9"><p>{caseCopy.baseline[0]}</p></ContentItem>
+          <ContentItem title="Cada objetivo tuvo respuesta en datos"><p>{caseCopy.baseline[1]}</p></ContentItem>
+          <ContentItem title="Autonomía y seguridad para comprar"><p>{caseCopy.contribution[1]}</p></ContentItem>
         </div>
       </section>
 
@@ -233,19 +265,19 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.testimonial}>
         <Image className={styles.quoteArt} src={vector('quote-background.svg')} width={841} height={599} alt="" aria-hidden="true" />
         <div className={styles.client}>
-          <Image src={image('testimonial-avatar.png')} width={249} height={249} alt="Equipo de SoyTechno" />
-          <h2>Un nuevo estándar</h2>
-          <p>Aporte al mercado venezolano</p>
+          <Image src={image('testimonial-avatar.png')} width={249} height={249} alt="Eva Cristina Luciani" />
+          <h2>Eva Cristina Luciani</h2>
+          <p>e-Commerce Manager de Soytechno.com</p>
         </div>
-        <blockquote>{approvedCopy.contribution}</blockquote>
+        <blockquote>“Se ve que la página está hecha en base a los requerimientos que nosotros teníamos y más. No sólo se quedaron con la idea de vender el producto, sino que también buscaron más soluciones, como agregar un comparador de productos para que la gente pueda verlo.”</blockquote>
       </section>
 
       <section className={styles.cta}>
         <Image className={styles.ctaArt} src={image('cta-illustration.png')} width={720} height={720} alt="Equipo de comercio electrónico" />
         <div className={styles.ctaCopy}>
-          <h2>¿Qué pasa cuando el comprador recibe la infraestructura que esperaba?</h2>
-          <p>{approvedCopy.idea}</p>
-          <Link href="/reunion-playful">¡Hablemos de tu proyecto!</Link>
+          <h2>¿Listo para convertir la complejidad en una mejor experiencia de compra?</h2>
+          <p>Diseñemos un eCommerce preparado para pagos, logística y atención a la escala de tu negocio.</p>
+          <Link href="/reunion-playful">Agenda una reunión</Link>
         </div>
       </section>
 

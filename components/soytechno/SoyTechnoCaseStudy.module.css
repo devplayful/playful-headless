@@ -146,7 +146,7 @@
   display: grid;
   gap: 20px 36px;
   grid-template-columns: 627px 1fr;
-  grid-template-rows: 239px 780px 290px;
+  grid-template-rows: 239px 547px 290px;
   margin: 64px auto 0;
   max-width: 1196px;
   overflow: hidden;
