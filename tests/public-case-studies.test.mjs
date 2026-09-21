@@ -41,15 +41,15 @@ test('SoyTechno is a public/synthetic case with nav-friendly title and listing t
   assert.equal(soytechno.acf.categoria1, 'E-commerce');
   assert.equal(
     soytechno.featured_media_url,
-    '/images/casos/soytechno/images/phones-composition.png',
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
   );
   assert.equal(
     CASOS_DE_EXITO_FEATURED_TAPAS['soytechno-ecommerce-venezuela'],
-    '/images/casos/soytechno/images/phones-composition.png',
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
   );
   assert.equal(
     featuredTapaForSlug('soytechno-ecommerce-venezuela'),
-    '/images/casos/soytechno/images/phones-composition.png',
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
   );
 });
 
@@ -87,7 +87,7 @@ test('mergePublicCaseStudies still yields SoyTechno when WordPress is empty', ()
 test('listing image resolver falls back to the SoyTechno tapa by slug', () => {
   assert.equal(
     resolveCaseStudyListingImage({ slug: 'soytechno-ecommerce-venezuela' }),
-    '/images/casos/soytechno/images/phones-composition.png',
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
   );
 });
 

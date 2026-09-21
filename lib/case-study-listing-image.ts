@@ -9,7 +9,7 @@ export const CASOS_DE_EXITO_FEATURED_TAPAS = {
   'odwalla-shopify-dtc-ecommerce':
     'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png',
   'soytechno-ecommerce-venezuela':
-    '/images/casos/soytechno/images/phones-composition.png',
+    '/images/casos/soytechno/images/lifestyle-f.jpg',
 } as const;
 
 export function resolveCaseStudyListingImage(item: {
