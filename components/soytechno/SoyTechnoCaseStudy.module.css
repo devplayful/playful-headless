@@ -28,7 +28,7 @@
 }
 
 .heroBackdrop {
-  background-color: #440099;
+  background-color: #6750a4;
   background-image: url('/images/casos/soytechno/images/background-texture.png');
   background-position: center top;
   background-repeat: repeat;
@@ -146,7 +146,7 @@
   display: grid;
   gap: 20px 36px;
   grid-template-columns: 627px 1fr;
-  grid-template-rows: 239px 547px 290px;
+  grid-template-rows: 239px 780px 290px;
   margin: 64px auto 0;
   max-width: 1196px;
   overflow: hidden;
@@ -501,7 +501,7 @@
 .quoteArt { height: 599px; left: 315px; position: absolute; top: 0; width: 841px; }
 .client { align-items: center; display: flex; flex-direction: column; position: relative; z-index: 1; }
 .client img { border-radius: 50%; height: 130px; object-fit: cover; width: 130px; }
-.client h2 { font-size: 36px; line-height: 44px; margin: 4px 0 0; white-space: nowrap; }
+.client h2 { font-size: 36px; line-height: 44px; margin: 4px 0 0; text-align: center; }
 .client p { font-size: 22px; margin: 0; }
 .testimonial blockquote { font-size: 26px; font-style: italic; font-weight: 500; line-height: 1.55; margin: 0; position: relative; z-index: 1; }
 

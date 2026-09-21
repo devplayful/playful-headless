@@ -32,7 +32,7 @@ test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => 
   );
 });
 
-test('SoyTechno H1 uses CIMA casing and SERP title stays on the envelope string', () => {
+test('SoyTechno keeps the approved CIMA title and SEO override', () => {
   assert.match(
     overrides,
     /'soytechno-ecommerce-venezuela':/,
@@ -47,8 +47,9 @@ test('SoyTechno H1 uses CIMA casing and SERP title stays on the envelope string'
   );
   assert.match(
     soytechnoBody,
-    /<h1>SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela<\/h1>/,
+    /title: 'SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela'/,
   );
+  assert.match(soytechnoBody, /<h1>\{approvedCopy\.title\}<\/h1>/);
   assert.doesNotMatch(
     soytechnoBody,
     /<h1>SOYTECHNO: Transformación 100% Centrada en el Usuario<\/h1>/,
@@ -57,25 +58,16 @@ test('SoyTechno H1 uses CIMA casing and SERP title stays on the envelope string'
   assert.doesNotMatch(soytechnoBody, /Tienda online en Venezuela/);
 });
 
-test('SoyTechno body is CIMA verbatim in the existing Figma slots', () => {
-  assert.match(soytechnoBody, /cansado de la informalidad/);
-  assert.match(soytechnoBody, /El Desafío y el Contexto Estratégico \(La Misión\)/);
-  assert.match(soytechnoBody, /67% de compras en divisas, BNPL creciendo \+250%/);
-  assert.match(soytechnoBody, /eCommerce venezolano creció \+125% \(Cavecom-e\)/);
-  assert.match(soytechnoBody, /Estrategia y Ejecución \(La Solución\)/);
-  assert.match(soytechnoBody, /¿Como su idea estratégica abordó directamente el insight/);
-  assert.match(soytechnoBody, /primera integración nativa de Cashea/);
-  assert.match(soytechnoBody, /picos de 31\.000 usuarios diarios/);
-  assert.match(soytechnoBody, /816\.000 vistas en el año/);
-  assert.match(soytechnoBody, /Innovación y Aporte \(Técnica y Trascendencia\)/);
-  assert.match(soytechnoBody, /filtros adaptativos bajaron el rebote a 11%/);
-  assert.match(soytechnoBody, /2,8 millones de usuarios activos/);
-  assert.match(soytechnoBody, /tasa de conversión global del 2,57%/);
-  assert.match(soytechnoBody, /99\.384 usuarios activos mensuales/);
-  assert.match(soytechnoBody, /Eva Cristina Luciani/);
-  assert.match(soytechnoBody, /e-Commerce Manager de Soytechno\.com/);
-  assert.match(soytechnoBody, /comparador de productos/);
-  assert.match(soytechnoBody, /Agenda una reunión/);
+test('SoyTechno body uses the approved CIMA case-study copy', () => {
+  assert.match(soytechnoBody, /Tras su soft launch, SoyTechno debía consolidar su eCommerce/);
+  assert.match(soytechnoBody, /El venezolano no compra tecnología; la planifica/);
+  assert.match(soytechnoBody, /En 2025, el eCommerce venezolano creció \+125% \(Cavecom-e\)/);
+  assert.match(soytechnoBody, /Con un enfoque trimestral \(Q1: Reconocimiento, Q2: Expansión/);
+  assert.match(soytechnoBody, /el 44,48% de las sesiones llegó de forma directa/);
+  assert.match(soytechnoBody, /SoyTechno arrancó diciembre de 2024 con 99\.384 usuarios activos mensuales/);
+  assert.match(soytechnoBody, /SoyTechno demostró que el eCommerce formal, automatizado y de alta gama es viable en Venezuela/);
+  assert.doesNotMatch(soytechnoBody, /consumiendo el precio vía método GET/);
+  assert.doesNotMatch(soytechnoBody, /La carga de asesores es asíncrona/);
   assert.match(soytechnoBody, /<span>SoyTechno<\/span>/);
   assert.match(soytechnoBody, /href="\/reunion-playful"/);
   assert.match(soytechnoBody, /jumex-shopify-dtc-ecommerce/);
