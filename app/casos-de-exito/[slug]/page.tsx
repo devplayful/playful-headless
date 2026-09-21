@@ -13,6 +13,9 @@ import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
+import SoyTechnoAddons from './SoyTechnoAddons';
+import { isSoyTechnoCaseStudySlug } from '@/utils/soytechno-case-study';
+import SoyTechnoFigmaBody from '@/components/soytechno/SoyTechnoFigmaBody';
 
 
 
@@ -79,6 +82,10 @@ export default async function SuccessStoryPage({
     notFound();
   }
 
+  if (isSoyTechnoCaseStudySlug(slug)) {
+    return <SoyTechnoFigmaBody />;
+  }
+
   const story = await getSuccessStoryBySlug(slug);
 
   if (!story) {
@@ -104,7 +111,7 @@ export default async function SuccessStoryPage({
       {/* Hero Section */}
       <section className="text-white">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6 bg-[#E9D7FF] rounded-t-[18px] p-5 md:p-[80px] mt-[40px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className={`grid grid-cols-1 ${story.acf?.imagenbanner ? 'md:grid-cols-2' : ''} gap-8 md:gap-12 items-center`}>
             <div className="text-left md:pt-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
                 {story.title.rendered}
@@ -115,6 +122,7 @@ export default async function SuccessStoryPage({
               />
               {isShopifyCaseStudySlug(slug) ? <ShopifyServiceLink /> : null}
             </div>
+            {(!isSoyTechno || story.acf?.imagenbanner) && (
             <div>
               <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] rounded-lg overflow-hidden bg-gray-100">
                 {story.acf?.imagenbanner ? (
@@ -138,11 +146,13 @@ export default async function SuccessStoryPage({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
             </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* Challenge Section */}
+      {!isSoyTechno && (
       <section className="py-12 sm:py-16 md:py-20 bg-[#FEF7FF] ">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 ">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
@@ -180,6 +190,7 @@ export default async function SuccessStoryPage({
             )}
         </div>
       </section>
+      )}
 
       {/* Work Process Images with Title and Description */}
       {(story.acf?.imagenminuta1 ||
@@ -460,8 +471,8 @@ export default async function SuccessStoryPage({
           <div className="max-w-[1200px] mx-auto px-4 md:px-6">
             <div className="relative">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
+                {story.acf?.imagendesarrollo ? (
                 <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[800px] rounded-xl overflow-hidden">
-                  {story.acf?.imagendesarrollo ? (
                     <Image
                       src={
                         typeof story.acf.imagendesarrollo === 'string'
@@ -473,12 +484,8 @@ export default async function SuccessStoryPage({
                       sizes="(max-width: 1024px) 100vw, 50%"
                       className="object-contain"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                      <span className="text-gray-500">Imagen no disponible</span>
-                    </div>
-                  )}
                 </div>
+                ) : null}
 
                 <div className="space-y-6 sm:space-y-8">
                   <div className="hidden">
@@ -693,6 +700,7 @@ export default async function SuccessStoryPage({
       </section>
       )}
 
+      {!isSoyTechno && (
       <section className="py-0 bg-[#FEF7FF]">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center">
@@ -710,8 +718,10 @@ export default async function SuccessStoryPage({
           </div>
         </div>
       </section>
+      )}
 
       {/* Results Cards Section */}
+      {!isSoyTechno && (
       <section className="py-16 bg-[#FEF7FF]">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="rounded-[18px] px-6 py-12 md:px-10 md:py-14">
@@ -761,6 +771,7 @@ export default async function SuccessStoryPage({
     </div>
   </div>
 </section>
+      )}
 
       {/* Phone Images Section */}
       {(story.acf?.telefono1 || story.acf?.telefono2 || story.acf?.telefono3 || story.acf?.telefono4) && (
@@ -869,6 +880,8 @@ export default async function SuccessStoryPage({
           </section>
         );
       })()}
+
+      {isSoyTechnoCaseStudySlug(slug) ? <SoyTechnoAddons /> : null}
     </div>
   );
 }

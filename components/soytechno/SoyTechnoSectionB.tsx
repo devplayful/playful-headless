@@ -5,6 +5,10 @@ interface Props {
   data: SoyTechnoSeccionB;
 }
 
+function isGif(url?: string) {
+  return Boolean(url?.endsWith('.gif'));
+}
+
 export default function SoyTechnoSectionB({ data }: Props) {
   // Guard: validar contenido mínimo
   const collage = data?.imagenes_collage;
@@ -62,6 +66,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="320px"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_1.url)}
                     />
                   </div>
                 )}
@@ -73,6 +78,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="320px"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_2.url)}
                     />
                   </div>
                 )}
@@ -84,6 +90,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="320px"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_3.url)}
                     />
                   </div>
                 )}
@@ -100,6 +107,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="340px"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_del_telefono.url)}
                     />
                   </div>
                 )}
@@ -113,6 +121,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="320px"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_4.url)}
                     />
                   </div>
                 )}
@@ -165,6 +174,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                     fill
                     sizes="(max-width: 640px) 80vw, 384px"
                     className="object-contain"
+                    unoptimized={isGif(collage.imagen_del_telefono.url)}
                   />
                 </div>
               )}
@@ -178,6 +188,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                     fill
                     sizes="100vw"
                     className="object-contain"
+                    unoptimized={isGif(collage.imagen_del_logo.url)}
                   />
                 </div>
               )}
@@ -192,6 +203,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="33vw"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_1.url)}
                     />
                   </div>
                 )}
@@ -203,6 +215,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="33vw"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_2.url)}
                     />
                   </div>
                 )}
@@ -214,6 +227,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                       fill
                       sizes="33vw"
                       className="object-contain"
+                      unoptimized={isGif(collage.imagen_3.url)}
                     />
                   </div>
                 )}
@@ -228,6 +242,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                     fill
                     sizes="100vw"
                     className="object-contain"
+                    unoptimized={isGif(collage.imagen_4.url)}
                   />
                 </div>
               )}

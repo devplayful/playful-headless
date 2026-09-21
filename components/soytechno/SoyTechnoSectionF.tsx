@@ -80,6 +80,7 @@ export default function SoyTechnoSectionF({ data }: Props) {
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain"
+                unoptimized={data.imagen_derecha.url.endsWith('.gif')}
               />
             </div>
           )}

@@ -17,6 +17,8 @@ const config: Config = {
         'title': ['var(--font-paytone-one)', 'var(--font-montserrat)', 'sans-serif'],
         'body': ['var(--font-dm-sans)', 'sans-serif'],
         'paytone': ['var(--font-paytone-one)', 'sans-serif'],
+        // SoyTechno micro-headers: Paytone only — never fall through to DM Sans
+        'paytone-lock': ['var(--font-paytone-one)', 'Paytone One'],
         'montserrat': ['var(--font-montserrat)', 'sans-serif'],
         'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
       },

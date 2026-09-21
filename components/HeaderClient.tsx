@@ -22,14 +22,34 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isServicesOpen, setIsServicesOpen] = useState(false)
   const [isCasesOpen, setIsCasesOpen] = useState(false)
+  const [hideOnScroll, setHideOnScroll] = useState(false)
   const pathname = usePathname()
+  const isSoyTechno = Boolean(pathname?.includes('soytechno-ecommerce-venezuela'))
 
   // Cerrar menú cuando cambia la ruta
   useEffect(() => {
     setIsMenuOpen(false)
     setIsServicesOpen(false)
     setIsCasesOpen(false)
+    setHideOnScroll(false)
   }, [pathname])
+
+  useEffect(() => {
+    if (!isSoyTechno) return
+    let lastY = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      if (window.innerWidth >= 1024 || isMenuOpen) {
+        setHideOnScroll(false)
+        lastY = y
+        return
+      }
+      setHideOnScroll(y > lastY && y > 80)
+      lastY = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isSoyTechno, isMenuOpen])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -73,7 +93,11 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-transparent pointer-events-none transition-colors duration-300">
+    <header
+      className={`sticky top-0 z-50 w-full bg-transparent pointer-events-none transition-transform duration-300 ${
+        hideOnScroll && !isMenuOpen ? '-translate-y-full' : 'translate-y-0'
+      }`}
+    >
       <div className="playful-header pointer-events-auto">
         <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full relative">
         {/* Mobile Layout - Pantallas >= 400px */}

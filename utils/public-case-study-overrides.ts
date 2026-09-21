@@ -1,3 +1,6 @@
+import { SOYTECHNO_CASE_STUDY_SLUG } from './soytechno-case-study';
+import { SOYTECHNO_SEO } from './soytechno-addons';
+
 type CaseStudyRecord = {
   slug?: string;
   title?: { rendered?: string };
@@ -20,6 +23,10 @@ const PUBLIC_CASE_STUDY_SEO: Record<string, { title: string; description: string
     title: 'Odwalla Shopify DTC: de sitio informativo a tienda',
     description:
       'Odwalla tenía web y visitas, no carrito. En Shopify armamos el canal DTC en odwalladrinks.com para que el pedido no se fuera a un tercero.',
+  },
+  [SOYTECHNO_CASE_STUDY_SLUG]: {
+    title: SOYTECHNO_SEO.title,
+    description: SOYTECHNO_SEO.description,
   },
 };
 
