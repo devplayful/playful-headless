@@ -35,6 +35,14 @@ export const CLOSED_BLOG_PATHS: readonly string[] = Object.freeze([
 
 const CLOSED_BLOG_PATH_SET = new Set(CLOSED_BLOG_PATHS);
 
+/** GSC Not found junk — 410. Not part of the signed José Excel v2 CERRAR list. */
+export const GSC_GONE_PATHS: readonly string[] = Object.freeze([
+  '/project/bottle-mockup',
+  '/agencylog',
+]);
+
+const GSC_GONE_PATH_SET = new Set(GSC_GONE_PATHS);
+
 export function normalizeBlogPath(pathname: string): string {
   const path = pathname.split(/[?#]/)[0];
   return path.length > 1 ? path.replace(/\/+$/, '') : path || '/';
@@ -57,7 +65,8 @@ export type BlogClosedDecision =
   | { type: 'next' };
 
 export function blogClosedDecision(pathname: string): BlogClosedDecision {
-  return isClosedBlogPath(pathname)
+  const path = normalizeBlogPath(pathname);
+  return CLOSED_BLOG_PATH_SET.has(path) || GSC_GONE_PATH_SET.has(path)
     ? { type: 'gone', status: 410 }
     : { type: 'next' };
 }
