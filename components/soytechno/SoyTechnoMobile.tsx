@@ -1,12 +1,6 @@
 import Image from 'next/image';
 import { FIGMA } from '@/utils/soytechno-figma-copy';
 import SoyTechnoGroupedArt from '@/components/soytechno/SoyTechnoGroupedArt';
-import {
-  DesafioArt,
-  HeroCollage,
-  IPadPortrait,
-  MobilePhonesCarousel,
-} from '@/components/soytechno/SoyTechnoNativeArt';
 
 const A = '/images/casos/soytechno';
 
@@ -78,6 +72,40 @@ function Marks({ third }: { third: 'circuit' | 'people' }) {
   );
 }
 
+function Phone({ screen, alt }: { screen: string; alt: string }) {
+  return (
+    <div className="relative w-full aspect-[276/577]">
+      <div className="absolute inset-x-[3.6%] top-[1.8%] bottom-[1.8%] overflow-hidden rounded-[18%/9%] bg-black">
+        <img src={src(screen)} alt={alt} className="w-full h-full object-cover object-top" />
+      </div>
+      <img
+        src={src('iphone-frame-02.png')}
+        alt=""
+        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+      />
+    </div>
+  );
+}
+
+function MobilePhonesCarousel() {
+  return (
+    <div className="soytechno-snap-row flex gap-4 overflow-x-auto snap-x snap-mandatory -mx-5 px-5">
+      {(
+        [
+          ['mobile-screen-04.png', 'Selección de moneda SoyTechno'],
+          ['mobile-screen-01.png', 'Catálogo móvil SoyTechno'],
+          ['mobile-screen-02.png', 'Producto móvil SoyTechno'],
+          ['mobile-screen-03.png', 'Checkout móvil SoyTechno'],
+        ] as const
+      ).map(([file, alt]) => (
+        <div key={file} className="snap-center shrink-0 w-[78vw] max-w-[320px]">
+          <Phone screen={file} alt={alt} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SoyTechnoMobile() {
   return (
     <div className="pb-[calc(48px+16px+env(safe-area-inset-bottom,0px)+32px)]">
@@ -96,7 +124,7 @@ export default function SoyTechnoMobile() {
           <p className="font-sans text-[16px] leading-[24px] mt-5">{FIGMA.heroP1}</p>
           <p className="font-sans text-[16px] leading-[24px] mt-4">{FIGMA.heroP2}</p>
           <div className="mt-8">
-            <HeroCollage />
+            <SoyTechnoGroupedArt slot="hero" alt="Collage SoyTechno" />
           </div>
         </div>
       </section>
@@ -107,7 +135,7 @@ export default function SoyTechnoMobile() {
           <Lead>{FIGMA.desafioLead}</Lead>
           <Marks third="circuit" />
           <div className="relative mt-5 bg-[#EADDFF] rounded-[24px] overflow-hidden">
-            <DesafioArt />
+            <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
             <div className="absolute left-[4%] top-[2.5%] w-[48%] h-[54%] bg-white rounded-[24px] px-3 py-3 overflow-hidden">
               <div className="space-y-3">
                 {FIGMA.desafioItems.map((item) => (
@@ -249,7 +277,13 @@ export default function SoyTechnoMobile() {
         <section id="soytechno-m-wizard" className="scroll-mt-[88px] pt-10">
           <Chapter>{FIGMA.wizardPill}</Chapter>
           <div className="mt-5 grid grid-cols-1 gap-5">
-            <IPadPortrait screen="ipad-mockup-01.png" alt="Checkout wizard" />
+            <img
+              src={src('soytechno-wizard-ipad.png')}
+              alt="Checkout wizard"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
             <div>
               <p className="font-sans text-[16px] leading-[24px]">{FIGMA.wizardLead}</p>
               <div className="mt-5 space-y-5">
@@ -293,7 +327,11 @@ export default function SoyTechnoMobile() {
         </section>
 
         <section id="soytechno-m-phones" className="scroll-mt-[88px] pt-10">
-          <MobilePhonesCarousel />
+          <SoyTechnoGroupedArt
+            slot="phones"
+            alt="Galería de pantallas móviles SoyTechno"
+            fallback={<MobilePhonesCarousel />}
+          />
         </section>
 
         <section id="soytechno-m-testimonial" className="scroll-mt-[88px] pt-10">

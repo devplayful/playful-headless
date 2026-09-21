@@ -113,6 +113,7 @@ https://playful-headless-git-cursor-soytechno-7e59aa-playfuls-projects.vercel.ap
 | 8 | grouped @2× rasters | hero / desafío / logística / phones wired from Figma 1440 crop (MCP raster down) | preview only |
 | 9 | native 2× composites | `jose-1440` was a 720 upscale; rasters rebuilt from handoff (logo 4096, screens 1170×2532, rect-146 1920×2663). Script: `scripts/build-soytechno-grouped-art.py` | preview only |
 | 10 | HTML for soft slots | Flattened hero / desafío / wizard / phones resampled UI text. Those four now use native `<img>` like arquitectura / Cashea / section-c. Logística grouped art stays (already sharp). | preview only |
+| 11 | no HTML collages | José: do not rebuild grouped compositions in HTML — they will never match. Revert hero / desafío / wizard / phones to grouped rasters. | preview only |
 
 No merge.
 
@@ -131,4 +132,5 @@ Stop rebuilding overlapping collages in HTML. Copy stays in HTML. Graphics:
 
 Block B is HTML (`1196` / `p-40` / `350 / 350 / 1fr` / icons `120` / phone `340`).
 
-Ronda 10: José QA — arquitectura / coherencia / vacías / Cashea / MRW nítidos; hero, desafío (“prioridad móvil”), wizard y phones pixelados. Causa: PNG aplanado reescala texto de UI. Esos cuatro pasan a HTML de assets nativos (`SoyTechnoNativeArt`). Logística grouped se queda.
+Ronda 10: HTML nativo para slots blandos.
+Ronda 11: José — “se dañaron cosas que estaban bien.” El HTML abrió el collage. Hero vuelve a 440×508 (navy cuadrado + foto encima). Desafío 2×2 con phone grande solapando laptop + navy. Logística no se toca.

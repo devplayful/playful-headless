@@ -3,12 +3,6 @@ import { FIGMA } from '@/utils/soytechno-figma-copy';
 import SoyTechnoMobile from '@/components/soytechno/SoyTechnoMobile';
 import SoyTechnoGroupedArt from '@/components/soytechno/SoyTechnoGroupedArt';
 import SoyTechnoChrome from '@/components/soytechno/SoyTechnoChrome';
-import {
-  DesafioArt,
-  DesktopPhonesRow,
-  HeroCollage,
-  IPadPortrait,
-} from '@/components/soytechno/SoyTechnoNativeArt';
 
 const A = '/images/casos/soytechno';
 
@@ -105,7 +99,7 @@ export default function SoyTechnoFigmaBody() {
       </div>
 
       <div className="hidden lg:block">
-        {/* 1. Hero — HTML copy + native collage (not a flattened PNG) */}
+        {/* 1. Hero — HTML copy + grouped export */}
         <section className="relative bg-[#440099] py-10 px-6 lg:px-[120px]">
           <div
             className="pointer-events-none absolute inset-0 opacity-50"
@@ -126,12 +120,12 @@ export default function SoyTechnoFigmaBody() {
                 <p className="font-sans text-[18px] leading-[1.5] mb-6">{FIGMA.heroP1}</p>
                 <p className="font-sans text-[18px] leading-[1.5]">{FIGMA.heroP2}</p>
               </div>
-              <HeroCollage />
+              <SoyTechnoGroupedArt slot="hero" alt="Collage SoyTechno" />
             </div>
           </div>
         </section>
 
-        {/* 2. Desafío — HTML text card + native 2×2 visual */}
+        {/* 2. Desafío — HTML text card + grouped export */}
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
           <SectionTitle>{FIGMA.desafioTitle}</SectionTitle>
           <Lead>{FIGMA.desafioLead}</Lead>
@@ -140,7 +134,7 @@ export default function SoyTechnoFigmaBody() {
             id="soytechno-desafio"
             className="relative bg-[#EADDFF] rounded-[36px] overflow-hidden scroll-mt-[168px]"
           >
-            <DesafioArt />
+            <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
             <div className="absolute left-[4%] top-[2.5%] w-[48%] h-[54%] bg-white rounded-[28px] px-8 py-8">
               <div className="space-y-6">
                 {FIGMA.desafioItems.map((item) => (
@@ -299,7 +293,13 @@ export default function SoyTechnoFigmaBody() {
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
           <ChapterBar>{FIGMA.wizardPill}</ChapterBar>
           <div id="soytechno-wizard" className="mt-16 grid grid-cols-2 gap-10 items-start">
-            <IPadPortrait screen="ipad-mockup-01.png" alt="Checkout wizard" />
+            <img
+              src={img('soytechno-wizard-ipad.png')}
+              alt="Checkout wizard"
+              width="100%"
+              height="auto"
+              className="w-full h-auto object-contain"
+            />
             <div>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.wizardLead}</p>
               <div className="space-y-10">
@@ -345,12 +345,12 @@ export default function SoyTechnoFigmaBody() {
           </div>
         </section>
 
-        {/* Phones — native 1170 screens in IPhoneFrame, peek first */}
+        {/* Phones — grouped strip export */}
         <section
           id="soytechno-phones"
           className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]"
         >
-          <DesktopPhonesRow />
+          <SoyTechnoGroupedArt slot="phones" alt="Galería de pantallas móviles SoyTechno" />
         </section>
 
         <section className="max-w-[1200px] mx-auto px-5 lg:px-0 pt-[120px] scroll-mt-[168px]">
