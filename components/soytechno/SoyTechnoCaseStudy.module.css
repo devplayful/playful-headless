@@ -187,7 +187,7 @@
 .challengeLogo img { border-radius: 50%; height: 190px; object-fit: cover; width: 190px; }
 
 .challengeLogo img {
-  clip-path: circle(39.5% at 50% 50%);
+  clip-path: circle(39.1% at 48.3% 46.4%);
   transform: scale(1.2);
 }
 
@@ -245,8 +245,6 @@
 .challengeProducts {
   align-items: center;
   background: linear-gradient(155deg, #3a0ca3, #4cc9f0);
-  background-image: linear-gradient(155deg, rgba(58,12,163,.9), rgba(76,201,240,.9)), url('/images/casos/soytechno/images/background-section-01.png');
-  background-size: cover;
   border-radius: 36px;
   display: flex;
   grid-column: 2;
@@ -256,12 +254,23 @@
   position: relative;
 }
 
+.challengeProducts::before {
+  background: url('/images/casos/soytechno/images/background-section-01.png') center / cover no-repeat;
+  content: '';
+  inset: 0;
+  opacity: .28;
+  pointer-events: none;
+  position: absolute;
+}
+
 .challengeProducts img {
   display: block;
   height: 94%;
   object-fit: contain;
+  position: relative;
   transform: translateY(1%);
   width: auto;
+  z-index: 1;
 }
 
 .standardSection {
