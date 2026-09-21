@@ -134,13 +134,15 @@ export default function SoyTechnoMobile() {
           <Title>{FIGMA.desafioTitle}</Title>
           <Lead>{FIGMA.desafioLead}</Lead>
           <Marks third="circuit" />
-          <div className="bg-white rounded-[24px] px-5 py-6 space-y-6 shadow-sm">
-            {FIGMA.desafioItems.map((item) => (
-              <Feature key={item.title} title={item.title} body={item.body} />
-            ))}
-          </div>
-          <div className="mt-5">
+          <div className="relative mt-5 bg-[#EADDFF] rounded-[24px] overflow-hidden">
             <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
+            <div className="absolute left-[4%] top-[2.5%] w-[48%] h-[54%] bg-white rounded-[24px] px-3 py-3 overflow-hidden">
+              <div className="space-y-3">
+                {FIGMA.desafioItems.map((item) => (
+                  <Feature key={item.title} title={item.title} body={item.body} />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -276,11 +278,11 @@ export default function SoyTechnoMobile() {
           <Chapter>{FIGMA.wizardPill}</Chapter>
           <div className="mt-5 grid grid-cols-1 gap-5">
             <img
-              src={src('ipad-mockup-01.png')}
+              src={src('soytechno-wizard-ipad.png')}
               alt="Checkout wizard"
               width="100%"
               height="auto"
-              className="w-full h-auto object-contain rounded-[20px]"
+              className="w-full h-auto object-contain"
             />
             <div>
               <p className="font-sans text-[16px] leading-[24px]">{FIGMA.wizardLead}</p>

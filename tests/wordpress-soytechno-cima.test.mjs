@@ -54,6 +54,7 @@ test('SoyTechno grouped 2x PNGs are on disk', () => {
     'soytechno-desafio-art@2x.png',
     'soytechno-logistica-art@2x.png',
     'soytechno-phones-strip@2x.png',
+    'soytechno-wizard-ipad.png',
   ]) {
     assert.equal(existsSync(path.join(dir, file)), true, file);
   }

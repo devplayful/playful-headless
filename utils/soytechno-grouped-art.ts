@@ -5,9 +5,8 @@
  *   soytechno-desafio-art@2x.png|.webp
  *   soytechno-logistica-art@2x.png|.webp
  *   soytechno-phones-strip@2x.png|.webp
- * Bare names (no @2x) are also accepted. The four @2× files are Figma-frame
- * crops (node 3798:11672 / phones 3798:11820) — MCP raster export was down.
- * DOM stays <img width=100% height=auto object-fit:contain>.
+ * Bare names (no @2x) are also accepted. Files are opaque RGB crops from the
+ * 1440 Figma frame (no chroma-key). DOM: width 100% / height auto / contain.
  */
 
 import { existsSync } from 'node:fs';

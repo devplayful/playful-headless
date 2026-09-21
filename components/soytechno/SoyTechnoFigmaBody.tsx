@@ -167,7 +167,7 @@ export default function SoyTechnoFigmaBody() {
             className="relative bg-[#EADDFF] rounded-[36px] overflow-hidden scroll-mt-[168px]"
           >
             <SoyTechnoGroupedArt slot="desafio" alt="Composición visual del desafío SoyTechno" />
-            <div className="absolute left-[6%] top-[4%] w-[44%] h-[52%] bg-white rounded-[28px] px-8 py-7 overflow-y-auto">
+            <div className="absolute left-[4%] top-[2.5%] w-[48%] h-[54%] bg-white rounded-[28px] px-8 py-8">
               <div className="space-y-6">
                 {FIGMA.desafioItems.map((item) => (
                   <Feature key={item.title} title={item.title} body={item.body} />
@@ -326,11 +326,11 @@ export default function SoyTechnoFigmaBody() {
           <ChapterBar>{FIGMA.wizardPill}</ChapterBar>
           <div id="soytechno-wizard" className="mt-16 grid grid-cols-2 gap-10 items-start">
             <img
-              src={img('ipad-mockup-01.png')}
+              src={img('soytechno-wizard-ipad.png')}
               alt="Checkout wizard"
               width="100%"
               height="auto"
-              className="w-full h-auto object-contain rounded-[18px]"
+              className="w-full h-auto object-contain"
             />
             <div>
               <p className="font-sans text-[18px] leading-[1.5] mb-10">{FIGMA.wizardLead}</p>
