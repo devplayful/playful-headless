@@ -23,27 +23,29 @@ const ContentItem = ({ title, children }: { title: string; children: ReactNode }
 export default function SoyTechnoCaseStudy() {
   return (
     <article className={`soytechno-case-study ${styles.page}`}>
-      <div className={styles.breadcrumb}>
-        <Link href="/">Home</Link><span>/</span>
-        <Link href="/casos-de-exito-agencia-de-marketing-digital">Casos de éxito</Link>
-        <span>/</span>
-        <span>SoyTechno</span>
-      </div>
+      <div className={styles.heroBackdrop}>
+        <div className={styles.breadcrumb}>
+          <Link href="/">Home</Link><span>/</span>
+          <Link href="/casos-de-exito-agencia-de-marketing-digital">Casos de éxito</Link>
+          <span>/</span>
+          <span>SoyTechno</span>
+        </div>
 
-      <section className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela</h1>
-          <p>
-            SOYTECHNO necesitaba transformar su presencia digital en una plataforma de alto rendimiento. El desafío no era solo vender, sino crear una experiencia de <em>E-commerce</em> con la <strong>funcionalidad y la robustez de una aplicación</strong>, capaz de manejar un catálogo variado y métodos de pago complejos como el cambio de moneda y <strong>Cashea</strong>.
-          </p>
-          <p>
-            En <strong>Playful Agency</strong>, demostramos que la <strong>personalización radical</strong> del <em>User Experience (UX)</em> y la <em>User Interface (UI)</em> era la clave para la conversión masiva.
-          </p>
-        </div>
-        <div className={styles.heroArtwork}>
-          <Image src={image('hero-composition.png')} width={638} height={998} priority alt="Composición visual de SoyTechno, Cashea, WordPress y comercio electrónico" />
-        </div>
-      </section>
+        <section className={styles.hero}>
+          <div className={styles.heroCopy}>
+            <h1>SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela</h1>
+            <p>
+              SOYTECHNO necesitaba transformar su presencia digital en una plataforma de alto rendimiento. El desafío no era solo vender, sino crear una experiencia de <em>E-commerce</em> con la <strong>funcionalidad y la robustez de una aplicación</strong>, capaz de manejar un catálogo variado y métodos de pago complejos como el cambio de moneda y <strong>Cashea</strong>.
+            </p>
+            <p>
+              En <strong>Playful Agency</strong>, demostramos que la <strong>personalización radical</strong> del <em>User Experience (UX)</em> y la <em>User Interface (UI)</em> era la clave para la conversión masiva.
+            </p>
+          </div>
+          <div className={styles.heroArtwork}>
+            <Image src={image('hero-composition.png')} width={638} height={998} priority alt="Composición visual de SoyTechno, Cashea, WordPress y comercio electrónico" />
+          </div>
+        </section>
+      </div>
 
       <section className={styles.introSection}>
         <h2>El Desafío UX/UI: De un Catálogo Inusable a una Navegación Intuitiva</h2>
