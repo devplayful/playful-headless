@@ -15,7 +15,7 @@
     "lint": "next lint",
     "clean": "rimraf .next",
     "test:seo": "node scripts/seo-smoke.mjs",
-    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs tests/blog-listing-pagination.test.mjs tests/amp-junk-query.test.mjs tests/blog-seo-redirect.test.mjs tests/blog-closed-posts.test.mjs tests/gsc-404-redirects.test.mjs tests/service-booking-cta.test.mjs tests/about-href.test.mjs tests/ecommerce-shopify-link.test.mjs tests/case-study-shopify-link.test.mjs tests/header-shopify-nav.test.mjs tests/public-case-studies.test.mjs tests/case-study-hub.test.mjs",
+    "test:canonical": "node --experimental-strip-types --test tests/canonical.test.mjs tests/agencia-shopify.test.mjs tests/pasarela-de-pagos-venezuela.test.mjs tests/blog-service-cta.test.mjs tests/blog-listing-robots.test.mjs tests/blog-listing-pagination.test.mjs tests/amp-junk-query.test.mjs tests/blog-seo-redirect.test.mjs tests/blog-closed-posts.test.mjs tests/gsc-404-redirects.test.mjs tests/service-booking-cta.test.mjs tests/about-href.test.mjs tests/ecommerce-shopify-link.test.mjs tests/case-study-shopify-link.test.mjs tests/header-shopify-nav.test.mjs tests/public-case-studies.test.mjs tests/case-study-hub.test.mjs",
     "test:service-booking": "node --experimental-strip-types --test tests/service-booking-cta.test.mjs",
     "test:about-hrefs": "node --experimental-strip-types --test tests/about-href.test.mjs",
     "smoke:service-booking": "node --experimental-strip-types scripts/service-booking-cta-curl.mjs",
@@ -28,7 +28,8 @@
     "test:route-integrity": "node --test tests/route-integrity.test.mjs",
     "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
     "verify:routes": "node scripts/verify-route-artifact.mjs",
-    "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
+    "verify:routes:build": "node scripts/build-and-verify-routes.mjs",
+    "test:pasarela-r3-visual": "node scripts/pasarela-r3-pixelmatch.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -71,7 +72,11 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8.0.0",
     "eslint-config-next": "15.5.25",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.63.0",
+    "pngjs": "^7.0.0",
     "rimraf": "^6.1.2",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.0"
   }

@@ -168,6 +168,8 @@ const expectedTitles = {
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   '/pasarela-de-pago-ecommerce':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  '/pasarela-de-pagos-venezuela':
+    'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
   '/marketing-internacional':
     'Marketing Internacional: Lleva tu negocio al mundo (sin complicaciones)',
 };
