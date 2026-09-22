@@ -167,7 +167,7 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.standardSection}>
         <SectionTitle>El ecosistema digital como medio principal</SectionTitle>
         <div className={styles.mediaTextGrid}>
-          <Image className={styles.tallMedia} src={image('phone-composite.png')} width={827} height={1134} alt="Catálogo móvil de SoyTechno con fichas de producto" />
+          <Image className={styles.tallMedia} src={image('mobile-screen-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno en Zona Gamer" />
           <div className={styles.textStack}>
             <ContentItem title="Una audiencia hiperconectada"><p>{caseCopy.audience[0]}</p></ContentItem>
             <ContentItem title="Compra móvil en siete ciudades"><p>{caseCopy.audience[1]}</p></ContentItem>

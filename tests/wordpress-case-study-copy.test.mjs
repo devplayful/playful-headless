@@ -93,7 +93,7 @@ test('SoyTechno QA redlines: Q1–Q4 diagram, named pillars, no A/C letters', ()
 test('SoyTechno QA redlines: drop duplicate circles/employees and overlapping catalog gif', () => {
   assert.doesNotMatch(soytechnoBody, /lifestyle-f\.jpg/);
   assert.doesNotMatch(soytechnoBody, /giffycanvas-01\.gif/);
-  assert.match(soytechnoBody, /phone-composite\.png/);
+  assert.match(soytechnoBody, /mobile-screen-01\.png/);
   assert.match(soytechnoBody, /mobile-screen-04\.png/);
 });
 
