@@ -6,7 +6,7 @@ export const PAGE_META = {
 } as const;
 
 export const HERO = {
-  eyebrow: 'Agencia E-commerce',
+  eyebrow: 'Agencia e-commerce',
   h1: '¡Crea o Mejora los Pagos Online de tu E-commerce!',
   body: 'Si eres un dueño de E-commerce con una empresa constituida y estás buscando mejorar tus métodos, acabas de encontrar a tu socio ideal. En Playful Agency entendemos que cada clic cuenta, y optimizamos tus opciones de pagos online para que tus clientes puedan comprar fácil, rápido y con confianza.',
   cta: 'Agendar Reunión con Playful',

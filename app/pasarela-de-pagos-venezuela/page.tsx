@@ -83,22 +83,16 @@ export default async function PasarelaDePagosVenezuelaPage() {
       />
 
       <article className={`${styles.page} w-full pb-20`}>
-        <section className={styles.heroBand}>
+        <section className={styles.heroBand} data-pasarela-section="hero">
           <div className={styles.sectionInner}>
             <div className={styles.heroGrid}>
-              <div>
+              <div className={styles.heroCopy}>
                 <p className={styles.heroEyebrow}>{HERO.eyebrow}</p>
                 <h1 className={styles.heroTitle}>{HERO.h1}</h1>
                 <p className={styles.heroBody}>{HERO.body}</p>
-                <div className="mt-6 space-y-3">
-                  <a href={BOOKING_HREF} className={styles.heroCta}>
-                    {HERO.button}
-                  </a>
-                  <p className={styles.heroSubline}>{HERO.subline}</p>
-                  <Link href={CONTACT_HREF} className={styles.heroContactLink}>
-                    O escríbenos por el formulario
-                  </Link>
-                </div>
+                <a href={BOOKING_HREF} className={styles.heroCta}>
+                  {HERO.button}
+                </a>
               </div>
               <div className={styles.heroArt} data-illustration-slot="hero">
                 <img
@@ -114,14 +108,14 @@ export default async function PasarelaDePagosVenezuelaPage() {
           </div>
         </section>
 
-        <section className={styles.introBand}>
-          <div className={styles.sectionInner}>
+        <section className={styles.introBand} data-pasarela-section="intro">
+          <div className={`${styles.sectionInner} ${styles.introInner}`}>
             <h2 className={styles.introTitle}>{INTRO_BAND.h2}</h2>
             <p className={styles.introBody}>{INTRO_BAND.body}</p>
           </div>
         </section>
 
-        <section className={styles.benefitsBand}>
+        <section className={styles.benefitsBand} data-pasarela-section="benefits">
           <div className={styles.sectionInner}>
             <h2 className={styles.benefitsTitle}>{BENEFITS.h2}</h2>
             <div className={styles.benefitsGrid}>
@@ -147,7 +141,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
           </div>
         </section>
 
-        <section className={styles.painBand}>
+        <section className={styles.painBand} data-pasarela-section="pain">
           <div className={styles.sectionInner}>
             <h2 className={styles.painTitle}>{PAIN_POINTS.h2}</h2>
             <p className={styles.painIntro}>{PAIN_POINTS.intro}</p>
@@ -197,17 +191,15 @@ export default async function PasarelaDePagosVenezuelaPage() {
           </div>
         </section>
 
-        <section className={styles.faqBand}>
+        <section className={styles.faqBand} data-pasarela-section="faq">
           <div className={styles.sectionInner}>
             <h2 className={styles.faqTitle}>{FAQ.h2}</h2>
-            <div className="max-w-4xl mx-auto">
-              <PasarelaFaqAccordion
+            <PasarelaFaqAccordion
                 items={FAQ.items.map((item) => ({
                   question: item.question,
                   answer: <LinkedCopy text={item.answer} />,
                 }))}
               />
-            </div>
           </div>
         </section>
 
@@ -223,7 +215,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
           </div>
         </section>
 
-        <section className={styles.bannerBand}>
+        <section className={styles.bannerBand} data-pasarela-section="banner">
           <div className="px-4 md:px-6">
             <div className={styles.bannerGrid}>
               <div className={styles.bannerLeft}>
