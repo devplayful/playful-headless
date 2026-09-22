@@ -72,13 +72,53 @@ test('SoyTechno editorial H2/H3 labels match the signed SEO set', () => {
   assert.doesNotMatch(soytechnoBody, /Por favor mencione cuáles fueron sus medios claves/);
 });
 
-test('SoyTechno distributes 32 unique source fragments without repeating them', () => {
+test('SoyTechno QA redlines: Q1–Q4 diagram, named pillars, no A/C letters', () => {
+  assert.match(soytechnoBody, /quarterTrack/);
+  assert.match(soytechnoBody, />Q1</);
+  assert.match(soytechnoBody, />Q2</);
+  assert.match(soytechnoBody, />Q3</);
+  assert.match(soytechnoBody, />Q4</);
+  assert.match(soytechnoBody, /Reconocimiento/);
+  assert.match(soytechnoBody, /Expansión/);
+  assert.match(soytechnoBody, /Escalabilidad/);
+  assert.match(soytechnoBody, /Fidelización/);
+  assert.match(soytechnoBody, /pillarList/);
+  assert.match(soytechnoBody, /El ecosistema digital como medio principal/);
+  assert.match(soytechnoBody, /Innovación y aporte más allá de la interfaz/);
+  assert.doesNotMatch(soytechnoBody, /A\. El ecosistema digital como medio principal/);
+  assert.doesNotMatch(soytechnoBody, /C\. Innovación y aporte más allá de la interfaz/);
+  assert.doesNotMatch(soytechnoBody, /B\. Medios clave/);
+});
+
+test('SoyTechno QA redlines: drop duplicate circles/employees and overlapping catalog gif', () => {
+  assert.doesNotMatch(soytechnoBody, /lifestyle-f\.jpg/);
+  assert.doesNotMatch(soytechnoBody, /giffycanvas-01\.gif/);
+  assert.match(soytechnoBody, /phone-composite\.png/);
+  assert.match(soytechnoBody, /mobile-screen-04\.png/);
+});
+
+test('SoyTechno QA redlines: Mobile-First keeps philosophy; metrics live in Resultados', () => {
+  const renderedBody = soytechnoBody.split('export default function', 2)[1];
+  const mobileFirstBlock = renderedBody.split('experiencia Mobile-First', 2)[1].split('Resultados frente a los KPIs', 2)[0];
+  const resultsBlock = renderedBody.split('Resultados frente a los KPIs', 2)[1];
+
+  assert.match(mobileFirstBlock, /caseCopy\.idea\[0\]/);
+  assert.match(mobileFirstBlock, /caseCopy\.strategicResponse\[1\]/);
+  assert.doesNotMatch(mobileFirstBlock, /caseCopy\.executiveResults/);
+  assert.doesNotMatch(mobileFirstBlock, /caseCopy\.results\[0\]/);
+  assert.doesNotMatch(mobileFirstBlock, /Escala alcanzada/);
+  assert.doesNotMatch(mobileFirstBlock, /Conversión por encima del promedio/);
+  assert.match(resultsBlock, /caseCopy\.results\[0\]/);
+  assert.match(resultsBlock, /El hábito de consumo cambió/);
+});
+
+test('SoyTechno distributes unique source fragments without repeating them', () => {
   const renderedBody = soytechnoBody.split('export default function', 2)[1];
   const fragments = [...renderedBody.matchAll(/caseCopy\.([A-Za-z]+)\[(\d+)\]/g)]
     .map((match) => `${match[1]}:${match[2]}`);
 
-  assert.equal(fragments.length, 32);
-  assert.equal(new Set(fragments).size, 32);
+  assert.equal(fragments.length, 31);
+  assert.equal(new Set(fragments).size, 31);
   assert.doesNotMatch(renderedBody, /approvedCopy\.(?!title)/);
   assert.match(soytechnoBody, /Eva Cristina Luciani/);
   assert.match(soytechnoBody, /comparador de productos/);
