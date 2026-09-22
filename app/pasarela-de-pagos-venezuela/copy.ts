@@ -56,13 +56,13 @@ export const PAIN_POINTS = {
     },
     {
       quote:
-        '«Nadie me compra, porque el poceso de pago es lento, confuso, y tarda considerables lapsos de tiempos en dar respuesta a los clientes.»',
-      answer: 'Diseñamos experiencias rápidas y sencillas que tus clientes amarán.',
+        '«Invierto mucho dinero en publicidad, por lo que muchas personas entran a mi tienda, incluso añaden productos al carrito pero, no completan la compra porque los métodos de pago son límitado e incompatibles con los clientes a los que quiero llegar.»',
+      answer: 'Ofrecemos soluciones globales y locales para que nadie se quede sin comprar.',
     },
     {
       quote:
-        '«Invierto mucho dinero en publicidad, por lo que muchas personas entran a mi tienda, incluso añaden productos al carrito pero, no completan la compra porque los métodos de pago son límitado e incompatibles con los clientes a los que quiero llegar.»',
-      answer: 'Ofrecemos soluciones globales y locales para que nadie se quede sin comprar.',
+        '«Nadie me compra, porque el poceso de pago es lento, confuso, y tarda considerables lapsos de tiempos en dar respuesta a los clientes.»',
+      answer: 'Diseñamos experiencias rápidas y sencillas que tus clientes amarán.',
     },
   ],
 } as const;

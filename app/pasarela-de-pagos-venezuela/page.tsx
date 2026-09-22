@@ -5,10 +5,10 @@ import { canonicalForPath } from '@/utils/canonical';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
-import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
-import ServiceFaqAccordion from '@/app/agencia-shopify/ServiceFaqAccordion';
 import { toShopifyCaseCards } from '@/app/agencia-shopify/shopify-cases';
+import PasarelaFaqAccordion from './PasarelaFaqAccordion';
+import styles from './PasarelaPagos.module.css';
 import {
   BENEFITS,
   BOOKING_HREF,
@@ -26,14 +26,12 @@ import {
 
 const PAGE_URL = canonicalForPath(PAGE_META.path);
 
-const HERO_ART = '/images/pasarela-de-pagos-venezuela/hero-payful-agencia.svg';
+const HERO_ART = '/images/pasarela-de-pagos-venezuela/hero-sofa@2x.png';
 const BENEFIT_ART: Record<string, string> = {
-  'beneficio-integracion': '/images/pasarela-de-pagos-venezuela/beneficio-integracion.svg',
-  'beneficio-seguridad': '/images/pasarela-de-pagos-venezuela/beneficio-seguridad.svg',
-  'beneficio-experiencia': '/images/pasarela-de-pagos-venezuela/beneficio-experiencia.svg',
+  'beneficio-integracion': '/images/pasarela-de-pagos-venezuela/beneficio-integracion@2x.png',
+  'beneficio-seguridad': '/images/pasarela-de-pagos-venezuela/beneficio-seguridad@2x.png',
+  'beneficio-experiencia': '/images/pasarela-de-pagos-venezuela/beneficio-experiencia@2x.png',
 };
-
-const BENEFIT_CARD_COLORS = ['bg-[#E9D7FF]', 'bg-[#FFEFD1]', 'bg-[#E4FFF9]'] as const;
 
 export const metadata: Metadata = {
   title: PAGE_META.title,
@@ -69,42 +67,6 @@ function LinkedCopy({ text }: { text: string }) {
   );
 }
 
-function TalkCta({ label = HERO.cta }: { label?: string }) {
-  return (
-    <a href={BOOKING_HREF} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
-      {label}
-    </a>
-  );
-}
-
-function PurpleBand({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="relative overflow-hidden rounded-[32px] bg-[#440099] p-8 md:p-[60px]">
-      <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat opacity-40" />
-      <div className="relative z-10 max-w-4xl mx-auto text-center md:text-left">
-        <h2 className="mb-6 [font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-[36px] leading-[1.1] md:text-[45px] font-normal !text-white">
-          {title}
-        </h2>
-        <p className="[font-family:var(--font-dm-sans),sans-serif] text-base leading-normal font-normal !text-[#E9D7FF]">
-          {body}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function BenefitIllustration({ slot }: { slot: string }) {
-  const src = BENEFIT_ART[slot];
-  return (
-    <div
-      data-illustration-slot={slot}
-      className="relative w-full max-w-[200px] h-[180px] mx-auto overflow-hidden rounded-2xl flex items-center justify-center"
-    >
-      <img src={src} alt="" width={200} height={180} decoding="async" className="max-h-full w-auto object-contain" />
-    </div>
-  );
-}
-
 export default async function PasarelaDePagosVenezuelaPage() {
   const faqJsonLd = buildFaqPageJsonLd();
   const [casosDeExito, blogPosts] = await Promise.all([
@@ -120,35 +82,25 @@ export default async function PasarelaDePagosVenezuelaPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <article className="w-full pb-20">
-        <section className="relative overflow-hidden">
-          <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8">
-                <p className="playful-contenido-p font-semibold uppercase tracking-wide text-[#440099]">
-                  {HERO.eyebrow}
-                </p>
-                <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
-                  {HERO.h1}
-                </h1>
-                <p className="playful-contenido-p">{HERO.body}</p>
-                <div className="space-y-3">
-                  <TalkCta label={HERO.button} />
-                  <p className="playful-contenido-p">{HERO.subline}</p>
-                  <p className="playful-contenido-p">
-                    <Link
-                      href={CONTACT_HREF}
-                      className="text-[#440099] font-semibold underline underline-offset-2"
-                    >
-                      O escríbenos por el formulario
-                    </Link>
-                  </p>
+      <article className={`${styles.page} w-full pb-20`}>
+        <section className={styles.heroBand}>
+          <div className={styles.sectionInner}>
+            <div className={styles.heroGrid}>
+              <div>
+                <p className={styles.heroEyebrow}>{HERO.eyebrow}</p>
+                <h1 className={styles.heroTitle}>{HERO.h1}</h1>
+                <p className={styles.heroBody}>{HERO.body}</p>
+                <div className="mt-6 space-y-3">
+                  <a href={BOOKING_HREF} className={styles.heroCta}>
+                    {HERO.button}
+                  </a>
+                  <p className={styles.heroSubline}>{HERO.subline}</p>
+                  <Link href={CONTACT_HREF} className={styles.heroContactLink}>
+                    O escríbenos por el formulario
+                  </Link>
                 </div>
               </div>
-              <div
-                data-illustration-slot="hero"
-                className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px] flex items-center justify-center bg-[#FFEFD1]"
-              >
+              <div className={styles.heroArt} data-illustration-slot="hero">
                 <img
                   src={HERO_ART}
                   alt=""
@@ -156,36 +108,38 @@ export default async function PasarelaDePagosVenezuelaPage() {
                   height={417}
                   decoding="async"
                   fetchPriority="high"
-                  className="max-h-[360px] w-auto object-contain"
                 />
               </div>
             </div>
           </div>
         </section>
 
-        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-          <PurpleBand title={INTRO_BAND.h2} body={INTRO_BAND.body} />
+        <section className={styles.introBand}>
+          <div className={styles.sectionInner}>
+            <h2 className={styles.introTitle}>{INTRO_BAND.h2}</h2>
+            <p className={styles.introBody}>{INTRO_BAND.body}</p>
+          </div>
         </section>
 
-        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-          <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px]">
-            <h2 className="playful-h2 text-center">{BENEFITS.h2}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-4">
-              {BENEFITS.items.map((item, index) => (
-                <article
-                  key={item.title}
-                  className={`${BENEFIT_CARD_COLORS[index]} rounded-[32px] shadow-lg p-8 md:p-10 flex flex-col text-center`}
-                >
-                  <div className="mb-6">
-                    <BenefitIllustration slot={item.slot} />
-                  </div>
-                  <h3 className="playful-h3 mb-4">{item.title}</h3>
-                  <p className="playful-contenido-p flex-1">{item.body}</p>
-                  <a
-                    href={BOOKING_HREF}
-                    className="mt-6 inline-block text-[#440099] font-semibold underline underline-offset-2"
-                  >
-                    {item.cta}
+        <section className={styles.benefitsBand}>
+          <div className={styles.sectionInner}>
+            <h2 className={styles.benefitsTitle}>{BENEFITS.h2}</h2>
+            <div className={styles.benefitsGrid}>
+              {BENEFITS.items.map((item) => (
+                <article key={item.title} className={styles.benefitCard}>
+                  <img
+                    src={BENEFIT_ART[item.slot]}
+                    alt=""
+                    width={300}
+                    height={300}
+                    decoding="async"
+                    className={styles.benefitArt}
+                    data-illustration-slot={item.slot}
+                  />
+                  <h3 className={styles.benefitHeading}>{item.title}</h3>
+                  <p className={styles.benefitBody}>{item.body}</p>
+                  <a href={BOOKING_HREF} className={styles.benefitLink}>
+                    {item.cta} →
                   </a>
                 </article>
               ))}
@@ -193,87 +147,108 @@ export default async function PasarelaDePagosVenezuelaPage() {
           </div>
         </section>
 
-        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-          <div className="playful-contenedor playful-contenedor-B3FFF3 rounded-[32px] md:rounded-[48px] !mt-0">
-            <h2 className="playful-h2 text-center">{PAIN_POINTS.h2}</h2>
-            <p className="playful-contenido-p max-w-3xl mx-auto text-center mb-10">{PAIN_POINTS.intro}</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <section className={styles.painBand}>
+          <div className={styles.sectionInner}>
+            <h2 className={styles.painTitle}>{PAIN_POINTS.h2}</h2>
+            <p className={styles.painIntro}>{PAIN_POINTS.intro}</p>
+            <div className={styles.painGrid}>
               {PAIN_POINTS.items.map((item) => (
-                <article key={item.quote} className="rounded-[32px] bg-white shadow-lg p-8 md:p-10">
-                  <p className="playful-contenido-p mb-4">
-                    <strong>{item.quote}</strong>
-                  </p>
-                  <p className="playful-contenido-p">{item.answer}</p>
+                <article key={item.quote} className={styles.painCard}>
+                  <p className={styles.painQuote}>{item.quote}</p>
+                  <p className={styles.painAnswer}>{item.answer}</p>
                 </article>
               ))}
             </div>
-            <h3 className="playful-h2 text-center mt-12 mb-0">{PAIN_POINTS.band}</h3>
+            <div className={styles.painCtaWrap}>
+              <a href={BOOKING_HREF} className={styles.painCta}>
+                {PAIN_POINTS.band}
+              </a>
+            </div>
           </div>
         </section>
 
-        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-          <h2 className="playful-h2 text-center mb-10">{SOCIAL_PROOF.h2}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
-            {caseCards.map((caseStudy) => (
-              <CaseStudyCard key={caseStudy.slug} caseStudy={caseStudy} />
-            ))}
+        <section className={styles.liveBlock}>
+          <div className={styles.sectionInner}>
+            <h2 className="playful-h2 text-center mb-10">{SOCIAL_PROOF.h2}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
+              {caseCards.map((caseStudy) => (
+                <CaseStudyCard key={caseStudy.slug} caseStudy={caseStudy} />
+              ))}
+            </div>
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-10">
+              <div className="w-20 h-20 relative mb-4">
+                <Image
+                  src="/images/avatar-playful.svg"
+                  alt="Avatar Playful"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h4 className="font-semibold text-lg mb-2 text-[#4A4453]">{SOCIAL_PROOF.attribution}</h4>
+              <div className="flex justify-center mb-4">
+                <div className="text-yellow-400 text-xl">
+                  {Array.from({ length: 5 }).map((_, star) => (
+                    <span key={star}>★</span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm md:text-base px-2 text-[#4A4453]">«{SOCIAL_PROOF.quote}»</p>
+            </div>
           </div>
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-10">
-            <div className="w-20 h-20 relative mb-4">
-              <Image
-                src="/images/avatar-playful.svg"
-                alt="Avatar Playful"
-                fill
-                className="object-contain"
+        </section>
+
+        <section className={styles.faqBand}>
+          <div className={styles.sectionInner}>
+            <h2 className={styles.faqTitle}>{FAQ.h2}</h2>
+            <div className="max-w-4xl mx-auto">
+              <PasarelaFaqAccordion
+                items={FAQ.items.map((item) => ({
+                  question: item.question,
+                  answer: <LinkedCopy text={item.answer} />,
+                }))}
               />
             </div>
-            <h4 className="font-semibold text-lg mb-2 text-[#4A4453]">{SOCIAL_PROOF.attribution}</h4>
-            <div className="flex justify-center mb-4">
-              <div className="text-yellow-400 text-xl">
-                {Array.from({ length: 5 }).map((_, star) => (
-                  <span key={star}>★</span>
-                ))}
-              </div>
-            </div>
-            <p className="text-sm md:text-base px-2 text-[#4A4453]">«{SOCIAL_PROOF.quote}»</p>
           </div>
         </section>
 
-        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-          <h2 className="playful-h2 text-center mb-10">{FAQ.h2}</h2>
-          <div className="max-w-4xl mx-auto">
-            <ServiceFaqAccordion
-              items={FAQ.items.map((item) => ({
-                question: item.question,
-                answer: <LinkedCopy text={item.answer} />,
-              }))}
-            />
-          </div>
-        </section>
-
-        <section className="py-12">
-          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+        <section className={styles.liveBlock}>
+          <div className={styles.sectionInner}>
             <TestimonialsSection />
           </div>
         </section>
 
-        <section className="py-12">
-          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+        <section className={styles.liveBlock}>
+          <div className={styles.sectionInner}>
             <BlogRelatedPostsSection posts={blogPosts} />
           </div>
         </section>
 
-        <section className="py-12">
-          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
-            <TwoColumnCtaSection
-              contentBgColor="#B3FFF3"
-              imageUrl="/images/pasarela-de-pagos-venezuela/cta-conectemos.png"
-              title={CTA.h2}
-              subtitle={CTA.body}
-              ctaTitle={CTA.question}
-              buttonText={CTA.cta}
-              buttonLink={BOOKING_HREF}
-            />
+        <section className={styles.bannerBand}>
+          <div className="px-4 md:px-6">
+            <div className={styles.bannerGrid}>
+              <div className={styles.bannerLeft}>
+                <h2 className={styles.bannerTitle}>{CTA.h2}</h2>
+                <p className={styles.bannerBody}>{CTA.body}</p>
+                <img
+                  src="/images/pasarela-de-pagos-venezuela/cta-banner-left@2x.png"
+                  alt=""
+                  width={520}
+                  height={420}
+                  decoding="async"
+                  className={styles.bannerIllustration}
+                />
+              </div>
+              <div className={styles.bannerRight}>
+                <h3 className={styles.bannerRightTitle}>¡Contáctanos y empieza ya!</h3>
+                <p className={styles.bannerRightBody}>{CTA.question}</p>
+                <a href={BOOKING_HREF} className={styles.ctaButton}>
+                  {CTA.cta}
+                </a>
+                <Link href={CONTACT_HREF} className={styles.bannerContactLink}>
+                  O escríbenos por el formulario
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
       </article>
