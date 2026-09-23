@@ -24,6 +24,15 @@ const LOTE_1 = [
   ['que-es-una-agencia-de-sem', '/images/blog/07-sem-magnific-YMaXoMhWeC.png'],
 ];
 
+const LOTE_2 = [
+  ['como-elegir-el-mejor-framework-para-tu-web', '/images/blog/01-framework-magnific-5j9Sv3wKxe.png'],
+  ['seo-y-sem-que-son-y-en-que-se-diferencian', '/images/blog/02-seo-y-sem-magnific-SyniXs1Ub8.png'],
+  ['7-consejos-seo-para-posicionar-tu-pagina', '/images/blog/03-7-consejos-seo-magnific-iGXTJXm3uK.png'],
+  ['pasos-para-aumentar-clientes-en-tu-negocio', '/images/blog/04-aumentar-clientes-magnific-gOz6HTdSXO.png'],
+  ['que-es-data-studio-de-google-y-como-funciona', '/images/blog/06-data-studio-magnific-yiVzbnFPW9.png'],
+  ['conoce-los-tipos-de-marketing', '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png'],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -31,15 +40,45 @@ function functionBody(source, name) {
   return nextExport === -1 ? source.slice(start) : source.slice(start, nextExport);
 }
 
-test('lote 1 maps exactly 7 slugs to Magnific PNG covers', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 7);
-  assert.equal(BLOG_COVER_SIZE.width, 2560);
-  assert.equal(BLOG_COVER_SIZE.height, 1440);
-  for (const [slug, path] of LOTE_1) {
+function assertMappedCovers(pairs) {
+  for (const [slug, path] of pairs) {
     assert.equal(BLOG_COVER_OVERRIDES[slug], path);
     assert.equal(blogCoverForSlug(slug), path);
     assert.equal(resolveBlogCoverUrl(slug, 'https://endpoint.example/old.jpg'), path);
     assert.ok(existsSync(join(root, 'public', path.replace(/^\//, ''))));
+  }
+}
+
+function pngSize(buffer) {
+  return {
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  };
+}
+
+test('lote 1 maps exactly 7 slugs to Magnific PNG covers', () => {
+  assert.equal(BLOG_COVER_SIZE.width, 2560);
+  assert.equal(BLOG_COVER_SIZE.height, 1440);
+  assertMappedCovers(LOTE_1);
+  assert.equal(
+    BLOG_COVER_OVERRIDES['que-es-una-agencia-de-sem'],
+    '/images/blog/07-sem-magnific-YMaXoMhWeC.png',
+  );
+});
+
+test('lote 2 maps 6 more slugs without removing lote 1', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 13);
+  assertMappedCovers(LOTE_2);
+  for (const [slug] of LOTE_1) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `lote 1 slug missing: ${slug}`);
+  }
+});
+
+test('override PNGs are 2560×1440', async () => {
+  for (const [, path] of [...LOTE_1, ...LOTE_2]) {
+    const file = join(root, 'public', path.replace(/^\//, ''));
+    const buffer = await readFile(file);
+    assert.deepEqual(pngSize(buffer), { width: 2560, height: 1440 }, path);
   }
 });
 
@@ -69,5 +108,8 @@ test('blog post generateMetadata points OG and Twitter at the cover override', a
   assert.match(meta, /coverOverride \|\| post\.featured_media_url/);
   assert.match(meta, /twitter:\s*\{/);
   assert.match(meta, /images:\s*\[imageUrl\]/);
-  assert.doesNotMatch(source, /tCjfdhqmZJ|1lis1ttr4r|8aruUnFIrU|Bhkm4lIoQR|ks6LT5H16B|iGX2L9R3uK/);
+  assert.doesNotMatch(
+    source,
+    /tCjfdhqmZJ|1lis1ttr4r|8aruUnFIrU|Bhkm4lIoQR|ks6LT5H16B|iGX2L9R3uK|3zBMZYMREY|WDfo97dcXe|p8qfFVNehw|yiVGtRkPW9|Lw29ezTswO|8arFJtUIrU/,
+  );
 });
