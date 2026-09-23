@@ -13,6 +13,7 @@ import {
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
+import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 
 export {
   rewriteInSitePageHrefs,
@@ -477,7 +478,10 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
   const processedPosts = posts.map(post => rewriteWpYoastFields(rewriteWpRenderedHtmlFields({
     ...post,
-    featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+    featured_media_url: resolveBlogCoverUrl(
+      post.slug,
+      post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+    ),
     featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
     categories: post._embedded?.['wp:term']?.[0] || [],
     author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
@@ -505,6 +509,7 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
     if (featuredMedia) {
       imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
     }
+    imageUrl = resolveBlogCoverUrl(rewritten.slug, imageUrl);
     const date = new Date(rewritten.date);
     const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
     const excerpt = (rewritten.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
@@ -533,6 +538,7 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     }
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
+  post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
   return rewriteWpRenderedHtmlFields(post);
 }
 
