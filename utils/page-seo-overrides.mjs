@@ -3,7 +3,7 @@
  * title was cloned from another page. generateMetadata in app/[slug]
  * applies these after fetching Yoast so each public URL keeps a unique title.
  *
- * Only title + og:title. Description, robots and on-page H1 stay untouched.
+ * Title and description overrides are independent. Robots and on-page H1 stay untouched.
  */
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
@@ -24,5 +24,20 @@ export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
   return {
     title: yoastTitle,
     ogTitle: yoastOgTitle || yoastTitle,
+  };
+}
+
+export const PAGE_DESCRIPTION_OVERRIDES = {
+  'agencia-e-commerce':
+    'Agencia e-Commerce para marcas D2C que ya venden y quieren crecer con margen. Ordenamos e implementamos tu catálogo en Shopify o WooCommerce. Agenda tu llamada diagnóstica.',
+};
+
+export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDescription) {
+  const override = Object.hasOwn(PAGE_DESCRIPTION_OVERRIDES, slug)
+    ? PAGE_DESCRIPTION_OVERRIDES[slug]
+    : undefined;
+  return {
+    description: override ?? yoastDescription,
+    ogDescription: override ?? (yoastOgDescription || yoastDescription),
   };
 }
