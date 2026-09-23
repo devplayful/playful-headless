@@ -5,9 +5,13 @@ import { readFileSync } from 'node:fs';
 const {
   BOOKING_HREF,
   BOOKING_CTA_LABEL,
+  BOOKING_FIT_CTA_LABEL,
   CONTACT_HREF,
   SERVICE_BOOKING_HREF,
   SERVICE_BOOKING_CTA_SLUGS,
+  buildBookingHref,
+  buildBookingHrefFromLocation,
+  isBookingDestination,
   isContactCtaLabel,
   isContactPageHref,
   isServiceBookingCtaSlug,
@@ -36,9 +40,10 @@ function functionBody(source, name) {
 test('shared booking constant matches the Shopify GHL widget', () => {
   assert.equal(BOOKING_HREF, 'https://api.playfulagency.com/widget/bookings/reunion-playful');
   assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
-  assert.equal(BOOKING_CTA_LABEL, 'Agendar Reunión con Playful');
+  assert.equal(BOOKING_CTA_LABEL, 'Solicitar una reunión');
+  assert.equal(BOOKING_FIT_CTA_LABEL, 'Comprobar si encajamos');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
-  assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF \} from '\.\.\/\.\.\/utils\/booking\.ts'/);
+  assert.match(shopifyCopy, /export \{ BOOKING_HREF, BOOKING_CTA_LABEL, CONTACT_HREF \} from '\.\.\/\.\.\/utils\/booking\.ts'/);
   assert.doesNotMatch(shopifyCopy, /SERVICE_BOOKING_HREF/);
 });
 
@@ -126,7 +131,34 @@ test('rewrites absolute WP and relative contactar hrefs used in live Elementor H
   assert.equal((rewritten.match(new RegExp(BOOKING_CTA_LABEL, 'g')) || []).length, 2);
 });
 
-test('diseño-web closer ¡Hablemos! becomes the booking label so the page has Agendar copy', () => {
+test('buildBookingHref is the only constructor and forwards utm/landing/referrer', () => {
+  assert.equal(buildBookingHref(), BOOKING_HREF);
+  assert.equal(
+    buildBookingHref({
+      search: '?utm_source=google&utm_medium=cpc&utm_campaign=shopify&foo=drop',
+      landing: '/agencia-shopify?utm_source=google',
+      referrer: 'https://www.google.com/',
+    }),
+    `${BOOKING_HREF}?utm_source=google&utm_medium=cpc&utm_campaign=shopify&landing=%2Fagencia-shopify%3Futm_source%3Dgoogle&referrer=https%3A%2F%2Fwww.google.com%2F`,
+  );
+  assert.equal(
+    buildBookingHref({ search: { utm_content: 'hero' } }, SERVICE_BOOKING_HREF),
+    '/reunion-playful?utm_content=hero',
+  );
+  assert.equal(
+    buildBookingHrefFromLocation(
+      { pathname: '/agencia-seo', search: '?utm_source=newsletter' },
+      'https://playfulagency.com/blog',
+    ),
+    `${BOOKING_HREF}?utm_source=newsletter&landing=%2Fagencia-seo%3Futm_source%3Dnewsletter&referrer=https%3A%2F%2Fplayfulagency.com%2Fblog`,
+  );
+  assert.equal(isBookingDestination(BOOKING_HREF), true);
+  assert.equal(isBookingDestination(SERVICE_BOOKING_HREF), true);
+  assert.equal(isBookingDestination('https://playfulagency.com/reunion-playful?utm_source=x'), true);
+  assert.equal(isBookingDestination(CONTACT_HREF), false);
+});
+
+test('diseño-web closer ¡Hablemos! becomes the booking label so the page has request-meeting copy', () => {
   const html = [
     MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', '¡Hagamos una página web!'),
     MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', '¡Hablemos!'),

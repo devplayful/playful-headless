@@ -211,7 +211,7 @@ assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
 assert.doesNotMatch(shopifyHtml, /Cocina/i);
 assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
 assert.match(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
-assert.match(shopifyHtml, /Agendar Reunión con Playful/);
+assert.match(shopifyHtml, /Solicitar una reunión/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
@@ -244,7 +244,7 @@ for (const pathname of serviceBookingPaths) {
     /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/,
     `${pathname} content must not expose the GHL widget API URL`,
   );
-  assert.match(content, /Agendar Reunión/, `${pathname} content must show Agendar Reunión`);
+  assert.match(content, /Solicitar una reunión/, `${pathname} content must show Solicitar una reunión`);
   assert.doesNotMatch(
     content,
     /contactar-agencia-de-marketing-digital/,

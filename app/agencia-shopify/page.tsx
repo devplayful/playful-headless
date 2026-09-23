@@ -10,6 +10,7 @@ import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
 import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
+import BookingLink from '@/components/BookingLink';
 import {
   BOOKING_HREF,
   CONTACT_HREF,
@@ -155,9 +156,9 @@ function LinkedCopy({ text }: { text: string }) {
 
 function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
   return (
-    <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+    <BookingLink href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}
-    </a>
+    </BookingLink>
   );
 }
 

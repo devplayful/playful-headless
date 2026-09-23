@@ -1,14 +1,32 @@
-/** Shopify CTAs keep the GHL widget URL. Middleware 301s the apex path there. */
+/** Single source of truth for the GHL reunion widget. Middleware 301s the apex path here. */
 export const BOOKING_HREF =
   'https://api.playfulagency.com/widget/bookings/reunion-playful';
 
 /**
- * Visible/canonical href on the four GO service landings.
- * Copy (e-com PR #21) and web must match; `/reunion-playful` 301s to BOOKING_HREF.
+ * Public slug on service landings and in-site links.
+ * `/reunion-playful` 301s to BOOKING_HREF and must keep working.
  */
 export const SERVICE_BOOKING_HREF = '/reunion-playful';
 
-export const BOOKING_CTA_LABEL = 'Agendar Reunión con Playful';
+/** CTA copy that does not promise an immediate confirmed slot. */
+export const BOOKING_CTA_LABEL = 'Solicitar una reunión';
+
+/** Qualification closer: check fit, then request the meeting. */
+export const BOOKING_FIT_CTA_LABEL = 'Comprobar si encajamos';
+
+export const BOOKING_UTM_KEYS = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_term',
+  'utm_content',
+] as const;
+
+export const BOOKING_ATTRIBUTION_KEYS = [
+  ...BOOKING_UTM_KEYS,
+  'landing',
+  'referrer',
+] as const;
 
 export const CONTACT_HREF = '/contactar-agencia-de-marketing-digital';
 
@@ -35,6 +53,18 @@ export const ABOUT_HREF_REWRITE_SLUGS = [
 
 export type ServiceBookingCtaSlug = (typeof SERVICE_BOOKING_CTA_SLUGS)[number];
 export type AboutHrefRewriteSlug = (typeof ABOUT_HREF_REWRITE_SLUGS)[number];
+export type BookingAttributionKey = (typeof BOOKING_ATTRIBUTION_KEYS)[number];
+
+type BookingSearch =
+  | string
+  | URLSearchParams
+  | Record<string, string | null | undefined>;
+
+export type BookingHrefInput = {
+  search?: BookingSearch;
+  landing?: string | null;
+  referrer?: string | null;
+};
 
 const SERVICE_BOOKING_CTA_SLUG_SET: ReadonlySet<string> = new Set(
   SERVICE_BOOKING_CTA_SLUGS,
@@ -106,6 +136,110 @@ export function isAboutPageHref(href: string): boolean {
   return pathnameOfHref(href) === ABOUT_PATH;
 }
 
+function toSearchParams(search?: BookingSearch): URLSearchParams {
+  if (!search) return new URLSearchParams();
+  if (typeof search === 'string') {
+    return new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
+  }
+  if (search instanceof URLSearchParams) return new URLSearchParams(search);
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(search as Record<string, string | null | undefined>)) {
+    if (typeof value === 'string' && value.trim()) params.set(key, value);
+  }
+  return params;
+}
+
+function bookingPathname(href: string): string | null {
+  const trimmed = href.trim();
+  if (!trimmed) return null;
+  try {
+    const absolute = trimmed.startsWith('//') ? `https:${trimmed}` : trimmed;
+    const url = absolute.startsWith('http')
+      ? new URL(absolute)
+      : new URL(absolute, 'https://playfulagency.com');
+    return url.pathname.replace(/\/+$/, '') || '/';
+  } catch {
+    return trimmed.split(/[?#]/)[0].replace(/\/+$/, '') || null;
+  }
+}
+
+function isAbsoluteHref(href: string): boolean {
+  return /^https?:\/\//i.test(href.trim()) || href.trim().startsWith('//');
+}
+
+/** True for the public slug or the canonical GHL widget URL. */
+export function isBookingDestination(href: string): boolean {
+  const path = bookingPathname(href);
+  return path === SERVICE_BOOKING_HREF || path === '/widget/bookings/reunion-playful';
+}
+
+/**
+ * Build the meeting-request URL from BOOKING_HREF (or another booking base)
+ * while forwarding utm_*, landing and referrer.
+ */
+export function buildBookingHref(
+  input: BookingHrefInput = {},
+  base: string = BOOKING_HREF,
+): string {
+  const incoming = toSearchParams(input.search);
+  const dest = isAbsoluteHref(base)
+    ? new URL(base.startsWith('//') ? `https:${base}` : base)
+    : new URL(base, 'https://playfulagency.com');
+
+  for (const key of BOOKING_UTM_KEYS) {
+    const value = incoming.get(key)?.trim();
+    if (value) dest.searchParams.set(key, value.slice(0, 160));
+  }
+
+  const landing = (incoming.get('landing') || input.landing || '').trim();
+  if (landing) dest.searchParams.set('landing', landing.slice(0, 500));
+
+  const referrer = (incoming.get('referrer') || input.referrer || '').trim();
+  if (referrer) dest.searchParams.set('referrer', referrer.slice(0, 500));
+
+  if (isAbsoluteHref(base)) return dest.toString();
+  return `${dest.pathname}${dest.search}${dest.hash}`;
+}
+
+export function buildBookingHrefFromLocation(
+  location: { pathname: string; search: string },
+  referrer?: string | null,
+  base: string = BOOKING_HREF,
+): string {
+  return buildBookingHref(
+    {
+      search: location.search,
+      landing: `${location.pathname}${location.search}`.slice(0, 500),
+      referrer,
+    },
+    base,
+  );
+}
+
+export function enhanceBookingAnchors(
+  root: ParentNode,
+  location: { pathname: string; search: string },
+  referrer?: string | null,
+): number {
+  let count = 0;
+  root.querySelectorAll('a[href]').forEach((el) => {
+    const href = el.getAttribute('href') || '';
+    if (!isBookingDestination(href)) return;
+    const path = bookingPathname(href) || SERVICE_BOOKING_HREF;
+    const nextBase = isAbsoluteHref(href)
+      ? (href.startsWith('//')
+        ? `https:${href.split(/[?#]/)[0]}`
+        : href.split(/[?#]/)[0])
+      : path;
+    const next = buildBookingHrefFromLocation(location, referrer, nextBase);
+    if (next !== href) {
+      el.setAttribute('href', next);
+      count += 1;
+    }
+  });
+  return count;
+}
+
 function normalizeCtaLabel(text: string): string {
   return decodeBasicEntities(text)
     .replace(/[áàäâÁÀÄÂ]/g, 'a')
@@ -131,6 +265,8 @@ export function isContactCtaLabel(text: string): boolean {
     return true;
   }
   if (normalized === 'agenda una reunion') return true;
+  if (normalized === 'agendar reunion con playful') return true;
+  if (normalized === 'agendar sesion') return true;
   if (normalized === 'hablemos') return true;
   return false;
 }
