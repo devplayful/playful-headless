@@ -1,7 +1,8 @@
 import styles from './ElementorPageContent.module.css';
 import './ElementorPageHeaderFix.css';
 import ElementorPageScripts from './ElementorPageScripts';
-import { rewriteElementorBodyHrefs } from '@/utils/booking';
+import BookingAttribution from '@/components/BookingAttribution';
+import { BOOKING_CTA_LABEL, rewriteElementorBodyHrefs } from '@/utils/booking';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
@@ -82,7 +83,7 @@ function restoreOldBodyCopy(html: string): string {
   out = out.split(
     '<span class="text">¡Contáctanos y empieza ya!</span>',
   ).join(
-    '<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">Agenda una Reunión</span>',
+    `<span class="text playful-magia-negra">¡Contáctanos y empieza ya!</span><span class="text">${BOOKING_CTA_LABEL}</span>`,
   );
 
   // /agencia-sem only: first heading is H2 in WP. Unique copy so SEO / diseño / e-commerce keep their H1s.
@@ -136,6 +137,7 @@ html body .playful-wp-page .playful-post-home .recent-news li .texts .playful-me
 html body .playful-wp-page .elementor-element-145155f,
 html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
 `}</style>
+      <BookingAttribution rootSelector=".playful-wp-page" />
       <ElementorPageScripts pageId={pageId} />
     </>
   );

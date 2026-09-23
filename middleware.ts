@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
+import { BOOKING_HREF, SERVICE_BOOKING_HREF } from './utils/booking';
 
 const PERMANENT_301: Record<string, string> = {
   '/servicios': '/agencia-e-commerce',
@@ -11,7 +12,8 @@ const PERMANENT_301: Record<string, string> = {
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
-  '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
+  [SERVICE_BOOKING_HREF]: BOOKING_HREF,
+  '/gracias-v2': '/gracias',
   '/blog/email-marketing/tipos-de-publicidad-online':
     'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
   '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
@@ -81,6 +83,8 @@ export const config = {
     '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/gracias-v2',
+    '/gracias-v2/',
     '/otros/conoce-todo-sobre-instagram-ads',
     '/otros/conoce-todo-sobre-instagram-ads/',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
