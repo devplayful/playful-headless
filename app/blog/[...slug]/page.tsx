@@ -15,6 +15,7 @@ import { BlogPostContent } from './BlogPostContent';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
 
 export async function generateStaticParams() {
   // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
@@ -363,6 +364,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const override = BLOG_SEO_OVERRIDES[postSlug];
   const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;
   const description = override?.description ?? (post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '');
+  const coverOverride = blogCoverForSlug(postSlug);
+  const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
+  const imageAlt = post.featured_media_alt || post.title.rendered;
 
   return {
     title,
@@ -377,12 +382,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: [post.author_name || 'Playful Agency'],
       images: [
         {
-          url: post.featured_media_url || '/images/og-blog.jpg',
-          width: 1200,
-          height: 630,
-          alt: post.featured_media_alt || post.title.rendered,
+          url: imageUrl,
+          width: imageSize.width,
+          height: imageSize.height,
+          alt: imageAlt,
         },
       ],
     },
+    ...(coverOverride
+      ? {
+          twitter: {
+            card: 'summary_large_image' as const,
+            images: [imageUrl],
+          },
+        }
+      : {}),
   };
 }
