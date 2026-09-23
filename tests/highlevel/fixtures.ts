@@ -48,6 +48,7 @@ export const config: EnabledHighLevelConfig = {
   locationId: 'location-test',
   pipelineId: 'pipeline-test',
   consultaStageId: 'stage-consulta-test',
+  revisarStageId: 'stage-revisar-test',
   ownerId: 'owner-test',
   contactTag: 'website-inbound',
   slaHours: 24,
