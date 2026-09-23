@@ -33,6 +33,15 @@ const LOTE_2 = [
   ['conoce-los-tipos-de-marketing', '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png'],
 ];
 
+const LOTE_3 = [
+  ['google-ads-grants', '/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png'],
+  ['como-posicionar-tu-negocio-en-google-ads', '/images/blog/02-posicionar-google-ads-magnific-s7A2J1Kl8e.png'],
+  ['publicidad-digital-en-tu-negocio', '/images/blog/03-publicidad-digital-magnific-5j9PO4hKxe.png'],
+  ['como-hacer-posicionamiento-web-en-buscadores', '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png'],
+  ['como-elegir-tus-palabras-claves', '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png'],
+  ['ecommerce-mi-negocio-online', '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png'],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -67,11 +76,19 @@ test('lote 1 maps exactly 7 slugs to Magnific PNG covers', () => {
 });
 
 test('lote 2 maps 6 more slugs without removing lote 1', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 13);
   assertMappedCovers(LOTE_2);
   for (const [slug] of LOTE_1) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `lote 1 slug missing: ${slug}`);
   }
+});
+
+test('lote 3 maps 6 more slugs without removing lote 1 or lote 2', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 19);
+  assertMappedCovers(LOTE_3);
+  for (const [slug] of [...LOTE_1, ...LOTE_2]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+  assert.equal('desarrollo-ui-ux' in BLOG_COVER_OVERRIDES, false);
 });
 
 test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
@@ -86,7 +103,7 @@ test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
 });
 
 test('override PNGs are 2560×1440', async () => {
-  for (const [, path] of [...LOTE_1, ...LOTE_2]) {
+  for (const [, path] of [...LOTE_1, ...LOTE_2, ...LOTE_3]) {
     const file = join(root, 'public', path.replace(/^\//, ''));
     const buffer = await readFile(file);
     assert.deepEqual(pngSize(buffer), { width: 2560, height: 1440 }, path);

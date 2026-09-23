@@ -1,9 +1,10 @@
 /**
  * Local Magnific covers that replace WordPress featured + OG/Twitter
- * for José-approved lote 1 + lote 2 (23 sep 2026). Same override shape as
- * CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
+ * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026). Same override
+ * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
+ * desarrollo-ui-ux is HOLD — José not signed; do not add that slug.
  */
 export const BLOG_COVER_OVERRIDES = {
   // lote 1
@@ -21,6 +22,13 @@ export const BLOG_COVER_OVERRIDES = {
   'pasos-para-aumentar-clientes-en-tu-negocio': '/images/blog/04-aumentar-clientes-magnific-gOz6HTdSXO.png',
   'que-es-data-studio-de-google-y-como-funciona': '/images/blog/06-data-studio-magnific-yiVzbnFPW9.png',
   'conoce-los-tipos-de-marketing': '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png',
+  // lote 3
+  'google-ads-grants': '/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png',
+  'como-posicionar-tu-negocio-en-google-ads': '/images/blog/02-posicionar-google-ads-magnific-s7A2J1Kl8e.png',
+  'publicidad-digital-en-tu-negocio': '/images/blog/03-publicidad-digital-magnific-5j9PO4hKxe.png',
+  'como-hacer-posicionamiento-web-en-buscadores': '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png',
+  'como-elegir-tus-palabras-claves': '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png',
+  'ecommerce-mi-negocio-online': '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -32,7 +40,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1 or lote 2. */
+/** Prefer the local Magnific cover when the slug is in lote 1, lote 2, or lote 3. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',
