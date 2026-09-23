@@ -109,6 +109,13 @@ async function HomeContent() {
                   que va más allá del diseño. Nos especializamos en transformar plataformas mediocres en
                   <b> máquinas de conversión de alto rendimiento</b>. No creamos webs bonitas por hacer; desarrollamos tecnología que se traduce en <b>ventas consistentes y crecimiento real</b>.
                 </p>
+                <p className="playful-contenido-p">
+                  Si tu tienda ya corre en Shopify —o quieres migrar—, también puedes ver nuestro servicio de{' '}
+                  <a href="/agencia-shopify" className="font-medium text-[#440099] underline">
+                    Agencia Shopify
+                  </a>
+                  .
+                </p>
               </div>
 
               <div className="space-y-4">
