@@ -37,6 +37,7 @@ const LOTE_3 = [
   ['google-ads-grants', '/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png'],
   ['como-posicionar-tu-negocio-en-google-ads', '/images/blog/02-posicionar-google-ads-magnific-s7A2J1Kl8e.png'],
   ['publicidad-digital-en-tu-negocio', '/images/blog/03-publicidad-digital-magnific-5j9PO4hKxe.png'],
+  ['desarrollo-ui-ux', '/images/blog/04-desarrollo-ui-ux-magnific-jUZ6ijXLD0.png'],
   ['como-hacer-posicionamiento-web-en-buscadores', '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png'],
   ['como-elegir-tus-palabras-claves', '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png'],
   ['ecommerce-mi-negocio-online', '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png'],
@@ -82,13 +83,13 @@ test('lote 2 maps 6 more slugs without removing lote 1', () => {
   }
 });
 
-test('lote 3 maps 6 more slugs without removing lote 1 or lote 2', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 19);
+test('lote 3 maps 7 more slugs without removing lote 1 or lote 2', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 20);
+  assert.equal(LOTE_3.length, 7);
   assertMappedCovers(LOTE_3);
   for (const [slug] of [...LOTE_1, ...LOTE_2]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
-  assert.equal('desarrollo-ui-ux' in BLOG_COVER_OVERRIDES, false);
 });
 
 test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
