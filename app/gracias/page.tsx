@@ -1,4 +1,8 @@
 import type { Metadata } from 'next';
+import { BOOKING_HREF } from '@/utils/booking';
+import { thanksBookingAllowed } from '@/utils/thanks-booking';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Gracias — siguiente paso | Playful Agency',
@@ -6,7 +10,18 @@ export const metadata: Metadata = {
   alternates: { canonical: '/gracias' },
 };
 
-export default function ThankYouV2() {
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function ThankYouV2({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const showBooking = thanksBookingAllowed({ fit: firstParam(params?.fit) });
+
   return (
     <div data-thanks-v2 className="min-h-screen relative overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
@@ -25,42 +40,64 @@ export default function ThankYouV2() {
         </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
           <div className="space-y-6">
-            <h2 className="playful-h2" style={{ color: '#440099' }}>Pero espera… podemos acelerar el siguiente paso.</h2>
-            <p className="playful-contenido-p">Gracias por compartirnos tu proyecto. Revisaremos tus datos. Si tu marca encaja con el perfil que ves abajo, puedes reservar una sesión sin esperar a que te contactemos.</p>
-            <p className="playful-contenido-p">Hablemos de dónde está tu e-commerce, qué quieres resolver y si Playful es el equipo adecuado para acompañarte.</p>
+            <h2 className="playful-h2" style={{ color: '#440099' }}>
+              {showBooking
+                ? 'Pero espera… podemos acelerar el siguiente paso.'
+                : 'Revisaremos tu caso y te contactamos.'}
+            </h2>
+            {showBooking ? (
+              <>
+                <p className="playful-contenido-p">Gracias por compartirnos tu proyecto. Revisaremos tus datos. Si tu marca encaja con el perfil que ves abajo, puedes reservar una sesión sin esperar a que te contactemos.</p>
+                <p className="playful-contenido-p">Hablemos de dónde está tu e-commerce, qué quieres resolver y si Playful es el equipo adecuado para acompañarte.</p>
+              </>
+            ) : (
+              <>
+                <p className="playful-contenido-p">Gracias por compartirnos tu proyecto. El equipo revisará tus datos y te escribirá si hay encaje. No hace falta reservar una sesión ni reenviar el formulario.</p>
+                <p className="playful-contenido-p">Si necesitamos más contexto, te lo pediremos por correo. Mientras tanto, no hay ningún paso extra.</p>
+              </>
+            )}
           </div>
           <div className="flex justify-center lg:justify-end">
             <img src="/images/contacto-imagen.png" alt="" className="w-full max-w-md" />
           </div>
         </div>
-        <section id="condiciones" className="scroll-mt-8 space-y-8">
-          <h2 className="playful-h2 text-center" style={{ color: '#440099' }}>¿Esta sesión es para ti? Demos el siguiente paso si…</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              ['Decides sobre el proyecto', 'Eres dueño/a, socio/a o responsable de e-commerce, marketing u operaciones y participas en la decisión.', '#C9B4FF'],
-              ['Tu marca apuesta por venta directa', 'Vendes D2C, o ya vendes en Amazon o Mercado Libre y quieres desarrollar tu propio canal directo.', '#72E3D8'],
-              ['Ya tienes tracción', 'Tu negocio factura más de US$100.000 al mes en ventas online.', '#FFE066'],
-              ['Quieres avanzar, no solo explorar', 'Tienes una necesidad concreta, quieres iniciar en los próximos tres meses y estás dispuesto/a a evaluar una inversión.', '#FFB4A2'],
-            ].map(([title, body, color]) => (
-              <div key={title} className="rounded-3xl p-6 md:p-8 text-[#2A0064]" style={{ backgroundColor: color }}>
-                <h3 className="text-xl font-bold mb-3">{title}</h3>
-                <p className="leading-relaxed">{body}</p>
+        {showBooking ? (
+          <>
+            <section id="condiciones" className="scroll-mt-8 space-y-8">
+              <h2 className="playful-h2 text-center" style={{ color: '#440099' }}>¿Esta sesión es para ti? Demos el siguiente paso si…</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {[
+                  ['Decides sobre el proyecto', 'Eres dueño/a, socio/a o responsable de e-commerce, marketing u operaciones y participas en la decisión.', '#C9B4FF'],
+                  ['Tu marca apuesta por venta directa', 'Vendes D2C, o ya vendes en Amazon o Mercado Libre y quieres desarrollar tu propio canal directo.', '#72E3D8'],
+                  ['Ya tienes tracción', 'Tu negocio factura más de US$100.000 al mes en ventas online.', '#FFE066'],
+                  ['Quieres avanzar, no solo explorar', 'Tienes una necesidad concreta, quieres iniciar en los próximos tres meses y estás dispuesto/a a evaluar una inversión.', '#FFB4A2'],
+                ].map(([title, body, color]) => (
+                  <div key={title} className="rounded-3xl p-6 md:p-8 text-[#2A0064]" style={{ backgroundColor: color }}>
+                    <h3 className="text-xl font-bold mb-3">{title}</h3>
+                    <p className="leading-relaxed">{body}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-        <div className="mt-8 text-center">
-          <a href="https://playfulagency.com/reunion-playful" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
-            Cumplo estas condiciones: agendar sesión
-            <span className="sr-only"> (abre en otra pestaña)</span>
-          </a>
-          <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
-        </div>
-        <section className="mt-12 md:mt-16 text-center space-y-6 max-w-3xl mx-auto">
-          <h2 className="playful-h2" style={{ color: '#440099' }}>Una conversación para evaluar trabajar juntos.</h2>
-          <p className="playful-contenido-p">La sesión es gratuita y tiene una finalidad comercial: entender tu caso, evaluar cómo podemos ayudarte y, si hay encaje, definir los siguientes pasos para prepararte una propuesta y un presupuesto. Agendar no implica ningún compromiso de contratación.</p>
-          <p className="text-sm text-[#453A53]">¿Todavía no es tu momento? No hace falta reservar ni reenviar el formulario. Revisaremos la solicitud que ya nos compartiste.</p>
-        </section>
+            </section>
+            <div className="mt-8 text-center">
+              <a href={BOOKING_HREF} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
+                Cumplo estas condiciones: agendar sesión
+                <span className="sr-only"> (abre en otra pestaña)</span>
+              </a>
+              <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
+            </div>
+            <section className="mt-12 md:mt-16 text-center space-y-6 max-w-3xl mx-auto">
+              <h2 className="playful-h2" style={{ color: '#440099' }}>Una conversación para evaluar trabajar juntos.</h2>
+              <p className="playful-contenido-p">La sesión es gratuita y tiene una finalidad comercial: entender tu caso, evaluar cómo podemos ayudarte y, si hay encaje, definir los siguientes pasos para prepararte una propuesta y un presupuesto. Agendar no implica ningún compromiso de contratación.</p>
+              <p className="text-sm text-[#453A53]">¿Todavía no es tu momento? No hace falta reservar ni reenviar el formulario. Revisaremos la solicitud que ya nos compartiste.</p>
+            </section>
+          </>
+        ) : (
+          <section className="mt-4 md:mt-8 text-center space-y-6 max-w-3xl mx-auto">
+            <h2 className="playful-h2" style={{ color: '#440099' }}>El siguiente paso lo damos nosotros.</h2>
+            <p className="playful-contenido-p">Revisaremos la solicitud que ya nos compartiste. Si encaja con el perfil de trabajo de Playful, te contactaremos para continuar.</p>
+          </section>
+        )}
       </div>
     </div>
   );

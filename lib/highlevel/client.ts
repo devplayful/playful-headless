@@ -22,6 +22,7 @@ export interface UpsertContactResult {
 export interface HighLevelOpportunity {
   id: string;
   status: string;
+  pipelineStageId?: string;
 }
 
 export interface HighLevelTask {
@@ -56,7 +57,11 @@ export interface HighLevelGateway {
   addContactTags(contactId: string, tags: string[]): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
-  updateOpportunityCustomFields(opportunityId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
+  updateOpportunityCustomFields(
+    opportunityId: string,
+    customFields: HighLevelCustomFieldValue[],
+    options?: { pipelineStageId?: string },
+  ): Promise<void>;
   findTasks(contactId: string): Promise<HighLevelTask[]>;
   createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }>;
 }
@@ -139,12 +144,18 @@ export class HighLevelApiClient implements HighLevelGateway {
       status: 'open',
       limit: '100',
     });
-    const result = await this.request<{ opportunities?: HighLevelOpportunity[] }>(
+    const result = await this.request<{
+      opportunities?: Array<{ id: string; status: string; pipelineStageId?: string }>;
+    }>(
       'search open opportunities',
       `/opportunities/search?${params}`,
       { method: 'GET' },
     );
-    return result.opportunities || [];
+    return (result.opportunities || []).map((item) => ({
+      id: item.id,
+      status: item.status,
+      ...(item.pipelineStageId ? { pipelineStageId: item.pipelineStageId } : {}),
+    }));
   }
 
   async createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }> {
@@ -159,10 +170,14 @@ export class HighLevelApiClient implements HighLevelGateway {
   async updateOpportunityCustomFields(
     opportunityId: string,
     customFields: HighLevelCustomFieldValue[],
+    options?: { pipelineStageId?: string },
   ): Promise<void> {
     await this.request('update opportunity qualification', `/opportunities/${encodeURIComponent(opportunityId)}`, {
       method: 'PUT',
-      body: JSON.stringify({ customFields }),
+      body: JSON.stringify({
+        customFields,
+        ...(options?.pipelineStageId ? { pipelineStageId: options.pipelineStageId } : {}),
+      }),
     });
   }
 

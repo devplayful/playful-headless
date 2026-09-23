@@ -15,6 +15,18 @@ import type {
   HighLevelOpportunity,
 } from './client.ts';
 import { HighLevelApiError } from './client.ts';
+import {
+  canMoveInboundOpportunityStage,
+  inboundOpportunityStageId,
+  qualificationLevel,
+} from './qualification.ts';
+
+export {
+  canMoveInboundOpportunityStage,
+  inboundOpportunityStageId,
+  qualificationLevel,
+} from './qualification.ts';
+export type { QualificationLevel } from './qualification.ts';
 
 export class AmbiguousOpportunityError extends Error {
   constructor(public readonly count: number) {
@@ -33,25 +45,6 @@ export interface CrmSyncResult {
 export interface CrmSyncOptions {
   /** Avoid an extra CRM side effect during the one-contact production canary. */
   skipSlaTask?: boolean;
-}
-
-export type QualificationLevel = 'priority' | 'transition' | 'review';
-
-export function qualificationLevel(lead: WebsiteLead): QualificationLevel {
-  const qualification = lead.qualification;
-  const isDecisionMaker = qualification.decisionRole === 'owner'
-    || qualification.decisionRole === 'decision_lead';
-  const isNearTerm = qualification.projectTiming === '0_30_days'
-    || qualification.projectTiming === '1_3_months';
-  const isDirectCommerce = qualification.salesModel === 'd2c'
-    || qualification.salesModel === 'd2c_b2b'
-    || qualification.salesModel === 'marketplace_to_d2c';
-
-  if (isDecisionMaker && isNearTerm && isDirectCommerce
-    && qualification.monthlyRevenue === 'over_100k') return 'priority';
-  if (['amazon', 'mercado_libre', 'marketplaces_other', 'marketplace_to_d2c', 'pre_d2c']
-    .includes(qualification.salesModel)) return 'transition';
-  return 'review';
 }
 
 function field(
@@ -271,33 +264,10 @@ export async function syncWebsiteLeadToHighLevel(
     await control.checkpoint({ tagsCompleted: true });
   }
 
-  if (fit !== 'priority') {
-    const existing = selectOrReject(await gateway.findOpenOpportunities(
-      config.locationId,
-      config.pipelineId,
-      contactId,
-    ));
-    if (!existing) return { contactId, opportunityCreated: false };
-
-    await control.withResourceLease(
-      `opportunity:${config.locationId}:${config.pipelineId}:${contactId}`,
-      async () => {
-        try {
-          await gateway.updateOpportunityCustomFields(
-            existing.id,
-            opportunityFields(lead, config),
-          );
-        } catch (error) {
-          retainLeaseForUncertainWrite(error);
-        }
-      },
-    );
-    return { contactId, opportunityId: existing.id, opportunityCreated: false };
-  }
-
   let opportunityId = control.progress.opportunityId;
   let opportunityCreated = control.progress.opportunityCreated;
   if (!opportunityId) {
+    const targetStageId = inboundOpportunityStageId(fit, config);
     await control.withResourceLease(
       `opportunity:${config.locationId}:${config.pipelineId}:${contactId}`,
       async () => {
@@ -310,10 +280,13 @@ export async function syncWebsiteLeadToHighLevel(
         let createdRemotely = false;
         if (existing) {
           resolvedOpportunityId = existing.id;
+          const shouldMove = canMoveInboundOpportunityStage(existing.pipelineStageId, config)
+            && existing.pipelineStageId !== targetStageId;
           try {
             await gateway.updateOpportunityCustomFields(
               resolvedOpportunityId,
               opportunityFields(lead, config),
+              shouldMove ? { pipelineStageId: targetStageId } : undefined,
             );
           } catch (error) {
             retainLeaseForUncertainWrite(error);
@@ -324,7 +297,7 @@ export async function syncWebsiteLeadToHighLevel(
               pipelineId: config.pipelineId,
               locationId: config.locationId,
               name: `${lead.business || lead.name} — consulta web`,
-              pipelineStageId: config.consultaStageId,
+              pipelineStageId: targetStageId,
               status: 'open',
               contactId,
               assignedTo: config.ownerId,
@@ -348,7 +321,11 @@ export async function syncWebsiteLeadToHighLevel(
     );
   }
 
-  if (options.skipSlaTask) {
+  if (!opportunityId || opportunityCreated === undefined) {
+    throw new Error('El flujo CRM terminó sin checkpoints de oportunidad.');
+  }
+
+  if (fit !== 'priority' || options.skipSlaTask) {
     return { contactId, opportunityId, opportunityCreated };
   }
 
