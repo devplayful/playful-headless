@@ -4,10 +4,50 @@ import assert from 'node:assert/strict';
 import {
   PAGE_TITLE_OVERRIDES,
   applyPageTitleOverride,
+  PAGE_DESCRIPTION_OVERRIDES,
+  applyPageDescriptionOverride,
 } from '../utils/page-seo-overrides.mjs';
 
 const MARKETING_TITLE =
   'Marketing Internacional: Lleva tu negocio al mundo (sin complicaciones)';
+const MARKETING_DESCRIPTION =
+  'Expandirte globalmente puede parecer complicado, pero con Playful Agency es pan comido. Te ayudamos a crear estrategias de Marketing Internacional que conectan con clientes.';
+const CONTENTO_ECOMMERCE_DESCRIPTION =
+  'Agencia e-Commerce para marcas D2C que ya venden y quieren crecer con margen. Ordenamos e implementamos tu catálogo en Shopify o WooCommerce. Agenda tu llamada diagnóstica.';
+const STALE_PR64_DESCRIPTION =
+  'Diseño, desarrollo y optimización de tiendas online. En Playful mejoramos el rendimiento, la experiencia de compra y el SEO de tu ecommerce.';
+
+test('ecommerce overrides both cloned descriptions with Contento canonical copy', () => {
+  assert.deepEqual(Object.keys(PAGE_DESCRIPTION_OVERRIDES), ['agencia-e-commerce']);
+  assert.equal(
+    PAGE_DESCRIPTION_OVERRIDES['agencia-e-commerce'],
+    CONTENTO_ECOMMERCE_DESCRIPTION,
+  );
+  const result = applyPageDescriptionOverride(
+    'agencia-e-commerce',
+    MARKETING_DESCRIPTION,
+    MARKETING_DESCRIPTION,
+  );
+  assert.equal(result.description, CONTENTO_ECOMMERCE_DESCRIPTION);
+  assert.equal(result.ogDescription, CONTENTO_ECOMMERCE_DESCRIPTION);
+  assert.doesNotMatch(result.description, /Marketing Internacional/i);
+  assert.doesNotMatch(result.description, /tiendas online/);
+  assert.notEqual(result.description, STALE_PR64_DESCRIPTION);
+});
+
+test('description overrides preserve other slugs and original Open Graph fallback', () => {
+  for (const slug of ['marketing-internacional', 'agencia-seo', 'agencia-sem', 'constructor', '__proto__']) {
+    assert.deepEqual(applyPageDescriptionOverride(slug, 'Original', 'Social'), {
+      description: 'Original',
+      ogDescription: 'Social',
+    });
+    assert.deepEqual(applyPageDescriptionOverride(slug, 'Original', ''), {
+      description: 'Original',
+      ogDescription: 'Original',
+    });
+  }
+});
+
 const SHARED_PAGOS_TITLE =
   'Pagos Online para E-commerce | Haz tu Integración con Playful Agency';
 
