@@ -9,6 +9,10 @@ const jumexOdwallaLink = readFileSync(
   new URL('../app/casos-de-exito/[slug]/ShopifyServiceLink.tsx', import.meta.url),
   'utf8',
 );
+const jumexOdwallaUtil = readFileSync(
+  new URL('../utils/case-study-shopify-link.ts', import.meta.url),
+  'utf8',
+);
 
 function heroBody(source) {
   const start = source.indexOf('Left Content');
@@ -38,5 +42,6 @@ test('home shopify internado is not a nav or footer item', () => {
 test('Jumex/Odwalla Agencia Shopify body anchors stay untouched', () => {
   assert.match(jumexOdwallaLink, /href=\{CASE_STUDY_SHOPIFY_HREF\}/);
   assert.match(jumexOdwallaLink, /\{CASE_STUDY_SHOPIFY_LABEL\}/);
-  assert.match(jumexOdwallaLink, /Agencia Shopify/);
+  assert.match(jumexOdwallaUtil, /CASE_STUDY_SHOPIFY_HREF = '\/agencia-shopify'/);
+  assert.match(jumexOdwallaUtil, /CASE_STUDY_SHOPIFY_LABEL = 'Agencia Shopify'/);
 });
