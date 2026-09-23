@@ -17,7 +17,7 @@ export const BLOG_COVER_OVERRIDES = {
   // lote 2
   'como-elegir-el-mejor-framework-para-tu-web': '/images/blog/01-framework-magnific-5j9Sv3wKxe.png',
   'seo-y-sem-que-son-y-en-que-se-diferencian': '/images/blog/02-seo-y-sem-magnific-SyniXs1Ub8.png',
-  '7-consejos-seo-para-posicionar-tu-pagina': '/images/blog/03-7-consejos-seo-magnific-iGXTJXm3uK.png',
+  '7-consejos-seo-para-posicionar-tu-pagina': '/images/blog/03-7-consejos-seo-magnific-3zBMZYMREY.png',
   'pasos-para-aumentar-clientes-en-tu-negocio': '/images/blog/04-aumentar-clientes-magnific-gOz6HTdSXO.png',
   'que-es-data-studio-de-google-y-como-funciona': '/images/blog/06-data-studio-magnific-yiVzbnFPW9.png',
   'conoce-los-tipos-de-marketing': '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png',

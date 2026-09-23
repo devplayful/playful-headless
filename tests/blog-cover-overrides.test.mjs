@@ -27,7 +27,7 @@ const LOTE_1 = [
 const LOTE_2 = [
   ['como-elegir-el-mejor-framework-para-tu-web', '/images/blog/01-framework-magnific-5j9Sv3wKxe.png'],
   ['seo-y-sem-que-son-y-en-que-se-diferencian', '/images/blog/02-seo-y-sem-magnific-SyniXs1Ub8.png'],
-  ['7-consejos-seo-para-posicionar-tu-pagina', '/images/blog/03-7-consejos-seo-magnific-iGXTJXm3uK.png'],
+  ['7-consejos-seo-para-posicionar-tu-pagina', '/images/blog/03-7-consejos-seo-magnific-3zBMZYMREY.png'],
   ['pasos-para-aumentar-clientes-en-tu-negocio', '/images/blog/04-aumentar-clientes-magnific-gOz6HTdSXO.png'],
   ['que-es-data-studio-de-google-y-como-funciona', '/images/blog/06-data-studio-magnific-yiVzbnFPW9.png'],
   ['conoce-los-tipos-de-marketing', '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png'],
@@ -74,6 +74,17 @@ test('lote 2 maps 6 more slugs without removing lote 1', () => {
   }
 });
 
+test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
+  const path = '/images/blog/03-7-consejos-seo-magnific-3zBMZYMREY.png';
+  assert.equal(BLOG_COVER_OVERRIDES['7-consejos-seo-para-posicionar-tu-pagina'], path);
+  assert.ok(existsSync(join(root, 'public', path.replace(/^\//, ''))));
+  assert.equal(
+    existsSync(join(root, 'public/images/blog/03-7-consejos-seo-magnific-iGXTJXm3uK.png')),
+    false,
+  );
+  assert.doesNotMatch(JSON.stringify(BLOG_COVER_OVERRIDES), /iGXTJXm3uK/);
+});
+
 test('override PNGs are 2560×1440', async () => {
   for (const [, path] of [...LOTE_1, ...LOTE_2]) {
     const file = join(root, 'public', path.replace(/^\//, ''));
@@ -110,6 +121,6 @@ test('blog post generateMetadata points OG and Twitter at the cover override', a
   assert.match(meta, /images:\s*\[imageUrl\]/);
   assert.doesNotMatch(
     source,
-    /tCjfdhqmZJ|1lis1ttr4r|8aruUnFIrU|Bhkm4lIoQR|ks6LT5H16B|iGX2L9R3uK|3zBMZYMREY|WDfo97dcXe|p8qfFVNehw|yiVGtRkPW9|Lw29ezTswO|8arFJtUIrU/,
+    /tCjfdhqmZJ|1lis1ttr4r|8aruUnFIrU|Bhkm4lIoQR|ks6LT5H16B|iGX2L9R3uK|iGXTJXm3uK|WDfo97dcXe|p8qfFVNehw|yiVGtRkPW9|Lw29ezTswO|8arFJtUIrU/,
   );
 });
