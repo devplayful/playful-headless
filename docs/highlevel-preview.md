@@ -12,7 +12,7 @@
 - Antes de llamar a WordPress, Next.js persiste `delivery_pending`. Un timeout, fallo de transporte o 5xx pasa a `delivery_uncertain`; ambos estados bloquean cualquier reentrega. Una comprobación manual consulta el endpoint sin efectos secundarios `/playful/v1/contact-receipt`: `completed` reanuda CRM sin correo nuevo, `processing` conserva el estado y `missing` libera la reserva para que el usuario inicie explícitamente otra solicitud. Solo un rechazo 4xx determinista elimina la reserva durante el primer intento.
 - Los leases de procesamiento son claves separadas del estado final, que conserva un TTL de siete días. El mínimo se calcula fail-closed desde el protocolo activo: 30 segundos para un único POST sin reintentos; 103 segundos para Gate 1.1 con preflight, cuatro POST acotados, tres comprobaciones previas a reintento, backoff, reserva/checkpoint Redis y margen. El ejemplo usa 105 segundos. Un proceso caído deja de bloquear al vencer el lease sin borrar el último checkpoint.
 - HighLevel recibe `createNewIfDuplicateAllowed=false`. La búsqueda y creación de oportunidad se serializa con un lease compartido por contacto y pipeline. Todo submit `website-contact` crea o reutiliza una oportunidad abierta en el pipeline D2C canónico.
-- Stage inbound: `priority` → `Consulta` (`HIGHLEVEL_STAGE_CONSULTA_ID`); `review` o `transition` → `Revisar` (`HIGHLEVEL_STAGE_REVISAR_ID`, lo setea José/Email tras crear el stage; no inventar UUID). No se usa `Lead cualificado`.
+- Stage inbound: `priority` → `Consulta` (`HIGHLEVEL_STAGE_CONSULTA_ID`); `review` o `transition` → `Revisar` (`HIGHLEVEL_STAGE_REVISAR_ID=7cd10297-1e83-4f53-aee4-36dfd292b964`, confirmado 23 sep 2026). No se usa `Lead cualificado`.
 - Si ya hay una oportunidad abierta en `Consulta` o `Revisar`, se actualizan custom fields y se mueve al stage del fit actual. Si la oportunidad ya está en una etapa posterior (Lead cualificado, Reunión, …), solo se actualizan fields: no se rebobina el flujo comercial documentado.
 - Si aparecen dos o más oportunidades abiertas, el flujo se detiene para revisión manual.
 - El primer origen y landing se completan campo a campo solo cuando el valor actual está vacío, también para contactos existentes. Nunca se incluyen en el upsert y la secuencia lectura/escritura/checkpoint usa un lease compartido por contacto, por lo que dos fuentes concurrentes no pueden sobrescribirse. El origen reciente, UTM, landing, formulario y consentimientos se actualizan en cada consulta confirmada.
@@ -42,8 +42,8 @@ El despliegue debe hacerse en este orden: (1) actualizar primero Playful Contact
 
 Resuelto en HighLevel:
 
-- Pipeline canónico `D2C`, etapa inbound `Consulta` (priority) y etapa inbound `Revisar` (review/transition; id pendiente de José/Email). Responsable José Reyes y SLA de referencia de 24 horas (tarea solo en priority).
-- El mapa `docs/qa/highlevel-d2c-pipeline-map.json` aún no incluye `Revisar`: no se inventa en el JSON. Se actualizará cuando Email confirme id y nombre.
+- Pipeline canónico `D2C`, etapa inbound `Consulta` (priority) y etapa inbound `Revisar` (review/transition; `7cd10297-1e83-4f53-aee4-36dfd292b964`). Responsable José Reyes y SLA de referencia de 24 horas (tarea solo en priority).
+- El mapa `docs/qa/highlevel-d2c-pipeline-map.json` incluye `Revisar` con el id confirmado el 23 sep 2026. Preview y Production ya tienen `HIGHLEVEL_STAGE_REVISAR_ID` en Vercel.
 - Doce campos de atribución agrupados en `GTM Web` y etiqueta `website-inbound`.
 - Seis prospectos fríos preservados en el pipeline legado y en una Smart List sin comunicaciones.
 
