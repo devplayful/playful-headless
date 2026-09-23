@@ -48,11 +48,11 @@ test('blog post page renders the mapped CTA after article HTML', () => {
   assert.ok(tagsIdx > ctaIdx, 'CTA must come before tags');
 });
 
-test('mapped service CTA is SSR outside BlogPostContent so curl sees href', () => {
+test('Zelle shopify CTA is not an sr-only data-playful-service-cta injection', () => {
+  assert.doesNotMatch(blogPage, /data-playful-service-cta/);
   const beforeLoader = blogPage.slice(0, blogPage.indexOf('<BlogPostContent'));
-  assert.match(beforeLoader, /data-playful-service-cta/);
-  assert.match(beforeLoader, /<a href=\{serviceCta\.href\}>/);
-  assert.match(beforeLoader, /\{serviceCta\.label\}/);
+  assert.doesNotMatch(beforeLoader, /serviceCta\.href/);
+  assert.doesNotMatch(beforeLoader, /serviceCta\.label/);
 });
 
 test('post canonical stays on the blog post, not a service landing', () => {
