@@ -18,10 +18,11 @@ import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 import {
-  EDITORIAL_AVATAR_SRC,
   buildBlogArticleJsonLd,
+  formatCombinedByline,
   resolveBlogEditorialUpdate,
 } from '@/lib/blog-editorial-meta';
+import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
 export async function generateStaticParams() {
@@ -129,6 +130,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         url: canonicalForPath(blogPostPath(post)),
       })
     : null;
+  const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
+  const bylineName =
+    post.author && typeof post.author === 'object'
+      ? editorial
+        ? formatCombinedByline(post.author.name, editorial.updatedBy)
+        : post.author.name
+      : '';
 
   return (
     <>
@@ -155,8 +163,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex flex-wrap items-center space-x-2 mb-4">
                 <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
+                {editorial ? (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">
+                      actualizado el {editorial.updatedAtLabel}
+                    </span>
+                  </>
+                ) : null}
                 {post.categories && post.categories.length > 0 && (
                   <>
                     <span className="text-gray-300">•</span>
@@ -174,34 +190,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {pageH1}
               </h2>
               
-              {post.excerpt?.rendered && (
-                <div 
-                  className="text-lg text-gray-700 leading-relaxed mb-4"
-                  dangerouslySetInnerHTML={{ 
-                    __html: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 200) + '...' 
-                  }} 
-                />
-              )}
-
-              {/* Autor original + chip editorial si hay actualización real */}
-              {((post.author && typeof post.author === 'object') || editorial) && (
-                <div className="flex flex-wrap items-center gap-2">
-                  {post.author && typeof post.author === 'object' && (
-                    <BlogBylineChip
-                      name={post.author.name}
-                      avatarSrc={authorAvatar}
-                      avatarAlt={post.author.name}
-                    />
-                  )}
-                  {editorial ? (
-                    <BlogBylineChip
-                      name={editorial.updatedBy}
-                      avatarSrc={EDITORIAL_AVATAR_SRC}
-                      avatarAlt={editorial.updatedBy}
-                      detail={`Actualizado el ${editorial.updatedAtLabel}`}
-                    />
-                  ) : null}
+              {excerptText ? (
+                <div className="text-lg text-gray-700 leading-relaxed mb-4">
+                  {excerptText}
                 </div>
+              ) : null}
+
+              {post.author && typeof post.author === 'object' && (
+                <BlogBylineChip
+                  name={bylineName}
+                  avatarSrc={authorAvatar}
+                  avatarAlt={post.author.name}
+                />
               )}
             </div>
 

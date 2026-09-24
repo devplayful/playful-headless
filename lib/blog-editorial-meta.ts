@@ -2,19 +2,34 @@
  * Editorial “last updated” byline for blog posts.
  *
  * Contento rewrites usually live in Next (`lib/blog-body-overrides.ts`) and
- * WordPress is often left untouched. To show the second chip on a rewrite:
+ * WordPress is often left untouched. To mark a rewrite:
  *
  *   1. Keep the original WP author (do not change it).
  *   2. Add the slug here with `updatedAt` (ISO `YYYY-MM-DD` or full datetime).
  *   3. Optionally set `updatedBy` — default is «Equipo editorial de Playful Agency».
  *
+ * The post header then uses one combined byline
+ * («{Author} y Equipo editorial de Playful Agency») and puts
+ * «actualizado el …» in the date • category row.
+ *
  * Posts without an override still pick up WordPress `modified` / `modified_gmt`
  * when that timestamp is a later UTC calendar day than publish *and* falls on
  * or after `WP_MODIFIED_HONOR_ON_OR_AFTER` (avoids historical Yoast/bulk
- * noise). Same-day WP saves do not show a chip.
+ * noise). Same-day WP saves do not show an update.
  */
 export const DEFAULT_EDITORIAL_BYLINE = 'Equipo editorial de Playful Agency';
 export const EDITORIAL_AVATAR_SRC = '/images/avatar-playful.svg';
+
+/** `{AuthorName} y Equipo editorial de Playful Agency` — single chip copy. */
+export function formatCombinedByline(
+  authorName: string | undefined | null,
+  editorialName: string = DEFAULT_EDITORIAL_BYLINE,
+): string {
+  const author = (authorName || '').trim();
+  const editorial = editorialName.trim() || DEFAULT_EDITORIAL_BYLINE;
+  if (!author) return editorial;
+  return `${author} y ${editorial}`;
+}
 
 /**
  * WordPress `modified` is dirty: Yoast, tapas and bulk saves bump it on
@@ -116,8 +131,9 @@ function toUpdate(
 }
 
 /**
- * Resolve whether a post should show the editorial “last updated” chip.
- * Override `updatedAt` wins; otherwise WP `modified` when it is a later day.
+ * Resolve whether a post has a real editorial update for the combined byline
+ * and the «actualizado el …» date row. Override `updatedAt` wins; otherwise
+ * WP `modified` when it is a later day on/after the honor cutoff.
  */
 export function resolveBlogEditorialUpdate(
   slug: string | undefined | null,

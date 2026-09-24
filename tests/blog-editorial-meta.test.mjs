@@ -10,11 +10,13 @@ const {
   EDITORIAL_AVATAR_SRC,
   WP_MODIFIED_HONOR_ON_OR_AFTER,
   buildBlogArticleJsonLd,
+  formatCombinedByline,
   formatEditorialDate,
   isMeaningfullyAfter,
   resolveBlogEditorialUpdate,
   toIsoDateTime,
 } = await import('../lib/blog-editorial-meta.ts');
+const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -177,21 +179,51 @@ test('Article JSON-LD includes dateModified and the original author', () => {
   assert.doesNotMatch(JSON.stringify(jsonLd), /</);
 });
 
-test('editorial avatar is the existing Playful mark in public/', () => {
+test('combined byline joins author and editorial with y', () => {
+  assert.equal(
+    formatCombinedByline('Stefanni Parabavidez'),
+    'Stefanni Parabavidez y Equipo editorial de Playful Agency',
+  );
+  assert.equal(
+    formatCombinedByline('Stefanni Parabavidez', DEFAULT_EDITORIAL_BYLINE),
+    'Stefanni Parabavidez y Equipo editorial de Playful Agency',
+  );
+  assert.equal(formatCombinedByline('  ', 'Equipo editorial de Playful Agency'), DEFAULT_EDITORIAL_BYLINE);
+});
+
+test('hero excerpt omits empty text and only adds ellipsis when truncated', () => {
+  assert.equal(formatBlogHeroExcerpt(''), '');
+  assert.equal(formatBlogHeroExcerpt('<p></p>'), '');
+  assert.equal(formatBlogHeroExcerpt('   <p>  </p>  '), '');
+  assert.equal(formatBlogHeroExcerpt('<p>Texto corto.</p>'), 'Texto corto.');
+  assert.equal(formatBlogHeroExcerpt('Exactamente veinte.'.padEnd(200, 'x')), 'Exactamente veinte.'.padEnd(200, 'x'));
+  const long = 'a'.repeat(201);
+  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), `${'a'.repeat(200)}...`);
+  assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
+});
+
+test('editorial avatar asset remains available but is not the byline face', () => {
   assert.equal(EDITORIAL_AVATAR_SRC, '/images/avatar-playful.svg');
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
 });
 
-test('blog post page wires chips, modifiedTime and Article JSON-LD', () => {
+test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
   assert.match(blogPage, /buildBlogArticleJsonLd/);
   assert.match(blogPage, /type="application\/ld\+json"/);
-  assert.match(blogPage, /BlogBylineChip/);
-  assert.match(blogPage, /EDITORIAL_AVATAR_SRC/);
-  assert.match(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
+  assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
+  assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
+  assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);
+  assert.doesNotMatch(blogPage, /detail=/);
+  assert.doesNotMatch(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /substring\(0, 200\) \+ '\.\.\.'/);
   assert.match(chipSource, /rounded-full bg-\[#440099\]/);
   assert.match(chipSource, /text-sm font-medium/);
   assert.match(chipSource, /h-6 w-6/);
+  assert.doesNotMatch(chipSource, /detail/);
+  assert.doesNotMatch(chipSource, /text-xs/);
   assert.match(overridesSource, /lib\/blog-editorial-meta\.ts/);
 });
