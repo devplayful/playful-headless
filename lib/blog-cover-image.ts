@@ -1,7 +1,8 @@
 /**
  * Local Magnific covers that replace WordPress featured + OG/Twitter
  * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026) + lote 4
- * (24 sep 2026, José GO vía Diseño). Same override
+ * (24 sep 2026, José GO vía Diseño) + lote 5 (24 sep 2026, José GO
+ * vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -15,6 +16,8 @@
  * en `rediseno-web`.
  * 24 sep 2026 (José GO vía Diseño): iGXlUlf3uK canónico en
  * `chat-gpt-puede-mejorar-el-seo-de-una-pagina-web`.
+ * 24 sep 2026 (José GO vía Diseño): s7AQv7dl8e canónico en
+ * `auditoria-seo-que-es-como-se-hace`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -47,6 +50,9 @@ export const BLOG_COVER_OVERRIDES = {
   'rediseno-web': '/images/blog/09-rediseno-web-magnific-VXQNEs8MMU.png',
   'chat-gpt-puede-mejorar-el-seo-de-una-pagina-web':
     '/images/blog/10-chat-gpt-seo-magnific-iGXlUlf3uK.png',
+  // lote 5 (24 sep 2026, José GO vía Diseño)
+  'auditoria-seo-que-es-como-se-hace':
+    '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -58,7 +64,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1–4. */
+/** Prefer the local Magnific cover when the slug is in lote 1–5. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',
