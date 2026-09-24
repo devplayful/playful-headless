@@ -13,6 +13,8 @@
  * en `blog-corporativo-aumenta-el-trafico-de-tu-sitio-web`.
  * 24 sep 2026 (José GO vía Diseño): VXQNEs8MMU (Nano Banana Pro) canónico
  * en `rediseno-web`.
+ * 24 sep 2026 (José GO vía Diseño): iGXlUlf3uK canónico en
+ * `chat-gpt-puede-mejorar-el-seo-de-una-pagina-web`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -43,6 +45,8 @@ export const BLOG_COVER_OVERRIDES = {
   'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web':
     '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png',
   'rediseno-web': '/images/blog/09-rediseno-web-magnific-VXQNEs8MMU.png',
+  'chat-gpt-puede-mejorar-el-seo-de-una-pagina-web':
+    '/images/blog/10-chat-gpt-seo-magnific-iGXlUlf3uK.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
