@@ -18,6 +18,8 @@
  * `chat-gpt-puede-mejorar-el-seo-de-una-pagina-web`.
  * 24 sep 2026 (José GO vía Diseño): s7AQv7dl8e canónico en
  * `auditoria-seo-que-es-como-se-hace`.
+ * 24 sep 2026 (José GO vía Diseño): JN0rWQjOq4 canónico en
+ * `zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -53,6 +55,8 @@ export const BLOG_COVER_OVERRIDES = {
   // lote 5 (24 sep 2026, José GO vía Diseño)
   'auditoria-seo-que-es-como-se-hace':
     '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+    '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;

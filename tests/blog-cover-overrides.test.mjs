@@ -59,6 +59,10 @@ const LOTE_5 = [
     'auditoria-seo-que-es-como-se-hace',
     '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
   ],
+  [
+    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+  ],
 ];
 
 function functionBody(source, name) {
@@ -117,9 +121,9 @@ test('lote 4 maps N2eryB06D9, VXQNEs8MMU and iGXlUlf3uK without removing prior l
   }
 });
 
-test('lote 5 maps s7AQv7dl8e without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 23);
-  assert.equal(LOTE_5.length, 1);
+test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 24);
+  assert.equal(LOTE_5.length, 2);
   assertMappedCovers(LOTE_5);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
@@ -183,6 +187,50 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   const file = join(root, 'public', path.replace(/^\//, ''));
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('JN0rWQjOq4 is exclusive to zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', async () => {
+  const path = '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'),
+    path,
+  );
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const igxlOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('iGXlUlf3uK'))
+    .map(([slug]) => slug);
+  assert.deepEqual(igxlOwners, ['chat-gpt-puede-mejorar-el-seo-de-una-pagina-web']);
+  const vxqnOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('VXQNEs8MMU'))
+    .map(([slug]) => slug);
+  assert.deepEqual(vxqnOwners, ['rediseno-web']);
+  const n2eryOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eryB06D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eryOwners, ['blog-corporativo-aumenta-el-trafico-de-tu-sitio-web']);
+  const n2eOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eMFsC6D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eOwners, ['aprende-todo-sobre-el-seo']);
+  const donor3z = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('3zBMZYMREY'))
+    .map(([slug]) => slug);
+  assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
 });
 
