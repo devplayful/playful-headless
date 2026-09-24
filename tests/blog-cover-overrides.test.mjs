@@ -34,11 +34,10 @@ const LOTE_2 = [
 ];
 
 const LOTE_3 = [
-  ['google-ads-grants', '/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png'],
   ['como-posicionar-tu-negocio-en-google-ads', '/images/blog/02-posicionar-google-ads-magnific-s7A2J1Kl8e.png'],
   ['publicidad-digital-en-tu-negocio', '/images/blog/03-publicidad-digital-magnific-5j9PO4hKxe.png'],
   ['desarrollo-ui-ux', '/images/blog/04-desarrollo-ui-ux-magnific-jUZ6ijXLD0.png'],
-  ['como-hacer-posicionamiento-web-en-buscadores', '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png'],
+  ['aprende-todo-sobre-el-seo', '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png'],
   ['como-elegir-tus-palabras-claves', '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png'],
   ['ecommerce-mi-negocio-online', '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png'],
 ];
@@ -83,9 +82,9 @@ test('lote 2 maps 6 more slugs without removing lote 1', () => {
   }
 });
 
-test('lote 3 maps 7 more slugs without removing lote 1 or lote 2', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 20);
-  assert.equal(LOTE_3.length, 7);
+test('lote 3 maps 6 slugs without removing lote 1 or lote 2', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 19);
+  assert.equal(LOTE_3.length, 6);
   assertMappedCovers(LOTE_3);
   for (const [slug] of [...LOTE_1, ...LOTE_2]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
@@ -101,6 +100,39 @@ test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
     false,
   );
   assert.doesNotMatch(JSON.stringify(BLOG_COVER_OVERRIDES), /iGXTJXm3uK/);
+});
+
+test('N2eMFsC6D9 is canonical on aprende-todo-sobre-el-seo only', () => {
+  const path = '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png';
+  assert.equal(BLOG_COVER_OVERRIDES['aprende-todo-sobre-el-seo'], path);
+  assert.equal(blogCoverForSlug('aprende-todo-sobre-el-seo'), path);
+  assert.equal(blogCoverForSlug('como-hacer-posicionamiento-web-en-buscadores'), '');
+  assert.equal(
+    resolveBlogCoverUrl(
+      'como-hacer-posicionamiento-web-en-buscadores',
+      'https://endpoint.example/wp-featured.jpg',
+    ),
+    'https://endpoint.example/wp-featured.jpg',
+  );
+  assert.ok(!('como-hacer-posicionamiento-web-en-buscadores' in BLOG_COVER_OVERRIDES));
+  const n2Owners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eMFsC6D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2Owners, ['aprende-todo-sobre-el-seo']);
+  const donor3z = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('3zBMZYMREY'))
+    .map(([slug]) => slug);
+  assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+});
+
+test('archived google-ads-grants / rg39Phdxtc is not remapped', () => {
+  assert.ok(!('google-ads-grants' in BLOG_COVER_OVERRIDES));
+  assert.equal(blogCoverForSlug('google-ads-grants'), '');
+  assert.doesNotMatch(JSON.stringify(BLOG_COVER_OVERRIDES), /rg39Phdxtc|google-ads-grants/);
+  assert.equal(
+    existsSync(join(root, 'public/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png')),
+    false,
+  );
 });
 
 test('override PNGs are 2560×1440', async () => {

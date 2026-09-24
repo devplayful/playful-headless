@@ -3,6 +3,11 @@
  * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
+ * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
+ * `aprende-todo-sobre-el-seo`; `como-hacer-posicionamiento-web-en-buscadores`
+ * vuelve a featured WP; `google-ads-grants` / rg39Phdxtc archivado.
+ * 3zBMZYMREY permanece solo en `7-consejos-seo-para-posicionar-tu-pagina`.
+ *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
 export const BLOG_COVER_OVERRIDES = {
@@ -22,11 +27,10 @@ export const BLOG_COVER_OVERRIDES = {
   'que-es-data-studio-de-google-y-como-funciona': '/images/blog/06-data-studio-magnific-yiVzbnFPW9.png',
   'conoce-los-tipos-de-marketing': '/images/blog/07-tipos-marketing-magnific-w4WZutE7EI.png',
   // lote 3
-  'google-ads-grants': '/images/blog/01-google-ads-grants-magnific-rg39Phdxtc.png',
   'como-posicionar-tu-negocio-en-google-ads': '/images/blog/02-posicionar-google-ads-magnific-s7A2J1Kl8e.png',
   'publicidad-digital-en-tu-negocio': '/images/blog/03-publicidad-digital-magnific-5j9PO4hKxe.png',
   'desarrollo-ui-ux': '/images/blog/04-desarrollo-ui-ux-magnific-jUZ6ijXLD0.png',
-  'como-hacer-posicionamiento-web-en-buscadores': '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png',
+  'aprende-todo-sobre-el-seo': '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png',
   'como-elegir-tus-palabras-claves': '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png',
   'ecommerce-mi-negocio-online': '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png',
 } as const;
