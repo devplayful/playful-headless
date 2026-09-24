@@ -429,6 +429,7 @@ export interface WPFeaturedMedia {
 export interface WPPost {
   id: number;
   date: string;
+  date_gmt?: string;
   slug: string;
   link: string;
   title: { rendered: string };

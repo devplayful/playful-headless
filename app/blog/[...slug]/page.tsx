@@ -17,6 +17,13 @@ import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  buildBlogArticleJsonLd,
+  formatCombinedByline,
+  resolveBlogEditorialUpdate,
+} from '@/lib/blog-editorial-meta';
+import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
+import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
 export async function generateStaticParams() {
   // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
@@ -100,9 +107,45 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
   const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
+  const editorial = resolveBlogEditorialUpdate(postSlug, {
+    published: post.date,
+    publishedGmt: post.date_gmt,
+    modified: post.modified,
+    modifiedGmt: post.modified_gmt,
+  });
+  const authorName =
+    (post.author && typeof post.author === 'object' && post.author.name) ||
+    post.author_name ||
+    'Playful Agency';
+  const authorAvatar =
+    post.author && typeof post.author === 'object'
+      ? post.author.avatar_urls?.['48']
+      : undefined;
+  const articleJsonLd = editorial
+    ? buildBlogArticleJsonLd({
+        headline: pageH1,
+        datePublished: post.date,
+        dateModified: editorial.updatedAt,
+        authorName,
+        url: canonicalForPath(blogPostPath(post)),
+      })
+    : null;
+  const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
+  const bylineName =
+    post.author && typeof post.author === 'object'
+      ? editorial
+        ? formatCombinedByline(post.author.name, editorial.updatedBy)
+        : post.author.name
+      : '';
 
   return (
     <>
+    {articleJsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+    ) : null}
     <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
@@ -120,8 +163,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex flex-wrap items-center space-x-2 mb-4">
                 <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
+                {editorial ? (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">
+                      actualizado el {editorial.updatedAtLabel}
+                    </span>
+                  </>
+                ) : null}
                 {post.categories && post.categories.length > 0 && (
                   <>
                     <span className="text-gray-300">•</span>
@@ -139,27 +190,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {pageH1}
               </h2>
               
-              {post.excerpt?.rendered && (
-                <div 
-                  className="text-lg text-gray-700 leading-relaxed mb-4"
-                  dangerouslySetInnerHTML={{ 
-                    __html: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 200) + '...' 
-                  }} 
-                />
-              )}
-
-              {/* Badge de Autor */}
-              {post.author && typeof post.author === 'object' && (
-                <div className="inline-flex items-center gap-2 bg-[#440099] text-white px-4 py-2 rounded-full">
-                  {post.author.avatar_urls && post.author.avatar_urls['48'] && (
-                    <img 
-                      src={post.author.avatar_urls['48']} 
-                      alt={post.author.name}
-                      className="w-6 h-6 rounded-full"
-                    />
-                  )}
-                  <span className="text-sm font-medium">{post.author.name}</span>
+              {excerptText ? (
+                <div className="text-lg text-gray-700 leading-relaxed mb-4">
+                  {excerptText}
                 </div>
+              ) : null}
+
+              {post.author && typeof post.author === 'object' && (
+                <BlogBylineChip
+                  name={bylineName}
+                  avatarSrc={authorAvatar}
+                  avatarAlt={post.author.name}
+                />
               )}
             </div>
 
@@ -378,6 +420,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
   const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
   const imageAlt = post.featured_media_alt || post.title.rendered;
+  const editorial = resolveBlogEditorialUpdate(postSlug, {
+    published: post.date,
+    publishedGmt: post.date_gmt,
+    modified: post.modified,
+    modifiedGmt: post.modified_gmt,
+  });
 
   return {
     title,
@@ -389,6 +437,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       url,
       publishedTime: post.date,
+      ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
         {

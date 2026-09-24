@@ -2,6 +2,10 @@
  * Closed-list HTML body overrides for blog posts whose signed copy
  * lives in Next (not WordPress). Featured image, category, and date
  * stay on WP. TOC still runs cheerio on this HTML (h2/h3 keep ids).
+ *
+ * When Contento ships a rewrite, also add `updatedAt` for that slug in
+ * `lib/blog-editorial-meta.ts` so the “última actualización” byline appears.
+ * WordPress is often left unedited; the override date is the source of truth.
  */
 export const ZELLE_VE_BLOG_SLUG =
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
