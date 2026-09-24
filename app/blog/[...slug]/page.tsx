@@ -16,6 +16,7 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
+import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 
 export async function generateStaticParams() {
   // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
@@ -70,7 +71,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const $ = cheerio.load(post.content?.rendered || '');
+  const sourceHtml = blogBodyForSlug(postSlug) || post.content?.rendered || '';
+  const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
     .map((_, el) => {
       const $el = $(el);
@@ -97,10 +99,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
+  const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
 
   return (
     <>
-    <h1 className="sr-only">{post.title.rendered}</h1>
+    <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
         <a href={serviceCta.href}>{serviceCta.label}</a>
@@ -133,7 +136,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
-                {post.title.rendered}
+                {pageH1}
               </h2>
               
               {post.excerpt?.rendered && (
@@ -329,13 +332,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string }> = {
+const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; h1?: string }> = {
   'actualizar-tu-e-commerce': {
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
   },
   'cintillos-de-promocion': {
     title: 'Cintillos de promoción en ecommerce | Playful',
     description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+  },
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
+    title:
+      'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea | Blog - Playful Agency',
+    description:
+      'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
+    h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
   },
 };
 
