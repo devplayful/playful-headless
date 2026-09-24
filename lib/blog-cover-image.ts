@@ -1,12 +1,16 @@
 /**
  * Local Magnific covers that replace WordPress featured + OG/Twitter
- * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026). Same override
+ * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026) + lote 4
+ * (24 sep 2026, José GO vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
  * `aprende-todo-sobre-el-seo`; `como-hacer-posicionamiento-web-en-buscadores`
  * vuelve a featured WP; `google-ads-grants` / rg39Phdxtc archivado.
  * 3zBMZYMREY permanece solo en `7-consejos-seo-para-posicionar-tu-pagina`.
+ *
+ * 24 sep 2026 (José GO vía Diseño): N2eryB06D9 (Nano Banana Pro) canónico
+ * en `blog-corporativo-aumenta-el-trafico-de-tu-sitio-web`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -33,6 +37,9 @@ export const BLOG_COVER_OVERRIDES = {
   'aprende-todo-sobre-el-seo': '/images/blog/05-posicionamiento-web-magnific-N2eMFsC6D9.png',
   'como-elegir-tus-palabras-claves': '/images/blog/06-palabras-claves-magnific-1li9dWjr4r.png',
   'ecommerce-mi-negocio-online': '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png',
+  // lote 4 (24 sep 2026, José GO vía Diseño)
+  'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web':
+    '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -44,7 +51,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1, lote 2, or lote 3. */
+/** Prefer the local Magnific cover when the slug is in lote 1–4. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',

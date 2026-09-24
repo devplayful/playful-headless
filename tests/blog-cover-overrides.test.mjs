@@ -42,6 +42,13 @@ const LOTE_3 = [
   ['ecommerce-mi-negocio-online', '/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png'],
 ];
 
+const LOTE_4 = [
+  [
+    'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web',
+    '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png',
+  ],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -83,10 +90,18 @@ test('lote 2 maps 6 more slugs without removing lote 1', () => {
 });
 
 test('lote 3 maps 6 slugs without removing lote 1 or lote 2', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 19);
   assert.equal(LOTE_3.length, 6);
   assertMappedCovers(LOTE_3);
   for (const [slug] of [...LOTE_1, ...LOTE_2]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 4 maps N2eryB06D9 to blog corporativo without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 20);
+  assert.equal(LOTE_4.length, 1);
+  assertMappedCovers(LOTE_4);
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -123,6 +138,34 @@ test('N2eMFsC6D9 is canonical on aprende-todo-sobre-el-seo only', () => {
     .filter(([, cover]) => cover.includes('3zBMZYMREY'))
     .map(([slug]) => slug);
   assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+});
+
+test('N2eryB06D9 is exclusive to blog-corporativo-aumenta-el-trafico-de-tu-sitio-web', async () => {
+  const path = '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['blog-corporativo-aumenta-el-trafico-de-tu-sitio-web'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('blog-corporativo-aumenta-el-trafico-de-tu-sitio-web'),
+    path,
+  );
+  const n2eryOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eryB06D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eryOwners, ['blog-corporativo-aumenta-el-trafico-de-tu-sitio-web']);
+  const n2eOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eMFsC6D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eOwners, ['aprende-todo-sobre-el-seo']);
+  const donor3z = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('3zBMZYMREY'))
+    .map(([slug]) => slug);
+  assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('archived google-ads-grants / rg39Phdxtc is not remapped', () => {
