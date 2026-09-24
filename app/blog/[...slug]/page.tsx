@@ -97,10 +97,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
+  const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
 
   return (
     <>
-    <h1 className="sr-only">{post.title.rendered}</h1>
+    <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
         <a href={serviceCta.href}>{serviceCta.label}</a>
@@ -133,7 +134,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
-                {post.title.rendered}
+                {pageH1}
               </h2>
               
               {post.excerpt?.rendered && (
@@ -329,13 +330,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string }> = {
+const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; h1?: string }> = {
   'actualizar-tu-e-commerce': {
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
   },
   'cintillos-de-promocion': {
-    title: 'Cintillos de promoción en ecommerce | Playful',
-    description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+    title: 'Cintillos publicitarios en ecommerce: guía práctica | Playful',
+    description: 'Los cintillos publicitarios en ecommerce destacan la oferta en el momento justo. Aprende a diseñarlos para que capten clics y conviertan en tu tienda.',
+    h1: 'Cintillos publicitarios en ecommerce: cómo diseñarlos para atraer y retener clientes',
   },
 };
 
