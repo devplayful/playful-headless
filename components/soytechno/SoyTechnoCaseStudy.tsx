@@ -44,12 +44,11 @@ const caseCopy = {
   executiveChallenge: splitCopy(approvedCopy.executiveChallenge, ['El reto 2025:']),
   insight: splitCopy(approvedCopy.insight, ['El consumidor no abandona']),
   idea: [approvedCopy.idea],
-  executiveResults: splitCopy(approvedCopy.executiveResults, ['Logramos una tasa']),
   challenge: splitCopy(approvedCopy.challenge, ['El reto de SoyTechno no era tecnológico']),
   audience: splitCopy(approvedCopy.audience, ['Navegan en su mayoría']),
   objectives: splitCopy(approvedCopy.objectives, ['(3) Incrementar']),
   strategy: splitCopy(approvedCopy.strategy, ['(1) Autonomía Financiera:', '(3) Arquitectura de Confianza:']),
-  strategicResponse: splitCopy(approvedCopy.strategicResponse, ['La respuesta fue diseñar']),
+  strategicResponse: splitCopy(approvedCopy.strategicResponse, ['La respuesta fue diseñar', 'No se le pidió']),
   media: splitCopy(approvedCopy.media, ['El módulo de rastreo MRW']),
   results: splitCopy(approvedCopy.results, ['Logramos una tasa de conversión global']),
   evidence: splitCopy(approvedCopy.evidence, ['La Semana Cosecha Cashea']),
@@ -135,11 +134,29 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.introSection}>
         <h2>Una estrategia trimestral para construir autonomía y confianza</h2>
         <p>{caseCopy.strategy[0]}</p>
-        <div className={styles.introIcons} aria-hidden="true">
-          <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
-          <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
-          <Image className={styles.roundPhoto} src={image('lifestyle-f.jpg')} width={120} height={120} alt="" />
-        </div>
+        <ol className={styles.quarterTrack} aria-label="Enfoque trimestral">
+          <li>
+            <span className={styles.quarterLabel}>Q1</span>
+            <span className={styles.quarterName}>Reconocimiento</span>
+          </li>
+          <li>
+            <span className={styles.quarterLabel}>Q2</span>
+            <span className={styles.quarterName}>Expansión</span>
+          </li>
+          <li>
+            <span className={styles.quarterLabel}>Q3</span>
+            <span className={styles.quarterName}>Escalabilidad</span>
+          </li>
+          <li>
+            <span className={styles.quarterLabel}>Q4</span>
+            <span className={styles.quarterName}>Fidelización</span>
+          </li>
+        </ol>
+        <ul className={styles.pillarList}>
+          <li>El ecosistema digital como medio principal</li>
+          <li>Medios clave: Cashea, MRW y checkout</li>
+          <li>Innovación y aporte más allá de la interfaz</li>
+        </ul>
       </section>
 
       <section className={styles.introSectionSmall}>
@@ -148,9 +165,9 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>A. El ecosistema digital como medio principal</SectionTitle>
+        <SectionTitle>El ecosistema digital como medio principal</SectionTitle>
         <div className={styles.mediaTextGrid}>
-          <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Ficha de producto y ofertas de SoyTechno" />
+          <Image className={styles.tallMedia} src={image('mobile-screen-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno en Zona Gamer" />
           <div className={styles.textStack}>
             <ContentItem title="Una audiencia hiperconectada"><p>{caseCopy.audience[0]}</p></ContentItem>
             <ContentItem title="Compra móvil en siete ciudades"><p>{caseCopy.audience[1]}</p></ContentItem>
@@ -189,9 +206,9 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.standardSection}>
-        <SectionTitle>C. Innovación y aporte más allá de la interfaz</SectionTitle>
+        <SectionTitle>Innovación y aporte más allá de la interfaz</SectionTitle>
         <div className={styles.mediaTextGrid}>
-          <Image className={styles.tallMedia} src={image('giffycanvas-01.gif')} width={827} height={1134} unoptimized alt="Pantallas vacías y estados de SoyTechno" />
+          <Image className={styles.tallMedia} src={image('mobile-screen-04.png')} width={720} height={1558} alt="Selección de moneda en el checkout de SoyTechno" />
           <div className={styles.textStack}>
             <ContentItem title="Tecnología adaptada a Venezuela"><p>{caseCopy.innovation[0]}</p></ContentItem>
             <ContentItem title="IA y filtros que reducen la fricción"><p>{caseCopy.innovation[1]}</p></ContentItem>
@@ -212,7 +229,7 @@ export default function SoyTechnoCaseStudy() {
             <h2 className={styles.subTitle}>Financiamiento y moneda sin salir del flujo de compra</h2>
             <p>{caseCopy.resources[1]}</p>
             <ContentItem title="Arquitectura de confianza"><p>{caseCopy.strategy[2]}</p></ContentItem>
-            <ContentItem title="Confianza como consecuencia"><p>{caseCopy.strategicResponse[1]}</p></ContentItem>
+            <ContentItem title="Confianza como consecuencia"><p>{caseCopy.strategicResponse[2]}</p></ContentItem>
           </div>
           <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
         </div>
@@ -229,9 +246,7 @@ export default function SoyTechnoCaseStudy() {
           </div>
           <div className={styles.textStack}>
             <p>{caseCopy.idea[0]}</p>
-            <ContentItem title="Escala alcanzada"><p>{caseCopy.executiveResults[0]}</p></ContentItem>
-            <ContentItem title="Conversión por encima del promedio"><p>{caseCopy.executiveResults[1]}</p></ContentItem>
-            <ContentItem title="El hábito de consumo cambió"><p>{caseCopy.results[0]}</p></ContentItem>
+            <p>{caseCopy.strategicResponse[1]}</p>
           </div>
         </div>
       </section>
@@ -241,6 +256,7 @@ export default function SoyTechnoCaseStudy() {
         <div className={`${styles.mediaTextGrid} ${styles.reverseMobile}`}>
           <div className={styles.textStack}>
             <p>{caseCopy.evidence[0]}</p>
+            <ContentItem title="El hábito de consumo cambió"><p>{caseCopy.results[0]}</p></ContentItem>
             <ContentItem title="La Semana Cosecha Cashea"><p>{caseCopy.evidence[1]}</p></ContentItem>
             <ContentItem title="Un nuevo estándar para el mercado"><p>{caseCopy.contribution[0]}</p></ContentItem>
           </div>

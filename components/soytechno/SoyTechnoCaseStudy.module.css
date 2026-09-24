@@ -140,6 +140,72 @@
 .blueIcon img { height: 58px; object-fit: contain; width: 58px; }
 .roundPhoto { border-radius: 50%; object-fit: cover !important; }
 
+.quarterTrack {
+  align-items: stretch;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: 40px auto 0;
+  max-width: 900px;
+  padding: 0;
+  position: relative;
+}
+
+.quarterTrack::before {
+  background: #d5cdd8;
+  content: '';
+  height: 1px;
+  left: 8%;
+  position: absolute;
+  right: 8%;
+  top: 28px;
+}
+
+.quarterTrack li {
+  background: var(--lavender);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 118px;
+  padding: 20px 14px;
+  position: relative;
+  text-align: center;
+}
+
+.quarterLabel {
+  font-family: var(--font-paytone-one), sans-serif;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.quarterName {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.pillarList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  margin: 36px auto 0;
+  max-width: 900px;
+  padding: 0;
+}
+
+.pillarList li {
+  background: var(--lavender);
+  border-radius: 36px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  padding: 22px 36px;
+  text-align: center;
+}
+
 .challenge {
   background: var(--lavender);
   border-radius: 20px;
@@ -544,6 +610,13 @@
   .introIcons > img,
   .blueIcon { height: 72px; width: 72px; }
   .blueIcon img { height: 44px; width: 44px; }
+  .quarterTrack { gap: 12px; grid-template-columns: repeat(2, 1fr); margin-top: 28px; }
+  .quarterTrack::before { display: none; }
+  .quarterTrack li { min-height: 96px; padding: 16px 12px; }
+  .quarterLabel { font-size: 20px; }
+  .quarterName { font-size: 15px; }
+  .pillarList { gap: 12px; margin-top: 28px; }
+  .pillarList li { border-radius: 24px; font-size: 16px; padding: 18px 20px; }
 
   .challenge { display: flex; flex-direction: column; gap: 16px; margin: 36px 16px 0; padding: 16px; }
   .challengeCopy { gap: 22px; order: 1; padding: 28px 22px; }
