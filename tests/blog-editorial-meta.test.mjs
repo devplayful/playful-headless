@@ -8,6 +8,7 @@ const {
   BLOG_EDITORIAL_OVERRIDES,
   DEFAULT_EDITORIAL_BYLINE,
   EDITORIAL_AVATAR_SRC,
+  WP_MODIFIED_HONOR_ON_OR_AFTER,
   buildBlogArticleJsonLd,
   formatEditorialDate,
   isMeaningfullyAfter,
@@ -78,18 +79,37 @@ test('unknown slugs stay unchanged when WP modified equals or is the same day as
   assert.equal(resolveBlogEditorialUpdate(undefined, { modified: '2024-01-01' }), null);
 });
 
-test('WordPress modified on a later UTC day becomes the editorial chip', () => {
+test('historical WordPress modified before the honor date is treated as CMS noise', () => {
+  assert.equal(WP_MODIFIED_HONOR_ON_OR_AFTER, '2026-09-24');
+  assert.equal(
+    resolveBlogEditorialUpdate('cintillos-de-promocion', {
+      published: '2024-10-01T10:00:00',
+      modified: '2024-11-05T08:00:00',
+      modifiedGmt: '2024-11-05T12:00:00',
+    }),
+    null,
+  );
+  assert.equal(
+    resolveBlogEditorialUpdate('actualizar-tu-e-commerce', {
+      published: '2024-09-16T10:00:00',
+      modified: '2026-01-07T18:57:36',
+    }),
+    null,
+  );
+});
+
+test('WordPress modified on or after the honor date becomes the editorial chip', () => {
   const update = resolveBlogEditorialUpdate('pasarela-de-pago-ecommerce-guia', {
     published: '2021-03-01T10:00:00',
     publishedGmt: '2021-03-01T14:00:00',
-    modified: '2023-11-20T08:00:00',
-    modifiedGmt: '2023-11-20T12:00:00',
+    modified: '2026-09-25T08:00:00',
+    modifiedGmt: '2026-09-25T12:00:00',
   });
   assert.ok(update);
   assert.equal(update.source, 'wordpress');
   assert.equal(update.updatedBy, DEFAULT_EDITORIAL_BYLINE);
-  assert.equal(update.updatedAt, '2023-11-20T12:00:00.000Z');
-  assert.equal(update.updatedAtLabel, '20 de noviembre de 2023');
+  assert.equal(update.updatedAt, '2026-09-25T12:00:00.000Z');
+  assert.equal(update.updatedAtLabel, '25 de septiembre de 2026');
 });
 
 test('same-day or earlier modified is not a real update', () => {

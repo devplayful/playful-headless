@@ -9,11 +9,20 @@
  *   3. Optionally set `updatedBy` — default is «Equipo editorial de Playful Agency».
  *
  * Posts without an override still pick up WordPress `modified` / `modified_gmt`
- * when that timestamp falls on a later UTC calendar day than publish. Same-day
- * WP saves do not show a chip.
+ * when that timestamp is a later UTC calendar day than publish *and* falls on
+ * or after `WP_MODIFIED_HONOR_ON_OR_AFTER` (avoids historical Yoast/bulk
+ * noise). Same-day WP saves do not show a chip.
  */
 export const DEFAULT_EDITORIAL_BYLINE = 'Equipo editorial de Playful Agency';
 export const EDITORIAL_AVATAR_SRC = '/images/avatar-playful.svg';
+
+/**
+ * WordPress `modified` is dirty: Yoast, tapas and bulk saves bump it on
+ * almost every post. Auto-honor only dates on/after this UTC day so
+ * historical CMS noise does not light up chips. A later WP edit still
+ * works without adding an override.
+ */
+export const WP_MODIFIED_HONOR_ON_OR_AFTER = '2026-09-24';
 
 export type BlogEditorialOverride = {
   /** ISO date (`YYYY-MM-DD`) or full datetime. Marks a Contento rewrite shipped in Next. */
@@ -130,6 +139,11 @@ export function resolveBlogEditorialUpdate(
 
   const modified = pickModified(dates);
   if (!modified || !published || !isMeaningfullyAfter(modified, published)) {
+    return null;
+  }
+
+  const modifiedDay = utcDay(modified);
+  if (!modifiedDay || modifiedDay < WP_MODIFIED_HONOR_ON_OR_AFTER) {
     return null;
   }
 
