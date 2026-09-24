@@ -11,6 +11,8 @@
  *
  * 24 sep 2026 (José GO vía Diseño): N2eryB06D9 (Nano Banana Pro) canónico
  * en `blog-corporativo-aumenta-el-trafico-de-tu-sitio-web`.
+ * 24 sep 2026 (José GO vía Diseño): VXQNEs8MMU (Nano Banana Pro) canónico
+ * en `rediseno-web`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -40,6 +42,7 @@ export const BLOG_COVER_OVERRIDES = {
   // lote 4 (24 sep 2026, José GO vía Diseño)
   'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web':
     '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png',
+  'rediseno-web': '/images/blog/09-rediseno-web-magnific-VXQNEs8MMU.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;

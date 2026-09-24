@@ -47,6 +47,7 @@ const LOTE_4 = [
     'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web',
     '/images/blog/08-blog-corporativo-magnific-N2eryB06D9.png',
   ],
+  ['rediseno-web', '/images/blog/09-rediseno-web-magnific-VXQNEs8MMU.png'],
 ];
 
 function functionBody(source, name) {
@@ -97,9 +98,9 @@ test('lote 3 maps 6 slugs without removing lote 1 or lote 2', () => {
   }
 });
 
-test('lote 4 maps N2eryB06D9 to blog corporativo without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 20);
-  assert.equal(LOTE_4.length, 1);
+test('lote 4 maps N2eryB06D9 and VXQNEs8MMU without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 21);
+  assert.equal(LOTE_4.length, 2);
   assertMappedCovers(LOTE_4);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
@@ -138,6 +139,32 @@ test('N2eMFsC6D9 is canonical on aprende-todo-sobre-el-seo only', () => {
     .filter(([, cover]) => cover.includes('3zBMZYMREY'))
     .map(([slug]) => slug);
   assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+});
+
+test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
+  const path = '/images/blog/09-rediseno-web-magnific-VXQNEs8MMU.png';
+  assert.equal(BLOG_COVER_OVERRIDES['rediseno-web'], path);
+  assert.equal(blogCoverForSlug('rediseno-web'), path);
+  const vxqnOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('VXQNEs8MMU'))
+    .map(([slug]) => slug);
+  assert.deepEqual(vxqnOwners, ['rediseno-web']);
+  const n2eryOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eryB06D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eryOwners, ['blog-corporativo-aumenta-el-trafico-de-tu-sitio-web']);
+  const n2eOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eMFsC6D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eOwners, ['aprende-todo-sobre-el-seo']);
+  const donor3z = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('3zBMZYMREY'))
+    .map(([slug]) => slug);
+  assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('N2eryB06D9 is exclusive to blog-corporativo-aumenta-el-trafico-de-tu-sitio-web', async () => {
