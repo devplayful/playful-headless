@@ -54,6 +54,13 @@ const LOTE_4 = [
   ],
 ];
 
+const LOTE_5 = [
+  [
+    'auditoria-seo-que-es-como-se-hace',
+    '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
+  ],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -103,10 +110,18 @@ test('lote 3 maps 6 slugs without removing lote 1 or lote 2', () => {
 });
 
 test('lote 4 maps N2eryB06D9, VXQNEs8MMU and iGXlUlf3uK without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 22);
   assert.equal(LOTE_4.length, 3);
   assertMappedCovers(LOTE_4);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 5 maps s7AQv7dl8e without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 23);
+  assert.equal(LOTE_5.length, 1);
+  assertMappedCovers(LOTE_5);
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -168,6 +183,40 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   const file = join(root, 'public', path.replace(/^\//, ''));
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('s7AQv7dl8e is exclusive to auditoria-seo-que-es-como-se-hace', async () => {
+  const path = '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png';
+  assert.equal(BLOG_COVER_OVERRIDES['auditoria-seo-que-es-como-se-hace'], path);
+  assert.equal(blogCoverForSlug('auditoria-seo-que-es-como-se-hace'), path);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const igxlOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('iGXlUlf3uK'))
+    .map(([slug]) => slug);
+  assert.deepEqual(igxlOwners, ['chat-gpt-puede-mejorar-el-seo-de-una-pagina-web']);
+  const vxqnOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('VXQNEs8MMU'))
+    .map(([slug]) => slug);
+  assert.deepEqual(vxqnOwners, ['rediseno-web']);
+  const n2eryOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eryB06D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eryOwners, ['blog-corporativo-aumenta-el-trafico-de-tu-sitio-web']);
+  const n2eOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('N2eMFsC6D9'))
+    .map(([slug]) => slug);
+  assert.deepEqual(n2eOwners, ['aprende-todo-sobre-el-seo']);
+  const donor3z = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('3zBMZYMREY'))
+    .map(([slug]) => slug);
+  assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
 });
 
