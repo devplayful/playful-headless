@@ -453,6 +453,32 @@ for (const [label, error] of uncertainWriteFailures) {
   });
 }
 
+test('reuses the inbound opportunity when create is rejected after a HighLevel workflow race', async () => {
+  const gateway = new GatewayMock();
+  gateway.opportunityWriteError = new HighLevelApiError(400, 'create opportunity');
+  let searches = 0;
+  gateway.findOpenOpportunities = async () => {
+    gateway.calls.push({ operation: 'search' });
+    searches += 1;
+    if (searches >= 2) {
+      gateway.opportunities = [{ id: 'opportunity-workflow', status: 'open' }];
+    }
+    return [...gateway.opportunities];
+  };
+
+  const result = await syncWebsiteLeadToHighLevel(lead, gateway, config);
+
+  assert.equal(result.opportunityId, 'opportunity-workflow');
+  assert.equal(result.opportunityCreated, false);
+  assert.equal(gateway.calls.filter((call) => call.operation === 'create-opportunity').length, 1);
+  assert(gateway.calls.some((call) => call.operation === 'update-opportunity'));
+  assert(gateway.calls.some((call) => call.operation === 'create-task'));
+  const update = gateway.calls.find((call) => call.operation === 'update-opportunity')?.value as {
+    opportunityId: string;
+  };
+  assert.equal(update.opportunityId, 'opportunity-workflow');
+});
+
 test('releases resource leases after deterministic HTTP 4xx write failures', async () => {
   const originalGateway = new GatewayMock();
   const originalLocks = new Set<string>();

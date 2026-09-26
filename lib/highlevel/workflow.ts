@@ -192,6 +192,12 @@ function isDeterministicWriteFailure(error: unknown): boolean {
   return error instanceof HighLevelApiError && error.status >= 400 && error.status < 500;
 }
 
+function isRejectedOpportunityCreate(error: unknown): boolean {
+  return error instanceof HighLevelApiError
+    && error.operation === 'create opportunity'
+    && (error.status === 400 || error.status === 409 || error.status === 422);
+}
+
 function retainLeaseForUncertainWrite(error: unknown): never {
   if (isDeterministicWriteFailure(error)) throw error;
   throw new RetainResourceLeaseError(error);
@@ -333,11 +339,35 @@ export async function syncWebsiteLeadToHighLevel(
             resolvedOpportunityId = created.id;
             createdRemotely = true;
           } catch (error) {
-            retainLeaseForUncertainWrite(error);
+            // A published HighLevel workflow can create the D2C/Consulta card
+            // after `website-inbound` is tagged and before this POST returns.
+            // HighLevel then rejects our create with 400; reuse that card.
+            if (isRejectedOpportunityCreate(error)) {
+              const raced = selectOrReject(await gateway.findOpenOpportunities(
+                config.locationId,
+                config.pipelineId,
+                contactId,
+              ));
+              if (raced) {
+                resolvedOpportunityId = raced.id;
+                try {
+                  await gateway.updateOpportunityCustomFields(
+                    resolvedOpportunityId,
+                    opportunityFields(lead, config),
+                  );
+                } catch (updateError) {
+                  retainLeaseForUncertainWrite(updateError);
+                }
+              } else {
+                throw error;
+              }
+            } else {
+              retainLeaseForUncertainWrite(error);
+            }
           }
         }
         opportunityId = resolvedOpportunityId;
-        opportunityCreated = !existing;
+        opportunityCreated = createdRemotely;
         try {
           await control.checkpoint({ opportunityId, opportunityCreated });
         } catch (error) {

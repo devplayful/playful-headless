@@ -252,8 +252,10 @@ export async function POST(request: NextRequest) {
     } else {
       console.error('El pipeline de contacto no pudo completar una operación segura.');
     }
+    // Post-delivery CRM failures are returned as success by the orchestrator.
+    // This 502 is only for unexpected errors before a confirmed WordPress delivery.
     return NextResponse.json(
-      { success: false, retryable: true, message: 'El mensaje fue procesado, pero falta confirmar el registro comercial. Inténtalo de nuevo.' },
+      { success: false, retryable: true, message: 'No pudimos completar el envío. Inténtalo de nuevo.' },
       { status: 502 },
     );
   }
