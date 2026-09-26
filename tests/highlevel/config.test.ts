@@ -37,6 +37,7 @@ test('uses a short processing lease independently from the durable result TTL', 
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_STAGE_REVISAR_ID: 'revisar',
     HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
     HIGHLEVEL_CONTACT_TAG: 'website-inbound',
     HIGHLEVEL_SLA_HOURS: '24',
@@ -52,7 +53,33 @@ test('uses a short processing lease independently from the durable result TTL', 
   if (enabled.enabled) {
     assert.equal(enabled.leaseSeconds, 30);
     assert.equal(enabled.idempotencyTtlSeconds, 604800);
+    assert.equal(enabled.consultaStageId, 'stage');
+    assert.equal(enabled.revisarStageId, 'revisar');
   }
+});
+
+test('refuses activation without HIGHLEVEL_STAGE_REVISAR_ID', () => {
+  assert.throws(
+    () => readHighLevelConfig({
+      HIGHLEVEL_ENABLED: 'true',
+      HIGHLEVEL_TEST_MODE: 'true',
+      HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
+      HIGHLEVEL_LOCATION_ID: 'location',
+      HIGHLEVEL_PIPELINE_ID: 'pipeline',
+      HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+      HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
+      HIGHLEVEL_CONTACT_TAG: 'website-inbound',
+      HIGHLEVEL_SLA_HOURS: '24',
+      HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS: '604800',
+      HIGHLEVEL_PROCESSING_LEASE_SECONDS: '30',
+      HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
+      HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
+      HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify(customFieldIds),
+      HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify(opportunityCustomFieldIds),
+    }),
+    (error) => error instanceof HighLevelConfigurationError
+      && /HIGHLEVEL_STAGE_REVISAR_ID/.test(error.message),
+  );
 });
 
 test('rejects a lease shorter than the longest two-call CRM critical section', () => {
@@ -63,6 +90,7 @@ test('rejects a lease shorter than the longest two-call CRM critical section', (
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_STAGE_REVISAR_ID: 'revisar',
     HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
     HIGHLEVEL_CONTACT_TAG: 'website-inbound',
     HIGHLEVEL_SLA_HOURS: '24',
@@ -83,6 +111,7 @@ test('includes WordPress delivery and its Redis checkpoint in lease validation',
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_STAGE_REVISAR_ID: 'revisar',
     HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
     HIGHLEVEL_CONTACT_TAG: 'website-inbound',
     HIGHLEVEL_SLA_HOURS: '24',
@@ -114,6 +143,7 @@ test('fails closed below the complete Gate 1.1 retry horizon', () => {
     HIGHLEVEL_LOCATION_ID: 'location',
     HIGHLEVEL_PIPELINE_ID: 'pipeline',
     HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
+    HIGHLEVEL_STAGE_REVISAR_ID: 'revisar',
     HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
     HIGHLEVEL_CONTACT_TAG: 'website-inbound',
     HIGHLEVEL_SLA_HOURS: '24',

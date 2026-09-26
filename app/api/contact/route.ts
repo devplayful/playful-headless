@@ -36,6 +36,7 @@ import {
   HighLevelApiClient,
   HighLevelApiError,
 } from '@/lib/highlevel/client';
+import { qualificationLevel } from '@/lib/highlevel/qualification';
 import {
   AmbiguousOpportunityError,
   syncWebsiteLeadToHighLevel,
@@ -51,10 +52,16 @@ import {
   ProductionCanaryConfigurationError,
 } from '@/lib/contact/production-canary';
 
-function success(crmSynced: boolean, dryRun: boolean, replayed: boolean) {
+function success(
+  crmSynced: boolean,
+  dryRun: boolean,
+  replayed: boolean,
+  fit: ReturnType<typeof qualificationLevel>,
+) {
   return NextResponse.json({
     success: true,
     message: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo lo antes posible.',
+    qualificationLevel: fit,
     crm: { synced: crmSynced, dryRun },
     analytics: {
       generateLead: true,
@@ -80,10 +87,11 @@ async function processRedisFreeRollback(
   lead: ReturnType<typeof normalizeWebsiteLead>,
   reconcileOnly: boolean,
 ) {
+  const fit = qualificationLevel(lead);
   if (reconcileOnly) {
     try {
       const receipt = await checkWordPressReceipt(lead);
-      if (receipt === 'completed') return success(false, false, true);
+      if (receipt === 'completed') return success(false, false, true, fit);
       if (receipt === 'missing') throw new DeliveryReceiptMissingError();
       return pendingConfirmation(true, false);
     } catch (error) {
@@ -94,7 +102,7 @@ async function processRedisFreeRollback(
 
   try {
     await deliverToWordPress(lead, { idempotentRetriesEnabled: false });
-    return success(false, false, false);
+    return success(false, false, false, fit);
   } catch (error) {
     if (error instanceof DeterministicContactDeliveryError) throw error;
     return pendingConfirmation(false, false);
@@ -133,12 +141,14 @@ export async function POST(request: NextRequest) {
       );
     }
     const lead = normalizeWebsiteLead(body);
+    const fit = qualificationLevel(lead);
     const reconcileOnly = requestedReconciliation(body);
     if (simulatorEnabled) {
       return NextResponse.json({
         success: true,
         simulated: true,
         message: 'La simulación aislada se completó. No se contactó WordPress, correo ni HighLevel.',
+        qualificationLevel: fit,
         previewEvidence: simulatePreviewContact(lead),
         analytics: {
           generateLead: false,
@@ -173,7 +183,7 @@ export async function POST(request: NextRequest) {
       });
       return result.deliveryStatus === 'pending_confirmation'
         ? pendingConfirmation(result.replayed, result.dryRun)
-        : success(false, false, result.replayed);
+        : success(false, false, result.replayed, fit);
     }
 
     const gateway = highLevel.testMode
@@ -197,7 +207,7 @@ export async function POST(request: NextRequest) {
     });
     return result.deliveryStatus === 'pending_confirmation'
       ? pendingConfirmation(result.replayed, result.dryRun)
-      : success(result.crmSynced, result.dryRun, result.replayed);
+      : success(result.crmSynced, result.dryRun, result.replayed, fit);
   } catch (error) {
     if (error instanceof SubmissionValidationError || error instanceof ContactDeliveryError) {
       const status = error instanceof ContactDeliveryError ? error.status : 400;

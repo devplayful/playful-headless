@@ -11,6 +11,12 @@ import {
   getOrCreateSubmissionId,
 } from '@/lib/contact/client-attribution';
 import { pushGenerateLead } from '@/lib/contact/analytics';
+import { qualificationLevel } from '@/lib/highlevel/qualification';
+import {
+  contactThanksHref,
+  qualificationLevelFromResponse,
+} from '@/utils/thanks-booking';
+import type { LeadQualification } from '@/lib/contact/types';
 
 interface ContactPageClientProps {
   casosDeExito: any[];
@@ -164,8 +170,12 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
             : {}),
         });
         
+        const thanksHref = contactThanksHref(qualificationLevelFromResponse(
+          data.qualificationLevel,
+          qualificationLevel({ qualification: formData as LeadQualification }),
+        ));
         resetConfirmedForm();
-        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias?conv=Lead');
+        if (data.simulated !== true && !previewSimulation) window.location.assign(thanksHref);
       } else {
         setSubmitStatus({
           success: false,

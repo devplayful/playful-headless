@@ -75,8 +75,15 @@ class GatewayMock implements HighLevelGateway {
     }
     return { id: opportunity.id };
   }
-  async updateOpportunityCustomFields(opportunityId: string, customFields: HighLevelCustomFieldValue[]) {
-    this.calls.push({ operation: 'update-opportunity', value: { opportunityId, customFields } });
+  async updateOpportunityCustomFields(
+    opportunityId: string,
+    customFields: HighLevelCustomFieldValue[],
+    options?: { pipelineStageId?: string },
+  ) {
+    this.calls.push({
+      operation: 'update-opportunity',
+      value: { opportunityId, customFields, pipelineStageId: options?.pipelineStageId },
+    });
   }
   async findTasks() {
     this.calls.push({ operation: 'find-tasks' });
@@ -168,7 +175,7 @@ test('checkpoints contact, first touch, tag, Consulta opportunity and SLA task',
   assert.match(task.input.body, /\[playful-submission:submission-a\]/);
 });
 
-test('retains marketplace-transition contacts without creating an opportunity or SLA task', async () => {
+test('creates a Revisar opportunity without an SLA task for marketplace-transition contacts', async () => {
   const gateway = new GatewayMock();
   const transitionLead = {
     ...lead,
@@ -180,10 +187,15 @@ test('retains marketplace-transition contacts without creating an opportunity or
 
   const result = await syncWebsiteLeadToHighLevel(transitionLead, gateway, config);
 
-  assert.deepEqual(result, { contactId: 'contact-1', opportunityCreated: false });
+  assert.deepEqual(result, {
+    contactId: 'contact-1',
+    opportunityId: 'opportunity-1',
+    opportunityCreated: true,
+  });
   assert.deepEqual(gateway.calls.map((call) => call.operation), [
-    'upsert', 'get-fields', 'update-original', 'tag', 'search',
+    'upsert', 'get-fields', 'update-original', 'tag', 'search', 'create-opportunity',
   ]);
+  assert(!gateway.calls.some((call) => call.operation === 'create-task'));
   const upsert = gateway.calls[0].value as UpsertContactInput;
   assert(upsert.customFields.some((item) => (
     item.id === config.customFieldIds.sales_model && item.fieldValue === 'mercado_libre'
@@ -191,11 +203,18 @@ test('retains marketplace-transition contacts without creating an opportunity or
   assert(upsert.customFields.some((item) => (
     item.id === config.customFieldIds.qualification_level && item.fieldValue === 'transition'
   )));
+  const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')
+    ?.value as CreateOpportunityInput;
+  assert.equal(opportunity.pipelineStageId, 'stage-revisar-test');
 });
 
-test('updates an existing canonical opportunity when a later submission needs review', async () => {
+test('updates an existing inbound opportunity and moves it to Revisar on review', async () => {
   const gateway = new GatewayMock();
-  gateway.opportunities = [{ id: 'opportunity-existing', status: 'open' }];
+  gateway.opportunities = [{
+    id: 'opportunity-existing',
+    status: 'open',
+    pipelineStageId: 'stage-consulta-test',
+  }];
   const reviewLead = {
     ...lead,
     qualification: {
@@ -218,11 +237,103 @@ test('updates an existing canonical opportunity when a later submission needs re
   const update = gateway.calls[5].value as {
     opportunityId: string;
     customFields: HighLevelCustomFieldValue[];
+    pipelineStageId?: string;
   };
   assert.equal(update.opportunityId, 'opportunity-existing');
+  assert.equal(update.pipelineStageId, 'stage-revisar-test');
   assert(update.customFields.some((item) => (
     item.id === config.opportunityCustomFieldIds.qualification_level
       && item.fieldValue === 'Revisar'
+  )));
+});
+
+test('does not rewind a later-stage open opportunity when the new fit is review', async () => {
+  const gateway = new GatewayMock();
+  gateway.opportunities = [{
+    id: 'opportunity-reunion',
+    status: 'open',
+    pipelineStageId: 'stage-reunion-already-progressed',
+  }];
+  const reviewLead = {
+    ...lead,
+    qualification: {
+      ...lead.qualification,
+      monthlyRevenue: '50k_100k' as const,
+    },
+  };
+
+  const result = await syncWebsiteLeadToHighLevel(reviewLead, gateway, config);
+  assert.equal(result.opportunityId, 'opportunity-reunion');
+  assert.equal(result.opportunityCreated, false);
+  const update = gateway.calls.find((call) => call.operation === 'update-opportunity')?.value as {
+    pipelineStageId?: string;
+  };
+  assert.equal(update.pipelineStageId, undefined);
+  assert(!gateway.calls.some((call) => call.operation === 'create-opportunity'));
+  assert(!gateway.calls.some((call) => call.operation === 'create-task'));
+});
+
+test('persists free-text otros on contact and opportunity fields', async () => {
+  const gateway = new GatewayMock();
+  const otherLead = {
+    ...lead,
+    message: 'Contexto libre del proyecto',
+    qualification: {
+      decisionRole: 'other' as const,
+      decisionRoleOther: 'Consultora externa',
+      salesModel: 'other' as const,
+      salesModelOther: 'Retail físico + web',
+      secondaryMarketplaces: '',
+      monthlyRevenue: 'other' as const,
+      monthlyRevenueOther: 'Estacional 80k',
+      projectTiming: 'other' as const,
+      projectTimingOther: 'Tras Black Friday',
+    },
+  };
+
+  const result = await syncWebsiteLeadToHighLevel(otherLead, gateway, config);
+  assert.equal(result.opportunityCreated, true);
+  assert.equal(result.taskId, undefined);
+
+  const upsert = gateway.calls[0].value as UpsertContactInput;
+  assert(upsert.customFields.some((item) => (
+    item.id === config.customFieldIds.decision_role_other && item.fieldValue === 'Consultora externa'
+  )));
+  assert(upsert.customFields.some((item) => (
+    item.id === config.customFieldIds.sales_model_other && item.fieldValue === 'Retail físico + web'
+  )));
+  assert(upsert.customFields.some((item) => (
+    item.id === config.customFieldIds.monthly_revenue_other && item.fieldValue === 'Estacional 80k'
+  )));
+  assert(upsert.customFields.some((item) => (
+    item.id === config.customFieldIds.project_timing_other && item.fieldValue === 'Tras Black Friday'
+  )));
+  assert(upsert.customFields.some((item) => (
+    item.id === config.customFieldIds.project_context && item.fieldValue === 'Contexto libre del proyecto'
+  )));
+
+  const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')
+    ?.value as CreateOpportunityInput;
+  assert.equal(opportunity.pipelineStageId, 'stage-revisar-test');
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.decision_role
+      && item.fieldValue === 'Otro: Consultora externa'
+  )));
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.sales_model
+      && item.fieldValue === 'Otro: Retail físico + web'
+  )));
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.monthly_revenue
+      && item.fieldValue === 'Otro: Estacional 80k'
+  )));
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.project_timing
+      && item.fieldValue === 'Otro: Tras Black Friday'
+  )));
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.project_context
+      && item.fieldValue === 'Contexto libre del proyecto'
   )));
 });
 

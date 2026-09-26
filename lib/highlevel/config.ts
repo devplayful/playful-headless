@@ -60,6 +60,7 @@ export interface EnabledHighLevelConfig {
   locationId: string;
   pipelineId: string;
   consultaStageId: string;
+  revisarStageId: string;
   ownerId: string;
   contactTag: string;
   slaHours: number;
@@ -187,6 +188,7 @@ export function readHighLevelConfig(env: Environment = process.env): HighLevelCo
     locationId: required(env, 'HIGHLEVEL_LOCATION_ID'),
     pipelineId: required(env, 'HIGHLEVEL_PIPELINE_ID'),
     consultaStageId: required(env, 'HIGHLEVEL_STAGE_CONSULTA_ID'),
+    revisarStageId: required(env, 'HIGHLEVEL_STAGE_REVISAR_ID'),
     ownerId: required(env, 'HIGHLEVEL_DEFAULT_OWNER_ID'),
     contactTag: required(env, 'HIGHLEVEL_CONTACT_TAG'),
     slaHours: integer(env, 'HIGHLEVEL_SLA_HOURS', 1, 168),

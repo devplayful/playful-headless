@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { qualificationLevel, type QualificationLevel } from '../highlevel/workflow.ts';
+import { qualificationLevel, type QualificationLevel } from '../highlevel/qualification.ts';
 import type { WebsiteLead } from './types.ts';
 
 export interface PreviewSimulationEvidence {
@@ -9,7 +9,7 @@ export interface PreviewSimulationEvidence {
   email: 'suppressed';
   highLevel: {
     contact: 'simulated-upsert';
-    opportunity: 'simulated-consulta' | 'not-created';
+    opportunity: 'simulated-consulta' | 'simulated-revisar';
     nextAction: 'simulated-sla-task' | 'not-created';
   };
   qualificationLevel: QualificationLevel;
@@ -33,7 +33,7 @@ export function simulatePreviewContact(lead: WebsiteLead): PreviewSimulationEvid
     email: 'suppressed',
     highLevel: {
       contact: 'simulated-upsert',
-      opportunity: priority ? 'simulated-consulta' : 'not-created',
+      opportunity: priority ? 'simulated-consulta' : 'simulated-revisar',
       nextAction: priority ? 'simulated-sla-task' : 'not-created',
     },
     qualificationLevel: fit,

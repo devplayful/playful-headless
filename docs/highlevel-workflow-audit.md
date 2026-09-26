@@ -25,7 +25,7 @@ Buscar tanto coincidencias exactas como reglas sin filtro o con filtro amplio:
 
 - `Contact Created`, `Contact Changed` y cambios en cualquiera de los 12 campos `GTM Web`.
 - `Tag Added`, en especial `website-inbound`, y condiciones que acepten cualquier etiqueta.
-- `Opportunity Created/Added`, `Opportunity Changed`, cambios de status o stage, pipeline `D2C` y etapa `Consulta`.
+- `Opportunity Created/Added`, `Opportunity Changed`, cambios de status o stage, pipeline `D2C`, etapa `Consulta` y etapa `Revisar` (`7cd10297-1e83-4f53-aee4-36dfd292b964`). No mapear review/transition a `Lead cualificado`.
 - `Task Added/Created` o reglas basadas en tareas pendientes.
 - Triggers derivados que puedan cumplirse después del upsert: Smart Lists, segmentos, campos vacíos/no vacíos, responsable, fuente, UTM o consentimiento.
 
