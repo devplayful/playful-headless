@@ -9,6 +9,57 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
+test('create task accepts both HighLevel response envelopes', async () => {
+  const nested = new HighLevelApiClient('token', 1000, async () => (
+    jsonResponse(201, { task: { id: 'task-nested' } })
+  ));
+  assert.deepEqual(
+    await nested.createTask('c', {
+      title: 'Responder consulta web',
+      body: 'marker',
+      dueDate: '2026-09-26T00:00:00.000Z',
+      completed: false,
+      assignedTo: 'o',
+    }),
+    { id: 'task-nested' },
+  );
+
+  const flat = new HighLevelApiClient('token', 1000, async () => (
+    jsonResponse(201, { id: 'task-flat' })
+  ));
+  assert.deepEqual(
+    await flat.createTask('c', {
+      title: 'Responder consulta web',
+      body: 'marker',
+      dueDate: '2026-09-26T00:00:00.000Z',
+      completed: false,
+      assignedTo: 'o',
+    }),
+    { id: 'task-flat' },
+  );
+});
+
+test('treats an empty 2xx HighLevel body as a recoverable API error, not a TypeError', async () => {
+  const client = new HighLevelApiClient('token', 1000, async () => (
+    new Response('', { status: 201, headers: { 'Content-Type': 'application/json' } })
+  ));
+  await assert.rejects(
+    () => client.createTask('c', {
+      title: 'Responder consulta web',
+      body: 'marker',
+      dueDate: '2026-09-26T00:00:00.000Z',
+      completed: false,
+      assignedTo: 'o',
+    }),
+    (error: unknown) => (
+      error instanceof HighLevelApiError
+      && error.status === 502
+      && error.operation === 'create follow-up task'
+      && error.detail === 'respuesta vacía'
+    ),
+  );
+});
+
 test('create opportunity accepts both HighLevel response envelopes', async () => {
   const nested = new HighLevelApiClient('token', 1000, async () => (
     jsonResponse(201, { opportunity: { id: 'opp-nested' } })

@@ -515,49 +515,29 @@ test('releases resource leases after deterministic HTTP 4xx write failures', asy
   assert.equal(taskLocks.size, 0);
 });
 
-test('recovers a task id when create succeeded but its response was lost', async () => {
+test('recovers a task id in the same attempt when create succeeded but its response was lost', async () => {
   const gateway = new GatewayMock();
-  const locks = new Set<string>();
-  const control = memoryControl('submission-lost-task', locks);
+  const control = memoryControl('submission-lost-task');
   gateway.loseFirstTaskResponse = true;
-
-  await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
-  assert.equal(gateway.tasks.length, 1);
-  assert.equal(control.progress.taskId, undefined);
-
-  await assert.rejects(
-    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
-    SubmissionInProgressError,
-  );
-  locks.clear(); // Simulates expiry of the retained short lease.
 
   const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
   assert.equal(recovered.taskId, 'task-1');
   assert.equal(gateway.tasks.length, 1);
   assert.equal(gateway.calls.filter((call) => call.operation === 'create-task').length, 1);
+  assert.equal(gateway.calls.filter((call) => call.operation === 'find-tasks').length, 2);
 });
 
-test('recovers an opportunity when create succeeded but its response was lost', async () => {
+test('recovers an opportunity in the same attempt when create succeeded but its response was lost', async () => {
   const gateway = new GatewayMock();
-  const locks = new Set<string>();
-  const control = memoryControl('submission-lost-opportunity', locks);
+  const control = memoryControl('submission-lost-opportunity');
   gateway.loseFirstOpportunityResponse = true;
-
-  await assert.rejects(() => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control));
-  assert.equal(gateway.opportunities.length, 1);
-  assert.equal(control.progress.opportunityId, undefined);
-
-  await assert.rejects(
-    () => syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control),
-    SubmissionInProgressError,
-  );
-  locks.clear(); // Simulates expiry of the retained short lease.
 
   const recovered = await syncWebsiteLeadToHighLevel(lead, gateway, config, new Date(), control);
   assert.equal(recovered.opportunityId, 'opportunity-1');
   assert.equal(recovered.opportunityCreated, false);
   assert.equal(gateway.opportunities.length, 1);
   assert.equal(gateway.calls.filter((call) => call.operation === 'create-opportunity').length, 1);
+  assert(gateway.calls.filter((call) => call.operation === 'search').length >= 2);
 });
 
 test('serializes opportunity search-create for concurrent submissions to one contact and pipeline', async () => {

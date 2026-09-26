@@ -13,6 +13,7 @@ import type {
   HighLevelCustomFieldValue,
   HighLevelGateway,
   HighLevelOpportunity,
+  HighLevelTask,
 } from './client.ts';
 import { HighLevelApiError } from './client.ts';
 
@@ -188,6 +189,22 @@ function selectOrReject(opportunities: HighLevelOpportunity[]): HighLevelOpportu
   return opportunities[0];
 }
 
+function taskWithMarker(tasks: HighLevelTask[], marker: string): HighLevelTask | undefined {
+  return tasks.find((task) => (task.body || '').includes(marker));
+}
+
+async function recoverOpenOpportunity(
+  gateway: HighLevelGateway,
+  config: EnabledHighLevelConfig,
+  contactId: string,
+): Promise<HighLevelOpportunity | undefined> {
+  return selectOrReject(await gateway.findOpenOpportunities(
+    config.locationId,
+    config.pipelineId,
+    contactId,
+  ));
+}
+
 function isDeterministicWriteFailure(error: unknown): boolean {
   return error instanceof HighLevelApiError && error.status >= 400 && error.status < 500;
 }
@@ -342,25 +359,26 @@ export async function syncWebsiteLeadToHighLevel(
             // A published HighLevel workflow can create the D2C/Consulta card
             // after `website-inbound` is tagged and before this POST returns.
             // HighLevel then rejects our create with 400; reuse that card.
-            if (isRejectedOpportunityCreate(error)) {
-              const raced = selectOrReject(await gateway.findOpenOpportunities(
-                config.locationId,
-                config.pipelineId,
-                contactId,
-              ));
-              if (raced) {
-                resolvedOpportunityId = raced.id;
-                try {
-                  await gateway.updateOpportunityCustomFields(
-                    resolvedOpportunityId,
-                    opportunityFields(lead, config),
-                  );
-                } catch (updateError) {
-                  retainLeaseForUncertainWrite(updateError);
-                }
-              } else {
-                throw error;
+            // The same lookup recovers a 201 whose body we could not parse.
+            let raced: HighLevelOpportunity | undefined;
+            try {
+              raced = await recoverOpenOpportunity(gateway, config, contactId);
+            } catch (searchError) {
+              if (searchError instanceof AmbiguousOpportunityError) throw searchError;
+              retainLeaseForUncertainWrite(error);
+            }
+            if (raced) {
+              resolvedOpportunityId = raced.id;
+              try {
+                await gateway.updateOpportunityCustomFields(
+                  resolvedOpportunityId,
+                  opportunityFields(lead, config),
+                );
+              } catch (updateError) {
+                retainLeaseForUncertainWrite(updateError);
               }
+            } else if (isRejectedOpportunityCreate(error)) {
+              throw error;
             } else {
               retainLeaseForUncertainWrite(error);
             }
@@ -386,17 +404,14 @@ export async function syncWebsiteLeadToHighLevel(
   if (!taskId) {
     const taskMarker = `[playful-submission:${control.submissionKey}]`;
     await control.withResourceLease(`task:${contactId}:${control.submissionKey}`, async () => {
-      const existing = (await gateway.findTasks(contactId)).find((task) => (
-        (task.body || '').includes(taskMarker)
-      ));
+      const existing = taskWithMarker(await gateway.findTasks(contactId), taskMarker);
       let createdRemotely = false;
       if (existing) {
         taskId = existing.id;
       } else {
         const dueDate = new Date(now.getTime() + config.slaHours * 60 * 60 * 1000).toISOString();
-        let task;
         try {
-          task = await gateway.createTask(contactId, {
+          const task = await gateway.createTask(contactId, {
             title: 'Responder consulta web',
             body: `Siguiente acción del formulario ${lead.recentAttribution.formId}. ${taskMarker}`,
             dueDate,
@@ -404,10 +419,22 @@ export async function syncWebsiteLeadToHighLevel(
             assignedTo: config.ownerId,
           });
           createdRemotely = true;
+          taskId = task.id;
         } catch (error) {
-          retainLeaseForUncertainWrite(error);
+          // HighLevel may persist the task and still return an empty or
+          // unexpected 201 body. Re-read by our submission marker.
+          let recovered: HighLevelTask | undefined;
+          try {
+            recovered = taskWithMarker(await gateway.findTasks(contactId), taskMarker);
+          } catch {
+            retainLeaseForUncertainWrite(error);
+          }
+          if (recovered) {
+            taskId = recovered.id;
+          } else {
+            retainLeaseForUncertainWrite(error);
+          }
         }
-        taskId = task.id;
       }
       try {
         await control.checkpoint({ taskId });
@@ -418,9 +445,9 @@ export async function syncWebsiteLeadToHighLevel(
     });
   }
 
-  if (!opportunityId || opportunityCreated === undefined || !taskId) {
+  if (!contactId || !opportunityId || !taskId) {
     throw new Error('El flujo CRM terminó sin checkpoints obligatorios.');
   }
 
-  return { contactId, opportunityId, opportunityCreated, taskId };
+  return { contactId, opportunityId, opportunityCreated: opportunityCreated === true, taskId };
 }

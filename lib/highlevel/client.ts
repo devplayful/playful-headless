@@ -116,7 +116,16 @@ export class HighLevelApiClient implements HighLevelGateway {
       }
       throw new HighLevelApiError(response.status, operation, detail);
     }
-    return response.json() as Promise<T>;
+
+    const text = await response.text();
+    if (!text.trim()) {
+      throw new HighLevelApiError(502, operation, 'respuesta vacía');
+    }
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      throw new HighLevelApiError(502, operation, 'respuesta no JSON');
+    }
   }
 
   async upsertContact(input: UpsertContactInput): Promise<UpsertContactResult> {
