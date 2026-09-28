@@ -383,8 +383,7 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
   },
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
-    title:
-      'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea | Blog - Playful Agency',
+    title: 'Zelle en Venezuela: cobra en tu tienda online | Playful',
     description:
       'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
     h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',

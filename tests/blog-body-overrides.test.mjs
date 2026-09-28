@@ -15,6 +15,8 @@ const blogPage = readFileSync(
 
 const ZELLE_TITLE =
   'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea';
+const ZELLE_DOCUMENT_TITLE =
+  'Zelle en Venezuela: cobra en tu tienda online | Playful';
 const ZELLE_META =
   'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.';
 
@@ -52,7 +54,9 @@ test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.match(blogPage, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);
   assert.match(blogPage, /BLOG_SEO_OVERRIDES\[postSlug\]\?\.h1/);
   assert.match(blogPage, /zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/);
-  assert.ok(blogPage.includes(`${ZELLE_TITLE} | Blog - Playful Agency`));
+  assert.ok(blogPage.includes(ZELLE_DOCUMENT_TITLE));
+  assert.ok(blogPage.includes(`h1: '${ZELLE_TITLE}'`));
+  assert.ok(!blogPage.includes(`${ZELLE_TITLE} | Blog - Playful Agency`));
   assert.ok(blogPage.includes(ZELLE_META));
   assert.match(blogPage, /Cintillos de promoción en ecommerce \| Playful/);
 });
