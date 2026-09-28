@@ -51,7 +51,9 @@ class GatewayMock implements HighLevelGateway {
   async updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]) {
     this.calls.push({ operation: 'update-original', value: { contactId, customFields } });
     if (this.originalWriteError) throw this.originalWriteError;
-    for (const item of customFields) this.customFields.set(item.id, item.fieldValue);
+    for (const item of customFields) {
+      if (item.id) this.customFields.set(item.id, item.fieldValue);
+    }
     if (this.loseFirstOriginalResponse) {
       this.loseFirstOriginalResponse = false;
       throw new Error('response lost after HighLevel applied original fields');

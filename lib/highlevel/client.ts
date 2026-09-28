@@ -1,6 +1,20 @@
 export interface HighLevelCustomFieldValue {
-  id: string;
+  id?: string;
+  key?: string;
   fieldValue: string;
+}
+
+export interface HighLevelNativeAttribution {
+  url: string;
+  campaign?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  referrer?: string;
+  medium?: string;
+  gclid?: string;
+  fbclid?: string;
 }
 
 export interface UpsertContactInput {
@@ -10,6 +24,9 @@ export interface UpsertContactInput {
   companyName?: string;
   locationId: string;
   assignedTo: string;
+  source?: string;
+  attributionSource?: HighLevelNativeAttribution;
+  lastAttributionSource?: HighLevelNativeAttribution;
   customFields: HighLevelCustomFieldValue[];
   createNewIfDuplicateAllowed: false;
 }
@@ -231,7 +248,9 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
     return Array.from(this.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
   }
   async updateContactCustomFields(_contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
-    for (const item of customFields) this.customFields.set(item.id, item.fieldValue);
+    for (const item of customFields) {
+      if (item.id) this.customFields.set(item.id, item.fieldValue);
+    }
   }
   async addContactTags(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
