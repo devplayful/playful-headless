@@ -125,7 +125,6 @@ test('builds first and last touch from request cookies', () => {
 test('maps click fields to the GHL fieldKeys Ops created', () => {
   assert.deepEqual(HIGHLEVEL_CLICK_FIELD_KEYS, {
     gclid_web: 'contact.gclid_web',
-    gclid: 'contact.gclid',
     fbclid: 'contact.fbclid',
     referrer: 'contact.referrer',
   });

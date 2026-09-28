@@ -25,7 +25,6 @@ export const UTM_FIELDS = [
 
 export const HIGHLEVEL_CLICK_FIELD_KEYS = {
   gclid_web: 'contact.gclid_web',
-  gclid: 'contact.gclid',
   fbclid: 'contact.fbclid',
   referrer: 'contact.referrer',
 } as const;
