@@ -33,8 +33,16 @@ const CUSTOM_FIELD_KEYS = [
   'project_context',
 ] as const;
 
+export const OPTIONAL_CUSTOM_FIELD_KEYS = [
+  'gclid',
+  'fbclid',
+  'referrer',
+] as const;
+
 export type HighLevelCustomFieldKey = (typeof CUSTOM_FIELD_KEYS)[number];
-export type HighLevelCustomFieldIds = Record<HighLevelCustomFieldKey, string>;
+export type HighLevelOptionalCustomFieldKey = (typeof OPTIONAL_CUSTOM_FIELD_KEYS)[number];
+export type HighLevelCustomFieldIds = Record<HighLevelCustomFieldKey, string> &
+  Partial<Record<HighLevelOptionalCustomFieldKey, string>>;
 
 const OPPORTUNITY_CUSTOM_FIELD_KEYS = [
   'decision_role',
@@ -119,6 +127,10 @@ function customFields(env: Environment): HighLevelCustomFieldIds {
       throw new HighLevelConfigurationError(`Falta el ID del campo HighLevel: ${key}.`);
     }
     result[key] = value.trim();
+  }
+  for (const key of OPTIONAL_CUSTOM_FIELD_KEYS) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) result[key] = value.trim();
   }
   return result;
 }

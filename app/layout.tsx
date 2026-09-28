@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import AttributionCapture from '@/components/AttributionCapture';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -120,6 +121,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <ChatWidget />
+          <AttributionCapture />
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,10 @@
 import {
+  DIRECT_SOURCE,
+  MISSING_SOURCE,
+  resolveAttributionSource,
+  slugSource,
+} from './attribution.ts';
+import {
   ATTRIBUTION_FIELDS,
   CONTACT_FORM_ID,
   DECISION_ROLE_OPTIONS,
@@ -157,15 +163,18 @@ function normalizeLanding(value: unknown): string {
   }
 }
 
-function normalizeSource(value: unknown): string {
-  const source = text(value, 100).toLowerCase();
-  return source.replace(/[^a-z0-9._/-]/g, '-').replace(/-+/g, '-').slice(0, 100) || 'direct';
+function normalizeSource(value: unknown, fallback: string): string {
+  const source = slugSource(typeof value === 'string' ? value : '');
+  return source || fallback;
 }
 
 export function normalizeAttribution(value: unknown): ContactAttribution {
+  const missing = value === undefined || value === null;
   const input = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  const captured = missing ? false : input.captured === true;
   const attribution: ContactAttribution = {
-    source: normalizeSource(input.source),
+    captured,
+    source: '',
     landing: normalizeLanding(input.landing),
     formId: CONTACT_FORM_ID,
     utm_source: '',
@@ -173,10 +182,25 @@ export function normalizeAttribution(value: unknown): ContactAttribution {
     utm_campaign: '',
     utm_term: '',
     utm_content: '',
+    gclid: text(input.gclid, 200),
+    fbclid: text(input.fbclid, 200),
+    referrer: text(input.referrer, 500),
   };
 
   for (const field of ATTRIBUTION_FIELDS) {
     attribution[field] = text(input[field], 160);
+  }
+
+  const resolved = resolveAttributionSource(attribution);
+  const explicit = normalizeSource(input.source, '');
+  if (explicit && explicit !== DIRECT_SOURCE && explicit !== MISSING_SOURCE) {
+    attribution.source = explicit;
+  } else if (resolved !== DIRECT_SOURCE && resolved !== MISSING_SOURCE) {
+    attribution.source = resolved;
+  } else if (captured) {
+    attribution.source = DIRECT_SOURCE;
+  } else {
+    attribution.source = MISSING_SOURCE;
   }
 
   return attribution;

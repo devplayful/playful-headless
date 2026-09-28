@@ -64,6 +64,7 @@ export interface LeadQualification {
 }
 
 export interface ContactAttribution {
+  captured: boolean;
   source: string;
   landing: string;
   formId: string;
@@ -72,6 +73,9 @@ export interface ContactAttribution {
   utm_campaign: string;
   utm_term: string;
   utm_content: string;
+  gclid: string;
+  fbclid: string;
+  referrer: string;
 }
 
 export interface WebsiteLead {

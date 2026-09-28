@@ -12,10 +12,17 @@ import type {
 import type {
   HighLevelCustomFieldValue,
   HighLevelGateway,
+  HighLevelNativeAttribution,
   HighLevelOpportunity,
   HighLevelTask,
+  UpsertContactInput,
 } from './client.ts';
 import { HighLevelApiError } from './client.ts';
+import {
+  HIGHLEVEL_CLICK_FIELD_KEYS,
+  HIGHLEVEL_KNOWN_CLICK_FIELD_IDS,
+  toNativeAttributionSource,
+} from '../contact/attribution.ts';
 
 export class AmbiguousOpportunityError extends Error {
   constructor(public readonly count: number) {
@@ -61,6 +68,47 @@ function field(
   value: string | boolean,
 ): HighLevelCustomFieldValue {
   return { id: config.customFieldIds[key], fieldValue: String(value) };
+}
+
+function clickIdField(
+  config: EnabledHighLevelConfig,
+  key: 'gclid' | 'fbclid' | 'referrer',
+  value: string,
+): HighLevelCustomFieldValue {
+  const fieldKey = HIGHLEVEL_CLICK_FIELD_KEYS[key];
+  const id = config.customFieldIds[key]
+    || (key === 'gclid' ? undefined : HIGHLEVEL_KNOWN_CLICK_FIELD_IDS[key]);
+  return id
+    ? { id, key: fieldKey, fieldValue: value }
+    : { key: fieldKey, fieldValue: value };
+}
+
+export function mapClickAndUtmFields(
+  lead: WebsiteLead,
+  config: EnabledHighLevelConfig,
+): HighLevelCustomFieldValue[] {
+  const first = lead.originalAttribution;
+  return [
+    field(config, 'utm_source', first.utm_source),
+    field(config, 'utm_medium', first.utm_medium),
+    field(config, 'utm_campaign', first.utm_campaign),
+    field(config, 'utm_term', first.utm_term),
+    field(config, 'utm_content', first.utm_content),
+    clickIdField(config, 'gclid', first.gclid),
+    clickIdField(config, 'fbclid', first.fbclid),
+    clickIdField(config, 'referrer', first.referrer),
+  ];
+}
+
+export function nativeContactAttribution(lead: WebsiteLead): Pick<
+  UpsertContactInput,
+  'source' | 'attributionSource' | 'lastAttributionSource'
+> {
+  return {
+    source: lead.originalAttribution.source,
+    attributionSource: toNativeAttributionSource(lead.originalAttribution) as HighLevelNativeAttribution,
+    lastAttributionSource: toNativeAttributionSource(lead.recentAttribution) as HighLevelNativeAttribution,
+  };
 }
 
 function opportunityField(
@@ -155,11 +203,7 @@ function recentFields(lead: WebsiteLead, config: EnabledHighLevelConfig): HighLe
   return [
     field(config, 'recent_source', attribution.source),
     field(config, 'recent_landing', attribution.landing),
-    field(config, 'utm_source', attribution.utm_source),
-    field(config, 'utm_medium', attribution.utm_medium),
-    field(config, 'utm_campaign', attribution.utm_campaign),
-    field(config, 'utm_term', attribution.utm_term),
-    field(config, 'utm_content', attribution.utm_content),
+    ...mapClickAndUtmFields(lead, config),
     field(config, 'form_id', attribution.formId),
     field(config, 'privacy_consent_at', lead.consentCapturedAt),
     field(config, 'marketing_consent', lead.marketingConsent),
@@ -250,6 +294,7 @@ export async function syncWebsiteLeadToHighLevel(
       ...(lead.business ? { companyName: lead.business } : {}),
       locationId: config.locationId,
       assignedTo: config.ownerId,
+      ...nativeContactAttribution(lead),
       customFields: recentFields(lead, config),
       createNewIfDuplicateAllowed: false,
     });

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CONTACT_FORM_ID } from '@/lib/contact/types';
 import {
+  ATTRIBUTION_COOKIE_FIRST,
+  ATTRIBUTION_COOKIE_LAST,
+  deserializeAttributionCookie,
+  preferStoredAttribution,
+} from '@/lib/contact/attribution';
+import {
   normalizeWebsiteLead,
   SubmissionValidationError,
 } from '@/lib/contact/normalize';
@@ -132,7 +138,14 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const lead = normalizeWebsiteLead(body);
+    const submitted = normalizeWebsiteLead(body);
+    const cookieFirst = deserializeAttributionCookie(request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value);
+    const cookieLast = deserializeAttributionCookie(request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value);
+    const lead = {
+      ...submitted,
+      originalAttribution: preferStoredAttribution(cookieFirst, submitted.originalAttribution),
+      recentAttribution: preferStoredAttribution(cookieLast, submitted.recentAttribution),
+    };
     const reconcileOnly = requestedReconciliation(body);
     if (simulatorEnabled) {
       return NextResponse.json({
