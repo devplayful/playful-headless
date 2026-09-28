@@ -154,7 +154,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
-          pushGenerateLead(data.analytics.formId);
+          await pushGenerateLead(data.analytics.formId);
         }
         setSubmitStatus({
           success: true,
