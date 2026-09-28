@@ -34,6 +34,7 @@ const CUSTOM_FIELD_KEYS = [
 ] as const;
 
 export const OPTIONAL_CUSTOM_FIELD_KEYS = [
+  'gclid_web',
   'gclid',
   'fbclid',
   'referrer',

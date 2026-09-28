@@ -24,13 +24,15 @@ export const UTM_FIELDS = [
 ] as const;
 
 export const HIGHLEVEL_CLICK_FIELD_KEYS = {
+  gclid_web: 'contact.gclid_web',
   gclid: 'contact.gclid',
   fbclid: 'contact.fbclid',
   referrer: 'contact.referrer',
 } as const;
 
-/** Live location IDs read from GHL on 2026-09-28. `contact.gclid` did not exist yet. */
+/** Live location IDs confirmed by Ops on 2026-09-28 (Europe/Madrid). */
 export const HIGHLEVEL_KNOWN_CLICK_FIELD_IDS = {
+  gclid_web: 'Kmor82qRkiPnP4TTopod',
   fbclid: 'lOU45Vo8TtnjfU5AbrIC',
   referrer: 'Hk0iFSmfIEvHei4X2ot9',
 } as const;

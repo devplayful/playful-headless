@@ -36,6 +36,8 @@ test('maps first-touch UTMs to existing custom field IDs and click ids by key', 
   assert.equal(byId.get(config.customFieldIds.utm_content), 'v1');
   assert.equal(byId.get(config.customFieldIds.utm_term), 'prueba');
 
+  assert.equal(byKey.get(HIGHLEVEL_CLICK_FIELD_KEYS.gclid_web)?.fieldValue, 'QA-GCLID-TEST');
+  assert.equal(byKey.get(HIGHLEVEL_CLICK_FIELD_KEYS.gclid_web)?.id, HIGHLEVEL_KNOWN_CLICK_FIELD_IDS.gclid_web);
   assert.equal(byKey.get(HIGHLEVEL_CLICK_FIELD_KEYS.gclid)?.fieldValue, 'QA-GCLID-TEST');
   assert.equal(byKey.get(HIGHLEVEL_CLICK_FIELD_KEYS.gclid)?.id, undefined);
   assert.equal(byKey.get(HIGHLEVEL_CLICK_FIELD_KEYS.fbclid)?.fieldValue, 'QA-FBCLID-TEST');
@@ -49,12 +51,14 @@ test('uses env IDs for click fields when present', () => {
     ...config,
     customFieldIds: {
       ...config.customFieldIds,
+      gclid_web: 'env-gclid-web',
       gclid: 'env-gclid',
       fbclid: 'env-fbclid',
       referrer: 'env-referrer',
     },
   };
   const fields = mapClickAndUtmFields(lead, withIds);
+  assert(fields.some((item) => item.id === 'env-gclid-web' && item.key === 'contact.gclid_web'));
   assert(fields.some((item) => item.id === 'env-gclid' && item.key === 'contact.gclid'));
   assert(fields.some((item) => item.id === 'env-fbclid' && item.key === 'contact.fbclid'));
   assert(fields.some((item) => item.id === 'env-referrer' && item.key === 'contact.referrer'));

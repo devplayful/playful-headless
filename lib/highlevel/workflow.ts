@@ -72,12 +72,12 @@ function field(
 
 function clickIdField(
   config: EnabledHighLevelConfig,
-  key: 'gclid' | 'fbclid' | 'referrer',
+  key: keyof typeof HIGHLEVEL_CLICK_FIELD_KEYS,
   value: string,
 ): HighLevelCustomFieldValue {
   const fieldKey = HIGHLEVEL_CLICK_FIELD_KEYS[key];
-  const id = config.customFieldIds[key]
-    || (key === 'gclid' ? undefined : HIGHLEVEL_KNOWN_CLICK_FIELD_IDS[key]);
+  const knownId = key === 'gclid' ? undefined : HIGHLEVEL_KNOWN_CLICK_FIELD_IDS[key];
+  const id = config.customFieldIds[key] || knownId;
   return id
     ? { id, key: fieldKey, fieldValue: value }
     : { key: fieldKey, fieldValue: value };
@@ -94,6 +94,7 @@ export function mapClickAndUtmFields(
     field(config, 'utm_campaign', first.utm_campaign),
     field(config, 'utm_term', first.utm_term),
     field(config, 'utm_content', first.utm_content),
+    clickIdField(config, 'gclid_web', first.gclid),
     clickIdField(config, 'gclid', first.gclid),
     clickIdField(config, 'fbclid', first.fbclid),
     clickIdField(config, 'referrer', first.referrer),
