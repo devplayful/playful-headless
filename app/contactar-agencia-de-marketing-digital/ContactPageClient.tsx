@@ -168,7 +168,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
-          pushGenerateLead(data.analytics.formId);
+          await pushGenerateLead(data.analytics.formId);
         }
         setSubmitStatus({
           success: true,
@@ -179,7 +179,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         });
         
         resetConfirmedForm();
-        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias?conv=Lead');
+        window.location.assign('/gracias?conv=Lead');
       } else {
         setSubmitStatus({
           success: false,

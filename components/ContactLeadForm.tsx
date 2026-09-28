@@ -175,7 +175,7 @@ export default function ContactLeadForm({
         recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
-          pushGenerateLead(data.analytics.formId);
+          await pushGenerateLead(data.analytics.formId);
         }
         setSubmitStatus({
           success: true,
@@ -186,7 +186,7 @@ export default function ContactLeadForm({
         });
         
         resetConfirmedForm();
-        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias?conv=Lead');
+        window.location.assign('/gracias?conv=Lead');
       } else {
         setSubmitStatus({
           success: false,

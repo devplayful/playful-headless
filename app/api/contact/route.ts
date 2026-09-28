@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
         message: 'La simulación aislada se completó. No se contactó WordPress, correo ni HighLevel.',
         previewEvidence: simulatePreviewContact(lead),
         analytics: {
-          generateLead: false,
+          generateLead: true,
           formId: CONTACT_FORM_ID,
         },
         replayed: reconcileOnly,
