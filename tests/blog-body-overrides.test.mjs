@@ -7,6 +7,8 @@ const {
   ZELLE_VE_BLOG_BODY_HTML,
   CASHEA_COMERCIOS_BLOG_SLUG,
   CASHEA_COMERCIOS_BLOG_BODY_HTML,
+  MIGRACION_SEO_ALT_BLOG_SLUG,
+  MIGRACION_SEO_ALT_BLOG_BODY_HTML,
   blogBodyForSlug,
 } = await import('../lib/blog-body-overrides.ts');
 
@@ -22,11 +24,13 @@ const ZELLE_DOCUMENT_TITLE =
 const ZELLE_META =
   'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.';
 
-test('closed list overrides only the signed Zelle VE and Cashea slugs', () => {
+test('closed list overrides only the signed Zelle VE, Cashea and migración alternativa slugs', () => {
   assert.equal(ZELLE_VE_BLOG_SLUG, 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce');
   assert.equal(CASHEA_COMERCIOS_BLOG_SLUG, 'cashea-para-comercios');
+  assert.equal(MIGRACION_SEO_ALT_BLOG_SLUG, 'migracion-seo-cambiar-de-plataforma-alternativa');
   assert.ok(blogBodyForSlug(ZELLE_VE_BLOG_SLUG).length > 0);
   assert.ok(blogBodyForSlug(CASHEA_COMERCIOS_BLOG_SLUG).length > 0);
+  assert.ok(blogBodyForSlug(MIGRACION_SEO_ALT_BLOG_SLUG).length > 0);
   assert.equal(blogBodyForSlug('cintillos-de-promocion'), '');
   assert.equal(blogBodyForSlug('actualizar-tu-e-commerce'), '');
   assert.equal(blogBodyForSlug('migracion-seo-cambiar-de-plataforma'), '');
@@ -85,6 +89,8 @@ test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.ok(blogPage.includes(ZELLE_META));
   assert.ok(blogPage.includes('Cashea para comercios: cuotas en tu tienda online'));
   assert.ok(blogPage.includes('cashea-para-comercios'));
+  assert.ok(blogPage.includes('Migración SEO: cambia de plataforma sin perder ranking'));
+  assert.ok(blogPage.includes('migracion-seo-cambiar-de-plataforma-alternativa'));
   assert.match(blogPage, /Cintillos publicitarios en ecommerce: guía práctica \| Playful/);
   assert.match(
     blogPage,

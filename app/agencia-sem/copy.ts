@@ -15,12 +15,12 @@ export const SECTIONS = {
   items: [
     {
       title: 'Ya gastas en ads y el CAC no para de subir',
-      body: 'Cuando una tienda ya tiene historial de campañas, el problema nunca es la falta de tráfico sino que ese tráfico llega caro y convierte poco. El CAC sube porque la estructura de campañas se fue armando por partes, porque el feed de producto no refleja bien tu catálogo o porque las pujas automáticas están optimizando hacia métricas que no son las que realmente importan para tu negocio. Nosotros empezamos por entender tu margen real por producto, mapeamos dónde se va el presupuesto y reorganizamos la cuenta para que cada campaña tenga un objetivo que se mida en pedidos y en rentabilidad, no solo en clics o en impresiones. Si tu [ecommerce ya factura](http:///agencia-e-commerce) pero el paid no escala sin destrozar el margen, eso es exactamente lo que resolvemos.',
+      body: 'Cuando una tienda ya tiene historial de campañas, el problema nunca es la falta de tráfico sino que ese tráfico llega caro y convierte poco. El CAC sube porque la estructura de campañas se fue armando por partes, porque el feed de producto no refleja bien tu catálogo o porque las pujas automáticas están optimizando hacia métricas que no son las que realmente importan para tu negocio. Nosotros empezamos por entender tu margen real por producto, mapeamos dónde se va el presupuesto y reorganizamos la cuenta para que cada campaña tenga un objetivo que se mida en pedidos y en rentabilidad, no solo en clics o en impresiones. Si tu [ecommerce ya factura](https://playfulagency.com/agencia-e-commerce) pero el paid no escala sin destrozar el margen, eso es exactamente lo que resolvemos.',
       slot: 'servicio-cac',
     },
     {
       title: 'Shopping, Merchant Center y el feed que alimenta todo',
-      body: 'Google Shopping es el canal donde se gana o se pierde la partida para una tienda online, y todo empieza con un feed limpio. Merchant Center necesita datos de producto bien estructurados para que tus anuncios de Shopping se muestren ante las búsquedas correctas con información precisa. Eso significa títulos que incluyan las palabras que tu comprador realmente busca, descripciones completas, precios actualizados, disponibilidad real y variantes bien configuradas. Nosotros trabajamos desde la base del catálogo, porque un feed mal armado produce campañas caras y poco relevantes. Organizamos colecciones, variantes y fichas de producto para que la información que sale de tu tienda hacia Merchant Center sea exacta, y eso se traduce en anuncios de Shopping que compiten mejor y cuestan menos por cada clic que genera una venta real. Si tu tienda funciona en [Shopify](http:///agencia-shopify), ya conocemos esa arquitectura de catálogo a fondo.',
+      body: 'Google Shopping es el canal donde se gana o se pierde la partida para una tienda online, y todo empieza con un feed limpio. Merchant Center necesita datos de producto bien estructurados para que tus anuncios de Shopping se muestren ante las búsquedas correctas con información precisa. Eso significa títulos que incluyan las palabras que tu comprador realmente busca, descripciones completas, precios actualizados, disponibilidad real y variantes bien configuradas. Nosotros trabajamos desde la base del catálogo, porque un feed mal armado produce campañas caras y poco relevantes. Organizamos colecciones, variantes y fichas de producto para que la información que sale de tu tienda hacia Merchant Center sea exacta, y eso se traduce en anuncios de Shopping que compiten mejor y cuestan menos por cada clic que genera una venta real. Si tu tienda funciona en [Shopify](https://playfulagency.com/agencia-shopify), ya conocemos esa arquitectura de catálogo a fondo.',
       slot: 'servicio-shopping',
     },
     {
@@ -30,7 +30,7 @@ export const SECTIONS = {
     },
     {
       title: 'Cuando SEO y SEM trabajan juntos',
-      body: 'Muchas tiendas tratan [SEO](http:///agencia-seo) y SEM como dos mundos separados, pero en la práctica comparten el mismo territorio, que son las páginas de resultados de Google. Cuando el contenido orgánico de tu tienda responde a las mismas búsquedas que tus campañas de paid, los datos de Search Console te dicen qué consultas ya posicionan bien y cuáles necesitan inversión publicitaria para generar tráfico. Al revés también funciona, porque los términos de búsqueda que descubres en tus campañas de Shopping o de texto son una mina para tu estrategia de contenido y para las páginas de categoría de tu tienda. Nosotros cruzamos ambas fuentes de datos para que no pagues por clics en keywords donde ya apareces en posiciones orgánicas fuertes, y para que inviertas en paid donde el orgánico todavía no llega. Ese cruce entre [SEO y SEM](http:///agencia-seo) es lo que separa una cuenta bien operada de una que simplemente gasta.',
+      body: 'Muchas tiendas tratan [SEO](https://playfulagency.com/agencia-seo) y SEM como dos mundos separados, pero en la práctica comparten el mismo territorio, que son las páginas de resultados de Google. Cuando el contenido orgánico de tu tienda responde a las mismas búsquedas que tus campañas de paid, los datos de Search Console te dicen qué consultas ya posicionan bien y cuáles necesitan inversión publicitaria para generar tráfico. Al revés también funciona, porque los términos de búsqueda que descubres en tus campañas de Shopping o de texto son una mina para tu estrategia de contenido y para las páginas de categoría de tu tienda. Nosotros cruzamos ambas fuentes de datos para que no pagues por clics en keywords donde ya apareces en posiciones orgánicas fuertes, y para que inviertas en paid donde el orgánico todavía no llega. Ese cruce entre [SEO y SEM](https://playfulagency.com/agencia-seo) es lo que separa una cuenta bien operada de una que simplemente gasta.',
       slot: 'servicio-cruce',
     },
   ],
@@ -74,7 +74,7 @@ export const FAQ_ITEMS = [
   {
     question: '¿Cuál es la diferencia entre SEO y SEM?',
     answer:
-      'SEO es el trabajo de posicionamiento orgánico, es decir, aparecer en los resultados de Google sin pagar por cada clic. SEM es la gestión de campañas de paid search y Shopping, donde pagas por aparecer ante búsquedas específicas. Ambos comparten el mismo espacio en los resultados de Google y funcionan mejor cuando se coordinan. Si te interesa el lado orgánico, trabajamos eso en nuestra [práctica de SEO](http:///agencia-seo).',
+      'SEO es el trabajo de posicionamiento orgánico, es decir, aparecer en los resultados de Google sin pagar por cada clic. SEM es la gestión de campañas de paid search y Shopping, donde pagas por aparecer ante búsquedas específicas. Ambos comparten el mismo espacio en los resultados de Google y funcionan mejor cuando se coordinan. Si te interesa el lado orgánico, trabajamos eso en nuestra [práctica de SEO](https://playfulagency.com/agencia-seo).',
   },
   {
     question: '¿Trabajan con tiendas que apenas van a empezar con paid?',
@@ -84,7 +84,7 @@ export const FAQ_ITEMS = [
   {
     question: '¿Qué plataformas de ecommerce manejan?',
     answer:
-      'Tenemos experiencia documentada en [Shopify](http:///agencia-shopify) y trabajamos con tiendas en distintas plataformas de [ecommerce](http:///agencia-e-commerce). Lo que importa para SEM es que la plataforma permita una buena configuración de feed y de datos de producto para Merchant Center.',
+      'Tenemos experiencia documentada en [Shopify](https://playfulagency.com/agencia-shopify) y trabajamos con tiendas en distintas plataformas de [ecommerce](https://playfulagency.com/agencia-e-commerce). Lo que importa para SEM es que la plataforma permita una buena configuración de feed y de datos de producto para Merchant Center.',
   },
   {
     question: '¿Cada cuánto se optimizan las campañas?',

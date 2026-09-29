@@ -91,3 +91,11 @@ test('primary SEM CTAs book via /reunion-playful', () => {
   assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.equal(HERO.cta, 'Agenda tu llamada');
 });
+
+test('the seven internal service links match SHA 568b6b5, never http:///', () => {
+  const copy = readFileSync(new URL('../app/agencia-sem/copy.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(copy, /http:\/\/\//);
+  assert.equal((copy.match(/\]\(https:\/\/playfulagency\.com\/agencia-e-commerce\)/g) || []).length, 2);
+  assert.equal((copy.match(/\]\(https:\/\/playfulagency\.com\/agencia-shopify\)/g) || []).length, 2);
+  assert.equal((copy.match(/\]\(https:\/\/playfulagency\.com\/agencia-seo\)/g) || []).length, 3);
+});

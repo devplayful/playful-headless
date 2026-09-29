@@ -16,7 +16,11 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
-import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  blogBodyForSlug,
+  MIGRACION_SEO_ALT_BLOG_SLUG,
+  MIGRACION_SEO_PLAN_PATH,
+} from '@/lib/blog-body-overrides';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
@@ -156,7 +160,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     post.author && typeof post.author === 'object'
       ? post.author.avatar_urls?.['48']
       : undefined;
-  const postCanonical = canonicalForPath(blogPostPath(post));
+  const postCanonical = canonicalForPath(
+    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
+  );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
     blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
@@ -447,6 +453,12 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
       'Cashea para comercios: cómo ofrecer cuotas en el checkout de tu tienda online en Venezuela. Playful integra el método; no somos la app ni la pasarela.',
     h1: 'Cashea para comercios: cómo ofrecer cuotas en tu tienda online',
   },
+  'migracion-seo-cambiar-de-plataforma-alternativa': {
+    title: 'Migración SEO: cambia de plataforma sin perder ranking',
+    description:
+      'Cómo hacer una migración SEO al cambiar de plataforma: inventario de URLs, redirecciones 301 y un ejemplo de tienda que deja Shopify en Venezuela.',
+    h1: 'Cómo hacer una migración SEO al cambiar de plataforma de tienda online',
+  },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
@@ -469,7 +481,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const url = canonicalForPath(blogPostPath(post));
+  const url = canonicalForPath(
+    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
+  );
 
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
@@ -487,6 +501,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description,
     alternates: { canonical: url },
+    ...(postSlug === MIGRACION_SEO_ALT_BLOG_SLUG
+      ? { robots: { index: false, follow: true } }
+      : {}),
     openGraph: {
       title,
       description,
