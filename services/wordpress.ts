@@ -39,6 +39,7 @@ import {
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
+import { localBlogPostBySlug } from '@/lib/blog-local-posts';
 
 export {
   rewriteInSitePageHrefs,
@@ -959,6 +960,9 @@ export async function getRelatedBlogPostsForPost(
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  const local = localBlogPostBySlug(slug);
+  if (local) return local;
+
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
