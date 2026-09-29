@@ -254,7 +254,9 @@ export function analyzeBlogPostJsonLd(html, expected = {}) {
   }
   const article = articles[0] || {};
   const headline = typeof article.headline === 'string' ? article.headline : '';
-  const description = typeof article.description === 'string' ? article.description : '';
+  const description = decodeEntities(
+    typeof article.description === 'string' ? article.description : '',
+  );
   const image = imageUrlFromJsonLd(article.image);
   const canonical = expected.canonical || '';
   const mainEntity = mainEntityUrl(article.mainEntityOfPage);

@@ -206,11 +206,13 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
 test('JSON-LD headline decodes WordPress entities to match the H1', () => {
   const jsonLd = buildBlogArticleJsonLd({
     headline: 'SEO &#8211; guía &amp; checklist',
+    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.',
     datePublished: ZELLE_PUBLISHED,
     dateModified: ZELLE_PUBLISHED,
     url: 'https://playfulagency.com/blog/seo/ejemplo',
   });
   assert.equal(jsonLd.headline, 'SEO – guía & checklist');
+  assert.equal(jsonLd.description, '¿Cuáles son sus ventajas? y… si realmente puede.');
   assert.equal(decodeHtmlEntities('&#x2013;'), '–');
 });
 

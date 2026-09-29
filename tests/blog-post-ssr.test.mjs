@@ -180,6 +180,44 @@ test('related posts require real /blog/category/slug links in visible HTML', () 
   assert.deepEqual(related.relatedHrefs, ['/blog/tecnologia/actualizar-tu-e-commerce']);
 });
 
+test('JSON-LD description with leftover WP entities still matches decoded meta', () => {
+  const description = '¿Cuáles son sus ventajas? y… si realmente puede ser una alternativa.\n';
+  const html = [
+    '<html><head>',
+    '<meta name="description" content="¿Cuáles son sus ventajas? y&amp;#8230; si realmente puede ser una alternativa.\n">',
+    '<link rel="canonical" href="https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online">',
+    '<meta property="og:image" content="https://playfulagency.com/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png">',
+    '<script type="application/ld+json">',
+    JSON.stringify({
+      '@type': 'BlogPosting',
+      headline: 'Crear un e-commerce',
+      description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede ser una alternativa.\n',
+      image: 'https://playfulagency.com/images/blog/07-ecommerce-negocio-online-magnific-s7AzDuWl8e.png',
+      datePublished: '2021-03-01T10:00:00.000Z',
+      dateModified: '2021-03-01T10:00:00.000Z',
+      author: { '@type': 'Person', name: 'Playful Agency' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Playful Agency',
+        logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logov.svg' },
+      },
+      mainEntityOfPage:
+        'https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online',
+      url: 'https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online',
+    }),
+    '</script></head><body><h1>Crear un e-commerce</h1></body></html>',
+  ].join('');
+  const head = extractSeoHead(html);
+  const analysis = analyzeBlogPostJsonLd(html, {
+    h1Text: 'Crear un e-commerce',
+    description: head.description,
+    canonical: head.canonical,
+    ogImage: head.ogImage,
+  });
+  assert.equal(head.description, description);
+  assert.equal(analysis.ok, true, analysis.reasons.join(','));
+});
+
 test('title/meta/canonical/OG comparison is exact after entity decode', () => {
   const local = extractSeoHead(
     '<html><head><title>A &amp; B</title><meta name="description" content="Desc"><link rel="canonical" href="https://playfulagency.com/blog/seo/a"><meta property="og:title" content="A &amp; B"><meta property="og:description" content="Desc"><meta property="og:url" content="https://playfulagency.com/blog/seo/a"><meta property="og:image" content="/images/og-blog.jpg"></head></html>',

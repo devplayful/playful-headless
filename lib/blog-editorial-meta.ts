@@ -210,7 +210,7 @@ export function buildBlogArticleJsonLd(input: {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: decodeHtmlEntities(input.headline),
-    description: input.description ?? '',
+    description: decodeHtmlEntities(input.description ?? ''),
     image: input.image || undefined,
     datePublished: toIsoDateTime(input.datePublished),
     dateModified: toIsoDateTime(input.dateModified),
