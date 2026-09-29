@@ -288,7 +288,16 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
   assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(
+    blogPage,
+    /visibleDateLabel = editorial\?\.updatedAtLabel \|\| formatDate\(post\.date\)/,
+  );
+  assert.match(blogPage, /\{visibleDateLabel\}/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(
+    blogPage.slice(blogPage.indexOf('return ('), blogPage.indexOf('generateMetadata')),
+    /formatDate\(post\.date\)/,
+  );
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);
