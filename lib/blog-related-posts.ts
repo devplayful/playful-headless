@@ -12,10 +12,10 @@ export const RELATED_BLOG_CACHE_TTL_MS = 3600 * 1000;
 export const RELATED_BLOG_FETCH_TIMEOUT_MS = 4000;
 /**
  * WP `per_page` for the category related fetch. Small on purpose (no `_embed`):
- * 12 still beats the old 47+embed (~1.5 MB) and leaves room for closed paths
- * in the newest window of pautas-digitales.
+ * 20 still beats the old 47+embed (~1.5 MB) and leaves room for closed paths
+ * plus multi-category posts whose primary slug is not the URL category.
  */
-export const RELATED_BLOG_CATEGORY_FETCH_PER_PAGE = 12;
+export const RELATED_BLOG_CATEGORY_FETCH_PER_PAGE = 20;
 /** Keep this many category cards after the closed-path filter. */
 export const RELATED_BLOG_CATEGORY_PER_PAGE = RELATED_BLOG_FETCH_COUNT;
 /** Next Data Cache TTL for the lite category fetch. Empty/timeout must not stick for 3600s. */

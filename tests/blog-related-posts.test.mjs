@@ -364,7 +364,7 @@ test('category related fetch is lite and does not cache timeout empties for 3600
     new URL('../services/wordpress.ts', import.meta.url),
     'utf8',
   );
-  assert.equal(RELATED_BLOG_CATEGORY_FETCH_PER_PAGE, 12);
+  assert.equal(RELATED_BLOG_CATEGORY_FETCH_PER_PAGE, 20);
   assert.equal(RELATED_BLOG_CATEGORY_PER_PAGE, 7);
   assert.equal(RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS, 60);
   assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
@@ -384,6 +384,8 @@ test('category related fetch is lite and does not cache timeout empties for 3600
   assert.match(lite, /_fields/);
   assert.match(lite, /exclude/);
   assert.match(lite, /orderby/);
+  assert.match(lite, /requestedSlug/);
+  assert.match(lite, /startsWith\(prefix\)/);
 });
 
 test('blog-posts API excludes via query and keeps six cards', () => {

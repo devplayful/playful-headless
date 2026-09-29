@@ -712,10 +712,20 @@ export async function getRelatedBlogPostsByCategory(
     byId: terms,
     fallback: terms.get(categoryId),
   };
-  return filterOpenBlogPosts(collection.items.map((post) => {
+  const cards = filterOpenBlogPosts(collection.items.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
     return toRelatedBlogCard(rewritten, lookup);
-  })).slice(0, RELATED_BLOG_CATEGORY_PER_PAGE);
+  }));
+  const requestedSlug = lookup.fallback?.slug;
+  if (!requestedSlug) return cards.slice(0, RELATED_BLOG_CATEGORY_PER_PAGE);
+  const primary: RelatedBlogCard[] = [];
+  const extra: RelatedBlogCard[] = [];
+  const prefix = `/blog/${requestedSlug}/`;
+  for (const card of cards) {
+    if (card.href.startsWith(prefix)) primary.push(card);
+    else extra.push(card);
+  }
+  return [...primary, ...extra].slice(0, RELATED_BLOG_CATEGORY_PER_PAGE);
 }
 
 export async function getBlogPostsByIds(
