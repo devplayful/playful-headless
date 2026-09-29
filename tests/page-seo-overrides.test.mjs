@@ -18,7 +18,10 @@ const STALE_PR64_DESCRIPTION =
   'Diseño, desarrollo y optimización de tiendas online. En Playful mejoramos el rendimiento, la experiencia de compra y el SEO de tu ecommerce.';
 
 test('ecommerce overrides both cloned descriptions with Contento canonical copy', () => {
-  assert.deepEqual(Object.keys(PAGE_DESCRIPTION_OVERRIDES), ['agencia-e-commerce']);
+  assert.deepEqual(Object.keys(PAGE_DESCRIPTION_OVERRIDES), [
+    'agencia-e-commerce',
+    'agencia-diseno-web',
+  ]);
   assert.equal(
     PAGE_DESCRIPTION_OVERRIDES['agencia-e-commerce'],
     CONTENTO_ECOMMERCE_DESCRIPTION,
@@ -58,7 +61,7 @@ const AGENCIA_SEO_YOAST_TITLE =
 
 test('hardcoded titles stay unique', () => {
   const titles = Object.values(PAGE_TITLE_OVERRIDES);
-  assert.equal(titles.length, 4);
+  assert.equal(titles.length, 5);
   assert.equal(new Set(titles).size, titles.length);
 });
 
@@ -96,6 +99,30 @@ test('marketing-internacional keeps its Yoast title', () => {
   );
   assert.equal(title, MARKETING_TITLE);
   assert.equal(ogTitle, MARKETING_TITLE);
+});
+
+const DISENO_TITLE = 'Agencia de diseño web para tiendas online | Playful Agency';
+const DISENO_DESCRIPTION =
+  'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.';
+
+test('agencia-diseno-web overrides Yoast title and the 151-character meta', () => {
+  assert.equal(PAGE_TITLE_OVERRIDES['agencia-diseno-web'], DISENO_TITLE);
+  assert.equal(PAGE_DESCRIPTION_OVERRIDES['agencia-diseno-web'], DISENO_DESCRIPTION);
+  assert.equal(PAGE_DESCRIPTION_OVERRIDES['agencia-diseno-web'].length, 151);
+  const titles = applyPageTitleOverride(
+    'agencia-diseno-web',
+    'Agencia Diseño Web Personalizamos tu Web | Playful Agency',
+    'Agencia Diseño Web Personalizamos tu Web | Playful Agency',
+  );
+  assert.equal(titles.title, DISENO_TITLE);
+  assert.equal(titles.ogTitle, DISENO_TITLE);
+  const desc = applyPageDescriptionOverride(
+    'agencia-diseno-web',
+    'Activa tu presencia en línea con una agencia diseño web que dé vida a tu marca. En Playful Agency, creamos ese sitio web.',
+    'Activa tu presencia en línea con una agencia diseño web que dé vida a tu marca. En Playful Agency, creamos ese sitio web.',
+  );
+  assert.equal(desc.description, DISENO_DESCRIPTION);
+  assert.equal(desc.ogDescription, DISENO_DESCRIPTION);
 });
 
 test('pagos-online and pasarela no longer share one title', () => {
