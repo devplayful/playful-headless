@@ -63,3 +63,4 @@ pids
 
 # Batch files (opcional, puedes comentar si quieres subirlos)
 *.bat
+.playwright-mcp/
