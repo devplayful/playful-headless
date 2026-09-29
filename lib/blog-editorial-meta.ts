@@ -17,6 +17,10 @@
  * or after `WP_MODIFIED_HONOR_ON_OR_AFTER` (avoids historical Yoast/bulk
  * noise). Same-day WP saves do not show an update.
  */
+import { decodeHtmlEntities, wordpressSeoText } from './wordpress-plain-text.ts';
+
+export { decodeHtmlEntities, wordpressSeoText };
+
 export const DEFAULT_EDITORIAL_BYLINE = 'Equipo editorial de Playful Agency';
 export const EDITORIAL_AVATAR_SRC = '/images/avatar-playful.svg';
 
@@ -166,30 +170,6 @@ export function resolveBlogEditorialUpdate(
   return toUpdate(modified, DEFAULT_EDITORIAL_BYLINE, 'wordpress');
 }
 
-const HTML_NAMED_ENTITIES: Record<string, string> = {
-  amp: '&',
-  quot: '"',
-  apos: "'",
-  lt: '<',
-  gt: '>',
-  nbsp: ' ',
-};
-
-/** Decode the numeric/named entities WordPress leaves in titles so JSON-LD matches the H1. */
-export function decodeHtmlEntities(value: string | undefined | null): string {
-  if (!value) return '';
-  return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity: string) => {
-    if (entity[0] === '#') {
-      const code =
-        entity[1].toLowerCase() === 'x'
-          ? parseInt(entity.slice(2), 16)
-          : parseInt(entity.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCharCode(code) : match;
-    }
-    return HTML_NAMED_ENTITIES[entity.toLowerCase()] ?? match;
-  });
-}
-
 export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
@@ -210,7 +190,7 @@ export function buildBlogArticleJsonLd(input: {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: decodeHtmlEntities(input.headline),
-    description: decodeHtmlEntities(input.description ?? ''),
+    description: wordpressSeoText(input.description ?? ''),
     image: input.image || undefined,
     datePublished: toIsoDateTime(input.datePublished),
     dateModified: toIsoDateTime(input.dateModified),

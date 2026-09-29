@@ -23,6 +23,7 @@ import {
   resolveBlogEditorialUpdate,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
+import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
@@ -126,12 +127,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       ? post.author.avatar_urls?.['48']
       : undefined;
   const postCanonical = canonicalForPath(blogPostPath(post));
-  const seoOverride = BLOG_SEO_OVERRIDES[postSlug];
-  const metaDescription =
-    seoOverride?.description ??
-    (post.excerpt?.rendered
-      ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160)
-      : '');
+  const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
     blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
   const articleJsonLd = buildBlogArticleJsonLd({
@@ -383,6 +379,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
+function blogPostSeoCopy(
+  post: Pick<WPPost, 'title' | 'excerpt'>,
+  postSlug: string,
+): { title: string; description: string } {
+  const override = BLOG_SEO_OVERRIDES[postSlug];
+  return {
+    title:
+      override?.title ??
+      `${decodeHtmlEntities(post.title.rendered)} | Blog - Playful Agency`,
+    description: override?.description
+      ? wordpressSeoText(override.description)
+      : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
+  };
+}
+
 const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; h1?: string }> = {
   'actualizar-tu-e-commerce': {
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
@@ -421,9 +432,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const url = canonicalForPath(blogPostPath(post));
 
-  const override = BLOG_SEO_OVERRIDES[postSlug];
-  const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;
-  const description = override?.description ?? (post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '');
+  const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
   const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
   const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
