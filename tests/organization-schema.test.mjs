@@ -39,10 +39,11 @@ test('home emits the organization script once without client-only loading', () =
   assert.doesNotMatch(home, /^["']use client["']/);
 });
 
-test('root layout keeps chat and analytics ungated', () => {
+test('root layout keeps chat and gates analytics to production', () => {
   const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /seo-preview|readOnlySeoPreview|isReadOnlySeoPreview/);
   assert.match(layout, /<ChatWidget \/>/);
+  assert.match(layout, /productionAnalyticsIds/);
   assert.match(layout, /\{gtmId && <GoogleTagManager gtmId=\{gtmId\} \/>\}/);
   assert.match(layout, /\{gaId && <GoogleAnalytics gaId=\{gaId\} \/>\}/);
 });
