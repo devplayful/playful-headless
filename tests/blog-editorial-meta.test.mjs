@@ -10,10 +10,12 @@ const {
   EDITORIAL_AVATAR_SRC,
   WP_MODIFIED_HONOR_ON_OR_AFTER,
   buildBlogArticleJsonLd,
+  decodeHtmlEntities,
   formatCombinedByline,
   formatEditorialDate,
   isMeaningfullyAfter,
   resolveBlogEditorialUpdate,
+  serializeJsonLd,
   toIsoDateTime,
 } = await import('../lib/blog-editorial-meta.ts');
 const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
@@ -164,19 +166,52 @@ test('date helpers normalize date-only ISO and format Spanish UTC labels', () =>
   assert.equal(formatEditorialDate('2023-11-20T12:00:00.000Z'), '20 de noviembre de 2023');
 });
 
-test('Article JSON-LD includes dateModified and the original author', () => {
+test('BlogPosting JSON-LD includes description, image, publisher and canonical', () => {
+  const url =
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const jsonLd = buildBlogArticleJsonLd({
-    headline: 'Zelle en Venezuela',
+    headline: 'Zelle en Venezuela: Un método de pago',
+    description: 'Integra Zelle como método de pago en tu tienda online en Venezuela.',
+    image: 'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
     datePublished: ZELLE_PUBLISHED,
     dateModified: '2026-09-24T00:00:00.000Z',
     authorName: 'Stefanni Parabavidez',
-    url: 'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    url,
+    publisherName: 'Playful Agency',
+    publisherLogo: 'https://playfulagency.com/images/logos/playful-logov.svg',
   });
-  assert.equal(jsonLd['@type'], 'Article');
-  assert.equal(jsonLd.datePublished, ZELLE_PUBLISHED);
+  assert.equal(jsonLd['@type'], 'BlogPosting');
+  assert.equal(jsonLd.headline, 'Zelle en Venezuela: Un método de pago');
+  assert.equal(jsonLd.description, 'Integra Zelle como método de pago en tu tienda online en Venezuela.');
+  assert.equal(
+    jsonLd.image,
+    'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+  );
+  assert.equal(jsonLd.datePublished, toIsoDateTime(ZELLE_PUBLISHED));
   assert.equal(jsonLd.dateModified, '2026-09-24T00:00:00.000Z');
   assert.deepEqual(jsonLd.author, { '@type': 'Person', name: 'Stefanni Parabavidez' });
-  assert.doesNotMatch(JSON.stringify(jsonLd), /</);
+  assert.deepEqual(jsonLd.publisher, {
+    '@type': 'Organization',
+    name: 'Playful Agency',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://playfulagency.com/images/logos/playful-logov.svg',
+    },
+  });
+  assert.equal(jsonLd.mainEntityOfPage, url);
+  assert.equal(jsonLd.url, url);
+  assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
+});
+
+test('JSON-LD headline decodes WordPress entities to match the H1', () => {
+  const jsonLd = buildBlogArticleJsonLd({
+    headline: 'SEO &#8211; guía &amp; checklist',
+    datePublished: ZELLE_PUBLISHED,
+    dateModified: ZELLE_PUBLISHED,
+    url: 'https://playfulagency.com/blog/seo/ejemplo',
+  });
+  assert.equal(jsonLd.headline, 'SEO – guía & checklist');
+  assert.equal(decodeHtmlEntities('&#x2013;'), '–');
 });
 
 test('combined byline joins author and editorial with y', () => {
@@ -212,6 +247,10 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
   assert.match(blogPage, /buildBlogArticleJsonLd/);
   assert.match(blogPage, /type="application\/ld\+json"/);
+  assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
+  assert.doesNotMatch(blogPage, /articleJsonLd \?/);
+  assert.match(blogPage, /<BlogRelatedPostsSection posts=\{relatedPosts\} \/>/);
+  assert.match(blogPage, /getLatestBlogPosts\(6\)/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);

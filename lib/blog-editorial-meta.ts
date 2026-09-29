@@ -166,23 +166,67 @@ export function resolveBlogEditorialUpdate(
   return toUpdate(modified, DEFAULT_EDITORIAL_BYLINE, 'wordpress');
 }
 
+const HTML_NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  quot: '"',
+  apos: "'",
+  lt: '<',
+  gt: '>',
+  nbsp: ' ',
+};
+
+/** Decode the numeric/named entities WordPress leaves in titles so JSON-LD matches the H1. */
+export function decodeHtmlEntities(value: string | undefined | null): string {
+  if (!value) return '';
+  return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity: string) => {
+    if (entity[0] === '#') {
+      const code =
+        entity[1].toLowerCase() === 'x'
+          ? parseInt(entity.slice(2), 16)
+          : parseInt(entity.slice(1), 10);
+      return Number.isFinite(code) ? String.fromCharCode(code) : match;
+    }
+    return HTML_NAMED_ENTITIES[entity.toLowerCase()] ?? match;
+  });
+}
+
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
 export function buildBlogArticleJsonLd(input: {
   headline: string;
+  description?: string;
+  image?: string;
   datePublished: string;
   dateModified: string;
   authorName?: string;
-  url?: string;
+  url: string;
+  publisherName?: string;
+  publisherLogo?: string;
 }): Record<string, unknown> {
+  const canonical = input.url;
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: input.headline,
-    datePublished: input.datePublished,
-    dateModified: input.dateModified,
+    '@type': 'BlogPosting',
+    headline: decodeHtmlEntities(input.headline),
+    description: input.description ?? '',
+    image: input.image || undefined,
+    datePublished: toIsoDateTime(input.datePublished),
+    dateModified: toIsoDateTime(input.dateModified),
     author: {
       '@type': 'Person',
       name: input.authorName || 'Playful Agency',
     },
-    ...(input.url ? { url: input.url } : {}),
+    publisher: {
+      '@type': 'Organization',
+      name: input.publisherName || 'Playful Agency',
+      logo: {
+        '@type': 'ImageObject',
+        url: input.publisherLogo || 'https://playfulagency.com/images/logos/playful-logov.svg',
+      },
+    },
+    mainEntityOfPage: canonical,
+    url: canonical,
   };
 }
