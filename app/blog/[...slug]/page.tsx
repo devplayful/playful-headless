@@ -1,9 +1,10 @@
-import { getBlogPostBySlug, getBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { canonicalForPath } from '@/utils/canonical';
+import { canonicalForPath, toAbsoluteSiteUrl } from '@/utils/canonical';
+import { ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
 import {
   getBlogServiceCta,
@@ -11,10 +12,19 @@ import {
 } from '@/utils/blog-service-cta';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
-import { BlogPostContent } from './BlogPostContent';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
+import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  buildBlogArticleJsonLd,
+  formatCombinedByline,
+  resolveBlogEditorialUpdate,
+  serializeJsonLd,
+} from '@/lib/blog-editorial-meta';
+import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
+import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
 export async function generateStaticParams() {
   // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
@@ -53,7 +63,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const post = await getBlogPostBySlug(postSlug);
+  const [post, relatedPosts] = await Promise.all([
+    getBlogPostBySlug(postSlug),
+    getLatestBlogPosts(6),
+  ]);
   
   if (!post) {
     notFound();
@@ -69,7 +82,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const $ = cheerio.load(post.content?.rendered || '');
+  const sourceHtml = blogBodyForSlug(postSlug) || post.content?.rendered || '';
+  const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
     .map((_, el) => {
       const $el = $(el);
@@ -96,28 +110,79 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
+  const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
+  const editorial = resolveBlogEditorialUpdate(postSlug, {
+    published: post.date,
+    publishedGmt: post.date_gmt,
+    modified: post.modified,
+    modifiedGmt: post.modified_gmt,
+  });
+  const authorName =
+    (post.author && typeof post.author === 'object' && post.author.name) ||
+    post.author_name ||
+    'Playful Agency';
+  const authorAvatar =
+    post.author && typeof post.author === 'object'
+      ? post.author.avatar_urls?.['48']
+      : undefined;
+  const postCanonical = canonicalForPath(blogPostPath(post));
+  const seoOverride = BLOG_SEO_OVERRIDES[postSlug];
+  const metaDescription =
+    seoOverride?.description ??
+    (post.excerpt?.rendered
+      ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160)
+      : '');
+  const ogImagePath =
+    blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
+  const articleJsonLd = buildBlogArticleJsonLd({
+    headline: pageH1,
+    description: metaDescription,
+    image: toAbsoluteSiteUrl(ogImagePath),
+    datePublished: post.date_gmt || post.date,
+    dateModified:
+      editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+    authorName,
+    url: postCanonical,
+    publisherName: ORGANIZATION_SCHEMA.name,
+    publisherLogo: ORGANIZATION_SCHEMA.logo,
+  });
+  const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
+  const bylineName =
+    post.author && typeof post.author === 'object'
+      ? editorial
+        ? formatCombinedByline(post.author.name, editorial.updatedBy)
+        : post.author.name
+      : '';
 
   return (
     <>
-    <h1 className="sr-only">{post.title.rendered}</h1>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
+    />
+    <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
         <a href={serviceCta.href}>{serviceCta.label}</a>
       </p>
     ) : null}
-    <BlogPostContent 
-      title={post.title.rendered}
-      featuredImage={post.featured_media_url}
-    >
-      <div className="min-h-screen">
+    <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
         <div className="mx-auto max-w-[1200px] px-4 md:px-6 bg-white rounded-[18px] p-[60px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex flex-wrap items-center space-x-2 mb-4">
                 <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
+                {editorial ? (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">
+                      actualizado el {editorial.updatedAtLabel}
+                    </span>
+                  </>
+                ) : null}
                 {post.categories && post.categories.length > 0 && (
                   <>
                     <span className="text-gray-300">•</span>
@@ -132,30 +197,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
-                {post.title.rendered}
+                {pageH1}
               </h2>
               
-              {post.excerpt?.rendered && (
-                <div 
-                  className="text-lg text-gray-700 leading-relaxed mb-4"
-                  dangerouslySetInnerHTML={{ 
-                    __html: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 200) + '...' 
-                  }} 
-                />
-              )}
-
-              {/* Badge de Autor */}
-              {post.author && typeof post.author === 'object' && (
-                <div className="inline-flex items-center gap-2 bg-[#440099] text-white px-4 py-2 rounded-full">
-                  {post.author.avatar_urls && post.author.avatar_urls['48'] && (
-                    <img 
-                      src={post.author.avatar_urls['48']} 
-                      alt={post.author.name}
-                      className="w-6 h-6 rounded-full"
-                    />
-                  )}
-                  <span className="text-sm font-medium">{post.author.name}</span>
+              {excerptText ? (
+                <div className="text-lg text-gray-700 leading-relaxed mb-4">
+                  {excerptText}
                 </div>
+              ) : null}
+
+              {post.author && typeof post.author === 'object' && (
+                <BlogBylineChip
+                  name={bylineName}
+                  avatarSrc={authorAvatar}
+                  avatarAlt={post.author.name}
+                />
               )}
             </div>
 
@@ -315,26 +371,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección de artículos relacionados */}
       <div className="mt-16">
-        <BlogRelatedPostsSection />
+        <BlogRelatedPostsSection posts={relatedPosts} />
       </div>
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
         <TwoColumnCtaSection />
       </section>
-      </div>
-    </BlogPostContent>
+    </div>
     </>
   );
 }
 
-const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string }> = {
+const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; h1?: string }> = {
   'actualizar-tu-e-commerce': {
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
   },
   'cintillos-de-promocion': {
     title: 'Cintillos de promoción en ecommerce | Playful',
     description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+  },
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
+    title: 'Zelle en Venezuela: cobra en tu tienda online | Playful',
+    description:
+      'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
+    h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
   },
 };
 
@@ -363,6 +424,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const override = BLOG_SEO_OVERRIDES[postSlug];
   const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;
   const description = override?.description ?? (post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '');
+  const coverOverride = blogCoverForSlug(postSlug);
+  const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
+  const imageAlt = post.featured_media_alt || post.title.rendered;
+  const editorial = resolveBlogEditorialUpdate(postSlug, {
+    published: post.date,
+    publishedGmt: post.date_gmt,
+    modified: post.modified,
+    modifiedGmt: post.modified_gmt,
+  });
 
   return {
     title,
@@ -374,15 +445,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       url,
       publishedTime: post.date,
+      ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
         {
-          url: post.featured_media_url || '/images/og-blog.jpg',
-          width: 1200,
-          height: 630,
-          alt: post.featured_media_alt || post.title.rendered,
+          url: imageUrl,
+          width: imageSize.width,
+          height: imageSize.height,
+          alt: imageAlt,
         },
       ],
     },
+    ...(coverOverride
+      ? {
+          twitter: {
+            card: 'summary_large_image' as const,
+            images: [imageUrl],
+          },
+        }
+      : {}),
   };
 }

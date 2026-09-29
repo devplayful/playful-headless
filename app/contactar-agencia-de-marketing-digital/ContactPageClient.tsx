@@ -22,6 +22,20 @@ interface PreviewEvidence {
   gate: string;
   email: string;
   highLevel: { contact: string; opportunity: string; nextAction: string };
+  attribution?: {
+    originalSource: string;
+    recentSource: string;
+    landing: string;
+    utm_source: string;
+    utm_medium: string;
+    utm_campaign: string;
+    utm_content: string;
+    utm_term: string;
+    gclid: string;
+    fbclid: string;
+    referrer: string;
+    captured: boolean;
+  };
   storage: string;
   externalRequests: boolean;
 }
@@ -154,7 +168,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         recaptchaRef.current?.reset();
       } else if (response.ok && data.success) {
         if (data.analytics?.generateLead === true && typeof data.analytics.formId === 'string') {
-          pushGenerateLead(data.analytics.formId);
+          await pushGenerateLead(data.analytics.formId);
         }
         setSubmitStatus({
           success: true,
@@ -165,7 +179,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         });
         
         resetConfirmedForm();
-        if (data.simulated !== true && !previewSimulation) window.location.assign('/gracias?conv=Lead');
+        window.location.assign('/gracias?conv=Lead');
       } else {
         setSubmitStatus({
           success: false,
@@ -254,6 +268,20 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                     <div><dt className="inline font-semibold">Correo:</dt> <dd className="inline">{submitStatus.previewEvidence.email}</dd></div>
                     <div><dt className="inline font-semibold">HighLevel:</dt> <dd className="inline">{submitStatus.previewEvidence.highLevel.contact}; {submitStatus.previewEvidence.highLevel.opportunity}</dd></div>
                     <div><dt className="inline font-semibold">Almacenamiento:</dt> <dd className="inline">{submitStatus.previewEvidence.storage}; solicitudes externas: {String(submitStatus.previewEvidence.externalRequests)}</dd></div>
+                    {submitStatus.previewEvidence.attribution && (
+                      <div>
+                        <dt className="inline font-semibold">Atribución:</dt>{' '}
+                        <dd className="inline">
+                          {submitStatus.previewEvidence.attribution.originalSource}
+                          {' / '}
+                          {submitStatus.previewEvidence.attribution.utm_source}
+                          {' / '}
+                          {submitStatus.previewEvidence.attribution.gclid}
+                          {' / '}
+                          {submitStatus.previewEvidence.attribution.captured ? 'capturado' : 'sin-dato'}
+                        </dd>
+                      </div>
+                    )}
                   </dl>
                 )}
               </div>
