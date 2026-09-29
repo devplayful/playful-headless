@@ -170,6 +170,31 @@ export function resolveBlogEditorialUpdate(
   return toUpdate(modified, DEFAULT_EDITORIAL_BYLINE, 'wordpress');
 }
 
+export type BlogListingDateStyle = 'long' | 'slash';
+
+/**
+ * Visible date for cards/listings: honored last update (same as PR #89),
+ * otherwise the publish date. `long` → «22 de abril de 2025»; `slash` → «22 / 04 / 2025».
+ */
+export function formatBlogListingDate(
+  slug: string | undefined | null,
+  dates: BlogEditorialDates = {},
+  style: BlogListingDateStyle = 'long',
+): string {
+  const editorial = resolveBlogEditorialUpdate(slug, dates);
+  const raw = editorial?.updatedAt || pickPublished(dates);
+  if (!raw) return '';
+  if (style === 'slash') {
+    return new Date(toIsoDateTime(raw)).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC',
+    }).split('/').join(' / ');
+  }
+  return formatEditorialDate(raw);
+}
+
 export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
