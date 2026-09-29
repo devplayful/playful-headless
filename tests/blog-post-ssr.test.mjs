@@ -58,17 +58,31 @@ test('server-rendered article with H1 and body passes', () => {
   assert.ok(analysis.articleParagraphs >= 2);
 });
 
-test('BAILOUT placeholder in visible HTML fails', () => {
+test('layout BAILOUT next to a full article does not fail the SEO check', () => {
   const html = [
     '<html><body>',
-    '<h1>Título</h1>',
-    '<article><p>Uno del cuerpo del artículo con texto suficiente para pasar el umbral de longitud mínima del análisis.</p><p>Dos del cuerpo del artículo con más texto para completar el contenido visible.</p></article>',
+    '<template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template>',
+    '<h1 class="sr-only">Título real del artículo de ecommerce</h1>',
+    '<article><p>Uno del cuerpo del artículo con texto suficiente para pasar el umbral de longitud mínima del análisis de SEO que exige al menos doscientos caracteres visibles en el HTML inicial.</p><p>Dos del cuerpo del artículo con más texto para completar el contenido visible y confirmar que el crawler ve párrafos reales fuera del payload RSC.</p></article>',
+    '</body></html>',
+  ].join('');
+  const analysis = analyzeBlogPostHtml(html);
+  assert.equal(analysis.ok, true);
+  assert.equal(analysis.hasBailout, true);
+});
+
+test('BAILOUT with no article body still fails', () => {
+  const html = [
+    '<html><body>',
+    '<h1 class="sr-only">Título</h1>',
+    '<p>Cargando artículo...</p>',
     '<template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template>',
     '</body></html>',
   ].join('');
   const analysis = analyzeBlogPostHtml(html);
   assert.equal(analysis.ok, false);
-  assert.equal(analysis.hasBailout, true);
+  assert.equal(analysis.hasLoader, true);
+  assert.equal(analysis.articleMissing, true);
 });
 
 test('case study control requires a real H1 and many paragraphs', () => {

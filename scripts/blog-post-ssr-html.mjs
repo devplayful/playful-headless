@@ -54,17 +54,18 @@ export function analyzeBlogPostHtml(html) {
   const articleHtml = articleMatch?.[1] ?? '';
   const articleParagraphs = (articleHtml.match(/<p\b/gi) || []).length;
   const articleTextLength = innerText(articleHtml).length;
-  const ok =
-    !hasLoader &&
-    !hasBailout &&
-    h1Text.length > 0 &&
-    articleParagraphs >= 2 &&
-    articleTextLength >= 200;
+  // Root layout AnalyticsSpaPageView uses useSearchParams inside Suspense.
+  // Statically generated pages (home, services, blog posts) keep a tiny
+  // BAILOUT template next to the header. That is not the article CSR hole
+  // SEO measured — fail only when the body itself is missing.
+  const articleMissing = !h1Text || articleParagraphs < 2 || articleTextLength < 200;
+  const ok = !hasLoader && !articleMissing;
 
   return {
     ok,
     hasLoader,
     hasBailout,
+    articleMissing,
     h1Text,
     h2Text,
     articleParagraphs,
@@ -110,7 +111,7 @@ export function summarizeCheck(path, analysis) {
   }
   const reasons = [];
   if (analysis.hasLoader) reasons.push('loader');
-  if (analysis.hasBailout) reasons.push('bailout');
+  if (analysis.articleMissing) reasons.push('article-missing');
   if (!analysis.h1Text) reasons.push('missing-h1');
   if ((analysis.articleParagraphs ?? 0) < 2 && analysis.paragraphCount == null) {
     reasons.push(`article-p=${analysis.articleParagraphs}`);
