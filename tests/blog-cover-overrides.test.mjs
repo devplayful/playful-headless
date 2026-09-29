@@ -65,6 +65,13 @@ const LOTE_5 = [
   ],
 ];
 
+const LOTE_6 = [
+  [
+    'analitica-web-que-es-como-puede-ayudar-a-mi-marca',
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL.png',
+  ],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -122,10 +129,19 @@ test('lote 4 maps N2eryB06D9, VXQNEs8MMU and iGXlUlf3uK without removing prior l
 });
 
 test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 24);
   assert.equal(LOTE_5.length, 2);
   assertMappedCovers(LOTE_5);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 6 maps 79TnhawJAL without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 25);
+  assert.equal(LOTE_6.length, 1);
+  assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-79TnhawJAL.png')));
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -188,6 +204,37 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('79TnhawJAL is exclusive to analitica-web-que-es-como-puede-ayudar-a-mi-marca', async () => {
+  const path = '/images/blog/13-analitica-web-magnific-79TnhawJAL.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['analitica-web-que-es-como-puede-ayudar-a-mi-marca'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('analitica-web-que-es-como-puede-ayudar-a-mi-marca'),
+    path,
+  );
+  const tnhOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('79TnhawJAL'))
+    .map(([slug]) => slug);
+  assert.deepEqual(tnhOwners, ['analitica-web-que-es-como-puede-ayudar-a-mi-marca']);
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-79TnhawJAL.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('JN0rWQjOq4 is exclusive to zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', async () => {
@@ -364,7 +411,8 @@ test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async ()
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   assert.match(source, /resolveBlogCoverUrl/);
   assert.match(functionBody(source, 'getBlogPosts'), /resolveBlogCoverUrl\(/);
-  assert.match(functionBody(source, 'getLatestBlogPosts'), /resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'getLatestBlogPosts'), /toRelatedBlogCard\(/);
+  assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverUrl\(/);
   assert.match(functionBody(source, 'getBlogPostBySlug'), /resolveBlogCoverUrl\(/);
 });
 

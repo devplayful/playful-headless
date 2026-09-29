@@ -1,0 +1,51 @@
+{
+  "key": "group_playful_articulos_relacionados",
+  "title": "Artículos relacionados",
+  "fields": [
+    {
+      "key": "field_playful_articulos_relacionados",
+      "label": "Artículos relacionados",
+      "name": "articulos_relacionados",
+      "aria-label": "",
+      "type": "relationship",
+      "instructions": "Hasta 3 posts, en el orden en que deben aparecer. El front completa el carrusel con la misma categoría y luego los más recientes.",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "post_type": ["post"],
+      "post_status": ["publish"],
+      "taxonomy": "",
+      "filters": ["search", "post_type", "taxonomy"],
+      "return_format": "id",
+      "min": 0,
+      "max": 3,
+      "elements": ["featured_image"],
+      "bidirectional": 0,
+      "bidirectional_target": [],
+      "show_in_rest": 1
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "post"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Campo manual de relacionados para playfulagency.com. Importar en ACF → Herramientas o copiar a wp-content/themes/<tema-activo>/acf-json/ si el tema tiene sync.",
+  "show_in_rest": 1,
+  "modified": 1790690000
+}

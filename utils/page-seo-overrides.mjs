@@ -14,6 +14,8 @@ export const PAGE_TITLE_OVERRIDES = {
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   'pasarela-de-pago-ecommerce':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  'pasarela-de-pagos-venezuela':
+    'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
 };
 
 export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {

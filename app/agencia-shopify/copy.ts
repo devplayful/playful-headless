@@ -1,3 +1,5 @@
+import { BOOKING_CTA_LABEL } from '../../utils/booking.ts';
+
 export const SHOPIFY_META = {
   title: 'Agencia Shopify para marcas que ya venden | Playful Agency',
   description:
@@ -8,7 +10,7 @@ export const SHOPIFY_META = {
 export const HERO = {
   h1: 'Agencia Shopify. Playful Agency, expertos en ecommerce',
   body: 'Somos una agencia Shopify para marcas que ya venden y quieren un canal propio, donde el catálogo y el pago sean suyos y no de un tercero. Implementamos tu tienda desde cero o migramos la que ya tienes, y dejamos las colecciones, las páginas de producto y el checkout listos para que tus clientes encuentren lo que buscan y terminen la compra sin fricción. Si ya vendes y quieres ordenar ese canal antes de hacerlo crecer, reservamos 30 a 40 minutos para revisar tu web contigo y proponerte por dónde empezar.',
-  cta: 'Agendar Reunión con Playful',
+  cta: BOOKING_CTA_LABEL,
   subline: 'Una llamada de 30 a 40 minutos para revisar tu tienda, sin compromiso.',
 } as const;
 
@@ -57,11 +59,28 @@ export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
   (item): item is ServiceCardItem => item.slot !== null,
 );
 export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
-export { BOOKING_HREF, CONTACT_HREF } from '../../utils/booking.ts';
+export { BOOKING_HREF, BOOKING_CTA_LABEL, CONTACT_HREF } from '../../utils/booking.ts';
 
 export const MIGRATION = {
   h2: 'Migración a Shopify',
   body: 'Si ya vendes y tienes tráfico que llega a tu web, migrar a Shopify no es empezar de nuevo, sino planear la mudanza con método para no perder lo que ya te funciona, vengas de otra tienda online, de un marketplace o de vender por Instagram, WhatsApp y fuera de línea. Antes de mover nada, hacemos una lista de lo que hay que preservar, y lo primero son las URLs que Google ya conoce y el catálogo que tus clientes ya navegan. Toda migración tiene un momento de cambio, así que planificamos el cutover para que la interrupción sea la mínima y sepas de antemano cuándo se hace el salto de una plataforma a la otra. Cuando terminamos, tu tienda vive en Shopify con el posicionamiento que traías, y lo que queda de tu lado es lo que de verdad te pertenece, los datos de tus compradores y la atribución de cada venta, porque la plataforma se alquila pero esos datos son tuyos.',
+} as const;
+
+export const SEO_SHOPIFY = {
+  h2: 'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  paragraphs: [
+    'Si ya vendes con Shopify, no tiene sentido que una agencia monte la tienda y otra distinta se ocupe de que Google la encuentre. Nosotros hacemos las dos cosas desde el mismo equipo, así que cada cambio en el catálogo se piensa también para la búsqueda.',
+    'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador y no según cómo está organizado tu almacén. Cada ficha de producto sale con su título, su descripción y sus metadatos escritos para esa búsqueda, y evitamos que las variantes repitan el mismo texto.',
+    'Después miramos la velocidad y las apps que tienes instaladas, porque cada app suma código a la tienda y algunas la frenan. Quitamos las que no aportan y cuidamos que las páginas carguen rápido en el móvil.',
+    'Si vienes de otra plataforma, cada URL antigua redirige con un 301 a su equivalente en Shopify, de modo que Google y tus clientes llegan a la página correcta y no a un error.',
+    'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta, porque así decides con tus datos y no con intuiciones.',
+    'Reserva 30 a 40 minutos y revisamos juntos tu tienda y su SEO, sin compromiso de seguir con nosotros.',
+  ],
+  seoLead: 'Si quieres ver cómo trabajamos el SEO más allá de la tienda, aquí tienes ',
+  seoLinkLabel: 'nuestro servicio de SEO',
+  seoHref: '/agencia-seo',
+  cta: '¿Hablamos?',
+  ctaHref: '/reunion-playful',
 } as const;
 
 export const SOCIAL_PROOF = {
@@ -156,8 +175,8 @@ export const CTA = {
   h2: 'Conversemos sobre tu tienda Shopify',
   body: 'Reserva 30 a 40 minutos y miramos tu web juntos. Sales con una lectura clara de qué habría que construir o migrar a Shopify para que venda mejor, sin compromiso de seguir con nosotros.',
   question: '¿Quieres que revisemos si tu web deja comprar a quien ya te eligió?',
-  cta: 'Agendar Reunión con Playful',
-  formButton: 'Reservar llamada diagnóstica 30–40 min',
+  cta: BOOKING_CTA_LABEL,
+  formButton: BOOKING_CTA_LABEL,
 } as const;
 
 export const PLAYFUL_URL_RE = /(https:\/\/playfulagency\.com\/[^\s).,;]+)/g;
