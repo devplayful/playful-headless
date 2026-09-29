@@ -11,7 +11,6 @@ import {
 } from '@/utils/blog-service-cta';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
-import { BlogPostContent } from './BlogPostContent';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -152,11 +151,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <a href={serviceCta.href}>{serviceCta.label}</a>
       </p>
     ) : null}
-    <BlogPostContent 
-      title={post.title.rendered}
-      featuredImage={post.featured_media_url}
-    >
-      <div className="min-h-screen">
+    <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
         <div className="mx-auto max-w-[1200px] px-4 md:px-6 bg-white rounded-[18px] p-[60px]">
@@ -368,8 +363,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
         <TwoColumnCtaSection />
       </section>
-      </div>
-    </BlogPostContent>
+    </div>
     </>
   );
 }
