@@ -7,6 +7,7 @@ const {
   FAQ_ITEMS,
   HERO,
   CTA,
+  SITEF_BLOCK,
   BOOKING_HREF,
   CONTACT_HREF,
   buildFaqPageJsonLd,
@@ -56,6 +57,27 @@ test('landing keeps one H1, booking CTAs, live shared sections and no embedded f
   assert.match(landing, /beneficio-integracion@2x\.png/);
   assert.equal(HERO.cta, 'Agendar Reunión con Playful');
   assert.equal(CTA.cta, 'Agendar Reunión con Playful');
+});
+
+test('SiTef signed block is the only SiTef heading and drops the old E-SiTef H3', () => {
+  assert.equal(SITEF_BLOCK.h2, 'Cómo integrar SiTef en tu tienda online en Venezuela');
+  assert.equal(SITEF_BLOCK.paragraphs.length, 6);
+  assert.match(SITEF_BLOCK.paragraphs[0], /E-Sitef Botón de Pago/);
+  assert.match(SITEF_BLOCK.paragraphs[5], /En Playful integramos SiTef en tiendas WooCommerce/);
+  assert.equal(SITEF_BLOCK.closeLinkLabel, 'Cashea para comercios');
+  assert.equal(SITEF_BLOCK.closeHref, '/blog/tecnologia/cashea-para-comercios');
+  assert.equal((landing.match(/SITEF_BLOCK\.h2/g) || []).length, 1);
+  assert.doesNotMatch(landing, /E-SiTef \(SiTef de Venezuela\)/);
+  const copySource = readFileSync(
+    new URL('../app/pasarela-de-pagos-venezuela/copy.ts', import.meta.url),
+    'utf8',
+  );
+  assert.equal((copySource.match(/Cómo integrar SiTef en tu tienda online en Venezuela/g) || []).length, 1);
+  assert.doesNotMatch(copySource, /E-SiTef \(SiTef de Venezuela\)/);
+  assert.doesNotMatch(copySource, /PrimeShoes/i);
+  assert.doesNotMatch(copySource, /calzado/i);
+  assert.doesNotMatch(landing, /PrimeShoes/i);
+  assert.doesNotMatch(landing, /calzado/i);
 });
 
 test('sitemap includes /pasarela-de-pagos-venezuela without trailing slash', () => {
