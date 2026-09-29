@@ -67,6 +67,10 @@ const LOTE_5 = [
 
 const LOTE_6 = [
   [
+    'como-crear-anuncios-en-facebook',
+    '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe.png',
+  ],
+  [
     'como-usar-el-remarketing-para-tener-mas-clientes',
     '/images/blog/15-remarketing-magnific-ovxxg2H829.png',
   ],
@@ -150,10 +154,11 @@ test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () =>
   }
 });
 
-test('lote 6 maps ovxxg2H829, LwGzTFJswO, iGo8Tmd3uK and 0eQHuiWTfW without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 28);
-  assert.equal(LOTE_6.length, 4);
+test('lote 6 maps accumulated Magnific covers without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 29);
+  assert.equal(LOTE_6.length, 5);
   assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-5j69aiPKxe.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-ovxxg2H829.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-iGo8Tmd3uK.png')));
@@ -288,33 +293,19 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
 });
 
-test('ovxxg2H829 is exclusive to como-usar-el-remarketing-para-tener-mas-clientes', async () => {
-  const path = '/images/blog/15-remarketing-magnific-ovxxg2H829.png';
-  assert.equal(
-    BLOG_COVER_OVERRIDES['como-usar-el-remarketing-para-tener-mas-clientes'],
-    path,
-  );
-  assert.equal(
-    blogCoverForSlug('como-usar-el-remarketing-para-tener-mas-clientes'),
-    path,
-  );
-  const remarketingOwners = Object.entries(BLOG_COVER_OVERRIDES)
-    .filter(([, cover]) => cover.includes('ovxxg2H829'))
+test('5j69aiPKxe is exclusive to como-crear-anuncios-en-facebook', async () => {
+  const path = '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe.png';
+  assert.equal(BLOG_COVER_OVERRIDES['como-crear-anuncios-en-facebook'], path);
+  assert.equal(blogCoverForSlug('como-crear-anuncios-en-facebook'), path);
+  const facebookOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('5j69aiPKxe'))
     .map(([slug]) => slug);
-  assert.deepEqual(remarketingOwners, ['como-usar-el-remarketing-para-tener-mas-clientes']);
-  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
-    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
-    .map(([slug]) => slug);
-  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
-  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
-    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
-    .map(([slug]) => slug);
-  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  assert.deepEqual(facebookOwners, ['como-crear-anuncios-en-facebook']);
   const file = join(root, 'public', path.replace(/^\//, ''));
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
-  const upload = await readFile(join(root, 'public/uploads/cover-ovxxg2H829.png'));
+  const upload = await readFile(join(root, 'public/uploads/cover-5j69aiPKxe.png'));
   assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
   assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
