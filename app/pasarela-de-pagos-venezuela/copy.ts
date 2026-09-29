@@ -19,6 +19,23 @@ export const INTRO_BAND = {
   body: 'Somos el equipo que trabajará para integrar las mejores plataformas de pago online, adaptadas a las necesidades de tu negocio y las expectativas de tus clientes.',
 } as const;
 
+/** Único bloque SiTef de la landing. Copy firmado 2f133f8. */
+export const SITEF_BLOCK = {
+  h2: 'Cómo integrar SiTef en tu tienda online en Venezuela',
+  paragraphs: [
+    'SiTef de Venezuela se presenta como representante exclusivo en el país de Software Express, la empresa brasileña que desarrolla la plataforma SiTef. Para una tienda online, lo que interesa es su botón de pago web, que su ficha llama E-Sitef Botón de Pago.',
+    'Ese botón se instala en la web o en la app de tu tienda y, según SiTef, acepta tarjetas de crédito nacionales y tarjetas de débito y crédito internacionales. SiTef lo describe como compatible con cualquier plataforma web.',
+    'Además del botón, SiTef ofrece otras soluciones que conviene no confundir con la integración del checkout. El link de pago sirve para cobrar por chat y no se integra con la web. La verificación de Pago Móvil permite que el cliente reporte su pago y que SiTef responda si fue aprobado o no. El vuelto digital sirve para devolver un remanente por Pago Móvil, y Merchant Sitef está pensado para el piso de venta y el punto de venta físico, no para la tienda online.',
+    'Sobre la liquidación, las preguntas frecuentes de SiTef dicen que recibes tu dinero directamente en tu cuenta bancaria asignada, sin intermediarios, en menos de 24 horas. Esa misma página no detalla qué bancos participan ni en qué moneda se liquida cada operación, así que la moneda de procesamiento y los plazos dependen del acuerdo entre tu comercio y SiTef.',
+    'SiTef también afirma tener plugins para WordPress, PrestaShop, WooCommerce y Odoo, aunque no publica dónde descargarlos ni sus versiones. La API REST que aparece documentada en internet es la del fabricante en Brasil, y no hemos encontrado un documento que confirme que esos mismos accesos estén habilitados para comercios venezolanos.',
+    'En Playful integramos SiTef en tiendas WooCommerce para que el botón funcione en el checkout y el pedido quede marcado como pagado cuando llega la confirmación. Lo que no hacemos es procesar el cobro ni gestionar tu afiliación, porque esa relación es entre tu comercio y SiTef.',
+  ],
+  closeLead: 'Si tu checkout combina SiTef con cuotas, en nuestra guía de ',
+  closeLinkLabel: 'Cashea para comercios',
+  closeHref: '/blog/tecnologia/cashea-para-comercios',
+  closeTail: ' explicamos cómo convive con el resto de métodos.',
+} as const;
+
 export const BENEFITS = {
   h2: 'Beneficios que te traerá tener variedad de Pagos Online',
   items: [

@@ -20,6 +20,7 @@ import {
   PAGE_META,
   PAIN_POINTS,
   PLAYFUL_URL_RE,
+  SITEF_BLOCK,
   SOCIAL_PROOF,
   buildFaqPageJsonLd,
 } from './copy';
@@ -112,6 +113,29 @@ export default async function PasarelaDePagosVenezuelaPage() {
           <div className={`${styles.sectionInner} ${styles.introInner}`}>
             <h2 className={styles.introTitle}>{INTRO_BAND.h2}</h2>
             <p className={styles.introBody}>{INTRO_BAND.body}</p>
+          </div>
+        </section>
+
+        <section className={styles.liveBlock} data-pasarela-section="sitef">
+          <div className={styles.sectionInner}>
+            <h2 className={styles.faqTitle}>{SITEF_BLOCK.h2}</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {SITEF_BLOCK.paragraphs.map((paragraph) => (
+                <p key={paragraph} className={styles.sitefBody}>
+                  {paragraph}
+                </p>
+              ))}
+              <p className={styles.sitefBody}>
+                {SITEF_BLOCK.closeLead}
+                <Link
+                  href={SITEF_BLOCK.closeHref}
+                  className="text-[#440099] font-semibold underline underline-offset-2"
+                >
+                  {SITEF_BLOCK.closeLinkLabel}
+                </Link>
+                {SITEF_BLOCK.closeTail}
+              </p>
+            </div>
           </div>
         </section>
 
