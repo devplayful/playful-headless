@@ -11,17 +11,7 @@ import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { blogPostPath } from '@/utils/blog-url';
-
-// Función para formatear la fecha
-const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    timeZone: 'UTC'
-  };
-  return new Date(dateString).toLocaleDateString('es-ES', options);
-};
+import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 
 // Función para extraer el texto del excerpt (eliminar etiquetas HTML)
 const getExcerpt = (excerpt: string) => {
@@ -170,7 +160,14 @@ export default async function BlogPage({
                       <svg className="w-4 h-4 text-[#440099]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-[#440099] font-semibold">{formatDate(posts[0].date)}</span>
+                      <span className="text-[#440099] font-semibold">
+                        {formatBlogListingDate(posts[0].slug, {
+                          published: posts[0].date,
+                          publishedGmt: posts[0].date_gmt,
+                          modified: posts[0].modified,
+                          modifiedGmt: posts[0].modified_gmt,
+                        })}
+                      </span>
                     </div>
                   </div>
 
@@ -278,7 +275,12 @@ export default async function BlogPage({
                       {/* Fecha y botón */}
                       <div className="flex flex-col gap-3 mt-auto">
                         <span className="text-xs text-gray-500 font-medium">
-                          {formatDate(post.date)}
+                          {formatBlogListingDate(post.slug, {
+                            published: post.date,
+                            publishedGmt: post.date_gmt,
+                            modified: post.modified,
+                            modifiedGmt: post.modified_gmt,
+                          })}
                         </span>
                         <Link 
                           href={blogPostPath(post)}

@@ -13,6 +13,7 @@ const {
   decodeHtmlEntities,
   formatCombinedByline,
   formatEditorialDate,
+  formatBlogListingDate,
   isMeaningfullyAfter,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
@@ -275,6 +276,52 @@ test('editorial avatar asset remains available but is not the byline face', () =
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
 });
 
+test('listing cards use honored update or publication, long and slash formats', () => {
+  const zelleDates = { published: '2025-04-22T23:28:54', modified: '2025-04-22T23:28:54' };
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates),
+    '24 de septiembre de 2026',
+  );
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates, 'slash'),
+    '24 / 09 / 2026',
+  );
+  assert.equal(
+    formatBlogListingDate('como-elegir-el-mejor-framework-para-tu-web', {
+      published: '2024-04-26T19:17:40',
+      modified: '2024-11-05T22:09:53',
+    }),
+    '26 de abril de 2024',
+  );
+  assert.equal(
+    formatBlogListingDate(
+      'como-elegir-el-mejor-framework-para-tu-web',
+      {
+        published: '2024-04-26T19:17:40',
+        modified: '2024-11-05T22:09:53',
+      },
+      'slash',
+    ),
+    '26 / 04 / 2024',
+  );
+});
+
+test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
+  const listingPage = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(listingPage, /formatBlogListingDate\(posts\[0\]\.slug/);
+  assert.match(listingPage, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(listingPage, /formatDate\(posts\[0\]\.date\)/);
+  assert.match(mostViewed, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(mostViewed, /formatDate\(post\.date\)/);
+  assert.match(wordpress, /formatBlogListingDate\(\s*rewritten\.slug/);
+  assert.match(wordpress, /'slash'/);
+});
+
 test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
@@ -288,7 +335,9 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
   assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);
