@@ -86,6 +86,13 @@ const LOTE_8 = [
   ],
 ];
 
+const LOTE_9 = [
+  [
+    'estrategia-de-email-marketing',
+    '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png',
+  ],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -169,11 +176,20 @@ test('lote 7 maps 5j69aiPKxe without removing prior lotes', () => {
 });
 
 test('lote 8 maps ovxxg2H829 without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 27);
   assert.equal(LOTE_8.length, 1);
   assertMappedCovers(LOTE_8);
   assert.ok(existsSync(join(root, 'public/uploads/cover-ovxxg2H829.png')));
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5, ...LOTE_6, ...LOTE_7]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 9 maps LwGzTFJswO without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 28);
+  assert.equal(LOTE_9.length, 1);
+  assertMappedCovers(LOTE_9);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5, ...LOTE_6, ...LOTE_7, ...LOTE_8]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -265,6 +281,43 @@ test('79TnhawJAL is exclusive to analitica-web-que-es-como-puede-ayudar-a-mi-mar
   assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
   const upload = await readFile(join(root, 'public/uploads/cover-79TnhawJAL.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('LwGzTFJswO is exclusive to estrategia-de-email-marketing', async () => {
+  const path = '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png';
+  assert.equal(BLOG_COVER_OVERRIDES['estrategia-de-email-marketing'], path);
+  assert.equal(blogCoverForSlug('estrategia-de-email-marketing'), path);
+  const emailOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('LwGzTFJswO'))
+    .map(([slug]) => slug);
+  assert.deepEqual(emailOwners, ['estrategia-de-email-marketing']);
+  const remarketingOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('ovxxg2H829'))
+    .map(([slug]) => slug);
+  assert.deepEqual(remarketingOwners, ['como-usar-el-remarketing-para-tener-mas-clientes']);
+  const facebookOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('5j69aiPKxe'))
+    .map(([slug]) => slug);
+  assert.deepEqual(facebookOwners, ['como-crear-anuncios-en-facebook']);
+  const tnhOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('79TnhawJAL'))
+    .map(([slug]) => slug);
+  assert.deepEqual(tnhOwners, ['analitica-web-que-es-como-puede-ayudar-a-mi-marca']);
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-LwGzTFJswO.png'));
   assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
   assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
