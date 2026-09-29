@@ -1,6 +1,20 @@
 export interface HighLevelCustomFieldValue {
-  id: string;
+  id?: string;
+  key?: string;
   fieldValue: string;
+}
+
+export interface HighLevelNativeAttribution {
+  url: string;
+  campaign?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  referrer?: string;
+  medium?: string;
+  gclid?: string;
+  fbclid?: string;
 }
 
 export interface UpsertContactInput {
@@ -10,6 +24,9 @@ export interface UpsertContactInput {
   companyName?: string;
   locationId: string;
   assignedTo: string;
+  source?: string;
+  attributionSource?: HighLevelNativeAttribution;
+  lastAttributionSource?: HighLevelNativeAttribution;
   customFields: HighLevelCustomFieldValue[];
   createNewIfDuplicateAllowed: false;
 }
@@ -62,10 +79,25 @@ export interface HighLevelGateway {
 }
 
 export class HighLevelApiError extends Error {
-  constructor(public readonly status: number, public readonly operation: string) {
-    super(`HighLevel rechazó ${operation} con HTTP ${status}.`);
+  constructor(
+    public readonly status: number,
+    public readonly operation: string,
+    public readonly detail?: string,
+  ) {
+    super(detail
+      ? `HighLevel rechazó ${operation} con HTTP ${status}: ${detail}`
+      : `HighLevel rechazó ${operation} con HTTP ${status}.`);
     this.name = 'HighLevelApiError';
   }
+}
+
+function sanitizedErrorDetail(message: unknown): string | undefined {
+  if (typeof message !== 'string') return undefined;
+  const trimmed = message.trim();
+  if (!trimmed || trimmed.length > 180) return undefined;
+  // Keep HighLevel's own status text; never log emails, phones, or free-text PII.
+  if (/[^\s@]+@[^\s@]+/.test(trimmed) || /\+?\d[\d\s().-]{7,}\d/.test(trimmed)) return undefined;
+  return trimmed;
 }
 
 type FetchLike = typeof fetch;
@@ -92,10 +124,25 @@ export class HighLevelApiClient implements HighLevelGateway {
     });
 
     if (!response.ok) {
-      // Do not include response bodies: they can echo contact PII.
-      throw new HighLevelApiError(response.status, operation);
+      let detail: string | undefined;
+      try {
+        const body = await response.json() as { message?: unknown };
+        detail = sanitizedErrorDetail(body.message);
+      } catch {
+        // The body is optional diagnostic text; status + operation remain enough.
+      }
+      throw new HighLevelApiError(response.status, operation, detail);
     }
-    return response.json() as Promise<T>;
+
+    const text = await response.text();
+    if (!text.trim()) {
+      throw new HighLevelApiError(502, operation, 'respuesta vacía');
+    }
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      throw new HighLevelApiError(502, operation, 'respuesta no JSON');
+    }
   }
 
   async upsertContact(input: UpsertContactInput): Promise<UpsertContactResult> {
@@ -148,12 +195,14 @@ export class HighLevelApiClient implements HighLevelGateway {
   }
 
   async createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }> {
-    const result = await this.request<{ opportunity: { id: string } }>(
+    const result = await this.request<{ opportunity?: { id?: string }; id?: string }>(
       'create opportunity',
       '/opportunities/',
       { method: 'POST', body: JSON.stringify(input) },
     );
-    return { id: result.opportunity.id };
+    const id = result.opportunity?.id || result.id;
+    if (!id) throw new HighLevelApiError(502, 'create opportunity', 'respuesta sin id');
+    return { id };
   }
 
   async updateOpportunityCustomFields(
@@ -176,12 +225,14 @@ export class HighLevelApiClient implements HighLevelGateway {
   }
 
   async createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }> {
-    const result = await this.request<{ task: { id: string } }>(
+    const result = await this.request<{ task?: { id?: string }; id?: string }>(
       'create follow-up task',
       `/contacts/${encodeURIComponent(contactId)}/tasks`,
       { method: 'POST', body: JSON.stringify(input) },
     );
-    return { id: result.task.id };
+    const id = result.task?.id || result.id;
+    if (!id) throw new HighLevelApiError(502, 'create follow-up task', 'respuesta sin id');
+    return { id };
   }
 }
 
@@ -197,7 +248,9 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
     return Array.from(this.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
   }
   async updateContactCustomFields(_contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
-    for (const item of customFields) this.customFields.set(item.id, item.fieldValue);
+    for (const item of customFields) {
+      if (item.id) this.customFields.set(item.id, item.fieldValue);
+    }
   }
   async addContactTags(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }

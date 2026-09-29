@@ -175,6 +175,54 @@ test('Preview E2E conserva, consulta y reconcilia delivery_uncertain sin reenvia
   assert.equal(traffic.includes(lead.email), false);
 });
 
+test('reusing an existing Consulta card still completes Redis when opportunityCreated is false', async () => {
+  const redis = redisRestDouble();
+  const store = new RedisRestIdempotencyStore(
+    'https://redis.test',
+    'test-token',
+    config.idempotencyTtlSeconds,
+    config.leaseSeconds,
+    redis.fetchImpl,
+  );
+  const gateway = new DryRunHighLevelGateway();
+  gateway.findOpenOpportunities = async () => (
+    [{ id: 'opportunity-workflow', status: 'open' }]
+  );
+
+  const result = await processContactPipeline(lead, {
+    store,
+    deliver: async () => {},
+    syncCrm: (submission, control) => syncWebsiteLeadToHighLevel(
+      submission,
+      gateway,
+      config,
+      new Date(),
+      control,
+    ).then(() => undefined),
+    dryRun: false,
+    ownerId: 'reuse-opp-1',
+  });
+
+  assert.deepEqual(result, {
+    deliveryStatus: 'confirmed',
+    delivered: true,
+    crmSynced: true,
+    dryRun: false,
+    replayed: false,
+  });
+
+  const replay = await processContactPipeline(lead, {
+    store,
+    deliver: async () => { throw new Error('must not redeliver'); },
+    syncCrm: async () => { throw new Error('must not replay CRM'); },
+    dryRun: false,
+    ownerId: 'reuse-opp-2',
+  });
+  assert.equal(replay.replayed, true);
+  assert.equal(replay.crmSynced, true);
+  assert.equal(replay.deliveryStatus, 'confirmed');
+});
+
 test('estados Redis corruptos o incompatibles se clasifican antes de cualquier entrega', async () => {
   for (const result of ['{not-json', '{"state":"unexpected"}', '604800']) {
     const store = new RedisRestIdempotencyStore(
