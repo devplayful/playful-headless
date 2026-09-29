@@ -27,5 +27,5 @@ export default async function ThankYouPage({
     return <ScheduleConfirmation />;
   }
 
-  return <LeadThankYou />;
+  return <LeadThankYou fit={firstQueryValue(params.fit)} />;
 }
