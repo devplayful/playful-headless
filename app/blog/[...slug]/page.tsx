@@ -27,21 +27,21 @@ import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text
 import {
   RELATED_BLOG_FETCH_COUNT,
   excludeCurrentBlogPost,
+  fetchWithRelatedPostsTtl,
+  type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
-let latestRelatedInflight: ReturnType<typeof getLatestBlogPosts> | null = null;
+type LatestRelatedPost = Awaited<ReturnType<typeof getLatestBlogPosts>>[number];
 
-/** Dedupe the latest-7 WP fetch across SSG pages (payload is too big for Next cache). */
+const latestRelatedCache: RelatedPostsCacheState<LatestRelatedPost[]> = { current: null };
+
+/** Dedupe the latest-7 WP fetch across SSG pages; TTL ≤ 3600s in runtime. */
 function fetchLatestRelatedBlogPosts() {
-  if (!latestRelatedInflight) {
-    latestRelatedInflight = getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT).catch((error) => {
-      latestRelatedInflight = null;
-      throw error;
-    });
-  }
-  return latestRelatedInflight;
+  return fetchWithRelatedPostsTtl(latestRelatedCache, () =>
+    getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
+  );
 }
 
 export async function generateStaticParams() {

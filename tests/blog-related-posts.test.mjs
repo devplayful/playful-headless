@@ -3,9 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const {
+  RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_FETCH_COUNT,
   excludeCurrentBlogPost,
+  fetchWithRelatedPostsTtl,
+  isRelatedPostsCacheFresh,
 } = await import('../lib/blog-related-posts.ts');
 
 const blogPage = readFileSync(
@@ -62,8 +65,62 @@ test('an older post that is not in the latest 7 keeps the same first 6 cards', (
   );
 });
 
+test('related-posts process cache expires after 3600s and retries after failure', async () => {
+  assert.equal(RELATED_BLOG_CACHE_TTL_MS, 3600 * 1000);
+  assert.equal(isRelatedPostsCacheFresh({ promise: Promise.resolve([]), fetchedAt: 0 }, 3599_999), true);
+  assert.equal(isRelatedPostsCacheFresh({ promise: Promise.resolve([]), fetchedAt: 0 }, 3600_000), false);
+
+  let now = 1_000;
+  let loads = 0;
+  const state = { current: null };
+  const load = async () => {
+    loads += 1;
+    return [`batch-${loads}`];
+  };
+
+  const first = await fetchWithRelatedPostsTtl(state, load, () => now);
+  const second = await fetchWithRelatedPostsTtl(state, load, () => now + 3599_999);
+  assert.deepEqual(first, ['batch-1']);
+  assert.deepEqual(second, ['batch-1']);
+  assert.equal(loads, 1);
+
+  const third = await fetchWithRelatedPostsTtl(state, load, () => now + 3600_000);
+  assert.deepEqual(third, ['batch-2']);
+  assert.equal(loads, 2);
+
+  const failing = { current: null };
+  let attempts = 0;
+  await assert.rejects(
+    () =>
+      fetchWithRelatedPostsTtl(
+        failing,
+        async () => {
+          attempts += 1;
+          throw new Error('wp-down');
+        },
+        () => now,
+      ),
+    /wp-down/,
+  );
+  assert.equal(failing.current, null);
+  await assert.rejects(
+    () =>
+      fetchWithRelatedPostsTtl(
+        failing,
+        async () => {
+          attempts += 1;
+          throw new Error('wp-down');
+        },
+        () => now,
+      ),
+    /wp-down/,
+  );
+  assert.equal(attempts, 2);
+});
+
 test('blog post page fetches one extra and filters the current slug/id', () => {
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /fetchWithRelatedPostsTtl\(latestRelatedCache/);
   assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
   assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
