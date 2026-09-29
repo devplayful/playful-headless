@@ -23,6 +23,7 @@ import {
   resolveRelatedBlogPosts,
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
+import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 
 export {
   rewriteInSitePageHrefs,
@@ -512,12 +513,16 @@ function toRelatedBlogCard(post: WPPost): RelatedBlogCard {
       || imageUrl;
   }
   imageUrl = resolveBlogCoverUrl(post.slug, imageUrl);
-  const date = new Date(post.date);
-  const formattedDate = date.toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).split('/').join(' / ');
+  const formattedDate = formatBlogListingDate(
+    post.slug,
+    {
+      published: post.date,
+      publishedGmt: post.date_gmt,
+      modified: post.modified,
+      modifiedGmt: post.modified_gmt,
+    },
+    'slash',
+  );
   const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
   const categorySlug = categories?.[0]?.slug || 'sin-categoria';
   return {
