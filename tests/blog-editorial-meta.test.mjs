@@ -1,0 +1,353 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const {
+  BLOG_EDITORIAL_OVERRIDES,
+  DEFAULT_EDITORIAL_BYLINE,
+  EDITORIAL_AVATAR_SRC,
+  WP_MODIFIED_HONOR_ON_OR_AFTER,
+  buildBlogArticleJsonLd,
+  decodeHtmlEntities,
+  formatCombinedByline,
+  formatEditorialDate,
+  formatBlogListingDate,
+  isMeaningfullyAfter,
+  resolveBlogEditorialUpdate,
+  serializeJsonLd,
+  toIsoDateTime,
+  wordpressSeoText,
+} = await import('../lib/blog-editorial-meta.ts');
+const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const plainText = await import('../lib/wordpress-plain-text.ts');
+const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const blogPage = readFileSync(
+  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  'utf8',
+);
+const chipSource = readFileSync(
+  new URL('../components/blog/BlogBylineChip.tsx', import.meta.url),
+  'utf8',
+);
+const overridesSource = readFileSync(
+  new URL('../lib/blog-body-overrides.ts', import.meta.url),
+  'utf8',
+);
+
+const ZELLE_PUBLISHED = '2020-06-15T14:22:00';
+
+test('Zelle rewrite is seeded with 2026-09-24 and default editorial byline', () => {
+  assert.equal(ZELLE_VE_BLOG_SLUG, 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce');
+  assert.equal(BLOG_EDITORIAL_OVERRIDES[ZELLE_VE_BLOG_SLUG].updatedAt, '2026-09-24');
+  assert.equal(BLOG_EDITORIAL_OVERRIDES[ZELLE_VE_BLOG_SLUG].updatedBy, undefined);
+  assert.equal(DEFAULT_EDITORIAL_BYLINE, 'Equipo editorial de Playful Agency');
+
+  const update = resolveBlogEditorialUpdate(ZELLE_VE_BLOG_SLUG, {
+    published: ZELLE_PUBLISHED,
+    modified: ZELLE_PUBLISHED,
+  });
+  assert.ok(update);
+  assert.equal(update.source, 'override');
+  assert.equal(update.updatedBy, DEFAULT_EDITORIAL_BYLINE);
+  assert.equal(update.updatedAt, '2026-09-24T00:00:00.000Z');
+  assert.equal(update.updatedAtLabel, '24 de septiembre de 2026');
+});
+
+test('override updatedAt wins over a later WordPress modified date', () => {
+  const update = resolveBlogEditorialUpdate(ZELLE_VE_BLOG_SLUG, {
+    published: ZELLE_PUBLISHED,
+    modified: '2024-01-10T09:00:00',
+    modifiedGmt: '2024-01-10T13:00:00',
+  });
+  assert.equal(update?.source, 'override');
+  assert.equal(update?.updatedAt, '2026-09-24T00:00:00.000Z');
+});
+
+test('unknown slugs stay unchanged when WP modified equals or is the same day as published', () => {
+  assert.equal(
+    resolveBlogEditorialUpdate('cintillos-de-promocion', {
+      published: '2021-03-01T10:00:00',
+      modified: '2021-03-01T10:00:00',
+    }),
+    null,
+  );
+  assert.equal(
+    resolveBlogEditorialUpdate('actualizar-tu-e-commerce', {
+      published: '2021-03-01T10:00:00',
+      modified: '2021-03-01T22:15:00',
+    }),
+    null,
+  );
+  assert.equal(resolveBlogEditorialUpdate('cintillos-de-promocion', {}), null);
+  assert.equal(resolveBlogEditorialUpdate(undefined, { modified: '2024-01-01' }), null);
+});
+
+test('historical WordPress modified before the honor date is treated as CMS noise', () => {
+  assert.equal(WP_MODIFIED_HONOR_ON_OR_AFTER, '2026-09-24');
+  assert.equal(
+    resolveBlogEditorialUpdate('cintillos-de-promocion', {
+      published: '2024-10-01T10:00:00',
+      modified: '2024-11-05T08:00:00',
+      modifiedGmt: '2024-11-05T12:00:00',
+    }),
+    null,
+  );
+  assert.equal(
+    resolveBlogEditorialUpdate('actualizar-tu-e-commerce', {
+      published: '2024-09-16T10:00:00',
+      modified: '2026-01-07T18:57:36',
+    }),
+    null,
+  );
+});
+
+test('WordPress modified on or after the honor date becomes the editorial chip', () => {
+  const update = resolveBlogEditorialUpdate('pasarela-de-pago-ecommerce-guia', {
+    published: '2021-03-01T10:00:00',
+    publishedGmt: '2021-03-01T14:00:00',
+    modified: '2026-09-25T08:00:00',
+    modifiedGmt: '2026-09-25T12:00:00',
+  });
+  assert.ok(update);
+  assert.equal(update.source, 'wordpress');
+  assert.equal(update.updatedBy, DEFAULT_EDITORIAL_BYLINE);
+  assert.equal(update.updatedAt, '2026-09-25T12:00:00.000Z');
+  assert.equal(update.updatedAtLabel, '25 de septiembre de 2026');
+});
+
+test('same-day or earlier modified is not a real update', () => {
+  assert.equal(isMeaningfullyAfter('2021-03-01T22:00:00', '2021-03-01T10:00:00'), false);
+  assert.equal(isMeaningfullyAfter('2021-03-01', '2021-03-01'), false);
+  assert.equal(isMeaningfullyAfter('2021-02-28', '2021-03-01'), false);
+  assert.equal(isMeaningfullyAfter('2021-03-02', '2021-03-01'), true);
+  assert.equal(
+    resolveBlogEditorialUpdate('cualquier-slug', {
+      published: '2021-03-02T01:00:00Z',
+      modified: '2021-03-01T23:00:00Z',
+    }),
+    null,
+  );
+});
+
+test('override on the publish day is suppressed', () => {
+  assert.equal(
+    resolveBlogEditorialUpdate(ZELLE_VE_BLOG_SLUG, {
+      published: '2026-09-24T18:00:00Z',
+    }),
+    null,
+  );
+});
+
+test('custom updatedBy is kept when provided', () => {
+  const original = BLOG_EDITORIAL_OVERRIDES['slug-de-prueba-editorial'];
+  BLOG_EDITORIAL_OVERRIDES['slug-de-prueba-editorial'] = {
+    updatedAt: '2026-01-15',
+    updatedBy: 'Mesa de contenidos',
+  };
+  try {
+    const update = resolveBlogEditorialUpdate('slug-de-prueba-editorial', {
+      published: '2022-01-01',
+    });
+    assert.equal(update?.updatedBy, 'Mesa de contenidos');
+    assert.equal(update?.source, 'override');
+  } finally {
+    if (original) {
+      BLOG_EDITORIAL_OVERRIDES['slug-de-prueba-editorial'] = original;
+    } else {
+      delete BLOG_EDITORIAL_OVERRIDES['slug-de-prueba-editorial'];
+    }
+  }
+});
+
+test('date helpers normalize date-only ISO and format Spanish UTC labels', () => {
+  assert.equal(toIsoDateTime('2026-09-24'), '2026-09-24T00:00:00.000Z');
+  assert.equal(formatEditorialDate('2026-09-24'), '24 de septiembre de 2026');
+  assert.equal(formatEditorialDate('2023-11-20T12:00:00.000Z'), '20 de noviembre de 2023');
+});
+
+test('BlogPosting JSON-LD includes description, image, publisher and canonical', () => {
+  const url =
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+  const jsonLd = buildBlogArticleJsonLd({
+    headline: 'Zelle en Venezuela: Un método de pago',
+    description: 'Integra Zelle como método de pago en tu tienda online en Venezuela.',
+    image: 'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+    datePublished: ZELLE_PUBLISHED,
+    dateModified: '2026-09-24T00:00:00.000Z',
+    authorName: 'Stefanni Parabavidez',
+    url,
+    publisherName: 'Playful Agency',
+    publisherLogo: 'https://playfulagency.com/images/logos/playful-logov.svg',
+  });
+  assert.equal(jsonLd['@type'], 'BlogPosting');
+  assert.equal(jsonLd.headline, 'Zelle en Venezuela: Un método de pago');
+  assert.equal(jsonLd.description, 'Integra Zelle como método de pago en tu tienda online en Venezuela.');
+  assert.equal(
+    jsonLd.image,
+    'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+  );
+  assert.equal(jsonLd.datePublished, toIsoDateTime(ZELLE_PUBLISHED));
+  assert.equal(jsonLd.dateModified, '2026-09-24T00:00:00.000Z');
+  assert.deepEqual(jsonLd.author, { '@type': 'Person', name: 'Stefanni Parabavidez' });
+  assert.deepEqual(jsonLd.publisher, {
+    '@type': 'Organization',
+    name: 'Playful Agency',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://playfulagency.com/images/logos/playful-logov.svg',
+    },
+  });
+  assert.equal(jsonLd.mainEntityOfPage, url);
+  assert.equal(jsonLd.url, url);
+  assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
+});
+
+test('JSON-LD headline decodes WordPress entities to match the H1', () => {
+  const jsonLd = buildBlogArticleJsonLd({
+    headline: 'SEO &#8211; guía &amp; checklist',
+    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.\n',
+    datePublished: ZELLE_PUBLISHED,
+    dateModified: ZELLE_PUBLISHED,
+    url: 'https://playfulagency.com/blog/seo/ejemplo',
+  });
+  assert.equal(jsonLd.headline, 'SEO – guía & checklist');
+  assert.equal(jsonLd.description, '¿Cuáles son sus ventajas? y… si realmente puede.');
+  assert.equal(decodeHtmlEntities('&#x2013;'), '–');
+});
+
+test('wordpressSeoText decodes WP entities once and trims descriptions', () => {
+  assert.equal(plainText.decodeHtmlEntities, decodeHtmlEntities);
+  assert.equal(plainText.wordpressSeoText, wordpressSeoText);
+  assert.equal(decodeHtmlEntities('y&#8230;'), 'y…');
+  assert.equal(decodeHtmlEntities('y&amp;#8230;'), 'y&#8230;');
+  assert.equal(decodeHtmlEntities('H&amp;M'), 'H&M');
+  assert.equal(decodeHtmlEntities('&amp;amp;'), '&amp;');
+  assert.equal(
+    wordpressSeoText(
+      '<p>¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y&#8230; si realmente puede ser una alternativa para tu negocio.</p>\n',
+      { stripTags: true, maxLength: 160 },
+    ),
+    '¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y… si realmente puede ser una alternativa para tu negocio.',
+  );
+  assert.equal(wordpressSeoText('texto con salto\n'), 'texto con salto');
+  assert.doesNotMatch(wordpressSeoText('H&amp;M y más'), /&amp;/);
+});
+
+test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter and JSON-LD', () => {
+  assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
+  assert.match(blogPage, /function blogPostSeoCopy/);
+  assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
+  assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
+  assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);
+  assert.match(blogPage, /description: metaDescription/);
+});
+
+test('combined byline joins author and editorial with y', () => {
+  assert.equal(
+    formatCombinedByline('Stefanni Parabavidez'),
+    'Stefanni Parabavidez y Equipo editorial de Playful Agency',
+  );
+  assert.equal(
+    formatCombinedByline('Stefanni Parabavidez', DEFAULT_EDITORIAL_BYLINE),
+    'Stefanni Parabavidez y Equipo editorial de Playful Agency',
+  );
+  assert.equal(formatCombinedByline('  ', 'Equipo editorial de Playful Agency'), DEFAULT_EDITORIAL_BYLINE);
+});
+
+test('hero excerpt omits empty text and only adds ellipsis when truncated', () => {
+  assert.equal(formatBlogHeroExcerpt(''), '');
+  assert.equal(formatBlogHeroExcerpt('<p></p>'), '');
+  assert.equal(formatBlogHeroExcerpt('   <p>  </p>  '), '');
+  assert.equal(formatBlogHeroExcerpt('<p>Texto corto.</p>'), 'Texto corto.');
+  assert.equal(formatBlogHeroExcerpt('Exactamente veinte.'.padEnd(200, 'x')), 'Exactamente veinte.'.padEnd(200, 'x'));
+  const long = 'a'.repeat(201);
+  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), `${'a'.repeat(200)}...`);
+  assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
+});
+
+test('editorial avatar asset remains available but is not the byline face', () => {
+  assert.equal(EDITORIAL_AVATAR_SRC, '/images/avatar-playful.svg');
+  assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
+});
+
+test('listing cards use honored update or publication, long and slash formats', () => {
+  const zelleDates = { published: '2025-04-22T23:28:54', modified: '2025-04-22T23:28:54' };
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates),
+    '24 de septiembre de 2026',
+  );
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates, 'slash'),
+    '24 / 09 / 2026',
+  );
+  assert.equal(
+    formatBlogListingDate('como-elegir-el-mejor-framework-para-tu-web', {
+      published: '2024-04-26T19:17:40',
+      modified: '2024-11-05T22:09:53',
+    }),
+    '26 de abril de 2024',
+  );
+  assert.equal(
+    formatBlogListingDate(
+      'como-elegir-el-mejor-framework-para-tu-web',
+      {
+        published: '2024-04-26T19:17:40',
+        modified: '2024-11-05T22:09:53',
+      },
+      'slash',
+    ),
+    '26 / 04 / 2024',
+  );
+});
+
+test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
+  const listingPage = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(listingPage, /formatBlogListingDate\(posts\[0\]\.slug/);
+  assert.match(listingPage, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(listingPage, /formatDate\(posts\[0\]\.date\)/);
+  assert.match(mostViewed, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(mostViewed, /formatDate\(post\.date\)/);
+  assert.match(wordpress, /formatBlogListingDate\(\s*rewritten\.slug/);
+  assert.match(wordpress, /'slash'/);
+});
+
+test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
+  assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
+  assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
+  assert.match(blogPage, /buildBlogArticleJsonLd/);
+  assert.match(blogPage, /type="application\/ld\+json"/);
+  assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
+  assert.doesNotMatch(blogPage, /articleJsonLd \?/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
+  assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /formatDate\(post\.date\)/);
+  assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /visibleDateLabel/);
+  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
+  assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
+  assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);
+  assert.doesNotMatch(blogPage, /detail=/);
+  assert.doesNotMatch(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /substring\(0, 200\) \+ '\.\.\.'/);
+  assert.match(chipSource, /rounded-full bg-\[#440099\]/);
+  assert.match(chipSource, /text-sm font-medium/);
+  assert.match(chipSource, /h-6 w-6/);
+  assert.doesNotMatch(chipSource, /detail/);
+  assert.doesNotMatch(chipSource, /text-xs/);
+  assert.match(overridesSource, /lib\/blog-editorial-meta\.ts/);
+});

@@ -5,22 +5,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { WPPost } from '@/services/wordpress';
 import { blogPostPath } from '@/utils/blog-url';
+import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 
 interface MostViewedArticlesProps {
   posts: WPPost[];
 }
 
 export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
-  // Función para formatear la fecha
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      timeZone: 'UTC'
-    };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
-  };
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 4;
   const totalSlides = Math.ceil(posts.length / itemsPerPage);
@@ -105,7 +96,12 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
                 </Link>
                 
                 <p className="text-xs text-gray-500 mb-4">
-                  {formatDate(post.date)}
+                  {formatBlogListingDate(post.slug, {
+                    published: post.date,
+                    publishedGmt: post.date_gmt,
+                    modified: post.modified,
+                    modifiedGmt: post.modified_gmt,
+                  })}
                 </p>
                 
                 <Link 

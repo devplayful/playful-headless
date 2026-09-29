@@ -13,6 +13,8 @@ import {
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
+import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
+import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 
 export {
   rewriteInSitePageHrefs,
@@ -428,6 +430,7 @@ export interface WPFeaturedMedia {
 export interface WPPost {
   id: number;
   date: string;
+  date_gmt?: string;
   slug: string;
   link: string;
   title: { rendered: string };
@@ -477,7 +480,10 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
   const processedPosts = posts.map(post => rewriteWpYoastFields(rewriteWpRenderedHtmlFields({
     ...post,
-    featured_media_url: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+    featured_media_url: resolveBlogCoverUrl(
+      post.slug,
+      post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+    ),
     featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
     categories: post._embedded?.['wp:term']?.[0] || [],
     author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
@@ -505,8 +511,17 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
     if (featuredMedia) {
       imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
     }
-    const date = new Date(rewritten.date);
-    const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
+    imageUrl = resolveBlogCoverUrl(rewritten.slug, imageUrl);
+    const formattedDate = formatBlogListingDate(
+      rewritten.slug,
+      {
+        published: rewritten.date,
+        publishedGmt: rewritten.date_gmt,
+        modified: rewritten.modified,
+        modifiedGmt: rewritten.modified_gmt,
+      },
+      'slash',
+    );
     const excerpt = (rewritten.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
     const categorySlug = categories?.[0]?.slug || 'sin-categoria';
     return { id: rewritten.id, title: rewritten.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: rewritten.slug, href: `/blog/${categorySlug}/${rewritten.slug}` };
@@ -533,6 +548,7 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
     }
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
+  post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
   return rewriteWpRenderedHtmlFields(post);
 }
 

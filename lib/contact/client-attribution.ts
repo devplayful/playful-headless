@@ -1,66 +1,130 @@
 'use client';
 
 import {
-  ATTRIBUTION_FIELDS,
-  CONTACT_FORM_ID,
-  type ContactAttribution,
-} from './types.ts';
+  ATTRIBUTION_COOKIE_FIRST,
+  ATTRIBUTION_COOKIE_LAST,
+  ATTRIBUTION_STORAGE_FIRST,
+  ATTRIBUTION_STORAGE_LAST,
+  ATTRIBUTION_TTL_SECONDS,
+  deserializeAttributionCookie,
+  emptyAttribution,
+  mergeFirstTouch,
+  mergeLastTouch,
+  parseVisitAttribution,
+  serializeAttributionCookie,
+  type VisitInput,
+} from './attribution.ts';
+import { CONTACT_FORM_ID, type ContactAttribution } from './types.ts';
 
-const ORIGINAL_ATTRIBUTION_KEY = 'playful:first-touch:v1';
 const SUBMISSION_ID_KEY = 'playful:contact-submission:v1';
+const LEGACY_FIRST_TOUCH_KEY = 'playful:first-touch:v1';
 
-function currentTouch(): ContactAttribution {
-  const params = new URLSearchParams(window.location.search);
-  const utmSource = params.get('utm_source')?.trim() || '';
-  let source = utmSource.toLowerCase();
-
-  if (!source && document.referrer) {
-    try {
-      const referrer = new URL(document.referrer);
-      source = referrer.hostname === window.location.hostname ? 'internal' : referrer.hostname;
-    } catch {
-      source = 'referral';
-    }
-  }
-
-  const attribution: ContactAttribution = {
-    source: source || 'direct',
-    landing: `${window.location.pathname}${window.location.search}`.slice(0, 500),
-    formId: CONTACT_FORM_ID,
-    utm_source: '',
-    utm_medium: '',
-    utm_campaign: '',
-    utm_term: '',
-    utm_content: '',
-  };
-
-  for (const field of ATTRIBUTION_FIELDS) {
-    attribution[field] = (params.get(field) || '').slice(0, 160);
-  }
-
-  return attribution;
+function currentVisit(): ContactAttribution {
+  if (typeof window === 'undefined') return emptyAttribution();
+  return parseVisitAttribution({
+    pathname: window.location.pathname,
+    search: window.location.search,
+    referrer: document.referrer,
+    host: window.location.hostname,
+  });
 }
 
-function readOriginalAttribution(fallback: ContactAttribution): ContactAttribution {
+function readStorage(key: string): ContactAttribution | null {
   try {
-    const stored = window.localStorage.getItem(ORIGINAL_ATTRIBUTION_KEY);
-    if (stored) return JSON.parse(stored) as ContactAttribution;
-    window.localStorage.setItem(ORIGINAL_ATTRIBUTION_KEY, JSON.stringify(fallback));
+    const stored = window.localStorage.getItem(key);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored) as Partial<ContactAttribution>;
+    if (!parsed || typeof parsed !== 'object') return null;
+    if (parsed.captured === true || parsed.landing || parsed.utm_source || parsed.source) {
+      return {
+        ...emptyAttribution(),
+        ...parsed,
+        captured: parsed.captured !== false,
+        formId: CONTACT_FORM_ID,
+      };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key: string, value: ContactAttribution): void {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
     // Attribution storage must never block a legitimate contact request.
   }
-  return fallback;
+}
+
+function readCookie(name: string): ContactAttribution | null {
+  if (typeof document === 'undefined') return null;
+  const prefix = `${name}=`;
+  const match = document.cookie.split('; ').find((part) => part.startsWith(prefix));
+  return match ? deserializeAttributionCookie(match.slice(prefix.length)) : null;
+}
+
+function writeCookie(name: string, value: ContactAttribution): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=${serializeAttributionCookie(value)}; Path=/; Max-Age=${ATTRIBUTION_TTL_SECONDS}; SameSite=Lax; Secure`;
+}
+
+function migrateLegacyFirstTouch(): ContactAttribution | null {
+  try {
+    const stored = window.localStorage.getItem(LEGACY_FIRST_TOUCH_KEY);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored) as Partial<ContactAttribution>;
+    if (!parsed || typeof parsed !== 'object') return null;
+    return {
+      ...emptyAttribution({ captured: true }),
+      ...parsed,
+      captured: true,
+      formId: CONTACT_FORM_ID,
+      gclid: parsed.gclid || '',
+      fbclid: parsed.fbclid || '',
+      referrer: parsed.referrer || '',
+    };
+  } catch {
+    return null;
+  }
+}
+
+function readPersistedFirst(): ContactAttribution | null {
+  return readCookie(ATTRIBUTION_COOKIE_FIRST)
+    || readStorage(ATTRIBUTION_STORAGE_FIRST)
+    || migrateLegacyFirstTouch();
+}
+
+function readPersistedLast(): ContactAttribution | null {
+  return readCookie(ATTRIBUTION_COOKIE_LAST) || readStorage(ATTRIBUTION_STORAGE_LAST);
+}
+
+function persistPair(first: ContactAttribution, last: ContactAttribution): void {
+  writeCookie(ATTRIBUTION_COOKIE_FIRST, first);
+  writeCookie(ATTRIBUTION_COOKIE_LAST, last);
+  writeStorage(ATTRIBUTION_STORAGE_FIRST, first);
+  writeStorage(ATTRIBUTION_STORAGE_LAST, last);
+}
+
+export function persistVisitAttribution(input?: VisitInput): {
+  originalAttribution: ContactAttribution;
+  recentAttribution: ContactAttribution;
+} {
+  const incoming = input ? parseVisitAttribution(input) : currentVisit();
+  const first = mergeFirstTouch(readPersistedFirst(), incoming);
+  const last = mergeLastTouch(readPersistedLast(), incoming);
+  persistPair(first, last);
+  return {
+    originalAttribution: first,
+    recentAttribution: last,
+  };
 }
 
 export function getSubmissionAttribution(): {
   originalAttribution: ContactAttribution;
   recentAttribution: ContactAttribution;
 } {
-  const recentAttribution = currentTouch();
-  return {
-    originalAttribution: readOriginalAttribution(recentAttribution),
-    recentAttribution,
-  };
+  return persistVisitAttribution();
 }
 
 export function createSubmissionId(): string {
