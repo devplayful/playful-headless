@@ -17,10 +17,15 @@ import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
   RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
+  RELATED_BLOG_CATEGORY_FETCH_PER_PAGE,
+  RELATED_BLOG_CATEGORY_PER_PAGE,
+  RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS,
   RELATED_BLOG_FETCH_COUNT,
   RELATED_BLOG_FETCH_TIMEOUT_MS,
+  RELATED_BLOG_POST_FIELDS,
   fetchWithRelatedPostsTtl,
   parseRelatedPostIds,
+  pickRelatedCategoryId,
   resolveRelatedBlogPosts,
   withRelatedFetchTimeout,
   type RelatedPostsCacheState,
@@ -488,25 +493,47 @@ export type RelatedBlogCard = {
 export type LatestBlogPostsQuery = {
   categoryId?: number;
   excludeId?: number | string;
+  perPage?: number;
   signal?: AbortSignal;
   timeoutMs?: number;
   maxAttempts?: number;
 };
 
 function primaryCategoryId(post: Pick<WPPost, 'categories'>): number | undefined {
-  const first = post.categories?.[0];
-  if (typeof first === 'number' && Number.isInteger(first) && first > 0) return first;
-  if (first && typeof first === 'object' && typeof first.id === 'number' && first.id > 0) {
-    return first.id;
-  }
-  return undefined;
+  return pickRelatedCategoryId(post.categories);
 }
 
-function toRelatedBlogCard(post: WPPost): RelatedBlogCard {
+type RelatedCategoryTerm = { id: number; name: string; slug: string };
+
+type RelatedCardCategoryLookup = {
+  byId?: Map<number, RelatedCategoryTerm>;
+  fallback?: { name?: string; slug?: string };
+};
+
+function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): RelatedBlogCard {
   let category = 'Sin categoría';
-  const categories = post._embedded?.['wp:term']?.[0]?.filter((term) => term.taxonomy === 'category')
-    || (Array.isArray(post.categories) ? post.categories.filter((term) => term?.slug) : []);
-  if (categories && categories.length > 0) category = categories[0].name || category;
+  let categorySlug = 'sin-categoria';
+  const embedded = post._embedded?.['wp:term']?.[0]?.filter((term) => term.taxonomy === 'category');
+  const objectCategories = Array.isArray(post.categories)
+    ? post.categories.filter((term) => term && typeof term === 'object' && term.slug)
+    : [];
+  const categories = (embedded && embedded.length > 0) ? embedded : objectCategories;
+  if (categories && categories.length > 0) {
+    category = categories[0].name || category;
+    categorySlug = categories[0].slug || categorySlug;
+  } else {
+    const ids = Array.isArray(post.categories)
+      ? post.categories.filter((id): id is number => typeof id === 'number' && id > 0)
+      : [];
+    const fromLookup = ids.map((id) => lookup?.byId?.get(id)).find(Boolean);
+    if (fromLookup) {
+      category = fromLookup.name || category;
+      categorySlug = fromLookup.slug || categorySlug;
+    } else if (lookup?.fallback) {
+      category = lookup.fallback.name || category;
+      categorySlug = lookup.fallback.slug || categorySlug;
+    }
+  }
   let imageUrl = '/images/blog/placeholder.jpg';
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
   if (featuredMedia) {
@@ -529,7 +556,6 @@ function toRelatedBlogCard(post: WPPost): RelatedBlogCard {
     'slash',
   );
   const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
-  const categorySlug = categories?.[0]?.slug || 'sin-categoria';
   return {
     id: post.id,
     title: post.title.rendered.replace(/&[a-z]+;/g, ''),
@@ -606,6 +632,92 @@ export async function getLatestBlogPosts(
   })).slice(0, perPage);
 }
 
+const categoryTermsCache: RelatedPostsCacheState<Map<number, RelatedCategoryTerm>> = { current: null };
+
+async function loadBlogCategoryTerms(
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<Map<number, RelatedCategoryTerm>> {
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/categories`);
+  url.searchParams.append('per_page', '100');
+  url.searchParams.append('_fields', 'id,slug,name');
+  const { items } = await wordpressFetchCollection<RelatedCategoryTerm>(
+    url.toString(),
+    {
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
+  );
+  const byId = new Map<number, RelatedCategoryTerm>();
+  for (const term of items) {
+    if (typeof term?.id === 'number' && term.id > 0 && term.slug) {
+      byId.set(term.id, {
+        id: term.id,
+        name: term.name || term.slug,
+        slug: term.slug,
+      });
+    }
+  }
+  return byId;
+}
+
+function getBlogCategoryTerms(
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<Map<number, RelatedCategoryTerm>> {
+  return fetchWithRelatedPostsTtl(categoryTermsCache, () => loadBlogCategoryTerms(query));
+}
+
+/**
+ * Lite same-category related fetch: exact small per_page, `_fields` only,
+ * no `_embed`. Timeout fallback stays empty so the article never 500s.
+ */
+export async function getRelatedBlogPostsByCategory(
+  categoryId: number,
+  query: LatestBlogPostsQuery = {},
+): Promise<RelatedBlogCard[]> {
+  const perPage = Math.min(
+    20,
+    Math.max(1, query.perPage ?? RELATED_BLOG_CATEGORY_FETCH_PER_PAGE),
+  );
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+  url.searchParams.append('per_page', String(perPage));
+  url.searchParams.append('orderby', 'date');
+  url.searchParams.append('order', 'desc');
+  url.searchParams.append('status', 'publish');
+  url.searchParams.append('categories', String(categoryId));
+  url.searchParams.append('_fields', RELATED_BLOG_POST_FIELDS);
+  if (query.excludeId != null && query.excludeId !== '') {
+    url.searchParams.append('exclude', String(query.excludeId));
+  }
+  const [collection, terms] = await Promise.all([
+    wordpressFetchCollection<WPPost>(
+      url.toString(),
+      {
+        next: { revalidate: RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS },
+        headers: { 'Content-Type': 'application/json' },
+        signal: query.signal,
+      },
+      {
+        timeoutMs: query.timeoutMs,
+        maxAttempts: query.maxAttempts,
+      },
+    ),
+    getBlogCategoryTerms(query).catch(() => new Map<number, RelatedCategoryTerm>()),
+  ]);
+  const lookup: RelatedCardCategoryLookup = {
+    byId: terms,
+    fallback: terms.get(categoryId),
+  };
+  return filterOpenBlogPosts(collection.items.map((post) => {
+    const rewritten = rewriteWpRenderedHtmlFields(post);
+    return toRelatedBlogCard(rewritten, lookup);
+  })).slice(0, RELATED_BLOG_CATEGORY_PER_PAGE);
+}
+
 export async function getBlogPostsByIds(
   ids: number[],
   query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
@@ -650,10 +762,11 @@ function relatedCacheFor(key: string): RelatedPostsCacheState<RelatedBlogCard[]>
 
 export async function getRelatedBlogPostsForPost(
   post: Pick<WPPost, 'id' | 'slug' | 'acf' | 'meta' | 'categories'>,
-  options: { latest?: RelatedBlogCard[] } = {},
+  options: { latest?: RelatedBlogCard[]; categorySlug?: string } = {},
 ): Promise<RelatedBlogCard[]> {
   const fieldIds = parseRelatedPostIds(post);
-  const categoryId = primaryCategoryId(post);
+  const categoryId = pickRelatedCategoryId(post.categories, options.categorySlug)
+    ?? primaryCategoryId(post);
   const cacheKey = `${post.id}:${fieldIds.join(',')}:${categoryId ?? ''}`;
   try {
     return await fetchWithRelatedPostsTtl(
@@ -717,8 +830,8 @@ async function loadRelatedBlogPosts({
     : await fetchWithRelatedPostsTtl(
       relatedCacheFor(`cat:${categoryId}`),
       () => withRelatedFetchTimeout(
-        (signal) => getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
-          categoryId,
+        (signal) => getRelatedBlogPostsByCategory(categoryId, {
+          excludeId: current.id,
           signal,
           ...relatedFetchGuard,
         }),
