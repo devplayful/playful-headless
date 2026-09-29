@@ -10,6 +10,8 @@
 export const ZELLE_VE_BLOG_SLUG =
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
 
+export const CASHEA_COMERCIOS_BLOG_SLUG = 'cashea-para-comercios';
+
 export const ZELLE_VE_BLOG_BODY_HTML = `
 <p>Si ya recibes pagos por Zelle en tu negocio, sabes cómo es la rutina. Llega la notificación del banco, abres el correo, buscas el pedido en la tienda, cruzas monto y nombre, marcas como pagado y pasas al siguiente.</p>
 <p>Cuando son pocos pedidos la cosa se maneja, pero en cuanto el volumen crece esa validación manual se convierte en un cuello de botella que te quita tiempo de vender y te obliga a dedicar horas a revisar capturas.</p>
@@ -83,8 +85,62 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 <p>Lo que sí ha crecido es la cantidad de negocios venezolanos que lo integran en sus tiendas en línea como método de pago formal dentro del checkout, en lugar de manejarlo por canales informales como WhatsApp o mensajes directos.</p>
 `.trim();
 
+export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `
+<p>Si tu tienda ya vende y tus compradores te preguntan si pueden pagar en cuotas, lo que te toca entender es Cashea para comercios, que no es lo mismo que la app que usan ellos.</p>
+<p>Esta guía está escrita para el comercio. Te explica cómo funciona Cashea desde el lado de quien vende, qué te pide el proveedor para afiliarte y qué tiene que resolver tu tienda para que las cuotas aparezcan en el checkout sin romper tu operación.</p>
+<p>Si todavía estás evaluando qué métodos de pago ofrecer en conjunto, empieza por nuestra guía de <a href="https://playfulagency.com/pasarela-de-pagos-venezuela">pasarela de pagos en Venezuela</a>, donde comparamos los métodos que integramos en tiendas online. Aquí vamos a fondo solo con Cashea.</p>
+<h2 id="que-es-cashea-para-un-comercio-y-que-es-la-app-del-comprador">Qué es Cashea para un comercio (y qué es la app del comprador)</h2>
+<p>Cashea es una empresa venezolana de compra ahora y paga después. El comprador paga una inicial en el momento de la compra y el resto en cuotas iguales sin interés.</p>
+<p>Para el comprador, Cashea es una app. Ahí paga sus cuotas y busca tiendas aliadas. Si llegaste a esta página buscando cómo pagar con Cashea, lo que necesitas está en esa app y no en este artículo.</p>
+<p>Para el comercio, Cashea es un método de cobro. Según la sección de preguntas frecuentes para comercios, el comercio recibe la inicial y las cuotas en cuentas a su nombre y Cashea asume el riesgo de impago. Las condiciones económicas las fija el contrato con Cashea.</p>
+<p>Un comercio puede vender con Cashea por tres vías que hoy aparecen en fuentes públicas.</p>
+<p>La primera es vender dentro de la propia app de Cashea, donde el comprador encuentra tu tienda o tu producto, paga la inicial y coordina la entrega contigo. No pasa por el checkout de tu web.</p>
+<p>La segunda es el SDK oficial de web checkout, publicado como paquete <code>cashea-web-checkout-sdk</code>, que permite llevar el pago con Cashea al checkout de tu propia tienda con una clave que entrega el equipo de integración de Cashea.</p>
+<p>La tercera son los plugins de terceros para WooCommerce, que conectan la tienda con Cashea usando las credenciales que te asigna tu gestor en Cashea.</p>
+<h2 id="como-vender-con-cashea-en-una-tienda-que-ya-factura">Cómo vender con Cashea en una tienda que ya factura</h2>
+<p>Si tu tienda ya factura, antes de agregar el botón de Cashea tienes que revisar las reglas del proveedor, porque afectan tus precios, tu catálogo y tu web.</p>
+<p>Según las preguntas frecuentes para comercios, Cashea fija un monto mínimo de compra, así que conviene revisar qué productos de tu catálogo quedan por debajo. Tampoco puedes subir el precio de un producto cuando el comprador paga con Cashea, así que el precio en cuotas tiene que ser el mismo que el de contado.</p>
+<p>Hay además categorías que Cashea no acepta, como tabaco, armas, tarjetas de regalo, membresías, apuestas o subastas. Si parte de tu catálogo entra en esas categorías, conviene revisarlo antes de activar el método.</p>
+<p>Para las ventas online, Cashea pide que la URL de tu tienda esté activa, que no redirija a otro sitio y que sus enlaces no den error. Si estás por cambiar de plataforma, ese requisito pesa, porque una tienda nueva con redirecciones mal hechas o con enlaces rotos puede complicarte la revisión. En nuestra guía de <a href="https://playfulagency.com/blog/seo/migracion-seo-cambiar-de-plataforma">migración SEO al cambiar de plataforma</a> explicamos cómo mover la tienda sin perder direcciones por el camino, y por qué los métodos de pago no viajan solos con el catálogo.</p>
+<h2 id="afiliarse-a-cashea-que-resuelve-el-proveedor-y-que-resuelve-la-tienda">Afiliarse a Cashea: qué resuelve el proveedor y qué resuelve la tienda</h2>
+<p>Afiliarse a Cashea es un trámite entre tu empresa y Cashea. Según sus preguntas frecuentes para comercios, te piden el RIF, los estatutos de la empresa, un punto de venta, tu política de cambios y cuentas bancarias en bolívares, con Pago Móvil, y en dólares.</p>
+<p>Del lado del proveedor queda la aprobación de tu comercio, el contrato y sus condiciones, el riesgo de impago, el cobro de las cuotas al comprador y las credenciales que necesita tu tienda para conectarse.</p>
+<p>Del lado de tu tienda queda todo lo que ocurre en tu web, es decir que el pago con Cashea aparezca en el checkout, que el pedido cambie de estado cuando la inicial se confirma, que los precios sean iguales con y sin cuotas y que tu equipo pueda conciliar lo que Cashea te abona con los pedidos que registró la tienda.</p>
+<p>Sobre los costos, las condiciones las fija el contrato que firmes con Cashea, así que pide que te detallen por escrito cada una antes de afiliarte.</p>
+<h2 id="donde-lo-integramos-woocommerce-en-venezuela">Dónde lo integramos: WooCommerce en Venezuela</h2>
+<p>En Playful integramos Cashea en tiendas WooCommerce, que es la plataforma con la que trabajamos los métodos de pago locales en Venezuela.</p>
+<p>En <a href="https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela">SoyTechno</a>, una tienda WooCommerce de tecnología, integramos Cashea a nivel web dentro del checkout. El comprador elige pagar con Cashea, se abre una ventana donde inicia sesión con sus datos, ve sus cuotas y paga la primera directamente en la página de la tienda. El resto de las cuotas las sigue pagando desde su app, como cualquier otra compra con Cashea.</p>
+<p>Si tu tienda está en otra plataforma, el primer paso es preguntarle a tu proveedor si Cashea está entre sus métodos de pago o si abre acceso a terceros para integrarlo. Hay suites de punto de venta con tienda web incluida cuyas fichas públicas no mencionan Cashea. Eso no descarta la integración, pero hay que preguntarlo antes de prometérselo a tus compradores.</p>
+<p>En Shopify, en la consulta que hicimos en septiembre de 2026 no encontramos una app de Cashea en la tienda de apps. Para nosotros Shopify es la vía del ecommerce internacional, y ahí trabajamos con procesadores como PayPal, Shop Pay y Mercado Pago en México. Si tu marca vende fuera de Venezuela, esa conversación está en <a href="https://playfulagency.com/agencia-shopify">desarrollo de tiendas en Shopify</a>.</p>
+<h2 id="como-convive-con-sitef-banesco-y-zelle-en-el-mismo-checkout">Cómo convive con SiTef, Banesco y Zelle en el mismo checkout</h2>
+<p>Cashea rara vez es el único método de pago de una tienda. Lo normal es que conviva con un botón de tarjeta como SiTef, con Banesco para tarjetas internacionales y con Zelle para pagos en dólares.</p>
+<p>Cada uno de esos métodos confirma el pago a su manera y liquida en sus propios plazos y en su propia moneda. Por eso el reto está en que tu tienda sepa qué pedidos están pagados por cada vía y que tu equipo pueda cuadrar cada abono con su pedido sin revisar capturas una por una.</p>
+<p>En el caso de Cashea, según el propio proveedor, el comercio recibe la inicial y las cuotas, así que la conciliación tiene que reconocer que un pedido pagado con Cashea puede no llegar en un solo abono, dependiendo de tu contrato.</p>
+<p>En nuestra guía de <a href="https://playfulagency.com/pasarela-de-pagos-venezuela">pasarela de pagos en Venezuela</a> comparamos SiTef, Instapago, Cashea, Banesco, Zelle y BDV, y explicamos por qué la moneda que ves en el checkout no siempre es la moneda en la que cobras. Si además cobras en dólares, en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>
+<h2 id="que-no-hace-playful-con-cashea">Qué no hace Playful con Cashea</h2>
+<p>Playful es una agencia de integración de ecommerce. Conectamos Cashea con tu tienda, pero no somos Cashea, no somos la app del comprador y no somos una pasarela de pagos.</p>
+<p>No te afiliamos a Cashea, porque esa relación es directamente entre tu empresa y Cashea.</p>
+<p>No aprobamos compradores, no asignamos cupos y no cobramos cuotas. Tampoco manejamos el dinero de tus ventas ni asumimos el riesgo de impago, que según las preguntas frecuentes de Cashea queda de su lado.</p>
+<p>Y no te prometemos un aumento de ventas por activar las cuotas. Lo que sí hacemos es que el método funcione en tu checkout y que el pedido quede bien registrado en tu tienda.</p>
+<h2 id="preguntas-frecuentes-para-el-comercio">Preguntas frecuentes para el comercio</h2>
+<h3 id="cashea-cobra-por-integrarse-en-mi-tienda">¿Cashea cobra por integrarse en mi tienda?</h3>
+<p>Las condiciones las fija tu contrato con Cashea. Pide que te detallen por escrito cada costo antes de afiliarte.</p>
+<h3 id="puedo-cobrar-un-precio-mas-alto-si-el-cliente-paga-con-cashea">¿Puedo cobrar un precio más alto si el cliente paga con Cashea?</h3>
+<p>No. Cashea prohíbe subir el precio cuando el comprador paga con su método.</p>
+<h3 id="como-recibo-el-dinero-de-una-venta-con-cashea">¿Cómo recibo el dinero de una venta con Cashea?</h3>
+<p>Según Cashea, el comercio recibe la inicial y las cuotas en cuentas a su nombre, y Cashea asume el impago del comprador. Los plazos y la moneda de cada abono dependen de tu contrato.</p>
+<h3 id="necesito-que-mi-tienda-este-en-woocommerce">¿Necesito que mi tienda esté en WooCommerce?</h3>
+<p>No es un requisito de Cashea, que publica un SDK de web checkout para tiendas propias. En Playful integramos Cashea en WooCommerce. Si tu tienda está en otra plataforma, pregúntale a tu proveedor si incluye Cashea o si permite integrarlo.</p>
+<h3 id="playful-me-puede-afiliar-a-cashea">¿Playful me puede afiliar a Cashea?</h3>
+<p>No. La afiliación es un trámite entre tu empresa y Cashea. Nosotros entramos cuando ya tienes las credenciales y necesitas que el método funcione en tu tienda.</p>
+<h2 id="diagnostico-de-integracion">Diagnóstico de integración</h2>
+<p>Antes de activar Cashea en tu tienda conviene tener claro en qué plataforma está tu tienda y si permite la integración, qué otros métodos de pago conviven en tu checkout y cómo concilia hoy tu equipo los cobros con los pedidos.</p>
+<p>Si tu marca ya vende y quieres ofrecer cuotas con Cashea sin que la conciliación se vuelva otro trabajo manual, podemos revisar tu caso en una <a href="https://playfulagency.com/reunion-playful">reunión de diagnóstico</a>. Y si lo que necesitas es trabajar la tienda completa, en <a href="https://playfulagency.com/agencia-e-commerce">agencia de ecommerce</a> está cómo lo hacemos.</p>
+`.trim();
+
 export const BLOG_BODY_OVERRIDES: Record<string, string> = {
   [ZELLE_VE_BLOG_SLUG]: ZELLE_VE_BLOG_BODY_HTML,
+  [CASHEA_COMERCIOS_BLOG_SLUG]: CASHEA_COMERCIOS_BLOG_BODY_HTML,
 };
 
 export function blogBodyForSlug(slug: string | undefined | null): string {
