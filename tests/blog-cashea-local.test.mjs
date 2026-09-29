@@ -31,7 +31,10 @@ test('Cashea is a Next-owned local post on the signed tecnologia path', () => {
   assert.equal(CASHEA_COMERCIOS_BLOG_PATH, '/blog/tecnologia/cashea-para-comercios');
   assert.equal(CASHEA_COMERCIOS_LOCAL_POST.slug, CASHEA_COMERCIOS_BLOG_SLUG);
   assert.equal(CASHEA_COMERCIOS_LOCAL_POST.categories?.[0]?.slug, 'tecnologia');
-  assert.deepEqual(localBlogStaticParams(), [{ slug: ['tecnologia', 'cashea-para-comercios'] }]);
+  assert.deepEqual(localBlogStaticParams(), [
+    { slug: ['tecnologia', 'cashea-para-comercios'] },
+    { slug: ['seo', 'migracion-seo-cambiar-de-plataforma-alternativa'] },
+  ]);
   assert.equal(localBlogPostBySlug('cashea-para-comercios')?.id, 900001);
   assert.equal(localBlogPostBySlug('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'), null);
 });

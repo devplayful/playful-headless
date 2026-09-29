@@ -4,7 +4,8 @@
  * (24 sep 2026, José GO vía Diseño) + lote 5 (24 sep 2026, José GO
  * vía Diseño) + lote 6 (29 sep 2026, José GO) + lote 7 (29 sep 2026,
  * José GO) + lote 8 (29 sep 2026, José GO vía Diseño) + lote 9
- * (29 sep 2026, José GO vía Diseño). Same override
+ * (29 sep 2026, José GO vía Diseño) + lote 10 (29 sep 2026, José GO
+ * vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -30,6 +31,8 @@
  * `como-usar-el-remarketing-para-tener-mas-clientes`.
  * 29 sep 2026 (José GO vía Diseño 22:38): LwGzTFJswO canónico en
  * `estrategia-de-email-marketing`.
+ * 29 sep 2026 (José GO vía Diseño 22:39): iGo8Tmd3uK canónico en
+ * `la-nueva-gestion-de-google-ads`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -79,6 +82,9 @@ export const BLOG_COVER_OVERRIDES = {
   // lote 9 (29 sep 2026, José GO vía Diseño 22:38)
   'estrategia-de-email-marketing':
     '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png',
+  // lote 10 (29 sep 2026, José GO vía Diseño 22:39)
+  'la-nueva-gestion-de-google-ads':
+    '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -90,7 +96,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1–9. */
+/** Prefer the local Magnific cover when the slug is in lote 1–10. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',
