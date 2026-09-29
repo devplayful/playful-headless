@@ -93,6 +93,13 @@ const LOTE_9 = [
   ],
 ];
 
+const LOTE_10 = [
+  [
+    'la-nueva-gestion-de-google-ads',
+    '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png',
+  ],
+];
+
 function functionBody(source, name) {
   const start = source.indexOf(`export async function ${name}`);
   assert.notEqual(start, -1, `missing ${name}`);
@@ -185,11 +192,20 @@ test('lote 8 maps ovxxg2H829 without removing prior lotes', () => {
 });
 
 test('lote 9 maps LwGzTFJswO without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 28);
   assert.equal(LOTE_9.length, 1);
   assertMappedCovers(LOTE_9);
   assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5, ...LOTE_6, ...LOTE_7, ...LOTE_8]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 10 maps iGo8Tmd3uK without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 29);
+  assert.equal(LOTE_10.length, 1);
+  assertMappedCovers(LOTE_10);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-iGo8Tmd3uK.png')));
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5, ...LOTE_6, ...LOTE_7, ...LOTE_8, ...LOTE_9]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -281,6 +297,35 @@ test('79TnhawJAL is exclusive to analitica-web-que-es-como-puede-ayudar-a-mi-mar
   assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
   const upload = await readFile(join(root, 'public/uploads/cover-79TnhawJAL.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('iGo8Tmd3uK is exclusive to la-nueva-gestion-de-google-ads', async () => {
+  const path = '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png';
+  assert.equal(BLOG_COVER_OVERRIDES['la-nueva-gestion-de-google-ads'], path);
+  assert.equal(blogCoverForSlug('la-nueva-gestion-de-google-ads'), path);
+  const pmaxOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('iGo8Tmd3uK'))
+    .map(([slug]) => slug);
+  assert.deepEqual(pmaxOwners, ['la-nueva-gestion-de-google-ads']);
+  const emailOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('LwGzTFJswO'))
+    .map(([slug]) => slug);
+  assert.deepEqual(emailOwners, ['estrategia-de-email-marketing']);
+  const remarketingOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('ovxxg2H829'))
+    .map(([slug]) => slug);
+  assert.deepEqual(remarketingOwners, ['como-usar-el-remarketing-para-tener-mas-clientes']);
+  const facebookOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('5j69aiPKxe'))
+    .map(([slug]) => slug);
+  assert.deepEqual(facebookOwners, ['como-crear-anuncios-en-facebook']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-iGo8Tmd3uK.png'));
   assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
   assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
