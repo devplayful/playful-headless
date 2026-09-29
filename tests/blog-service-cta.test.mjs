@@ -48,11 +48,13 @@ test('blog post page renders the mapped CTA after article HTML', () => {
   assert.ok(tagsIdx > ctaIdx, 'CTA must come before tags');
 });
 
-test('mapped service CTA is SSR outside BlogPostContent so curl sees href', () => {
-  const beforeLoader = blogPage.slice(0, blogPage.indexOf('<BlogPostContent'));
-  assert.match(beforeLoader, /data-playful-service-cta/);
-  assert.match(beforeLoader, /<a href=\{serviceCta\.href\}>/);
-  assert.match(beforeLoader, /\{serviceCta\.label\}/);
+test('mapped service CTA and article HTML are not gated behind a client loader', () => {
+  assert.doesNotMatch(blogPage, /BlogPostContent|BlogLoader|Cargando artículo/);
+  assert.doesNotMatch(blogPage, /^['"]use client['"]/m);
+  assert.match(blogPage, /data-playful-service-cta/);
+  assert.match(blogPage, /<a href=\{serviceCta\.href\}>/);
+  assert.match(blogPage, /\{serviceCta\.label\}/);
+  assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
 });
 
 test('post canonical stays on the blog post, not a service landing', () => {
