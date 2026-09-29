@@ -170,6 +170,8 @@ const expectedTitles = {
     'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
   '/agencia-seo':
     'Agencia SEO para ecommerce que ya vende | Playful Agency',
+  '/agencia-sem':
+    'Agencia SEM para ecommerce que ya invierte en ads | Playful Agency',
   '/agencia-shopify':
     'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':
@@ -244,6 +246,25 @@ assert.match(seoHtml, /Agenda tu llamada diagnóstica/);
 assert.match(seoHtml, /href=["']\/reunion-playful["']/);
 assert.doesNotMatch(seoHtml, /PrimeShoes/i);
 
+const semResponse = await request('/agencia-sem', { redirect: 'follow' });
+assert.equal(semResponse.status, 200, '/agencia-sem should return 200');
+const semHtml = await semResponse.text();
+const semCanonicals = [...semHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(semCanonicals.length, 1, '/agencia-sem should emit exactly one canonical');
+assert.equal(semCanonicals[0][1], 'https://playfulagency.com/agencia-sem');
+assert.match(
+  semHtml,
+  /name=["']description["'][^>]*content=["']Agencia SEM para D2C que ya gasta en Shopping, PMax y feed\./i,
+);
+assert.match(semHtml, /"@type"\s*:\s*"FAQPage"/);
+assert.match(
+  semHtml,
+  /<h1[^>]*>SEM para ecommerce: Shopping y paid search con control de margen<\/h1>/,
+);
+assert.match(semHtml, /Agenda tu llamada/);
+assert.match(semHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(semHtml, /PrimeShoes/i);
+
 function extractElementorContent(html) {
   const pageIdx = html.search(/\bplayful-wp-page\b/);
   const endIdx = html.indexOf('id="playful-qa2-ssr"');
@@ -253,7 +274,6 @@ function extractElementorContent(html) {
 
 const serviceBookingPaths = [
   '/agencia-e-commerce',
-  '/agencia-sem',
   '/agencia-diseno-web',
 ];
 for (const pathname of serviceBookingPaths) {
