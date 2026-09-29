@@ -21,23 +21,6 @@ export default function PoliticaDePrivacidad() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Columna izquierda: textos */}
             <div className="flex flex-col justify-center items-start text-left">
-              {/* Breadcrumb */}
-              <nav className="mb-6 [font-family:var(--font-paytone-one)] text-[28px] leading-[32px] font-normal" aria-label="Breadcrumb">
-                <ol className="flex items-center space-x-2 text-[#4A4453]">
-                  <li>
-                    <a href="/" className="hover:text-[#440099] transition-colors">
-                      Home
-                    </a>
-                  </li>
-                  <li>
-                    <span className="mx-2">&gt;</span>
-                  </li>
-                  <li>
-                    <span className="text-[#440099] font-normal">Política de Privacidad</span>
-                  </li>
-                </ol>
-              </nav>
-
             <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
             <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Protegemos tu Identidad: Seguridad y Confianza para Tus Datos</h2>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px] mb-4">

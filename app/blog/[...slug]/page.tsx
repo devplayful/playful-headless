@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -90,10 +90,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const relatedPosts = excludeCurrentBlogPost(latestRelated, {
-    slug: post.slug,
-    id: post.id,
-  });
+  const relatedPosts = excludeCurrentBlogPost(
+    await getRelatedBlogPostsForPost(post, { latest: latestRelated }),
+    {
+      slug: post.slug,
+      id: post.id,
+    },
+  );
 
   const postCategory = getPrimaryCategorySlug(post);
 
