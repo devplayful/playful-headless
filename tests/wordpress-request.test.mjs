@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   WordPressUpstreamError,
   isTransientWordPressStatus,
+  resolveWordPressRequestTimeoutMs,
   wordpressFetch,
   wordpressFetchCollection,
 } from '../services/wordpress-request.mjs';
@@ -244,6 +245,20 @@ test('collection caller propagates a persistent 5xx instead of returning empty',
     (error) => error instanceof WordPressUpstreamError && error.status === 500,
   );
   assert.equal(calls, 3);
+});
+
+test('keeps the 8s runtime deadline and raises it only for next build', () => {
+  assert.equal(resolveWordPressRequestTimeoutMs({}), 8_000);
+  assert.equal(resolveWordPressRequestTimeoutMs({
+    NEXT_PHASE: 'phase-production-build',
+  }), 20_000);
+  assert.equal(resolveWordPressRequestTimeoutMs({
+    NEXT_PHASE: 'phase-production-build',
+    WORDPRESS_REQUEST_TIMEOUT_MS: '25000',
+  }), 25_000);
+  assert.equal(resolveWordPressRequestTimeoutMs({
+    WORDPRESS_REQUEST_TIMEOUT_MS: '0',
+  }), 8_000);
 });
 
 test('classifies only retry-safe statuses as transient', () => {

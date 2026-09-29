@@ -2,6 +2,23 @@ const DEFAULT_MAX_ATTEMPTS = 3;
 const DEFAULT_BASE_DELAY_MS = 150;
 const DEFAULT_MAX_DELAY_MS = 1_000;
 const DEFAULT_TIMEOUT_MS = 8_000;
+const BUILD_TIMEOUT_MS = 20_000;
+
+/**
+ * Resolve the WordPress REST deadline.
+ *
+ * Runtime stays at 8s. `next build` uses 20s because the deadline covers
+ * fetch + retries + backoff, and the heaviest build collection
+ * (`posts?_embed=wp:featuredmedia,wp:term,author`, ~3.5 MB) already takes
+ * ~3.4s on a healthy origin — a single transient retry would miss 8s.
+ * `WORDPRESS_REQUEST_TIMEOUT_MS` wins when set to a positive number.
+ */
+export function resolveWordPressRequestTimeoutMs(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_REQUEST_TIMEOUT_MS);
+  if (Number.isFinite(fromEnv) && fromEnv > 0) return fromEnv;
+  if (env.NEXT_PHASE === 'phase-production-build') return BUILD_TIMEOUT_MS;
+  return DEFAULT_TIMEOUT_MS;
+}
 
 const TRANSIENT_STATUSES = new Set([408, 425, 429]);
 
@@ -76,7 +93,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
   const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
   const baseDelayMs = options.baseDelayMs ?? DEFAULT_BASE_DELAY_MS;
   const maxDelayMs = options.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
-  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timeoutMs = options.timeoutMs ?? resolveWordPressRequestTimeoutMs();
   const url = requestUrl(input);
   const requestSignal = init.signal ?? (
     typeof Request !== 'undefined' && input instanceof Request ? input.signal : undefined
