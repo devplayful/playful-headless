@@ -20,9 +20,14 @@ export const RELATED_BLOG_CATEGORY_FETCH_PER_PAGE = 20;
 export const RELATED_BLOG_CATEGORY_PER_PAGE = RELATED_BLOG_FETCH_COUNT;
 /** Next Data Cache TTL for the lite category fetch. Empty/timeout must not stick for 3600s. */
 export const RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS = 60;
-/** REST `_fields` for related cards. No `_embed`, no Yoast, no content. */
+/** REST `_fields` for the shared related index and lite cards. No `_embed`, no Yoast, no content. */
 export const RELATED_BLOG_POST_FIELDS =
   'id,date,date_gmt,modified,modified_gmt,slug,title,excerpt,featured_media,categories,status';
+/** Shared index lives in Next Data Cache this long. Related pages read it; they do not refetch WP. */
+export const RELATED_BLOG_INDEX_REVALIDATE_SECONDS = 21_600;
+/** WP REST max per_page. Two pages cover the ~103 open posts. */
+export const RELATED_BLOG_INDEX_PER_PAGE = 100;
+export const RELATED_INDEX_UNAVAILABLE = 'RELATED_INDEX_UNAVAILABLE';
 
 export type RelatedPostsCacheEntry<T> = {
   promise: Promise<T>;
@@ -349,4 +354,157 @@ export function resolveRelatedBlogPosts<T extends RelatedBlogCandidate>(
   }
 
   return result;
+}
+
+export type RelatedIndexTerm = {
+  id: number;
+  slug: string;
+  name: string;
+};
+
+export type RelatedIndexPost = RelatedBlogCandidate & {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  dateGmt?: string;
+  modified?: string;
+  modifiedGmt?: string;
+  featuredMediaId?: number;
+  featuredMediaUrl?: string;
+  categoryIds: number[];
+  categorySlug: string;
+  categoryName: string;
+  href: string;
+};
+
+export type RelatedBlogIndex = {
+  posts: RelatedIndexPost[];
+  terms: RelatedIndexTerm[];
+  fetchedAt: number;
+};
+
+export type LastKnownGoodState<T> = {
+  value: T | null;
+};
+
+export function isUsableRelatedIndex(
+  index: RelatedBlogIndex | null | undefined,
+): index is RelatedBlogIndex {
+  return Boolean(index && Array.isArray(index.posts) && index.posts.length > 0);
+}
+
+/**
+ * Keep the last non-empty index. A timeout or `[]` must not overwrite it.
+ */
+export function adoptLastKnownGood<T>(
+  state: LastKnownGoodState<T>,
+  next: T | null | undefined,
+  isUsable: (value: T) => boolean,
+): T | null {
+  if (next != null && isUsable(next)) {
+    state.value = next;
+    return next;
+  }
+  return state.value;
+}
+
+export class RelatedIndexUnavailableError extends Error {
+  constructor(message = RELATED_INDEX_UNAVAILABLE) {
+    super(message);
+    this.name = 'RelatedIndexUnavailableError';
+  }
+}
+
+export type EmptyRelatedBehavior = 'hide' | 'throw';
+
+/**
+ * Empty related during ISR must throw so Next keeps the previous HTML.
+ * Build / first cold / `next dev` hide the block instead of 500.
+ */
+export function emptyRelatedBehavior(
+  options: { phase?: string | null; nodeEnv?: string | null } = {},
+): EmptyRelatedBehavior {
+  const phase = options.phase ?? process.env.NEXT_PHASE ?? '';
+  const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? '';
+  if (phase === 'phase-production-build' || phase === 'phase-export') return 'hide';
+  if (nodeEnv !== 'production') return 'hide';
+  return 'throw';
+}
+
+function termBySlug(terms: RelatedIndexTerm[], slug: string): RelatedIndexTerm | undefined {
+  const wanted = slug.trim();
+  if (!wanted) return undefined;
+  return terms.find((term) => term.slug === wanted);
+}
+
+function timestampMs(value: string | undefined): number {
+  if (!value) return 0;
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+function sortByDateDesc(left: RelatedIndexPost, right: RelatedIndexPost): number {
+  return timestampMs(right.dateGmt || right.date) - timestampMs(left.dateGmt || left.date);
+}
+
+function belongsToCategorySlug(
+  post: RelatedIndexPost,
+  categorySlug: string,
+  categoryId?: number,
+): boolean {
+  const slug = categorySlug.trim();
+  if (categoryId && post.categoryIds.includes(categoryId)) return true;
+  if (slug && (post.categorySlug === slug || post.href.startsWith(`/blog/${slug}/`))) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Field IDs → same URL-category (primary slug first) → latest.
+ * Always published, never the current post, capped at 6.
+ */
+export function selectRelatedFromIndex(
+  index: RelatedBlogIndex,
+  input: {
+    current: RelatedBlogPostIdentity;
+    fieldIds?: Array<number | string | null | undefined>;
+    categorySlug?: string | null;
+    isUsable?: (post: RelatedIndexPost) => boolean;
+    limit?: number;
+  },
+): RelatedIndexPost[] {
+  const published = index.posts.filter((post) => isPublishedCandidate(post, input.isUsable));
+  const postsById = new Map(published.map((post) => [post.id, post]));
+  const categorySlug = (input.categorySlug || '').trim();
+  const categoryId = termBySlug(index.terms, categorySlug)?.id
+    ?? pickRelatedCategoryId(
+      published.flatMap((post) => {
+        if (post.categorySlug !== categorySlug) return [];
+        return post.categoryIds.map((id) => ({ id, slug: post.categorySlug }));
+      }),
+      categorySlug,
+    );
+
+  const sameCategory = published
+    .filter((post) => belongsToCategorySlug(post, categorySlug, categoryId))
+    .sort((left, right) => {
+      const leftPrimary = left.categorySlug === categorySlug ? 0 : 1;
+      const rightPrimary = right.categorySlug === categorySlug ? 0 : 1;
+      if (leftPrimary !== rightPrimary) return leftPrimary - rightPrimary;
+      return sortByDateDesc(left, right);
+    });
+  const latest = published.slice().sort(sortByDateDesc);
+
+  return resolveRelatedBlogPosts({
+    current: input.current,
+    fieldIds: input.fieldIds,
+    postsById,
+    sameCategory,
+    latest,
+    limit: input.limit ?? RELATED_BLOG_CARD_COUNT,
+    isUsable: input.isUsable,
+  });
 }

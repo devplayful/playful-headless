@@ -12,13 +12,21 @@ const {
   RELATED_BLOG_FETCH_TIMEOUT_MS,
   RELATED_BLOG_FIELD_LIMIT,
   RELATED_BLOG_FIELD_NAME,
+  RELATED_BLOG_INDEX_PER_PAGE,
+  RELATED_BLOG_INDEX_REVALIDATE_SECONDS,
   RELATED_BLOG_POST_FIELDS,
+  RELATED_INDEX_UNAVAILABLE,
+  RelatedIndexUnavailableError,
+  adoptLastKnownGood,
+  emptyRelatedBehavior,
   excludeCurrentBlogPost,
   fetchWithRelatedPostsTtl,
   isRelatedPostsCacheFresh,
+  isUsableRelatedIndex,
   parseRelatedPostIds,
   pickRelatedCategoryId,
   resolveRelatedBlogPosts,
+  selectRelatedFromIndex,
   shouldCacheRelatedPostsResult,
   withRelatedFetchTimeout,
 } = await import('../lib/blog-related-posts.ts');
@@ -167,20 +175,18 @@ test('pickRelatedCategoryId prefers the URL slug on multi-category posts', () =>
   assert.equal(pickRelatedCategoryId(undefined, 'pautas-digitales'), undefined);
 });
 
-test('blog post page fetches one extra and filters the current slug/id', () => {
-  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT/);
-  assert.match(blogPage, /fetchWithRelatedPostsTtl\(latestRelatedCache/);
-  assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
+test('blog post page resolves related from the shared index, not a live WP fetch', () => {
   assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
   assert.match(blogPage, /categorySlug: category/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
-  assert.match(blogPage, /withRelatedFetchTimeout/);
-  assert.match(blogPage, /RELATED_BLOG_FETCH_TIMEOUT_MS/);
-  assert.match(blogPage, /catch \{/);
+  assert.match(blogPage, /emptyRelatedBehavior\(\)/);
+  assert.match(blogPage, /RelatedIndexUnavailableError/);
+  assert.match(blogPage, /relatedPosts\.length > 0/);
   assert.match(blogPage, /getBlogPosts\(page, perPage\)/);
-  assert.doesNotMatch(blogPage, /getLatestBlogPosts\(6\)/);
+  assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
+  assert.doesNotMatch(blogPage, /fetchLatestRelatedBlogPosts/);
   assert.doesNotMatch(blogPage, /Cargando artículos/);
 });
 
@@ -346,11 +352,11 @@ test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacio
     'utf8',
   );
   assert.match(wordpress, /parseRelatedPostIds\(post\)/);
-  assert.match(wordpress, /getBlogPostsByIds\(missingFieldIds/);
+  assert.match(wordpress, /getBlogRelatedIndex\(/);
+  assert.match(wordpress, /selectRelatedFromIndex\(/);
   assert.match(wordpress, /withRelatedFetchTimeout/);
   assert.match(wordpress, /RELATED_BLOG_FETCH_TIMEOUT_MS/);
   assert.match(wordpress, /acf_format=standard/);
-  assert.match(wordpress, /relatedCacheFor\(`cat:\$\{categoryId\}`\)/);
   assert.match(wordpress, /revalidate: 3600/);
   assert.match(wordpress, /status', 'publish'/);
   assert.match(plugin, /register_post_meta\('post', PLAYFUL_RELATED_META_KEY/);
@@ -359,33 +365,36 @@ test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacio
   assert.match(plugin, /show_in_rest/);
 });
 
-test('category related fetch is lite and does not cache timeout empties for 3600s', () => {
+test('shared related index is lite, long-lived and last-known-good', () => {
   const wordpress = readFileSync(
     new URL('../services/wordpress.ts', import.meta.url),
     'utf8',
   );
+  assert.equal(RELATED_BLOG_INDEX_PER_PAGE, 100);
+  assert.equal(RELATED_BLOG_INDEX_REVALIDATE_SECONDS, 21_600);
+  assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
+  assert.doesNotMatch(RELATED_BLOG_POST_FIELDS, /content|yoast|_links|_embed/);
+  assert.match(wordpress, /RELATED_BLOG_INDEX_REVALIDATE_SECONDS/);
+  assert.match(wordpress, /RELATED_BLOG_INDEX_PER_PAGE/);
+  assert.match(wordpress, /RELATED_BLOG_POST_FIELDS/);
+  assert.match(wordpress, /adoptLastKnownGood\(/);
+  assert.match(wordpress, /isUsableRelatedIndex\(/);
+  const indexStart = wordpress.indexOf('async function loadBlogRelatedIndex');
+  const indexEnd = wordpress.indexOf('export async function getRelatedBlogPostsForPost');
+  assert.ok(indexStart >= 0 && indexEnd > indexStart);
+  const indexLoader = wordpress.slice(indexStart, indexEnd);
+  assert.doesNotMatch(indexLoader, /_embed/);
+  assert.match(indexLoader, /_fields/);
+  assert.match(indexLoader, /orderby/);
+  assert.match(indexLoader, /status/);
+  const resolveStart = wordpress.indexOf('export async function getRelatedBlogPostsForPost');
+  const resolveFn = wordpress.slice(resolveStart, resolveStart + 1200);
+  assert.match(resolveFn, /selectRelatedFromIndex/);
+  assert.doesNotMatch(resolveFn, /getRelatedBlogPostsByCategory/);
+  assert.doesNotMatch(resolveFn, /getBlogPostsByIds/);
   assert.equal(RELATED_BLOG_CATEGORY_FETCH_PER_PAGE, 20);
   assert.equal(RELATED_BLOG_CATEGORY_PER_PAGE, 7);
   assert.equal(RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS, 60);
-  assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
-  assert.doesNotMatch(RELATED_BLOG_POST_FIELDS, /content|yoast|_links/);
-  assert.match(wordpress, /getRelatedBlogPostsByCategory\(categoryId/);
-  assert.match(wordpress, /excludeId: current.id/);
-  assert.match(wordpress, /pickRelatedCategoryId\(post\.categories, options\.categorySlug\)/);
-  assert.match(wordpress, /RELATED_BLOG_POST_FIELDS/);
-  assert.match(wordpress, /RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS/);
-  assert.match(wordpress, /RELATED_BLOG_CATEGORY_FETCH_PER_PAGE/);
-  const liteStart = wordpress.indexOf('export async function getRelatedBlogPostsByCategory');
-  const liteEnd = wordpress.indexOf('export async function getBlogPostsByIds');
-  assert.ok(liteStart >= 0 && liteEnd > liteStart);
-  const lite = wordpress.slice(liteStart, liteEnd);
-  assert.doesNotMatch(lite, /_embed/);
-  assert.doesNotMatch(lite, /perPage \+ 40/);
-  assert.match(lite, /_fields/);
-  assert.match(lite, /exclude/);
-  assert.match(lite, /orderby/);
-  assert.match(lite, /requestedSlug/);
-  assert.match(lite, /startsWith\(prefix\)/);
 });
 
 test('blog-posts API excludes via query and keeps six cards', () => {
@@ -395,4 +404,122 @@ test('blog-posts API excludes via query and keeps six cards', () => {
   assert.match(relatedSection, /params\.set\('exclude'/);
   assert.match(relatedSection, /excludeCurrentBlogPost\(arr/);
   assert.match(relatedSection, /Cargando artículos…/);
+  assert.match(relatedSection, /posts\.length === 0/);
+  assert.match(relatedSection, /return null/);
+});
+
+function indexPost(partial) {
+  return {
+    title: partial.slug,
+    excerpt: '',
+    date: '2026-01-01T00:00:00.000Z',
+    categoryIds: [],
+    categorySlug: 'tecnologia',
+    categoryName: 'Tecnología',
+    href: `/blog/tecnologia/${partial.slug}`,
+    status: 'publish',
+    ...partial,
+  };
+}
+
+test('selectRelatedFromIndex prefers field IDs, then URL category, then latest', () => {
+  const index = {
+    fetchedAt: 1,
+    terms: [
+      { id: 25, slug: 'pautas-digitales', name: 'Pautas Digitales' },
+      { id: 51, slug: 'mas-vistos', name: 'Más vistos' },
+      { id: 10, slug: 'tecnologia', name: 'Tecnología' },
+    ],
+    posts: [
+      indexPost({
+        id: 1,
+        slug: 'manual-pautas',
+        categoryIds: [25],
+        categorySlug: 'pautas-digitales',
+        href: '/blog/pautas-digitales/manual-pautas',
+        date: '2026-01-10T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 2,
+        slug: 'pautas-reciente',
+        categoryIds: [25],
+        categorySlug: 'pautas-digitales',
+        href: '/blog/pautas-digitales/pautas-reciente',
+        date: '2026-02-01T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 3,
+        slug: 'pautas-viejo',
+        categoryIds: [25],
+        categorySlug: 'pautas-digitales',
+        href: '/blog/pautas-digitales/pautas-viejo',
+        date: '2025-01-01T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 4,
+        slug: 'mixto-mas-vistos',
+        categoryIds: [51, 25],
+        categorySlug: 'mas-vistos',
+        href: '/blog/mas-vistos/mixto-mas-vistos',
+        date: '2026-03-01T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 5,
+        slug: 'tech-latest',
+        categoryIds: [10],
+        date: '2026-04-01T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 6,
+        slug: 'tech-two',
+        categoryIds: [10],
+        date: '2026-03-15T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 7,
+        slug: 'tech-three',
+        categoryIds: [10],
+        date: '2026-03-10T00:00:00.000Z',
+      }),
+      indexPost({
+        id: 99,
+        slug: 'current-pautas',
+        categoryIds: [25],
+        categorySlug: 'pautas-digitales',
+        href: '/blog/pautas-digitales/current-pautas',
+        date: '2026-05-01T00:00:00.000Z',
+      }),
+    ],
+  };
+
+  const related = selectRelatedFromIndex(index, {
+    current: { id: 99, slug: 'current-pautas' },
+    fieldIds: [1],
+    categorySlug: 'pautas-digitales',
+  });
+  assert.equal(related[0].slug, 'manual-pautas');
+  assert.deepEqual(
+    related.slice(1, 4).map((post) => post.slug),
+    ['pautas-reciente', 'pautas-viejo', 'mixto-mas-vistos'],
+  );
+  assert.equal(related.some((post) => post.slug === 'current-pautas'), false);
+  assert.equal(related.length, 6);
+  assert.equal(
+    related.filter((post) => post.categoryIds.includes(25) || post.categorySlug === 'pautas-digitales').length,
+    4,
+  );
+});
+
+test('last-known-good index ignores empty refreshes and empty related hides or throws', () => {
+  const good = { posts: [indexPost({ id: 1, slug: 'ok' })], terms: [], fetchedAt: 1 };
+  const state = { value: null };
+  assert.equal(isUsableRelatedIndex(null), false);
+  assert.equal(isUsableRelatedIndex({ posts: [], terms: [], fetchedAt: 1 }), false);
+  assert.equal(adoptLastKnownGood(state, good, isUsableRelatedIndex)?.posts[0].slug, 'ok');
+  assert.equal(adoptLastKnownGood(state, { posts: [], terms: [], fetchedAt: 2 }, isUsableRelatedIndex)?.posts[0].slug, 'ok');
+  assert.equal(adoptLastKnownGood(state, null, isUsableRelatedIndex)?.posts[0].slug, 'ok');
+  assert.equal(emptyRelatedBehavior({ phase: 'phase-production-build', nodeEnv: 'production' }), 'hide');
+  assert.equal(emptyRelatedBehavior({ phase: '', nodeEnv: 'development' }), 'hide');
+  assert.equal(emptyRelatedBehavior({ phase: '', nodeEnv: 'production' }), 'throw');
+  assert.equal(new RelatedIndexUnavailableError().message, RELATED_INDEX_UNAVAILABLE);
 });
