@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -25,34 +25,12 @@ import {
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import {
-  RELATED_BLOG_FETCH_COUNT,
-  RELATED_BLOG_FETCH_TIMEOUT_MS,
+  RelatedIndexUnavailableError,
+  emptyRelatedBehavior,
   excludeCurrentBlogPost,
-  fetchWithRelatedPostsTtl,
-  withRelatedFetchTimeout,
-  type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
-
-type LatestRelatedPost = Awaited<ReturnType<typeof getLatestBlogPosts>>[number];
-
-const latestRelatedCache: RelatedPostsCacheState<LatestRelatedPost[]> = { current: null };
-
-/** Dedupe the latest-7 WP fetch across SSG pages; TTL ≤ 3600s in runtime. */
-function fetchLatestRelatedBlogPosts() {
-  return fetchWithRelatedPostsTtl(latestRelatedCache, () =>
-    withRelatedFetchTimeout(
-      (signal) =>
-        getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
-          signal,
-          timeoutMs: RELATED_BLOG_FETCH_TIMEOUT_MS,
-          maxAttempts: 1,
-        }),
-      [],
-    ),
-  );
-}
 
 export async function generateStaticParams() {
   // WP REST and getBlogPosts clamp per_page at 100. Raising the argument
@@ -102,32 +80,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const [post, latestRelated] = await Promise.all([
-    getBlogPostBySlug(postSlug),
-    fetchLatestRelatedBlogPosts(),
-  ]);
+  const post = await getBlogPostBySlug(postSlug);
   
   if (!post) {
     notFound();
   }
 
-  let relatedPosts = excludeCurrentBlogPost(latestRelated, {
-    slug: post.slug,
-    id: post.id,
-  });
-  try {
-    relatedPosts = excludeCurrentBlogPost(
-      await getRelatedBlogPostsForPost(post, {
-        latest: latestRelated,
-        categorySlug: category,
-      }),
-      {
-        slug: post.slug,
-        id: post.id,
-      },
-    );
-  } catch {
-    // Related WordPress lookups must never fail the article.
+  const relatedPosts = excludeCurrentBlogPost(
+    await getRelatedBlogPostsForPost(post, {
+      categorySlug: category,
+    }),
+    {
+      slug: post.slug,
+      id: post.id,
+    },
+  );
+  if (relatedPosts.length === 0 && emptyRelatedBehavior() === 'throw') {
+    throw new RelatedIndexUnavailableError();
   }
 
   const postCategory = getPrimaryCategorySlug(post);
@@ -417,7 +386,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
       </main>
       
-      {/* Sección de artículos relacionados */}
+      {/* Sección de artículos relacionados: never an empty carousel. */}
+      {relatedPosts.length > 0 ? (
       <div className="mt-16">
         <BlogRelatedPostsSection
           posts={relatedPosts}
@@ -425,6 +395,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           excludeId={post.id}
         />
       </div>
+      ) : null}
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
