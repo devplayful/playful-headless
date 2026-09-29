@@ -165,6 +165,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     publisherLogo: ORGANIZATION_SCHEMA.logo,
   });
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
+  const visibleDateLabel = editorial?.updatedAtLabel || formatDate(post.date);
   const bylineName =
     post.author && typeof post.author === 'object'
       ? editorial
@@ -192,7 +193,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Columna izquierda: Título y resumen */}
             <div>
               <div className="flex flex-wrap items-center space-x-2 mb-4">
-                <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
+                <span className="text-sm text-gray-500">{visibleDateLabel}</span>
                 {editorial ? (
                   <>
                     <span className="text-gray-300">•</span>
