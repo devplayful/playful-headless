@@ -1,0 +1,555 @@
+.page {
+  --pasarela-purple: #9139ff;
+  --pasarela-purple-dark: #440099;
+  --pasarela-mint: #dcf8f5;
+  --pasarela-lavender: #e9d7ff;
+  --pasarela-teal: #95eae2;
+  --pasarela-cream: #fff7db;
+  --pasarela-form-mint: #b9f1eb;
+  --pasarela-text: #453a53;
+  --pasarela-cta: #2cd5c4;
+}
+
+.sectionInner {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 768px) {
+  .sectionInner {
+    padding-inline: 1.5rem;
+  }
+}
+
+.heroBand {
+  background-color: var(--pasarela-purple);
+  background-image: url('/images/pasarela-de-pagos-venezuela/hero-pattern.png');
+  background-size: 1440px auto;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding: 5.125rem 0 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .heroBand {
+    min-height: 577px;
+    box-sizing: border-box;
+  }
+
+  .heroBand .sectionInner {
+    width: 100%;
+  }
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 437px);
+    gap: 2.5rem;
+    align-items: center;
+  }
+}
+
+.heroCopy {
+  max-width: 42rem;
+}
+
+.heroEyebrow {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #f7f7f7;
+  margin-bottom: 1.25rem;
+}
+
+.heroTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.05;
+  font-weight: 400;
+  color: #f7f7f7;
+  margin-bottom: 1.25rem;
+}
+
+.heroBody {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #f7f7f7;
+  margin-bottom: 1.75rem;
+}
+
+.heroArt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .heroArt {
+    justify-content: flex-end;
+  }
+}
+
+.heroArt img {
+  width: min(100%, 437px);
+  height: auto;
+}
+
+.introBand {
+  background-color: var(--pasarela-purple);
+  background-image: url('/images/pasarela-de-pagos-venezuela/hero-pattern.png');
+  background-size: 1440px auto;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding: 2.5rem 0;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .introBand {
+    min-height: 237px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.introInner {
+  width: 100%;
+}
+
+.introTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  color: #f7f7f7;
+  max-width: 75rem;
+  margin: 0 auto 1rem;
+}
+
+.introBody {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #f7f7f7;
+  max-width: 75rem;
+  margin: 0 auto;
+}
+
+.benefitsBand {
+  background-color: var(--pasarela-mint);
+  background-image: url('/images/pasarela-de-pagos-venezuela/hero-pattern.png');
+  background-size: 1440px auto;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding: 3rem 0 3.5rem;
+}
+
+@media (min-width: 1024px) {
+  .benefitsBand {
+    box-sizing: border-box;
+  }
+}
+
+.benefitsTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.8125rem);
+  line-height: 1.1;
+  color: var(--pasarela-text);
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .benefitsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.benefitCard {
+  text-align: center;
+}
+
+.benefitArt {
+  width: min(100%, 300px);
+  height: auto;
+  margin: 0 auto 1.25rem;
+  display: block;
+  object-fit: contain;
+}
+
+.benefitHeading {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--pasarela-text);
+  margin-bottom: 1rem;
+}
+
+.benefitBody {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+  margin-bottom: 1.25rem;
+}
+
+.benefitLink {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pasarela-purple-dark);
+  text-decoration: none;
+}
+
+.benefitLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.painBand {
+  background-color: var(--pasarela-lavender);
+  background-image: url('/images/pasarela-de-pagos-venezuela/hero-pattern.png');
+  background-size: 1440px auto;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding: 3rem 0 3.5rem;
+}
+
+.painTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.8125rem);
+  line-height: 1.1;
+  color: var(--pasarela-text);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.painIntro {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+  text-align: center;
+  max-width: 46rem;
+  margin: 0 auto 2.5rem;
+}
+
+.painGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .painGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.painCard {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 16px rgba(69, 58, 83, 0.08);
+}
+
+.painQuote {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-purple-dark);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.painAnswer {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+}
+
+.painCtaWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.painCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pasarela-purple-dark);
+  color: #ffffff;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.painCta:hover {
+  transform: scale(1.03);
+  background: #5b21b6;
+}
+
+.faqBand {
+  background-color: var(--pasarela-teal);
+  padding: 3rem 0 3.5rem;
+}
+
+.faqStack {
+  max-width: 1180px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(69, 58, 83, 0.12);
+}
+
+.faqItem:last-child {
+  border-bottom: none;
+}
+
+.faqSummary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #ffffff;
+  padding: 1.25rem 1.5rem;
+  color: var(--pasarela-text);
+}
+
+.faqSummary::-webkit-details-marker {
+  display: none;
+}
+
+.faqItem[open] > .faqSummary {
+  background: var(--pasarela-purple-dark);
+  color: #f7f7f7;
+}
+
+.faqQuestion {
+  margin: 0;
+  padding-right: 0.5rem;
+  text-align: left;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .faqQuestion {
+    font-size: 1.125rem;
+  }
+}
+
+.faqIcon {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.faqItem[open] > .faqSummary .faqIcon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
+}
+
+.faqAnswer {
+  background: var(--pasarela-lavender);
+  padding: 1.25rem 1.5rem;
+}
+
+.faqAnswerText {
+  margin: 0;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+}
+
+.faqTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.8125rem);
+  line-height: 1.1;
+  color: var(--pasarela-text);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.liveBlock {
+  padding: 3rem 0;
+}
+
+.bannerBand {
+  padding: 0 0 5rem;
+}
+
+.bannerGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 1180px;
+  margin: 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(69, 58, 83, 0.12);
+}
+
+@media (min-width: 1024px) {
+  .bannerGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.bannerLeft {
+  background: var(--pasarela-cream);
+  padding: 2.5rem 1.5rem;
+}
+
+.bannerRight {
+  background: var(--pasarela-form-mint);
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+}
+
+.bannerTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  color: var(--pasarela-text);
+  margin-bottom: 1rem;
+}
+
+.bannerBody {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+  margin-bottom: 1.5rem;
+}
+
+.bannerIllustration {
+  width: min(100%, 520px);
+  height: auto;
+  display: block;
+}
+
+.bannerRightTitle {
+  font-family: var(--font-paytone-one), var(--font-montserrat), sans-serif;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--pasarela-text);
+}
+
+.bannerRightBody {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pasarela-text);
+  max-width: 22rem;
+}
+
+.bannerContactLink {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pasarela-purple-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pasarela-purple-dark);
+  color: #ffffff;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-weight: 600;
+  padding: 0.875rem 1.75rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .ctaButton {
+    font-size: 1rem;
+    line-height: normal;
+    padding: 1rem 2rem;
+  }
+}
+
+.ctaButton:hover {
+  transform: scale(1.03);
+  background: #5b21b6;
+}
+
+.heroCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: min(100%, 26.125rem);
+  background: var(--pasarela-cta);
+  color: var(--pasarela-purple-dark);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.375rem;
+  line-height: 1.2;
+  font-weight: 500;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .heroCta {
+    font-size: 1.375rem;
+    padding: 1rem 2.25rem;
+  }
+}
+
+.heroCta:hover {
+  transform: scale(1.03);
+  background: #39ddcb;
+}
