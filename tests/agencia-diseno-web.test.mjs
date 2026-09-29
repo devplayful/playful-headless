@@ -39,25 +39,29 @@ const published = JSON.stringify({
   CASES,
 });
 
-test('title, meta and H1 stay on the production strings', () => {
-  assert.equal(DISENO_META.title, 'Agencia Diseño Web Personalizamos tu Web | Playful Agency');
+test('title, meta and H1 use the proposed SEO strings from the piece', () => {
+  assert.equal(DISENO_META.title, 'Agencia de diseño web para tiendas online | Playful Agency');
   assert.equal(
     DISENO_META.description,
-    'Activa tu presencia en línea con una agencia diseño web que dé vida a tu marca. En Playful Agency, creamos ese sitio web.',
+    'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.',
   );
+  assert.equal(DISENO_META.description.length, 151);
   assert.equal(DISENO_META.path, '/agencia-diseno-web');
-  assert.equal(HERO.h1, 'Agencia de diseño web: Dando vida a tu visión en línea');
+  assert.equal(HERO.h1, 'Diseño de tienda online que convierte visitas en pedidos');
   assert.doesNotMatch(published, /Diseño de tienda online que convierte el tráfico que ya pagas/);
   assert.doesNotMatch(published, /Diseño de tienda online para ecommerce que ya vende/);
   assert.doesNotMatch(published, /para D2C que ya factura/);
 });
 
-test('signed body copy is pasted without pending marks or caps', () => {
+test('proposed body copy is pasted without pending marks or caps', () => {
   assert.match(HERO.body, /página de lista de productos \(PLP\)/);
   assert.match(SCREENS.items[2].body, /Instapago, SITEF, Banesco Panamá, Cashea/);
-  assert.match(SCREENS.items[2].body, /en WooCommerce podemos implementar/);
-  assert.match(PROCESS.intro, /Las propuestas visuales forman parte del trabajo/);
-  assert.match(FAQ_ITEMS[3].answer, /cada proyecto tiene 30 días de garantía después del lanzamiento/);
+  assert.match(SCREENS.items[2].body, /experiencia comprobada implementando métodos de pago venezolanos/);
+  assert.match(SCREENS.items[2].body, /Los pagos venezolanos también los estamos implementando en Medusa/);
+  assert.match(PLATFORMS.items[0].body, /En el checkout de Shopify trabajamos con métodos de pago internacionales/);
+  assert.match(PROCESS.intro, /Te presentamos dos propuestas visuales para que elijas con nosotros/);
+  assert.match(FAQ_ITEMS[3].answer, /tienes 30 días de garantía desde que te entregamos la tienda/);
+  assert.match(FAQ_ITEMS[1].answer, /ya estamos trabajando con Medusa en un proyecto en curso/);
   assert.match(PLATFORMS.items[1].body, /SoyTechno/);
   assert.doesNotMatch(published, /PENDIENTE/);
   assert.doesNotMatch(copySource, /PENDIENTE/);
@@ -67,7 +71,7 @@ test('signed body copy is pasted without pending marks or caps', () => {
   assert.doesNotMatch(landing, /\[[A-ZÁÉÍÓÚÑÜ][^\]\n]{8,}\](?!\()/);
 });
 
-test('FAQPage JSON-LD uses the seven signed questions and answers exactly', () => {
+test('FAQPage JSON-LD uses the seven proposed questions and answers exactly', () => {
   const jsonLd = buildFaqPageJsonLd();
   assert.equal(jsonLd['@type'], 'FAQPage');
   assert.equal(jsonLd.mainEntity.length, 7);
@@ -81,7 +85,7 @@ test('FAQPage JSON-LD uses the seven signed questions and answers exactly', () =
   );
 });
 
-test('landing keeps one H1, signed CTAs and the copy.ts pattern', () => {
+test('landing keeps one H1, the proposed CTAs and the copy.ts pattern', () => {
   assert.equal((landing.match(/<h1\b/g) || []).length, 1);
   assert.match(landing, /\{HERO\.h1\}/);
   assert.match(landing, /\{CTA\.h2\}/);

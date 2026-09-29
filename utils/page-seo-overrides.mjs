@@ -14,6 +14,8 @@ export const PAGE_TITLE_OVERRIDES = {
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
   'pasarela-de-pagos-venezuela':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  'agencia-diseno-web':
+    'Agencia de diseño web para tiendas online | Playful Agency',
 };
 
 export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
@@ -30,6 +32,8 @@ export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
     'Agencia e-Commerce para marcas D2C que ya venden y quieren crecer con margen. Ordenamos e implementamos tu catálogo en Shopify o WooCommerce. Agenda tu llamada diagnóstica.',
+  'agencia-diseno-web':
+    'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDescription) {

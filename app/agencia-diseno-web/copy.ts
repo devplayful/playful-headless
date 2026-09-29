@@ -1,12 +1,12 @@
 export const DISENO_META = {
-  title: 'Agencia Diseño Web Personalizamos tu Web | Playful Agency',
+  title: 'Agencia de diseño web para tiendas online | Playful Agency',
   description:
-    'Activa tu presencia en línea con una agencia diseño web que dé vida a tu marca. En Playful Agency, creamos ese sitio web.',
+    'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.',
   path: '/agencia-diseno-web',
 } as const;
 
 export const HERO = {
-  h1: 'Agencia de diseño web: Dando vida a tu visión en línea',
+  h1: 'Diseño de tienda online que convierte visitas en pedidos',
   body: 'Tu tienda recibe visitas, pero el diseño no las convierte en pedidos. Diseñamos o rediseñamos la página de lista de productos (PLP), la página de detalle de producto (PDP) y el checkout para que cada clic acerque a tu cliente a la compra, en Shopify o WooCommerce.',
   cta: 'Agenda tu llamada diagnóstica',
 } as const;
@@ -33,7 +33,7 @@ export const SCREENS = {
       body: '**PDP (página de detalle de producto).** La ficha de producto es donde tu cliente decide si compra o se va. Diseñamos plantillas con galería, información comercial, selección de variantes y contenido que resuelve objeciones. En el caso de [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce), las fichas incluyen galería, descripción, información nutricional y opciones de producto dentro de Shopify, porque en una marca de bebidas el contenido nutricional es parte de la decisión de compra.',
     },
     {
-      body: '**Carrito y checkout.** Son los pasos donde se concentran los abandonos. Reducimos campos, aclaramos costos y quitamos distracciones para que quien ya decidió comprar no tenga motivos para salir. También cuenta cómo se confirma el pago, porque hay tiendas que todavía validan cada pago a mano y el cliente se queda esperando. Si vendes en Venezuela, en WooCommerce podemos implementar una cantidad importante de métodos de pago automáticos, como Instapago, SITEF, Banesco Panamá, Cashea y Zelle con validación automática para marcas que ya reciben pagos por Zelle, así que el pedido se confirma sin que nadie tenga que revisar cada transferencia.',
+      body: '**Carrito y checkout.** Son los pasos donde se concentran los abandonos. Reducimos campos, aclaramos costos y quitamos distracciones para que quien ya decidió comprar no tenga motivos para salir. También cuenta cómo se confirma el pago, porque hay tiendas que todavía validan cada pago a mano y el cliente se queda esperando. Si vendes en Venezuela, tenemos experiencia comprobada implementando métodos de pago venezolanos automáticos en WooCommerce y en apps móviles, como Instapago, SITEF, Banesco Panamá, Cashea y Zelle con validación automática para marcas que ya reciben pagos por Zelle, así que el pedido se confirma sin que nadie tenga que revisar cada transferencia. Los pagos venezolanos también los estamos implementando en Medusa, en un proyecto en curso que todavía no se ha lanzado. En Shopify, nuestra experiencia es con métodos de pago internacionales.',
     },
   ],
   outro:
@@ -46,7 +46,7 @@ export const PLATFORMS = {
     'Trabajamos con Shopify y con WooCommerce porque son las dos plataformas que cubren la mayoría de los casos reales de marcas que venden online, y elegimos una u otra según lo que necesita tu tienda.',
   items: [
     {
-      body: '**Shopify** es donde hemos implementado proyectos como [Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce), con configuración de catálogo por colecciones, variantes, plantillas de producto y vistas responsive para escritorio y móvil. Si tu marca vende en Shopify o necesita migrar a Shopify, puedes ver cómo lo hacemos en [nuestra página de Shopify](https://playfulagency.com/agencia-shopify).',
+      body: '**Shopify** es donde hemos implementado proyectos como [Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce), con configuración de catálogo por colecciones, variantes, plantillas de producto y vistas responsive para escritorio y móvil. En el checkout de Shopify trabajamos con métodos de pago internacionales. Si tu marca vende en Shopify o necesita migrar a Shopify, puedes ver cómo lo hacemos en [nuestra página de Shopify](https://playfulagency.com/agencia-shopify).',
     },
     {
       body: '**WooCommerce** es la opción cuando tu tienda ya vive en WordPress o cuando necesitas integraciones que Shopify no cubre de forma nativa, como los métodos de pago locales en Venezuela. Aplicamos la misma lógica de conversión en la estructura de catálogo, en la ficha de producto y en el checkout. Así trabajamos con [SoyTechno](https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela), una tienda de tecnología en Venezuela que vende en WooCommerce. Integramos un checkout multimoneda en bolívares y divisas, la primera integración nativa de Cashea en un ecommerce venezolano y un flujo de Zelle en el que el correo de confirmación del banco se cruza con la orden, así que el equipo de SoyTechno recibe los pedidos ya prevalidados y no tiene que perseguir cada pago.',
@@ -69,7 +69,7 @@ export const CRO = {
 export const PROCESS = {
   h2: 'Cómo trabajamos',
   intro:
-    'El proceso tiene cuatro fases. Las propuestas visuales forman parte del trabajo, pero no instalamos una plantilla prehecha sin adaptarla a tu marca, no tomamos atajos y no te dejamos solo cuando la tienda sale a producción. Cada fase tiene entregables concretos y criterios claros para pasar a la siguiente, y te acompañamos en todas.',
+    'El proceso tiene cuatro fases. Te presentamos dos propuestas visuales para que elijas con nosotros, pero no instalamos una plantilla prehecha sin adaptarla a tu marca, no tomamos atajos y no te dejamos solo cuando la tienda sale a producción. Cada fase tiene entregables concretos y criterios claros para pasar a la siguiente, y te acompañamos en todas.',
   steps: [
     {
       body: '**1. Diagnóstico.** Analizamos tu tienda actual, tu catálogo, tus datos de tráfico y tu flujo de compra. Identificamos los puntos de fuga y las pantallas con mayor potencial de mejora. Este paso suele tomar la primera llamada diagnóstica y una auditoría técnica inicial.',
@@ -129,7 +129,7 @@ export const FAQ_ITEMS = [
   {
     question: '¿Trabajan solo con Shopify?',
     answer:
-      'No. Trabajamos con Shopify y con WooCommerce, también tenemos experiencia con PrestaShop y Medusa es la próxima plataforma que incorporamos. La elección de plataforma depende de tu tienda actual, tus integraciones y tus necesidades de negocio, y te ayudamos a tomar esa decisión durante el diagnóstico.',
+      'No. Trabajamos con Shopify y con WooCommerce, también tenemos experiencia con PrestaShop y ya estamos trabajando con Medusa en un proyecto en curso que todavía no se ha lanzado. La elección de plataforma depende de tu tienda actual, tus integraciones y tus necesidades de negocio, y te ayudamos a tomar esa decisión durante el diagnóstico.',
   },
   {
     question: '¿Cuánto tarda un proyecto de diseño de tienda online?',
@@ -139,7 +139,7 @@ export const FAQ_ITEMS = [
   {
     question: '¿Qué pasa después del lanzamiento?',
     answer:
-      'Seguimos midiendo, porque un diseño orientado a conversión no termina cuando se publica. Analizamos el comportamiento real de los visitantes después del lanzamiento y ajustamos las pantallas que lo necesiten para mejorar los resultados. Además, cada proyecto tiene 30 días de garantía después del lanzamiento.',
+      'Seguimos midiendo, porque un diseño orientado a conversión no termina cuando se publica. Analizamos el comportamiento real de los visitantes después del lanzamiento y ajustamos las pantallas que lo necesiten para mejorar los resultados. Además, tienes 30 días de garantía desde que te entregamos la tienda. En ese tiempo trabajamos en resolver cualquier error o desperfecto que tenga la web, para asegurarnos de que recibes un producto sin errores.',
   },
   {
     question: '¿Necesito tener tráfico antes de contratar el rediseño?',
