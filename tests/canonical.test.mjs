@@ -13,6 +13,7 @@ test('interior canonicals stay without a trailing slash', () => {
   assert.equal(canonicalForPath('/agencia-shopify'), 'https://playfulagency.com/agencia-shopify');
   assert.equal(canonicalForPath('/agencia-seo'), 'https://playfulagency.com/agencia-seo');
   assert.equal(canonicalForPath('/agencia-sem'), 'https://playfulagency.com/agencia-sem');
+  assert.equal(canonicalForPath('/agencia-diseno-web'), 'https://playfulagency.com/agencia-diseno-web');
   assert.equal(canonicalForPath('/blog/seo/aprende-todo-sobre-el-seo'), 'https://playfulagency.com/blog/seo/aprende-todo-sobre-el-seo');
 });
 

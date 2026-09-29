@@ -4,6 +4,7 @@
   "sourceRoutes": [
     "/",
     "/[slug]",
+    "/agencia-diseno-web",
     "/agencia-sem",
     "/agencia-seo",
     "/agencia-shopify",
@@ -26,6 +27,7 @@
   ],
   "criticalRoutes": [
     "/",
+    "/agencia-diseno-web",
     "/agencia-sem",
     "/agencia-seo",
     "/agencia-shopify",
@@ -61,7 +63,6 @@
   },
   "governedConcreteRoutes": {
     "/[slug]": [
-      "/agencia-diseno-web",
       "/agencia-e-commerce",
       "/agencia-ux-ui",
       "/marketing-internacional",
