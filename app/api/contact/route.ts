@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CONTACT_FORM_ID } from '@/lib/contact/types';
 import {
+  ATTRIBUTION_COOKIE_FIRST,
+  ATTRIBUTION_COOKIE_LAST,
+  deserializeAttributionCookie,
+  preferStoredAttribution,
+} from '@/lib/contact/attribution';
+import {
   normalizeWebsiteLead,
   SubmissionValidationError,
 } from '@/lib/contact/normalize';
@@ -140,7 +146,14 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const lead = normalizeWebsiteLead(body);
+    const submitted = normalizeWebsiteLead(body);
+    const cookieFirst = deserializeAttributionCookie(request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value);
+    const cookieLast = deserializeAttributionCookie(request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value);
+    const lead = {
+      ...submitted,
+      originalAttribution: preferStoredAttribution(cookieFirst, submitted.originalAttribution),
+      recentAttribution: preferStoredAttribution(cookieLast, submitted.recentAttribution),
+    };
     const fit = qualificationLevel(lead);
     const reconcileOnly = requestedReconciliation(body);
     if (simulatorEnabled) {
@@ -151,7 +164,7 @@ export async function POST(request: NextRequest) {
         qualificationLevel: fit,
         previewEvidence: simulatePreviewContact(lead),
         analytics: {
-          generateLead: false,
+          generateLead: true,
           formId: CONTACT_FORM_ID,
         },
         replayed: reconcileOnly,
@@ -262,8 +275,10 @@ export async function POST(request: NextRequest) {
     } else {
       console.error('El pipeline de contacto no pudo completar una operación segura.');
     }
+    // Post-delivery CRM failures are returned as success by the orchestrator.
+    // This 502 is only for unexpected errors before a confirmed WordPress delivery.
     return NextResponse.json(
-      { success: false, retryable: true, message: 'El mensaje fue procesado, pero falta confirmar el registro comercial. Inténtalo de nuevo.' },
+      { success: false, retryable: true, message: 'No pudimos completar el envío. Inténtalo de nuevo.' },
       { status: 502 },
     );
   }

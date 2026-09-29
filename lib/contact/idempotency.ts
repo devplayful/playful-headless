@@ -66,13 +66,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function isCrmProgress(value: unknown): value is CrmProgress {
   if (!isRecord(value)) return false;
   const stringFields = ['contactId', 'opportunityId', 'taskId'] as const;
-  const booleanFields = [
-    'originalAttributionCompleted',
-    'tagsCompleted',
-    'opportunityCreated',
-  ] as const;
+  // Presence flags are stored as `true` or omitted. `opportunityCreated` is a
+  // real boolean: false means we reused an existing Consulta card.
+  const trueOnlyFields = ['originalAttributionCompleted', 'tagsCompleted'] as const;
   return stringFields.every((field) => value[field] === undefined || typeof value[field] === 'string')
-    && booleanFields.every((field) => value[field] === undefined || value[field] === true);
+    && trueOnlyFields.every((field) => value[field] === undefined || value[field] === true)
+    && (value.opportunityCreated === undefined || typeof value.opportunityCreated === 'boolean');
 }
 
 function isSubmissionState(value: unknown): value is SubmissionState {

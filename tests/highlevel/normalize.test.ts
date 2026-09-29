@@ -32,6 +32,8 @@ test('normalizes identity and bounds attribution to a relative landing', () => {
   assert.equal(result.originalAttribution.source, 'google-ads');
   assert.equal(result.originalAttribution.landing, '/contacto?utm_source=google');
   assert.equal(result.originalAttribution.formId, 'website-contact');
+  assert.equal(result.recentAttribution.source, 'sin-dato');
+  assert.equal(result.recentAttribution.captured, false);
   assert.equal(result.consentCapturedAt, '2026-08-30T12:00:00.000Z');
   assert.equal(result.qualification.salesModel, 'd2c');
 });
@@ -75,6 +77,47 @@ test('requires a country code for local phone numbers and stores E.164', () => {
   assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+0000000' }), SubmissionValidationError);
   assert.throws(() => normalizeWebsiteLead({ ...base, phone: '658A093580', phoneCountryCode: '+34' }), SubmissionValidationError);
   assert.throws(() => normalizeWebsiteLead({ ...base, phone: '+341234567890123456' }), SubmissionValidationError);
+});
+
+test('distinguishes a captured direct visit from missing attribution', () => {
+  const base = {
+    submissionId: '00000000-0000-4000-8000-000000000000',
+    name: 'Ada',
+    email: 'ada@example.com',
+    message: 'Hola',
+    privacyConsent: true,
+    decisionRole: 'owner',
+    salesModel: 'd2c',
+    monthlyRevenue: 'over_100k',
+    projectTiming: '0_30_days',
+  };
+
+  const captured = normalizeWebsiteLead({
+    ...base,
+    originalAttribution: { captured: true, landing: '/' },
+    recentAttribution: { captured: true, landing: '/contactar-agencia-de-marketing-digital' },
+  });
+  assert.equal(captured.originalAttribution.source, 'direct');
+  assert.equal(captured.originalAttribution.captured, true);
+
+  const missing = normalizeWebsiteLead(base);
+  assert.equal(missing.originalAttribution.source, 'sin-dato');
+  assert.equal(missing.originalAttribution.captured, false);
+
+  const withUtm = normalizeWebsiteLead({
+    ...base,
+    originalAttribution: {
+      captured: true,
+      utm_source: 'qa',
+      gclid: 'QA-GCLID-TEST',
+      fbclid: 'QA-FBCLID-TEST',
+      referrer: 'https://www.google.com/',
+      landing: '/?utm_source=qa',
+    },
+  });
+  assert.equal(withUtm.originalAttribution.source, 'qa');
+  assert.equal(withUtm.originalAttribution.gclid, 'QA-GCLID-TEST');
+  assert.equal(withUtm.originalAttribution.fbclid, 'QA-FBCLID-TEST');
 });
 
 test('rejects a submission without explicit privacy consent', () => {

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { excludeCurrentBlogPost } from '@/lib/blog-related-posts';
 
 interface BlogPost {
   id: number | string;
@@ -12,11 +13,22 @@ interface BlogPost {
   excerpt: string;
   date: string;
   href: string;
+  slug?: string;
 }
 
-export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts?: BlogPost[] } = {}) {
+export default function BlogRelatedPostsSection({
+  posts: initialPosts,
+  excludeSlug,
+  excludeId,
+}: {
+  posts?: BlogPost[];
+  excludeSlug?: string;
+  excludeId?: number | string;
+} = {}) {
   const hasServerPosts = initialPosts !== undefined;
-  const [posts, setPosts] = useState<BlogPost[]>(initialPosts ?? []);
+  const [posts, setPosts] = useState<BlogPost[]>(() =>
+    excludeCurrentBlogPost(initialPosts ?? [], { slug: excludeSlug, id: excludeId }),
+  );
   const [loading, setLoading] = useState(!hasServerPosts);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -38,10 +50,14 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
     if (hasServerPosts) return;
     const fetchPosts = async () => {
       try {
-        const res = await fetch('/api/blog-posts');
+        const params = new URLSearchParams();
+        if (excludeSlug) params.set('exclude', excludeSlug);
+        else if (excludeId != null && excludeId !== '') params.set('exclude', String(excludeId));
+        const query = params.toString();
+        const res = await fetch(`/api/blog-posts${query ? `?${query}` : ''}`);
         const data = await res.json();
         const arr = Array.isArray(data) ? data : (Array.isArray(data?.posts) ? data.posts : []);
-        setPosts(arr);
+        setPosts(excludeCurrentBlogPost(arr, { slug: excludeSlug, id: excludeId }));
       } catch (e) {
         console.error('Error fetching blog posts', e);
       } finally {
@@ -49,7 +65,7 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
       }
     };
     fetchPosts();
-  }, [hasServerPosts]);
+  }, [hasServerPosts, excludeSlug, excludeId]);
 
   const totalPages = Math.ceil(posts.length / postsPerPage);
   const currentPosts = posts.slice(currentIndex * postsPerPage, (currentIndex + 1) * postsPerPage);

@@ -32,14 +32,17 @@ test('thanks booking lock only opens for priority', () => {
 });
 
 for (const file of ['app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', 'components/ContactLeadForm.tsx']) {
-  test(`${file}: navigate only within successful receipt branch, not simulator or pending`, () => {
+  test(`${file}: navigate only within successful receipt branch, after generate_lead flush`, () => {
     const code = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
     const success = code.indexOf('else if (response.ok && data.success)');
     const navigation = code.indexOf('window.location.assign(thanksHref)');
+    const pending = code.indexOf('if (response.status === 202 && data.pendingConfirmation === true)');
     assert(success > 0 && navigation > success);
+    assert(pending >= 0 && pending < success);
     assert(code.slice(success, navigation).includes('resetConfirmedForm();'));
     assert.match(code.slice(success, navigation), /data.simulated !== true && !previewSimulation/);
     assert.match(code, /contactThanksHref/);
+    assert(code.slice(pending, success).includes('await pushGenerateLead') || code.includes('await pushGenerateLead'));
     assert(!code.slice(0, success).includes('window.location.assign(thanksHref)'));
     assert(!code.includes("window.location.assign('/gracias?conv=Lead')"));
   });

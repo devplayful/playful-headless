@@ -22,6 +22,7 @@ import {
   submissionFingerprint,
   submissionKey,
 } from '../../lib/contact/orchestrator.ts';
+import { HighLevelApiError } from '../../lib/highlevel/client.ts';
 import { lead } from './fixtures.ts';
 
 class TestStore implements IdempotencyStore {
@@ -125,7 +126,7 @@ test('resumes CRM from its last checkpoint without delivering WordPress twice', 
   let deliveries = 0;
   const visited: string[] = [];
 
-  await assert.rejects(() => processContactPipeline(lead, {
+  const interrupted = await processContactPipeline(lead, {
     store,
     deliver: async () => { deliveries += 1; },
     syncCrm: async (_submission, control) => {
@@ -134,7 +135,15 @@ test('resumes CRM from its last checkpoint without delivering WordPress twice', 
     },
     dryRun: true,
     ownerId: 'attempt-1',
-  }));
+  });
+  assert.deepEqual(interrupted, {
+    deliveryStatus: 'confirmed',
+    delivered: true,
+    crmSynced: false,
+    dryRun: true,
+    replayed: false,
+  });
+  assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'delivered');
 
   const recovered = await processContactPipeline(lead, {
     store,
@@ -160,6 +169,41 @@ test('resumes CRM from its last checkpoint without delivering WordPress twice', 
   assert.equal(recovered.replayed, false);
   assert.equal(replay.replayed, true);
   assert.equal(replay.deliveryStatus, 'confirmed');
+});
+
+test('a CRM rejection after WordPress delivery still confirms the user-facing receipt', async () => {
+  const store = new TestStore();
+  const errors: unknown[] = [];
+  const originalError = console.error;
+  console.error = (...args: unknown[]) => { errors.push(args); };
+
+  try {
+    const result = await processContactPipeline(lead, {
+      store,
+      deliver: async () => {},
+      syncCrm: async () => {
+        throw new HighLevelApiError(400, 'create opportunity');
+      },
+      dryRun: false,
+      ownerId: 'crm-400-after-mail',
+    });
+
+    assert.deepEqual(result, {
+      deliveryStatus: 'confirmed',
+      delivered: true,
+      crmSynced: false,
+      dryRun: false,
+      replayed: false,
+    });
+    assert.equal(store.records.get(submissionKey(lead.submissionId))?.state, 'delivered');
+    assert(errors.some((entry) => (
+      Array.isArray(entry)
+      && String(entry[0]).includes('el mensaje del formulario ya se entregó')
+      && String(entry[1]).includes('create opportunity')
+    )));
+  } finally {
+    console.error = originalError;
+  }
 });
 
 test('a crashed worker lease expires while the durable delivered checkpoint survives', async () => {

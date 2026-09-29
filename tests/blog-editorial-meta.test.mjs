@@ -10,13 +10,18 @@ const {
   EDITORIAL_AVATAR_SRC,
   WP_MODIFIED_HONOR_ON_OR_AFTER,
   buildBlogArticleJsonLd,
+  decodeHtmlEntities,
   formatCombinedByline,
   formatEditorialDate,
+  formatBlogListingDate,
   isMeaningfullyAfter,
   resolveBlogEditorialUpdate,
+  serializeJsonLd,
   toIsoDateTime,
+  wordpressSeoText,
 } = await import('../lib/blog-editorial-meta.ts');
 const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const plainText = await import('../lib/wordpress-plain-text.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -164,19 +169,83 @@ test('date helpers normalize date-only ISO and format Spanish UTC labels', () =>
   assert.equal(formatEditorialDate('2023-11-20T12:00:00.000Z'), '20 de noviembre de 2023');
 });
 
-test('Article JSON-LD includes dateModified and the original author', () => {
+test('BlogPosting JSON-LD includes description, image, publisher and canonical', () => {
+  const url =
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const jsonLd = buildBlogArticleJsonLd({
-    headline: 'Zelle en Venezuela',
+    headline: 'Zelle en Venezuela: Un método de pago',
+    description: 'Integra Zelle como método de pago en tu tienda online en Venezuela.',
+    image: 'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
     datePublished: ZELLE_PUBLISHED,
     dateModified: '2026-09-24T00:00:00.000Z',
     authorName: 'Stefanni Parabavidez',
-    url: 'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    url,
+    publisherName: 'Playful Agency',
+    publisherLogo: 'https://playfulagency.com/images/logos/playful-logov.svg',
   });
-  assert.equal(jsonLd['@type'], 'Article');
-  assert.equal(jsonLd.datePublished, ZELLE_PUBLISHED);
+  assert.equal(jsonLd['@type'], 'BlogPosting');
+  assert.equal(jsonLd.headline, 'Zelle en Venezuela: Un método de pago');
+  assert.equal(jsonLd.description, 'Integra Zelle como método de pago en tu tienda online en Venezuela.');
+  assert.equal(
+    jsonLd.image,
+    'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+  );
+  assert.equal(jsonLd.datePublished, toIsoDateTime(ZELLE_PUBLISHED));
   assert.equal(jsonLd.dateModified, '2026-09-24T00:00:00.000Z');
   assert.deepEqual(jsonLd.author, { '@type': 'Person', name: 'Stefanni Parabavidez' });
-  assert.doesNotMatch(JSON.stringify(jsonLd), /</);
+  assert.deepEqual(jsonLd.publisher, {
+    '@type': 'Organization',
+    name: 'Playful Agency',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://playfulagency.com/images/logos/playful-logov.svg',
+    },
+  });
+  assert.equal(jsonLd.mainEntityOfPage, url);
+  assert.equal(jsonLd.url, url);
+  assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
+});
+
+test('JSON-LD headline decodes WordPress entities to match the H1', () => {
+  const jsonLd = buildBlogArticleJsonLd({
+    headline: 'SEO &#8211; guía &amp; checklist',
+    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.\n',
+    datePublished: ZELLE_PUBLISHED,
+    dateModified: ZELLE_PUBLISHED,
+    url: 'https://playfulagency.com/blog/seo/ejemplo',
+  });
+  assert.equal(jsonLd.headline, 'SEO – guía & checklist');
+  assert.equal(jsonLd.description, '¿Cuáles son sus ventajas? y… si realmente puede.');
+  assert.equal(decodeHtmlEntities('&#x2013;'), '–');
+});
+
+test('wordpressSeoText decodes WP entities once and trims descriptions', () => {
+  assert.equal(plainText.decodeHtmlEntities, decodeHtmlEntities);
+  assert.equal(plainText.wordpressSeoText, wordpressSeoText);
+  assert.equal(decodeHtmlEntities('y&#8230;'), 'y…');
+  assert.equal(decodeHtmlEntities('y&amp;#8230;'), 'y&#8230;');
+  assert.equal(decodeHtmlEntities('H&amp;M'), 'H&M');
+  assert.equal(decodeHtmlEntities('&amp;amp;'), '&amp;');
+  assert.equal(
+    wordpressSeoText(
+      '<p>¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y&#8230; si realmente puede ser una alternativa para tu negocio.</p>\n',
+      { stripTags: true, maxLength: 160 },
+    ),
+    '¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y… si realmente puede ser una alternativa para tu negocio.',
+  );
+  assert.equal(wordpressSeoText('texto con salto\n'), 'texto con salto');
+  assert.doesNotMatch(wordpressSeoText('H&amp;M y más'), /&amp;/);
+});
+
+test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter and JSON-LD', () => {
+  assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
+  assert.match(blogPage, /function blogPostSeoCopy/);
+  assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
+  assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
+  assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);
+  assert.match(blogPage, /description: metaDescription/);
 });
 
 test('combined byline joins author and editorial with y', () => {
@@ -207,13 +276,68 @@ test('editorial avatar asset remains available but is not the byline face', () =
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
 });
 
+test('listing cards use honored update or publication, long and slash formats', () => {
+  const zelleDates = { published: '2025-04-22T23:28:54', modified: '2025-04-22T23:28:54' };
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates),
+    '24 de septiembre de 2026',
+  );
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates, 'slash'),
+    '24 / 09 / 2026',
+  );
+  assert.equal(
+    formatBlogListingDate('como-elegir-el-mejor-framework-para-tu-web', {
+      published: '2024-04-26T19:17:40',
+      modified: '2024-11-05T22:09:53',
+    }),
+    '26 de abril de 2024',
+  );
+  assert.equal(
+    formatBlogListingDate(
+      'como-elegir-el-mejor-framework-para-tu-web',
+      {
+        published: '2024-04-26T19:17:40',
+        modified: '2024-11-05T22:09:53',
+      },
+      'slash',
+    ),
+    '26 / 04 / 2024',
+  );
+});
+
+test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
+  const listingPage = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(listingPage, /formatBlogListingDate\(posts\[0\]\.slug/);
+  assert.match(listingPage, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(listingPage, /formatDate\(posts\[0\]\.date\)/);
+  assert.match(mostViewed, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(mostViewed, /formatDate\(post\.date\)/);
+  assert.match(wordpress, /formatBlogListingDate\(\s*rewritten\.slug/);
+  assert.match(wordpress, /'slash'/);
+});
+
 test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
   assert.match(blogPage, /buildBlogArticleJsonLd/);
   assert.match(blogPage, /type="application\/ld\+json"/);
+  assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
+  assert.doesNotMatch(blogPage, /articleJsonLd \?/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);

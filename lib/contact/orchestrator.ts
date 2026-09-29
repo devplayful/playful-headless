@@ -9,6 +9,7 @@ import {
   SubmissionInProgressError,
 } from './idempotency.ts';
 import type { WordPressReceiptState } from './delivery.ts';
+import { logCrmFailureAfterDelivery } from './crm-alert.ts';
 
 export interface CrmSyncControl {
   submissionKey: string;
@@ -270,8 +271,19 @@ export async function processContactPipeline(
       dependencies.dryRun,
     );
   } catch (error) {
-    await dependencies.store.releaseCrm(key, owner);
-    throw error;
+    logCrmFailureAfterDelivery(error);
+    try {
+      await dependencies.store.releaseCrm(key, owner);
+    } catch {
+      // The short CRM lease expires; the delivered reservation stays durable.
+    }
+    return {
+      deliveryStatus: 'confirmed',
+      delivered: true,
+      crmSynced: false,
+      dryRun: dependencies.dryRun,
+      replayed: false,
+    };
   }
 
   return {

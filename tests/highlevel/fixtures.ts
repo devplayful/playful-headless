@@ -83,6 +83,7 @@ export const lead: WebsiteLead = {
   marketingConsent: false,
   consentCapturedAt: '2026-08-30T12:00:00.000Z',
   originalAttribution: {
+    captured: true,
     source: 'google',
     landing: '/servicios?utm_source=google',
     formId: 'website-contact',
@@ -91,8 +92,12 @@ export const lead: WebsiteLead = {
     utm_campaign: '',
     utm_term: '',
     utm_content: '',
+    gclid: '',
+    fbclid: '',
+    referrer: '',
   },
   recentAttribution: {
+    captured: true,
     source: 'linkedin',
     landing: '/contactar-agencia-de-marketing-digital?utm_source=linkedin',
     formId: 'website-contact',
@@ -101,5 +106,8 @@ export const lead: WebsiteLead = {
     utm_campaign: 'agency',
     utm_term: '',
     utm_content: 'cta',
+    gclid: '',
+    fbclid: '',
+    referrer: '',
   },
 };
