@@ -6,6 +6,7 @@ import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import BleedIllustrationCard from '@/components/ui/BleedIllustrationCard';
 import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
@@ -107,17 +108,17 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
     return (
       <div
         data-illustration-slot={id}
-        className="relative w-full max-w-[200px] h-[180px] mx-auto overflow-hidden rounded-2xl"
+        className="absolute inset-0 overflow-hidden"
       >
         <img
           src={src1x}
-          srcSet={`${src1x} 200w, ${src2x} 400w`}
-          sizes="200px"
+          srcSet={`${src1x} 560w, ${src2x} 1120w`}
+          sizes="(min-width: 768px) 45vw, calc(100vw - 2rem)"
           alt=""
-          width={200}
-          height={180}
+          width={560}
+          height={240}
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </div>
     );
@@ -127,7 +128,7 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
     <div
       data-illustration-slot={id}
       aria-hidden="true"
-      className="w-full max-w-[200px] h-[180px] mx-auto rounded-2xl border border-dashed border-[#C4B5D4] bg-white/50"
+      className="absolute inset-0 border border-dashed border-[#C4B5D4] bg-white/50"
     />
   );
 }
@@ -237,16 +238,14 @@ export default async function AgenciaShopifyPage() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-4">
               {SERVICE_GRID_ITEMS.map((item, index) => (
-                <article
+                <BleedIllustrationCard
                   key={item.title}
-                  className={`${SERVICE_CARD_COLORS[index]} rounded-[32px] shadow-lg p-8 md:p-10 flex flex-col`}
+                  className={SERVICE_CARD_COLORS[index]}
+                  media={<IllustrationSlot id={item.slot} />}
                 >
-                  <div className="mb-6">
-                    <IllustrationSlot id={item.slot} />
-                  </div>
                   <h3 className="playful-h3 mb-4">{item.title}</h3>
                   <p className="playful-contenido-p flex-1">{item.body}</p>
-                </article>
+                </BleedIllustrationCard>
               ))}
             </div>
           </div>
