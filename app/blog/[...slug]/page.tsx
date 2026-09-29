@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -25,28 +25,27 @@ import {
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import {
-  RELATED_BLOG_FETCH_COUNT,
+  RelatedIndexUnavailableError,
+  emptyRelatedBehavior,
   excludeCurrentBlogPost,
-  fetchWithRelatedPostsTtl,
-  type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
-type LatestRelatedPost = Awaited<ReturnType<typeof getLatestBlogPosts>>[number];
-
-const latestRelatedCache: RelatedPostsCacheState<LatestRelatedPost[]> = { current: null };
-
-/** Dedupe the latest-7 WP fetch across SSG pages; TTL ≤ 3600s in runtime. */
-function fetchLatestRelatedBlogPosts() {
-  return fetchWithRelatedPostsTtl(latestRelatedCache, () =>
-    getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
-  );
-}
-
 export async function generateStaticParams() {
-  // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
-  const { posts } = await getBlogPosts(1, 100);
+  // WP REST and getBlogPosts clamp per_page at 100. Raising the argument
+  // above 100 would still yield 100 and leave the oldest open posts
+  // (~103 total) to on-demand ISR, which is what 500'd under parallel
+  // crawls. Paginate every WP page instead; the build already fetches
+  // these posts for the listing and has tolerated that volume.
+  const perPage = 100;
+  const first = await getBlogPosts(1, perPage);
+  const posts = [...first.posts];
+  const totalPages = Math.max(1, first.totalPages || 1);
+  for (let page = 2; page <= totalPages; page += 1) {
+    const next = await getBlogPosts(page, perPage);
+    posts.push(...next.posts);
+  }
   return posts.map((post) => ({
     slug: [getPrimaryCategorySlug(post), post.slug],
   }));
@@ -81,19 +80,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const [post, latestRelated] = await Promise.all([
-    getBlogPostBySlug(postSlug),
-    fetchLatestRelatedBlogPosts(),
-  ]);
+  const post = await getBlogPostBySlug(postSlug);
   
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = excludeCurrentBlogPost(latestRelated, {
-    slug: post.slug,
-    id: post.id,
-  });
+  const relatedPosts = excludeCurrentBlogPost(
+    await getRelatedBlogPostsForPost(post, {
+      categorySlug: category,
+    }),
+    {
+      slug: post.slug,
+      id: post.id,
+    },
+  );
+  if (relatedPosts.length === 0 && emptyRelatedBehavior() === 'throw') {
+    throw new RelatedIndexUnavailableError();
+  }
 
   const postCategory = getPrimaryCategorySlug(post);
 
@@ -387,7 +391,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
       </main>
       
-      {/* Sección de artículos relacionados */}
+      {/* Sección de artículos relacionados: never an empty carousel. */}
+      {relatedPosts.length > 0 ? (
       <div className="mt-16">
         <BlogRelatedPostsSection
           posts={relatedPosts}
@@ -395,6 +400,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           excludeId={post.id}
         />
       </div>
+      ) : null}
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">

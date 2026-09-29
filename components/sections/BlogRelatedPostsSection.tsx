@@ -70,6 +70,10 @@ export default function BlogRelatedPostsSection({
   const totalPages = Math.ceil(posts.length / postsPerPage);
   const currentPosts = posts.slice(currentIndex * postsPerPage, (currentIndex + 1) * postsPerPage);
 
+  if (!loading && posts.length === 0) {
+    return null;
+  }
+
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % totalPages);
   };
