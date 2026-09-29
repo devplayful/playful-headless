@@ -1,6 +1,6 @@
 'use client';
 
-import { isProductionAnalyticsHostname } from './production-tags';
+import { isProductionAnalyticsHostname } from './production-tags.ts';
 
 declare global {
   interface Window {
