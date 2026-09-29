@@ -66,13 +66,15 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               {subtitle}
             </p>
 
-            <div className="space-y-4 flex flex-col items-center">
-              <div className="flex items-center">
-                <h2 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
-                  {ctaTitle}
-                </h2>
+            {ctaTitle ? (
+              <div className="space-y-4 flex flex-col items-center">
+                <div className="flex items-center">
+                  <h2 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                    {ctaTitle}
+                  </h2>
+                </div>
               </div>
-            </div>
+            ) : null}
 
             <div className="w-full flex justify-center px-5 py-5 md:p-0">
               {isBookingDestination(buttonLink) ? (

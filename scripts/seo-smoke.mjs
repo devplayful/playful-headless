@@ -168,6 +168,8 @@ function extractOgTitle(html) {
 const expectedTitles = {
   '/agencia-e-commerce':
     'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+  '/agencia-seo':
+    'Agencia SEO para ecommerce que ya vende | Playful Agency',
   '/agencia-shopify':
     'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':
@@ -223,6 +225,25 @@ assert.match(shopifyHtml, /Solicitar una reunión/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
 
+const seoResponse = await request('/agencia-seo', { redirect: 'follow' });
+assert.equal(seoResponse.status, 200, '/agencia-seo should return 200');
+const seoHtml = await seoResponse.text();
+const seoCanonicals = [...seoHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(seoCanonicals.length, 1, '/agencia-seo should emit exactly one canonical');
+assert.equal(seoCanonicals[0][1], 'https://playfulagency.com/agencia-seo');
+assert.match(
+  seoHtml,
+  /name=["']description["'][^>]*content=["']Agencia SEO para ecommerce D2C que ya vende y ya paga ads\./i,
+);
+assert.match(seoHtml, /"@type"\s*:\s*"FAQPage"/);
+assert.match(
+  seoHtml,
+  /<h1[^>]*>Agencia SEO para ecommerce que posiciona el catálogo que ya te está vendiendo<\/h1>/,
+);
+assert.match(seoHtml, /Agenda tu llamada diagnóstica/);
+assert.match(seoHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(seoHtml, /PrimeShoes/i);
+
 function extractElementorContent(html) {
   const pageIdx = html.search(/\bplayful-wp-page\b/);
   const endIdx = html.indexOf('id="playful-qa2-ssr"');
@@ -232,7 +253,6 @@ function extractElementorContent(html) {
 
 const serviceBookingPaths = [
   '/agencia-e-commerce',
-  '/agencia-seo',
   '/agencia-sem',
   '/agencia-diseno-web',
 ];

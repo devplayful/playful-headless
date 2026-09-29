@@ -4,6 +4,7 @@
   "sourceRoutes": [
     "/",
     "/[slug]",
+    "/agencia-seo",
     "/agencia-shopify",
     "/pasarela-de-pagos-venezuela",
     "/api/blog-posts",
@@ -24,6 +25,7 @@
   ],
   "criticalRoutes": [
     "/",
+    "/agencia-seo",
     "/agencia-shopify",
     "/pasarela-de-pagos-venezuela",
     "/api/blog-posts",
@@ -60,7 +62,6 @@
       "/agencia-diseno-web",
       "/agencia-e-commerce",
       "/agencia-sem",
-      "/agencia-seo",
       "/agencia-ux-ui",
       "/marketing-internacional",
       "/seo-expertos",
