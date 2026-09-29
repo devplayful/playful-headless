@@ -1,9 +1,10 @@
-import { getBlogPostBySlug, getBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { canonicalForPath } from '@/utils/canonical';
+import { canonicalForPath, toAbsoluteSiteUrl } from '@/utils/canonical';
+import { ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
 import {
   getBlogServiceCta,
@@ -20,6 +21,7 @@ import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
   resolveBlogEditorialUpdate,
+  serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
@@ -61,7 +63,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const post = await getBlogPostBySlug(postSlug);
+  const [post, relatedPosts] = await Promise.all([
+    getBlogPostBySlug(postSlug),
+    getLatestBlogPosts(6),
+  ]);
   
   if (!post) {
     notFound();
@@ -120,15 +125,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     post.author && typeof post.author === 'object'
       ? post.author.avatar_urls?.['48']
       : undefined;
-  const articleJsonLd = editorial
-    ? buildBlogArticleJsonLd({
-        headline: pageH1,
-        datePublished: post.date,
-        dateModified: editorial.updatedAt,
-        authorName,
-        url: canonicalForPath(blogPostPath(post)),
-      })
-    : null;
+  const postCanonical = canonicalForPath(blogPostPath(post));
+  const seoOverride = BLOG_SEO_OVERRIDES[postSlug];
+  const metaDescription =
+    seoOverride?.description ??
+    (post.excerpt?.rendered
+      ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160)
+      : '');
+  const ogImagePath =
+    blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
+  const articleJsonLd = buildBlogArticleJsonLd({
+    headline: pageH1,
+    description: metaDescription,
+    image: toAbsoluteSiteUrl(ogImagePath),
+    datePublished: post.date_gmt || post.date,
+    dateModified:
+      editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+    authorName,
+    url: postCanonical,
+    publisherName: ORGANIZATION_SCHEMA.name,
+    publisherLogo: ORGANIZATION_SCHEMA.logo,
+  });
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -139,12 +156,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
-    {articleJsonLd ? (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
-    ) : null}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
+    />
     <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
@@ -356,7 +371,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección de artículos relacionados */}
       <div className="mt-16">
-        <BlogRelatedPostsSection />
+        <BlogRelatedPostsSection posts={relatedPosts} />
       </div>
       
       {/* Sección CTA */}
