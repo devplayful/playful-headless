@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
+import { normalizeCaseStudyAcf } from '@/utils/case-study-acf-fields';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
 import SoyTechnoSectionB from '@/components/soytechno/SoyTechnoSectionB';
 import SoyTechnoSectionC from '@/components/soytechno/SoyTechnoSectionC';
@@ -86,11 +87,16 @@ export default async function SuccessStoryPage({
     return <SoyTechnoCaseStudy />;
   }
 
-  const story = await getSuccessStoryBySlug(slug);
+  const rawStory = await getSuccessStoryBySlug(slug);
 
-  if (!story) {
+  if (!rawStory) {
     notFound();
   }
+
+  const story = {
+    ...rawStory,
+    acf: normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered),
+  };
 
   // SoyTechno template detection
   const isSoyTechno = story.acf?.template === "soytechno_extended";
@@ -152,9 +158,11 @@ export default async function SuccessStoryPage({
       {/* Challenge Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-[#FEF7FF] ">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 ">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
-            {story.acf.primerh2 || 'El Desafío'}
-          </h2>
+          {story.acf.primerh2 ? (
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
+              {story.acf.primerh2}
+            </h2>
+          ) : null}
           {story.acf.segundap && (
             <div
               className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6"
@@ -224,9 +232,11 @@ export default async function SuccessStoryPage({
             </div>
 
             <div className="text-center max-w-4xl px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
-                {story.acf?.segundoh2 || ''}
-              </h2>
+              {story.acf?.segundoh2 ? (
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
+                  {story.acf.segundoh2}
+                </h2>
+              ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: story.acf?.tercerap || '' }}
@@ -393,9 +403,11 @@ export default async function SuccessStoryPage({
           <div className="flex flex-col items-center">
             {/* Título y descripción */}
             <div className="text-center max-w-4xl px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
-                {story.acf?.tercerh2 || 'Nuestro Enfoque'}
-              </h2>
+              {story.acf?.tercerh2 ? (
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
+                  {story.acf.tercerh2}
+                </h2>
+              ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
                 dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
@@ -431,9 +443,11 @@ export default async function SuccessStoryPage({
 
             {/* Segundo título y párrafo */}
             <div className="text-center max-w-4xl px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
-                {story.acf?.otroh2st || ''}
-              </h2>
+              {story.acf?.otroh2st ? (
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2A0064] mb-4 sm:mb-6">
+                  {story.acf.otroh2st}
+                </h2>
+              ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
                 dangerouslySetInnerHTML={{ __html: story.acf?.otropst || '' }}
@@ -488,17 +502,6 @@ export default async function SuccessStoryPage({
                 </div>
 
                 <div className="space-y-6 sm:space-y-8">
-                  <div className="hidden">
-                    {JSON.stringify({
-                      primerh3desarrollo: story.acf?.primerh3desarrollo,
-                      primerapdesarrollo: story.acf?.primerapdesarrollo,
-                      segundoh3desarrollo: story.acf?.segundoh3desarrollo,
-                      segundopdesarrollo: story.acf?.segundopdesarrollo,
-                      tercerh3desarrollo: story.acf?.tercerh3desarrollo,
-                      tercerapdesarrollo: story.acf?.tercerapdesarrollo,
-                    })}
-                  </div>
-
                   {story.acf?.primerah3desarrollo && story.acf.primerapdesarrollo && (
                     <div className="space-y-4">
                       <h3 className="text-[22px] font-payton text-[#453A53] mb-3">
@@ -704,9 +707,11 @@ export default async function SuccessStoryPage({
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center">
             <div className="text-center max-w-4xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
-                {story.acf?.resultadotitulo || 'Nuestro Enfoque'}
-              </h2>
+              {story.acf?.resultadotitulo ? (
+                <h2 className="text-3xl md:text-4xl font-bold text-[#2A0064] mb-6">
+                  {story.acf.resultadotitulo}
+                </h2>
+              ) : null}
               <div
                 className="text-lg text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{
