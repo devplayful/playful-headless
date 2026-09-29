@@ -124,18 +124,16 @@ export default async function BlogPage({
             <div>
               <div className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
                 {/* Imagen del artículo destacado con fondo colorido */}
-                <div className="h-80 md:h-96 w-full relative bg-white">
+                <div className="h-80 md:h-96 w-full relative overflow-hidden">
                   {posts[0].featured_media_url ? (
-                    <div className="relative w-full h-full flex items-center justify-center p-8">
-                      <Image
+                    <Image
                         src={posts[0].featured_media_url}
                         alt={posts[0].featured_media_alt || posts[0].title.rendered}
                         fill
-                        className="object-contain p-8"
+                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, 80vw"
                         priority
-                      />
-                    </div>
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <svg className="w-32 h-32 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
@@ -225,14 +223,14 @@ export default async function BlogPage({
                     className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1"
                   >
                     {/* Imagen del artículo con fondo colorido */}
-                    <div className="h-56 relative bg-white">
+                    <div className="h-56 relative overflow-hidden">
                       {post.featured_media_url ? (
                         <div className="relative w-full h-full">
                           <Image
                             src={post.featured_media_url}
                             alt={post.featured_media_alt || post.title.rendered}
                             fill
-                            className="object-contain p-6 hover:scale-105 transition-transform duration-300"
+                            className="object-cover hover:scale-105 transition-transform duration-300"
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                         </div>
