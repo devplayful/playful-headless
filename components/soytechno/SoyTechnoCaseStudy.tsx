@@ -133,7 +133,11 @@ export default function SoyTechnoCaseStudy() {
 
       <section className={styles.introSection}>
         <h2>Una estrategia trimestral para construir autonomía y confianza</h2>
-        <p>{caseCopy.strategy[0]}</p>
+        <p>
+          Con un enfoque trimestral, SoyTechno consolidó un ecosistema Mobile-First
+          basado en tres pilares: el ecosistema digital como medio principal; medios
+          clave: Cashea, MRW y checkout; e innovación y aporte más allá de la interfaz.
+        </p>
         <ol className={styles.quarterTrack} aria-label="Enfoque trimestral">
           <li>
             <span className={styles.quarterLabel}>Q1</span>
@@ -152,7 +156,7 @@ export default function SoyTechnoCaseStudy() {
             <span className={styles.quarterName}>Fidelización</span>
           </li>
         </ol>
-        <ul className={styles.pillarList}>
+        <ul className={styles.pillarList} aria-label="Tres pilares">
           <li>El ecosistema digital como medio principal</li>
           <li>Medios clave: Cashea, MRW y checkout</li>
           <li>Innovación y aporte más allá de la interfaz</li>
@@ -245,8 +249,8 @@ export default function SoyTechnoCaseStudy() {
             <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
-            <p>{caseCopy.idea[0]}</p>
             <p>{caseCopy.strategicResponse[1]}</p>
+            <p>{caseCopy.idea[0]}</p>
           </div>
         </div>
       </section>

@@ -83,6 +83,10 @@ test('SoyTechno QA redlines: Q1–Q4 diagram, named pillars, no A/C letters', ()
   assert.match(soytechnoBody, /Escalabilidad/);
   assert.match(soytechnoBody, /Fidelización/);
   assert.match(soytechnoBody, /pillarList/);
+  assert.match(
+    soytechnoBody,
+    /basado en tres pilares: el ecosistema digital como medio principal; medios\s+clave: Cashea, MRW y checkout; e innovación y aporte más allá de la interfaz/,
+  );
   assert.match(soytechnoBody, /El ecosistema digital como medio principal/);
   assert.match(soytechnoBody, /Innovación y aporte más allá de la interfaz/);
   assert.doesNotMatch(soytechnoBody, /A\. El ecosistema digital como medio principal/);
@@ -102,8 +106,13 @@ test('SoyTechno QA redlines: Mobile-First keeps philosophy; metrics live in Resu
   const mobileFirstBlock = renderedBody.split('experiencia Mobile-First', 2)[1].split('Resultados frente a los KPIs', 2)[0];
   const resultsBlock = renderedBody.split('Resultados frente a los KPIs', 2)[1];
 
-  assert.match(mobileFirstBlock, /caseCopy\.idea\[0\]/);
   assert.match(mobileFirstBlock, /caseCopy\.strategicResponse\[1\]/);
+  assert.match(mobileFirstBlock, /caseCopy\.idea\[0\]/);
+  assert.ok(
+    mobileFirstBlock.indexOf('caseCopy.strategicResponse[1]') <
+      mobileFirstBlock.indexOf('caseCopy.idea[0]'),
+    'Mobile-First copy must lead with the Mobile-First sentence',
+  );
   assert.doesNotMatch(mobileFirstBlock, /caseCopy\.executiveResults/);
   assert.doesNotMatch(mobileFirstBlock, /caseCopy\.results\[0\]/);
   assert.doesNotMatch(mobileFirstBlock, /Escala alcanzada/);
@@ -117,8 +126,8 @@ test('SoyTechno distributes unique source fragments without repeating them', () 
   const fragments = [...renderedBody.matchAll(/caseCopy\.([A-Za-z]+)\[(\d+)\]/g)]
     .map((match) => `${match[1]}:${match[2]}`);
 
-  assert.equal(fragments.length, 31);
-  assert.equal(new Set(fragments).size, 31);
+  assert.equal(fragments.length, 30);
+  assert.equal(new Set(fragments).size, 30);
   assert.doesNotMatch(renderedBody, /approvedCopy\.(?!title)/);
   assert.match(soytechnoBody, /Eva Cristina Luciani/);
   assert.match(soytechnoBody, /comparador de productos/);
