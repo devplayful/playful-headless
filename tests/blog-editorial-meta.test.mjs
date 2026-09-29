@@ -282,8 +282,11 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /type="application\/ld\+json"/);
   assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
   assert.doesNotMatch(blogPage, /articleJsonLd \?/);
-  assert.match(blogPage, /<BlogRelatedPostsSection posts=\{relatedPosts\} \/>/);
-  assert.match(blogPage, /getLatestBlogPosts\(6\)/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);

@@ -24,6 +24,10 @@ import {
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
+import {
+  RELATED_BLOG_FETCH_COUNT,
+  excludeCurrentBlogPost,
+} from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
@@ -64,14 +68,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const [post, relatedPosts] = await Promise.all([
+  const [post, latestRelated] = await Promise.all([
     getBlogPostBySlug(postSlug),
-    getLatestBlogPosts(6),
+    getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
   ]);
   
   if (!post) {
     notFound();
   }
+
+  const relatedPosts = excludeCurrentBlogPost(latestRelated, {
+    slug: post.slug,
+    id: post.id,
+  });
 
   const postCategory = getPrimaryCategorySlug(post);
 
@@ -367,7 +376,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección de artículos relacionados */}
       <div className="mt-16">
-        <BlogRelatedPostsSection posts={relatedPosts} />
+        <BlogRelatedPostsSection
+          posts={relatedPosts}
+          excludeSlug={post.slug}
+          excludeId={post.id}
+        />
       </div>
       
       {/* Sección CTA */}
