@@ -15,19 +15,27 @@ import {
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
-  RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_CATEGORY_FETCH_PER_PAGE,
   RELATED_BLOG_CATEGORY_PER_PAGE,
   RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS,
   RELATED_BLOG_FETCH_COUNT,
   RELATED_BLOG_FETCH_TIMEOUT_MS,
+  RELATED_BLOG_INDEX_PER_PAGE,
+  RELATED_BLOG_INDEX_REVALIDATE_SECONDS,
   RELATED_BLOG_POST_FIELDS,
+  adoptLastKnownGood,
   fetchWithRelatedPostsTtl,
+  isUsableRelatedIndex,
   parseRelatedPostIds,
-  pickRelatedCategoryId,
   resolveRelatedBlogPosts,
+  selectRelatedFromIndex,
+  shouldCacheRelatedPostsResult,
   withRelatedFetchTimeout,
+  type LastKnownGoodState,
+  type RelatedBlogIndex,
+  type RelatedIndexPost,
+  type RelatedIndexTerm,
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
@@ -499,10 +507,6 @@ export type LatestBlogPostsQuery = {
   maxAttempts?: number;
 };
 
-function primaryCategoryId(post: Pick<WPPost, 'categories'>): number | undefined {
-  return pickRelatedCategoryId(post.categories);
-}
-
 type RelatedCategoryTerm = { id: number; name: string; slug: string };
 
 type RelatedCardCategoryLookup = {
@@ -760,14 +764,169 @@ export async function getBlogPostsByIds(
   return unique.map((id) => byId.get(id)).filter((card): card is RelatedBlogCard => Boolean(card));
 }
 
-const relatedByPostCache = new Map<string, RelatedPostsCacheState<RelatedBlogCard[]>>();
+const relatedIndexCache: RelatedPostsCacheState<RelatedBlogIndex | null> = { current: null };
+const relatedIndexLastKnownGood: LastKnownGoodState<RelatedBlogIndex> = { value: null };
 
-function relatedCacheFor(key: string): RelatedPostsCacheState<RelatedBlogCard[]> {
-  const existing = relatedByPostCache.get(key);
-  if (existing) return existing;
-  const created: RelatedPostsCacheState<RelatedBlogCard[]> = { current: null };
-  relatedByPostCache.set(key, created);
-  return created;
+const relatedIndexFetchGuard = {
+  timeoutMs: RELATED_BLOG_FETCH_TIMEOUT_MS,
+  maxAttempts: 1,
+} as const;
+
+function categoryIdsFromPost(post: Pick<WPPost, 'categories'>): number[] {
+  if (!Array.isArray(post.categories)) return [];
+  const ids: number[] = [];
+  for (const item of post.categories) {
+    if (typeof item === 'number' && Number.isInteger(item) && item > 0) {
+      ids.push(item);
+      continue;
+    }
+    if (
+      item
+      && typeof item === 'object'
+      && typeof item.id === 'number'
+      && Number.isInteger(item.id)
+      && item.id > 0
+    ) {
+      ids.push(item.id);
+    }
+  }
+  return Array.from(new Set(ids));
+}
+
+function toRelatedIndexPost(
+  post: WPPost,
+  terms: Map<number, RelatedIndexTerm>,
+): RelatedIndexPost {
+  const categoryIds = categoryIdsFromPost(post);
+  const primary = categoryIds.map((id) => terms.get(id)).find(Boolean);
+  const categorySlug = primary?.slug || 'sin-categoria';
+  const categoryName = primary?.name || 'Sin categoría';
+  const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
+  const title = (post.title?.rendered ?? '').replace(/&[a-z]+;/g, '');
+  const featuredMediaId = typeof post.featured_media === 'number' && post.featured_media > 0
+    ? post.featured_media
+    : undefined;
+  return {
+    id: post.id,
+    slug: post.slug,
+    title,
+    excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt,
+    date: post.date,
+    dateGmt: post.date_gmt,
+    modified: post.modified,
+    modifiedGmt: post.modified_gmt,
+    featuredMediaId,
+    featuredMediaUrl: resolveBlogCoverUrl(post.slug, '/images/blog/placeholder.jpg'),
+    categoryIds,
+    categorySlug,
+    categoryName,
+    status: post.status || 'publish',
+    href: `/blog/${categorySlug}/${post.slug}`,
+  };
+}
+
+function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
+  return {
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: post.categoryName,
+    date: formatBlogListingDate(
+      post.slug,
+      {
+        published: post.date,
+        publishedGmt: post.dateGmt,
+        modified: post.modified,
+        modifiedGmt: post.modifiedGmt,
+      },
+      'slash',
+    ),
+    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || '/images/blog/placeholder.jpg'),
+    slug: post.slug,
+    href: post.href,
+  };
+}
+
+async function loadBlogRelatedIndexPage(
+  page: number,
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<{ items: WPPost[]; totalPages: number }> {
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+  url.searchParams.append('page', String(page));
+  url.searchParams.append('per_page', String(RELATED_BLOG_INDEX_PER_PAGE));
+  url.searchParams.append('orderby', 'date');
+  url.searchParams.append('order', 'desc');
+  url.searchParams.append('status', 'publish');
+  url.searchParams.append('_fields', RELATED_BLOG_POST_FIELDS);
+  const { items, response } = await wordpressFetchCollection<WPPost>(
+    url.toString(),
+    {
+      next: { revalidate: RELATED_BLOG_INDEX_REVALIDATE_SECONDS },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
+  );
+  return {
+    items,
+    totalPages: Math.max(1, parseInt(response.headers.get('X-WP-TotalPages') || '1', 10)),
+  };
+}
+
+async function loadBlogRelatedIndex(
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<RelatedBlogIndex | null> {
+  const terms = await getBlogCategoryTerms(query).catch(() => new Map<number, RelatedIndexTerm>());
+  const first = await loadBlogRelatedIndexPage(1, query);
+  const posts = [...first.items];
+  for (let page = 2; page <= first.totalPages; page += 1) {
+    const next = await loadBlogRelatedIndexPage(page, query);
+    posts.push(...next.items);
+  }
+  if (posts.length === 0) return null;
+
+  const termList: RelatedIndexTerm[] = Array.from(terms.values());
+  const entries = posts.map((post) => {
+    const rewritten = rewriteWpRenderedHtmlFields(post);
+    return toRelatedIndexPost(rewritten, terms);
+  });
+  const open = filterOpenBlogPosts(entries);
+  if (open.length === 0) return null;
+  return {
+    posts: open,
+    terms: termList,
+    fetchedAt: Date.now(),
+  };
+}
+
+function cacheRelatedIndexResult(result: RelatedBlogIndex | null): boolean {
+  return shouldCacheRelatedPostsResult(result) && isUsableRelatedIndex(result);
+}
+
+export async function getBlogRelatedIndex(): Promise<RelatedBlogIndex | null> {
+  try {
+    const loaded = await fetchWithRelatedPostsTtl(
+      relatedIndexCache,
+      () => withRelatedFetchTimeout(
+        (signal) => loadBlogRelatedIndex({
+          signal,
+          ...relatedIndexFetchGuard,
+        }),
+        null,
+      ),
+      Date.now,
+      RELATED_BLOG_INDEX_REVALIDATE_SECONDS * 1000,
+    );
+    if (loaded && !cacheRelatedIndexResult(loaded) && relatedIndexCache.current) {
+      relatedIndexCache.current = null;
+    }
+    return adoptLastKnownGood(relatedIndexLastKnownGood, loaded, isUsableRelatedIndex);
+  } catch {
+    return relatedIndexLastKnownGood.value;
+  }
 }
 
 export async function getRelatedBlogPostsForPost(
@@ -775,93 +934,28 @@ export async function getRelatedBlogPostsForPost(
   options: { latest?: RelatedBlogCard[]; categorySlug?: string } = {},
 ): Promise<RelatedBlogCard[]> {
   const fieldIds = parseRelatedPostIds(post);
-  const categoryId = pickRelatedCategoryId(post.categories, options.categorySlug)
-    ?? primaryCategoryId(post);
-  const cacheKey = `${post.id}:${fieldIds.join(',')}:${categoryId ?? ''}`;
-  try {
-    return await fetchWithRelatedPostsTtl(
-      relatedCacheFor(cacheKey),
-      () => loadRelatedBlogPosts({
-        current: { id: post.id, slug: post.slug },
-        fieldIds,
-        categoryId,
-        latest: options.latest,
-      }),
-      Date.now,
-      RELATED_BLOG_CACHE_TTL_MS,
-    );
-  } catch {
-    return options.latest ?? [];
-  }
-}
-
-const relatedFetchGuard = {
-  timeoutMs: RELATED_BLOG_FETCH_TIMEOUT_MS,
-  maxAttempts: 1,
-} as const;
-
-async function loadRelatedBlogPosts({
-  current,
-  fieldIds,
-  categoryId,
-  latest: providedLatest,
-}: {
-  current: { id: number; slug: string };
-  fieldIds: number[];
-  categoryId?: number;
-  latest?: RelatedBlogCard[];
-}): Promise<RelatedBlogCard[]> {
-  const latest = providedLatest
-    ? providedLatest
-    : await withRelatedFetchTimeout(
-      (signal) => getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
-        signal,
-        ...relatedFetchGuard,
-      }),
-      [],
-    );
-
-  const knownIds = new Set(latest.map((card) => card.id));
-  const missingFieldIds = fieldIds.filter((id) => !knownIds.has(id));
-  const manualFromLatest = latest.filter((card) => fieldIds.includes(card.id));
-  const manualFetched = missingFieldIds.length === 0
-    ? []
-    : await withRelatedFetchTimeout(
-      (signal) => getBlogPostsByIds(missingFieldIds, {
-        signal,
-        ...relatedFetchGuard,
-      }),
-      [],
-    );
-  const manual = [...manualFromLatest, ...manualFetched];
-
-  const sameCategory = !categoryId
-    ? []
-    : await fetchWithRelatedPostsTtl(
-      relatedCacheFor(`cat:${categoryId}`),
-      () => withRelatedFetchTimeout(
-        (signal) => getRelatedBlogPostsByCategory(categoryId, {
-          excludeId: current.id,
-          signal,
-          ...relatedFetchGuard,
-        }),
-        [],
-      ),
-    );
-
-  const postsById = new Map<number, RelatedBlogCard>();
-  for (const card of [...manual, ...sameCategory, ...latest]) {
-    if (!postsById.has(card.id)) postsById.set(card.id, card);
+  const index = await getBlogRelatedIndex();
+  if (!isUsableRelatedIndex(index)) {
+    return options.latest?.length ? options.latest.slice(0, RELATED_BLOG_CARD_COUNT) : [];
   }
 
-  return resolveRelatedBlogPosts({
-    current,
+  const selected = selectRelatedFromIndex(index, {
+    current: { id: post.id, slug: post.slug },
     fieldIds,
-    postsById,
-    sameCategory,
-    latest,
-    limit: RELATED_BLOG_CARD_COUNT,
+    categorySlug: options.categorySlug,
   });
+  const cards = selected.map(relatedCardFromIndexPost);
+  if (cards.length > 0) return cards;
+  if (options.latest?.length) {
+    return resolveRelatedBlogPosts({
+      current: { id: post.id, slug: post.slug },
+      fieldIds,
+      postsById: new Map(options.latest.map((card) => [card.id, card])),
+      latest: options.latest,
+      limit: RELATED_BLOG_CARD_COUNT,
+    });
+  }
+  return [];
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
