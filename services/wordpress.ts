@@ -18,9 +18,11 @@ import {
   RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_FETCH_COUNT,
+  RELATED_BLOG_FETCH_TIMEOUT_MS,
   fetchWithRelatedPostsTtl,
   parseRelatedPostIds,
   resolveRelatedBlogPosts,
+  withRelatedFetchTimeout,
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
@@ -486,6 +488,9 @@ export type RelatedBlogCard = {
 export type LatestBlogPostsQuery = {
   categoryId?: number;
   excludeId?: number | string;
+  signal?: AbortSignal;
+  timeoutMs?: number;
+  maxAttempts?: number;
 };
 
 function primaryCategoryId(post: Pick<WPPost, 'categories'>): number | undefined {
@@ -585,7 +590,15 @@ export async function getLatestBlogPosts(
   }
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     url.toString(),
-    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
+    {
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
   );
   return filterOpenBlogPosts(posts.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
@@ -593,7 +606,10 @@ export async function getLatestBlogPosts(
   })).slice(0, perPage);
 }
 
-export async function getBlogPostsByIds(ids: number[]): Promise<RelatedBlogCard[]> {
+export async function getBlogPostsByIds(
+  ids: number[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<RelatedBlogCard[]> {
   const unique = Array.from(new Set(ids.filter((id) => Number.isInteger(id) && id > 0)));
   if (unique.length === 0) return [];
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
@@ -604,7 +620,15 @@ export async function getBlogPostsByIds(ids: number[]): Promise<RelatedBlogCard[
   url.searchParams.append('status', 'publish');
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     url.toString(),
-    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
+    {
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
   );
   const cards = filterOpenBlogPosts(posts.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
@@ -631,18 +655,27 @@ export async function getRelatedBlogPostsForPost(
   const fieldIds = parseRelatedPostIds(post);
   const categoryId = primaryCategoryId(post);
   const cacheKey = `${post.id}:${fieldIds.join(',')}:${categoryId ?? ''}`;
-  return fetchWithRelatedPostsTtl(
-    relatedCacheFor(cacheKey),
-    () => loadRelatedBlogPosts({
-      current: { id: post.id, slug: post.slug },
-      fieldIds,
-      categoryId,
-      latest: options.latest,
-    }),
-    Date.now,
-    RELATED_BLOG_CACHE_TTL_MS,
-  );
+  try {
+    return await fetchWithRelatedPostsTtl(
+      relatedCacheFor(cacheKey),
+      () => loadRelatedBlogPosts({
+        current: { id: post.id, slug: post.slug },
+        fieldIds,
+        categoryId,
+        latest: options.latest,
+      }),
+      Date.now,
+      RELATED_BLOG_CACHE_TTL_MS,
+    );
+  } catch {
+    return options.latest ?? [];
+  }
 }
+
+const relatedFetchGuard = {
+  timeoutMs: RELATED_BLOG_FETCH_TIMEOUT_MS,
+  maxAttempts: 1,
+} as const;
 
 async function loadRelatedBlogPosts({
   current,
@@ -655,18 +688,43 @@ async function loadRelatedBlogPosts({
   categoryId?: number;
   latest?: RelatedBlogCard[];
 }): Promise<RelatedBlogCard[]> {
-  const [manual, sameCategory, latest] = await Promise.all([
-    getBlogPostsByIds(fieldIds),
-    categoryId
-      ? getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
+  const latest = providedLatest
+    ? providedLatest
+    : await withRelatedFetchTimeout(
+      (signal) => getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
+        signal,
+        ...relatedFetchGuard,
+      }),
+      [],
+    );
+
+  const knownIds = new Set(latest.map((card) => card.id));
+  const missingFieldIds = fieldIds.filter((id) => !knownIds.has(id));
+  const manualFromLatest = latest.filter((card) => fieldIds.includes(card.id));
+  const manualFetched = missingFieldIds.length === 0
+    ? []
+    : await withRelatedFetchTimeout(
+      (signal) => getBlogPostsByIds(missingFieldIds, {
+        signal,
+        ...relatedFetchGuard,
+      }),
+      [],
+    );
+  const manual = [...manualFromLatest, ...manualFetched];
+
+  const sameCategory = !categoryId
+    ? []
+    : await fetchWithRelatedPostsTtl(
+      relatedCacheFor(`cat:${categoryId}`),
+      () => withRelatedFetchTimeout(
+        (signal) => getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
           categoryId,
-          excludeId: current.id,
-        })
-      : Promise.resolve([]),
-    providedLatest
-      ? Promise.resolve(providedLatest)
-      : getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
-  ]);
+          signal,
+          ...relatedFetchGuard,
+        }),
+        [],
+      ),
+    );
 
   const postsById = new Map<number, RelatedBlogCard>();
   for (const card of [...manual, ...sameCategory, ...latest]) {
@@ -685,7 +743,7 @@ async function loadRelatedBlogPosts({
 
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
   const { items: posts } = await wordpressFetchCollection<WPPost>(
-    `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author`,
+    `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
   if (!posts || posts.length === 0) return null;

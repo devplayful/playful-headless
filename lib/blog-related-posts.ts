@@ -8,6 +8,8 @@ export const RELATED_BLOG_FIELD_LIMIT = 3;
 export const RELATED_BLOG_FIELD_NAME = 'articulos_relacionados';
 /** Aligns with getLatestBlogPosts `revalidate: 3600` so runtime does not pin stale latest-7. */
 export const RELATED_BLOG_CACHE_TTL_MS = 3600 * 1000;
+/** Soft deadline for field / category / latest related fetches. The post page must not 500. */
+export const RELATED_BLOG_FETCH_TIMEOUT_MS = 4000;
 
 export type RelatedPostsCacheEntry<T> = {
   promise: Promise<T>;
@@ -30,6 +32,40 @@ export function isRelatedPostsCacheFresh<T>(
  * Reuse one in-flight/resolved latest-related fetch until TTL elapses.
  * Failed promises are dropped so the next call retries. Build stays one request.
  */
+/**
+ * Run a related-posts fetch with AbortController (~4s). Timeouts and throws
+ * resolve to `fallback` so the article page never dies on WordPress slowness.
+ */
+export async function withRelatedFetchTimeout<T>(
+  load: (signal: AbortSignal) => Promise<T>,
+  fallback: T,
+  timeoutMs = RELATED_BLOG_FETCH_TIMEOUT_MS,
+): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort(
+      new DOMException(`Related posts fetch exceeded ${timeoutMs}ms`, 'TimeoutError'),
+    );
+  }, timeoutMs);
+  try {
+    return await Promise.race([
+      load(controller.signal),
+      new Promise<T>((_, reject) => {
+        const onAbort = () => reject(controller.signal.reason ?? new Error('related-timeout'));
+        if (controller.signal.aborted) {
+          onAbort();
+          return;
+        }
+        controller.signal.addEventListener('abort', onAbort, { once: true });
+      }),
+    ]);
+  } catch {
+    return fallback;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export function fetchWithRelatedPostsTtl<T>(
   state: RelatedPostsCacheState<T>,
   load: () => Promise<T>,

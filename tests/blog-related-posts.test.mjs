@@ -6,6 +6,7 @@ const {
   RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_FETCH_COUNT,
+  RELATED_BLOG_FETCH_TIMEOUT_MS,
   RELATED_BLOG_FIELD_LIMIT,
   RELATED_BLOG_FIELD_NAME,
   excludeCurrentBlogPost,
@@ -13,6 +14,7 @@ const {
   isRelatedPostsCacheFresh,
   parseRelatedPostIds,
   resolveRelatedBlogPosts,
+  withRelatedFetchTimeout,
 } = await import('../lib/blog-related-posts.ts');
 
 const blogPage = readFileSync(
@@ -123,13 +125,17 @@ test('related-posts process cache expires after 3600s and retries after failure'
 });
 
 test('blog post page fetches one extra and filters the current slug/id', () => {
-  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT/);
   assert.match(blogPage, /fetchWithRelatedPostsTtl\(latestRelatedCache/);
   assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
   assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
+  assert.match(blogPage, /withRelatedFetchTimeout/);
+  assert.match(blogPage, /RELATED_BLOG_FETCH_TIMEOUT_MS/);
+  assert.match(blogPage, /catch \{/);
+  assert.match(blogPage, /getBlogPosts\(page, perPage\)/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts\(6\)/);
   assert.doesNotMatch(blogPage, /Cargando artículos/);
 });
@@ -252,6 +258,38 @@ test('parseRelatedPostIds reads acf/meta and ignores the current empty ACF array
   assert.deepEqual(parseRelatedPostIds({ acf: [] }), []);
   assert.deepEqual(parseRelatedPostIds({ meta: { _acf_changed: false } }), []);
   assert.deepEqual(parseRelatedPostIds(undefined), []);
+  assert.deepEqual(parseRelatedPostIds(null), []);
+  assert.deepEqual(parseRelatedPostIds('basura'), []);
+  assert.deepEqual(parseRelatedPostIds('12abc'), []);
+  assert.deepEqual(parseRelatedPostIds({ acf: { articulos_relacionados: 'no-es-un-id' } }), []);
+  assert.deepEqual(
+    parseRelatedPostIds({ acf: { articulos_relacionados: [null, '', 'foo', -3, 0, 2.5, '  '] } }),
+    [],
+  );
+});
+
+test('withRelatedFetchTimeout returns fallback on timeout and thrown errors', async () => {
+  assert.equal(RELATED_BLOG_FETCH_TIMEOUT_MS, 4000);
+
+  const ok = await withRelatedFetchTimeout(async () => ['manual'], ['fallback']);
+  assert.deepEqual(ok, ['manual']);
+
+  const timedOut = await withRelatedFetchTimeout(
+    async (signal) => new Promise((_, reject) => {
+      signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+    }),
+    ['fallback'],
+    20,
+  );
+  assert.deepEqual(timedOut, ['fallback']);
+
+  const failed = await withRelatedFetchTimeout(
+    async () => {
+      throw new Error('wp-down');
+    },
+    ['fallback'],
+  );
+  assert.deepEqual(failed, ['fallback']);
 });
 
 test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacionados', () => {
@@ -264,7 +302,11 @@ test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacio
     'utf8',
   );
   assert.match(wordpress, /parseRelatedPostIds\(post\)/);
-  assert.match(wordpress, /getBlogPostsByIds\(fieldIds\)/);
+  assert.match(wordpress, /getBlogPostsByIds\(missingFieldIds/);
+  assert.match(wordpress, /withRelatedFetchTimeout/);
+  assert.match(wordpress, /RELATED_BLOG_FETCH_TIMEOUT_MS/);
+  assert.match(wordpress, /acf_format=standard/);
+  assert.match(wordpress, /relatedCacheFor\(`cat:\$\{categoryId\}`\)/);
   assert.match(wordpress, /revalidate: 3600/);
   assert.match(wordpress, /status', 'publish'/);
   assert.match(plugin, /register_post_meta\('post', PLAYFUL_RELATED_META_KEY/);
