@@ -51,7 +51,7 @@ test('blog post page renders the mapped CTA after article HTML', () => {
 test('mapped service CTA and article HTML are not gated behind a client loader', () => {
   assert.doesNotMatch(blogPage, /BlogPostContent|BlogLoader|Cargando artículo/);
   assert.doesNotMatch(blogPage, /^['"]use client['"]/m);
-  assert.match(blogPage, /<a href=\{serviceCta\.href\}>/);
+  assert.match(blogPage, /<a\s+href=\{serviceCta\.href\}/);
   assert.match(blogPage, /\{serviceCta\.label\}/);
   assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
 });
