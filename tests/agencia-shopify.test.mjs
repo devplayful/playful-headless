@@ -104,6 +104,28 @@ test('signed SEO-for-Shopify block sits between migration and social proof', () 
     'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
   );
   assert.equal(SEO_SHOPIFY.paragraphs.length, 6);
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.startsWith(
+        'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador.',
+      ),
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('y no según cómo está organizado tu almacén'),
+    ),
+  );
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.includes(
+      'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta.',
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('porque así decides con tus datos y no con intuiciones'),
+    ),
+  );
   assert.equal(SEO_SHOPIFY.seoHref, '/agencia-seo');
   assert.equal(SEO_SHOPIFY.seoLinkLabel, 'nuestro servicio de SEO');
   assert.equal(SEO_SHOPIFY.cta, '¿Hablamos?');

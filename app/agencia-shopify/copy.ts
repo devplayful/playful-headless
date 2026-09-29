@@ -68,10 +68,10 @@ export const SEO_SHOPIFY = {
   h2: 'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
   paragraphs: [
     'Si ya vendes con Shopify, no tiene sentido que una agencia monte la tienda y otra distinta se ocupe de que Google la encuentre. Nosotros hacemos las dos cosas desde el mismo equipo, así que cada cambio en el catálogo se piensa también para la búsqueda.',
-    'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador y no según cómo está organizado tu almacén. Cada ficha de producto sale con su título, su descripción y sus metadatos escritos para esa búsqueda, y evitamos que las variantes repitan el mismo texto.',
+    'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador. Cada ficha de producto sale con su título, su descripción y sus metadatos escritos para esa búsqueda, y evitamos que las variantes repitan el mismo texto.',
     'Después miramos la velocidad y las apps que tienes instaladas, porque cada app suma código a la tienda y algunas la frenan. Quitamos las que no aportan y cuidamos que las páginas carguen rápido en el móvil.',
     'Si vienes de otra plataforma, cada URL antigua redirige con un 301 a su equivalente en Shopify, de modo que Google y tus clientes llegan a la página correcta y no a un error.',
-    'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta, porque así decides con tus datos y no con intuiciones.',
+    'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta.',
     'Reserva 30 a 40 minutos y revisamos juntos tu tienda y su SEO, sin compromiso de seguir con nosotros.',
   ],
   seoLead: 'Si quieres ver cómo trabajamos el SEO más allá de la tienda, aquí tienes ',
