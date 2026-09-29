@@ -31,6 +31,7 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+import { localBlogStaticParams } from '@/lib/blog-local-posts';
 
 export async function generateStaticParams() {
   // WP REST and getBlogPosts clamp per_page at 100. Raising the argument
@@ -46,9 +47,12 @@ export async function generateStaticParams() {
     const next = await getBlogPosts(page, perPage);
     posts.push(...next.posts);
   }
-  return posts.map((post) => ({
+  const fromWp = posts.map((post) => ({
     slug: [getPrimaryCategorySlug(post), post.slug],
   }));
+  const seen = new Set(fromWp.map((entry) => entry.slug.join('/')));
+  const fromLocal = localBlogStaticParams().filter((entry) => !seen.has(entry.slug.join('/')));
+  return [...fromWp, ...fromLocal];
 }
 
 const formatDate = (dateString: string) => {
@@ -439,6 +443,12 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description:
       'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
     h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
+  },
+  'cashea-para-comercios': {
+    title: 'Cashea para comercios: cuotas en tu tienda online',
+    description:
+      'Cashea para comercios: cómo ofrecer cuotas en el checkout de tu tienda online en Venezuela. Playful integra el método; no somos la app ni la pasarela.',
+    h1: 'Cashea para comercios: cómo ofrecer cuotas en tu tienda online',
   },
 };
 
