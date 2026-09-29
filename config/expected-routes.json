@@ -4,6 +4,7 @@
   "sourceRoutes": [
     "/",
     "/[slug]",
+    "/agencia-sem",
     "/agencia-shopify",
     "/api/blog-posts",
     "/api/contact",
@@ -23,6 +24,7 @@
   ],
   "criticalRoutes": [
     "/",
+    "/agencia-sem",
     "/agencia-shopify",
     "/api/blog-posts",
     "/api/contact",
@@ -57,7 +59,6 @@
     "/[slug]": [
       "/agencia-diseno-web",
       "/agencia-e-commerce",
-      "/agencia-sem",
       "/agencia-seo",
       "/agencia-ux-ui",
       "/marketing-internacional",
