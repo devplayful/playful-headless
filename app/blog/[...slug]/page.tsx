@@ -31,6 +31,19 @@ import {
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
+let latestRelatedInflight: ReturnType<typeof getLatestBlogPosts> | null = null;
+
+/** Dedupe the latest-7 WP fetch across SSG pages (payload is too big for Next cache). */
+function fetchLatestRelatedBlogPosts() {
+  if (!latestRelatedInflight) {
+    latestRelatedInflight = getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT).catch((error) => {
+      latestRelatedInflight = null;
+      throw error;
+    });
+  }
+  return latestRelatedInflight;
+}
+
 export async function generateStaticParams() {
   // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
   const { posts } = await getBlogPosts(1, 100);
@@ -70,7 +83,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const [post, latestRelated] = await Promise.all([
     getBlogPostBySlug(postSlug),
-    getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
+    fetchLatestRelatedBlogPosts(),
   ]);
   
   if (!post) {

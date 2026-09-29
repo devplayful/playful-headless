@@ -64,6 +64,7 @@ test('an older post that is not in the latest 7 keeps the same first 6 cards', (
 
 test('blog post page fetches one extra and filters the current slug/id', () => {
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
   assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
