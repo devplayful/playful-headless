@@ -17,8 +17,10 @@ const {
   resolveBlogEditorialUpdate,
   serializeJsonLd,
   toIsoDateTime,
+  wordpressSeoText,
 } = await import('../lib/blog-editorial-meta.ts');
 const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const plainText = await import('../lib/wordpress-plain-text.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -206,7 +208,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
 test('JSON-LD headline decodes WordPress entities to match the H1', () => {
   const jsonLd = buildBlogArticleJsonLd({
     headline: 'SEO &#8211; guía &amp; checklist',
-    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.',
+    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.\n',
     datePublished: ZELLE_PUBLISHED,
     dateModified: ZELLE_PUBLISHED,
     url: 'https://playfulagency.com/blog/seo/ejemplo',
@@ -214,6 +216,35 @@ test('JSON-LD headline decodes WordPress entities to match the H1', () => {
   assert.equal(jsonLd.headline, 'SEO – guía & checklist');
   assert.equal(jsonLd.description, '¿Cuáles son sus ventajas? y… si realmente puede.');
   assert.equal(decodeHtmlEntities('&#x2013;'), '–');
+});
+
+test('wordpressSeoText decodes WP entities once and trims descriptions', () => {
+  assert.equal(plainText.decodeHtmlEntities, decodeHtmlEntities);
+  assert.equal(plainText.wordpressSeoText, wordpressSeoText);
+  assert.equal(decodeHtmlEntities('y&#8230;'), 'y…');
+  assert.equal(decodeHtmlEntities('y&amp;#8230;'), 'y&#8230;');
+  assert.equal(decodeHtmlEntities('H&amp;M'), 'H&M');
+  assert.equal(decodeHtmlEntities('&amp;amp;'), '&amp;');
+  assert.equal(
+    wordpressSeoText(
+      '<p>¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y&#8230; si realmente puede ser una alternativa para tu negocio.</p>\n',
+      { stripTags: true, maxLength: 160 },
+    ),
+    '¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y… si realmente puede ser una alternativa para tu negocio.',
+  );
+  assert.equal(wordpressSeoText('texto con salto\n'), 'texto con salto');
+  assert.doesNotMatch(wordpressSeoText('H&amp;M y más'), /&amp;/);
+});
+
+test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter and JSON-LD', () => {
+  assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
+  assert.match(blogPage, /function blogPostSeoCopy/);
+  assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
+  assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
+  assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);
+  assert.match(blogPage, /description: metaDescription/);
 });
 
 test('combined byline joins author and editorial with y', () => {
@@ -251,8 +282,11 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /type="application\/ld\+json"/);
   assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
   assert.doesNotMatch(blogPage, /articleJsonLd \?/);
-  assert.match(blogPage, /<BlogRelatedPostsSection posts=\{relatedPosts\} \/>/);
-  assert.match(blogPage, /getLatestBlogPosts\(6\)/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
