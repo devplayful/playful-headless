@@ -238,12 +238,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Columna derecha: Imagen destacada */}
             {post.featured_media_url && (
-              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#DFFFFE] to-[#E0F7FA]">
+              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden">
                 <Image
                   src={post.featured_media_url}
                   alt={post.featured_media_alt || post.title.rendered}
                   fill
-                  className="object-contain p-8"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 80vw"
                   priority
                 />
               </div>

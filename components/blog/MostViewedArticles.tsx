@@ -63,13 +63,13 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col"
             >
               {/* Imagen */}
-              <div className="h-48 relative bg-white">
+              <div className="h-48 relative overflow-hidden">
                 {post.featured_media_url ? (
                   <Image
                     src={post.featured_media_url}
                     alt={post.featured_media_alt || post.title.rendered}
                     fill
-                    className="object-contain p-4"
+                    className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 ) : (
