@@ -14,6 +14,7 @@ import {
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
+import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 
 export {
   rewriteInSitePageHrefs,
@@ -429,6 +430,7 @@ export interface WPFeaturedMedia {
 export interface WPPost {
   id: number;
   date: string;
+  date_gmt?: string;
   slug: string;
   link: string;
   title: { rendered: string };
@@ -510,8 +512,16 @@ export async function getLatestBlogPosts(perPage: number = 3): Promise<Array<{ i
       imageUrl = featuredMedia.source_url || featuredMedia.media_details?.sizes?.full?.source_url || featuredMedia.media_details?.sizes?.large?.source_url || featuredMedia.media_details?.sizes?.medium_large?.source_url || featuredMedia.media_details?.sizes?.medium?.source_url || imageUrl;
     }
     imageUrl = resolveBlogCoverUrl(rewritten.slug, imageUrl);
-    const date = new Date(rewritten.date);
-    const formattedDate = date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').join(' / ');
+    const formattedDate = formatBlogListingDate(
+      rewritten.slug,
+      {
+        published: rewritten.date,
+        publishedGmt: rewritten.date_gmt,
+        modified: rewritten.modified,
+        modifiedGmt: rewritten.modified_gmt,
+      },
+      'slash',
+    );
     const excerpt = (rewritten.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
     const categorySlug = categories?.[0]?.slug || 'sin-categoria';
     return { id: rewritten.id, title: rewritten.title.rendered.replace(/&[a-z]+;/g, ''), excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt, category, date: formattedDate, imageUrl, slug: rewritten.slug, href: `/blog/${categorySlug}/${rewritten.slug}` };

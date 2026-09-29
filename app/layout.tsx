@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Paytone_One, Montserrat, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
@@ -9,6 +10,8 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
+import AttributionCapture from '@/components/AttributionCapture';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -114,12 +117,16 @@ export default function RootLayout({
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
           <BodyClassManager />
+          <Suspense fallback={null}>
+            <AnalyticsSpaPageView />
+          </Suspense>
           <Header />
           <main className="min-h-screen">
             {children}
           </main>
           <Footer />
           <ChatWidget />
+          <AttributionCapture />
         </ThemeProvider>
       </body>
     </html>

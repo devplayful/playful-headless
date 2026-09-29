@@ -4,6 +4,30 @@ import { blogSeoRedirectDecision } from './utils/amp-junk-query';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import { BOOKING_HREF, SERVICE_BOOKING_HREF } from './utils/booking';
+import {
+  ATTRIBUTION_COOKIE_FIRST,
+  ATTRIBUTION_COOKIE_LAST,
+  attributionCookieOptions,
+  nextAttributionFromRequest,
+  serializeAttributionCookie,
+  shouldCaptureAttributionPath,
+} from './lib/contact/attribution';
+
+function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
+  if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
+  const { first, last } = nextAttributionFromRequest({
+    pathname: request.nextUrl.pathname,
+    search: request.nextUrl.search,
+    referrer: request.headers.get('referer') || '',
+    host: request.nextUrl.hostname,
+    firstCookie: request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value,
+    lastCookie: request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value,
+  });
+  const options = attributionCookieOptions();
+  response.cookies.set(ATTRIBUTION_COOKIE_FIRST, serializeAttributionCookie(first), options);
+  response.cookies.set(ATTRIBUTION_COOKIE_LAST, serializeAttributionCookie(last), options);
+  return response;
+}
 
 const PERMANENT_301: Record<string, string> = {
   '/servicios': '/agencia-e-commerce',
@@ -33,10 +57,10 @@ export function middleware(request: NextRequest) {
 
   const closed = blogClosedDecision(path);
   if (closed.type === 'gone') {
-    return new NextResponse('Gone', {
+    return attachAttributionCookies(request, new NextResponse('Gone', {
       status: 410,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+    }));
   }
 
   const dest = PERMANENT_301[path];
@@ -44,12 +68,12 @@ export function middleware(request: NextRequest) {
     if (/^https?:\/\//i.test(dest)) {
       const target = new URL(dest);
       target.search = request.nextUrl.search;
-      return NextResponse.redirect(target, 301);
+      return attachAttributionCookies(request, NextResponse.redirect(target, 301));
     }
 
     const target = request.nextUrl.clone();
     target.pathname = dest;
-    return NextResponse.redirect(target, 301);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 301));
   }
 
   const blogSeo = blogSeoRedirectDecision(
@@ -61,10 +85,10 @@ export function middleware(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname = blogSeo.pathname;
     target.search = blogSeo.search;
-    return NextResponse.redirect(target, blogSeo.status);
+    return attachAttributionCookies(request, NextResponse.redirect(target, blogSeo.status));
   }
 
-  return NextResponse.next();
+  return attachAttributionCookies(request, NextResponse.next());
 }
 
 export const config = {
@@ -96,5 +120,6 @@ export const config = {
     '/blog',
     '/blog/',
     '/blog/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\..*).*)',
   ],
 };
