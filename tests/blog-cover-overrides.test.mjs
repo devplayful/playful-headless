@@ -67,6 +67,10 @@ const LOTE_5 = [
 
 const LOTE_6 = [
   [
+    'como-usar-el-remarketing-para-tener-mas-clientes',
+    '/images/blog/15-remarketing-magnific-ovxxg2H829.png',
+  ],
+  [
     'estrategia-de-email-marketing',
     '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png',
   ],
@@ -146,10 +150,11 @@ test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () =>
   }
 });
 
-test('lote 6 maps LwGzTFJswO, iGo8Tmd3uK and 0eQHuiWTfW without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 27);
-  assert.equal(LOTE_6.length, 3);
+test('lote 6 maps ovxxg2H829, LwGzTFJswO, iGo8Tmd3uK and 0eQHuiWTfW without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 28);
+  assert.equal(LOTE_6.length, 4);
   assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-ovxxg2H829.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-iGo8Tmd3uK.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-0eQHuiWTfW.png')));
@@ -281,6 +286,37 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('ovxxg2H829 is exclusive to como-usar-el-remarketing-para-tener-mas-clientes', async () => {
+  const path = '/images/blog/15-remarketing-magnific-ovxxg2H829.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['como-usar-el-remarketing-para-tener-mas-clientes'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('como-usar-el-remarketing-para-tener-mas-clientes'),
+    path,
+  );
+  const remarketingOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('ovxxg2H829'))
+    .map(([slug]) => slug);
+  assert.deepEqual(remarketingOwners, ['como-usar-el-remarketing-para-tener-mas-clientes']);
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-ovxxg2H829.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('JN0rWQjOq4 is exclusive to zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', async () => {
