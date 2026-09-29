@@ -2,7 +2,7 @@
  * Local Magnific covers that replace WordPress featured + OG/Twitter
  * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026) + lote 4
  * (24 sep 2026, José GO vía Diseño) + lote 5 (24 sep 2026, José GO
- * vía Diseño). Same override
+ * vía Diseño) + lote 6 (29 sep 2026, José GO). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -20,6 +20,8 @@
  * `auditoria-seo-que-es-como-se-hace`.
  * 24 sep 2026 (José GO vía Diseño): JN0rWQjOq4 canónico en
  * `zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce`.
+ * 29 sep 2026 (José GO 17:33): 79TnhawJAL canónico en
+ * `analitica-web-que-es-como-puede-ayudar-a-mi-marca`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -57,6 +59,9 @@ export const BLOG_COVER_OVERRIDES = {
     '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
+  // lote 6 (29 sep 2026, José GO 17:33)
+  'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -68,7 +73,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1–5. */
+/** Prefer the local Magnific cover when the slug is in lote 1–6. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',

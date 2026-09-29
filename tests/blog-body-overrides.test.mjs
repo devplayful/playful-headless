@@ -58,5 +58,9 @@ test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.ok(blogPage.includes(`h1: '${ZELLE_TITLE}'`));
   assert.ok(!blogPage.includes(`${ZELLE_TITLE} | Blog - Playful Agency`));
   assert.ok(blogPage.includes(ZELLE_META));
-  assert.match(blogPage, /Cintillos de promoción en ecommerce \| Playful/);
+  assert.match(blogPage, /Cintillos publicitarios en ecommerce: guía práctica \| Playful/);
+  assert.match(
+    blogPage,
+    /Cintillos publicitarios en ecommerce: cómo diseñarlos para atraer y retener clientes/,
+  );
 });
