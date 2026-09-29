@@ -8,10 +8,12 @@ const {
   HERO,
   CTA,
   BOOKING_HREF,
+  BOOKING_CTA_LABEL,
   CONTACT_HREF,
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
+  SEO_SHOPIFY,
   SOCIAL_PROOF,
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
@@ -56,9 +58,9 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.doesNotMatch(landing, /buttonLink=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /servicio-operar/);
-  assert.equal(CTA.formButton, 'Reservar llamada diagnóstica 30–40 min');
-  assert.equal(HERO.cta, 'Agendar Reunión con Playful');
-  assert.equal(CTA.cta, 'Agendar Reunión con Playful');
+  assert.equal(CTA.formButton, BOOKING_CTA_LABEL);
+  assert.equal(HERO.cta, BOOKING_CTA_LABEL);
+  assert.equal(CTA.cta, BOOKING_CTA_LABEL);
   const contentSlots = SERVICES.items.filter((item) => item.slot);
   assert.equal(contentSlots.length, 4);
   assert.deepEqual(
@@ -97,6 +99,27 @@ test('sitemap lists the interior URL without a trailing slash', () => {
   assert.doesNotMatch(sitemap, /https:\/\/playfulagency\.com\/agencia-shopify\//);
 });
 
+test('signed SEO-for-Shopify block sits between migration and social proof', () => {
+  assert.equal(
+    SEO_SHOPIFY.h2,
+    'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  );
+  assert.equal(SEO_SHOPIFY.paragraphs.length, 6);
+  assert.equal(SEO_SHOPIFY.seoHref, '/agencia-seo');
+  assert.equal(SEO_SHOPIFY.seoLinkLabel, 'nuestro servicio de SEO');
+  assert.equal(SEO_SHOPIFY.cta, '¿Hablamos?');
+  assert.equal(SEO_SHOPIFY.ctaHref, '/reunion-playful');
+  assert.match(landing, /data-seo-shopify-block/);
+  assert.match(landing, /href=\{SEO_SHOPIFY\.seoHref\}/);
+  assert.match(landing, /href=\{SEO_SHOPIFY\.ctaHref\}/);
+  const migrationIdx = landing.indexOf('title={MIGRATION.h2}');
+  const seoIdx = landing.indexOf('{SEO_SHOPIFY.h2}');
+  const socialIdx = landing.indexOf('{SOCIAL_PROOF.h2}');
+  assert.ok(migrationIdx !== -1 && seoIdx !== -1 && socialIdx !== -1);
+  assert.ok(migrationIdx < seoIdx && seoIdx < socialIdx);
+  assert.equal((landing.match(/\{SEO_SHOPIFY\.h2\}/g) || []).length, 1);
+});
+
 test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
   const published = JSON.stringify({
     SHOPIFY_META,
@@ -104,6 +127,7 @@ test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
     SERVICES,
     FAQ_ITEMS,
     CTA,
+    SEO_SHOPIFY,
   });
   assert.doesNotMatch(published, /Shopify Plus/i);
   assert.doesNotMatch(published, /Cocina/);
@@ -174,15 +198,14 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
   assert.doesNotMatch(landing, /TalkCta\(\{ href = CONTACT_HREF/);
   assert.doesNotMatch(HERO.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
-  assert.match(HERO.cta, /Agendar|Reservar/i);
-  assert.match(CTA.cta, /Agendar|Reservar/i);
+  assert.match(HERO.cta, /Solicitar una reunión|Comprobar si encajamos/);
+  assert.match(CTA.cta, /Solicitar una reunión|Comprobar si encajamos/);
+  assert.match(landing, /BookingLink/);
 });
 
 test('middleware 301s /reunion-playful to the GHL booking widget', () => {
-  assert.match(
-    middleware,
-    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
-  );
+  assert.match(middleware, /\[SERVICE_BOOKING_HREF\]:\s*BOOKING_HREF/);
+  assert.match(middleware, /from '\.\/utils\/booking'/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
   assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);
