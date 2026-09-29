@@ -5,15 +5,21 @@ import { readFileSync } from 'node:fs';
 const {
   RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
+  RELATED_BLOG_CATEGORY_FETCH_PER_PAGE,
+  RELATED_BLOG_CATEGORY_PER_PAGE,
+  RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS,
   RELATED_BLOG_FETCH_COUNT,
   RELATED_BLOG_FETCH_TIMEOUT_MS,
   RELATED_BLOG_FIELD_LIMIT,
   RELATED_BLOG_FIELD_NAME,
+  RELATED_BLOG_POST_FIELDS,
   excludeCurrentBlogPost,
   fetchWithRelatedPostsTtl,
   isRelatedPostsCacheFresh,
   parseRelatedPostIds,
+  pickRelatedCategoryId,
   resolveRelatedBlogPosts,
+  shouldCacheRelatedPostsResult,
   withRelatedFetchTimeout,
 } = await import('../lib/blog-related-posts.ts');
 
@@ -124,11 +130,49 @@ test('related-posts process cache expires after 3600s and retries after failure'
   assert.equal(attempts, 2);
 });
 
+test('empty related results are not cached so a timeout fallback retries', async () => {
+  assert.equal(shouldCacheRelatedPostsResult([]), false);
+  assert.equal(shouldCacheRelatedPostsResult(new Map()), false);
+  assert.equal(shouldCacheRelatedPostsResult([{ id: 1 }]), true);
+
+  let now = 5_000;
+  let loads = 0;
+  const state = { current: null };
+  const first = await fetchWithRelatedPostsTtl(state, async () => {
+    loads += 1;
+    return [];
+  }, () => now);
+  assert.deepEqual(first, []);
+  assert.equal(state.current, null);
+  assert.equal(loads, 1);
+
+  const second = await fetchWithRelatedPostsTtl(state, async () => {
+    loads += 1;
+    return [{ slug: 'pautas-ok' }];
+  }, () => now + 10);
+  assert.deepEqual(second, [{ slug: 'pautas-ok' }]);
+  assert.equal(loads, 2);
+  assert.equal(state.current == null, false);
+});
+
+test('pickRelatedCategoryId prefers the URL slug on multi-category posts', () => {
+  const categories = [
+    { id: 51, slug: 'mas-vistos', name: 'Más vistos' },
+    { id: 25, slug: 'pautas-digitales', name: 'Pautas Digitales' },
+  ];
+  assert.equal(pickRelatedCategoryId(categories, 'pautas-digitales'), 25);
+  assert.equal(pickRelatedCategoryId(categories, 'mas-vistos'), 51);
+  assert.equal(pickRelatedCategoryId(categories), 51);
+  assert.equal(pickRelatedCategoryId([25, 51], 'pautas-digitales'), 25);
+  assert.equal(pickRelatedCategoryId(undefined, 'pautas-digitales'), undefined);
+});
+
 test('blog post page fetches one extra and filters the current slug/id', () => {
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT/);
   assert.match(blogPage, /fetchWithRelatedPostsTtl\(latestRelatedCache/);
   assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
   assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /categorySlug: category/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
@@ -313,6 +357,35 @@ test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacio
   assert.match(plugin, /articulos_relacionados/);
   assert.match(plugin, /'max' => PLAYFUL_RELATED_META_MAX/);
   assert.match(plugin, /show_in_rest/);
+});
+
+test('category related fetch is lite and does not cache timeout empties for 3600s', () => {
+  const wordpress = readFileSync(
+    new URL('../services/wordpress.ts', import.meta.url),
+    'utf8',
+  );
+  assert.equal(RELATED_BLOG_CATEGORY_FETCH_PER_PAGE, 20);
+  assert.equal(RELATED_BLOG_CATEGORY_PER_PAGE, 7);
+  assert.equal(RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS, 60);
+  assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
+  assert.doesNotMatch(RELATED_BLOG_POST_FIELDS, /content|yoast|_links/);
+  assert.match(wordpress, /getRelatedBlogPostsByCategory\(categoryId/);
+  assert.match(wordpress, /excludeId: current.id/);
+  assert.match(wordpress, /pickRelatedCategoryId\(post\.categories, options\.categorySlug\)/);
+  assert.match(wordpress, /RELATED_BLOG_POST_FIELDS/);
+  assert.match(wordpress, /RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS/);
+  assert.match(wordpress, /RELATED_BLOG_CATEGORY_FETCH_PER_PAGE/);
+  const liteStart = wordpress.indexOf('export async function getRelatedBlogPostsByCategory');
+  const liteEnd = wordpress.indexOf('export async function getBlogPostsByIds');
+  assert.ok(liteStart >= 0 && liteEnd > liteStart);
+  const lite = wordpress.slice(liteStart, liteEnd);
+  assert.doesNotMatch(lite, /_embed/);
+  assert.doesNotMatch(lite, /perPage \+ 40/);
+  assert.match(lite, /_fields/);
+  assert.match(lite, /exclude/);
+  assert.match(lite, /orderby/);
+  assert.match(lite, /requestedSlug/);
+  assert.match(lite, /startsWith\(prefix\)/);
 });
 
 test('blog-posts API excludes via query and keeps six cards', () => {

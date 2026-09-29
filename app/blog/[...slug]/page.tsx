@@ -117,7 +117,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
   try {
     relatedPosts = excludeCurrentBlogPost(
-      await getRelatedBlogPostsForPost(post, { latest: latestRelated }),
+      await getRelatedBlogPostsForPost(post, {
+        latest: latestRelated,
+        categorySlug: category,
+      }),
       {
         slug: post.slug,
         id: post.id,

@@ -10,6 +10,19 @@ export const RELATED_BLOG_FIELD_NAME = 'articulos_relacionados';
 export const RELATED_BLOG_CACHE_TTL_MS = 3600 * 1000;
 /** Soft deadline for field / category / latest related fetches. The post page must not 500. */
 export const RELATED_BLOG_FETCH_TIMEOUT_MS = 4000;
+/**
+ * WP `per_page` for the category related fetch. Small on purpose (no `_embed`):
+ * 20 still beats the old 47+embed (~1.5 MB) and leaves room for closed paths
+ * plus multi-category posts whose primary slug is not the URL category.
+ */
+export const RELATED_BLOG_CATEGORY_FETCH_PER_PAGE = 20;
+/** Keep this many category cards after the closed-path filter. */
+export const RELATED_BLOG_CATEGORY_PER_PAGE = RELATED_BLOG_FETCH_COUNT;
+/** Next Data Cache TTL for the lite category fetch. Empty/timeout must not stick for 3600s. */
+export const RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS = 60;
+/** REST `_fields` for related cards. No `_embed`, no Yoast, no content. */
+export const RELATED_BLOG_POST_FIELDS =
+  'id,date,date_gmt,modified,modified_gmt,slug,title,excerpt,featured_media,categories,status';
 
 export type RelatedPostsCacheEntry<T> = {
   promise: Promise<T>;
@@ -29,10 +42,54 @@ export function isRelatedPostsCacheFresh<T>(
 }
 
 /**
- * Reuse one in-flight/resolved latest-related fetch until TTL elapses.
- * Failed promises are dropped so the next call retries. Build stays one request.
+ * Prefer the category that matches the URL slug (multi-category posts),
+ * then the first numeric / object id. Used so /blog/pautas-digitales/…
+ * does not resolve to mas-vistos when both IDs are on the post.
  */
+export function pickRelatedCategoryId(
+  categories: Array<{ id?: number; slug?: string | null } | number> | undefined,
+  preferredSlug?: string | null,
+): number | undefined {
+  const list = categories ?? [];
+  const slug = (preferredSlug || '').trim();
+  if (slug) {
+    for (const category of list) {
+      if (
+        category
+        && typeof category === 'object'
+        && category.slug === slug
+        && typeof category.id === 'number'
+        && Number.isInteger(category.id)
+        && category.id > 0
+      ) {
+        return category.id;
+      }
+    }
+  }
+  const first = list[0];
+  if (typeof first === 'number' && Number.isInteger(first) && first > 0) return first;
+  if (
+    first
+    && typeof first === 'object'
+    && typeof first.id === 'number'
+    && Number.isInteger(first.id)
+    && first.id > 0
+  ) {
+    return first.id;
+  }
+  return undefined;
+}
+
+/** Successful non-empty payloads only. Timeout fallback `[]` must not pin the cache. */
+export function shouldCacheRelatedPostsResult<T>(result: T): boolean {
+  if (Array.isArray(result)) return result.length > 0;
+  if (result instanceof Map) return result.size > 0;
+  return result != null;
+}
+
 /**
+ * Reuse one in-flight/resolved related fetch until TTL elapses.
+ * Failed promises and empty arrays are dropped so the next call retries.
  * Run a related-posts fetch with AbortController (~4s). Timeouts and throws
  * resolve to `fallback` so the article page never dies on WordPress slowness.
  */
@@ -76,12 +133,19 @@ export function fetchWithRelatedPostsTtl<T>(
     return state.current.promise;
   }
   const fetchedAt = now();
-  const promise = load().catch((error) => {
-    if (state.current?.promise === promise) {
-      state.current = null;
-    }
-    throw error;
-  });
+  const promise = load()
+    .then((result) => {
+      if (!shouldCacheRelatedPostsResult(result) && state.current?.promise === promise) {
+        state.current = null;
+      }
+      return result;
+    })
+    .catch((error) => {
+      if (state.current?.promise === promise) {
+        state.current = null;
+      }
+      throw error;
+    });
   state.current = { promise, fetchedAt };
   return promise;
 }
