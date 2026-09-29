@@ -26,8 +26,10 @@ import {
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import {
   RELATED_BLOG_FETCH_COUNT,
+  RELATED_BLOG_FETCH_TIMEOUT_MS,
   excludeCurrentBlogPost,
   fetchWithRelatedPostsTtl,
+  withRelatedFetchTimeout,
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
@@ -40,13 +42,32 @@ const latestRelatedCache: RelatedPostsCacheState<LatestRelatedPost[]> = { curren
 /** Dedupe the latest-7 WP fetch across SSG pages; TTL ≤ 3600s in runtime. */
 function fetchLatestRelatedBlogPosts() {
   return fetchWithRelatedPostsTtl(latestRelatedCache, () =>
-    getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT),
+    withRelatedFetchTimeout(
+      (signal) =>
+        getLatestBlogPosts(RELATED_BLOG_FETCH_COUNT, {
+          signal,
+          timeoutMs: RELATED_BLOG_FETCH_TIMEOUT_MS,
+          maxAttempts: 1,
+        }),
+      [],
+    ),
   );
 }
 
 export async function generateStaticParams() {
-  // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
-  const { posts } = await getBlogPosts(1, 100);
+  // WP REST and getBlogPosts clamp per_page at 100. Raising the argument
+  // above 100 would still yield 100 and leave the oldest open posts
+  // (~103 total) to on-demand ISR, which is what 500'd under parallel
+  // crawls. Paginate every WP page instead; the build already fetches
+  // these posts for the listing and has tolerated that volume.
+  const perPage = 100;
+  const first = await getBlogPosts(1, perPage);
+  const posts = [...first.posts];
+  const totalPages = Math.max(1, first.totalPages || 1);
+  for (let page = 2; page <= totalPages; page += 1) {
+    const next = await getBlogPosts(page, perPage);
+    posts.push(...next.posts);
+  }
   return posts.map((post) => ({
     slug: [getPrimaryCategorySlug(post), post.slug],
   }));
@@ -90,13 +111,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const relatedPosts = excludeCurrentBlogPost(
-    await getRelatedBlogPostsForPost(post, { latest: latestRelated }),
-    {
-      slug: post.slug,
-      id: post.id,
-    },
-  );
+  let relatedPosts = excludeCurrentBlogPost(latestRelated, {
+    slug: post.slug,
+    id: post.id,
+  });
+  try {
+    relatedPosts = excludeCurrentBlogPost(
+      await getRelatedBlogPostsForPost(post, { latest: latestRelated }),
+      {
+        slug: post.slug,
+        id: post.id,
+      },
+    );
+  } catch {
+    // Related WordPress lookups must never fail the article.
+  }
 
   const postCategory = getPrimaryCategorySlug(post);
 
