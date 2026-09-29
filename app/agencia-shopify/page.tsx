@@ -295,14 +295,14 @@ export default async function AgenciaShopifyPage() {
               </ul>
               <h3 className="playful-h3">{MIGRATION.close.h3}</h3>
               <p className="playful-contenido-p">{MIGRATION.close.body}</p>
-              <div>
-                <a
-                  href={MIGRATION.close.ctaHref}
-                  className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
-                >
-                  {MIGRATION.close.cta}
-                </a>
-              </div>
+            </div>
+            <div className="block w-full">
+              <a
+                href={BOOKING_HREF}
+                className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {MIGRATION.close.cta}
+              </a>
             </div>
           </div>
         </section>
@@ -330,14 +330,14 @@ export default async function AgenciaShopifyPage() {
                 .
               </p>
               <p className="playful-contenido-p">{SEO_SHOPIFY.paragraphs[5]}</p>
-              <div>
-                <a
-                  href={SEO_SHOPIFY.ctaHref}
-                  className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
-                >
-                  {SEO_SHOPIFY.cta}
-                </a>
-              </div>
+            </div>
+            <div className="block w-full">
+              <a
+                href={BOOKING_HREF}
+                className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {SEO_SHOPIFY.cta}
+              </a>
             </div>
           </div>
         </section>
