@@ -17,6 +17,7 @@ import {
   FAQ,
   HERO,
   MIGRATION,
+  SEO_SHOPIFY,
   SERVICE_BAND_ITEMS,
   SERVICE_GRID_ITEMS,
   SERVICES,
@@ -256,6 +257,41 @@ export default async function AgenciaShopifyPage() {
               <PurpleBand key={item.title} title={item.title} body={item.body} />
             ))}
             <PurpleBand title={MIGRATION.h2} body={MIGRATION.body} />
+          </div>
+        </section>
+
+        <section
+          data-seo-shopify-block
+          className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12"
+        >
+          <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px] !mt-0">
+            <h2 className="playful-h2 text-center">{SEO_SHOPIFY.h2}</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {SEO_SHOPIFY.paragraphs.slice(0, 5).map((paragraph) => (
+                <p key={paragraph} className="playful-contenido-p">
+                  {paragraph}
+                </p>
+              ))}
+              <p className="playful-contenido-p">
+                {SEO_SHOPIFY.seoLead}
+                <Link
+                  href={SEO_SHOPIFY.seoHref}
+                  className="text-[#440099] font-semibold underline underline-offset-2"
+                >
+                  {SEO_SHOPIFY.seoLinkLabel}
+                </Link>
+                .
+              </p>
+              <p className="playful-contenido-p">{SEO_SHOPIFY.paragraphs[5]}</p>
+              <div>
+                <a
+                  href={SEO_SHOPIFY.ctaHref}
+                  className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+                >
+                  {SEO_SHOPIFY.cta}
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
