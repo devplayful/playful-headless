@@ -1,5 +1,7 @@
 'use client';
 
+import { isProductionAnalyticsHostname } from '../analytics/production-tags.ts';
+
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
@@ -15,6 +17,7 @@ type DataLayerLike = {
 
 function getDataLayer(): DataLayerLike | undefined {
   if (typeof window === 'undefined') return undefined;
+  if (!isProductionAnalyticsHostname(window.location.hostname)) return undefined;
   const dataLayer = window.dataLayer;
   if (!dataLayer || typeof dataLayer.push !== 'function') return undefined;
   return dataLayer;
@@ -43,14 +46,19 @@ export function pushGenerateLead(
     const timer = setTimeout(finish, Math.max(0, timeoutMs));
 
     // Intentionally exclude email, phone, name, message, CRM IDs and raw UTMs.
-    dataLayer.push({
-      event: 'generate_lead',
-      form_id: formId,
-      eventCallback: () => {
-        clearTimeout(timer);
-        finish();
-      },
-      eventTimeout: timeoutMs,
-    });
+    try {
+      dataLayer.push({
+        event: 'generate_lead',
+        form_id: formId,
+        eventCallback: () => {
+          clearTimeout(timer);
+          finish();
+        },
+        eventTimeout: timeoutMs,
+      });
+    } catch {
+      clearTimeout(timer);
+      finish();
+    }
   });
 }

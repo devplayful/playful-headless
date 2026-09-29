@@ -13,6 +13,7 @@ test('prefers gtag config and does not duplicate via dataLayer', () => {
   Object.defineProperty(globalThis, 'window', {
     configurable: true,
     value: {
+      location: { hostname: 'playfulagency.com' },
       gtag: (...args: unknown[]) => {
         calls.push(args);
       },
@@ -27,6 +28,31 @@ test('prefers gtag config and does not duplicate via dataLayer', () => {
     assert.deepEqual(window.dataLayer, []);
   } finally {
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = previousGa;
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
+    });
+  }
+});
+
+test('does not send page_view on the Vercel production alias', () => {
+  const calls: unknown[][] = [];
+  const originalWindow = globalThis.window;
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: {
+      location: { hostname: 'playful-headless.vercel.app' },
+      gtag: (...args: unknown[]) => {
+        calls.push(args);
+      },
+      dataLayer: [],
+    },
+  });
+  try {
+    sendSpaPageView('/agencia-seo');
+    assert.deepEqual(calls, []);
+    assert.deepEqual(window.dataLayer, []);
+  } finally {
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
       value: originalWindow,
