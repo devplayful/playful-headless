@@ -1,4 +1,10 @@
 import assert from 'node:assert/strict';
+import {
+  REQUIRED_BLOG_PATHS,
+  CONTROL_CASE_STUDY_PATH,
+  analyzeBlogPostHtml,
+  analyzeCaseStudyHtml,
+} from './blog-post-ssr-html.mjs';
 
 const baseUrl = process.env.SEO_BASE_URL;
 
@@ -336,6 +342,27 @@ for (const gonePath of ['/project/bottle-mockup', '/agencylog']) {
     '/blog/categoria/temporada-2 must stay 404 or 410',
   );
   assert.equal(temporada.headers.get('location'), null);
+}
+
+for (const pathname of REQUIRED_BLOG_PATHS) {
+  const response = await request(pathname, { redirect: 'follow' });
+  assert.equal(response.status, 200, `${pathname} should return 200`);
+  const html = await response.text();
+  const analysis = analyzeBlogPostHtml(html);
+  assert.equal(analysis.ok, true, `${pathname} must ship H1 + article body in HTML (${JSON.stringify(analysis)})`);
+  assert.doesNotMatch(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''), /Cargando artículo\.\.\./);
+}
+
+{
+  const response = await request(CONTROL_CASE_STUDY_PATH, { redirect: 'follow' });
+  assert.equal(response.status, 200, `${CONTROL_CASE_STUDY_PATH} should return 200`);
+  const html = await response.text();
+  const analysis = analyzeCaseStudyHtml(html);
+  assert.equal(
+    analysis.ok,
+    true,
+    `${CONTROL_CASE_STUDY_PATH} must keep SSR H1 + body (${JSON.stringify(analysis)})`,
+  );
 }
 
 console.log(`SEO smoke passed against ${origin}`);
