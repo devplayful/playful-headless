@@ -66,6 +66,23 @@ export const MIGRATION = {
   body: 'Si ya vendes y tienes tráfico que llega a tu web, migrar a Shopify no es empezar de nuevo, sino planear la mudanza con método para no perder lo que ya te funciona, vengas de otra tienda online, de un marketplace o de vender por Instagram, WhatsApp y fuera de línea. Antes de mover nada, hacemos una lista de lo que hay que preservar, y lo primero son las URLs que Google ya conoce y el catálogo que tus clientes ya navegan. Toda migración tiene un momento de cambio, así que planificamos el cutover para que la interrupción sea la mínima y sepas de antemano cuándo se hace el salto de una plataforma a la otra. Cuando terminamos, tu tienda vive en Shopify con el posicionamiento que traías, y lo que queda de tu lado es lo que de verdad te pertenece, los datos de tus compradores y la atribución de cada venta, porque la plataforma se alquila pero esos datos son tuyos.',
 } as const;
 
+export const SEO_SHOPIFY = {
+  h2: 'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  paragraphs: [
+    'Si ya vendes con Shopify, no tiene sentido que una agencia monte la tienda y otra distinta se ocupe de que Google la encuentre. Nosotros hacemos las dos cosas desde el mismo equipo, así que cada cambio en el catálogo se piensa también para la búsqueda.',
+    'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador y no según cómo está organizado tu almacén. Cada ficha de producto sale con su título, su descripción y sus metadatos escritos para esa búsqueda, y evitamos que las variantes repitan el mismo texto.',
+    'Después miramos la velocidad y las apps que tienes instaladas, porque cada app suma código a la tienda y algunas la frenan. Quitamos las que no aportan y cuidamos que las páginas carguen rápido en el móvil.',
+    'Si vienes de otra plataforma, cada URL antigua redirige con un 301 a su equivalente en Shopify, de modo que Google y tus clientes llegan a la página correcta y no a un error.',
+    'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta, porque así decides con tus datos y no con intuiciones.',
+    'Reserva 30 a 40 minutos y revisamos juntos tu tienda y su SEO, sin compromiso de seguir con nosotros.',
+  ],
+  seoLead: 'Si quieres ver cómo trabajamos el SEO más allá de la tienda, aquí tienes ',
+  seoLinkLabel: 'nuestro servicio de SEO',
+  seoHref: '/agencia-seo',
+  cta: '¿Hablamos?',
+  ctaHref: '/reunion-playful',
+} as const;
+
 export const SOCIAL_PROOF = {
   h2: 'Con la confianza de marcas que ya venden',
   cases: [

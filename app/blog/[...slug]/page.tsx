@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -90,10 +90,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const relatedPosts = excludeCurrentBlogPost(latestRelated, {
-    slug: post.slug,
-    id: post.id,
-  });
+  const relatedPosts = excludeCurrentBlogPost(
+    await getRelatedBlogPostsForPost(post, { latest: latestRelated }),
+    {
+      slug: post.slug,
+      id: post.id,
+    },
+  );
 
   const postCategory = getPrimaryCategorySlug(post);
 
@@ -179,11 +182,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
     <h1 className="sr-only">{pageH1}</h1>
-    {serviceCta ? (
-      <p data-playful-service-cta="" className="sr-only">
-        <a href={serviceCta.href}>{serviceCta.label}</a>
-      </p>
-    ) : null}
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
@@ -425,8 +423,9 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
   },
   'cintillos-de-promocion': {
-    title: 'Cintillos de promoción en ecommerce | Playful',
-    description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+    title: 'Cintillos publicitarios en ecommerce: guía práctica | Playful',
+    description: 'Los cintillos publicitarios en ecommerce destacan la oferta en el momento justo. Aprende a diseñarlos para que capten clics y conviertan en tu tienda.',
+    h1: 'Cintillos publicitarios en ecommerce: cómo diseñarlos para atraer y retener clientes',
   },
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
     title: 'Zelle en Venezuela: cobra en tu tienda online | Playful',

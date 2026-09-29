@@ -6,9 +6,13 @@ const {
   RELATED_BLOG_CACHE_TTL_MS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_FETCH_COUNT,
+  RELATED_BLOG_FIELD_LIMIT,
+  RELATED_BLOG_FIELD_NAME,
   excludeCurrentBlogPost,
   fetchWithRelatedPostsTtl,
   isRelatedPostsCacheFresh,
+  parseRelatedPostIds,
+  resolveRelatedBlogPosts,
 } = await import('../lib/blog-related-posts.ts');
 
 const blogPage = readFileSync(
@@ -122,11 +126,151 @@ test('blog post page fetches one extra and filters the current slug/id', () => {
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
   assert.match(blogPage, /fetchWithRelatedPostsTtl\(latestRelatedCache/);
   assert.match(blogPage, /fetchLatestRelatedBlogPosts\(\)/);
-  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
+  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts\(6\)/);
   assert.doesNotMatch(blogPage, /Cargando artículos/);
+});
+
+const catalog = [
+  { id: 10, slug: 'manual-uno', href: '/blog/seo/manual-uno', status: 'publish' },
+  { id: 20, slug: 'manual-dos', href: '/blog/seo/manual-dos', status: 'publish' },
+  { id: 30, slug: 'manual-tres', href: '/blog/seo/manual-tres', status: 'publish' },
+  { id: 40, slug: 'manual-cuatro-ignorado', href: '/blog/seo/manual-cuatro-ignorado', status: 'publish' },
+  { id: 50, slug: 'draft-id', href: '/blog/seo/draft-id', status: 'draft' },
+  { id: 101, slug: 'cat-alpha', href: '/blog/seo/cat-alpha', status: 'publish' },
+  { id: 102, slug: 'cat-beta', href: '/blog/seo/cat-beta', status: 'publish' },
+  { id: 103, slug: 'cat-gamma', href: '/blog/seo/cat-gamma', status: 'publish' },
+  { id: 201, slug: 'latest-one', href: '/blog/tecnologia/latest-one', status: 'publish' },
+  { id: 202, slug: 'latest-two', href: '/blog/tecnologia/latest-two', status: 'publish' },
+  { id: 203, slug: 'latest-three', href: '/blog/tecnologia/latest-three', status: 'publish' },
+  { id: 204, slug: 'latest-four', href: '/blog/tecnologia/latest-four', status: 'publish' },
+  { id: 205, slug: 'latest-five', href: '/blog/tecnologia/latest-five', status: 'publish' },
+  { id: 206, slug: 'latest-six', href: '/blog/tecnologia/latest-six', status: 'publish' },
+];
+const postsById = new Map(catalog.map((post) => [post.id, post]));
+const sameCategory = catalog.filter((post) => post.id >= 101 && post.id <= 103);
+const latestPool = catalog.filter((post) => post.id >= 201);
+
+test('resolver uses the field IDs in order and caps at 3', () => {
+  assert.equal(RELATED_BLOG_FIELD_LIMIT, 3);
+  assert.equal(RELATED_BLOG_FIELD_NAME, 'articulos_relacionados');
+
+  const related = resolveRelatedBlogPosts({
+    current: { id: 99, slug: 'current-post' },
+    fieldIds: [10, 20, 30, 40],
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.deepEqual(
+    related.slice(0, 3).map((post) => post.slug),
+    ['manual-uno', 'manual-dos', 'manual-tres'],
+  );
+  assert.equal(related.some((post) => post.slug === 'manual-cuatro-ignorado'), false);
+  assert.equal(related.length, 6);
+});
+
+test('resolver fills a partial field from the same category then latest', () => {
+  const related = resolveRelatedBlogPosts({
+    current: { id: 99, slug: 'current-post' },
+    fieldIds: [20],
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.deepEqual(
+    related.map((post) => post.slug),
+    ['manual-dos', 'cat-alpha', 'cat-beta', 'cat-gamma', 'latest-one', 'latest-two'],
+  );
+});
+
+test('resolver falls back to category then latest when the field is empty or missing', () => {
+  const emptyField = resolveRelatedBlogPosts({
+    current: { id: 99, slug: 'current-post' },
+    fieldIds: [],
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.deepEqual(
+    emptyField.map((post) => post.slug),
+    ['cat-alpha', 'cat-beta', 'cat-gamma', 'latest-one', 'latest-two', 'latest-three'],
+  );
+
+  const missingField = resolveRelatedBlogPosts({
+    current: { id: 99, slug: 'current-post' },
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.deepEqual(missingField.map((post) => post.slug), emptyField.map((post) => post.slug));
+});
+
+test('resolver skips a field ID that is missing from the published map', () => {
+  const related = resolveRelatedBlogPosts({
+    current: { id: 99, slug: 'current-post' },
+    fieldIds: [99999, 20],
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.equal(related[0].slug, 'manual-dos');
+  assert.equal(related.some((post) => post.id === 99999), false);
+});
+
+test('resolver skips unpublished IDs, the current post, and duplicates', () => {
+  const related = resolveRelatedBlogPosts({
+    current: { id: 10, slug: 'manual-uno' },
+    fieldIds: [10, 50, 20],
+    postsById,
+    sameCategory,
+    latest: latestPool,
+  });
+  assert.equal(related.some((post) => post.id === 10 || post.slug === 'manual-uno'), false);
+  assert.equal(related.some((post) => post.id === 50), false);
+  assert.equal(related[0].slug, 'manual-dos');
+  assert.deepEqual(
+    related.slice(1, 4).map((post) => post.slug),
+    ['cat-alpha', 'cat-beta', 'cat-gamma'],
+  );
+  assert.equal(related.length, 6);
+  assert.equal(new Set(related.map((post) => post.id)).size, related.length);
+});
+
+test('parseRelatedPostIds reads acf/meta and ignores the current empty ACF array', () => {
+  assert.deepEqual(
+    parseRelatedPostIds({ acf: { articulos_relacionados: [10, '20', { id: 30 }, 40] } }),
+    [10, 20, 30],
+  );
+  assert.deepEqual(
+    parseRelatedPostIds({ meta: { articulos_relacionados: [{ ID: 7 }, 8] } }),
+    [7, 8],
+  );
+  assert.deepEqual(parseRelatedPostIds({ acf: [] }), []);
+  assert.deepEqual(parseRelatedPostIds({ meta: { _acf_changed: false } }), []);
+  assert.deepEqual(parseRelatedPostIds(undefined), []);
+});
+
+test('wordpress related fetch keeps 3600s revalidate and reads articulos_relacionados', () => {
+  const wordpress = readFileSync(
+    new URL('../services/wordpress.ts', import.meta.url),
+    'utf8',
+  );
+  const plugin = readFileSync(
+    new URL('../wordpress-related-posts.php', import.meta.url),
+    'utf8',
+  );
+  assert.match(wordpress, /parseRelatedPostIds\(post\)/);
+  assert.match(wordpress, /getBlogPostsByIds\(fieldIds\)/);
+  assert.match(wordpress, /revalidate: 3600/);
+  assert.match(wordpress, /status', 'publish'/);
+  assert.match(plugin, /register_post_meta\('post', PLAYFUL_RELATED_META_KEY/);
+  assert.match(plugin, /articulos_relacionados/);
+  assert.match(plugin, /'max' => PLAYFUL_RELATED_META_MAX/);
+  assert.match(plugin, /show_in_rest/);
 });
 
 test('blog-posts API excludes via query and keeps six cards', () => {

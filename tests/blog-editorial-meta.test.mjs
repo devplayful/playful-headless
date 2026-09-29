@@ -318,7 +318,7 @@ test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', 
   assert.doesNotMatch(listingPage, /formatDate\(posts\[0\]\.date\)/);
   assert.match(mostViewed, /formatBlogListingDate\(post\.slug/);
   assert.doesNotMatch(mostViewed, /formatDate\(post\.date\)/);
-  assert.match(wordpress, /formatBlogListingDate\(\s*rewritten\.slug/);
+  assert.match(wordpress, /function toRelatedBlogCard[\s\S]*formatBlogListingDate\(\s*post\.slug/);
   assert.match(wordpress, /'slash'/);
 });
 
@@ -333,7 +333,8 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /posts=\{relatedPosts\}/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /getLatestBlogPosts\(RELATED_BLOG_FETCH_COUNT\)/);
-  assert.match(blogPage, /excludeCurrentBlogPost\(latestRelated/);
+  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
