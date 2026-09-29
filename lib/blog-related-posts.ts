@@ -185,7 +185,7 @@ function identityKeys(post: RelatedBlogPostIdentity): string[] {
     normalizeSlug(post.slug),
     hrefSlug(post.href),
   ].filter(Boolean);
-  return [...new Set(keys)];
+  return Array.from(new Set(keys));
 }
 
 export type ResolveRelatedBlogPostsInput<T extends RelatedBlogCandidate> = {

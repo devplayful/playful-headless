@@ -589,7 +589,7 @@ export async function getLatestBlogPosts(
 }
 
 export async function getBlogPostsByIds(ids: number[]): Promise<RelatedBlogCard[]> {
-  const unique = [...new Set(ids.filter((id) => Number.isInteger(id) && id > 0))];
+  const unique = Array.from(new Set(ids.filter((id) => Number.isInteger(id) && id > 0)));
   if (unique.length === 0) return [];
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
   url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
