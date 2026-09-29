@@ -2,7 +2,7 @@
  * Local Magnific covers that replace WordPress featured + OG/Twitter
  * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026) + lote 4
  * (24 sep 2026, José GO vía Diseño) + lote 5 (24 sep 2026, José GO
- * vía Diseño) + lote 6 (30 sep 2026, José GO vía Diseño). Same override
+ * vía Diseño) + lote 6 (29–30 sep 2026, José GO vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -20,6 +20,8 @@
  * `auditoria-seo-que-es-como-se-hace`.
  * 24 sep 2026 (José GO vía Diseño): JN0rWQjOq4 canónico en
  * `zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce`.
+ * 29 sep 2026 (José GO vía Diseño 22:39): iGo8Tmd3uK canónico en
+ * `la-nueva-gestion-de-google-ads`.
  * 30 sep 2026 (José GO vía Diseño 11:52): 0eQHuiWTfW canónico en
  * `live-stream-shopping-compra-mientras-interactuas`.
  *
@@ -59,7 +61,9 @@ export const BLOG_COVER_OVERRIDES = {
     '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
-  // lote 6 (30 sep 2026, José GO vía Diseño 11:52)
+  // lote 6 (29–30 sep 2026, José GO vía Diseño)
+  'la-nueva-gestion-de-google-ads':
+    '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png',
   'live-stream-shopping-compra-mientras-interactuas':
     '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png',
 } as const;
