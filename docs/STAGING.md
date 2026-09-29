@@ -10,10 +10,13 @@ Esta rama (`staging`) es el entorno de previsualización compartido. **No es pro
 
 1. **Cada cambio va en su propia rama** `cursor/...` o `feat/...` creada desde `main` (nunca desde `staging`).
 2. **Se abre un PR con base `staging`.** El equipo lo mergea libremente con **merge commit** (no squash) para verlo en la URL fija de staging.
-3. **Enlace directo por cambio para la card de ClickUp:**
-   - Preview propia del PR (comentario del bot de Vercel en el PR).
-   - Además, la URL fija de staging + la ruta de la página (ej. `https://playful-headless-git-staging-playfuls-projects.vercel.app/blog`).
-4. **Paso a producción:** con GO de José o Alejandra, se abre un PR de **esa misma rama de feature contra `main`** (no `staging` → `main` entero). Merge con **squash**. Así se promueve cambio por cambio.
+3. **Card ClickUp obligatoria (regla de José, 29 sep 15:09).** Todo lo que se publica en staging lleva su card en estado **«En staging»** con:
+   - Enlace directo: preview del PR (comentario del bot de Vercel) **y** URL fija de staging + ruta de la página (ej. `https://playful-headless-git-staging-playfuls-projects.vercel.app/blog`).
+   - Qué cambió.
+   - Quién lo hizo.
+   - Hora (Europe/Madrid).
+   **Sin card no cuenta como publicado.**
+4. **Paso a producción:** sale de ese estado **«En staging»** con GO de José o Alejandra. Entonces se abre un PR de **esa misma rama de feature contra `main`** (no `staging` → `main` entero). Merge con **squash**. Así se promueve cambio por cambio.
 5. **Resync:** tras cada merge a `main`, `main` se mergea en `staging`. Si staging se ensucia, se resetea a `main` (avisando al equipo antes).
 
 ## Qué no hacer
@@ -50,7 +53,7 @@ git push --force-with-lease origin staging
 
 - [ ] Rama de feature creada desde `main`
 - [ ] PR → `staging` (merge commit) para verlo en la URL fija
-- [ ] Card de ClickUp con preview del PR + URL fija + ruta
-- [ ] GO de José o Alejandra
+- [ ] Card ClickUp en **«En staging»** con enlace directo (preview PR + URL fija + ruta), qué cambió, quién y hora Madrid — sin card no cuenta
+- [ ] GO de José o Alejandra desde **«En staging»**
 - [ ] PR de la **misma** feature → `main` (squash)
 - [ ] `main` mergeado de vuelta a `staging`
