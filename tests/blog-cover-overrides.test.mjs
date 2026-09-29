@@ -411,7 +411,8 @@ test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async ()
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   assert.match(source, /resolveBlogCoverUrl/);
   assert.match(functionBody(source, 'getBlogPosts'), /resolveBlogCoverUrl\(/);
-  assert.match(functionBody(source, 'getLatestBlogPosts'), /resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'getLatestBlogPosts'), /toRelatedBlogCard\(/);
+  assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverUrl\(/);
   assert.match(functionBody(source, 'getBlogPostBySlug'), /resolveBlogCoverUrl\(/);
 });
 
