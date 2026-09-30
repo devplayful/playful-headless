@@ -369,7 +369,8 @@ test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async ()
   assert.match(functionBody(source, 'getBlogPosts'), /hydrateListingPosts\(/);
   assert.match(functionBody(source, 'getLatestBlogPosts'), /toRelatedBlogCard\(/);
   assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverUrl\(/);
-  assert.match(functionBody(source, 'getBlogPostBySlug'), /resolveBlogCoverUrl\(/);
+  assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'getBlogPostBySlug'), /loadBlogPostBySlug\(/);
 });
 
 test('blog post generateMetadata points OG and Twitter at the cover override', async () => {

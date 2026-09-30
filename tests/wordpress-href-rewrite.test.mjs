@@ -128,7 +128,10 @@ function functionBody(source, name) {
 
 test('getBlogPostBySlug maps content.rendered and excerpt.rendered through the rewriter', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const body = functionBody(source, 'getBlogPostBySlug');
+  const body = source.slice(
+    source.indexOf('const loadBlogPostBySlug'),
+    source.indexOf('\nexport interface TeamMember'),
+  );
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
 });
 
