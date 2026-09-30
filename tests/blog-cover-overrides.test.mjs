@@ -65,6 +65,13 @@ const LOTE_5 = [
   ],
 ];
 
+const LOTE_6 = [
+  [
+    'live-stream-shopping-compra-mientras-interactuas',
+    '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png',
+  ],
+];
+
 function functionBody(source, name) {
   const exported = source.indexOf(`export async function ${name}`);
   const local = source.indexOf(`async function ${name}`);
@@ -124,10 +131,19 @@ test('lote 4 maps N2eryB06D9, VXQNEs8MMU and iGXlUlf3uK without removing prior l
 });
 
 test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 24);
   assert.equal(LOTE_5.length, 2);
   assertMappedCovers(LOTE_5);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 6 maps 0eQHuiWTfW without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 25);
+  assert.equal(LOTE_6.length, 1);
+  assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-0eQHuiWTfW.png')));
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -141,6 +157,37 @@ test('7 consejos SEO cover is Magnific 3zBMZYMREY and drops iGXTJXm3uK', () => {
     false,
   );
   assert.doesNotMatch(JSON.stringify(BLOG_COVER_OVERRIDES), /iGXTJXm3uK/);
+});
+
+test('0eQHuiWTfW is exclusive to live-stream-shopping-compra-mientras-interactuas', async () => {
+  const path = '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['live-stream-shopping-compra-mientras-interactuas'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('live-stream-shopping-compra-mientras-interactuas'),
+    path,
+  );
+  const globoOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('0eQHuiWTfW'))
+    .map(([slug]) => slug);
+  assert.deepEqual(globoOwners, ['live-stream-shopping-compra-mientras-interactuas']);
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-0eQHuiWTfW.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('N2eMFsC6D9 is canonical on aprende-todo-sobre-el-seo only', () => {
