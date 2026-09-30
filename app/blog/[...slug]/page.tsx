@@ -183,11 +183,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
     <h1 className="sr-only">{pageH1}</h1>
-    {serviceCta ? (
-      <p data-playful-service-cta="" className="sr-only">
-        <a href={serviceCta.href}>{serviceCta.label}</a>
-      </p>
-    ) : null}
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
