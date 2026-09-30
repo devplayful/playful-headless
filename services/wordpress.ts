@@ -715,10 +715,10 @@ async function hydrateListingPosts(
   query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
 ): Promise<WPPost[]> {
   if (posts.length === 0) return [];
-  const mediaIds = posts.map((post) => post.featured_media);
-  const authorIds = posts.map((post) => (
+  const mediaIds = uniquePositiveIds(posts.map((post) => post.featured_media));
+  const authorIds = uniquePositiveIds(posts.map((post) => (
     typeof post.author === 'number' ? post.author : post.author?.id
-  ));
+  )));
   const [terms, media, authors] = await Promise.all([
     getBlogCategoryTerms(query).catch(() => new Map<number, RelatedCategoryTerm>()),
     loadBlogMediaByIds(mediaIds, query).catch(() => new Map<number, ListingMedia>()),
