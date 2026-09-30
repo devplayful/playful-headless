@@ -1,0 +1,63 @@
+[
+  {
+    "region": "hero",
+    "pass": false,
+    "mismatchPct": 21.47,
+    "diffPixels": 498293,
+    "total": 2320348,
+    "referencePath": "artifacts/pasarela-r3/hero/reference.png",
+    "actualPath": "artifacts/pasarela-r3/hero/actual.png",
+    "diffPath": "artifacts/pasarela-r3/hero/diff.png"
+  },
+  {
+    "region": "intro",
+    "pass": false,
+    "mismatchPct": 11.56,
+    "diffPixels": 110157,
+    "total": 953172,
+    "referencePath": "artifacts/pasarela-r3/intro/reference.png",
+    "actualPath": "artifacts/pasarela-r3/intro/actual.png",
+    "diffPath": "artifacts/pasarela-r3/intro/diff.png"
+  },
+  {
+    "region": "benefits",
+    "pass": false,
+    "mismatchPct": 13.05,
+    "diffPixels": 568251,
+    "total": 4354263,
+    "referencePath": "artifacts/pasarela-r3/benefits/reference.png",
+    "actualPath": "artifacts/pasarela-r3/benefits/actual.png",
+    "diffPath": "artifacts/pasarela-r3/benefits/diff.png"
+  },
+  {
+    "region": "pain",
+    "pass": false,
+    "mismatchPct": 21.22,
+    "diffPixels": 618945,
+    "total": 2917284,
+    "referencePath": "artifacts/pasarela-r3/pain/reference.png",
+    "actualPath": "artifacts/pasarela-r3/pain/actual.png",
+    "diffPath": "artifacts/pasarela-r3/pain/diff.png"
+  },
+  {
+    "region": "faq",
+    "pass": false,
+    "mismatchPct": 23.37,
+    "diffPixels": 702465,
+    "total": 3006343,
+    "referencePath": "artifacts/pasarela-r3/faq/reference.png",
+    "actualPath": "artifacts/pasarela-r3/faq/actual.png",
+    "diffPath": "artifacts/pasarela-r3/faq/diff.png"
+  },
+  {
+    "region": "banner",
+    "pass": false,
+    "mismatchPct": 31.59,
+    "diffPixels": 1659723,
+    "total": 5254481,
+    "note": "CTA derecha vs form Figma — delta estructural esperado",
+    "referencePath": "artifacts/pasarela-r3/banner/reference.png",
+    "actualPath": "artifacts/pasarela-r3/banner/actual.png",
+    "diffPath": "artifacts/pasarela-r3/banner/diff.png"
+  }
+]
