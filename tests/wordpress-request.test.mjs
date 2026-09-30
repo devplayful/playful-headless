@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 
 import {
   WordPressUpstreamError,
+  consumeWordPressBuildRetry,
   isTransientWordPressStatus,
+  remainingWordPressBuildRetries,
+  resetWordPressBuildRetryBudget,
+  resolveWordPressMaxAttempts,
   resolveWordPressRequestTimeoutMs,
   wordpressFetch,
   wordpressFetchCollection,
@@ -259,6 +263,47 @@ test('keeps the 8s runtime deadline and raises it only for next build', () => {
   assert.equal(resolveWordPressRequestTimeoutMs({
     WORDPRESS_REQUEST_TIMEOUT_MS: '0',
   }), 8_000);
+});
+
+test('build phase uses two attempts and a shared extra-retry budget', () => {
+  const buildEnv = { NEXT_PHASE: 'phase-production-build' };
+  assert.equal(resolveWordPressMaxAttempts(buildEnv), 2);
+  assert.equal(resolveWordPressMaxAttempts({}), 3);
+  resetWordPressBuildRetryBudget({ ...buildEnv, WORDPRESS_BUILD_RETRY_BUDGET: '2' });
+  assert.equal(remainingWordPressBuildRetries(), 2);
+  assert.equal(consumeWordPressBuildRetry(buildEnv), true);
+  assert.equal(consumeWordPressBuildRetry(buildEnv), true);
+  assert.equal(consumeWordPressBuildRetry(buildEnv), false);
+  resetWordPressBuildRetryBudget({});
+});
+
+test('build retry budget stops a second 5xx from issuing another origin GET', async () => {
+  let calls = 0;
+  const previousPhase = process.env.NEXT_PHASE;
+  const previousBudget = process.env.WORDPRESS_BUILD_RETRY_BUDGET;
+  process.env.NEXT_PHASE = 'phase-production-build';
+  process.env.WORDPRESS_BUILD_RETRY_BUDGET = '0';
+  resetWordPressBuildRetryBudget(process.env);
+  try {
+    await assert.rejects(
+      wordpressFetch('https://endpoint.playfulagency.com/wp-json', {}, {
+        fetchImpl: async () => {
+          calls += 1;
+          return response(503, 'Service Unavailable');
+        },
+        sleep: async () => {},
+        maxAttempts: 3,
+      }),
+      (error) => error instanceof WordPressUpstreamError && error.status === 503,
+    );
+    assert.equal(calls, 1);
+  } finally {
+    if (previousPhase === undefined) delete process.env.NEXT_PHASE;
+    else process.env.NEXT_PHASE = previousPhase;
+    if (previousBudget === undefined) delete process.env.WORDPRESS_BUILD_RETRY_BUDGET;
+    else process.env.WORDPRESS_BUILD_RETRY_BUDGET = previousBudget;
+    resetWordPressBuildRetryBudget(process.env);
+  }
 });
 
 test('classifies only retry-safe statuses as transient', () => {
