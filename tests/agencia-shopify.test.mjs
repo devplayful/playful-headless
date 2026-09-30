@@ -8,6 +8,7 @@ const {
   HERO,
   CTA,
   BOOKING_HREF,
+  BOOKING_CTA_LABEL,
   CONTACT_HREF,
   SERVICES,
   SERVICE_GRID_ITEMS,
@@ -56,9 +57,9 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.doesNotMatch(landing, /buttonLink=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /servicio-operar/);
-  assert.equal(CTA.formButton, 'Reservar llamada diagnóstica 30–40 min');
-  assert.equal(HERO.cta, 'Agendar Reunión con Playful');
-  assert.equal(CTA.cta, 'Agendar Reunión con Playful');
+  assert.equal(CTA.formButton, BOOKING_CTA_LABEL);
+  assert.equal(HERO.cta, BOOKING_CTA_LABEL);
+  assert.equal(CTA.cta, BOOKING_CTA_LABEL);
   const contentSlots = SERVICES.items.filter((item) => item.slot);
   assert.equal(contentSlots.length, 4);
   assert.deepEqual(
@@ -174,15 +175,14 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
   assert.doesNotMatch(landing, /TalkCta\(\{ href = CONTACT_HREF/);
   assert.doesNotMatch(HERO.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
-  assert.match(HERO.cta, /Agendar|Reservar/i);
-  assert.match(CTA.cta, /Agendar|Reservar/i);
+  assert.match(HERO.cta, /Solicitar una reunión|Comprobar si encajamos/);
+  assert.match(CTA.cta, /Solicitar una reunión|Comprobar si encajamos/);
+  assert.match(landing, /BookingLink/);
 });
 
 test('middleware 301s /reunion-playful to the GHL booking widget', () => {
-  assert.match(
-    middleware,
-    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
-  );
+  assert.match(middleware, /\[SERVICE_BOOKING_HREF\]:\s*BOOKING_HREF/);
+  assert.match(middleware, /from '\.\/utils\/booking'/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
   assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);

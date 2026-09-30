@@ -96,7 +96,11 @@ test('SoyTechno body uses the approved CIMA case-study copy', () => {
   assert.doesNotMatch(soytechnoBody, /consumiendo el precio vía método GET/);
   assert.doesNotMatch(soytechnoBody, /La carga de asesores es asíncrona/);
   assert.match(soytechnoBody, /<span>SoyTechno<\/span>/);
-  assert.match(soytechnoBody, /href="\/reunion-playful"/);
+  assert.match(soytechnoBody, /BookingLink/);
+  assert.match(soytechnoBody, /SERVICE_BOOKING_HREF/);
+  assert.match(soytechnoBody, /BOOKING_CTA_LABEL/);
+  assert.doesNotMatch(soytechnoBody, /href="\/reunion-playful"/);
+  assert.doesNotMatch(soytechnoBody, /Agenda una reunión/);
   assert.match(soytechnoBody, /jumex-shopify-dtc-ecommerce/);
   assert.match(soytechnoBody, /odwalla-shopify-dtc-ecommerce/);
   assert.doesNotMatch(soytechnoBody, /consumiendo el precio vía método GET/);

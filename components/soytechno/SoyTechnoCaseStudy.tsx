@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import BookingLink from '@/components/BookingLink'
+import { BOOKING_CTA_LABEL, SERVICE_BOOKING_HREF } from '@/utils/booking'
 import styles from './SoyTechnoCaseStudy.module.css'
 
 const base = '/images/casos/soytechno'
@@ -277,7 +279,7 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.ctaCopy}>
           <h2>¿Listo para convertir la complejidad en una mejor experiencia de compra?</h2>
           <p>Diseñemos un eCommerce preparado para pagos, logística y atención a la escala de tu negocio.</p>
-          <Link href="/reunion-playful">Agenda una reunión</Link>
+          <BookingLink href={SERVICE_BOOKING_HREF}>{BOOKING_CTA_LABEL}</BookingLink>
         </div>
       </section>
 
