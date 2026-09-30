@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
 import { mergePublicCaseStudies } from '@/lib/public-case-studies';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
@@ -1108,7 +1109,9 @@ async function loadBlogStaticParamsPage(
   };
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+const blogPostBySlugBuildCache = new Map<string, Promise<WPPost | null>>();
+
+const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> => {
   const local = localBlogPostBySlug(slug);
   if (local) return local;
 
@@ -1133,6 +1136,22 @@ export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
   }
   post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
   return rewriteWpRenderedHtmlFields(post);
+});
+
+/**
+ * generateMetadata and the page both need the same slug. React `cache()`
+ * covers one render; the build map covers the SSG worker so a post is
+ * fetched once, not twice per route.
+ */
+export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    const hit = blogPostBySlugBuildCache.get(slug);
+    if (hit) return hit;
+    const pending = loadBlogPostBySlug(slug);
+    blogPostBySlugBuildCache.set(slug, pending);
+    return pending;
+  }
+  return loadBlogPostBySlug(slug);
 }
 
 export interface TeamMember {
@@ -1332,7 +1351,9 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
 }
 
-export async function getAllCaseStudies(): Promise<any[]> {
+const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
+
+async function loadAllCaseStudies(): Promise<any[]> {
   const { items: casos } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
@@ -1342,4 +1363,9 @@ export async function getAllCaseStudies(): Promise<any[]> {
     return applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized));
   });
   return mergePublicCaseStudies(published);
+}
+
+/** Header, home and service pages share one in-flight listing (3600s). */
+export async function getAllCaseStudies(): Promise<any[]> {
+  return fetchWithRelatedPostsTtl(caseStudiesCache, loadAllCaseStudies, Date.now, 3600 * 1000);
 }

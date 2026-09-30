@@ -18,8 +18,13 @@ test('listing and params fetches use _fields and never a full _embed', () => {
   const listing = functionSlice('getBlogPosts');
   const latest = functionSlice('getLatestBlogPosts');
   const byIds = functionSlice('getBlogPostsByIds');
-  const params = functionSlice('getBlogStaticParams') + functionSlice('loadBlogStaticParamsPage');
-  const article = functionSlice('getBlogPostBySlug');
+  const params = (
+    functionSlice('getBlogStaticParams').split('const blogPostBySlugBuildCache')[0]
+    + functionSlice('loadBlogStaticParamsPage').split('const blogPostBySlugBuildCache')[0]
+  );
+  const articleStart = wordpress.indexOf('const loadBlogPostBySlug');
+  assert.notEqual(articleStart, -1, 'missing loadBlogPostBySlug');
+  const article = wordpress.slice(articleStart, wordpress.indexOf('\nexport interface TeamMember'));
 
   assert.match(listing, /BLOG_LISTING_POST_FIELDS/);
   assert.match(listing, /hydrateListingPosts/);
@@ -41,4 +46,6 @@ test('listing and params fetches use _fields and never a full _embed', () => {
 
   assert.match(article, /BLOG_ARTICLE_POST_FIELDS/);
   assert.match(article, /_embed=wp:featuredmedia,wp:term,author/);
+  assert.match(article, /blogPostBySlugBuildCache/);
+  assert.match(wordpress, /fetchWithRelatedPostsTtl\(caseStudiesCache/);
 });

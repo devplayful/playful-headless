@@ -23,8 +23,9 @@ Blog listings no longer request `content` or a full `_embed`. Measured 2026-09-3
 ## Availability behavior
 
 - WordPress requests have one 8-second operation deadline covering fetch attempts and backoff (20 s during `next build`, #151).
-- Runtime: 408, 425, 429, 5xx, and network errors receive at most three attempts with bounded jitter.
-- `next build`: at most **two** attempts per request, plus a process-wide budget of **8** extra 5xx/network retries, so pagination cannot multiply 3× retries across every page.
+- Runtime: 408, 425, 429, 5xx, and network errors receive at most three attempts with bounded jitter (150 ms × 2^(n-1) + jitter, cap 1 s).
+- Before this change, `next build` used the same **three** attempts **per request**. Pagination and ~100 article routes multiplied that (a 5xx on every page could mean hundreds of extra GETs to the origin).
+- `next build` now uses at most **two** attempts per request, plus a process-wide budget of **8** extra 5xx/network retries. The 20 s deadline (#151) is unchanged.
 - Caller cancellation interrupts both an active fetch and retry backoff; no subsequent request is allowed.
 - Only a successful `200 []` collection is an absence. A collection 404 and persistent upstream failures throw `WordPressUnavailableError`.
 - Slug pages may render a 404 only after confirmed absence. Build inventory failures stop the build.
