@@ -23,10 +23,35 @@ export const RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS = 60;
 /** REST `_fields` for the shared related index and lite cards. No `_embed`, no Yoast, no content. */
 export const RELATED_BLOG_POST_FIELDS =
   'id,date,date_gmt,modified,modified_gmt,slug,title,excerpt,featured_media,categories,status';
+/**
+ * Listing cards (/blog, latest, by-id). Same as the related index plus `author`
+ * so the hub can print the byline without pulling `content` or Yoast.
+ */
+export const BLOG_LISTING_POST_FIELDS = `${RELATED_BLOG_POST_FIELDS},author`;
+/** generateStaticParams only needs the slug and the category ids. */
+export const BLOG_STATIC_PARAMS_FIELDS = 'id,slug,categories';
+/**
+ * Single-article payload. `content` lives here only. `_links` is required for
+ * `_embed=wp:featuredmedia,wp:term,author` to materialize `_embedded`.
+ */
+export const BLOG_ARTICLE_POST_FIELDS =
+  'id,date,date_gmt,modified,modified_gmt,slug,title,content,excerpt,featured_media,categories,author,acf,meta,_links,_embedded';
+/** Media lookup used by listings instead of embedding every image size. */
+export const BLOG_MEDIA_FIELDS = 'id,source_url,alt_text';
+/** Author lookup used by listings instead of embedding avatar maps. */
+export const BLOG_AUTHOR_FIELDS = 'id,name,slug';
+/**
+ * Next cannot cache REST bodies over 2 MB. Measured listing+embed-media at
+ * 100 posts is ~0.53 MB; 1.5 MB is the hard ceiling we paginate against.
+ */
+export const WP_FETCH_CACHE_CEILING_BYTES = 2 * 1024 * 1024;
+export const WP_FETCH_SAFE_BODY_BYTES = 1_500_000;
 /** Shared index lives in Next Data Cache this long. Related pages read it; they do not refetch WP. */
 export const RELATED_BLOG_INDEX_REVALIDATE_SECONDS = 21_600;
-/** WP REST max per_page. Two pages cover the ~103 open posts. */
+/** WP REST max per_page. Two pages of `_fields`-only posts stay ~54 KB each. */
 export const RELATED_BLOG_INDEX_PER_PAGE = 100;
+/** Latest-N overscan after dropping closed paths. Was +40 with full `_embed` (~2.1 MB). */
+export const BLOG_LATEST_OVERSCAN = 8;
 export const RELATED_INDEX_UNAVAILABLE = 'RELATED_INDEX_UNAVAILABLE';
 
 export type RelatedPostsCacheEntry<T> = {

@@ -15,6 +15,12 @@ import {
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
+  BLOG_ARTICLE_POST_FIELDS,
+  BLOG_AUTHOR_FIELDS,
+  BLOG_LATEST_OVERSCAN,
+  BLOG_LISTING_POST_FIELDS,
+  BLOG_MEDIA_FIELDS,
+  BLOG_STATIC_PARAMS_FIELDS,
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_CATEGORY_FETCH_PER_PAGE,
   RELATED_BLOG_CATEGORY_PER_PAGE,
@@ -538,9 +544,9 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       categorySlug = lookup.fallback.slug || categorySlug;
     }
   }
-  let imageUrl = '/images/blog/placeholder.jpg';
+  let imageUrl = post.featured_media_url || '/images/blog/placeholder.jpg';
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-  if (featuredMedia) {
+  if (!post.featured_media_url && featuredMedia) {
     imageUrl = featuredMedia.source_url
       || featuredMedia.media_details?.sizes?.full?.source_url
       || featuredMedia.media_details?.sizes?.large?.source_url
@@ -575,30 +581,24 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
 export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
-  let url = `${WORDPRESS_API_URL}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term,author`;
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+  url.searchParams.set('page', String(page));
+  url.searchParams.set('per_page', String(perPage));
+  url.searchParams.set('_fields', BLOG_LISTING_POST_FIELDS);
   if (categorySlug) {
     const { items: categories } = await wordpressFetchCollection<any>(
-      `${WORDPRESS_API_URL}/wp/v2/categories?slug=${encodeURIComponent(categorySlug)}`,
+      `${WORDPRESS_API_URL}/wp/v2/categories?slug=${encodeURIComponent(categorySlug)}&_fields=id,slug,name`,
       { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
     );
     if (categories.length === 0) return { posts: [], totalPages: 0 };
-    url += `&categories=${categories[0].id}`;
+    url.searchParams.set('categories', String(categories[0].id));
   }
   const { items: posts, response } = await wordpressFetchCollection<WPPost>(
-    url,
+    url.toString(),
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } },
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-  const processedPosts = posts.map(post => rewriteWpYoastFields(rewriteWpRenderedHtmlFields({
-    ...post,
-    featured_media_url: resolveBlogCoverUrl(
-      post.slug,
-      post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
-    ),
-    featured_media_alt: post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || '',
-    categories: post._embedded?.['wp:term']?.[0] || [],
-    author_name: post._embedded?.['author']?.[0]?.name || 'Playful Agency'
-  })));
+  const processedPosts = await hydrateListingPosts(posts);
   return { posts: filterOpenBlogPosts(processedPosts), totalPages };
 }
 
@@ -607,11 +607,11 @@ export async function getLatestBlogPosts(
   query: LatestBlogPostsQuery = {},
 ): Promise<RelatedBlogCard[]> {
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
-  url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
-  url.searchParams.append('per_page', String(Math.min(100, Math.max(perPage + 40, perPage))));
+  url.searchParams.append('per_page', String(Math.min(100, Math.max(perPage + BLOG_LATEST_OVERSCAN, perPage))));
   url.searchParams.append('orderby', 'date');
   url.searchParams.append('order', 'desc');
   url.searchParams.append('status', 'publish');
+  url.searchParams.append('_fields', BLOG_LISTING_POST_FIELDS);
   if (query.categoryId) {
     url.searchParams.append('categories', String(query.categoryId));
   }
@@ -630,10 +630,122 @@ export async function getLatestBlogPosts(
       maxAttempts: query.maxAttempts,
     },
   );
-  return filterOpenBlogPosts(posts.map((post) => {
-    const rewritten = rewriteWpRenderedHtmlFields(post);
-    return toRelatedBlogCard(rewritten);
-  })).slice(0, perPage);
+  const hydrated = await hydrateListingPosts(posts, query);
+  return filterOpenBlogPosts(hydrated.map((post) => toRelatedBlogCard(post))).slice(0, perPage);
+}
+
+type ListingMedia = { id: number; source_url: string; alt_text?: string };
+type ListingAuthor = { id: number; name: string; slug?: string };
+
+function uniquePositiveIds(values: unknown[]): number[] {
+  return Array.from(new Set(
+    values.filter((id): id is number => typeof id === 'number' && Number.isInteger(id) && id > 0),
+  ));
+}
+
+async function loadBlogMediaByIds(
+  ids: number[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<Map<number, ListingMedia>> {
+  const unique = uniquePositiveIds(ids);
+  if (unique.length === 0) return new Map();
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/media`);
+  url.searchParams.append('include', unique.join(','));
+  url.searchParams.append('per_page', String(Math.min(100, unique.length)));
+  url.searchParams.append('_fields', BLOG_MEDIA_FIELDS);
+  const { items } = await wordpressFetchCollection<ListingMedia>(
+    url.toString(),
+    {
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
+  );
+  const byId = new Map<number, ListingMedia>();
+  for (const item of items) {
+    if (typeof item?.id === 'number' && item.id > 0 && item.source_url) {
+      byId.set(item.id, {
+        id: item.id,
+        source_url: item.source_url,
+        alt_text: item.alt_text || '',
+      });
+    }
+  }
+  return byId;
+}
+
+async function loadBlogAuthorsByIds(
+  ids: number[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<Map<number, ListingAuthor>> {
+  const unique = uniquePositiveIds(ids);
+  if (unique.length === 0) return new Map();
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/users`);
+  url.searchParams.append('include', unique.join(','));
+  url.searchParams.append('per_page', String(Math.min(100, unique.length)));
+  url.searchParams.append('_fields', BLOG_AUTHOR_FIELDS);
+  const { items } = await wordpressFetchCollection<ListingAuthor>(
+    url.toString(),
+    {
+      next: { revalidate: 3600 },
+      headers: { 'Content-Type': 'application/json' },
+      signal: query.signal,
+    },
+    {
+      timeoutMs: query.timeoutMs,
+      maxAttempts: query.maxAttempts,
+    },
+  );
+  const byId = new Map<number, ListingAuthor>();
+  for (const item of items) {
+    if (typeof item?.id === 'number' && item.id > 0 && item.name) {
+      byId.set(item.id, { id: item.id, name: item.name, slug: item.slug });
+    }
+  }
+  return byId;
+}
+
+async function hydrateListingPosts(
+  posts: WPPost[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<WPPost[]> {
+  if (posts.length === 0) return [];
+  const mediaIds = posts.map((post) => post.featured_media);
+  const authorIds = posts.map((post) => (
+    typeof post.author === 'number' ? post.author : post.author?.id
+  ));
+  const [terms, media, authors] = await Promise.all([
+    getBlogCategoryTerms(query).catch(() => new Map<number, RelatedCategoryTerm>()),
+    loadBlogMediaByIds(mediaIds, query).catch(() => new Map<number, ListingMedia>()),
+    loadBlogAuthorsByIds(authorIds, query).catch(() => new Map<number, ListingAuthor>()),
+  ]);
+  return posts.map((post) => {
+    const rewritten = rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post));
+    const categoryIds = categoryIdsFromPost(rewritten);
+    const categories = categoryIds
+      .map((id) => terms.get(id))
+      .filter((term): term is RelatedCategoryTerm => Boolean(term))
+      .map((term) => ({ ...term, taxonomy: 'category' }));
+    const mediaItem = typeof rewritten.featured_media === 'number'
+      ? media.get(rewritten.featured_media)
+      : undefined;
+    const authorId = typeof rewritten.author === 'number' ? rewritten.author : rewritten.author?.id;
+    const author = typeof authorId === 'number' ? authors.get(authorId) : undefined;
+    return {
+      ...rewritten,
+      categories,
+      featured_media_url: resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
+      featured_media_alt: mediaItem?.alt_text || '',
+      author_name: author?.name || 'Playful Agency',
+      author: author
+        ? { id: author.id, name: author.name, slug: author.slug || '' }
+        : rewritten.author,
+    };
+  });
 }
 
 const categoryTermsCache: RelatedPostsCacheState<Map<number, RelatedCategoryTerm>> = { current: null };
@@ -739,11 +851,11 @@ export async function getBlogPostsByIds(
   const unique = Array.from(new Set(ids.filter((id) => Number.isInteger(id) && id > 0)));
   if (unique.length === 0) return [];
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
-  url.searchParams.append('_embed', 'wp:featuredmedia,wp:term');
   url.searchParams.append('include', unique.join(','));
   url.searchParams.append('per_page', String(unique.length));
   url.searchParams.append('orderby', 'include');
   url.searchParams.append('status', 'publish');
+  url.searchParams.append('_fields', BLOG_LISTING_POST_FIELDS);
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     url.toString(),
     {
@@ -756,10 +868,8 @@ export async function getBlogPostsByIds(
       maxAttempts: query.maxAttempts,
     },
   );
-  const cards = filterOpenBlogPosts(posts.map((post) => {
-    const rewritten = rewriteWpRenderedHtmlFields(post);
-    return toRelatedBlogCard(rewritten);
-  }));
+  const hydrated = await hydrateListingPosts(posts, query);
+  const cards = filterOpenBlogPosts(hydrated.map((post) => toRelatedBlogCard(post)));
   const byId = new Map(cards.map((card) => [card.id, card]));
   return unique.map((id) => byId.get(id)).filter((card): card is RelatedBlogCard => Boolean(card));
 }
@@ -958,9 +1068,48 @@ export async function getRelatedBlogPostsForPost(
   return [];
 }
 
+export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> {
+  const terms = await getBlogCategoryTerms().catch(() => new Map<number, RelatedCategoryTerm>());
+  const first = await loadBlogStaticParamsPage(1);
+  const posts = [...first.items];
+  for (let page = 2; page <= first.totalPages; page += 1) {
+    const next = await loadBlogStaticParamsPage(page);
+    posts.push(...next.items);
+  }
+  const hydrated = posts.map((post) => {
+    const categoryIds = categoryIdsFromPost(post);
+    const categories = categoryIds
+      .map((id) => terms.get(id))
+      .filter((term): term is RelatedCategoryTerm => Boolean(term))
+      .map((term) => ({ ...term, taxonomy: 'category' }));
+    return { ...post, categories };
+  });
+  return filterOpenBlogPosts(hydrated).map((post) => ({
+    slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
+  }));
+}
+
+async function loadBlogStaticParamsPage(
+  page: number,
+): Promise<{ items: WPPost[]; totalPages: number }> {
+  const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
+  url.searchParams.set('page', String(page));
+  url.searchParams.set('per_page', String(RELATED_BLOG_INDEX_PER_PAGE));
+  url.searchParams.set('status', 'publish');
+  url.searchParams.set('_fields', BLOG_STATIC_PARAMS_FIELDS);
+  const { items, response } = await wordpressFetchCollection<WPPost>(
+    url.toString(),
+    { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } },
+  );
+  return {
+    items,
+    totalPages: Math.max(1, parseInt(response.headers.get('X-WP-TotalPages') || '1', 10)),
+  };
+}
+
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
   const { items: posts } = await wordpressFetchCollection<WPPost>(
-    `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard`,
+    `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard&_fields=${BLOG_ARTICLE_POST_FIELDS}`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
   if (!posts || posts.length === 0) return null;

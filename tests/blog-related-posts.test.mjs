@@ -12,6 +12,10 @@ const {
   RELATED_BLOG_FETCH_TIMEOUT_MS,
   RELATED_BLOG_FIELD_LIMIT,
   RELATED_BLOG_FIELD_NAME,
+  BLOG_ARTICLE_POST_FIELDS,
+  BLOG_LATEST_OVERSCAN,
+  BLOG_LISTING_POST_FIELDS,
+  BLOG_STATIC_PARAMS_FIELDS,
   RELATED_BLOG_INDEX_PER_PAGE,
   RELATED_BLOG_INDEX_REVALIDATE_SECONDS,
   RELATED_BLOG_POST_FIELDS,
@@ -184,7 +188,8 @@ test('blog post page resolves related from the shared index, not a live WP fetch
   assert.match(blogPage, /emptyRelatedBehavior\(\)/);
   assert.match(blogPage, /RelatedIndexUnavailableError/);
   assert.match(blogPage, /relatedPosts\.length > 0/);
-  assert.match(blogPage, /getBlogPosts\(page, perPage\)/);
+  assert.match(blogPage, /getBlogStaticParams\(\)/);
+  assert.doesNotMatch(blogPage, /getBlogPosts\(page, perPage\)/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.doesNotMatch(blogPage, /fetchLatestRelatedBlogPosts/);
   assert.doesNotMatch(blogPage, /Cargando artículos/);
@@ -374,6 +379,12 @@ test('shared related index is lite, long-lived and last-known-good', () => {
   assert.equal(RELATED_BLOG_INDEX_REVALIDATE_SECONDS, 21_600);
   assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
   assert.doesNotMatch(RELATED_BLOG_POST_FIELDS, /content|yoast|_links|_embed/);
+  assert.match(BLOG_LISTING_POST_FIELDS, /author/);
+  assert.doesNotMatch(BLOG_LISTING_POST_FIELDS, /content|yoast|_embed/);
+  assert.equal(BLOG_STATIC_PARAMS_FIELDS, 'id,slug,categories');
+  assert.match(BLOG_ARTICLE_POST_FIELDS, /content/);
+  assert.match(BLOG_ARTICLE_POST_FIELDS, /acf/);
+  assert.equal(BLOG_LATEST_OVERSCAN, 8);
   assert.match(wordpress, /RELATED_BLOG_INDEX_REVALIDATE_SECONDS/);
   assert.match(wordpress, /RELATED_BLOG_INDEX_PER_PAGE/);
   assert.match(wordpress, /RELATED_BLOG_POST_FIELDS/);
