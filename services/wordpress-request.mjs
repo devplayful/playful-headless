@@ -1,9 +1,3 @@
-import {
-  isWordPressMeterEnabled,
-  recordWordPressFetch,
-  installWordPressFetchMeterExitHook,
-} from '../scripts/wp-fetch-meter.mjs';
-
 const DEFAULT_MAX_ATTEMPTS = 3;
 const BUILD_MAX_ATTEMPTS = 2;
 const DEFAULT_BASE_DELAY_MS = 150;
@@ -13,7 +7,45 @@ const BUILD_TIMEOUT_MS = 20_000;
 /** Extra 5xx/network retries across the whole `next build`, not per page. */
 const BUILD_GLOBAL_RETRY_BUDGET = 8;
 
-installWordPressFetchMeterExitHook();
+const meterState = { requests: [], hookInstalled: false };
+
+function isWordPressMeterEnabled(env = process.env) {
+  return env.WP_FETCH_METER === '1' || env.WP_FETCH_METER === 'true';
+}
+
+function recordWordPressFetch({ url, status, bytes }) {
+  if (!isWordPressMeterEnabled()) return;
+  meterState.requests.push({
+    url: String(url),
+    status: Number(status) || 0,
+    bytes: Number(bytes) || 0,
+  });
+  let path = String(url);
+  try { path = new URL(url).pathname + new URL(url).search; } catch { /* keep */ }
+  console.log(`[wp-fetch-meter] 1x ${Number(bytes) || 0}B ${path}`);
+  if (!meterState.hookInstalled && typeof process !== 'undefined' && process.once) {
+    meterState.hookInstalled = true;
+    process.once('beforeExit', () => {
+      let total = 0;
+      let largest = { url: '', bytes: 0 };
+      const byEndpoint = new Map();
+      for (const entry of meterState.requests) {
+        total += entry.bytes;
+        if (entry.bytes > largest.bytes) largest = entry;
+        let path = entry.url;
+        try { path = new URL(entry.url).pathname + new URL(entry.url).search; } catch { /* keep */ }
+        const row = byEndpoint.get(path) || { count: 0, bytes: 0 };
+        row.count += 1;
+        row.bytes += entry.bytes;
+        byEndpoint.set(path, row);
+      }
+      console.log(`[wp-fetch-meter] requests=${meterState.requests.length} totalBytes=${total} largest=${largest.bytes} ${largest.url}`);
+      for (const [endpoint, row] of [...byEndpoint.entries()].sort((a, b) => b[1].bytes - a[1].bytes)) {
+        console.log(`[wp-fetch-meter] ${row.count}x ${row.bytes}B ${endpoint}`);
+      }
+    });
+  }
+}
 
 let remainingBuildRetries = BUILD_GLOBAL_RETRY_BUDGET;
 let buildRetryBudgetInitialized = false;
