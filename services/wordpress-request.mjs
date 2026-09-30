@@ -1,16 +1,30 @@
+import {
+  isWordPressMeterEnabled,
+  recordWordPressFetch,
+  installWordPressFetchMeterExitHook,
+} from '../scripts/wp-fetch-meter.mjs';
+
 const DEFAULT_MAX_ATTEMPTS = 3;
+const BUILD_MAX_ATTEMPTS = 2;
 const DEFAULT_BASE_DELAY_MS = 150;
 const DEFAULT_MAX_DELAY_MS = 1_000;
 const DEFAULT_TIMEOUT_MS = 8_000;
 const BUILD_TIMEOUT_MS = 20_000;
+/** Extra 5xx/network retries across the whole `next build`, not per page. */
+const BUILD_GLOBAL_RETRY_BUDGET = 8;
+
+installWordPressFetchMeterExitHook();
+
+let remainingBuildRetries = BUILD_GLOBAL_RETRY_BUDGET;
+let buildRetryBudgetInitialized = false;
 
 /**
  * Resolve the WordPress REST deadline.
  *
  * Runtime stays at 8s. `next build` uses 20s because the deadline covers
  * fetch + retries + backoff, and the heaviest build collection
- * (`posts?_embed=wp:featuredmedia,wp:term,author`, ~3.5 MB) already takes
- * ~3.4s on a healthy origin — a single transient retry would miss 8s.
+ * (`posts?_fields=…` listing pages, ~0.05–0.53 MB) already takes
+ * ~1–2s on a healthy origin — a single transient retry would miss 8s.
  * `WORDPRESS_REQUEST_TIMEOUT_MS` wins when set to a positive number.
  */
 export function resolveWordPressRequestTimeoutMs(env = process.env) {
@@ -18,6 +32,48 @@ export function resolveWordPressRequestTimeoutMs(env = process.env) {
   if (Number.isFinite(fromEnv) && fromEnv > 0) return fromEnv;
   if (env.NEXT_PHASE === 'phase-production-build') return BUILD_TIMEOUT_MS;
   return DEFAULT_TIMEOUT_MS;
+}
+
+export function isWordPressProductionBuild(env = process.env) {
+  return env.NEXT_PHASE === 'phase-production-build';
+}
+
+export function resolveWordPressMaxAttempts(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_MAX_ATTEMPTS);
+  if (Number.isInteger(fromEnv) && fromEnv > 0) return fromEnv;
+  if (isWordPressProductionBuild(env)) return BUILD_MAX_ATTEMPTS;
+  return DEFAULT_MAX_ATTEMPTS;
+}
+
+export function resolveWordPressBuildRetryBudget(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_BUILD_RETRY_BUDGET);
+  if (Number.isInteger(fromEnv) && fromEnv >= 0) return fromEnv;
+  return BUILD_GLOBAL_RETRY_BUDGET;
+}
+
+export function resetWordPressBuildRetryBudget(env = process.env) {
+  remainingBuildRetries = resolveWordPressBuildRetryBudget(env);
+  buildRetryBudgetInitialized = true;
+  return remainingBuildRetries;
+}
+
+export function remainingWordPressBuildRetries() {
+  return remainingBuildRetries;
+}
+
+/**
+ * Extra attempts (not the first GET) share one process-wide budget during
+ * `next build`. Runtime keeps the per-request cap so a single 5xx still
+ * retries without multiplying across 100 static pages.
+ */
+export function consumeWordPressBuildRetry(env = process.env) {
+  if (!isWordPressProductionBuild(env)) return true;
+  if (!buildRetryBudgetInitialized) {
+    resetWordPressBuildRetryBudget(env);
+  }
+  if (remainingBuildRetries <= 0) return false;
+  remainingBuildRetries -= 1;
+  return true;
 }
 
 const TRANSIENT_STATUSES = new Set([408, 425, 429]);
@@ -90,7 +146,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
   const fetchImpl = options.fetchImpl ?? fetch;
   const sleep = options.sleep ?? defaultSleep;
   const random = options.random ?? Math.random;
-  const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
+  const maxAttempts = options.maxAttempts ?? resolveWordPressMaxAttempts();
   const baseDelayMs = options.baseDelayMs ?? DEFAULT_BASE_DELAY_MS;
   const maxDelayMs = options.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
   const timeoutMs = options.timeoutMs ?? resolveWordPressRequestTimeoutMs();
@@ -134,7 +190,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
         }
 
         const retryable = isTransientWordPressStatus(response.status);
-        if (!retryable || attempt === maxAttempts) {
+        if (!retryable || attempt === maxAttempts || !consumeWordPressBuildRetry()) {
           throw new WordPressUnavailableError(
             `WordPress request failed with ${response.status} ${response.statusText}`,
             { url, status: response.status, attempts: attempt },
@@ -158,7 +214,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
         }
         if (error?.name === 'AbortError') throw error;
 
-        if (attempt === maxAttempts) {
+        if (attempt === maxAttempts || !consumeWordPressBuildRetry()) {
           throw new WordPressUnavailableError(
             `WordPress request failed after ${attempt} attempts`,
             { url, attempts: attempt, cause: error },
@@ -200,8 +256,11 @@ async function wordpressRequest(input, init, options, consumeResponse) {
 }
 
 export async function wordpressFetch(input, init = {}, options = {}) {
-  return wordpressRequest(input, init, options, async (response) => {
+  return wordpressRequest(input, init, options, async (response, { url }) => {
     const body = await response.arrayBuffer();
+    if (isWordPressMeterEnabled()) {
+      recordWordPressFetch({ url, status: response.status, bytes: body.byteLength });
+    }
     return bufferedResponse(response, body);
   });
 }
@@ -216,7 +275,21 @@ export async function wordpressFetchCollection(input, init = {}, options = {}) {
       );
     }
 
-    const items = await response.json();
+    const body = await response.arrayBuffer();
+    if (isWordPressMeterEnabled()) {
+      recordWordPressFetch({ url, status: response.status, bytes: body.byteLength });
+    }
+    let items;
+    try {
+      items = JSON.parse(new TextDecoder().decode(body));
+    } catch (error) {
+      throw new WordPressUnavailableError('WordPress collection returned invalid JSON', {
+        url,
+        status: response.status,
+        attempts: attempt,
+        cause: error,
+      });
+    }
     if (!Array.isArray(items)) {
       throw new WordPressUnavailableError('WordPress collection returned a non-array payload', {
         url,
@@ -224,6 +297,6 @@ export async function wordpressFetchCollection(input, init = {}, options = {}) {
         attempts: attempt,
       });
     }
-    return { items, response };
+    return { items, response: bufferedResponse(response, body) };
   });
 }
