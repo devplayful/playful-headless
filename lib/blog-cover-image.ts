@@ -5,7 +5,7 @@
  * vía Diseño) + lote 6 (29 sep 2026, José GO) + lote 7 (29 sep 2026,
  * José GO) + lote 8 (29 sep 2026, José GO vía Diseño) + lote 9
  * (29 sep 2026, José GO vía Diseño) + lote 10 (29 sep 2026, José GO
- * vía Diseño). Same override
+ * vía Diseño) + lote 11 (30 sep 2026, José GO vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -33,6 +33,8 @@
  * `estrategia-de-email-marketing`.
  * 29 sep 2026 (José GO vía Diseño 22:39): iGo8Tmd3uK canónico en
  * `la-nueva-gestion-de-google-ads`.
+ * 30 sep 2026 (José GO vía Diseño 11:52): 0eQHuiWTfW canónico en
+ * `live-stream-shopping-compra-mientras-interactuas`.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
@@ -85,6 +87,9 @@ export const BLOG_COVER_OVERRIDES = {
   // lote 10 (29 sep 2026, José GO vía Diseño 22:39)
   'la-nueva-gestion-de-google-ads':
     '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png',
+  // lote 11 (30 sep 2026, José GO vía Diseño 11:52)
+  'live-stream-shopping-compra-mientras-interactuas':
+    '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png',
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
@@ -96,7 +101,7 @@ export function blogCoverForSlug(slug: string | undefined | null): string {
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1–10. */
+/** Prefer the local Magnific cover when the slug is in lote 1–11. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',
