@@ -66,7 +66,9 @@ const LOTE_5 = [
 ];
 
 function functionBody(source, name) {
-  const start = source.indexOf(`export async function ${name}`);
+  const exported = source.indexOf(`export async function ${name}`);
+  const local = source.indexOf(`async function ${name}`);
+  const start = exported === -1 ? local : exported;
   assert.notEqual(start, -1, `missing ${name}`);
   const nextExport = source.indexOf('\nexport ', start + 1);
   return nextExport === -1 ? source.slice(start) : source.slice(start, nextExport);
@@ -363,10 +365,12 @@ test('unknown slugs keep the WordPress featured fallback', () => {
 test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   assert.match(source, /resolveBlogCoverUrl/);
-  assert.match(functionBody(source, 'getBlogPosts'), /resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'hydrateListingPosts'), /resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'getBlogPosts'), /hydrateListingPosts\(/);
   assert.match(functionBody(source, 'getLatestBlogPosts'), /toRelatedBlogCard\(/);
   assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverUrl\(/);
-  assert.match(functionBody(source, 'getBlogPostBySlug'), /resolveBlogCoverUrl\(/);
+  assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverUrl\(/);
+  assert.match(functionBody(source, 'getBlogPostBySlug'), /loadBlogPostBySlug\(/);
 });
 
 test('blog post generateMetadata points OG and Twitter at the cover override', async () => {

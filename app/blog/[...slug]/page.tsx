@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogStaticParams, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -33,22 +33,10 @@ import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
 export async function generateStaticParams() {
-  // WP REST and getBlogPosts clamp per_page at 100. Raising the argument
-  // above 100 would still yield 100 and leave the oldest open posts
-  // (~103 total) to on-demand ISR, which is what 500'd under parallel
-  // crawls. Paginate every WP page instead; the build already fetches
-  // these posts for the listing and has tolerated that volume.
-  const perPage = 100;
-  const first = await getBlogPosts(1, perPage);
-  const posts = [...first.posts];
-  const totalPages = Math.max(1, first.totalPages || 1);
-  for (let page = 2; page <= totalPages; page += 1) {
-    const next = await getBlogPosts(page, perPage);
-    posts.push(...next.posts);
-  }
-  return posts.map((post) => ({
-    slug: [getPrimaryCategorySlug(post), post.slug],
-  }));
+  // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
+  // getBlogPosts(1, 100) + `_embed` path was 3.5–4.7 MB and Next
+  // refused to cache it.
+  return getBlogStaticParams();
 }
 
 const formatDate = (dateString: string) => {

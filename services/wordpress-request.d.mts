@@ -18,6 +18,18 @@ export { WordPressUnavailableError as WordPressUpstreamError };
 
 export function isTransientWordPressStatus(status: number): boolean;
 
+export function isWordPressProductionBuild(env?: NodeJS.ProcessEnv): boolean;
+
+export function resolveWordPressMaxAttempts(env?: NodeJS.ProcessEnv): number;
+
+export function resolveWordPressBuildRetryBudget(env?: NodeJS.ProcessEnv): number;
+
+export function resetWordPressBuildRetryBudget(env?: NodeJS.ProcessEnv): number;
+
+export function remainingWordPressBuildRetries(): number;
+
+export function consumeWordPressBuildRetry(env?: NodeJS.ProcessEnv): boolean;
+
 export function wordpressFetch(
   input: RequestInfo | URL,
   init?: RequestInit & { next?: { revalidate?: number | false; tags?: string[] } },

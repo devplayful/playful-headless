@@ -118,7 +118,9 @@ test('rewriteWpRenderedHtmlFields rewrites excerpt and content hrefs; leaves wp-
 });
 
 function functionBody(source, name) {
-  const start = source.indexOf(`export async function ${name}`);
+  const exported = source.indexOf(`export async function ${name}`);
+  const local = source.indexOf(`async function ${name}`);
+  const start = exported === -1 ? local : exported;
   assert.notEqual(start, -1, `missing ${name}`);
   const nextExport = source.indexOf('\nexport ', start + 1);
   return nextExport === -1 ? source.slice(start) : source.slice(start, nextExport);
@@ -126,13 +128,17 @@ function functionBody(source, name) {
 
 test('getBlogPostBySlug maps content.rendered and excerpt.rendered through the rewriter', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const body = functionBody(source, 'getBlogPostBySlug');
+  const body = source.slice(
+    source.indexOf('const loadBlogPostBySlug'),
+    source.indexOf('\nexport interface TeamMember'),
+  );
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
 });
 
 test('getBlogPosts rewrites listing excerpt.rendered and content.rendered', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const body = functionBody(source, 'getBlogPosts');
+  const body = functionBody(source, 'hydrateListingPosts') || functionBody(source, 'getBlogPosts');
+  assert.match(source, /async function hydrateListingPosts/);
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
 });
 
@@ -235,7 +241,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
 
 test('getBlogPosts rewrites Yoast og:url / breadcrumb fields in the listing pipeline', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const body = functionBody(source, 'getBlogPosts');
+  const body = functionBody(source, 'hydrateListingPosts');
   assert.match(body, /rewriteWpRenderedHtmlFields\(/);
   assert.match(body, /rewriteWpYoastFields\(/);
 });
