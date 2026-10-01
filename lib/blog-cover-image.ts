@@ -36,6 +36,10 @@
  * 30 sep 2026 (José GO vía Diseño 11:52): 0eQHuiWTfW canónico en
  * `live-stream-shopping-compra-mientras-interactuas`.
  *
+ * 1 oct 2026 (pedido SEO): seis tapas de staging (email, analítica,
+ * Facebook, remarketing, Google Ads, live stream) tienen recorte
+ * 1200×630 solo para og:image y JSON-LD. La destacada visible no cambia.
+ *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
 export const BLOG_COVER_OVERRIDES = {
@@ -93,12 +97,38 @@ export const BLOG_COVER_OVERRIDES = {
 } as const;
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
+export const BLOG_OG_SIZE = { width: 1200, height: 630 } as const;
+
+/**
+ * 1200×630 center-crop (no stretch) for og:image + JSON-LD only.
+ * Featured/hero still uses BLOG_COVER_OVERRIDES / WordPress.
+ */
+export const BLOG_OG_OVERRIDES = {
+  'estrategia-de-email-marketing':
+    '/images/blog/16-estrategia-email-magnific-LwGzTFJswO-og-1200x630.webp',
+  'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL-og-1200x630.webp',
+  'como-crear-anuncios-en-facebook':
+    '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe-og-1200x630.webp',
+  'como-usar-el-remarketing-para-tener-mas-clientes':
+    '/images/blog/15-remarketing-magnific-ovxxg2H829-og-1200x630.webp',
+  'la-nueva-gestion-de-google-ads':
+    '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK-og-1200x630.webp',
+  'live-stream-shopping-compra-mientras-interactuas':
+    '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW-og-1200x630.webp',
+} as const;
 
 export type BlogCoverSlug = keyof typeof BLOG_COVER_OVERRIDES;
+export type BlogOgSlug = keyof typeof BLOG_OG_OVERRIDES;
 
 export function blogCoverForSlug(slug: string | undefined | null): string {
   if (!slug) return '';
   return BLOG_COVER_OVERRIDES[slug as BlogCoverSlug] || '';
+}
+
+export function blogOgForSlug(slug: string | undefined | null): string {
+  if (!slug) return '';
+  return BLOG_OG_OVERRIDES[slug as BlogOgSlug] || '';
 }
 
 /** Prefer the local Magnific cover when the slug is in lote 1–11. */
@@ -107,4 +137,12 @@ export function resolveBlogCoverUrl(
   fallback = '',
 ): string {
   return blogCoverForSlug(slug) || fallback;
+}
+
+/** Prefer the 1200×630 OG crop, then the featured cover, then fallback. */
+export function resolveBlogOgUrl(
+  slug: string | undefined | null,
+  fallback = '',
+): string {
+  return blogOgForSlug(slug) || blogCoverForSlug(slug) || fallback;
 }
