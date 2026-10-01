@@ -15,7 +15,13 @@ import TableOfContents from '@/components/blog/TableOfContents';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
-import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
+import {
+  BLOG_COVER_SIZE,
+  BLOG_OG_SIZE,
+  blogCoverForSlug,
+  blogOgForSlug,
+  resolveBlogOgUrl,
+} from '@/lib/blog-cover-image';
 import {
   blogBodyForSlug,
   MIGRACION_SEO_ALT_BLOG_SLUG,
@@ -153,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
-    blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
+    resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
@@ -475,8 +481,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
-  const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
-  const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
+  const ogOverride = blogOgForSlug(postSlug);
+  const imageUrl =
+    ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = ogOverride
+    ? BLOG_OG_SIZE
+    : coverOverride
+      ? BLOG_COVER_SIZE
+      : { width: 1200, height: 630 };
   const imageAlt = post.featured_media_alt || post.title.rendered;
   const editorial = resolveBlogEditorialUpdate(postSlug, {
     published: post.date,
@@ -509,7 +521,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
       ],
     },
-    ...(coverOverride
+    ...(ogOverride || coverOverride
       ? {
           twitter: {
             card: 'summary_large_image' as const,
