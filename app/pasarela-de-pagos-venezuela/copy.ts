@@ -142,7 +142,7 @@ export const CTA = {
   cta: 'Agendar Reunión con Playful',
 } as const;
 
-export { BOOKING_HREF, CONTACT_HREF } from '../../utils/booking.ts';
+export { BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF } from '../../utils/booking.ts';
 
 export const PLAYFUL_URL_RE = /(https:\/\/playfulagency\.com\/[^\s).,;]+)/g;
 

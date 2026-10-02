@@ -11,7 +11,7 @@ import PasarelaFaqAccordion from './PasarelaFaqAccordion';
 import styles from './PasarelaPagos.module.css';
 import {
   BENEFITS,
-  BOOKING_HREF,
+  SERVICE_BOOKING_HREF,
   CONTACT_HREF,
   CTA,
   FAQ,
@@ -91,7 +91,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
                 <p className={styles.heroEyebrow}>{HERO.eyebrow}</p>
                 <h1 className={styles.heroTitle}>{HERO.h1}</h1>
                 <p className={styles.heroBody}>{HERO.body}</p>
-                <a href={BOOKING_HREF} className={styles.heroCta}>
+                <a href={SERVICE_BOOKING_HREF} className={styles.heroCta}>
                   {HERO.button}
                 </a>
               </div>
@@ -156,7 +156,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
                   />
                   <h3 className={styles.benefitHeading}>{item.title}</h3>
                   <p className={styles.benefitBody}>{item.body}</p>
-                  <a href={BOOKING_HREF} className={styles.benefitLink}>
+                  <a href={SERVICE_BOOKING_HREF} className={styles.benefitLink}>
                     {item.cta} →
                   </a>
                 </article>
@@ -178,7 +178,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
               ))}
             </div>
             <div className={styles.painCtaWrap}>
-              <a href={BOOKING_HREF} className={styles.painCta}>
+              <a href={SERVICE_BOOKING_HREF} className={styles.painCta}>
                 {PAIN_POINTS.band}
               </a>
             </div>
@@ -257,7 +257,7 @@ export default async function PasarelaDePagosVenezuelaPage() {
               <div className={styles.bannerRight}>
                 <h3 className={styles.bannerRightTitle}>¡Contáctanos y empieza ya!</h3>
                 <p className={styles.bannerRightBody}>{CTA.question}</p>
-                <a href={BOOKING_HREF} className={styles.ctaButton}>
+                <a href={SERVICE_BOOKING_HREF} className={styles.ctaButton}>
                   {CTA.cta}
                 </a>
                 <Link href={CONTACT_HREF} className={styles.bannerContactLink}>

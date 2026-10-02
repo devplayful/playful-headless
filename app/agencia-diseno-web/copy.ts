@@ -172,7 +172,7 @@ export const CTA = {
   cta: 'Agenda tu llamada diagnóstica',
 } as const;
 
-export { BOOKING_HREF, CONTACT_HREF } from '../../utils/booking.ts';
+export { BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF } from '../../utils/booking.ts';
 
 export const MARKDOWN_TOKEN_RE = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g;
 

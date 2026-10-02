@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ComponentPropsWithoutRef } from 'react';
 import {
-  BOOKING_HREF,
+  SERVICE_BOOKING_HREF,
   buildBookingHrefFromLocation,
 } from '@/utils/booking';
 
@@ -11,14 +11,14 @@ type BookingLinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href'> & {
 };
 
 export default function BookingLink({
-  href = BOOKING_HREF,
+  href = SERVICE_BOOKING_HREF,
   children,
   ...props
 }: BookingLinkProps) {
   const [resolved, setResolved] = useState(href);
 
   useEffect(() => {
-    setResolved(buildBookingHrefFromLocation(window.location, document.referrer, href));
+    setResolved(buildBookingHrefFromLocation(window.location, document.referrer, SERVICE_BOOKING_HREF));
   }, [href]);
 
   return (

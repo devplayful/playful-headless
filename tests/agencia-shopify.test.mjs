@@ -10,6 +10,7 @@ const {
   BOOKING_HREF,
   BOOKING_CTA_LABEL,
   CONTACT_HREF,
+  SERVICE_BOOKING_HREF,
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
@@ -55,7 +56,7 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /{HERO\.h1}/);
   assert.match(landing, /TwoColumnCtaSection/);
   assert.match(landing, /buttonText=\{CTA\.cta\}/);
-  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(landing, /buttonLink=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /servicio-operar/);
@@ -113,12 +114,12 @@ test('signed migration section uses the last proposed copy and sits before SEO',
   assert.equal(MIGRATION.prestashop.items.length, 4);
   assert.equal(MIGRATION.close.h3, 'Da el paso sin improvisar');
   assert.equal(MIGRATION.close.cta, 'Agenda tu reunión con Playful');
-  assert.equal(MIGRATION.close.ctaHref, BOOKING_HREF);
+  assert.equal(MIGRATION.close.ctaHref, SERVICE_BOOKING_HREF);
   assert.match(landing, /data-migration-block/);
   assert.match(landing, /\{MIGRATION\.h2\}/);
   assert.match(landing, /\{MIGRATION\.checklist\.h3\}/);
   assert.match(landing, /\{MIGRATION\.prestashop\.h3\}/);
-  assert.match(landing, /href=\{BOOKING_HREF\}/);
+  assert.match(landing, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(landing, /href=\{MIGRATION\.close\.ctaHref\}/);
   const closeBodyIdx = landing.indexOf('{MIGRATION.close.body}');
   const closeCtaIdx = landing.lastIndexOf('{MIGRATION.close.cta}');
@@ -160,7 +161,7 @@ test('signed SEO-for-Shopify block sits between migration and social proof', () 
   assert.equal(SEO_SHOPIFY.seoHref, '/agencia-seo');
   assert.equal(SEO_SHOPIFY.seoLinkLabel, 'nuestro servicio de SEO');
   assert.equal(SEO_SHOPIFY.cta, '¿Hablamos?');
-  assert.equal(SEO_SHOPIFY.ctaHref, BOOKING_HREF);
+  assert.equal(SEO_SHOPIFY.ctaHref, SERVICE_BOOKING_HREF);
   assert.match(landing, /data-seo-shopify-block/);
   assert.match(landing, /href=\{SEO_SHOPIFY\.seoHref\}/);
   assert.doesNotMatch(landing, /href=\{SEO_SHOPIFY\.ctaHref\}/);
@@ -250,11 +251,13 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
     BOOKING_HREF,
     'https://api.playfulagency.com/widget/bookings/reunion-playful',
   );
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
-  assert.match(landing, /href = BOOKING_HREF/);
-  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.match(landing, /href = SERVICE_BOOKING_HREF/);
+  assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(landing, /href=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /TalkCta\(\{ href = CONTACT_HREF/);
+  assert.doesNotMatch(landing, /buttonLink=\{BOOKING_HREF\}/);
   assert.doesNotMatch(HERO.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.match(HERO.cta, /Solicitar una reunión|Comprobar si encajamos/);
@@ -262,11 +265,15 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
   assert.match(landing, /BookingLink/);
 });
 
-test('middleware 301s /reunion-playful to the GHL booking widget', () => {
-  assert.match(middleware, /\[SERVICE_BOOKING_HREF\]:\s*BOOKING_HREF/);
-  assert.match(middleware, /from '\.\/utils\/booking'/);
+test('middleware 302s /reunion-playful to the GHL booking widget after filling query', () => {
+  assert.match(middleware, /resolveBookingWidgetRedirect/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
+  assert.doesNotMatch(middleware, /\[SERVICE_BOOKING_HREF\]:\s*BOOKING_HREF/);
+  assert.doesNotMatch(
+    middleware,
+    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
+  );
   assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);
 });
 

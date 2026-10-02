@@ -1,12 +1,18 @@
-/** Single source of truth for the GHL reunion widget. Middleware 301s the apex path here. */
-export const BOOKING_HREF =
-  'https://api.playfulagency.com/widget/bookings/reunion-playful';
+import {
+  BOOKING_WIDGET_HREF,
+  SERVICE_BOOKING_HREF as CANONICAL_SERVICE_BOOKING_HREF,
+  isBookingHref,
+  toServiceBookingHref,
+} from './booking-attribution.ts';
+
+/** Widget destination. Visible CTAs use SERVICE_BOOKING_HREF so the hop can fill query. */
+export const BOOKING_HREF = BOOKING_WIDGET_HREF;
 
 /**
- * Public slug on service landings and in-site links.
- * `/reunion-playful` 301s to BOOKING_HREF and must keep working.
+ * Visible/canonical href for every booking CTA.
+ * `/reunion-playful` 302s to BOOKING_HREF after filling gclid/utm from URL or cookie.
  */
-export const SERVICE_BOOKING_HREF = '/reunion-playful';
+export const SERVICE_BOOKING_HREF = CANONICAL_SERVICE_BOOKING_HREF;
 
 /** CTA copy that does not promise an immediate confirmed slot. */
 export const BOOKING_CTA_LABEL = 'Solicitar una reunión';
@@ -191,6 +197,11 @@ export function buildBookingHref(
     if (value) dest.searchParams.set(key, value.slice(0, 160));
   }
 
+  for (const key of ['gclid', 'gbraid', 'wbraid'] as const) {
+    const value = incoming.get(key)?.trim();
+    if (value) dest.searchParams.set(key, value.slice(0, 200));
+  }
+
   const landing = (incoming.get('landing') || input.landing || '').trim();
   if (landing) dest.searchParams.set('landing', landing.slice(0, 500));
 
@@ -225,13 +236,7 @@ export function enhanceBookingAnchors(
   root.querySelectorAll('a[href]').forEach((el) => {
     const href = el.getAttribute('href') || '';
     if (!isBookingDestination(href)) return;
-    const path = bookingPathname(href) || SERVICE_BOOKING_HREF;
-    const nextBase = isAbsoluteHref(href)
-      ? (href.startsWith('//')
-        ? `https:${href.split(/[?#]/)[0]}`
-        : href.split(/[?#]/)[0])
-      : path;
-    const next = buildBookingHrefFromLocation(location, referrer, nextBase);
+    const next = buildBookingHrefFromLocation(location, referrer, SERVICE_BOOKING_HREF);
     if (next !== href) {
       el.setAttribute('href', next);
       count += 1;
@@ -294,8 +299,20 @@ function isGlobalChromeAnchor(pre: string, post: string): boolean {
 }
 
 /**
+ * Any rendered HTML (Elementor, ACF, blog): send widget / apex booking
+ * hrefs through `/reunion-playful` so middleware can attach attribution.
+ */
+export function rewriteBookingWidgetHrefs(html: string): string {
+  if (!html) return html;
+  return html.replace(/href\s*=\s*(["'])([^"']*)\1/gi, (full, quote: string, href: string) => {
+    if (!isBookingHref(href)) return full;
+    return `href=${quote}${toServiceBookingHref(href)}${quote}`;
+  });
+}
+
+/**
  * On the four GO service landings, rewrite body anchors that point at the
- * contact page to the canonical `/reunion-playful` path (301 → GHL widget).
+ * contact page to the canonical `/reunion-playful` path (302 → GHL widget).
  * Header/footer live outside this HTML; `playful-boton-header` is skipped.
  */
 export function rewriteServiceBookingCtas(html: string, slug: string): string {
@@ -327,7 +344,10 @@ export function rewriteAboutHrefs(html: string, slug: string): string {
   });
 }
 
-/** Elementor body pipeline: booking CTAs, then leftover `/about` anchors. */
+/** Elementor body pipeline: widget URLs, booking CTAs, then leftover `/about` anchors. */
 export function rewriteElementorBodyHrefs(html: string, slug: string): string {
-  return rewriteAboutHrefs(rewriteServiceBookingCtas(html, slug), slug);
+  return rewriteAboutHrefs(
+    rewriteServiceBookingCtas(rewriteBookingWidgetHrefs(html), slug),
+    slug,
+  );
 }

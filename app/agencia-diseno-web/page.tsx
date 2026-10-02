@@ -7,7 +7,7 @@ import { getLatestBlogPosts } from '@/services/wordpress';
 import ServiceFaqAccordion from '../agencia-shopify/ServiceFaqAccordion';
 import {
   AUDIENCE,
-  BOOKING_HREF,
+  SERVICE_BOOKING_HREF,
   CASES,
   CRO,
   CTA,
@@ -75,7 +75,7 @@ function LinkedMarkdown({
   );
 }
 
-function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
+function TalkCta({ href = SERVICE_BOOKING_HREF }: { href?: string }) {
   return (
     <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}

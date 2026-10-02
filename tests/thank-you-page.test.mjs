@@ -42,6 +42,7 @@ test('Lead thank-you gates the booking CTA with thanksBookingAllowed', () => {
   assert.match(lead, /id="condiciones"/);
   assert.match(lead, /BOOKING_FIT_CTA_LABEL/);
   assert.match(lead, /<BookingLink/);
+  assert.match(lead, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.match(lead, /target="_blank"/);
   assert.match(lead, /sesión es gratuita/);
   assert.match(lead, /showBooking/);
