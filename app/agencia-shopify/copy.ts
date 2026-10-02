@@ -1,4 +1,4 @@
-import { BOOKING_CTA_LABEL, BOOKING_HREF } from '../../utils/booking.ts';
+import { BOOKING_CTA_LABEL, SERVICE_BOOKING_HREF } from '../../utils/booking.ts';
 
 export const SHOPIFY_META = {
   title: 'Agencia Shopify para marcas que ya venden | Playful Agency',
@@ -59,7 +59,7 @@ export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
   (item): item is ServiceCardItem => item.slot !== null,
 );
 export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
-export { BOOKING_HREF, BOOKING_CTA_LABEL, CONTACT_HREF } from '../../utils/booking.ts';
+export { BOOKING_HREF, BOOKING_CTA_LABEL, CONTACT_HREF, SERVICE_BOOKING_HREF } from '../../utils/booking.ts';
 
 export const MIGRATION = {
   h2: 'Cómo migrar tu tienda a Shopify sin parar ventas',
@@ -122,7 +122,7 @@ export const MIGRATION = {
     h3: 'Da el paso sin improvisar',
     body: 'Si estás evaluando migrar tu tienda a Shopify y quieres hacerlo con un equipo que ya ha pasado por el proceso, agenda una llamada con nosotros. Revisamos tu tienda actual, mapeamos los riesgos y te explicamos cómo sería la migración en tu caso concreto, sin compromiso.',
     cta: 'Agenda tu reunión con Playful',
-    ctaHref: BOOKING_HREF,
+    ctaHref: SERVICE_BOOKING_HREF,
   },
 } as const;
 
@@ -140,7 +140,7 @@ export const SEO_SHOPIFY = {
   seoLinkLabel: 'nuestro servicio de SEO',
   seoHref: '/agencia-seo',
   cta: '¿Hablamos?',
-  ctaHref: BOOKING_HREF,
+  ctaHref: SERVICE_BOOKING_HREF,
 } as const;
 
 export const SOCIAL_PROOF = {

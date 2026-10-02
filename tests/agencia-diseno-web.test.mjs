@@ -91,7 +91,7 @@ test('landing keeps one H1, the proposed CTAs and the copy.ts pattern', () => {
   assert.match(landing, /\{CTA\.h2\}/);
   assert.equal(HERO.cta, 'Agenda tu llamada diagnóstica');
   assert.equal(CTA.cta, 'Agenda tu llamada diagnóstica');
-  assert.match(landing, /href = BOOKING_HREF/);
+  assert.match(landing, /href = SERVICE_BOOKING_HREF/);
   assert.match(landing, /ServiceFaqAccordion/);
   assert.match(landing, /TestimonialsSection/);
   assert.match(landing, /BlogRelatedPostsSection/);

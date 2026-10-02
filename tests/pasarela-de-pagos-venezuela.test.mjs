@@ -44,7 +44,7 @@ test('landing keeps one H1, booking CTAs, live shared sections and no embedded f
   assert.match(landing, /{HERO\.h1}/);
   assert.match(landing, /styles\.bannerGrid/);
   assert.match(landing, /{CTA\.cta}/);
-  assert.match(landing, /href=\{BOOKING_HREF\}/);
+  assert.match(landing, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.match(landing, /href=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /forminator/i);

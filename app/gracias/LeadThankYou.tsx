@@ -1,5 +1,5 @@
 import BookingLink from '@/components/BookingLink';
-import { BOOKING_FIT_CTA_LABEL } from '@/utils/booking';
+import { BOOKING_FIT_CTA_LABEL, SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { thanksBookingAllowed } from '@/utils/thanks-booking';
 
 export default function LeadThankYou({ fit }: { fit?: string }) {
@@ -64,6 +64,7 @@ export default function LeadThankYou({ fit }: { fit?: string }) {
             </section>
             <div className="mt-8 text-center">
               <BookingLink
+                href={SERVICE_BOOKING_HREF}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]"

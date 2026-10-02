@@ -3,7 +3,6 @@ import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
-import { BOOKING_HREF, SERVICE_BOOKING_HREF } from './utils/booking';
 import {
   ATTRIBUTION_COOKIE_FIRST,
   ATTRIBUTION_COOKIE_LAST,
@@ -12,6 +11,7 @@ import {
   serializeAttributionCookie,
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
+import { resolveBookingWidgetRedirect } from './utils/booking-attribution';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -36,7 +36,6 @@ const PERMANENT_301: Record<string, string> = {
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
-  [SERVICE_BOOKING_HREF]: BOOKING_HREF,
   '/gracias-v2': '/gracias',
   '/blog/email-marketing/tipos-de-publicidad-online':
     'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
@@ -60,6 +59,18 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, new NextResponse('Gone', {
       status: 410,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    }));
+  }
+
+  if (path === '/reunion-playful') {
+    const { location, status } = resolveBookingWidgetRedirect({
+      search: request.nextUrl.search,
+      lastCookie: request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value,
+      firstCookie: request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value,
+    });
+    return attachAttributionCookies(request, NextResponse.redirect(location, {
+      status,
+      headers: { 'Cache-Control': 'private, no-store' },
     }));
   }
 
