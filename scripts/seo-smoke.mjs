@@ -47,7 +47,7 @@ await expectRedirect(
 
 {
   const reunion = await request('/reunion-playful?utm_source=seo-smoke');
-  assert.equal(reunion.status, 301, '/reunion-playful should return 301');
+  assert.equal(reunion.status, 302, '/reunion-playful should return 302');
   const location = reunion.headers.get('location');
   assert.ok(location, '/reunion-playful should include a Location header');
   const target = new URL(location);
@@ -216,7 +216,8 @@ assert.match(shopifyHtml, /<h1[^>]*>Agencia Shopify\. Playful Agency, expertos e
 assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
 assert.doesNotMatch(shopifyHtml, /Cocina/i);
 assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
-assert.match(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
+assert.match(shopifyHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
 assert.match(shopifyHtml, /Agendar Reunión con Playful/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);

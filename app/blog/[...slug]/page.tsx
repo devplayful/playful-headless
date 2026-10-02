@@ -17,6 +17,7 @@ import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
@@ -97,7 +98,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const sourceHtml = blogBodyForSlug(postSlug) || post.content?.rendered || '';
+  const sourceHtml = rewriteBookingWidgetHrefs(
+    blogBodyForSlug(postSlug) || post.content?.rendered || '',
+  );
   const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
     .map((_, el) => {

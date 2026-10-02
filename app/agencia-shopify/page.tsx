@@ -11,8 +11,8 @@ import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
 import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
 import {
-  BOOKING_HREF,
   CONTACT_HREF,
+  SERVICE_BOOKING_HREF,
   CTA,
   FAQ,
   HERO,
@@ -153,7 +153,7 @@ function LinkedCopy({ text }: { text: string }) {
   );
 }
 
-function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
+function TalkCta({ href = SERVICE_BOOKING_HREF }: { href?: string }) {
   return (
     <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}
@@ -338,7 +338,7 @@ export default async function AgenciaShopifyPage() {
               subtitle={CTA.body}
               ctaTitle={CTA.question}
               buttonText={CTA.cta}
-              buttonLink={BOOKING_HREF}
+              buttonLink={SERVICE_BOOKING_HREF}
             />
           </div>
         </section>
