@@ -57,11 +57,89 @@ export const SERVICE_GRID_ITEMS = SERVICES.items.filter(
   (item): item is ServiceCardItem => item.slot !== null,
 );
 export const SERVICE_BAND_ITEMS = SERVICES.items.filter((item) => item.slot === null);
+import { BOOKING_HREF } from '../../utils/booking.ts';
 export { BOOKING_HREF, CONTACT_HREF } from '../../utils/booking.ts';
 
 export const MIGRATION = {
-  h2: 'Migración a Shopify',
-  body: 'Si ya vendes y tienes tráfico que llega a tu web, migrar a Shopify no es empezar de nuevo, sino planear la mudanza con método para no perder lo que ya te funciona, vengas de otra tienda online, de un marketplace o de vender por Instagram, WhatsApp y fuera de línea. Antes de mover nada, hacemos una lista de lo que hay que preservar, y lo primero son las URLs que Google ya conoce y el catálogo que tus clientes ya navegan. Toda migración tiene un momento de cambio, así que planificamos el cutover para que la interrupción sea la mínima y sepas de antemano cuándo se hace el salto de una plataforma a la otra. Cuando terminamos, tu tienda vive en Shopify con el posicionamiento que traías, y lo que queda de tu lado es lo que de verdad te pertenece, los datos de tus compradores y la atribución de cada venta, porque la plataforma se alquila pero esos datos son tuyos.',
+  h2: 'Cómo migrar tu tienda a Shopify sin parar ventas',
+  paragraphs: [
+    'Si tu tienda ya vende en otra plataforma y estás pensando en pasarte a Shopify, la pregunta no es si Shopify es mejor, sino cómo hacer el cambio sin perder lo que ya construiste. Posicionamiento en Google, historial de clientes, pedidos en curso y el checkout que ya funciona con tus pasarelas de pago. Todo eso tiene que llegar intacto al otro lado, y tu tienda no puede quedarse en negro mientras tanto.',
+    'Eso es exactamente lo que hacemos cuando migramos una tienda a Shopify. No se trata de montar una tienda nueva desde cero, sino de trasladar toda la operación, las URLs, los datos, la estructura de catálogo y los flujos de pago, a una plataforma que te permita crecer sin los problemas técnicos que ya conoces.',
+  ],
+  checklist: {
+    h3: 'Lo que cubrimos en cada migración a Shopify',
+    lead: 'Una migración mal planificada puede costarte meses de tráfico orgánico y la confianza de clientes que llevaban tiempo comprando. Por eso trabajamos con un checklist que cubre cada punto crítico antes, durante y después del cambio.',
+    items: [
+      {
+        lead: 'Redirecciones 301 y estructura de URLs.',
+        body: 'Mapeamos cada URL de tu tienda actual a su equivalente en Shopify para que Google no pierda el rastro. Cada página de producto, cada colección y cada entrada de blog que tenga tráfico recibe su redirección antes de que la tienda nueva entre en producción, porque una URL rota es una venta que se pierde y un golpe al posicionamiento que tardas meses en recuperar.',
+      },
+      {
+        lead: 'SEO y catálogo.',
+        body: 'Migramos los títulos, las descripciones, las etiquetas y la estructura de colecciones para que el catálogo en Shopify mantenga la misma relevancia que tenía antes. Revisamos que las meta descriptions, los alt texts de imágenes y la jerarquía de categorías se trasladen de forma que Google entienda que la tienda cambió de plataforma pero no de contenido.',
+      },
+      {
+        lead: 'Datos de clientes.',
+        body: 'Cuentas, historiales de pedidos, direcciones guardadas y listas de deseos. Trasladamos la base de datos de clientes para que quien ya te compró pueda seguir haciéndolo sin crear una cuenta nueva ni perder su historial. Eso también protege tus segmentos de email marketing y tus flujos de automatización post-compra.',
+      },
+      {
+        lead: 'Checkout y pasarelas de pago.',
+        body: 'Configuramos el checkout de Shopify con las pasarelas que necesitas para tu mercado, ya sea Stripe, PayPal o procesadores de pagos locales, y verificamos que los flujos de compra funcionen antes de apuntar el dominio. El objetivo es que el primer pedido en Shopify se procese sin fricciones desde el día uno.',
+      },
+      {
+        lead: 'Cutover y puesta en producción.',
+        body: 'El momento del cambio lo planificamos para minimizar el tiempo en que ambas tiendas coexisten. Apuntamos el dominio, activamos las redirecciones, verificamos que los pedidos entren correctamente y monitorizamos las primeras horas para resolver cualquier incidencia antes de que afecte a tus clientes.',
+      },
+    ],
+  },
+  prestashop: {
+    h3: 'Migrar de PrestaShop a Shopify',
+    paragraphs: [
+      'PrestaShop es una de las plataformas desde las que más tiendas migran a Shopify, y tiene sus complejidades propias. Los módulos de terceros, la estructura de URLs con IDs numéricos y las personalizaciones de tema crean dependencias que no se resuelven con una exportación de CSV y ya está.',
+      'Cuando migramos una tienda de PrestaShop a Shopify, trabajamos específicamente en estos puntos:',
+    ],
+    items: [
+      {
+        lead: 'Estructura de URLs.',
+        body: 'PrestaShop genera URLs con patrones diferentes a los de Shopify, así que el mapeo de redirecciones requiere atención especial para que cada producto y cada categoría apunte a donde debe sin perder autoridad en buscadores.',
+      },
+      {
+        lead: 'Módulos y funcionalidades personalizadas.',
+        body: 'Revisamos qué módulos de PrestaShop usas realmente, cuáles tienen equivalente nativo en Shopify y cuáles necesitan una app o un desarrollo a medida para mantener la misma funcionalidad.',
+      },
+      {
+        lead: 'Variantes y atributos de producto.',
+        body: 'La forma en que PrestaShop maneja combinaciones de producto es diferente a cómo Shopify gestiona variantes, así que la migración del catálogo incluye una revisión de estructura para que nada se pierda en la traducción.',
+      },
+      {
+        lead: 'Datos transaccionales.',
+        body: 'Historiales de pedidos, facturas y datos de clientes se trasladan para que tu equipo de atención al cliente y tus flujos de post-venta sigan funcionando sin interrupciones.',
+      },
+    ],
+  },
+  close: {
+    h3: 'Da el paso sin improvisar',
+    body: 'Si estás evaluando migrar tu tienda a Shopify y quieres hacerlo con un equipo que ya ha pasado por el proceso, agenda una llamada con nosotros. Revisamos tu tienda actual, mapeamos los riesgos y te explicamos cómo sería la migración en tu caso concreto, sin compromiso.',
+    cta: 'Agenda tu reunión con Playful',
+    ctaHref: BOOKING_HREF,
+  },
+} as const;
+
+export const SEO_SHOPIFY = {
+  h2: 'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  paragraphs: [
+    'Si ya vendes con Shopify, no tiene sentido que una agencia monte la tienda y otra distinta se ocupe de que Google la encuentre. Nosotros hacemos las dos cosas desde el mismo equipo, así que cada cambio en el catálogo se piensa también para la búsqueda.',
+    'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador. Cada ficha de producto sale con su título, su descripción y sus metadatos escritos para esa búsqueda, y evitamos que las variantes repitan el mismo texto.',
+    'Después miramos la velocidad y las apps que tienes instaladas, porque cada app suma código a la tienda y algunas la frenan. Quitamos las que no aportan y cuidamos que las páginas carguen rápido en el móvil.',
+    'Si vienes de otra plataforma, cada URL antigua redirige con un 301 a su equivalente en Shopify, de modo que Google y tus clientes llegan a la página correcta y no a un error.',
+    'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta.',
+    'Reserva 30 a 40 minutos y revisamos juntos tu tienda y su SEO, sin compromiso de seguir con nosotros.',
+  ],
+  seoLead: 'Si quieres ver cómo trabajamos el SEO más allá de la tienda, aquí tienes ',
+  seoLinkLabel: 'nuestro servicio de SEO',
+  seoHref: '/agencia-seo',
+  cta: '¿Hablamos?',
+  ctaHref: BOOKING_HREF,
 } as const;
 
 export const SOCIAL_PROOF = {

@@ -17,6 +17,7 @@ import {
   FAQ,
   HERO,
   MIGRATION,
+  SEO_SHOPIFY,
   SERVICE_BAND_ITEMS,
   SERVICE_GRID_ITEMS,
   SERVICES,
@@ -255,7 +256,89 @@ export default async function AgenciaShopifyPage() {
             {SERVICE_BAND_ITEMS.map((item) => (
               <PurpleBand key={item.title} title={item.title} body={item.body} />
             ))}
-            <PurpleBand title={MIGRATION.h2} body={MIGRATION.body} />
+          </div>
+        </section>
+
+        <section
+          data-migration-block
+          className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12"
+        >
+          <div className="playful-contenedor playful-contenedor-B3FFF3 rounded-[32px] md:rounded-[48px] !mt-0">
+            <h2 className="playful-h2 text-center">{MIGRATION.h2}</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {MIGRATION.paragraphs.map((paragraph) => (
+                <p key={paragraph} className="playful-contenido-p">
+                  {paragraph}
+                </p>
+              ))}
+              <h3 className="playful-h3">{MIGRATION.checklist.h3}</h3>
+              <p className="playful-contenido-p">{MIGRATION.checklist.lead}</p>
+              <ul className="list-disc pl-6 space-y-4">
+                {MIGRATION.checklist.items.map((item) => (
+                  <li key={item.lead} className="playful-contenido-p">
+                    <strong className="font-bold">{item.lead}</strong> {item.body}
+                  </li>
+                ))}
+              </ul>
+              <h3 className="playful-h3">{MIGRATION.prestashop.h3}</h3>
+              {MIGRATION.prestashop.paragraphs.map((paragraph) => (
+                <p key={paragraph} className="playful-contenido-p">
+                  {paragraph}
+                </p>
+              ))}
+              <ul className="list-disc pl-6 space-y-4">
+                {MIGRATION.prestashop.items.map((item) => (
+                  <li key={item.lead} className="playful-contenido-p">
+                    <strong className="font-bold">{item.lead}</strong> {item.body}
+                  </li>
+                ))}
+              </ul>
+              <h3 className="playful-h3">{MIGRATION.close.h3}</h3>
+              <p className="playful-contenido-p">{MIGRATION.close.body}</p>
+            </div>
+            <div className="block w-full">
+              <a
+                href={BOOKING_HREF}
+                className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {MIGRATION.close.cta}
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section
+          data-seo-shopify-block
+          className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12"
+        >
+          <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px] !mt-0">
+            <h2 className="playful-h2 text-center">{SEO_SHOPIFY.h2}</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {SEO_SHOPIFY.paragraphs.slice(0, 5).map((paragraph) => (
+                <p key={paragraph} className="playful-contenido-p">
+                  {paragraph}
+                </p>
+              ))}
+              <p className="playful-contenido-p">
+                {SEO_SHOPIFY.seoLead}
+                <Link
+                  href={SEO_SHOPIFY.seoHref}
+                  className="text-[#440099] font-semibold underline underline-offset-2"
+                >
+                  {SEO_SHOPIFY.seoLinkLabel}
+                </Link>
+                .
+              </p>
+              <p className="playful-contenido-p">{SEO_SHOPIFY.paragraphs[5]}</p>
+            </div>
+            <div className="block w-full">
+              <a
+                href={BOOKING_HREF}
+                className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {SEO_SHOPIFY.cta}
+              </a>
+            </div>
           </div>
         </section>
 

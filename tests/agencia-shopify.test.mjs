@@ -12,6 +12,8 @@ const {
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
+  MIGRATION,
+  SEO_SHOPIFY,
   SOCIAL_PROOF,
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
@@ -97,6 +99,84 @@ test('sitemap lists the interior URL without a trailing slash', () => {
   assert.doesNotMatch(sitemap, /https:\/\/playfulagency\.com\/agencia-shopify\//);
 });
 
+test('signed migration section uses the last proposed copy and sits before SEO', () => {
+  assert.equal(MIGRATION.h2, 'Cómo migrar tu tienda a Shopify sin parar ventas');
+  assert.equal(MIGRATION.paragraphs.length, 2);
+  assert.equal(
+    MIGRATION.paragraphs[0],
+    'Si tu tienda ya vende en otra plataforma y estás pensando en pasarte a Shopify, la pregunta no es si Shopify es mejor, sino cómo hacer el cambio sin perder lo que ya construiste. Posicionamiento en Google, historial de clientes, pedidos en curso y el checkout que ya funciona con tus pasarelas de pago. Todo eso tiene que llegar intacto al otro lado, y tu tienda no puede quedarse en negro mientras tanto.',
+  );
+  assert.equal(MIGRATION.checklist.h3, 'Lo que cubrimos en cada migración a Shopify');
+  assert.equal(MIGRATION.checklist.items.length, 5);
+  assert.equal(MIGRATION.prestashop.h3, 'Migrar de PrestaShop a Shopify');
+  assert.equal(MIGRATION.prestashop.items.length, 4);
+  assert.equal(MIGRATION.close.h3, 'Da el paso sin improvisar');
+  assert.equal(MIGRATION.close.cta, 'Agenda tu reunión con Playful');
+  assert.equal(MIGRATION.close.ctaHref, BOOKING_HREF);
+  assert.match(landing, /data-migration-block/);
+  assert.match(landing, /\{MIGRATION\.h2\}/);
+  assert.match(landing, /\{MIGRATION\.checklist\.h3\}/);
+  assert.match(landing, /\{MIGRATION\.prestashop\.h3\}/);
+  assert.match(landing, /href=\{BOOKING_HREF\}/);
+  assert.doesNotMatch(landing, /href=\{MIGRATION\.close\.ctaHref\}/);
+  const closeBodyIdx = landing.indexOf('{MIGRATION.close.body}');
+  const closeCtaIdx = landing.lastIndexOf('{MIGRATION.close.cta}');
+  const closeBodyEnd = landing.indexOf('</p>', closeBodyIdx);
+  assert.ok(closeBodyIdx !== -1 && closeCtaIdx !== -1 && closeBodyEnd !== -1);
+  assert.ok(closeBodyEnd < closeCtaIdx);
+  assert.doesNotMatch(landing, /title=\{MIGRATION\.h2\}/);
+  assert.doesNotMatch(JSON.stringify(MIGRATION), /Migración a Shopify/);
+});
+
+test('signed SEO-for-Shopify block sits between migration and social proof', () => {
+  assert.equal(
+    SEO_SHOPIFY.h2,
+    'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  );
+  assert.equal(SEO_SHOPIFY.paragraphs.length, 6);
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.startsWith(
+        'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador.',
+      ),
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('y no según cómo está organizado tu almacén'),
+    ),
+  );
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.includes(
+      'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta.',
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('porque así decides con tus datos y no con intuiciones'),
+    ),
+  );
+  assert.equal(SEO_SHOPIFY.seoHref, '/agencia-seo');
+  assert.equal(SEO_SHOPIFY.seoLinkLabel, 'nuestro servicio de SEO');
+  assert.equal(SEO_SHOPIFY.cta, '¿Hablamos?');
+  assert.equal(SEO_SHOPIFY.ctaHref, BOOKING_HREF);
+  assert.match(landing, /data-seo-shopify-block/);
+  assert.match(landing, /href=\{SEO_SHOPIFY\.seoHref\}/);
+  assert.doesNotMatch(landing, /href=\{SEO_SHOPIFY\.ctaHref\}/);
+  const seoBodyIdx = landing.indexOf('{SEO_SHOPIFY.paragraphs[5]}');
+  const seoCtaIdx = landing.lastIndexOf('{SEO_SHOPIFY.cta}');
+  const seoBodyEnd = landing.indexOf('</p>', seoBodyIdx);
+  assert.ok(seoBodyIdx !== -1 && seoCtaIdx !== -1 && seoBodyEnd !== -1);
+  assert.ok(seoBodyEnd < seoCtaIdx);
+  const migrationIdx = landing.indexOf('{MIGRATION.h2}');
+  const seoIdx = landing.indexOf('{SEO_SHOPIFY.h2}');
+  const socialIdx = landing.indexOf('{SOCIAL_PROOF.h2}');
+  assert.ok(migrationIdx !== -1 && seoIdx !== -1 && socialIdx !== -1);
+  assert.ok(migrationIdx < seoIdx && seoIdx < socialIdx);
+  assert.equal((landing.match(/\{SEO_SHOPIFY\.h2\}/g) || []).length, 1);
+  assert.equal((landing.match(/data-seo-shopify-block/g) || []).length, 1);
+});
+
 test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
   const published = JSON.stringify({
     SHOPIFY_META,
@@ -104,6 +184,8 @@ test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
     SERVICES,
     FAQ_ITEMS,
     CTA,
+    MIGRATION,
+    SEO_SHOPIFY,
   });
   assert.doesNotMatch(published, /Shopify Plus/i);
   assert.doesNotMatch(published, /Cocina/);
