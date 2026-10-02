@@ -13,37 +13,33 @@ export default function BookingQueryPropagator() {
     const search = searchParams.toString();
     const nextHref = bookingHrefFromPageSearch(search ? `?${search}` : '');
 
+    const applyHref = (anchor: HTMLAnchorElement) => {
+      const href = anchor.getAttribute('href') || '';
+      if (!isBookingHref(href) || href === nextHref) return;
+      anchor.setAttribute('href', nextHref);
+    };
+
     const rewrite = (root: ParentNode) => {
-      const anchors = root.querySelectorAll('a[href]');
-      for (const node of anchors) {
-        const anchor = node as HTMLAnchorElement;
-        const href = anchor.getAttribute('href') || '';
-        if (!isBookingHref(href) || href === nextHref) continue;
-        anchor.setAttribute('href', nextHref);
-      }
+      Array.from(root.querySelectorAll('a[href]')).forEach((node) => {
+        applyHref(node as HTMLAnchorElement);
+      });
     };
 
     rewrite(document);
     const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
+      mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.target instanceof HTMLAnchorElement) {
-          const href = mutation.target.getAttribute('href') || '';
-          if (isBookingHref(href) && href !== nextHref) {
-            mutation.target.setAttribute('href', nextHref);
-          }
-          continue;
+          applyHref(mutation.target);
+          return;
         }
-        for (const node of mutation.addedNodes) {
+        Array.from(mutation.addedNodes).forEach((node) => {
           if (node instanceof HTMLAnchorElement) {
-            const href = node.getAttribute('href') || '';
-            if (isBookingHref(href) && href !== nextHref) {
-              node.setAttribute('href', nextHref);
-            }
+            applyHref(node);
           } else if (node instanceof Element || node instanceof DocumentFragment) {
             rewrite(node);
           }
-        }
-      }
+        });
+      });
     });
     observer.observe(document.body, {
       subtree: true,
