@@ -12,6 +12,7 @@ import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleT
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import AttributionCapture from '@/components/AttributionCapture';
+import BookingQueryPropagator from '@/components/BookingQueryPropagator';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -127,6 +128,9 @@ export default function RootLayout({
           <Footer />
           <ChatWidget />
           <AttributionCapture />
+          <Suspense fallback={null}>
+            <BookingQueryPropagator />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

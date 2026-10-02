@@ -11,6 +11,7 @@ import {
   serializeAttributionCookie,
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
+import { resolveBookingWidgetRedirect } from './utils/booking-attribution';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -35,7 +36,6 @@ const PERMANENT_301: Record<string, string> = {
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
-  '/reunion-playful': 'https://api.playfulagency.com/widget/bookings/reunion-playful',
   '/blog/email-marketing/tipos-de-publicidad-online':
     'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
   '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
@@ -58,6 +58,18 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, new NextResponse('Gone', {
       status: 410,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    }));
+  }
+
+  if (path === '/reunion-playful') {
+    const { location, status } = resolveBookingWidgetRedirect({
+      search: request.nextUrl.search,
+      lastCookie: request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value,
+      firstCookie: request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value,
+    });
+    return attachAttributionCookies(request, NextResponse.redirect(location, {
+      status,
+      headers: { 'Cache-Control': 'private, no-store' },
     }));
   }
 

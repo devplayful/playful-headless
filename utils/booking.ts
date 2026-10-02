@@ -1,12 +1,18 @@
-/** Shopify CTAs keep the GHL widget URL. Middleware 301s the apex path there. */
-export const BOOKING_HREF =
-  'https://api.playfulagency.com/widget/bookings/reunion-playful';
+import {
+  BOOKING_WIDGET_HREF,
+  SERVICE_BOOKING_HREF as CANONICAL_SERVICE_BOOKING_HREF,
+  isBookingHref,
+  toServiceBookingHref,
+} from './booking-attribution.ts';
+
+/** Widget destination. Visible CTAs use SERVICE_BOOKING_HREF so the hop can fill query. */
+export const BOOKING_HREF = BOOKING_WIDGET_HREF;
 
 /**
- * Visible/canonical href on the four GO service landings.
- * Copy (e-com PR #21) and web must match; `/reunion-playful` 301s to BOOKING_HREF.
+ * Visible/canonical href for every booking CTA.
+ * `/reunion-playful` 302s to BOOKING_HREF after filling gclid/utm from URL or cookie.
  */
-export const SERVICE_BOOKING_HREF = '/reunion-playful';
+export const SERVICE_BOOKING_HREF = CANONICAL_SERVICE_BOOKING_HREF;
 
 export const BOOKING_CTA_LABEL = 'Agendar Reunión con Playful';
 
@@ -158,8 +164,20 @@ function isGlobalChromeAnchor(pre: string, post: string): boolean {
 }
 
 /**
+ * Any rendered HTML (Elementor, ACF, blog): send widget / apex booking
+ * hrefs through `/reunion-playful` so middleware can attach attribution.
+ */
+export function rewriteBookingWidgetHrefs(html: string): string {
+  if (!html) return html;
+  return html.replace(/href\s*=\s*(["'])([^"']*)\1/gi, (full, quote: string, href: string) => {
+    if (!isBookingHref(href)) return full;
+    return `href=${quote}${toServiceBookingHref(href)}${quote}`;
+  });
+}
+
+/**
  * On the four GO service landings, rewrite body anchors that point at the
- * contact page to the canonical `/reunion-playful` path (301 → GHL widget).
+ * contact page to the canonical `/reunion-playful` path (302 → GHL widget).
  * Header/footer live outside this HTML; `playful-boton-header` is skipped.
  */
 export function rewriteServiceBookingCtas(html: string, slug: string): string {
@@ -191,7 +209,10 @@ export function rewriteAboutHrefs(html: string, slug: string): string {
   });
 }
 
-/** Elementor body pipeline: booking CTAs, then leftover `/about` anchors. */
+/** Elementor body pipeline: widget URLs, booking CTAs, then leftover `/about` anchors. */
 export function rewriteElementorBodyHrefs(html: string, slug: string): string {
-  return rewriteAboutHrefs(rewriteServiceBookingCtas(html, slug), slug);
+  return rewriteAboutHrefs(
+    rewriteServiceBookingCtas(rewriteBookingWidgetHrefs(html), slug),
+    slug,
+  );
 }
