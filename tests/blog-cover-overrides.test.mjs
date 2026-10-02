@@ -65,6 +65,13 @@ const LOTE_5 = [
   ],
 ];
 
+const LOTE_6 = [
+  [
+    'estrategia-de-email-marketing',
+    '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png',
+  ],
+];
+
 function functionBody(source, name) {
   const exported = source.indexOf(`export async function ${name}`);
   const local = source.indexOf(`async function ${name}`);
@@ -124,10 +131,19 @@ test('lote 4 maps N2eryB06D9, VXQNEs8MMU and iGXlUlf3uK without removing prior l
 });
 
 test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 24);
   assert.equal(LOTE_5.length, 2);
   assertMappedCovers(LOTE_5);
   for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4]) {
+    assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
+  }
+});
+
+test('lote 6 maps LwGzTFJswO without removing prior lotes', () => {
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 25);
+  assert.equal(LOTE_6.length, 1);
+  assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
+  for (const [slug] of [...LOTE_1, ...LOTE_2, ...LOTE_3, ...LOTE_4, ...LOTE_5]) {
     assert.ok(slug in BLOG_COVER_OVERRIDES, `prior lote slug missing: ${slug}`);
   }
 });
@@ -164,6 +180,31 @@ test('N2eMFsC6D9 is canonical on aprende-todo-sobre-el-seo only', () => {
     .filter(([, cover]) => cover.includes('3zBMZYMREY'))
     .map(([slug]) => slug);
   assert.deepEqual(donor3z, ['7-consejos-seo-para-posicionar-tu-pagina']);
+});
+
+test('LwGzTFJswO is exclusive to estrategia-de-email-marketing', async () => {
+  const path = '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png';
+  assert.equal(BLOG_COVER_OVERRIDES['estrategia-de-email-marketing'], path);
+  assert.equal(blogCoverForSlug('estrategia-de-email-marketing'), path);
+  const emailOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('LwGzTFJswO'))
+    .map(([slug]) => slug);
+  assert.deepEqual(emailOwners, ['estrategia-de-email-marketing']);
+  const jn0rOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('JN0rWQjOq4'))
+    .map(([slug]) => slug);
+  assert.deepEqual(jn0rOwners, ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce']);
+  const s7aqOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('s7AQv7dl8e'))
+    .map(([slug]) => slug);
+  assert.deepEqual(s7aqOwners, ['auditoria-seo-que-es-como-se-hace']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-LwGzTFJswO.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
