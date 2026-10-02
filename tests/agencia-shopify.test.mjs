@@ -12,6 +12,7 @@ const {
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
+  SEO_SHOPIFY,
   SOCIAL_PROOF,
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
@@ -97,6 +98,49 @@ test('sitemap lists the interior URL without a trailing slash', () => {
   assert.doesNotMatch(sitemap, /https:\/\/playfulagency\.com\/agencia-shopify\//);
 });
 
+test('signed SEO-for-Shopify block sits between migration and social proof', () => {
+  assert.equal(
+    SEO_SHOPIFY.h2,
+    'Agencia SEO para Shopify: tu tienda y su SEO en un mismo equipo',
+  );
+  assert.equal(SEO_SHOPIFY.paragraphs.length, 6);
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.startsWith(
+        'Empezamos por la estructura de colecciones, que ordenamos según cómo busca tu comprador.',
+      ),
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('y no según cómo está organizado tu almacén'),
+    ),
+  );
+  assert.ok(
+    SEO_SHOPIFY.paragraphs.includes(
+      'Y dejamos la medición montada para que veas qué búsquedas traen visitas a tu tienda y cuáles terminan en venta.',
+    ),
+  );
+  assert.ok(
+    !SEO_SHOPIFY.paragraphs.some((paragraph) =>
+      paragraph.includes('porque así decides con tus datos y no con intuiciones'),
+    ),
+  );
+  assert.equal(SEO_SHOPIFY.seoHref, '/agencia-seo');
+  assert.equal(SEO_SHOPIFY.seoLinkLabel, 'nuestro servicio de SEO');
+  assert.equal(SEO_SHOPIFY.cta, '¿Hablamos?');
+  assert.equal(SEO_SHOPIFY.ctaHref, '/reunion-playful');
+  assert.match(landing, /data-seo-shopify-block/);
+  assert.match(landing, /href=\{SEO_SHOPIFY\.seoHref\}/);
+  assert.match(landing, /href=\{SEO_SHOPIFY\.ctaHref\}/);
+  const migrationIdx = landing.indexOf('title={MIGRATION.h2}');
+  const seoIdx = landing.indexOf('{SEO_SHOPIFY.h2}');
+  const socialIdx = landing.indexOf('{SOCIAL_PROOF.h2}');
+  assert.ok(migrationIdx !== -1 && seoIdx !== -1 && socialIdx !== -1);
+  assert.ok(migrationIdx < seoIdx && seoIdx < socialIdx);
+  assert.equal((landing.match(/\{SEO_SHOPIFY\.h2\}/g) || []).length, 1);
+});
+
 test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
   const published = JSON.stringify({
     SHOPIFY_META,
@@ -104,6 +148,7 @@ test('signed copy never invents Plus, Cocina notes, surtido or prices', () => {
     SERVICES,
     FAQ_ITEMS,
     CTA,
+    SEO_SHOPIFY,
   });
   assert.doesNotMatch(published, /Shopify Plus/i);
   assert.doesNotMatch(published, /Cocina/);
