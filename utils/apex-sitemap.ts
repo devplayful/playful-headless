@@ -9,6 +9,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/agencia-e-commerce",
   "/agencia-shopify",
   "/pasarela-de-pagos-venezuela",
+  "/shopify-precios",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
