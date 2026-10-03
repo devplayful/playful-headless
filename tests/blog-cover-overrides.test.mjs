@@ -8,8 +8,12 @@ import { fileURLToPath } from 'node:url';
 const {
   BLOG_COVER_OVERRIDES,
   BLOG_COVER_SIZE,
+  BLOG_OG_OVERRIDES,
+  BLOG_OG_SIZE,
   blogCoverForSlug,
+  blogOgForSlug,
   resolveBlogCoverUrl,
+  resolveBlogOgUrl,
 } = await import('../lib/blog-cover-image.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -373,16 +377,81 @@ test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async ()
   assert.match(functionBody(source, 'getBlogPostBySlug'), /loadBlogPostBySlug\(/);
 });
 
-test('blog post generateMetadata points OG and Twitter at the cover override', async () => {
+test('blog post generateMetadata points OG and Twitter at the OG crop when present', async () => {
   const source = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.match(source, /blogCoverForSlug/);
+  assert.match(source, /blogOgForSlug/);
   assert.match(source, /BLOG_COVER_SIZE/);
+  assert.match(source, /BLOG_OG_SIZE/);
+  assert.match(source, /resolveBlogOgUrl/);
   const meta = functionBody(source, 'generateMetadata');
-  assert.match(meta, /coverOverride \|\| post\.featured_media_url/);
+  assert.match(meta, /ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
   assert.match(meta, /twitter:\s*\{/);
   assert.match(meta, /images:\s*\[imageUrl\]/);
   assert.doesNotMatch(
     source,
     /tCjfdhqmZJ|1lis1ttr4r|8aruUnFIrU|Bhkm4lIoQR|ks6LT5H16B|iGX2L9R3uK|iGXTJXm3uK|WDfo97dcXe|p8qfFVNehw|yiVGtRkPW9|Lw29ezTswO|8arFJtUIrU/,
+  );
+});
+
+const OG_LOTE = [
+  [
+    'estrategia-de-email-marketing',
+    '/images/blog/16-estrategia-email-magnific-LwGzTFJswO-og-1200x630.webp',
+  ],
+  [
+    'analitica-web-que-es-como-puede-ayudar-a-mi-marca',
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL-og-1200x630.webp',
+  ],
+  [
+    'como-crear-anuncios-en-facebook',
+    '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe-og-1200x630.webp',
+  ],
+  [
+    'como-usar-el-remarketing-para-tener-mas-clientes',
+    '/images/blog/15-remarketing-magnific-ovxxg2H829-og-1200x630.webp',
+  ],
+  [
+    'la-nueva-gestion-de-google-ads',
+    '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK-og-1200x630.webp',
+  ],
+  [
+    'live-stream-shopping-compra-mientras-interactuas',
+    '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW-og-1200x630.webp',
+  ],
+];
+
+function webpSize(buffer) {
+  // VP8 lossy: after start code 0x9d012a, two 16-bit LE fields
+  // pack 14-bit width/height + 2-bit scale (RFC 6386).
+  const chunk = buffer.toString('ascii', 12, 16);
+  assert.equal(chunk, 'VP8 ', `expected VP8 chunk, got ${chunk}`);
+  const startCode = buffer.toString('hex', 23, 26);
+  assert.equal(startCode, '9d012a');
+  return {
+    width: buffer.readUInt16LE(26) & 0x3fff,
+    height: buffer.readUInt16LE(28) & 0x3fff,
+  };
+}
+
+test('six Magnific posts get a 1200×630 OG crop under 200 KB without changing featured covers', async () => {
+  assert.equal(BLOG_OG_SIZE.width, 1200);
+  assert.equal(BLOG_OG_SIZE.height, 630);
+  assert.equal(Object.keys(BLOG_OG_OVERRIDES).length, 6);
+  for (const [slug, path] of OG_LOTE) {
+    assert.equal(BLOG_OG_OVERRIDES[slug], path);
+    assert.equal(blogOgForSlug(slug), path);
+    assert.equal(resolveBlogOgUrl(slug, 'https://endpoint.example/old.jpg'), path);
+    assert.equal(blogCoverForSlug(slug), '');
+    const file = join(root, 'public', path.replace(/^\//, ''));
+    assert.ok(existsSync(file), path);
+    const buffer = await readFile(file);
+    assert.ok(buffer.byteLength < 200 * 1024, `${path} is ${buffer.byteLength} bytes`);
+    assert.deepEqual(webpSize(buffer), { width: 1200, height: 630 }, path);
+  }
+  assert.equal(blogOgForSlug('cintillos-de-promocion'), '');
+  assert.equal(
+    resolveBlogOgUrl('cintillos-de-promocion', 'https://endpoint.example/old.jpg'),
+    'https://endpoint.example/old.jpg',
   );
 });
