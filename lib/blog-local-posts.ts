@@ -32,10 +32,7 @@ export const ESHOW_MADRID_2026_CABECERA_ALT =
 export const ESHOW_MADRID_2026_PROGRAMA_ALT =
   'Programa oficial de E-SHOW Madrid 2026 ordenado por día y por sala, con el E-SHOW Keynote Theatre y el Ecommerce Strategies Theatre';
 
-export type StagingLocalBlogEnv = {
-  VERCEL_ENV?: string;
-  VERCEL_GIT_COMMIT_REF?: string;
-};
+export type StagingLocalBlogEnv = Record<string, string | undefined>;
 
 export function isStagingLocalBlogEnabled(
   env: StagingLocalBlogEnv = process.env,
