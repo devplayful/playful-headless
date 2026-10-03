@@ -207,14 +207,17 @@ const MARKDOWN_LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
 
 export function splitMarkdownLinks(text: string): Array<{ type: 'text' | 'link'; value: string; href?: string }> {
   const parts: Array<{ type: 'text' | 'link'; value: string; href?: string }> = [];
+  const matcher = new RegExp(MARKDOWN_LINK_RE.source, 'g');
   let lastIndex = 0;
-  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
-    const index = match.index ?? 0;
+  let match = matcher.exec(text);
+  while (match) {
+    const index = match.index;
     if (index > lastIndex) {
       parts.push({ type: 'text', value: text.slice(lastIndex, index) });
     }
     parts.push({ type: 'link', value: match[1], href: match[2] });
     lastIndex = index + match[0].length;
+    match = matcher.exec(text);
   }
   if (lastIndex < text.length) {
     parts.push({ type: 'text', value: text.slice(lastIndex) });
@@ -226,14 +229,17 @@ const BOLD_RE = /\*\*([^*]+)\*\*/g;
 
 export function splitBold(text: string): Array<{ type: 'text' | 'strong'; value: string }> {
   const parts: Array<{ type: 'text' | 'strong'; value: string }> = [];
+  const matcher = new RegExp(BOLD_RE.source, 'g');
   let lastIndex = 0;
-  for (const match of text.matchAll(BOLD_RE)) {
-    const index = match.index ?? 0;
+  let match = matcher.exec(text);
+  while (match) {
+    const index = match.index;
     if (index > lastIndex) {
       parts.push({ type: 'text', value: text.slice(lastIndex, index) });
     }
     parts.push({ type: 'strong', value: match[1] });
     lastIndex = index + match[0].length;
+    match = matcher.exec(text);
   }
   if (lastIndex < text.length) {
     parts.push({ type: 'text', value: text.slice(lastIndex) });
