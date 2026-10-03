@@ -278,3 +278,4 @@ export function blogArticleJsonLdExtras(slug: string | undefined | null): {
     type: 'Article',
     about: { '@type': 'Thing', name: ESHOW_MADRID_2026_ABOUT_NAME },
   };
+}
