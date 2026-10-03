@@ -1,10 +1,7 @@
 import BlogListingView from './blog-listing-view';
-import {
-  BLOG_LISTING_REVALIDATE_SECONDS,
-  buildBlogListingMetadata,
-} from '@/utils/blog-listing-query';
+import { buildBlogListingMetadata } from '@/utils/blog-listing-query';
 
-export const revalidate = BLOG_LISTING_REVALIDATE_SECONDS;
+export const revalidate = 300;
 
 export function generateMetadata() {
   return buildBlogListingMetadata();
