@@ -71,6 +71,10 @@ test('bare /blog is the cacheable listing; queries are not', () => {
 
 test('related-posts fetch cache and booking hop stay on their own files', () => {
   assert.match(related, /RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS|revalidate: 3600/);
+  assert.match(
+    related,
+    /export async function getBlogPosts[\s\S]*revalidate: 300/,
+  );
   assert.match(booking, /reunion-playful/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/blog/q'));
 });
