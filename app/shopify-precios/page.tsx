@@ -298,7 +298,7 @@ export default async function ShopifyPreciosPage() {
             {CHOOSE.profiles.map((profile) => (
               <div key={profile.h3} className="space-y-4">
                 <h3 className="playful-h3">{profile.h3}</h3>
-                {(Array.isArray(profile.body) ? profile.body : [profile.body]).map((paragraph) => (
+                {profile.body.map((paragraph) => (
                   <p key={paragraph} className="playful-contenido-p">
                     <LinkedCopy text={paragraph} />
                   </p>

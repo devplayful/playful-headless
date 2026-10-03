@@ -129,7 +129,9 @@ export const CHOOSE = {
   profiles: [
     {
       h3: 'Si tu tienda empieza desde cero',
-      body: 'Basic cubre la tienda completa, los productos ilimitados y el pago, con una tarifa de 2,1 % + 0,30 € por cobro con tarjeta estándar. Si todavía estás decidiendo cómo montar tu primera tienda, en [qué hay que saber para crear un e-commerce](https://playfulagency.com/blog/tecnologia/crear-un-e-commerce) repasamos los elementos que no pueden faltar.',
+      body: [
+        'Basic cubre la tienda completa, los productos ilimitados y el pago, con una tarifa de 2,1 % + 0,30 € por cobro con tarjeta estándar. Si todavía estás decidiendo cómo montar tu primera tienda, en [qué hay que saber para crear un e-commerce](https://playfulagency.com/blog/tecnologia/crear-un-e-commerce) repasamos los elementos que no pueden faltar.',
+      ],
     },
     {
       h3: 'Si tienes una tienda física y quieres vender online',
@@ -140,7 +142,9 @@ export const CHOOSE = {
     },
     {
       h3: 'Si tu tienda ya vende online y tiene equipo',
-      body: 'Grow suma hasta 5 cuentas para empleados y baja la tarjeta estándar a 1,8 % + 0,30 €. Cuando el número de pedidos crece, la diferencia de comisión entre Basic y Grow puede pesar más que la diferencia de cuota, así que compensa hacer la cuenta con tus pedidos reales.',
+      body: [
+        'Grow suma hasta 5 cuentas para empleados y baja la tarjeta estándar a 1,8 % + 0,30 €. Cuando el número de pedidos crece, la diferencia de comisión entre Basic y Grow puede pesar más que la diferencia de cuota, así que compensa hacer la cuenta con tus pedidos reales.',
+      ],
     },
     {
       h3: 'Si vendes en varios países',
