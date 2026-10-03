@@ -32,6 +32,14 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+import {
+  GOOGLE_MERCHANT_CENTER_H1,
+  GOOGLE_MERCHANT_CENTER_META,
+  GOOGLE_MERCHANT_CENTER_SLUG,
+  GOOGLE_MERCHANT_CENTER_TITLE,
+  blogArticleJsonLdExtras,
+  blogFaqPageJsonLd,
+} from '@/lib/blog-local-posts';
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
@@ -158,7 +166,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_SCHEMA.logo,
+    ...blogArticleJsonLdExtras(postSlug),
   });
+  const faqJsonLd = blogFaqPageJsonLd(postSlug);
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -173,6 +183,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
+    {faqJsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+      />
+    ) : null}
     <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
@@ -430,6 +446,11 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description:
       'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
     h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
+  },
+  [GOOGLE_MERCHANT_CENTER_SLUG]: {
+    title: GOOGLE_MERCHANT_CENTER_TITLE,
+    description: GOOGLE_MERCHANT_CENTER_META,
+    h1: GOOGLE_MERCHANT_CENTER_H1,
   },
 };
 
