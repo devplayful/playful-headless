@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+const copy = readFileSync(new URL('../app/home-copy.ts', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 const jumexOdwallaLink = readFileSync(
@@ -24,13 +25,15 @@ function heroBody(source) {
 
 test('home hero body has one contextual Agencia Shopify anchor', () => {
   const body = heroBody(home);
-  assert.match(body, /Si tu tienda ya corre en Shopify/);
-  assert.match(body, /href="\/agencia-shopify"/);
-  assert.match(body, />[\s\n]*Agencia Shopify[\s\n]*</);
-  assert.equal((body.match(/href="\/agencia-shopify"/g) || []).length, 1);
+  assert.match(copy, /Si tu tienda ya funciona en Shopify o quieres migrar a Shopify/);
+  assert.match(copy, /shopifyHref: '\/agencia-shopify'/);
+  assert.match(copy, /shopifyAnchor: 'agencia Shopify'/);
+  assert.match(body, /HOME_HERO.shopifyHref/);
+  assert.match(body, /HOME_HERO.shopifyAnchor/);
+  assert.equal((body.match(/HOME_HERO.shopifyHref/g) || []).length, 1);
   assert.match(
     body,
-    /<a href="\/agencia-shopify" className="font-medium text-\[#440099\] underline">/,
+    /<Link href=\{HOME_HERO.shopifyHref\} className="font-medium text-\[#440099\] underline">/,
   );
 });
 

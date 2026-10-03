@@ -116,14 +116,28 @@ const partnerLogos = [
   "/images/logos/venemergencia.png",
 ];
 
+interface FeaturedTestimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
+
 interface TestimonialsSectionProps {
   textColor?: string;
   className?: string;
+  title?: string;
+  intro?: string;
+  alliesTitle?: string;
+  featuredTestimonials?: readonly FeaturedTestimonial[];
 }
 
 export default function TestimonialsSection({
   textColor = "#4A4453",
   className,
+  title = "Lo que nuestros clientes dicen",
+  intro = "Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que potencian negocios.",
+  alliesTitle = "Nuestros aliados estratégicos",
+  featuredTestimonials,
 }: TestimonialsSectionProps) {
   const textStyle: React.CSSProperties = { color: textColor };
 
@@ -132,14 +146,48 @@ export default function TestimonialsSection({
       <div className="w-full">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-normal mb-4" style={textStyle}>
-            Lo que nuestros clientes dicen
+            {title}
           </h2>
           <p className="text-lg mb-12 max-w-3xl mx-auto" style={textStyle}>
-            Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta
-            de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que
-            potencian negocios.
+            {intro}
           </p>
         </div>
+
+        {featuredTestimonials?.length ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-[1200px] mx-auto px-4">
+            {featuredTestimonials.map((item) => (
+              <div
+                key={item.name}
+                className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-8"
+              >
+                <div className="w-20 h-20 relative mb-4">
+                  <Image
+                    src="/images/avatar-playful.svg"
+                    alt="Avatar Playful"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h4 className="font-semibold text-lg mb-1" style={textStyle}>
+                  {item.name}
+                </h4>
+                <p className="text-sm mb-4" style={textStyle}>
+                  {item.role}
+                </p>
+                <div className="flex justify-center mb-4">
+                  <div className="text-yellow-400 text-xl">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i}>★</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm md:text-base px-2">
+                  «{item.quote}»
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : null}
 
         {/* Carrusel de testimonios */}
         <div className="w-full overflow-hidden pb-12">
@@ -201,7 +249,7 @@ export default function TestimonialsSection({
         {/* Logos */}
         <div className="py-16">
           <h3 className="text-center text-2xl md:text-3xl font-normal mb-12" style={textStyle}>
-            Nuestros aliados estratégicos
+            {alliesTitle}
           </h3>
 
           <div className="w-full max-w-[1200px] mx-auto px-4 pb-12">
