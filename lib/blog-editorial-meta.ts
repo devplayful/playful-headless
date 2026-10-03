@@ -209,11 +209,13 @@ export function buildBlogArticleJsonLd(input: {
   url: string;
   publisherName?: string;
   publisherLogo?: string;
+  type?: 'Article' | 'BlogPosting';
+  about?: { '@type': 'Thing'; name: string };
 }): Record<string, unknown> {
   const canonical = input.url;
   return {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': input.type || 'BlogPosting',
     headline: decodeHtmlEntities(input.headline),
     description: wordpressSeoText(input.description ?? ''),
     image: input.image || undefined,
@@ -233,5 +235,6 @@ export function buildBlogArticleJsonLd(input: {
     },
     mainEntityOfPage: canonical,
     url: canonical,
+    ...(input.about ? { about: input.about } : {}),
   };
 }

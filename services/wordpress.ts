@@ -16,6 +16,10 @@ import {
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
+  getStagingLocalBlogPost,
+  listStagingLocalBlogStaticParams,
+} from '@/lib/blog-local-posts';
+import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
   BLOG_LATEST_OVERSCAN,
@@ -1085,9 +1089,12 @@ export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> 
       .map((term) => ({ ...term, taxonomy: 'category' }));
     return { ...post, categories };
   });
-  return filterOpenBlogPosts(hydrated).map((post) => ({
-    slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
-  }));
+  return [
+    ...filterOpenBlogPosts(hydrated).map((post) => ({
+      slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
+    })),
+    ...listStagingLocalBlogStaticParams(),
+  ];
 }
 
 async function loadBlogStaticParamsPage(
@@ -1140,6 +1147,8 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
  * fetched once, not twice per route.
  */
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  const local = getStagingLocalBlogPost(slug);
+  if (local) return local;
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     const hit = blogPostBySlugBuildCache.get(slug);
     if (hit) return hit;
