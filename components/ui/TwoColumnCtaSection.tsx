@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import BookingLink from "@/components/BookingLink";
 import { isBookingDestination } from "@/utils/booking";
 
@@ -33,9 +34,12 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-1/2 mb-12 lg:mb-0">
           <div className="relative rounded-2xl overflow-hidden">
-            <img
+            <Image
               src={imageUrl}
               alt={imageAlt}
+              width={2048}
+              height={2048}
+              sizes="(min-width: 1024px) 560px, 100vw"
               className="w-full h-auto object-cover"
             />
           </div>
