@@ -98,6 +98,19 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.redirect(target, blogSeo.status));
   }
 
+  // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
+  // so pagination, category and search keep working without dynamizing /blog.
+  if (path === '/blog/q') {
+    const target = request.nextUrl.clone();
+    target.pathname = '/blog';
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
+  }
+  if (path === '/blog' && request.nextUrl.search && request.nextUrl.search !== '?') {
+    const target = request.nextUrl.clone();
+    target.pathname = '/blog/q';
+    return attachAttributionCookies(request, NextResponse.rewrite(target));
+  }
+
   return attachAttributionCookies(request, NextResponse.next());
 }
 

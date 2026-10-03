@@ -60,7 +60,7 @@ const MUST_STAY_OPEN = [
 ];
 
 const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const listingSource = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+const listingSource = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
 const wordpressSource = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 
 test('closed set equals José Excel v2 — exactly these 31 paths', () => {
