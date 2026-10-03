@@ -5,6 +5,7 @@
     "/",
     "/[slug]",
     "/agencia-shopify",
+    "/shopify-precios",
     "/api/blog-posts",
     "/api/contact",
     "/blog",
@@ -24,6 +25,7 @@
   "criticalRoutes": [
     "/",
     "/agencia-shopify",
+    "/shopify-precios",
     "/api/blog-posts",
     "/api/contact",
     "/blog",
