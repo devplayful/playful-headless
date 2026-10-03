@@ -19,7 +19,7 @@ const booking = readFileSync(new URL('../utils/booking-attribution.ts', import.m
 
 test('clean /blog is ISR at 300s and does not read searchParams', () => {
   assert.equal(BLOG_LISTING_REVALIDATE_SECONDS, 300);
-  assert.match(listingPage, /export const revalidate = BLOG_LISTING_REVALIDATE_SECONDS/);
+  assert.match(listingPage, /export const revalidate = 300/);
   assert.match(listingPage, /currentPage=\{1\}/);
   assert.doesNotMatch(listingPage, /searchParams/);
   assert.doesNotMatch(listingPage, /cookies\(/);
