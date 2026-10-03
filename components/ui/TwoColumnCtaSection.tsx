@@ -11,11 +11,18 @@ interface TwoColumnCtaSectionProps {
   contentBgColor?: string;
   title?: string;
   subtitle?: string;
+  extraParagraph?: string;
   ctaTitle?: string;
+  ctaAs?: "h2" | "h3";
   buttonText?: string;
   buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
   onButtonClick?: () => void;
 }
+
+const buttonClassName =
+  "mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal";
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   imageUrl = "/images/imagen-nueva-cta-home.png",
@@ -23,9 +30,13 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   contentBgColor = "#FFEFD1",
   title = "¡Es Hora de Dejar de Perder y Empezar a Vender Más!",
   subtitle = "Deja de arreglar tu web con parches y evita perder clientes por fallas que no puedes ver.",
+  extraParagraph,
   ctaTitle = "¡Contáctanos y hagamos que tu tienda online trabaje realmente para ti!",
+  ctaAs = "h2",
   buttonText = "Llena el formulario y hablemos sobre tu web",
   buttonLink = "/contactar-agencia-de-marketing-digital",
+  secondaryButtonText,
+  secondaryButtonLink,
   onButtonClick,
 }) => {
   return (
@@ -70,22 +81,34 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               {subtitle}
             </p>
 
+            {extraParagraph ? (
+              <p className="text-lg text-[#453A53] text-center mb-8">
+                {extraParagraph}
+              </p>
+            ) : null}
+
             {ctaTitle ? (
               <div className="space-y-4 flex flex-col items-center">
                 <div className="flex items-center">
-                  <h2 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
-                    {ctaTitle}
-                  </h2>
+                  {ctaAs === "h3" ? (
+                    <h3 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                      {ctaTitle}
+                    </h3>
+                  ) : (
+                    <h2 className="text-[28px] font-normal text-center text-[#453A53] mb-6 leading-tight max-w-[600px] mx-auto">
+                      {ctaTitle}
+                    </h2>
+                  )}
                 </div>
               </div>
             ) : null}
 
-            <div className="w-full flex justify-center px-5 py-5 md:p-0">
+            <div className="w-full flex flex-col items-center justify-center px-5 py-5 md:p-0">
               {isBookingDestination(buttonLink) ? (
                 <BookingLink
                   href={buttonLink}
                   onClick={onButtonClick}
-                  className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+                  className={buttonClassName}
                 >
                   {buttonText}
                 </BookingLink>
@@ -93,11 +116,19 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
                 <a
                   href={buttonLink}
                   onClick={onButtonClick}
-                  className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+                  className={buttonClassName}
                 >
                   {buttonText}
                 </a>
               )}
+              {secondaryButtonText && secondaryButtonLink ? (
+                <a
+                  href={secondaryButtonLink}
+                  className="mt-4 text-[#440099] font-semibold underline underline-offset-2 text-center"
+                >
+                  {secondaryButtonText}
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
