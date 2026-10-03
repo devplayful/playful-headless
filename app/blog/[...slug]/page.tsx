@@ -42,7 +42,14 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
-import { localBlogStaticParams } from '@/lib/blog-local-posts';
+import {
+  ESHOW_MADRID_2026_H1,
+  ESHOW_MADRID_2026_META,
+  ESHOW_MADRID_2026_SLUG,
+  ESHOW_MADRID_2026_TITLE,
+  blogArticleJsonLdExtras,
+  localBlogStaticParams,
+} from '@/lib/blog-local-posts';
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
@@ -174,6 +181,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_SCHEMA.logo,
+    ...blogArticleJsonLdExtras(postSlug),
   });
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
@@ -455,6 +463,11 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description:
       'Cómo hacer una migración SEO al cambiar de plataforma: inventario de URLs, redirecciones 301 y un ejemplo de tienda que deja Shopify en Venezuela.',
     h1: 'Cómo hacer una migración SEO al cambiar de plataforma de tienda online',
+  },
+  [ESHOW_MADRID_2026_SLUG]: {
+    title: ESHOW_MADRID_2026_TITLE,
+    description: ESHOW_MADRID_2026_META,
+    h1: ESHOW_MADRID_2026_H1,
   },
 };
 
