@@ -65,6 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+import Image from "next/image";
 import Link from "next/link";
 import AnimatedButton from "@/components/AnimatedButton";
 import MaterialServicesSection from "@/components/MaterialServicesSection";
@@ -130,9 +131,15 @@ async function HomeContent() {
 
             {/* Right Illustration Area */}
             <div className="relative">
-              <img
-                src="../images/playful-imagen-banner.png"
+              <Image
+                src="/images/playful-imagen-banner.png"
                 alt=""
+                width={2048}
+                height={2048}
+                priority
+                fetchPriority="high"
+                sizes="(min-width: 1024px) 560px, 100vw"
+                className="w-full h-auto"
               />
             </div>
           </div>
