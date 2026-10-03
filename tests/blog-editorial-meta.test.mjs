@@ -307,7 +307,7 @@ test('listing cards use honored update or publication, long and slash formats', 
 });
 
 test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
-  const listingPage = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
   const mostViewed = readFileSync(
     new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
     'utf8',

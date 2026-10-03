@@ -601,7 +601,7 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   }
   const { items: posts, response } = await wordpressFetchCollection<WPPost>(
     url.toString(),
-    { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } },
+    { next: { revalidate: 300 }, headers: { 'Content-Type': 'application/json' } },
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
   const processedPosts = await hydrateListingPosts(posts);
