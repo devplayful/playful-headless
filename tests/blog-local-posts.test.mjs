@@ -17,10 +17,19 @@ const {
   ESHOW_MADRID_2026_PROGRAMA_ALT,
   ESHOW_MADRID_2026_IMAGE_WIDTH,
   ESHOW_MADRID_2026_IMAGE_HEIGHT,
+  GOOGLE_MERCHANT_CENTER_SLUG,
+  GOOGLE_MERCHANT_CENTER_H1,
+  GOOGLE_MERCHANT_CENTER_TITLE,
+  GOOGLE_MERCHANT_CENTER_META,
+  GOOGLE_MERCHANT_CENTER_DATE_PUBLISHED_PROVISIONAL,
+  GOOGLE_MERCHANT_CENTER_DATE_MODIFIED_PROVISIONAL,
+  GOOGLE_MERCHANT_CENTER_BODY_HTML,
+  GOOGLE_MERCHANT_CENTER_FAQS,
   isStagingLocalBlogEnabled,
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
   blogArticleJsonLdExtras,
+  blogFaqPageJsonLd,
 } = await import('../lib/blog-local-posts.ts');
 
 const { buildBlogArticleJsonLd } = await import('../lib/blog-editorial-meta.ts');
@@ -39,6 +48,14 @@ const sitemapSource = readFileSync(
 );
 const listingSource = readFileSync(
   new URL('../app/blog/page.tsx', import.meta.url),
+  'utf8',
+);
+const expectedRoutes = readFileSync(
+  new URL('../config/expected-routes.json', import.meta.url),
+  'utf8',
+);
+const relatedSource = readFileSync(
+  new URL('../lib/blog-related-posts.ts', import.meta.url),
   'utf8',
 );
 
@@ -72,6 +89,7 @@ test('local eShow post is gated and shaped like a WP otros article', () => {
   assert.equal(post.title.rendered, ESHOW_MADRID_2026_H1);
   assert.deepEqual(listStagingLocalBlogStaticParams({}), [
     { slug: ['otros', 'eshow-madrid-2026'] },
+    { slug: ['pautas-digitales', 'google-merchant-center'] },
   ]);
 });
 
@@ -122,4 +140,68 @@ test('wordpress and the post template wire the staging-only post without listing
   assert.ok(blogPage.includes(ESHOW_MADRID_2026_TITLE) || blogPage.includes('ESHOW_MADRID_2026_TITLE'));
   assert.doesNotMatch(listingSource, /eshow-madrid-2026/);
   assert.doesNotMatch(sitemapSource, /eshow-madrid-2026/);
+  assert.match(blogPage, /blogFaqPageJsonLd\(postSlug\)/);
+  assert.match(blogPage, /\[GOOGLE_MERCHANT_CENTER_SLUG\]/);
+  assert.match(blogPage, /h1: GOOGLE_MERCHANT_CENTER_H1/);
+  assert.doesNotMatch(listingSource, /google-merchant-center/);
+  assert.doesNotMatch(sitemapSource, /google-merchant-center/);
+  assert.doesNotMatch(expectedRoutes, /google-merchant-center/);
+  assert.doesNotMatch(relatedSource, /google-merchant-center/);
+});
+
+test('local Merchant Center post is gated and shaped like a WP pautas-digitales article', () => {
+  assert.equal(
+    getStagingLocalBlogPost(GOOGLE_MERCHANT_CENTER_SLUG, { VERCEL_ENV: 'production' }),
+    null,
+  );
+
+  const post = getStagingLocalBlogPost(GOOGLE_MERCHANT_CENTER_SLUG, {});
+  assert.ok(post);
+  assert.equal(post.slug, 'google-merchant-center');
+  assert.equal(post.categories[0].slug, 'pautas-digitales');
+  assert.equal(post.categories[0].name, 'Pautas Digitales');
+  assert.equal(post.categories[0].id, 25);
+  assert.equal(post.author.name, 'Stefanni Parabavidez');
+  assert.equal(post.date, GOOGLE_MERCHANT_CENTER_DATE_PUBLISHED_PROVISIONAL);
+  assert.equal(post.modified, GOOGLE_MERCHANT_CENTER_DATE_MODIFIED_PROVISIONAL);
+  assert.equal(post.title.rendered, GOOGLE_MERCHANT_CENTER_H1);
+});
+
+test('Merchant Center body is the signed copy: no H1 and no invented images', () => {
+  const html = GOOGLE_MERCHANT_CENTER_BODY_HTML;
+  assert.doesNotMatch(html, /<h1[\s>]/);
+  assert.doesNotMatch(html, /<img[\s>]/);
+  assert.match(
+    html,
+    /Google Merchant Center es la herramienta gratuita de Google donde subes el catálogo/,
+  );
+  assert.match(
+    html,
+    /<h2 id="que-es-google-merchant-center-y-en-que-se-diferencia-de-shopping-y-de-google-ads">/,
+  );
+  assert.match(html, /reserva una reunión con nuestro equipo/);
+  assert.equal(GOOGLE_MERCHANT_CENTER_FAQS.length, 5);
+});
+
+test('Merchant Center JSON-LD is Article with provisional dates and a FAQPage', () => {
+  const extras = blogArticleJsonLdExtras(GOOGLE_MERCHANT_CENTER_SLUG);
+  assert.equal(extras.type, 'Article');
+  const jsonLd = buildBlogArticleJsonLd({
+    headline: GOOGLE_MERCHANT_CENTER_H1,
+    description: GOOGLE_MERCHANT_CENTER_META,
+    datePublished: GOOGLE_MERCHANT_CENTER_DATE_PUBLISHED_PROVISIONAL,
+    dateModified: GOOGLE_MERCHANT_CENTER_DATE_MODIFIED_PROVISIONAL,
+    authorName: 'Stefanni Parabavidez',
+    url: 'https://playfulagency.com/blog/pautas-digitales/google-merchant-center',
+    ...extras,
+  });
+  assert.equal(jsonLd['@type'], 'Article');
+  assert.equal(jsonLd.datePublished, '2026-10-03T00:00:00.000Z');
+  assert.equal(jsonLd.dateModified, '2026-10-03T00:00:00.000Z');
+
+  const faq = blogFaqPageJsonLd(GOOGLE_MERCHANT_CENTER_SLUG);
+  assert.ok(faq);
+  assert.equal(faq['@type'], 'FAQPage');
+  assert.equal(faq.mainEntity.length, 5);
+  assert.equal(blogFaqPageJsonLd(ESHOW_MADRID_2026_SLUG), null);
 });
