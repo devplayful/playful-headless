@@ -8,6 +8,7 @@
     "/api/blog-posts",
     "/api/contact",
     "/blog",
+    "/blog/q",
     "/blog/[...slug]",
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
