@@ -47,7 +47,12 @@ import {
   ESHOW_MADRID_2026_META,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
+  GOOGLE_MERCHANT_CENTER_H1,
+  GOOGLE_MERCHANT_CENTER_META,
+  GOOGLE_MERCHANT_CENTER_SLUG,
+  GOOGLE_MERCHANT_CENTER_TITLE,
   blogArticleJsonLdExtras,
+  blogFaqPageJsonLd,
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 
@@ -183,6 +188,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     publisherLogo: ORGANIZATION_SCHEMA.logo,
     ...blogArticleJsonLdExtras(postSlug),
   });
+  const faqJsonLd = blogFaqPageJsonLd(postSlug);
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -197,6 +203,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
+    {faqJsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+      />
+    ) : null}
     <h1 className="sr-only">{pageH1}</h1>
     <div className="min-h-screen">
       {/* Header con título e imagen */}
@@ -468,6 +480,11 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     title: ESHOW_MADRID_2026_TITLE,
     description: ESHOW_MADRID_2026_META,
     h1: ESHOW_MADRID_2026_H1,
+  },
+  [GOOGLE_MERCHANT_CENTER_SLUG]: {
+    title: GOOGLE_MERCHANT_CENTER_TITLE,
+    description: GOOGLE_MERCHANT_CENTER_META,
+    h1: GOOGLE_MERCHANT_CENTER_H1,
   },
 };
 
