@@ -11,9 +11,8 @@ const {
   buildEshowListaFirstTouchFields,
   buildEshowListaUpsertInput,
   eshowListaConfirmation,
-  eshowListaConsentNote,
+  eshowListaMarketingConsent,
   formatMadridOffsetIso,
-  readEshowListaConsentFieldId,
   readEshowListaTag,
   syncEshowListaToHighLevel,
   validateEshowLista,
@@ -157,7 +156,6 @@ test('lista upsert writes firstName, Email fields and never inbound tags', () =>
   const always = buildEshowListaAlwaysFields({
     recentAttribution: attribution,
     consentCapturedAt: '2026-10-04T19:20:00+02:00',
-    consentFieldId: ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad,
   });
   const payload = buildEshowListaUpsertInput({
     name: 'QA eShow',
@@ -180,6 +178,10 @@ test('lista upsert writes firstName, Email fields and never inbound tags', () =>
   assert.equal(
     alwaysById.get(ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad),
     '2026-10-04T19:20:00+02:00',
+  );
+  assert.equal(
+    alwaysById.get(ESHOW_LISTA_FIELD_IDS.consentimiento_marketing),
+    'Sí — https://playfulagency.com/politica-de-privacidad',
   );
   assert.equal(alwaysById.get(ESHOW_LISTA_FIELD_IDS.lt_utm_source), 'blog');
   assert.equal(alwaysById.get(ESHOW_LISTA_FIELD_IDS.lt_utm_medium), 'form');
@@ -241,7 +243,6 @@ test('when the tag is set the sync writes fields first and the tag after', async
     contactId: 'c1',
     isNew: true,
     tag: 'lista-sigue-eshow-2026',
-    noteWritten: false,
   });
 
   const names = gateway.calls.map((item) => item[0]);
@@ -261,6 +262,10 @@ test('when the tag is set the sync writes fields first and the tag after', async
   assert.equal(
     upsertFields.get(ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad),
     '2026-10-04T18:00:00+02:00',
+  );
+  assert.equal(
+    upsertFields.get(ESHOW_LISTA_FIELD_IDS.consentimiento_marketing),
+    'Sí — https://playfulagency.com/politica-de-privacidad',
   );
   assert.equal(upsertFields.get(ESHOW_LISTA_FIELD_IDS.lt_utm_source), 'blog');
   assert.equal(upsertFields.has(ESHOW_LISTA_FIELD_IDS.fuente_original), false);
@@ -311,48 +316,15 @@ test('first-touch fields stay put when the contact already has them', async () =
   assert.equal(gateway.calls.some((item) => item[0] === 'update-fields'), false);
 });
 
-test('without a privacy field the consent goes to the contact note', async () => {
-  const gateway = mockGateway();
-  const result = await syncEshowListaToHighLevel({
-    name: 'Ana',
-    email: 'ana@correo.com',
-    originalAttribution: withEshowListaAttribution({}),
-    recentAttribution: withEshowListaAttribution({}),
-    consentCapturedAt: '2026-10-04T18:00:00+02:00',
-    env: {
-      GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
-      HIGHLEVEL_LOCATION_ID: 'loc',
-      HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify({ privacy_consent_at: '' }),
-    },
-    gateway,
-  });
-  assert.equal(result.noteWritten, true);
+test('consent writes both existing GHL fields and never a note', () => {
   assert.equal(
-    gateway.calls.find((item) => item[0] === 'note')?.[2],
-    'Consentimiento política de privacidad: sí, 2026-10-04T18:00:00+02:00, web-eshow-madrid-2026',
-  );
-  const names = gateway.calls.map((item) => item[0]);
-  assert.ok(names.indexOf('note') < names.indexOf('tags'));
-  assert.equal(
-    eshowListaConsentNote('2026-10-04T18:00:00+02:00'),
-    'Consentimiento política de privacidad: sí, 2026-10-04T18:00:00+02:00, web-eshow-madrid-2026',
-  );
-});
-
-test('consent field id prefers the listed privacy field and Madrid offset', () => {
-  assert.equal(
-    readEshowListaConsentFieldId({}),
-    ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad,
-  );
-  assert.equal(
-    readEshowListaConsentFieldId({
-      HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify({ privacy_consent_at: 'pca' }),
-    }),
-    'pca',
+    eshowListaMarketingConsent(),
+    'Sí — https://playfulagency.com/politica-de-privacidad',
   );
   const stamped = formatMadridOffsetIso(new Date('2026-10-04T17:00:00.000Z'));
   assert.match(stamped, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/);
   assert.match(stamped, /\+02:00$/);
+  assert.doesNotMatch(syncSource, /addContactNote|eshowListaConsentNote/);
 });
 
 test('forbidden inbound tag still rejects before any write', async () => {
