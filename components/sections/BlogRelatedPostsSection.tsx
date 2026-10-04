@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { excludeCurrentBlogPost } from '@/lib/blog-related-posts';
 
 interface BlogPost {
@@ -20,10 +20,24 @@ export default function BlogRelatedPostsSection({
   posts: initialPosts,
   excludeSlug,
   excludeId,
+  title = (
+    <>
+      ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
+    </>
+  ),
+  subtitle = (
+    <>
+      Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de <strong className="font-bold">UX/UI, E-commerce y desarrollo tecnológico</strong>. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.
+    </>
+  ),
+  ctaLabel = "Ver más artículos",
 }: {
   posts?: BlogPost[];
   excludeSlug?: string;
   excludeId?: number | string;
+  title?: ReactNode;
+  subtitle?: ReactNode;
+  ctaLabel?: string;
 } = {}) {
   const hasServerPosts = initialPosts !== undefined;
   const [posts, setPosts] = useState<BlogPost[]>(() =>
@@ -87,10 +101,10 @@ export default function BlogRelatedPostsSection({
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
-          ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
+          {title}
         </h2>
         <p className="text-white text-base md:text-lg leading-relaxed mb-10">
-          Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de <strong className="font-bold">UX/UI, E-commerce y desarrollo tecnológico</strong>. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.
+          {subtitle}
         </p>
       </div>
 
@@ -146,7 +160,7 @@ export default function BlogRelatedPostsSection({
 
       <div className="relative z-10 flex justify-center mt-12 pb-5 md:pb-0">
         <Link href="/blog" className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 !text-[14px] !leading-[18px] md:!text-base md:!leading-normal shadow-lg transition-colors">
-          Ver más artículos
+          {ctaLabel}
         </Link>
       </div>
     </section>

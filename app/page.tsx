@@ -1,91 +1,96 @@
 import type { Metadata } from 'next';
-import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
+import { HOME_META } from './home-copy';
 
 const HOME_CANONICAL = canonicalForPath('/');
+const HOME_OG_IMAGE = 'https://playfulagency.com/og.jpg';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
-  const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
-  const defaultOgImage = 'https://playfulagency.com/og.jpg';
-
-  // Next.js 15 resolveAbsoluteUrlWithPathname collapses pathname `/` to origin
-  // (no trailing slash). Home canonical + og:url are emitted as raw tags below
-  // so they stay exactly `https://playfulagency.com/` to match the sitemap.
-  try {
-    const yoastData = await getHomePageMetadata();
-    return {
-      title: yoastData.yoast_wpseo_title || defaultTitle,
-      description: yoastData.yoast_wpseo_metadesc || defaultDescription,
-      openGraph: {
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        type: 'website',
-        locale: 'es_ES',
-        siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        images: [defaultOgImage],
-      },
-    };
-  } catch {
-    return {
-      title: defaultTitle,
-      description: defaultDescription,
-      openGraph: {
-        title: defaultTitle,
-        description: defaultDescription,
-        type: 'website',
-        locale: 'es_ES',
-        siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: defaultTitle,
-        description: defaultDescription,
-        images: [defaultOgImage],
-      },
-    };
-  }
-}
+export const metadata: Metadata = {
+  title: HOME_META.title,
+  description: HOME_META.description,
+  openGraph: {
+    title: HOME_META.title,
+    description: HOME_META.description,
+    type: 'website',
+    locale: 'es_ES',
+    siteName: 'Playful Agency',
+    images: [{
+      url: HOME_OG_IMAGE,
+      width: 1200,
+      height: 630,
+      alt: HOME_META.title,
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: HOME_META.title,
+    description: HOME_META.description,
+    images: [HOME_OG_IMAGE],
+  },
+};
 
 import Image from "next/image";
 import Link from "next/link";
-import AnimatedButton from "@/components/AnimatedButton";
 import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
-import CarouselResultados from "@/components/CarouselResultados";
+import CarouselResultados, { type CaseStudy } from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
-import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
+import { featuredTapaForSlug, resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
+import {
+  HOME_ALIADOS,
+  HOME_BLOG,
+  HOME_CASOS,
+  HOME_CTA_FINAL,
+  HOME_HERO,
+  HOME_TESTIMONIOS,
+} from "./home-copy";
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
+function homeCaseStudies(
+  casosDeExito: Array<Record<string, unknown>>,
+): CaseStudy[] {
+  const bySlug = new Map(
+    casosDeExito
+      .filter((item) => typeof item?.slug === "string")
+      .map((item) => [item.slug as string, item]),
+  );
+
+  return HOME_CASOS.items.map((item, index) => {
+    const wp = bySlug.get(item.slug);
+    return {
+      id: index + 1,
+      title: item.name,
+      slug: item.slug,
+      description: item.body,
+      categories: [...item.tags],
+      badge: "",
+      badgeColor: "bg-purple-600",
+      buttonText: item.cta,
+      buttonColor: "bg-blue-600",
+      image:
+        resolveCaseStudyListingImage(
+          wp as {
+            slug?: string;
+            featured_media_url?: string;
+            _embedded?: { 'wp:featuredmedia'?: Array<{ source_url?: string }> };
+          },
+        ) || featuredTapaForSlug(item.slug),
+    };
+  });
+}
+
 async function HomeContent() {
-  // Obtener casos de éxito y posts del bloque de blog una sola vez en el servidor
   const [casosDeExito, blogPosts] = await Promise.all([
-    getAllCaseStudies(),
+    getAllCaseStudies().catch(() => []),
     getLatestBlogPosts(6).catch(() => []),
   ]);
+  const homeCases = homeCaseStudies(casosDeExito);
   return (
     <div className="">
       {/* Hero Section */}
@@ -95,30 +100,41 @@ async function HomeContent() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-2">
-                <p className="playful-miga-pan">Playful Agency:</p>
-                <p className="playful-h1">
-                  ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
-                </p>
+                <p className="playful-miga-pan">{HOME_HERO.antetitulo}</p>
+                <h1 className="playful-h1">
+                  {HOME_HERO.h1}
+                </h1>
               </div>
 
-              <div className="space-y-4 2 text-purple-800">
+              <div className="space-y-4 text-purple-800">
+                <p className="playful-contenido-p">{HOME_HERO.subtitulo}</p>
+                {HOME_HERO.cuerpo.map((paragraph) => (
+                  <p key={paragraph} className="playful-contenido-p">
+                    {paragraph}
+                  </p>
+                ))}
                 <p className="playful-contenido-p">
-                Tu sitio web no es solo un escaparate digital; es tu motor de ventas más crucial. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás{" "}
-                  <b>dejando dinero sobre la mesa</b>.
-                </p>
-                <p className="playful-contenido-p">
-                  En <b>Playful Agency</b>, somos una <b>Agencia de E-commerce</b>
-                  que va más allá del diseño. Nos especializamos en transformar plataformas mediocres en
-                  <b> máquinas de conversión de alto rendimiento</b>. No creamos webs bonitas por hacer; desarrollamos tecnología que se traduce en <b>ventas consistentes y crecimiento real</b>.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton">
-                    Completa el formulario y cuéntanos tu idea
+                  {HOME_HERO.shopifyAntes}
+                  <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
+                    {HOME_HERO.shopifyAnchor}
                   </Link>
-                </div>
+                  {HOME_HERO.shopifyDespues}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <a href={HOME_HERO.ctaHref} className="playful-boton">
+                  {HOME_HERO.ctaPrincipal}
+                </a>
+                <p className="playful-contenido-p">{HOME_HERO.microcopia}</p>
+                <p className="playful-contenido-p">
+                  <Link
+                    href={HOME_HERO.ctaSecundarioHref}
+                    className="text-[#440099] font-semibold underline underline-offset-2"
+                  >
+                    {HOME_HERO.ctaSecundario}
+                  </Link>
+                </p>
               </div>
             </div>
 
@@ -161,29 +177,51 @@ async function HomeContent() {
 
       <section className="py-12">
         <div className={shell}>
-          <CarouselResultados casosDeExito={casosDeExito} />
+          <CarouselResultados
+            title={HOME_CASOS.h2}
+            subtitle={HOME_CASOS.intro}
+            title2={HOME_CASOS.h3}
+            cases={homeCases}
+          />
         </div>
       </section>
 
       <section className="py-12">
         <div className={shell}>
-          <TestimonialsSection />
+          <TestimonialsSection
+            title={HOME_TESTIMONIOS.h2}
+            intro={HOME_TESTIMONIOS.intro}
+            alliesTitle={HOME_ALIADOS.titulo}
+            items={HOME_TESTIMONIOS.destacados}
+          />
         </div>
       </section>
 
       <section className="py-12">
         <div className={shell}>
-          <BlogRelatedPostsSection posts={blogPosts} />
+          <BlogRelatedPostsSection
+            posts={blogPosts}
+            title={HOME_BLOG.h2}
+            subtitle={HOME_BLOG.intro}
+            ctaLabel={HOME_BLOG.cta}
+          />
         </div>
       </section>
 
       <section className="py-12">
         <div className={shell}>
-          <TwoColumnCtaSection 
+          <TwoColumnCtaSection
             contentBgColor="#B3FFF3"
             imageUrl="/images/imagen-nueva-cta-home.png"
-            buttonText="Llena el formulario y hablemos sobre tu web"
-            buttonLink="/contactar-agencia-de-marketing-digital"
+            title={HOME_CTA_FINAL.h2}
+            subtitle={HOME_CTA_FINAL.parrafos[0]}
+            extraParagraph={HOME_CTA_FINAL.parrafos[1]}
+            ctaTitle={HOME_CTA_FINAL.h3}
+            ctaAs="h3"
+            buttonText={HOME_CTA_FINAL.ctaPrincipal}
+            buttonLink={HOME_CTA_FINAL.ctaHref}
+            secondaryButtonText={HOME_CTA_FINAL.ctaSecundario}
+            secondaryButtonLink={HOME_CTA_FINAL.ctaSecundarioHref}
           />
         </div>
       </section>
@@ -201,9 +239,6 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
       />
-      <h1 className="sr-only">
-        ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
-      </h1>
       <HomePageContent>
         <HomeContent />
       </HomePageContent>
