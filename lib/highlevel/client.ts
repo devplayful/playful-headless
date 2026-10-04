@@ -18,16 +18,16 @@ export interface HighLevelNativeAttribution {
 }
 
 export interface UpsertContactInput {
-  name: string;
+  name?: string;
   email: string;
   phone?: string;
   companyName?: string;
   locationId: string;
-  assignedTo: string;
+  assignedTo?: string;
   source?: string;
   attributionSource?: HighLevelNativeAttribution;
   lastAttributionSource?: HighLevelNativeAttribution;
-  customFields: HighLevelCustomFieldValue[];
+  customFields?: HighLevelCustomFieldValue[];
   createNewIfDuplicateAllowed: false;
 }
 
