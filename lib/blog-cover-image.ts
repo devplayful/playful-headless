@@ -20,6 +20,8 @@
  * `auditoria-seo-que-es-como-se-hace`.
  * 24 sep 2026 (José GO vía Diseño): JN0rWQjOq4 canónico en
  * `zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce`.
+ * 29 sep 2026 (José GO 17:33): 79TnhawJAL canónico en
+ * `analitica-web-que-es-como-puede-ayudar-a-mi-marca`.
  * 29 sep 2026 (José GO): 5j69aiPKxe canónico en
  * `como-crear-anuncios-en-facebook`.
  * 29 sep 2026 (José GO vía Diseño 21:41): ovxxg2H829 canónico en
@@ -68,6 +70,8 @@ export const BLOG_COVER_OVERRIDES = {
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
   // lote 6 (29–30 sep 2026, José GO vía Diseño)
+  'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL.png',
   'como-crear-anuncios-en-facebook':
     '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe.png',
   'como-usar-el-remarketing-para-tener-mas-clientes':

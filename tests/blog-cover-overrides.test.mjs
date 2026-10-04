@@ -67,6 +67,10 @@ const LOTE_5 = [
 
 const LOTE_6 = [
   [
+    'analitica-web-que-es-como-puede-ayudar-a-mi-marca',
+    '/images/blog/13-analitica-web-magnific-79TnhawJAL.png',
+  ],
+  [
     'como-crear-anuncios-en-facebook',
     '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe.png',
   ],
@@ -155,9 +159,10 @@ test('lote 5 maps s7AQv7dl8e and JN0rWQjOq4 without removing prior lotes', () =>
 });
 
 test('lote 6 maps accumulated Magnific covers without removing prior lotes', () => {
-  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 29);
-  assert.equal(LOTE_6.length, 5);
+  assert.equal(Object.keys(BLOG_COVER_OVERRIDES).length, 30);
+  assert.equal(LOTE_6.length, 6);
   assertMappedCovers(LOTE_6);
+  assert.ok(existsSync(join(root, 'public/uploads/cover-79TnhawJAL.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-5j69aiPKxe.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-ovxxg2H829.png')));
   assert.ok(existsSync(join(root, 'public/uploads/cover-LwGzTFJswO.png')));
@@ -291,6 +296,29 @@ test('VXQNEs8MMU is exclusive to rediseno-web', async () => {
   const buffer = await readFile(file);
   assert.deepEqual(pngSize(buffer), { width: 2752, height: 1536 }, path);
   assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+});
+
+test('79TnhawJAL is exclusive to analitica-web-que-es-como-puede-ayudar-a-mi-marca', async () => {
+  const path = '/images/blog/13-analitica-web-magnific-79TnhawJAL.png';
+  assert.equal(
+    BLOG_COVER_OVERRIDES['analitica-web-que-es-como-puede-ayudar-a-mi-marca'],
+    path,
+  );
+  assert.equal(
+    blogCoverForSlug('analitica-web-que-es-como-puede-ayudar-a-mi-marca'),
+    path,
+  );
+  const tnhOwners = Object.entries(BLOG_COVER_OVERRIDES)
+    .filter(([, cover]) => cover.includes('79TnhawJAL'))
+    .map(([slug]) => slug);
+  assert.deepEqual(tnhOwners, ['analitica-web-que-es-como-puede-ayudar-a-mi-marca']);
+  const file = join(root, 'public', path.replace(/^\//, ''));
+  const buffer = await readFile(file);
+  assert.deepEqual(pngSize(buffer), { width: 1376, height: 768 }, path);
+  assert.equal(buffer[25], 2, 'PNG should be 8-bit RGB');
+  const upload = await readFile(join(root, 'public/uploads/cover-79TnhawJAL.png'));
+  assert.deepEqual(pngSize(upload), { width: 1376, height: 768 });
+  assert.equal(upload[25], 2, 'PNG should be 8-bit RGB');
 });
 
 test('5j69aiPKxe is exclusive to como-crear-anuncios-en-facebook', async () => {
