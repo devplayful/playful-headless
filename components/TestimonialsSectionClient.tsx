@@ -20,12 +20,16 @@ export default function TestimonialsSectionClient({
   intro,
   alliesTitle,
   items,
+  hideHeader,
+  hideQuotes,
 }: {
   className?: string;
   title?: string;
   intro?: string;
   alliesTitle?: string;
   items?: readonly TestimonialItem[];
+  hideHeader?: boolean;
+  hideQuotes?: boolean;
 }) {
   return (
     <TestimonialsSection
@@ -34,6 +38,8 @@ export default function TestimonialsSectionClient({
       intro={intro}
       alliesTitle={alliesTitle}
       items={items}
+      hideHeader={hideHeader}
+      hideQuotes={hideQuotes}
     />
   );
 }

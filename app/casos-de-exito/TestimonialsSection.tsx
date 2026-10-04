@@ -130,6 +130,8 @@ interface TestimonialsSectionProps {
   intro?: string;
   alliesTitle?: string;
   items?: readonly TestimonialItem[];
+  hideHeader?: boolean;
+  hideQuotes?: boolean;
 }
 
 export default function TestimonialsSection({
@@ -139,12 +141,15 @@ export default function TestimonialsSection({
   intro = "Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que potencian negocios.",
   alliesTitle = "Nuestros aliados estratégicos",
   items,
+  hideHeader = false,
+  hideQuotes = false,
 }: TestimonialsSectionProps) {
   const textStyle: React.CSSProperties = { color: textColor };
 
   return (
     <section className={className}>
       <div className="w-full">
+        {hideHeader ? null : (
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-normal mb-4" style={textStyle}>
             {title}
@@ -153,8 +158,9 @@ export default function TestimonialsSection({
             {intro}
           </p>
         </div>
+        )}
 
-        {/* Carrusel de testimonios */}
+        {hideQuotes ? null : (
         <div className="w-full overflow-hidden pb-12">
           <div className="max-w-[1200px] mx-auto px-4">
             <Swiper
@@ -223,6 +229,7 @@ export default function TestimonialsSection({
             </Swiper>
           </div>
         </div>
+        )}
 
         {/* Logos */}
         <div className="py-16">
