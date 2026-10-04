@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const {
+  ESHOW_LISTA_ALLOWED_TAG,
   ESHOW_LISTA_ERRORS,
+  assertEshowListaTag,
+  buildEshowListaUpsertInput,
   eshowListaConfirmation,
   readEshowListaTag,
   syncEshowListaToHighLevel,
@@ -91,6 +94,46 @@ test('attribution defaults to the lista source and does not invent a pipeline wr
   assert.deepEqual(skipped, { wrote: false, reason: 'tag-unset' });
 });
 
+test('lista upsert is isolated from the inbound contact flow', async () => {
+  const payload = buildEshowListaUpsertInput({
+    name: 'QA eShow',
+    email: 'qa+eshow-lista@playfulagency.com',
+    locationId: 'loc',
+    consentCapturedAt: '2026-10-04T19:20:00+02:00',
+    consentFieldId: 'pca',
+  });
+  assert.equal(payload.email, 'qa+eshow-lista@playfulagency.com');
+  assert.equal(payload.name, 'QA eShow');
+  assert.equal(payload.locationId, 'loc');
+  assert.equal(payload.assignedTo, undefined);
+  assert.equal(payload.source, undefined);
+  assert.equal(payload.tags, undefined);
+  assert.deepEqual(payload.customFields, [
+    { id: 'pca', fieldValue: '2026-10-04T19:20:00+02:00' },
+  ]);
+  assert.throws(
+    () => assertEshowListaTag('website-inbound'),
+    /pipeline de la feria o el inbound/,
+  );
+  assert.throws(
+    () => assertEshowListaTag('eshow-2026'),
+    /pipeline de la feria o el inbound/,
+  );
+  assert.equal(assertEshowListaTag(ESHOW_LISTA_ALLOWED_TAG), 'lista-sigue-eshow-2026');
+  await assert.rejects(
+    () => syncEshowListaToHighLevel({
+      name: 'Ana',
+      email: 'ana@correo.com',
+      originalAttribution: withEshowListaAttribution({}),
+      recentAttribution: withEshowListaAttribution({}),
+      consentCapturedAt: '2026-10-04T18:00:00+02:00',
+      env: { GHL_TAG_ESHOW_LISTA: 'website-inbound', HIGHLEVEL_LOCATION_ID: 'loc' },
+      gateway: { async upsertContact() { return { id: 'x', isNew: true }; } },
+    }),
+    /inbound web/,
+  );
+});
+
 test('when the tag is set the sync writes contact + tag and never an opportunity', async () => {
   const calls = [];
   const gateway = {
@@ -131,54 +174,8 @@ test('when the tag is set the sync writes contact + tag and never an opportunity
 
   const env = {
     GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
-    HIGHLEVEL_ENABLED: 'true',
-    HIGHLEVEL_TEST_MODE: 'true',
-    HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
     HIGHLEVEL_LOCATION_ID: 'loc',
-    HIGHLEVEL_PIPELINE_ID: 'pipe',
-    HIGHLEVEL_STAGE_CONSULTA_ID: 'stage',
-    HIGHLEVEL_STAGE_REVISAR_ID: 'revisar',
-    HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
-    HIGHLEVEL_CONTACT_TAG: 'website-inbound',
-    HIGHLEVEL_SLA_HOURS: '24',
-    HIGHLEVEL_IDEMPOTENCY_TTL_SECONDS: '604800',
-    HIGHLEVEL_PROCESSING_LEASE_SECONDS: '30',
-    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.invalid',
-    HIGHLEVEL_IDEMPOTENCY_REDIS_REST_TOKEN: 'test-only',
-    HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify({
-      original_source: 'os',
-      original_landing: 'ol',
-      recent_source: 'rs',
-      recent_landing: 'rl',
-      utm_source: 'us',
-      utm_medium: 'um',
-      utm_campaign: 'uc',
-      utm_term: 'ut',
-      utm_content: 'uco',
-      form_id: 'fid',
-      privacy_consent_at: 'pca',
-      marketing_consent: 'mc',
-      decision_role: 'dr',
-      decision_role_other: 'dro',
-      sales_model: 'sm',
-      sales_model_other: 'smo',
-      secondary_marketplaces: 'sec',
-      monthly_revenue: 'mr',
-      monthly_revenue_other: 'mro',
-      project_timing: 'pt',
-      project_timing_other: 'pto',
-      qualification_level: 'ql',
-      project_context: 'pc',
-    }),
-    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify({
-      decision_role: 'odr',
-      sales_model: 'osm',
-      marketplaces: 'omk',
-      monthly_revenue: 'omr',
-      project_timing: 'opt',
-      qualification_level: 'oql',
-      project_context: 'opc',
-    }),
+    HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify({ privacy_consent_at: 'pca' }),
   };
 
   const attribution = withEshowListaAttribution({});
@@ -198,11 +195,17 @@ test('when the tag is set the sync writes contact + tag and never an opportunity
     isNew: true,
     tag: 'lista-sigue-eshow-2026',
   });
+  const upsert = calls.find((item) => item[0] === 'upsert')?.[1];
+  assert.equal(upsert.assignedTo, undefined);
+  assert.equal(upsert.source, undefined);
   assert.deepEqual(calls.find((item) => item[0] === 'tags')?.[2], ['lista-sigue-eshow-2026']);
+  assert.equal(calls.some((item) => item[0] === 'get-fields'), false);
+  assert.equal(calls.some((item) => item[0] === 'update-fields'), false);
   assert.equal(calls.some((item) => item[0] === 'opportunities'), false);
   assert.equal(calls.some((item) => item[0] === 'create-opportunity'), false);
   assert.equal(calls.some((item) => item[0] === 'create-task'), false);
-  assert.doesNotMatch(syncSource, /PLAYFUL-TSS|website-inbound|eshow-2026/);
+  assert.doesNotMatch(syncSource, /readHighLevelConfig|PLAYFUL-TSS/);
+  assert.match(syncSource, /ESHOW_LISTA_FORBIDDEN_TAGS/);
   assert.match(apiSource, /syncEshowListaToHighLevel/);
-  assert.doesNotMatch(apiSource, /sms|sendEmail|mailgun/i);
+  assert.doesNotMatch(apiSource, /sms|sendEmail|mailgun|createOpportunity|website-inbound/i);
 });

@@ -1,11 +1,7 @@
 import type { ContactAttribution } from './contact/types.ts';
 import { emptyAttribution } from './contact/attribution.ts';
-import type { HighLevelCustomFieldValue, HighLevelGateway } from './highlevel/client.ts';
-import {
-  HighLevelConfigurationError,
-  readHighLevelConfig,
-  type EnabledHighLevelConfig,
-} from './highlevel/config.ts';
+import type { HighLevelCustomFieldValue, HighLevelGateway, UpsertContactInput } from './highlevel/client.ts';
+import { HighLevelConfigurationError } from './highlevel/config.ts';
 import {
   ESHOW_LISTA_DEFAULT_UTM,
   ESHOW_LISTA_FORM_ID,
@@ -14,6 +10,8 @@ import {
 } from './eshow-madrid-2026.ts';
 
 export const ESHOW_LISTA_TAG_ENV = 'GHL_TAG_ESHOW_LISTA';
+export const ESHOW_LISTA_ALLOWED_TAG = 'lista-sigue-eshow-2026';
+export const ESHOW_LISTA_FORBIDDEN_TAGS = ['eshow-2026', 'website-inbound'] as const;
 
 export const ESHOW_LISTA_ERRORS = {
   name: 'Escribe tu nombre para saber a quién escribimos.',
@@ -36,6 +34,63 @@ function text(value: unknown, maxLength: number): string {
 
 export function readEshowListaTag(env: Record<string, string | undefined> = process.env): string {
   return env[ESHOW_LISTA_TAG_ENV]?.trim() || '';
+}
+
+export function assertEshowListaTag(tag: string): string {
+  const normalized = tag.trim();
+  if (!normalized) return '';
+  const lower = normalized.toLowerCase();
+  if (
+    ESHOW_LISTA_FORBIDDEN_TAGS.some((forbidden) => lower === forbidden)
+    || lower.includes('website-inbound')
+    || lower === 'eshow-2026'
+  ) {
+    throw new HighLevelConfigurationError(
+      `${ESHOW_LISTA_TAG_ENV} no puede ser «${normalized}»: dispara el pipeline de la feria o el inbound web.`,
+    );
+  }
+  return normalized;
+}
+
+function readEshowListaToken(env: Record<string, string | undefined>): string {
+  return env.HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN?.trim()
+    || env.GHL_PRIVATE_INTEGRATION_TOKEN?.trim()
+    || '';
+}
+
+function readEshowListaLocationId(env: Record<string, string | undefined>): string {
+  return env.HIGHLEVEL_LOCATION_ID?.trim() || env.GHL_LOCATION_ID?.trim() || '';
+}
+
+function readConsentFieldId(env: Record<string, string | undefined>): string {
+  const raw = env.HIGHLEVEL_CUSTOM_FIELD_IDS_JSON?.trim();
+  if (!raw) return '';
+  try {
+    const parsed = JSON.parse(raw) as { privacy_consent_at?: unknown };
+    return typeof parsed.privacy_consent_at === 'string' ? parsed.privacy_consent_at.trim() : '';
+  } catch {
+    return '';
+  }
+}
+
+export function buildEshowListaUpsertInput(input: {
+  name: string;
+  email: string;
+  locationId: string;
+  consentCapturedAt: string;
+  consentFieldId?: string;
+}): UpsertContactInput {
+  const customFields: HighLevelCustomFieldValue[] = [];
+  if (input.consentFieldId) {
+    customFields.push({ id: input.consentFieldId, fieldValue: input.consentCapturedAt });
+  }
+  return {
+    email: input.email,
+    ...(input.name ? { name: input.name } : {}),
+    locationId: input.locationId,
+    createNewIfDuplicateAllowed: false,
+    ...(customFields.length > 0 ? { customFields } : {}),
+  };
 }
 
 export function validateEshowLista(input: {
@@ -80,14 +135,6 @@ export function withEshowListaAttribution(
   };
 }
 
-function field(
-  config: EnabledHighLevelConfig,
-  key: 'original_source' | 'original_landing' | 'recent_source' | 'recent_landing' | 'form_id' | 'privacy_consent_at' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'utm_content',
-  value: string,
-): HighLevelCustomFieldValue {
-  return { id: config.customFieldIds[key], fieldValue: value };
-}
-
 export type EshowListaSyncResult =
   | { wrote: false; reason: 'tag-unset' }
   | { wrote: true; contactId: string; isNew: boolean; tag: string };
@@ -102,56 +149,39 @@ export async function syncEshowListaToHighLevel(input: {
   gateway?: HighLevelGateway;
 }): Promise<EshowListaSyncResult> {
   const env = input.env || process.env;
-  const tag = readEshowListaTag(env);
+  const tag = assertEshowListaTag(readEshowListaTag(env));
   if (!tag) return { wrote: false, reason: 'tag-unset' };
 
-  const config = readHighLevelConfig(env);
-  if (!config.enabled) {
+  const locationId = readEshowListaLocationId(env);
+  if (!locationId) {
     throw new HighLevelConfigurationError(
-      `${ESHOW_LISTA_TAG_ENV} está definida, pero HighLevel no está habilitado.`,
+      `${ESHOW_LISTA_TAG_ENV} está definida, pero falta HIGHLEVEL_LOCATION_ID o GHL_LOCATION_ID.`,
+    );
+  }
+
+  const testMode = env.HIGHLEVEL_TEST_MODE === 'true';
+  const token = readEshowListaToken(env);
+  if (!testMode && !token && !input.gateway) {
+    throw new HighLevelConfigurationError(
+      `${ESHOW_LISTA_TAG_ENV} está definida, pero falta HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN o GHL_PRIVATE_INTEGRATION_TOKEN.`,
     );
   }
 
   let gateway = input.gateway;
   if (!gateway) {
     const { DryRunHighLevelGateway, HighLevelApiClient } = await import('./highlevel/client.ts');
-    gateway = config.testMode
+    gateway = testMode
       ? new DryRunHighLevelGateway()
-      : new HighLevelApiClient(config.token, config.timeoutMs);
+      : new HighLevelApiClient(token, 8000);
   }
 
-  const original = withEshowListaAttribution(input.originalAttribution);
-  const recent = withEshowListaAttribution(input.recentAttribution);
-
-  const contact = await gateway.upsertContact({
+  const contact = await gateway.upsertContact(buildEshowListaUpsertInput({
     name: input.name,
     email: input.email,
-    locationId: config.locationId,
-    assignedTo: config.ownerId,
-    source: original.source,
-    customFields: [
-      field(config, 'recent_source', recent.source),
-      field(config, 'recent_landing', recent.landing),
-      field(config, 'form_id', ESHOW_LISTA_FORM_ID),
-      field(config, 'privacy_consent_at', input.consentCapturedAt),
-      field(config, 'utm_source', recent.utm_source),
-      field(config, 'utm_medium', recent.utm_medium),
-      field(config, 'utm_campaign', recent.utm_campaign),
-      field(config, 'utm_term', recent.utm_term),
-      field(config, 'utm_content', recent.utm_content),
-    ],
-    createNewIfDuplicateAllowed: false,
-  });
-
-  const currentFields = await gateway.getContactCustomFields(contact.id);
-  const values = new Map(currentFields.map((item) => [item.id, item.fieldValue]));
-  const missingOriginal = [
-    field(config, 'original_source', original.source),
-    field(config, 'original_landing', original.landing),
-  ].filter((item) => item.fieldValue.trim() !== '' && !(values.get(item.id) || '').trim());
-  if (missingOriginal.length > 0) {
-    await gateway.updateContactCustomFields(contact.id, missingOriginal);
-  }
+    locationId,
+    consentCapturedAt: input.consentCapturedAt,
+    consentFieldId: readConsentFieldId(env),
+  }));
 
   await gateway.addContactTags(contact.id, [tag]);
 
