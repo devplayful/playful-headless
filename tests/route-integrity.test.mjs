@@ -174,7 +174,7 @@ test('accepts the exact governed template and concrete inventory', () => {
     manifest,
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(validArtifact().concreteRoutes.length, 81);
+  assert.equal(validArtifact().concreteRoutes.length, 110);
 });
 
 test('requires each of the four dynamic source templates in the artifact', async (t) => {
