@@ -34,8 +34,16 @@ test('home keeps the /agencia-shopify internado', () => {
   assert.match(home, /HOME_HERO.shopifyHref/);
 });
 
-test('home title and meta come from the signed B2B copy', () => {
+test('home title, meta and H1 come from the B2B piece', () => {
   assert.match(copy, /Playful Agency: tienda online de marca en Shopify y WooCommerce/);
+  assert.match(copy, /La tienda online de tu marca, entregada a tiempo y conectada a tu operación/);
   assert.match(home, /title: HOME_META.title/);
   assert.match(home, /description: HOME_META.description/);
+});
+
+test('home keeps the next\/image hero and the case carousel', () => {
+  assert.match(home, /from ['"]next\/image['"]/);
+  assert.match(home, /src="\/images\/playful-imagen-banner\.png"/);
+  assert.match(home, /<CarouselResultados/);
+  assert.match(home, /cases=\{homeCases\}/);
 });

@@ -2,8 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import BookingLink from "@/components/BookingLink";
-import { isBookingDestination } from "@/utils/booking";
 
 interface TwoColumnCtaSectionProps {
   imageUrl?: string;
@@ -20,9 +18,6 @@ interface TwoColumnCtaSectionProps {
   secondaryButtonLink?: string;
   onButtonClick?: () => void;
 }
-
-const buttonClassName =
-  "mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal";
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   imageUrl = "/images/imagen-nueva-cta-home.png",
@@ -104,23 +99,13 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
             ) : null}
 
             <div className="w-full flex flex-col items-center justify-center px-5 py-5 md:p-0">
-              {isBookingDestination(buttonLink) ? (
-                <BookingLink
-                  href={buttonLink}
-                  onClick={onButtonClick}
-                  className={buttonClassName}
-                >
-                  {buttonText}
-                </BookingLink>
-              ) : (
-                <a
-                  href={buttonLink}
-                  onClick={onButtonClick}
-                  className={buttonClassName}
-                >
-                  {buttonText}
-                </a>
-              )}
+              <a
+                href={buttonLink}
+                onClick={onButtonClick}
+                className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {buttonText}
+              </a>
               {secondaryButtonText && secondaryButtonLink ? (
                 <a
                   href={secondaryButtonLink}

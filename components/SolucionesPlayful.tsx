@@ -50,13 +50,8 @@ export default function SolucionesPlayful({
               />
             </div>
             <h3 className="playful-h3 flex-shrink-0 mb-3">{desarrollo.h3}</h3>
-            {desarrollo.body.map((paragraph) => (
-              <p key={paragraph} className="playful-contenido-p flex-1 mb-3 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
             <p className="playful-contenido-p flex-1 mb-3">
-              {HOME_METODO.ecommerceAntes}
+              {desarrollo.body[0]}
               <Link
                 href={HOME_METODO.ecommerceHref}
                 className="font-medium text-[#440099] underline"
@@ -64,6 +59,9 @@ export default function SolucionesPlayful({
                 {HOME_METODO.ecommerceAnchor}
               </Link>
               {HOME_METODO.ecommerceDespues}
+            </p>
+            <p className="playful-contenido-p flex-1 mb-3">
+              {desarrollo.body[1]}
             </p>
             <p className="playful-contenido-p flex-1 mb-3">
               {HOME_METODO.pagosAntes}

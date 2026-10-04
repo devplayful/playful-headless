@@ -1,29 +1,10 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import MaterialServicesSection from '@/components/MaterialServicesSection';
-import SolucionesPlayful from '@/components/SolucionesPlayful';
-import TestimonialsSection from '@/components/TestimonialsSectionClient';
-import { HomePageContent } from './HomePageContent';
-import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
-import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
-import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
-import { featuredTapaForSlug, resolveCaseStudyListingImage } from '@/lib/case-study-listing-image';
-import {
-  HOME_ALIADOS,
-  HOME_BLOG,
-  HOME_CASOS,
-  HOME_CTA_FINAL,
-  HOME_HERO,
-  HOME_META,
-  HOME_TESTIMONIOS,
-} from './home-copy';
+import { HOME_META } from './home-copy';
 
 const HOME_CANONICAL = canonicalForPath('/');
 const HOME_OG_IMAGE = 'https://playfulagency.com/og.jpg';
-const shell = 'max-w-[1200px] mx-auto px-4 md:px-6';
 
 export const metadata: Metadata = {
   title: HOME_META.title,
@@ -49,79 +30,59 @@ export const metadata: Metadata = {
   },
 };
 
-function HomeCaseCards({ casosDeExito }: { casosDeExito: Array<Record<string, any>> }) {
+import Image from "next/image";
+import Link from "next/link";
+import MaterialServicesSection from "@/components/MaterialServicesSection";
+import SolucionesPlayful from "@/components/SolucionesPlayful";
+import CarouselResultados, { type CaseStudy } from "@/components/CarouselResultados";
+import TestimonialsSection from "@/components/TestimonialsSectionClient";
+import { HomePageContent } from "./HomePageContent";
+import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
+import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
+import { featuredTapaForSlug, resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
+import {
+  HOME_ALIADOS,
+  HOME_BLOG,
+  HOME_CASOS,
+  HOME_CTA_FINAL,
+  HOME_HERO,
+  HOME_TESTIMONIOS,
+} from "./home-copy";
+
+const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
+
+function homeCaseStudies(
+  casosDeExito: Array<Record<string, unknown>>,
+): CaseStudy[] {
   const bySlug = new Map(
     casosDeExito
-      .filter((item) => typeof item?.slug === 'string')
+      .filter((item) => typeof item?.slug === "string")
       .map((item) => [item.slug as string, item]),
   );
 
-  return (
-    <div
-      className="w-full flex flex-col gap-[25px] p-[2.2rem] lg:px-[4rem] box-border md:p-[60px_40px] lg:p-[80px_90px] rounded-3xl md:rounded-[68px] bg-[url('/images/background.webp')] text-center playful-contenedor-B3FFF3"
-    >
-      <h2 className="playful-h2 text-center text-3xl md:text-4xl font-normal mb-4 text-white">
-        {HOME_CASOS.h2}
-      </h2>
-      <p className="playful-contenido-p text-center text-lg mb-5 max-w-3xl mx-auto text-white">
-        {HOME_CASOS.intro}
-      </p>
-      <h3 className="playful-h2 pb-4 text-white">
-        {HOME_CASOS.h3}
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {HOME_CASOS.items.map((item) => {
-          const wp = bySlug.get(item.slug);
-          const image = resolveCaseStudyListingImage(wp) || featuredTapaForSlug(item.slug);
-          return (
-            <article key={item.slug} className="bg-white rounded-2xl overflow-hidden shadow-lg flex flex-col text-left">
-              <div className="relative h-48 bg-gray-200 overflow-hidden">
-                {image ? (
-                  <Image
-                    src={image}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 360px, (min-width: 768px) 45vw, 90vw"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                    <span className="text-gray-400">{item.name}</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6 flex flex-col flex-1">
-                <p className="text-xl font-normal text-gray-900 mb-4 leading-tight">
-                  {item.name}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {item.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="flex items-center px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700 whitespace-nowrap"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <p className="playful-contenido-p flex-1 mb-6">
-                  {item.body}
-                </p>
-                <div className="flex justify-end mt-auto">
-                  <Link
-                    href={item.href}
-                    className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-                  >
-                    {item.cta}
-                  </Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </div>
-  );
+  return HOME_CASOS.items.map((item, index) => {
+    const wp = bySlug.get(item.slug);
+    return {
+      id: index + 1,
+      title: item.name,
+      slug: item.slug,
+      description: item.body,
+      categories: [...item.tags],
+      badge: "",
+      badgeColor: "bg-purple-600",
+      buttonText: item.cta,
+      buttonColor: "bg-blue-600",
+      image:
+        resolveCaseStudyListingImage(
+          wp as {
+            slug?: string;
+            featured_media_url?: string;
+            _embedded?: { 'wp:featuredmedia'?: Array<{ source_url?: string }> };
+          },
+        ) || featuredTapaForSlug(item.slug),
+    };
+  });
 }
 
 async function HomeContent() {
@@ -129,9 +90,10 @@ async function HomeContent() {
     getAllCaseStudies().catch(() => []),
     getLatestBlogPosts(6).catch(() => []),
   ]);
-
+  const homeCases = homeCaseStudies(casosDeExito);
   return (
     <div className="">
+      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className={`${shell} pt-4 pb-20`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -192,28 +154,35 @@ async function HomeContent() {
           </div>
         </div>
 
+        {/* Floating decorative elements */}
         <div className="absolute top-20 left-10 w-4 h-4 bg-purple-300 rounded-full opacity-60 animate-bounce"></div>
         <div
           className="absolute top-40 right-20 w-6 h-6 bg-pink-300 rounded-full opacity-60 animate-bounce"
-          style={{ animationDelay: '0.5s' }}
+          style={{ animationDelay: "0.5s" }}
         ></div>
         <div
           className="absolute bottom-40 left-20 w-3 h-3 bg-teal-300 rounded-full opacity-60 animate-bounce"
-          style={{ animationDelay: '1s' }}
+          style={{ animationDelay: "1s" }}
         ></div>
         <div
           className="absolute bottom-20 right-40 w-5 h-5 bg-yellow-300 rounded-full opacity-60 animate-bounce"
-          style={{ animationDelay: '1.5s' }}
+          style={{ animationDelay: "1.5s" }}
         ></div>
       </section>
 
+      {/* Material UI Services Section */}
       <MaterialServicesSection className={shell} />
 
       <SolucionesPlayful className={shell} />
 
       <section className="py-12">
         <div className={shell}>
-          <HomeCaseCards casosDeExito={casosDeExito} />
+          <CarouselResultados
+            title={HOME_CASOS.h2}
+            subtitle={HOME_CASOS.intro}
+            title2={HOME_CASOS.h3}
+            cases={homeCases}
+          />
         </div>
       </section>
 
@@ -223,7 +192,7 @@ async function HomeContent() {
             title={HOME_TESTIMONIOS.h2}
             intro={HOME_TESTIMONIOS.intro}
             alliesTitle={HOME_ALIADOS.titulo}
-            featuredTestimonials={HOME_TESTIMONIOS.destacados}
+            items={HOME_TESTIMONIOS.destacados}
           />
         </div>
       </section>

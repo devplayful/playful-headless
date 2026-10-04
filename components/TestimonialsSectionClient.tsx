@@ -7,10 +7,11 @@ const TestimonialsSection = dynamic(
   { ssr: false }
 );
 
-interface FeaturedTestimonial {
-  quote: string;
+interface TestimonialItem {
+  quote?: string;
+  content?: string;
   name: string;
-  role: string;
+  role?: string;
 }
 
 export default function TestimonialsSectionClient({
@@ -18,13 +19,13 @@ export default function TestimonialsSectionClient({
   title,
   intro,
   alliesTitle,
-  featuredTestimonials,
+  items,
 }: {
   className?: string;
   title?: string;
   intro?: string;
   alliesTitle?: string;
-  featuredTestimonials?: readonly FeaturedTestimonial[];
+  items?: readonly TestimonialItem[];
 }) {
   return (
     <TestimonialsSection
@@ -32,7 +33,7 @@ export default function TestimonialsSectionClient({
       title={title}
       intro={intro}
       alliesTitle={alliesTitle}
-      featuredTestimonials={featuredTestimonials}
+      items={items}
     />
   );
 }

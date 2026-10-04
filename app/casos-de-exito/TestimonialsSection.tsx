@@ -116,10 +116,11 @@ const partnerLogos = [
   "/images/logos/venemergencia.png",
 ];
 
-interface FeaturedTestimonial {
-  quote: string;
+interface TestimonialItem {
+  quote?: string;
+  content?: string;
   name: string;
-  role: string;
+  role?: string;
 }
 
 interface TestimonialsSectionProps {
@@ -128,7 +129,7 @@ interface TestimonialsSectionProps {
   title?: string;
   intro?: string;
   alliesTitle?: string;
-  featuredTestimonials?: readonly FeaturedTestimonial[];
+  items?: readonly TestimonialItem[];
 }
 
 export default function TestimonialsSection({
@@ -137,7 +138,7 @@ export default function TestimonialsSection({
   title = "Lo que nuestros clientes dicen",
   intro = "Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que potencian negocios.",
   alliesTitle = "Nuestros aliados estratégicos",
-  featuredTestimonials,
+  items,
 }: TestimonialsSectionProps) {
   const textStyle: React.CSSProperties = { color: textColor };
 
@@ -152,42 +153,6 @@ export default function TestimonialsSection({
             {intro}
           </p>
         </div>
-
-        {featuredTestimonials?.length ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-[1200px] mx-auto px-4">
-            {featuredTestimonials.map((item) => (
-              <div
-                key={item.name}
-                className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-8"
-              >
-                <div className="w-20 h-20 relative mb-4">
-                  <Image
-                    src="/images/avatar-playful.svg"
-                    alt="Avatar Playful"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <h4 className="font-semibold text-lg mb-1" style={textStyle}>
-                  {item.name}
-                </h4>
-                <p className="text-sm mb-4" style={textStyle}>
-                  {item.role}
-                </p>
-                <div className="flex justify-center mb-4">
-                  <div className="text-yellow-400 text-xl">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-sm md:text-base px-2">
-                  «{item.quote}»
-                </p>
-              </div>
-            ))}
-          </div>
-        ) : null}
 
         {/* Carrusel de testimonios */}
         <div className="w-full overflow-hidden pb-12">
@@ -212,7 +177,15 @@ export default function TestimonialsSection({
               }}
               className="testimonials-swiper"
             >
-              {testimonials.map((testimonial) => (
+              {(items?.length
+                ? items.map((item, index) => ({
+                    id: index + 1,
+                    name: item.name,
+                    role: item.role ?? "",
+                    content: item.quote ?? item.content ?? "",
+                  }))
+                : testimonials
+              ).map((testimonial) => (
                 <SwiperSlide key={testimonial.id}>
                   <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[650px] flex flex-col justify-center items-center text-center p-3 md:p-8">
                     <div className="w-20 h-20 relative mb-4">
@@ -224,9 +197,14 @@ export default function TestimonialsSection({
                       />
                     </div>
 
-                    <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                    <h4 className="font-semibold text-lg mb-1" style={textStyle}>
                       {testimonial.name}
                     </h4>
+                    {testimonial.role ? (
+                      <p className="text-sm mb-4" style={textStyle}>
+                        {testimonial.role}
+                      </p>
+                    ) : null}
 
                     <div className="flex justify-center mb-4">
                       <div className="text-yellow-400 text-xl">
@@ -237,7 +215,7 @@ export default function TestimonialsSection({
                     </div>
 
                     <p className="flex-grow flex items-center text-sm md:text-base px-2">
-                      "{testimonial.content}"
+                      «{testimonial.content}»
                     </p>
                   </div>
                 </SwiperSlide>
