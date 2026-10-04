@@ -36,6 +36,7 @@ import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados, { type CaseStudy } from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
+import HomeTestimonialsBlock from "@/components/HomeTestimonialsBlock";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
@@ -182,17 +183,22 @@ async function HomeContent() {
             subtitle={HOME_CASOS.intro}
             title2={HOME_CASOS.h3}
             cases={homeCases}
+            fullDescription
           />
         </div>
       </section>
 
       <section className="py-12">
         <div className={shell}>
-          <TestimonialsSection
+          <HomeTestimonialsBlock
             title={HOME_TESTIMONIOS.h2}
             intro={HOME_TESTIMONIOS.intro}
-            alliesTitle={HOME_ALIADOS.titulo}
             items={HOME_TESTIMONIOS.destacados}
+          />
+          <TestimonialsSection
+            alliesTitle={HOME_ALIADOS.titulo}
+            hideHeader
+            hideQuotes
           />
         </div>
       </section>

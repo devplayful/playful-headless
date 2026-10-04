@@ -46,4 +46,12 @@ test('home keeps the next\/image hero and the case carousel', () => {
   assert.match(home, /src="\/images\/playful-imagen-banner\.png"/);
   assert.match(home, /<CarouselResultados/);
   assert.match(home, /cases=\{homeCases\}/);
+  assert.match(home, /fullDescription/);
+});
+
+test('home paints the two signed testimonials in a static two-column block', () => {
+  assert.match(home, /<HomeTestimonialsBlock/);
+  assert.match(home, /HOME_TESTIMONIOS.destacados/);
+  assert.match(copy, /Federico Vera/);
+  assert.match(copy, /Eva Cristina Luciani/);
 });
