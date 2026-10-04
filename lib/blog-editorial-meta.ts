@@ -97,6 +97,10 @@ export function toIsoDateTime(value: string): string {
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
     return `${trimmed}T00:00:00.000Z`;
   }
+  // Keep Europe/Madrid (or any numeric) offsets as written. Do not fold them to Z.
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?[+-]\d{2}:\d{2}$/.test(trimmed)) {
+    return trimmed;
+  }
   const timestamp = Date.parse(trimmed);
   return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : trimmed;
 }
@@ -209,20 +213,32 @@ export function buildBlogArticleJsonLd(input: {
   url: string;
   publisherName?: string;
   publisherLogo?: string;
+  type?: 'Article' | 'BlogPosting';
+  about?: { '@type': 'Thing'; name: string };
+  inLanguage?: string;
+  authorType?: 'Person' | 'Organization';
+  authorUrl?: string;
 }): Record<string, unknown> {
   const canonical = input.url;
+  const authorType = input.authorType || 'Person';
   return {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': input.type || 'BlogPosting',
     headline: decodeHtmlEntities(input.headline),
     description: wordpressSeoText(input.description ?? ''),
     image: input.image || undefined,
     datePublished: toIsoDateTime(input.datePublished),
     dateModified: toIsoDateTime(input.dateModified),
-    author: {
-      '@type': 'Person',
-      name: input.authorName || 'Playful Agency',
-    },
+    author: authorType === 'Organization'
+      ? {
+          '@type': 'Organization',
+          name: input.authorName || 'Playful Agency',
+          ...(input.authorUrl ? { url: input.authorUrl } : {}),
+        }
+      : {
+          '@type': 'Person',
+          name: input.authorName || 'Playful Agency',
+        },
     publisher: {
       '@type': 'Organization',
       name: input.publisherName || 'Playful Agency',
@@ -233,5 +249,7 @@ export function buildBlogArticleJsonLd(input: {
     },
     mainEntityOfPage: canonical,
     url: canonical,
+    ...(input.about ? { about: input.about } : {}),
+    ...(input.inLanguage ? { inLanguage: input.inLanguage } : {}),
   };
 }
