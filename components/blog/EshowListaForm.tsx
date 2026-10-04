@@ -2,6 +2,7 @@
 
 import { useId, useRef, useState } from 'react';
 import { getSubmissionAttribution } from '@/lib/contact/client-attribution';
+import { ESHOW_LISTA_PRIVACY_URL } from '@/lib/eshow-madrid-2026';
 import { ESHOW_LISTA_ERRORS } from '@/lib/eshow-lista';
 
 type FieldErrors = Partial<Record<'name' | 'email' | 'consent', string>>;
@@ -190,7 +191,7 @@ export default function EshowListaForm() {
             />
             <label htmlFor={consentId} className="text-gray-700 leading-relaxed">
               Acepto recibir los correos de la lista «Sigue el eShow con Playful» y he leído la{' '}
-              <a href="/politica-de-privacidad" className="text-[#440099] underline">
+              <a href={ESHOW_LISTA_PRIVACY_URL} className="text-[#440099] underline">
                 política de privacidad
               </a>
               .

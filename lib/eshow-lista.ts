@@ -13,6 +13,52 @@ export const ESHOW_LISTA_TAG_ENV = 'GHL_TAG_ESHOW_LISTA';
 export const ESHOW_LISTA_ALLOWED_TAG = 'lista-sigue-eshow-2026';
 export const ESHOW_LISTA_FORBIDDEN_TAGS = ['eshow-2026', 'website-inbound'] as const;
 
+/**
+ * IDs de custom fields listados por GET /locations/{id}/customFields
+ * el 4 oct 2026. Consentimiento: «Consentimiento privacidad (fecha/hora)» TEXT.
+ * Si ese campo desaparece, no se crea otro: el consentimiento va a la nota.
+ */
+export const ESHOW_LISTA_FIELD_IDS = {
+  fuente_original: '46rGGZIFjF6IjhFsgQkf',
+  fuente_reciente: '22lwTrSD9NksHKfS05zG',
+  landing_reciente: 'l4fC4ROH3LmUWOdF721y',
+  id_de_formulario: 're4FCksKLMnVqJMhiYYA',
+  consentimiento_privacidad: 'Fj462mI3xgCgSGRIOxYc',
+  ft_utm_source: 'vC0iZbQSiAMpU9aaOkFB',
+  ft_utm_medium: 'aGdYAMsLKSehSkvymdDk',
+  ft_utm_campaign: 'rzGUFfbL10hogd0QypbJ',
+  ft_utm_term: '6inc5Tp9JTlVjVIufwU2',
+  ft_utm_content: 'ggVv3mETPZLobMZDSrKe',
+  ft_gclid: 'UUrx9CFtgujwChypJtoj',
+  lt_utm_source: 'vj5VmZZcstzQYSYl8GV6',
+  lt_utm_medium: 'CQnP7a9wGzCUDoVTs1Gc',
+  lt_utm_campaign: 'hBmTWQAiid25ddEk6ayn',
+  lt_utm_term: 'w988J16BAs6AZg8cn9J8',
+  lt_utm_content: 'k644EMzEfJSNGqCLQfAM',
+  lt_gclid: 'qZpdsmmwFlbyfqsXOLMq',
+} as const;
+
+const FIRST_TOUCH_UTM_IDS = {
+  utm_source: ESHOW_LISTA_FIELD_IDS.ft_utm_source,
+  utm_medium: ESHOW_LISTA_FIELD_IDS.ft_utm_medium,
+  utm_campaign: ESHOW_LISTA_FIELD_IDS.ft_utm_campaign,
+  utm_term: ESHOW_LISTA_FIELD_IDS.ft_utm_term,
+  utm_content: ESHOW_LISTA_FIELD_IDS.ft_utm_content,
+  gclid: ESHOW_LISTA_FIELD_IDS.ft_gclid,
+} as const;
+
+const LAST_TOUCH_UTM_IDS = {
+  utm_source: ESHOW_LISTA_FIELD_IDS.lt_utm_source,
+  utm_medium: ESHOW_LISTA_FIELD_IDS.lt_utm_medium,
+  utm_campaign: ESHOW_LISTA_FIELD_IDS.lt_utm_campaign,
+  utm_term: ESHOW_LISTA_FIELD_IDS.lt_utm_term,
+  utm_content: ESHOW_LISTA_FIELD_IDS.lt_utm_content,
+  gclid: ESHOW_LISTA_FIELD_IDS.lt_gclid,
+} as const;
+
+const REQUIRED_UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign'] as const;
+const OPTIONAL_UTM_KEYS = ['utm_term', 'utm_content', 'gclid'] as const;
+
 export const ESHOW_LISTA_ERRORS = {
   name: 'Escribe tu nombre para saber a quién escribimos.',
   email: 'Revisa el correo, parece que le falta algo.',
@@ -30,6 +76,39 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function text(value: unknown, maxLength: number): string {
   if (typeof value !== 'string') return '';
   return value.trim().replace(/\u0000/g, '').slice(0, maxLength);
+}
+
+function fieldIsEmpty(value: string | undefined): boolean {
+  return !value || !value.trim();
+}
+
+function attributionValue(
+  attribution: ContactAttribution,
+  key: keyof typeof FIRST_TOUCH_UTM_IDS,
+): string {
+  return attribution[key]?.trim() || '';
+}
+
+function pushUtmFields(
+  fields: HighLevelCustomFieldValue[],
+  ids: typeof FIRST_TOUCH_UTM_IDS | typeof LAST_TOUCH_UTM_IDS,
+  attribution: ContactAttribution,
+  existing?: Map<string, string>,
+): void {
+  for (const key of REQUIRED_UTM_KEYS) {
+    const id = ids[key];
+    const value = attributionValue(attribution, key);
+    if (!value) continue;
+    if (existing && !fieldIsEmpty(existing.get(id))) continue;
+    fields.push({ id, fieldValue: value });
+  }
+  for (const key of OPTIONAL_UTM_KEYS) {
+    const id = ids[key];
+    const value = attributionValue(attribution, key);
+    if (!value) continue;
+    if (existing && !fieldIsEmpty(existing.get(id))) continue;
+    fields.push({ id, fieldValue: value });
+  }
 }
 
 export function readEshowListaTag(env: Record<string, string | undefined> = process.env): string {
@@ -62,34 +141,97 @@ function readEshowListaLocationId(env: Record<string, string | undefined>): stri
   return env.HIGHLEVEL_LOCATION_ID?.trim() || env.GHL_LOCATION_ID?.trim() || '';
 }
 
-function readConsentFieldId(env: Record<string, string | undefined>): string {
+export function readEshowListaConsentFieldId(
+  env: Record<string, string | undefined> = process.env,
+): string {
   const raw = env.HIGHLEVEL_CUSTOM_FIELD_IDS_JSON?.trim();
-  if (!raw) return '';
-  try {
-    const parsed = JSON.parse(raw) as { privacy_consent_at?: unknown };
-    return typeof parsed.privacy_consent_at === 'string' ? parsed.privacy_consent_at.trim() : '';
-  } catch {
-    return '';
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as { privacy_consent_at?: unknown };
+      if (Object.prototype.hasOwnProperty.call(parsed, 'privacy_consent_at')) {
+        return typeof parsed.privacy_consent_at === 'string' ? parsed.privacy_consent_at.trim() : '';
+      }
+    } catch {
+      // El JSON de inbound no es obligatorio en esta ruta aislada.
+    }
   }
+  return ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad;
+}
+
+export function formatMadridOffsetIso(date: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Madrid',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'longOffset',
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) => (
+    parts.find((part) => part.type === type)?.value || ''
+  );
+  const rawOffset = value('timeZoneName').replace(/^GMT/i, '').replace(/^UTC/i, '');
+  let offset = rawOffset;
+  if (/^[+-]\d$/.test(offset)) offset = `${offset[0]}0${offset.slice(1)}:00`;
+  else if (/^[+-]\d{2}$/.test(offset)) offset = `${offset}:00`;
+  else if (/^[+-]\d{4}$/.test(offset)) offset = `${offset.slice(0, 3)}:${offset.slice(3)}`;
+  else if (!/^[+-]\d{2}:\d{2}$/.test(offset)) offset = '+02:00';
+  return `${value('year')}-${value('month')}-${value('day')}T${value('hour')}:${value('minute')}:${value('second')}${offset}`;
+}
+
+export function eshowListaConsentNote(consentCapturedAt: string): string {
+  return `Consentimiento política de privacidad: sí, ${consentCapturedAt}, ${ESHOW_LISTA_FORM_ID}`;
+}
+
+export function buildEshowListaAlwaysFields(input: {
+  recentAttribution: ContactAttribution;
+  consentCapturedAt: string;
+  consentFieldId?: string;
+}): HighLevelCustomFieldValue[] {
+  const fields: HighLevelCustomFieldValue[] = [
+    { id: ESHOW_LISTA_FIELD_IDS.fuente_reciente, fieldValue: ESHOW_LISTA_SOURCE },
+    { id: ESHOW_LISTA_FIELD_IDS.landing_reciente, fieldValue: ESHOW_MADRID_2026_CANONICAL },
+    { id: ESHOW_LISTA_FIELD_IDS.id_de_formulario, fieldValue: ESHOW_LISTA_FORM_ID },
+  ];
+  if (input.consentFieldId) {
+    fields.push({ id: input.consentFieldId, fieldValue: input.consentCapturedAt });
+  }
+  pushUtmFields(fields, LAST_TOUCH_UTM_IDS, input.recentAttribution);
+  return fields;
+}
+
+export function buildEshowListaFirstTouchFields(input: {
+  originalAttribution: ContactAttribution;
+  existing: Map<string, string>;
+}): HighLevelCustomFieldValue[] {
+  const fields: HighLevelCustomFieldValue[] = [];
+  if (fieldIsEmpty(input.existing.get(ESHOW_LISTA_FIELD_IDS.fuente_original))) {
+    fields.push({
+      id: ESHOW_LISTA_FIELD_IDS.fuente_original,
+      fieldValue: ESHOW_LISTA_SOURCE,
+    });
+  }
+  pushUtmFields(fields, FIRST_TOUCH_UTM_IDS, input.originalAttribution, input.existing);
+  return fields;
 }
 
 export function buildEshowListaUpsertInput(input: {
   name: string;
   email: string;
   locationId: string;
-  consentCapturedAt: string;
-  consentFieldId?: string;
+  customFields: HighLevelCustomFieldValue[];
+  tag?: string;
 }): UpsertContactInput {
-  const customFields: HighLevelCustomFieldValue[] = [];
-  if (input.consentFieldId) {
-    customFields.push({ id: input.consentFieldId, fieldValue: input.consentCapturedAt });
-  }
   return {
     email: input.email,
-    ...(input.name ? { name: input.name } : {}),
+    ...(input.name ? { firstName: input.name } : {}),
     locationId: input.locationId,
     createNewIfDuplicateAllowed: false,
-    ...(customFields.length > 0 ? { customFields } : {}),
+    ...(input.customFields.length > 0 ? { customFields: input.customFields } : {}),
+    ...(input.tag ? { tags: [input.tag] } : {}),
   };
 }
 
@@ -137,7 +279,7 @@ export function withEshowListaAttribution(
 
 export type EshowListaSyncResult =
   | { wrote: false; reason: 'tag-unset' }
-  | { wrote: true; contactId: string; isNew: boolean; tag: string };
+  | { wrote: true; contactId: string; isNew: boolean; tag: string; noteWritten: boolean };
 
 export async function syncEshowListaToHighLevel(input: {
   name: string;
@@ -175,15 +317,45 @@ export async function syncEshowListaToHighLevel(input: {
       : new HighLevelApiClient(token, 8000);
   }
 
+  const consentFieldId = readEshowListaConsentFieldId(env);
+  const alwaysFields = buildEshowListaAlwaysFields({
+    recentAttribution: input.recentAttribution,
+    consentCapturedAt: input.consentCapturedAt,
+    consentFieldId,
+  });
+
   const contact = await gateway.upsertContact(buildEshowListaUpsertInput({
     name: input.name,
     email: input.email,
     locationId,
-    consentCapturedAt: input.consentCapturedAt,
-    consentFieldId: readConsentFieldId(env),
+    customFields: alwaysFields,
   }));
+
+  const currentFields = new Map<string, string>();
+  for (const item of await gateway.getContactCustomFields(contact.id)) {
+    if (item.id) currentFields.set(item.id, item.fieldValue);
+  }
+
+  const firstTouchFields = buildEshowListaFirstTouchFields({
+    originalAttribution: input.originalAttribution,
+    existing: currentFields,
+  });
+  if (firstTouchFields.length > 0) {
+    await gateway.updateContactCustomFields(contact.id, firstTouchFields);
+  }
+
+  let noteWritten = false;
+  if (!consentFieldId) {
+    if (!gateway.addContactNote) {
+      throw new HighLevelConfigurationError(
+        'No hay campo de consentimiento en GHL y el cliente no puede escribir la nota del contacto.',
+      );
+    }
+    await gateway.addContactNote(contact.id, eshowListaConsentNote(input.consentCapturedAt));
+    noteWritten = true;
+  }
 
   await gateway.addContactTags(contact.id, [tag]);
 
-  return { wrote: true, contactId: contact.id, isNew: contact.isNew, tag };
+  return { wrote: true, contactId: contact.id, isNew: contact.isNew, tag, noteWritten };
 }

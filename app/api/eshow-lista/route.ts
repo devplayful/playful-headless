@@ -8,6 +8,7 @@ import {
 import { HighLevelConfigurationError } from '@/lib/highlevel/config';
 import {
   eshowListaConfirmation,
+  formatMadridOffsetIso,
   syncEshowListaToHighLevel,
   validateEshowLista,
   withEshowListaAttribution,
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
       email: parsed.email,
       originalAttribution,
       recentAttribution,
-      consentCapturedAt: new Date().toISOString(),
+      consentCapturedAt: formatMadridOffsetIso(),
     });
     return NextResponse.json({
       success: true,

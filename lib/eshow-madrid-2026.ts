@@ -47,8 +47,9 @@ export const ESHOW_MADRID_2026_PROGRAMA_ALT =
 
 export const ESHOW_LISTA_FORM_SLOT = '<p data-eshow-lista-form="" hidden></p>';
 export const ESHOW_LISTA_FORM_MARKER = '<!--eshow-lista-form-->';
-export const ESHOW_LISTA_FORM_ID = 'lista-sigue-eshow';
+export const ESHOW_LISTA_FORM_ID = 'web-eshow-madrid-2026';
 export const ESHOW_LISTA_SOURCE = 'Lista Sigue el eShow';
+export const ESHOW_LISTA_PRIVACY_URL = 'https://playfulagency.com/politica-de-privacidad';
 export const ESHOW_LISTA_DEFAULT_UTM = {
   utm_source: 'blog',
   utm_medium: 'form',
