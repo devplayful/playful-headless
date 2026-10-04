@@ -42,7 +42,10 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+import EshowListaForm from '@/components/blog/EshowListaForm';
 import {
+  ESHOW_LISTA_FORM_MARKER,
+  ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
   ESHOW_MADRID_2026_H1,
   ESHOW_MADRID_2026_META,
   ESHOW_MADRID_2026_SLUG,
@@ -53,6 +56,8 @@ import {
   GOOGLE_MERCHANT_CENTER_TITLE,
   blogArticleJsonLdExtras,
   blogFaqPageJsonLd,
+  eshowMadrid2026DateModified,
+  formatEshowActualizadoLine,
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 
@@ -128,6 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     blogBodyForSlug(postSlug) || post.content?.rendered || '',
   );
   const $ = cheerio.load(sourceHtml);
+  $('[data-eshow-lista-form]').replaceWith(ESHOW_LISTA_FORM_MARKER);
   const headings = $('h2, h3, h4')
     .map((_, el) => {
       const $el = $(el);
@@ -175,20 +181,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
     resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
+  const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
+  const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
     image: toAbsoluteSiteUrl(ogImagePath),
-    datePublished: post.date_gmt || post.date,
-    dateModified:
-      editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
-    authorName,
+    datePublished: isEshow
+      ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
+      : post.date_gmt || post.date,
+    dateModified: isEshow
+      ? eshowMadrid2026DateModified()
+      : editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+    authorName: jsonLdExtras.authorType === 'Organization' ? 'Playful Agency' : authorName,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_SCHEMA.logo,
-    ...blogArticleJsonLdExtras(postSlug),
+    ...jsonLdExtras,
   });
   const faqJsonLd = blogFaqPageJsonLd(postSlug);
+  const eshowUpdatedLine = isEshow ? formatEshowActualizadoLine() : null;
+  const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
+  const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm
+    ? contentWithIds.split(ESHOW_LISTA_FORM_MARKER)
+    : [contentWithIds, null];
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -218,8 +234,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Columna izquierda: Título y resumen */}
             <div>
               <div className="flex flex-wrap items-center space-x-2 mb-4">
-                <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
-                {editorial ? (
+                <span className="text-sm text-gray-500">
+                  {isEshow
+                    ? new Date(post.date).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: 'Europe/Madrid',
+                      })
+                    : formatDate(post.date)}
+                </span>
+                {eshowUpdatedLine ? (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">{eshowUpdatedLine}</span>
+                  </>
+                ) : editorial ? (
                   <>
                     <span className="text-gray-300">•</span>
                     <span className="text-sm text-gray-500">
@@ -376,10 +406,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           )}
           
+          {eshowBodyAfter == null ? (
           <div 
             className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
             dangerouslySetInnerHTML={{ __html: contentWithIds }} 
           />
+          ) : (
+            <>
+              <div
+                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                dangerouslySetInnerHTML={{ __html: eshowBodyBefore }}
+              />
+              <EshowListaForm />
+              <div
+                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                dangerouslySetInnerHTML={{ __html: eshowBodyAfter }}
+              />
+            </>
+          )}
 
           {serviceCta ? (
             <p className="mt-8">
@@ -529,6 +573,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
   });
+  const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
 
   return {
     title,
@@ -542,8 +587,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       type: 'article',
       url,
-      publishedTime: post.date,
-      ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
+      publishedTime: isEshow
+        ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
+        : post.date,
+      ...(isEshow
+        ? { modifiedTime: eshowMadrid2026DateModified() }
+        : editorial
+          ? { modifiedTime: editorial.updatedAt }
+          : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
         {

@@ -1,4 +1,5 @@
 import { isClosedBlogPath } from './blog-closed-paths.ts';
+import { listStagingSitemapBlogEntries } from '../lib/blog-local-posts.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
@@ -172,7 +173,16 @@ export function getSitemapLocs(): string[] {
   ));
 }
 
+function sitemapUrlXml(loc: string, lastmod?: string): string {
+  return lastmod
+    ? `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`
+    : `  <url><loc>${loc}</loc></url>`;
+}
+
 export function buildSitemapXml(): string {
-  const urls = getSitemapLocs().map((loc) => `  <url><loc>${loc}</loc></url>`).join('\n');
+  const urls = [
+    ...getSitemapLocs().map((loc) => sitemapUrlXml(loc)),
+    ...listStagingSitemapBlogEntries().map((entry) => sitemapUrlXml(entry.loc, entry.lastmod)),
+  ].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
