@@ -5,6 +5,7 @@ import { HighLevelConfigurationError } from './highlevel/config.ts';
 import {
   ESHOW_LISTA_DEFAULT_UTM,
   ESHOW_LISTA_FORM_ID,
+  ESHOW_LISTA_PRIVACY_URL,
   ESHOW_LISTA_SOURCE,
   ESHOW_MADRID_2026_CANONICAL,
 } from './eshow-madrid-2026.ts';
@@ -14,9 +15,8 @@ export const ESHOW_LISTA_ALLOWED_TAG = 'lista-sigue-eshow-2026';
 export const ESHOW_LISTA_FORBIDDEN_TAGS = ['eshow-2026', 'website-inbound'] as const;
 
 /**
- * IDs de custom fields listados por GET /locations/{id}/customFields
- * el 4 oct 2026. Consentimiento: «Consentimiento privacidad (fecha/hora)» TEXT.
- * Si ese campo desaparece, no se crea otro: el consentimiento va a la nota.
+ * IDs del contrato Email (playful-copy PR #158, PASOS-JOSE §3).
+ * Consentimiento: los dos campos TEXT ya existen. No se usa nota.
  */
 export const ESHOW_LISTA_FIELD_IDS = {
   fuente_original: '46rGGZIFjF6IjhFsgQkf',
@@ -24,6 +24,7 @@ export const ESHOW_LISTA_FIELD_IDS = {
   landing_reciente: 'l4fC4ROH3LmUWOdF721y',
   id_de_formulario: 're4FCksKLMnVqJMhiYYA',
   consentimiento_privacidad: 'Fj462mI3xgCgSGRIOxYc',
+  consentimiento_marketing: 'H0XhGufYmNDBO3ggoUtU',
   ft_utm_source: 'vC0iZbQSiAMpU9aaOkFB',
   ft_utm_medium: 'aGdYAMsLKSehSkvymdDk',
   ft_utm_campaign: 'rzGUFfbL10hogd0QypbJ',
@@ -141,21 +142,8 @@ function readEshowListaLocationId(env: Record<string, string | undefined>): stri
   return env.HIGHLEVEL_LOCATION_ID?.trim() || env.GHL_LOCATION_ID?.trim() || '';
 }
 
-export function readEshowListaConsentFieldId(
-  env: Record<string, string | undefined> = process.env,
-): string {
-  const raw = env.HIGHLEVEL_CUSTOM_FIELD_IDS_JSON?.trim();
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw) as { privacy_consent_at?: unknown };
-      if (Object.prototype.hasOwnProperty.call(parsed, 'privacy_consent_at')) {
-        return typeof parsed.privacy_consent_at === 'string' ? parsed.privacy_consent_at.trim() : '';
-      }
-    } catch {
-      // El JSON de inbound no es obligatorio en esta ruta aislada.
-    }
-  }
-  return ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad;
+export function eshowListaMarketingConsent(): string {
+  return `Sí — ${ESHOW_LISTA_PRIVACY_URL}`;
 }
 
 export function formatMadridOffsetIso(date: Date = new Date()): string {
@@ -182,23 +170,17 @@ export function formatMadridOffsetIso(date: Date = new Date()): string {
   return `${value('year')}-${value('month')}-${value('day')}T${value('hour')}:${value('minute')}:${value('second')}${offset}`;
 }
 
-export function eshowListaConsentNote(consentCapturedAt: string): string {
-  return `Consentimiento política de privacidad: sí, ${consentCapturedAt}, ${ESHOW_LISTA_FORM_ID}`;
-}
-
 export function buildEshowListaAlwaysFields(input: {
   recentAttribution: ContactAttribution;
   consentCapturedAt: string;
-  consentFieldId?: string;
 }): HighLevelCustomFieldValue[] {
   const fields: HighLevelCustomFieldValue[] = [
     { id: ESHOW_LISTA_FIELD_IDS.fuente_reciente, fieldValue: ESHOW_LISTA_SOURCE },
     { id: ESHOW_LISTA_FIELD_IDS.landing_reciente, fieldValue: ESHOW_MADRID_2026_CANONICAL },
     { id: ESHOW_LISTA_FIELD_IDS.id_de_formulario, fieldValue: ESHOW_LISTA_FORM_ID },
+    { id: ESHOW_LISTA_FIELD_IDS.consentimiento_privacidad, fieldValue: input.consentCapturedAt },
+    { id: ESHOW_LISTA_FIELD_IDS.consentimiento_marketing, fieldValue: eshowListaMarketingConsent() },
   ];
-  if (input.consentFieldId) {
-    fields.push({ id: input.consentFieldId, fieldValue: input.consentCapturedAt });
-  }
   pushUtmFields(fields, LAST_TOUCH_UTM_IDS, input.recentAttribution);
   return fields;
 }
@@ -279,7 +261,7 @@ export function withEshowListaAttribution(
 
 export type EshowListaSyncResult =
   | { wrote: false; reason: 'tag-unset' }
-  | { wrote: true; contactId: string; isNew: boolean; tag: string; noteWritten: boolean };
+  | { wrote: true; contactId: string; isNew: boolean; tag: string };
 
 export async function syncEshowListaToHighLevel(input: {
   name: string;
@@ -317,11 +299,9 @@ export async function syncEshowListaToHighLevel(input: {
       : new HighLevelApiClient(token, 8000);
   }
 
-  const consentFieldId = readEshowListaConsentFieldId(env);
   const alwaysFields = buildEshowListaAlwaysFields({
     recentAttribution: input.recentAttribution,
     consentCapturedAt: input.consentCapturedAt,
-    consentFieldId,
   });
 
   const contact = await gateway.upsertContact(buildEshowListaUpsertInput({
@@ -344,18 +324,7 @@ export async function syncEshowListaToHighLevel(input: {
     await gateway.updateContactCustomFields(contact.id, firstTouchFields);
   }
 
-  let noteWritten = false;
-  if (!consentFieldId) {
-    if (!gateway.addContactNote) {
-      throw new HighLevelConfigurationError(
-        'No hay campo de consentimiento en GHL y el cliente no puede escribir la nota del contacto.',
-      );
-    }
-    await gateway.addContactNote(contact.id, eshowListaConsentNote(input.consentCapturedAt));
-    noteWritten = true;
-  }
-
   await gateway.addContactTags(contact.id, [tag]);
 
-  return { wrote: true, contactId: contact.id, isNew: contact.isNew, tag, noteWritten };
+  return { wrote: true, contactId: contact.id, isNew: contact.isNew, tag };
 }
