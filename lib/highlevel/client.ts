@@ -19,12 +19,14 @@ export interface HighLevelNativeAttribution {
 
 export interface UpsertContactInput {
   name?: string;
+  firstName?: string;
   email: string;
   phone?: string;
   companyName?: string;
   locationId: string;
   assignedTo?: string;
   source?: string;
+  tags?: string[];
   attributionSource?: HighLevelNativeAttribution;
   lastAttributionSource?: HighLevelNativeAttribution;
   customFields?: HighLevelCustomFieldValue[];
@@ -72,6 +74,7 @@ export interface HighLevelGateway {
   getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
+  addContactNote?(contactId: string, body: string): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
   updateOpportunityCustomFields(
@@ -183,6 +186,13 @@ export class HighLevelApiClient implements HighLevelGateway {
     });
   }
 
+  async addContactNote(contactId: string, body: string): Promise<void> {
+    await this.request('add contact note', `/contacts/${encodeURIComponent(contactId)}/notes`, {
+      method: 'POST',
+      body: JSON.stringify({ body }),
+    });
+  }
+
   async findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]> {
     const params = new URLSearchParams({
       locationId,
@@ -268,6 +278,7 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
     }
   }
   async addContactTags(): Promise<void> {}
+  async addContactNote(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
   async createOpportunity(): Promise<{ id: string }> { return { id: 'preview-opportunity' }; }
   async updateOpportunityCustomFields(): Promise<void> {}
