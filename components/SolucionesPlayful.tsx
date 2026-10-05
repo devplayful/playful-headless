@@ -9,9 +9,69 @@ export default function SolucionesPlayful({
   className?: string;
 }) {
   const [diseno, desarrollo, entrega] = HOME_METODO.items;
+  const steps = [
+    {
+      item: diseno,
+      body: diseno.body.map((paragraph) => (
+        <p key={paragraph} className="playful-contenido-p mb-3 last:mb-0 text-left">
+          {paragraph}
+        </p>
+      )),
+    },
+    {
+      item: desarrollo,
+      body: (
+        <>
+          <p className="playful-contenido-p mb-3 text-left">
+            {desarrollo.body[0]}
+            <Link
+              href={HOME_METODO.ecommerceHref}
+              className="font-medium text-[#440099] underline"
+            >
+              {HOME_METODO.ecommerceAnchor}
+            </Link>
+            {HOME_METODO.ecommerceDespues}
+          </p>
+          <p className="playful-contenido-p mb-3 text-left">
+            {desarrollo.body[1]}
+          </p>
+          <p className="playful-contenido-p mb-3 text-left">
+            {HOME_METODO.pagosAntes}
+            <Link
+              href={HOME_METODO.pagosHref}
+              className="font-medium text-[#440099] underline"
+            >
+              {HOME_METODO.pagosAnchor}
+            </Link>
+            {HOME_METODO.pagosDespues}
+          </p>
+          <p className="playful-contenido-p text-left">
+            {HOME_METODO.migracion}
+          </p>
+        </>
+      ),
+    },
+    {
+      item: entrega,
+      body: entrega.body.map((paragraph) => (
+        <p key={paragraph} className="playful-contenido-p mb-3 last:mb-0 text-left">
+          {paragraph}
+        </p>
+      )),
+    },
+  ];
 
   return (
     <section className={`${className} pb-[1rem]`}>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .home-metodo-paso-num::before {
+              content: attr(data-n);
+            }
+          `,
+        }}
+      />
       <div className="playful-contenedor playful-contenedor-B3FFF3 ">
         <h2 className="playful-h2 max-w-3xl mx-auto">
           {HOME_METODO.h2}
@@ -20,81 +80,34 @@ export default function SolucionesPlayful({
           {HOME_METODO.intro}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
-          <div className="conversion-card flex flex-col">
-            <div className="card-icon flex-shrink-0 mb-4 w-[200px] h-[200px] relative mx-auto">
-              <Image
-                src={diseno.icon}
-                alt=""
-                width={200}
-                height={200}
-                className="object-contain"
-              />
-            </div>
-            <h3 className="playful-h3 flex-shrink-0 mb-3">{diseno.h3}</h3>
-            {diseno.body.map((paragraph) => (
-              <p key={paragraph} className="playful-contenido-p flex-1 mb-3 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-
-          <div className="conversion-card flex flex-col">
-            <div className="card-icon flex-shrink-0 mb-4 w-[200px] h-[200px] relative mx-auto">
-              <Image
-                src={desarrollo.icon}
-                alt=""
-                width={200}
-                height={200}
-                className="object-contain"
-              />
-            </div>
-            <h3 className="playful-h3 flex-shrink-0 mb-3">{desarrollo.h3}</h3>
-            <p className="playful-contenido-p flex-1 mb-3">
-              {desarrollo.body[0]}
-              <Link
-                href={HOME_METODO.ecommerceHref}
-                className="font-medium text-[#440099] underline"
-              >
-                {HOME_METODO.ecommerceAnchor}
-              </Link>
-              {HOME_METODO.ecommerceDespues}
-            </p>
-            <p className="playful-contenido-p flex-1 mb-3">
-              {desarrollo.body[1]}
-            </p>
-            <p className="playful-contenido-p flex-1 mb-3">
-              {HOME_METODO.pagosAntes}
-              <Link
-                href={HOME_METODO.pagosHref}
-                className="font-medium text-[#440099] underline"
-              >
-                {HOME_METODO.pagosAnchor}
-              </Link>
-              {HOME_METODO.pagosDespues}
-            </p>
-            <p className="playful-contenido-p flex-1">
-              {HOME_METODO.migracion}
-            </p>
-          </div>
-
-          <div className="conversion-card flex flex-col">
-            <div className="card-icon flex-shrink-0 mb-4 w-[200px] h-[200px] relative mx-auto">
-              <Image
-                src={entrega.icon}
-                alt=""
-                width={200}
-                height={200}
-                className="object-contain"
-              />
-            </div>
-            <h3 className="playful-h3 flex-shrink-0 mb-3">{entrega.h3}</h3>
-            {entrega.body.map((paragraph) => (
-              <p key={paragraph} className="playful-contenido-p flex-1 mb-3 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+        <div className="flex flex-col gap-6 md:gap-8 mt-12 w-full">
+          {steps.map(({ item, body }, index) => (
+            <article
+              key={item.h3}
+              className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-6 md:p-8 w-full text-left flex flex-col md:flex-row md:items-start md:gap-10"
+            >
+              <div className="md:w-[34%] md:flex-shrink-0 mb-5 md:mb-0">
+                <span
+                  className="playful-h2 home-metodo-paso-num mb-3 block"
+                  data-n={String(index + 1).padStart(2, "0")}
+                  aria-hidden="true"
+                />
+                <div className="card-icon flex-shrink-0 mb-4 w-24 h-24 relative">
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={96}
+                    height={96}
+                    className="object-contain"
+                  />
+                </div>
+                <h3 className="playful-h3">{item.h3}</h3>
+              </div>
+              <div className="md:flex-1 min-w-0">
+                {body}
+              </div>
+            </article>
+          ))}
         </div>
 
         <div className="text-center mt-12">
