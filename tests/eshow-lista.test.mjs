@@ -58,6 +58,9 @@ function mockGateway(existingFields = []) {
     async updateContactCustomFields(id, fields) {
       calls.push(['update-fields', id, fields]);
     },
+    async updateContactLastName(id, lastName) {
+      calls.push(['clear-last-name', id, lastName]);
+    },
     async addContactNote(id, body) {
       calls.push(['note', id, body]);
     },
@@ -166,6 +169,8 @@ test('lista upsert writes firstName, Email fields and never inbound tags', () =>
   assert.equal(payload.email, 'qa+eshow-lista@playfulagency.com');
   assert.equal(payload.firstName, 'QA eShow');
   assert.equal(payload.name, undefined);
+  assert.equal(payload.lastName, undefined);
+  assert.equal('lastName' in payload, false);
   assert.equal(payload.locationId, 'loc');
   assert.equal(payload.assignedTo, undefined);
   assert.equal(payload.source, undefined);
@@ -246,13 +251,15 @@ test('when the tag is set the sync writes fields first and the tag after', async
   });
 
   const names = gateway.calls.map((item) => item[0]);
-  assert.deepEqual(names, ['upsert', 'get-fields', 'update-fields', 'tags']);
+  assert.deepEqual(names, ['upsert', 'clear-last-name', 'get-fields', 'update-fields', 'tags']);
   assert.ok(names.indexOf('upsert') < names.indexOf('tags'));
   assert.ok(names.indexOf('update-fields') < names.indexOf('tags'));
 
   const upsert = gateway.calls.find((item) => item[0] === 'upsert')?.[1];
   assert.equal(upsert.firstName, 'Ana');
   assert.equal(upsert.name, undefined);
+  assert.equal(upsert.lastName, undefined);
+  assert.deepEqual(gateway.calls.find((item) => item[0] === 'clear-last-name'), ['clear-last-name', 'c1', '']);
   assert.equal(upsert.assignedTo, undefined);
   assert.equal(upsert.source, undefined);
   assert.equal(upsert.tags, undefined);
@@ -279,6 +286,7 @@ test('when the tag is set the sync writes fields first and the tag after', async
   assert.equal(gateway.calls.some((item) => item[0] === 'create-opportunity'), false);
   assert.equal(gateway.calls.some((item) => item[0] === 'create-task'), false);
   assert.doesNotMatch(syncSource, /readHighLevelConfig|PLAYFUL-TSS/);
+  assert.doesNotMatch(syncSource, /split\(\s*['\"]\\s/);
   assert.match(syncSource, /ESHOW_LISTA_FORBIDDEN_TAGS/);
   assert.match(apiSource, /syncEshowListaToHighLevel/);
   assert.match(apiSource, /formatMadridOffsetIso/);
