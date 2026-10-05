@@ -13,11 +13,15 @@ const {
   eshowListaConfirmation,
   eshowListaMarketingConsent,
   formatMadridOffsetIso,
+  readEshowListaLocationId,
   readEshowListaTag,
+  readEshowListaToken,
   syncEshowListaToHighLevel,
   validateEshowLista,
   withEshowListaAttribution,
 } = await import('../lib/eshow-lista.ts');
+
+const { HighLevelConfigurationError } = await import('../lib/highlevel/config.ts');
 
 const {
   ESHOW_LISTA_FORM_ID,
@@ -347,5 +351,101 @@ test('forbidden inbound tag still rejects before any write', async () => {
       gateway: { async upsertContact() { return { id: 'x', isNew: true }; } },
     }),
     /inbound web/,
+  );
+});
+
+test('token and location prefer HIGHLEVEL_* and fall back to GHL_*', () => {
+  assert.equal(readEshowListaToken({}), '');
+  assert.equal(readEshowListaLocationId({}), '');
+  assert.equal(readEshowListaToken({
+    HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN: ' high-token ',
+    GHL_PRIVATE_INTEGRATION_TOKEN: 'ghl-token',
+  }), 'high-token');
+  assert.equal(readEshowListaToken({
+    GHL_PRIVATE_INTEGRATION_TOKEN: ' ghl-token ',
+  }), 'ghl-token');
+  assert.equal(readEshowListaLocationId({
+    HIGHLEVEL_LOCATION_ID: ' high-loc ',
+    GHL_LOCATION_ID: 'ghl-loc',
+  }), 'high-loc');
+  assert.equal(readEshowListaLocationId({
+    GHL_LOCATION_ID: ' ghl-loc ',
+  }), 'ghl-loc');
+  assert.match(syncSource, /HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN/);
+  assert.match(syncSource, /GHL_PRIVATE_INTEGRATION_TOKEN/);
+  assert.match(syncSource, /HIGHLEVEL_LOCATION_ID/);
+  assert.match(syncSource, /GHL_LOCATION_ID/);
+  assert.doesNotMatch(syncSource, /readHighLevelConfig\(/);
+});
+
+test('sync uses HIGHLEVEL location first and GHL location as fallback', async () => {
+  const attribution = withEshowListaAttribution({});
+  const preferred = mockGateway();
+  await syncEshowListaToHighLevel({
+    name: 'Ana',
+    email: 'ana@correo.com',
+    originalAttribution: attribution,
+    recentAttribution: attribution,
+    consentCapturedAt: '2026-10-04T18:00:00+02:00',
+    env: {
+      GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
+      HIGHLEVEL_LOCATION_ID: 'high-loc',
+      GHL_LOCATION_ID: 'ghl-loc',
+    },
+    gateway: preferred,
+  });
+  assert.equal(preferred.calls.find((item) => item[0] === 'upsert')?.[1].locationId, 'high-loc');
+
+  const fallback = mockGateway();
+  await syncEshowListaToHighLevel({
+    name: 'Ana',
+    email: 'ana@correo.com',
+    originalAttribution: attribution,
+    recentAttribution: attribution,
+    consentCapturedAt: '2026-10-04T18:00:00+02:00',
+    env: {
+      GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
+      GHL_LOCATION_ID: 'ghl-loc',
+    },
+    gateway: fallback,
+  });
+  assert.equal(fallback.calls.find((item) => item[0] === 'upsert')?.[1].locationId, 'ghl-loc');
+});
+
+test('missing location or token throws HighLevelConfigurationError', async () => {
+  const attribution = withEshowListaAttribution({});
+  await assert.rejects(
+    () => syncEshowListaToHighLevel({
+      name: 'Ana',
+      email: 'ana@correo.com',
+      originalAttribution: attribution,
+      recentAttribution: attribution,
+      consentCapturedAt: '2026-10-04T18:00:00+02:00',
+      env: { GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026' },
+    }),
+    (error) => {
+      assert.equal(error instanceof HighLevelConfigurationError, true);
+      assert.match(error.message, /HIGHLEVEL_LOCATION_ID o GHL_LOCATION_ID/);
+      return true;
+    },
+  );
+
+  await assert.rejects(
+    () => syncEshowListaToHighLevel({
+      name: 'Ana',
+      email: 'ana@correo.com',
+      originalAttribution: attribution,
+      recentAttribution: attribution,
+      consentCapturedAt: '2026-10-04T18:00:00+02:00',
+      env: {
+        GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
+        HIGHLEVEL_LOCATION_ID: 'loc',
+      },
+    }),
+    (error) => {
+      assert.equal(error instanceof HighLevelConfigurationError, true);
+      assert.match(error.message, /HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN o GHL_PRIVATE_INTEGRATION_TOKEN/);
+      return true;
+    },
   );
 });

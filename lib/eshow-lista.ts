@@ -132,13 +132,13 @@ export function assertEshowListaTag(tag: string): string {
   return normalized;
 }
 
-function readEshowListaToken(env: Record<string, string | undefined>): string {
+export function readEshowListaToken(env: Record<string, string | undefined> = process.env): string {
   return env.HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN?.trim()
     || env.GHL_PRIVATE_INTEGRATION_TOKEN?.trim()
     || '';
 }
 
-function readEshowListaLocationId(env: Record<string, string | undefined>): string {
+export function readEshowListaLocationId(env: Record<string, string | undefined> = process.env): string {
   return env.HIGHLEVEL_LOCATION_ID?.trim() || env.GHL_LOCATION_ID?.trim() || '';
 }
 
