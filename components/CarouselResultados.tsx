@@ -143,7 +143,7 @@ export const CaseStudyCard = ({
 
   return (
     <div className="px-2 h-full">
-      <div className={`bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col ${fullDescription ? 'min-h-[500px] h-auto' : 'h-[500px]'}`}>
+      <div className={`bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full ${fullDescription ? 'min-h-[500px]' : 'h-[500px]'}`}>
         <Link href={`/casos-de-exito/${caseStudy.slug}`} className="block h-full flex flex-col">
           {/* Imagen */}
           <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
@@ -194,7 +194,7 @@ export const CaseStudyCard = ({
               ))}
             </div>
 
-            {/* Descripción */}
+            {/* Descripción: crece para igualar alturas; el botón queda anclado abajo */}
             <div className="text-gray-600 text-sm mb-6 flex-1 leading-5">
               <p
                 className={fullDescription ? '' : 'line-clamp-3'}
@@ -214,8 +214,7 @@ export const CaseStudyCard = ({
               </p>
             </div>
 
-            {/* Botón alineado a la derecha */}
-            <div className="flex justify-end mt-auto">
+            <div className={`flex mt-auto ${fullDescription ? 'justify-center' : 'justify-end'}`}>
               <button
                 className={`${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0`}
               >
