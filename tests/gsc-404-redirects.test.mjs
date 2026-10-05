@@ -32,6 +32,18 @@ const GSC_301 = [
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
     'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
   ],
+  [
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
 ];
 
 const CERRAR_SAMPLE_410 = [
