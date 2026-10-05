@@ -259,7 +259,7 @@ test('when the tag is set the sync writes fields first and the tag after', async
   assert.equal(upsert.firstName, 'Ana');
   assert.equal(upsert.name, undefined);
   assert.equal(upsert.lastName, undefined);
-  assert.deepEqual(gateway.calls.find((item) => item[0] === 'clear-last-name'), ['clear-last-name', 'c1', '']);
+  assert.deepEqual(gateway.calls.find((item) => item[0] === 'clear-last-name'), ['clear-last-name', 'c1', null]);
   assert.equal(upsert.assignedTo, undefined);
   assert.equal(upsert.source, undefined);
   assert.equal(upsert.tags, undefined);
