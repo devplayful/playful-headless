@@ -15,24 +15,30 @@ const jumexOdwallaUtil = readFileSync(
   'utf8',
 );
 
-function heroBody(source) {
-  const start = source.indexOf('Left Content');
-  assert.notEqual(start, -1, 'missing home hero left column');
-  const end = source.indexOf('Right Illustration Area', start);
-  assert.notEqual(end, -1, 'missing home hero right column');
-  return source.slice(start, end);
+function heroFollowup(source) {
+  const heroStart = source.indexOf('{/* Hero Section */}');
+  assert.notEqual(heroStart, -1, 'missing home hero');
+  const heroEnd = source.indexOf('</section>', heroStart);
+  assert.notEqual(heroEnd, -1, 'missing home hero close');
+  const followupEnd = source.indexOf('<MaterialServicesSection', heroEnd);
+  assert.notEqual(followupEnd, -1, 'missing problemas section after hero followup');
+  return {
+    hero: source.slice(heroStart, heroEnd),
+    followup: source.slice(heroEnd, followupEnd),
+  };
 }
 
-test('home hero body has one contextual Agencia Shopify anchor', () => {
-  const body = heroBody(home);
-  assert.match(copy, /Si tu tienda ya funciona en Shopify o quieres migrar a Shopify/);
+test('home keeps one contextual Agencia Shopify anchor in the post-hero text module', () => {
+  const { hero, followup } = heroFollowup(home);
+  assert.match(copy, /Si la tienda de tu marca ya funciona en Shopify o el plan es migrar a Shopify/);
   assert.match(copy, /shopifyHref: '\/agencia-shopify'/);
   assert.match(copy, /shopifyAnchor: 'agencia Shopify'/);
-  assert.match(body, /HOME_HERO.shopifyHref/);
-  assert.match(body, /HOME_HERO.shopifyAnchor/);
-  assert.equal((body.match(/HOME_HERO.shopifyHref/g) || []).length, 1);
+  assert.doesNotMatch(hero, /HOME_HERO.shopifyHref/);
+  assert.match(followup, /HOME_HERO.shopifyHref/);
+  assert.match(followup, /HOME_HERO.shopifyAnchor/);
+  assert.equal((followup.match(/HOME_HERO.shopifyHref/g) || []).length, 1);
   assert.match(
-    body,
+    followup,
     /<Link href=\{HOME_HERO.shopifyHref\} className="font-medium text-\[#440099\] underline">/,
   );
 });

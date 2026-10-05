@@ -57,6 +57,26 @@ test('home paints the two signed testimonials in a static two-column block', () 
   assert.match(copy, /Eva Cristina Luciani/);
 });
 
+test('hero keeps only the first paragraph with the H1 and CTAs; the rest follows as a text module', () => {
+  const heroStart = home.indexOf('{/* Hero Section */}');
+  const heroEnd = home.indexOf('</section>', heroStart);
+  const hero = home.slice(heroStart, heroEnd);
+  const afterHero = home.slice(heroEnd);
+  assert.match(hero, /HOME_HERO\.subtitulo/);
+  assert.match(hero, /HOME_HERO\.ctaPrincipal/);
+  assert.match(hero, /HOME_HERO\.microcopia/);
+  assert.match(hero, /HOME_HERO\.ctaSecundario/);
+  assert.doesNotMatch(hero, /HOME_HERO\.cuerpo/);
+  assert.doesNotMatch(hero, /HOME_HERO\.shopifyAntes/);
+  assert.match(afterHero, /HOME_HERO\.cuerpo\.map/);
+  assert.match(afterHero, /HOME_HERO\.shopifyAntes/);
+  assert.match(afterHero, /<MaterialServicesSection/);
+  const followupEnd = afterHero.indexOf('<MaterialServicesSection');
+  const followup = afterHero.slice(0, followupEnd);
+  assert.match(followup, /HOME_HERO\.cuerpo/);
+  assert.match(followup, /HOME_HERO\.shopifyHref/);
+});
+
 test('metodo steps are full-width rows, not a three-column grid', () => {
   assert.doesNotMatch(metodo, /md:grid-cols-3/);
   assert.match(metodo, /flex flex-col gap-6 md:gap-8/);
