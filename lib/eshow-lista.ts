@@ -315,7 +315,7 @@ export async function syncEshowListaToHighLevel(input: {
   }));
 
   if (gateway.updateContactLastName) {
-    await gateway.updateContactLastName(contact.id, '');
+    await gateway.updateContactLastName(contact.id, null);
   }
 
   const currentFields = new Map<string, string>();
