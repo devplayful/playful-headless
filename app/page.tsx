@@ -109,18 +109,6 @@ async function HomeContent() {
 
               <div className="space-y-4 text-purple-800">
                 <p className="playful-contenido-p">{HOME_HERO.subtitulo}</p>
-                {HOME_HERO.cuerpo.map((paragraph) => (
-                  <p key={paragraph} className="playful-contenido-p">
-                    {paragraph}
-                  </p>
-                ))}
-                <p className="playful-contenido-p">
-                  {HOME_HERO.shopifyAntes}
-                  <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
-                    {HOME_HERO.shopifyAnchor}
-                  </Link>
-                  {HOME_HERO.shopifyDespues}
-                </p>
               </div>
 
               <div className="space-y-3">
@@ -169,6 +157,25 @@ async function HomeContent() {
           className="absolute bottom-20 right-40 w-5 h-5 bg-yellow-300 rounded-full opacity-60 animate-bounce"
           style={{ animationDelay: "1.5s" }}
         ></div>
+      </section>
+
+      <section className="relative">
+        <div className={`${shell} pt-2 pb-16 md:pb-20`}>
+          <div className="max-w-[40rem] md:max-w-[42rem] space-y-6">
+            {HOME_HERO.cuerpo.map((paragraph) => (
+              <p key={paragraph} className="playful-contenido-p leading-7 md:leading-8">
+                {paragraph}
+              </p>
+            ))}
+            <p className="playful-contenido-p leading-7 md:leading-8">
+              {HOME_HERO.shopifyAntes}
+              <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
+                {HOME_HERO.shopifyAnchor}
+              </Link>
+              {HOME_HERO.shopifyDespues}
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Material UI Services Section */}
