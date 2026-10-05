@@ -72,6 +72,7 @@ export interface HighLevelGateway {
   upsertContact(input: UpsertContactInput): Promise<UpsertContactResult>;
   getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
+  updateContactLastName?(contactId: string, lastName: string): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
   addContactNote?(contactId: string, body: string): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
@@ -174,6 +175,13 @@ export class HighLevelApiClient implements HighLevelGateway {
     });
   }
 
+  async updateContactLastName(contactId: string, lastName: string): Promise<void> {
+    await this.request('update contact last name', `/contacts/${encodeURIComponent(contactId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ lastName }),
+    });
+  }
+
   async addContactTags(contactId: string, tags: string[]): Promise<void> {
     await this.request('add contact tag', `/contacts/${encodeURIComponent(contactId)}/tags`, {
       method: 'POST',
@@ -263,6 +271,7 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
     }
   }
   async addContactTags(): Promise<void> {}
+  async updateContactLastName(): Promise<void> {}
   async addContactNote(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
   async createOpportunity(): Promise<{ id: string }> { return { id: 'preview-opportunity' }; }

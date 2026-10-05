@@ -207,6 +207,9 @@ export function buildEshowListaUpsertInput(input: {
   customFields: HighLevelCustomFieldValue[];
   tag?: string;
 }): UpsertContactInput {
+  // El formulario solo pide nombre: firstName lleva el texto tal cual.
+  // No enviamos `name` ni `lastName` y no partimos el nombre. Si se omite
+  // lastName, GHL lo rellena con la última palabra de firstName.
   return {
     email: input.email,
     ...(input.name ? { firstName: input.name } : {}),
@@ -310,6 +313,10 @@ export async function syncEshowListaToHighLevel(input: {
     locationId,
     customFields: alwaysFields,
   }));
+
+  if (gateway.updateContactLastName) {
+    await gateway.updateContactLastName(contact.id, '');
+  }
 
   const currentFields = new Map<string, string>();
   for (const item of await gateway.getContactCustomFields(contact.id)) {
