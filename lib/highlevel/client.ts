@@ -20,6 +20,7 @@ export interface HighLevelNativeAttribution {
 export interface UpsertContactInput {
   name?: string;
   firstName?: string;
+  lastName?: string | null;
   email: string;
   phone?: string;
   companyName?: string;
@@ -72,7 +73,7 @@ export interface HighLevelGateway {
   upsertContact(input: UpsertContactInput): Promise<UpsertContactResult>;
   getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
-  updateContactLastName?(contactId: string, lastName: string): Promise<void>;
+  updateContactLastName?(contactId: string, lastName: string | null): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
   addContactNote?(contactId: string, body: string): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
@@ -175,7 +176,7 @@ export class HighLevelApiClient implements HighLevelGateway {
     });
   }
 
-  async updateContactLastName(contactId: string, lastName: string): Promise<void> {
+  async updateContactLastName(contactId: string, lastName: string | null): Promise<void> {
     await this.request('update contact last name', `/contacts/${encodeURIComponent(contactId)}`, {
       method: 'PUT',
       body: JSON.stringify({ lastName }),
