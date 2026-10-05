@@ -63,6 +63,15 @@ export default function SolucionesPlayful({
 
   return (
     <section className={`${className} pb-[1rem]`}>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .home-metodo-paso-num::before {
+              content: attr(data-n);
+            }
+          `,
+        }}
+      />
       <div className="playful-contenedor playful-contenedor-B3FFF3 ">
         <h2 className="playful-h2 max-w-3xl mx-auto">
           {HOME_METODO.h2}
@@ -78,7 +87,11 @@ export default function SolucionesPlayful({
               className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-6 md:p-8 w-full text-left flex flex-col md:flex-row md:items-start md:gap-10"
             >
               <div className="md:w-[34%] md:flex-shrink-0 mb-5 md:mb-0">
-                <p className="playful-miga-pan mb-3">{String(index + 1).padStart(2, "0")}</p>
+                <span
+                  className="playful-h2 home-metodo-paso-num mb-3 block"
+                  data-n={String(index + 1).padStart(2, "0")}
+                  aria-hidden="true"
+                />
                 <div className="card-icon flex-shrink-0 mb-4 w-24 h-24 relative">
                   <Image
                     src={item.icon}

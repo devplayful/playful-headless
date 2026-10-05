@@ -82,6 +82,8 @@ test('metodo steps are full-width rows, not a three-column grid', () => {
   assert.match(metodo, /flex flex-col gap-6 md:gap-8/);
   assert.match(metodo, /md:flex-row md:items-start/);
   assert.match(metodo, /HOME_METODO\.items/);
+  assert.match(metodo, /home-metodo-paso-num/);
+  assert.doesNotMatch(metodo, />0[123]</);
 });
 
 test('home case cards stretch to equal height and center the Ver caso button', () => {

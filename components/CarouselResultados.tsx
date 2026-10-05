@@ -35,18 +35,21 @@ const cardStyles = `
     word-wrap: break-word;
     line-height: 1.25rem;
   }
+  .conversion-cards-wrapper .slick-list {
+    height: auto;
+  }
+  .conversion-cards-wrapper .slick-track {
+    display: flex !important;
+    align-items: stretch;
+  }
   .conversion-cards-wrapper .slick-slide {
     height: auto;
+    display: flex !important;
   }
   .conversion-cards-wrapper .slick-slide > div {
     height: 100%;
-  }
-  .conversion-cards-wrapper .slick-track {
+    width: 100%;
     display: flex;
-    align-items: stretch;
-  }
-  .conversion-cards-wrapper .slick-list {
-    height: 100%;
   }
 `;
 
@@ -144,7 +147,7 @@ export const CaseStudyCard = ({
   return (
     <div className="px-2 h-full">
       <div className={`bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full ${fullDescription ? 'min-h-[500px]' : 'h-[500px]'}`}>
-        <Link href={`/casos-de-exito/${caseStudy.slug}`} className="block h-full flex flex-col">
+        <Link href={`/casos-de-exito/${caseStudy.slug}`} className="flex flex-col h-full">
           {/* Imagen */}
           <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
             {hasImage ? (
