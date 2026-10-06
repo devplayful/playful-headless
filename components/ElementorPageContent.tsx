@@ -3,6 +3,7 @@ import './ElementorPageHeaderFix.css';
 import ElementorPageScripts from './ElementorPageScripts';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
+import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -108,7 +109,10 @@ export default function ElementorPageContent({
   slug = '',
 }: ElementorPageContentProps) {
   const bodyHtml = rewriteElementorBodyHrefs(
-    rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+    rewriteEcommerceZelleCover(
+      rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+      slug,
+    ),
     slug,
   );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
