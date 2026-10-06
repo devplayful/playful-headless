@@ -13,6 +13,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import AttributionCapture from '@/components/AttributionCapture';
 import BookingQueryPropagator from '@/components/BookingQueryPropagator';
+import BookingWidgetAttribution from '@/components/BookingWidgetAttribution';
 import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
@@ -121,6 +122,7 @@ export default function RootLayout({
           <AttributionCapture />
           <Suspense fallback={null}>
             <BookingQueryPropagator />
+            <BookingWidgetAttribution />
           </Suspense>
         </ThemeProvider>
       </body>
