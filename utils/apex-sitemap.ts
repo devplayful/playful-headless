@@ -8,6 +8,8 @@ export const SITEMAP_STATIC_PATHS = [
   "/contactar-agencia-de-marketing-digital",
   "/agencia-e-commerce",
   "/agencia-shopify",
+  "/agencia-prestashop",
+  "/agencia-woocommerce",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",

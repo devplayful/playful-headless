@@ -4,7 +4,9 @@
   "sourceRoutes": [
     "/",
     "/[slug]",
+    "/agencia-prestashop",
     "/agencia-shopify",
+    "/agencia-woocommerce",
     "/api/blog-posts",
     "/api/contact",
     "/blog",
@@ -24,7 +26,9 @@
   ],
   "criticalRoutes": [
     "/",
+    "/agencia-prestashop",
     "/agencia-shopify",
+    "/agencia-woocommerce",
     "/api/blog-posts",
     "/api/contact",
     "/blog",
