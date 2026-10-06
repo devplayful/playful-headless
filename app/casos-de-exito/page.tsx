@@ -6,6 +6,7 @@ import {
   CASE_STUDIES_HUB_TITLE,
   CASE_STUDIES_HUB_WP_SLUG,
 } from '@/utils/case-study-hub';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import CaseStudiesContent from './CaseStudiesContent';
 
 export default function CaseStudiesPage() {
@@ -41,6 +42,7 @@ export async function generateMetadata() {
             ]
           : [],
       },
+      twitter: twitterFromOpenGraph(title, description),
     };
   } catch (error) {
     console.error('Error al generar metadatos de la página de casos de éxito:', error);
@@ -53,6 +55,7 @@ export async function generateMetadata() {
         description,
         url,
       },
+      twitter: twitterFromOpenGraph(title, description),
     };
   }
 }

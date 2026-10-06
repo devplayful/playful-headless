@@ -1,5 +1,6 @@
 import { getPageMetadataBySlug, TeamMember, getTeamMembers } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
@@ -443,5 +444,6 @@ export async function generateMetadata() {
       description,
       url,
     },
+    twitter: twitterFromOpenGraph(title, description),
   };
 }
