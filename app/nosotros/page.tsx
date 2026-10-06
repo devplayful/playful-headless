@@ -3,6 +3,7 @@ import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import BleedIllustrationCard from '@/components/ui/BleedIllustrationCard';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 
@@ -51,36 +52,42 @@ const HistorySection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16 p-[20px]">
           
           {/* Tarjeta 1 */}
-          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
-            <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
+          <BleedIllustrationCard
+            className="bg-[#E9D7FF] text-left min-h-[280px] w-full lg:w-[480px] mx-auto"
+            bodyClassName="p-8 md:p-12"
+            media={
               <Image
                 src="/images/nosotros/historia-eficiencia-seguridad.png"
                 alt="Ilustración de estrategia digital"
-                width={200}
-                height={180}
-                className="object-contain"
+                fill
+                sizes="(min-width: 1024px) 480px, calc(100vw - 2rem)"
+                className="object-cover object-center"
               />
-            </div>
+            }
+          >
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
               Hemos aplicado este conocimiento para ofrecer servicios completos de SEO, campañas de Ads, y desarrollo web de alta calidad, diseñados para atraer tráfico de calidad, mejorar las tasas de conversión y asegurar que las plataformas digitales de nuestros clientes sean rápidas, seguras y eficientes.
             </p>
-          </div>
+          </BleedIllustrationCard>
           
           {/* Tarjeta 2 */}
-          <div className="bg-[#E9D7FF] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left min-h-[280px] w-full lg:w-[480px] mx-auto">
-            <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
+          <BleedIllustrationCard
+            className="bg-[#E9D7FF] text-left min-h-[280px] w-full lg:w-[480px] mx-auto"
+            bodyClassName="p-8 md:p-12"
+            media={
               <Image
                 src="/images/nosotros/generamos-exito-roi.png"
                 alt="Ilustración de crecimiento y optimización"
-                width={200}
-                height={180}
-                className="object-contain"
+                fill
+                sizes="(min-width: 1024px) 480px, calc(100vw - 2rem)"
+                className="object-cover object-center"
               />
-            </div>
+            }
+          >
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
               Es ayudar a empresas como la tuya a optimizar su presencia digital y alcanzar sus metas comerciales. Si buscas mejorar tu visibilidad en los motores de búsqueda, maximizar el retorno de la inversión en publicidad pagada o construir un sitio web que funcione como una herramienta de ventas eficaz, Playful Agency tiene la experiencia y las soluciones necesarias para ayudarte a crecer.
             </p>
-          </div>
+          </BleedIllustrationCard>
         </div>
       </div>
     </section>
@@ -94,38 +101,44 @@ const MissionVisionSection = () => {
       <div className="px-0 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tarjeta Misión */}
-          <div className="bg-[#FFEFD1] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left">
-              <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
-                <Image
-                  src="/images/nosotros/nuestra-mision.png"
-                  alt="Ilustración de crecimiento y optimización"
-                  width={200}
-                  height={180}
-                  className="object-contain"
-                />
-              </div>
+          <BleedIllustrationCard
+            className="bg-[#FFEFD1] text-left"
+            bodyClassName="p-8 md:p-12"
+            media={
+              <Image
+                src="/images/nosotros/nuestra-mision.png"
+                alt="Ilustración de crecimiento y optimización"
+                fill
+                sizes="(min-width: 1024px) 560px, calc(100vw - 2rem)"
+                className="object-cover object-center"
+              />
+            }
+          >
               <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] pt-[20px] text-[#453A53] mb-4">MISIÓN</h3>
               <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
                 Acompañar a equipos de ecommerce en el diseño, implementación y evolución de experiencias digitales funcionales. Trabajamos sobre arquitectura, interfaz, integraciones y medición para que cada proyecto tenga un alcance técnico definido y criterios de verificación claros.
               </p>
-            </div>
+          </BleedIllustrationCard>
           
           {/* Tarjeta Visión */}
-          <div className="bg-[#FFDBDB] rounded-[32px] shadow-lg p-8 md:p-12 flex flex-col text-left">
-              <div className="relative w-full max-w-[220px] h-[180px] mb-6 mx-auto">
-                <Image
-                  src="/images/nosotros/nuestra-vision.png"
-                  alt="Ilustración de crecimiento y optimización"
-                  width={200}
-                  height={180}
-                  className="object-contain"
-                />
-              </div>
+          <BleedIllustrationCard
+            className="bg-[#FFDBDB] text-left"
+            bodyClassName="p-8 md:p-12"
+            media={
+              <Image
+                src="/images/nosotros/nuestra-vision.png"
+                alt="Ilustración de crecimiento y optimización"
+                fill
+                sizes="(min-width: 1024px) 560px, calc(100vw - 2rem)"
+                className="object-cover object-center"
+              />
+            }
+          >
               <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[32px] leading-[40px] pt-[20px] text-[#453A53] mb-4">VISIÓN</h3>
               <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
                 En 10 años, Playful será la empresa número 1 en ecommerce en Iberoamérica, habiendo influenciado y desarrollado las marcas más importantes del sector. A través de nuestra innovación y apoyo continuo, habremos ayudado a miles de emprendedores y empresarios a transformar sus negocios digitales, consolidándonos como el motor de crecimiento del ecommerce en la región.
               </p>
-            </div>
+          </BleedIllustrationCard>
         </div>
       </div>
     </section>
@@ -285,23 +298,27 @@ const NuestrosValoresSection = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
         {valores.map((valor) => (
-          <div key={valor.id} className="flex flex-col items-center text-center p-8 md:p-12 bg-[#FEF7FF] rounded-[32px] shadow-lg hover:shadow-xl transition-shadow min-h-[500px]">
-            <div className="mb-6 h-[180px] w-[200px] relative mx-auto">
+          <BleedIllustrationCard
+            key={valor.id}
+            className="items-center text-center bg-[#FEF7FF] hover:shadow-xl transition-shadow min-h-[500px]"
+            bodyClassName="p-8 md:p-12"
+            media={
               <Image
                 src={valor.imagen}
                 alt={valor.titulo}
-                width={200}
-                height={180}
-                className="object-contain"
+                fill
+                sizes="(min-width: 1024px) 360px, (min-width: 768px) 45vw, calc(100vw - 2rem)"
+                className="object-cover object-center"
               />
-            </div>
+            }
+          >
             <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[24px] leading-[30px] text-[#453A53] mb-3">
               {valor.titulo}
             </h3>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-medium text-[16px] leading-[24px] text-[#4A4453]">
               {valor.descripcion}
             </p>
-          </div>
+          </BleedIllustrationCard>
         ))}
       </div>
     </section>

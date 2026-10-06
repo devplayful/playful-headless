@@ -1,17 +1,25 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Script from 'next/script'
+import { isProductionAnalyticsHostname } from '@/lib/analytics/production-tags'
 
 interface GoogleTagManagerProps {
   gtmId: string
 }
 
 export default function GoogleTagManager({ gtmId }: GoogleTagManagerProps) {
-  if (!gtmId) return null
+  const [allowed, setAllowed] = useState(false)
+
+  useEffect(() => {
+    setAllowed(isProductionAnalyticsHostname(window.location.hostname))
+  }, [])
+
+  if (!gtmId || !allowed) return null
 
   return (
     <>
-      {/* Google Tag Manager Script */}
+      {/* Google Tag Manager — only after apex/www hostname check */}
       <Script
         id="gtm-script"
         strategy="afterInteractive"
@@ -31,7 +39,13 @@ export default function GoogleTagManager({ gtmId }: GoogleTagManagerProps) {
 
 // Componente para el noscript del body
 export function GoogleTagManagerNoscript({ gtmId }: GoogleTagManagerProps) {
-  if (!gtmId) return null
+  const [allowed, setAllowed] = useState(false)
+
+  useEffect(() => {
+    setAllowed(isProductionAnalyticsHostname(window.location.hostname))
+  }, [])
+
+  if (!gtmId || !allowed) return null
 
   return (
     <noscript>

@@ -22,7 +22,11 @@ import {
   blogOgForSlug,
   resolveBlogOgUrl,
 } from '@/lib/blog-cover-image';
-import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  blogBodyForSlug,
+  MIGRACION_SEO_ALT_BLOG_SLUG,
+  MIGRACION_SEO_PLAN_PATH,
+} from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import {
   buildBlogArticleJsonLd,
@@ -39,12 +43,33 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+import EshowListaForm from '@/components/blog/EshowListaForm';
+import {
+  ESHOW_LISTA_FORM_MARKER,
+  ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
+  ESHOW_MADRID_2026_H1,
+  ESHOW_MADRID_2026_META,
+  ESHOW_MADRID_2026_SLUG,
+  ESHOW_MADRID_2026_TITLE,
+  GOOGLE_MERCHANT_CENTER_H1,
+  GOOGLE_MERCHANT_CENTER_META,
+  GOOGLE_MERCHANT_CENTER_SLUG,
+  GOOGLE_MERCHANT_CENTER_TITLE,
+  blogArticleJsonLdExtras,
+  blogFaqPageJsonLd,
+  eshowMadrid2026DateModified,
+  formatEshowActualizadoLine,
+  localBlogStaticParams,
+} from '@/lib/blog-local-posts';
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
   // getBlogPosts(1, 100) + `_embed` path was 3.5–4.7 MB and Next
-  // refused to cache it.
-  return getBlogStaticParams();
+  // refused to cache it. Staging still unions local-only slugs.
+  const fromWp = await getBlogStaticParams();
+  const seen = new Set(fromWp.map((entry) => entry.slug.join('/')));
+  const fromLocal = localBlogStaticParams().filter((entry) => !seen.has(entry.slug.join('/')));
+  return [...fromWp, ...fromLocal];
 }
 
 const formatDate = (dateString: string) => {
@@ -109,6 +134,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     blogBodyForSlug(postSlug) || post.content?.rendered || '',
   );
   const $ = cheerio.load(sourceHtml);
+  $('[data-eshow-lista-form]').replaceWith(ESHOW_LISTA_FORM_MARKER);
   const headings = $('h2, h3, h4')
     .map((_, el) => {
       const $el = $(el);
@@ -150,22 +176,36 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     post.author && typeof post.author === 'object'
       ? post.author.avatar_urls?.['48']
       : undefined;
-  const postCanonical = canonicalForPath(blogPostPath(post));
+  const postCanonical = canonicalForPath(
+    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
+  );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
     resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
+  const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
+  const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
     image: toAbsoluteSiteUrl(ogImagePath),
-    datePublished: post.date_gmt || post.date,
-    dateModified:
-      editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
-    authorName,
+    datePublished: isEshow
+      ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
+      : post.date_gmt || post.date,
+    dateModified: isEshow
+      ? eshowMadrid2026DateModified()
+      : editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+    authorName: jsonLdExtras.authorType === 'Organization' ? 'Playful Agency' : authorName,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_SCHEMA.logo,
+    ...jsonLdExtras,
   });
+  const faqJsonLd = blogFaqPageJsonLd(postSlug);
+  const eshowUpdatedLine = isEshow ? formatEshowActualizadoLine() : null;
+  const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
+  const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm
+    ? contentWithIds.split(ESHOW_LISTA_FORM_MARKER)
+    : [contentWithIds, null];
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -180,12 +220,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
-    <h1 className="sr-only">{pageH1}</h1>
-    {serviceCta ? (
-      <p data-playful-service-cta="" className="sr-only">
-        <a href={serviceCta.href}>{serviceCta.label}</a>
-      </p>
+    {faqJsonLd ? (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+      />
     ) : null}
+    <h1 className="sr-only">{pageH1}</h1>
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
@@ -194,8 +235,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Columna izquierda: Título y resumen */}
             <div>
               <div className="flex flex-wrap items-center space-x-2 mb-4">
-                <span className="text-sm text-gray-500">{formatDate(post.date)}</span>
-                {editorial ? (
+                <span className="text-sm text-gray-500">
+                  {isEshow
+                    ? new Date(post.date).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: 'Europe/Madrid',
+                      })
+                    : formatDate(post.date)}
+                </span>
+                {eshowUpdatedLine ? (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">{eshowUpdatedLine}</span>
+                  </>
+                ) : editorial ? (
                   <>
                     <span className="text-gray-300">•</span>
                     <span className="text-sm text-gray-500">
@@ -237,12 +292,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Columna derecha: Imagen destacada */}
             {post.featured_media_url && (
-              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#DFFFFE] to-[#E0F7FA]">
+              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden">
                 <Image
                   src={post.featured_media_url}
                   alt={post.featured_media_alt || post.title.rendered}
                   fill
-                  className="object-contain p-8"
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 80vw"
                   priority
                 />
               </div>
@@ -351,10 +407,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           )}
           
+          {eshowBodyAfter == null ? (
           <div 
             className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
             dangerouslySetInnerHTML={{ __html: contentWithIds }} 
           />
+          ) : (
+            <>
+              <div
+                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                dangerouslySetInnerHTML={{ __html: eshowBodyBefore }}
+              />
+              <EshowListaForm />
+              <div
+                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                dangerouslySetInnerHTML={{ __html: eshowBodyAfter }}
+              />
+            </>
+          )}
 
           {serviceCta ? (
             <p className="mt-8">
@@ -429,14 +499,37 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description: 'Si tu tienda ya vende y se quedó corta, actualizar el e-commerce no es empezar de cero. Es mejorar la experiencia, la gestión y el pedido que ya tienes.',
   },
   'cintillos-de-promocion': {
-    title: 'Cintillos de promoción en ecommerce | Playful',
-    description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
+    title: 'Cintillos publicitarios en ecommerce: guía práctica | Playful',
+    description: 'Los cintillos publicitarios en ecommerce destacan la oferta en el momento justo. Aprende a diseñarlos para que capten clics y conviertan en tu tienda.',
+    h1: 'Cintillos publicitarios en ecommerce: cómo diseñarlos para atraer y retener clientes',
   },
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
     title: 'Zelle en Venezuela: cobra en tu tienda online | Playful',
     description:
       'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
     h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
+  },
+  'cashea-para-comercios': {
+    title: 'Cashea para comercios: cuotas en tu tienda online',
+    description:
+      'Cashea para comercios: cómo ofrecer cuotas en el checkout de tu tienda online en Venezuela. Playful integra el método; no somos la app ni la pasarela.',
+    h1: 'Cashea para comercios: cómo ofrecer cuotas en tu tienda online',
+  },
+  'migracion-seo-cambiar-de-plataforma-alternativa': {
+    title: 'Migración SEO: cambia de plataforma sin perder ranking',
+    description:
+      'Cómo hacer una migración SEO al cambiar de plataforma: inventario de URLs, redirecciones 301 y un ejemplo de tienda que deja Shopify en Venezuela.',
+    h1: 'Cómo hacer una migración SEO al cambiar de plataforma de tienda online',
+  },
+  [ESHOW_MADRID_2026_SLUG]: {
+    title: ESHOW_MADRID_2026_TITLE,
+    description: ESHOW_MADRID_2026_META,
+    h1: ESHOW_MADRID_2026_H1,
+  },
+  [GOOGLE_MERCHANT_CENTER_SLUG]: {
+    title: GOOGLE_MERCHANT_CENTER_TITLE,
+    description: GOOGLE_MERCHANT_CENTER_META,
+    h1: GOOGLE_MERCHANT_CENTER_H1,
   },
 };
 
@@ -460,7 +553,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const url = canonicalForPath(blogPostPath(post));
+  const url = canonicalForPath(
+    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
+  );
 
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
@@ -479,18 +574,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
   });
+  const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
 
   return {
     title,
     description,
     alternates: { canonical: url },
+    ...(postSlug === MIGRACION_SEO_ALT_BLOG_SLUG
+      ? { robots: { index: false, follow: true } }
+      : {}),
     openGraph: {
       title,
       description,
       type: 'article',
       url,
-      publishedTime: post.date,
-      ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
+      publishedTime: isEshow
+        ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
+        : post.date,
+      ...(isEshow
+        ? { modifiedTime: eshowMadrid2026DateModified() }
+        : editorial
+          ? { modifiedTime: editorial.updatedAt }
+          : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
         {

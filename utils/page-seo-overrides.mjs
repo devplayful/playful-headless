@@ -8,12 +8,14 @@
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
     'Agencia ecommerce para venta directa | Playful Agency',
-  'agencia-seo':
-    'Agencia SEO Playful Agency | Mejora tu Posicionamiento',
   'pagos-online-ecommerce':
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   'pasarela-de-pago-ecommerce':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  'pasarela-de-pagos-venezuela':
+    'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  'agencia-diseno-web':
+    'Agencia de diseño web para tiendas online | Playful Agency',
 };
 
 export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
@@ -30,6 +32,8 @@ export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
     'Para marcas que ya venden directo al consumidor (D2C): ordenamos tu tienda online, el posicionamiento y el diseño para que venda más. Agenda tu llamada.',
+  'agencia-diseno-web':
+    'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDescription) {

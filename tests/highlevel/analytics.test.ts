@@ -5,11 +5,14 @@ import {
   pushGenerateLead,
 } from '../../lib/contact/analytics.ts';
 
-function withWindow(value: unknown, run: () => Promise<void> | void) {
+function withWindow(value: Record<string, unknown>, run: () => Promise<void> | void) {
   const originalWindow = globalThis.window;
   Object.defineProperty(globalThis, 'window', {
     configurable: true,
-    value,
+    value: {
+      location: { hostname: 'playfulagency.com' },
+      ...value,
+    },
   });
   return Promise.resolve()
     .then(run)
@@ -72,5 +75,27 @@ test('does not block when dataLayer is missing', async () => {
     const started = Date.now();
     await pushGenerateLead('website-contact', 400);
     assert(Date.now() - started < 80);
+  });
+});
+
+test('does not throw when gtag is absent and dataLayer.push fails', async () => {
+  await withWindow({
+    dataLayer: {
+      push() {
+        throw new Error('gtm missing');
+      },
+    },
+  }, async () => {
+    await pushGenerateLead('website-contact', 50);
+  });
+});
+
+test('does not push generate_lead on preview or Vercel alias hosts', async () => {
+  await withWindow({
+    location: { hostname: 'playful-headless-abc.vercel.app' },
+    dataLayer: [],
+  }, async () => {
+    await pushGenerateLead('website-contact', 50);
+    assert.deepEqual(window.dataLayer, []);
   });
 });

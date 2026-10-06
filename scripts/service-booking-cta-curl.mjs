@@ -63,8 +63,8 @@ for (const slug of SLUGS) {
   if (widgetApi.length) {
     throw new Error(`/${slug} still exposes the GHL widget API URL`);
   }
-  if (!booked.some((cta) => cta.text.includes('Agendar Reunión'))) {
-    throw new Error(`/${slug} has no Agendar Reunión label after rewrite`);
+  if (!booked.some((cta) => cta.text.includes(BOOKING_CTA_LABEL))) {
+    throw new Error(`/${slug} has no ${BOOKING_CTA_LABEL} label after rewrite`);
   }
 }
 

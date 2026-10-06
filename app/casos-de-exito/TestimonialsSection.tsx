@@ -116,32 +116,51 @@ const partnerLogos = [
   "/images/logos/venemergencia.png",
 ];
 
+interface TestimonialItem {
+  quote?: string;
+  content?: string;
+  name: string;
+  role?: string;
+}
+
 interface TestimonialsSectionProps {
   textColor?: string;
   className?: string;
+  title?: string;
+  intro?: string;
+  alliesTitle?: string;
+  items?: readonly TestimonialItem[];
+  hideHeader?: boolean;
+  hideQuotes?: boolean;
 }
 
 export default function TestimonialsSection({
   textColor = "#4A4453",
   className,
+  title = "Lo que nuestros clientes dicen",
+  intro = "Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que potencian negocios.",
+  alliesTitle = "Nuestros aliados estratégicos",
+  items,
+  hideHeader = false,
+  hideQuotes = false,
 }: TestimonialsSectionProps) {
   const textStyle: React.CSSProperties = { color: textColor };
 
   return (
     <section className={className}>
       <div className="w-full">
+        {hideHeader ? null : (
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-normal mb-4" style={textStyle}>
-            Lo que nuestros clientes dicen
+            {title}
           </h2>
           <p className="text-lg mb-12 max-w-3xl mx-auto" style={textStyle}>
-            Aquí, la voz la tienen ellos. Las historias de nuestros clientes no solo son nuestra mejor carta
-            de presentación, sino también el reflejo de un trabajo enfocado en resultados reales que
-            potencian negocios.
+            {intro}
           </p>
         </div>
+        )}
 
-        {/* Carrusel de testimonios */}
+        {hideQuotes ? null : (
         <div className="w-full overflow-hidden pb-12">
           <div className="max-w-[1200px] mx-auto px-4">
             <Swiper
@@ -164,7 +183,15 @@ export default function TestimonialsSection({
               }}
               className="testimonials-swiper"
             >
-              {testimonials.map((testimonial) => (
+              {(items?.length
+                ? items.map((item, index) => ({
+                    id: index + 1,
+                    name: item.name,
+                    role: item.role ?? "",
+                    content: item.quote ?? item.content ?? "",
+                  }))
+                : testimonials
+              ).map((testimonial) => (
                 <SwiperSlide key={testimonial.id}>
                   <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full h-[650px] flex flex-col justify-center items-center text-center p-3 md:p-8">
                     <div className="w-20 h-20 relative mb-4">
@@ -176,9 +203,14 @@ export default function TestimonialsSection({
                       />
                     </div>
 
-                    <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                    <h4 className="font-semibold text-lg mb-1" style={textStyle}>
                       {testimonial.name}
                     </h4>
+                    {testimonial.role ? (
+                      <p className="text-sm mb-4" style={textStyle}>
+                        {testimonial.role}
+                      </p>
+                    ) : null}
 
                     <div className="flex justify-center mb-4">
                       <div className="text-yellow-400 text-xl">
@@ -189,7 +221,7 @@ export default function TestimonialsSection({
                     </div>
 
                     <p className="flex-grow flex items-center text-sm md:text-base px-2">
-                      "{testimonial.content}"
+                      «{testimonial.content}»
                     </p>
                   </div>
                 </SwiperSlide>
@@ -197,11 +229,12 @@ export default function TestimonialsSection({
             </Swiper>
           </div>
         </div>
+        )}
 
         {/* Logos */}
         <div className="py-16">
           <h3 className="text-center text-2xl md:text-3xl font-normal mb-12" style={textStyle}>
-            Nuestros aliados estratégicos
+            {alliesTitle}
           </h3>
 
           <div className="w-full max-w-[1200px] mx-auto px-4 pb-12">

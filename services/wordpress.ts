@@ -16,6 +16,11 @@ import {
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
+  getStagingLocalBlogPost,
+  listStagingLocalBlogStaticParams,
+  localBlogPostBySlug,
+} from '@/lib/blog-local-posts';
+import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
   BLOG_LATEST_OVERSCAN,
@@ -1085,9 +1090,12 @@ export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> 
       .map((term) => ({ ...term, taxonomy: 'category' }));
     return { ...post, categories };
   });
-  return filterOpenBlogPosts(hydrated).map((post) => ({
-    slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
-  }));
+  return [
+    ...filterOpenBlogPosts(hydrated).map((post) => ({
+      slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
+    })),
+    ...listStagingLocalBlogStaticParams(),
+  ];
 }
 
 async function loadBlogStaticParamsPage(
@@ -1111,6 +1119,9 @@ async function loadBlogStaticParamsPage(
 const blogPostBySlugBuildCache = new Map<string, Promise<WPPost | null>>();
 
 const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> => {
+  const local = localBlogPostBySlug(slug);
+  if (local) return local;
+
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard&_fields=${BLOG_ARTICLE_POST_FIELDS}`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
@@ -1140,6 +1151,8 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
  * fetched once, not twice per route.
  */
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  const local = getStagingLocalBlogPost(slug);
+  if (local) return local;
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     const hit = blogPostBySlugBuildCache.get(slug);
     if (hit) return hit;

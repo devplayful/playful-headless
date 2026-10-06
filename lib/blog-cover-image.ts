@@ -2,7 +2,10 @@
  * Local Magnific covers that replace WordPress featured + OG/Twitter
  * for José-approved lote 1 + lote 2 + lote 3 (23 sep 2026) + lote 4
  * (24 sep 2026, José GO vía Diseño) + lote 5 (24 sep 2026, José GO
- * vía Diseño) + lote 6 (29–30 sep 2026, José GO vía Diseño). Same override
+ * vía Diseño) + lote 6 (29 sep 2026, José GO) + lote 7 (29 sep 2026,
+ * José GO) + lote 8 (29 sep 2026, José GO vía Diseño) + lote 9
+ * (29 sep 2026, José GO vía Diseño) + lote 10 (29 sep 2026, José GO
+ * vía Diseño) + lote 11 (30 sep 2026, José GO vía Diseño). Same override
  * shape as CASOS_DE_EXITO_FEATURED_TAPAS: slug → public/ path.
  *
  * 24 sep 2026 (José GO vía Diseño): N2eMFsC6D9 canónico en
@@ -73,17 +76,22 @@ export const BLOG_COVER_OVERRIDES = {
     '/images/blog/11-auditoria-seo-magnific-s7AQv7dl8e.png',
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
-  // lote 6 (29–30 sep 2026, José GO vía Diseño)
+  // lote 6 (29 sep 2026, José GO 17:33)
   'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
     '/images/blog/13-analitica-web-magnific-79TnhawJAL.png',
+  // lote 7 (29 sep 2026, José GO)
   'como-crear-anuncios-en-facebook':
     '/images/blog/14-anuncios-facebook-magnific-5j69aiPKxe.png',
+  // lote 8 (29 sep 2026, José GO vía Diseño 21:41)
   'como-usar-el-remarketing-para-tener-mas-clientes':
     '/images/blog/15-remarketing-magnific-ovxxg2H829.png',
+  // lote 9 (29 sep 2026, José GO vía Diseño 22:38)
   'estrategia-de-email-marketing':
     '/images/blog/16-estrategia-email-magnific-LwGzTFJswO.png',
+  // lote 10 (29 sep 2026, José GO vía Diseño 22:39)
   'la-nueva-gestion-de-google-ads':
     '/images/blog/17-gestion-google-ads-magnific-iGo8Tmd3uK.png',
+  // lote 11 (30 sep 2026, José GO vía Diseño 11:52)
   'live-stream-shopping-compra-mientras-interactuas':
     '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png',
 } as const;
@@ -123,7 +131,7 @@ export function blogOgForSlug(slug: string | undefined | null): string {
   return BLOG_OG_OVERRIDES[slug as BlogOgSlug] || '';
 }
 
-/** Prefer the local Magnific cover when the slug is in lote 1–6. */
+/** Prefer the local Magnific cover when the slug is in lote 1–11. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
   fallback = '',

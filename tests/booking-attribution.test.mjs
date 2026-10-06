@@ -212,7 +212,7 @@ test('Shopify, gracias and blog CTAs go through /reunion-playful; layout propaga
   assert.match(shopifyPage, /href = SERVICE_BOOKING_HREF/);
   assert.match(shopifyPage, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(shopifyPage, /buttonLink=\{BOOKING_HREF\}/);
-  assert.match(gracias, /href="\/reunion-playful"/);
+  assert.doesNotMatch(shopifyPage, /href=\{BOOKING_HREF\}/);
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);

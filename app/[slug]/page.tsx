@@ -8,9 +8,6 @@ export const revalidate = 300;
 export const dynamicParams = true;
 
 const SERVICE_SLUGS = [
-  'agencia-seo',
-  'agencia-sem',
-  'agencia-diseno-web',
   'agencia-e-commerce',
   'marketing-internacional',
   'agencia-ux-ui',

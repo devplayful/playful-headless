@@ -51,14 +51,19 @@ test('blog post page renders the mapped CTA after article HTML', () => {
 test('mapped service CTA and article HTML are not gated behind a client loader', () => {
   assert.doesNotMatch(blogPage, /BlogPostContent|BlogLoader|Cargando artículo/);
   assert.doesNotMatch(blogPage, /^['"]use client['"]/m);
-  assert.match(blogPage, /data-playful-service-cta/);
-  assert.match(blogPage, /<a href=\{serviceCta\.href\}>/);
+  assert.match(blogPage, /<a\s+href=\{serviceCta\.href\}/);
   assert.match(blogPage, /\{serviceCta\.label\}/);
   assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
 });
 
+test('Zelle shopify CTA is not an sr-only data-playful-service-cta injection', () => {
+  assert.doesNotMatch(blogPage, /data-playful-service-cta/);
+});
+
 test('post canonical stays on the blog post, not a service landing', () => {
-  assert.match(blogPage, /canonicalForPath\(blogPostPath\(post\)\)/);
+  assert.match(blogPage, /canonicalForPath\(/);
+  assert.match(blogPage, /blogPostPath\(post\)/);
+  assert.match(blogPage, /MIGRACION_SEO_PLAN_PATH/);
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.doesNotMatch(metadataFn, /agencia-sem/);
   assert.doesNotMatch(metadataFn, /agencia-shopify/);

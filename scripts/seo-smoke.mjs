@@ -168,11 +168,17 @@ function extractOgTitle(html) {
 const expectedTitles = {
   '/agencia-e-commerce':
     'Agencia ecommerce para venta directa | Playful Agency',
+  '/agencia-seo':
+    'Agencia SEO para ecommerce que ya vende | Playful Agency',
+  '/agencia-sem':
+    'Agencia SEM para ecommerce que ya invierte en ads | Playful Agency',
   '/agencia-shopify':
     'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   '/pasarela-de-pago-ecommerce':
+    'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  '/pasarela-de-pagos-venezuela':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
   '/marketing-internacional':
     'Marketing Internacional: Lleva tu negocio al mundo (sin complicaciones)',
@@ -218,9 +224,47 @@ assert.doesNotMatch(shopifyHtml, /Cocina/i);
 assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
 assert.match(shopifyHtml, /href=["']\/reunion-playful["']/);
 assert.doesNotMatch(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
-assert.match(shopifyHtml, /Agendar Reunión con Playful/);
+assert.match(shopifyHtml, /Solicitar una reunión/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
+
+const seoResponse = await request('/agencia-seo', { redirect: 'follow' });
+assert.equal(seoResponse.status, 200, '/agencia-seo should return 200');
+const seoHtml = await seoResponse.text();
+const seoCanonicals = [...seoHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(seoCanonicals.length, 1, '/agencia-seo should emit exactly one canonical');
+assert.equal(seoCanonicals[0][1], 'https://playfulagency.com/agencia-seo');
+assert.match(
+  seoHtml,
+  /name=["']description["'][^>]*content=["']Agencia SEO para ecommerce D2C que ya vende y ya paga ads\./i,
+);
+assert.match(seoHtml, /"@type"\s*:\s*"FAQPage"/);
+assert.match(
+  seoHtml,
+  /<h1[^>]*>Agencia SEO para ecommerce que posiciona el catálogo que ya te está vendiendo<\/h1>/,
+);
+assert.match(seoHtml, /Agenda tu llamada diagnóstica/);
+assert.match(seoHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(seoHtml, /PrimeShoes/i);
+
+const semResponse = await request('/agencia-sem', { redirect: 'follow' });
+assert.equal(semResponse.status, 200, '/agencia-sem should return 200');
+const semHtml = await semResponse.text();
+const semCanonicals = [...semHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(semCanonicals.length, 1, '/agencia-sem should emit exactly one canonical');
+assert.equal(semCanonicals[0][1], 'https://playfulagency.com/agencia-sem');
+assert.match(
+  semHtml,
+  /name=["']description["'][^>]*content=["']Agencia SEM para D2C que ya gasta en Shopping, PMax y feed\./i,
+);
+assert.match(semHtml, /"@type"\s*:\s*"FAQPage"/);
+assert.match(
+  semHtml,
+  /<h1[^>]*>SEM para ecommerce: Shopping y paid search con control de margen<\/h1>/,
+);
+assert.match(semHtml, /Agenda tu llamada/);
+assert.match(semHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(semHtml, /PrimeShoes/i);
 
 function extractElementorContent(html) {
   const pageIdx = html.search(/\bplayful-wp-page\b/);
@@ -231,8 +275,6 @@ function extractElementorContent(html) {
 
 const serviceBookingPaths = [
   '/agencia-e-commerce',
-  '/agencia-seo',
-  '/agencia-sem',
   '/agencia-diseno-web',
 ];
 for (const pathname of serviceBookingPaths) {
@@ -251,7 +293,7 @@ for (const pathname of serviceBookingPaths) {
     /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/,
     `${pathname} content must not expose the GHL widget API URL`,
   );
-  assert.match(content, /Agendar Reunión/, `${pathname} content must show Agendar Reunión`);
+  assert.match(content, /Solicitar una reunión/, `${pathname} content must show Solicitar una reunión`);
   assert.doesNotMatch(
     content,
     /contactar-agencia-de-marketing-digital/,

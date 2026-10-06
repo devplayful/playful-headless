@@ -8,10 +8,11 @@ import ChatWidget from '@/components/ChatWidget'
 import { BodyClassManager } from '@/components/BodyClassManager';
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
-import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
+import GoogleTagManager from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import AttributionCapture from '@/components/AttributionCapture';
+import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import BookingQueryPropagator from '@/components/BookingQueryPropagator';
 
 const paytoneOne = Paytone_One({ 
@@ -105,8 +106,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+  const { gtmId, gaId } = productionAnalyticsIds();
 
   return (
     <html lang="es" suppressHydrationWarning>

@@ -1,17 +1,25 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Script from 'next/script'
+import { isProductionAnalyticsHostname } from '@/lib/analytics/production-tags'
 
 interface GoogleAnalyticsProps {
   gaId: string
 }
 
 export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
-  if (!gaId) return null
+  const [allowed, setAllowed] = useState(false)
+
+  useEffect(() => {
+    setAllowed(isProductionAnalyticsHostname(window.location.hostname))
+  }, [])
+
+  if (!gaId || !allowed) return null
 
   return (
     <>
-      {/* Google Analytics gtag.js */}
+      {/* Google Analytics gtag.js — only after apex/www hostname check */}
       <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}

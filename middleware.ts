@@ -36,6 +36,7 @@ const PERMANENT_301: Record<string, string> = {
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
+  '/gracias-v2': '/gracias',
   '/blog/email-marketing/tipos-de-publicidad-online':
     'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
   '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
@@ -44,12 +45,6 @@ const PERMANENT_301: Record<string, string> = {
     'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
   '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
     'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
-  '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
 };
 
 function normalizePath(pathname: string): string {
@@ -136,6 +131,8 @@ export const config = {
     '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/gracias-v2',
+    '/gracias-v2/',
     '/otros/conoce-todo-sobre-instagram-ads',
     '/otros/conoce-todo-sobre-instagram-ads/',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
