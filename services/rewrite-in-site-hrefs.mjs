@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import canibalizacionOrigins from '../utils/blog-canibalizacion-redirect-map.json' with { type: 'json' };
 
 const IN_SITE_PAGE_HOSTS = new Set([
   'endpoint.playfulagency.com',
@@ -13,9 +13,7 @@ const APEX_ORIGIN = 'https://playfulagency.com';
 const LEGACY_CASE_STUDIES_HUB_PATH = '/casos-de-exito-agencia-de-marketing-digital';
 const CASE_STUDIES_HUB_PATH = '/casos-de-exito';
 
-const CANIBALIZACION_301 = JSON.parse(
-  readFileSync(new URL('../utils/blog-canibalizacion-redirect-map.json', import.meta.url), 'utf8'),
-);
+const CANIBALIZACION_301 = canibalizacionOrigins;
 
 function normalizeRedirectPath(pathname) {
   const path = pathname.split(/[?#]/)[0];
