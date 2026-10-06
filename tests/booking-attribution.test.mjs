@@ -15,6 +15,7 @@ const {
   firstNonEmptyBookingValue,
   isBookingHref,
   mergeBookingQuery,
+  mergeIncomingQueryOntoWidget,
   resolveBookingWidgetRedirect,
   searchFromBookingValues,
   toServiceBookingHref,
@@ -162,6 +163,72 @@ test('route resolver 302s to the widget with URL query, cookie fallback, or a cl
   assert.equal(clean.location, BOOKING_WIDGET_HREF);
   assert.equal(new URL(clean.location).search, '');
   assert.equal(buildBookingWidgetUrl({ search: '?utm_medium=' }), BOOKING_WIDGET_HREF);
+});
+
+test('GET /reunion-playful forwards the entire incoming query including fbclid and unknown keys', () => {
+  const search = '?utm_source=facebook&utm_medium=paid_social&utm_campaign=set1&utm_content=ad1&fbclid=TEST123&gclid=G456&foo=bar';
+  const { location, status } = resolveBookingWidgetRedirect({ search });
+  assert.equal(status, 302);
+  const target = new URL(location);
+  assert.equal(target.origin, 'https://api.playfulagency.com');
+  assert.equal(target.pathname, '/widget/bookings/reunion-playful');
+  assert.equal(target.searchParams.get('utm_source'), 'facebook');
+  assert.equal(target.searchParams.get('utm_medium'), 'paid_social');
+  assert.equal(target.searchParams.get('utm_campaign'), 'set1');
+  assert.equal(target.searchParams.get('utm_content'), 'ad1');
+  assert.equal(target.searchParams.get('fbclid'), 'TEST123');
+  assert.equal(target.searchParams.get('gclid'), 'G456');
+  assert.equal(target.searchParams.get('foo'), 'bar');
+
+  const withRest = resolveBookingWidgetRedirect({
+    search: '?utm_term=shoes&gbraid=GB1&wbraid=WB1&msclkid=MS1&ttclid=TT1',
+  });
+  const rest = new URL(withRest.location);
+  assert.equal(rest.searchParams.get('utm_term'), 'shoes');
+  assert.equal(rest.searchParams.get('gbraid'), 'GB1');
+  assert.equal(rest.searchParams.get('wbraid'), 'WB1');
+  assert.equal(rest.searchParams.get('msclkid'), 'MS1');
+  assert.equal(rest.searchParams.get('ttclid'), 'TT1');
+
+  const noQuery = resolveBookingWidgetRedirect({ search: '' });
+  assert.equal(noQuery.status, 302);
+  assert.equal(noQuery.location, BOOKING_WIDGET_HREF);
+});
+
+test('widget own keys survive merge; incoming wins only on attribution keys', () => {
+  const widget = `${BOOKING_WIDGET_HREF}?timezone=America/Managua&utm_source=widget-default&foo=widget`;
+  const merged = mergeIncomingQueryOntoWidget(
+    widget,
+    '?utm_source=facebook&fbclid=TEST123&foo=bar&gclid=G456',
+  );
+  assert.equal(merged.searchParams.get('timezone'), 'America/Managua');
+  assert.equal(merged.searchParams.get('utm_source'), 'facebook');
+  assert.equal(merged.searchParams.get('fbclid'), 'TEST123');
+  assert.equal(merged.searchParams.get('gclid'), 'G456');
+  assert.equal(merged.searchParams.get('foo'), 'widget');
+});
+
+test('cookie fbclid fills the hop when the incoming URL omitted it', () => {
+  const lastCookie = serializeAttributionCookie(emptyAttribution({
+    captured: true,
+    source: 'facebook',
+    landing: '/agencia-shopify?fbclid=COOKIE-FB&utm_source=facebook',
+    utm_source: 'facebook',
+    fbclid: 'COOKIE-FB',
+  }));
+  const fromCookie = resolveBookingWidgetRedirect({
+    search: '?utm_source=facebook',
+    lastCookie,
+  });
+  const target = new URL(fromCookie.location);
+  assert.equal(target.searchParams.get('utm_source'), 'facebook');
+  assert.equal(target.searchParams.get('fbclid'), 'COOKIE-FB');
+
+  const incomingWins = resolveBookingWidgetRedirect({
+    search: '?fbclid=TEST123',
+    lastCookie,
+  });
+  assert.equal(new URL(incomingWins.location).searchParams.get('fbclid'), 'TEST123');
 });
 
 test('middleware wires the resolver instead of a static /reunion-playful 301', () => {
