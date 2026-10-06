@@ -11,6 +11,7 @@ import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
+import CtaClickTracker from '@/components/CtaClickTracker';
 import AttributionCapture from '@/components/AttributionCapture';
 import BookingQueryPropagator from '@/components/BookingQueryPropagator';
 import BookingWidgetAttribution from '@/components/BookingWidgetAttribution';
@@ -113,6 +114,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <AnalyticsSpaPageView />
           </Suspense>
+          <CtaClickTracker />
           <Header />
           <main className="min-h-screen">
             {children}

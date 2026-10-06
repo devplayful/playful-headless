@@ -43,6 +43,7 @@ test('layout and tag components stay server-gated so production HTML is unchange
   assert.match(layout, /productionAnalyticsIds/);
   assert.match(layout, /\{gtmId && <GoogleTagManager gtmId=\{gtmId\} \/>\}/);
   assert.match(layout, /\{gaId && <GoogleAnalytics gaId=\{gaId\} \/>\}/);
+  assert.match(layout, /<CtaClickTracker \/>/);
   assert.doesNotMatch(layout, /process\.env\.NEXT_PUBLIC_GTM_ID/);
   assert.doesNotMatch(layout, /process\.env\.NEXT_PUBLIC_GA_MEASUREMENT_ID/);
   assert.doesNotMatch(layout, /isProductionAnalyticsHostname|useState|window\.location/);

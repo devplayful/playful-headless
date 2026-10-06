@@ -28,7 +28,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   onButtonClick,
 }) => {
   return (
-    <div className="w-full mb-[40px]">
+    <div data-cta-section="cta-final" className="w-full mb-[40px]">
       <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-1/2 mb-12 lg:mb-0">

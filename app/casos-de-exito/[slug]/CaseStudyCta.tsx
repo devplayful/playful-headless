@@ -21,7 +21,7 @@ export default function CaseStudyCta({
   illustrationAlt = '',
 }: Props) {
   return (
-    <section className="py-4 bg-[#FEF7FF]">
+    <section data-cta-section="caso-cta" className="py-4 bg-[#FEF7FF]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mx-auto w-full max-w-[1050px]">
           <div className="bg-[#B3FFF3] rounded-[26px] p-8 md:p-12 overflow-hidden mb-20">
