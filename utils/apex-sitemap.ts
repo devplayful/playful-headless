@@ -12,6 +12,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
+  "/agencia-ux-ui",
   "/casos-de-exito",
   "/casos-de-exito/soytechno-ecommerce-venezuela",
   "/casos-de-exito/jumex-shopify-dtc-ecommerce",
