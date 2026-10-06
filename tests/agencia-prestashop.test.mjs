@@ -89,6 +89,18 @@ test('landing uses the agency template, booking hop and generic og image', () =>
   assert.doesNotMatch(sharedLanding, /pasarela-de-pagos-venezuela/);
 });
 
+test('illustration slots match the Shopify agency template without extra H2s', () => {
+  assert.match(sharedLanding, /AgencyIllustrationSlot/);
+  assert.match(sharedLanding, /BleedIllustrationCard/);
+  assert.match(sharedLanding, /TwoColumnCtaSection/);
+  assert.match(sharedLanding, /data-placeholder="PLACEHOLDER"/);
+  assert.match(sharedLanding, /ctaTitle=""/);
+  assert.doesNotMatch(sharedLanding, /TestimonialsSection/);
+  assert.doesNotMatch(sharedLanding, /BlogRelatedPostsSection/);
+  assert.doesNotMatch(landing, /TestimonialsSection/);
+  assert.doesNotMatch(landing, /BlogRelatedPostsSection/);
+});
+
 test('sitemap and expected-routes include the dedicated Next route', () => {
   assert.match(sitemap, /https:\/\/playfulagency\.com\/agencia-prestashop</);
   assert.doesNotMatch(sitemap, /https:\/\/playfulagency\.com\/agencia-prestashop\//);
