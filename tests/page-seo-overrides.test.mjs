@@ -1,11 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { readFile } from 'node:fs/promises';
+
 import {
   PAGE_TITLE_OVERRIDES,
   applyPageTitleOverride,
   PAGE_DESCRIPTION_OVERRIDES,
   applyPageDescriptionOverride,
+  twitterFromOpenGraph,
 } from '../utils/page-seo-overrides.mjs';
 
 const MARKETING_TITLE =
@@ -128,6 +131,53 @@ test('agencia-diseno-web overrides Yoast title and the 151-character meta', () =
   );
   assert.equal(desc.description, DISENO_DESCRIPTION);
   assert.equal(desc.ogDescription, DISENO_DESCRIPTION);
+});
+
+test('twitterFromOpenGraph mirrors the resolved og title and description', () => {
+  assert.deepEqual(
+    twitterFromOpenGraph('OG título de página', 'OG descripción de página'),
+    {
+      title: 'OG título de página',
+      description: 'OG descripción de página',
+    },
+  );
+  const ecommerce = applyPageTitleOverride(
+    'agencia-e-commerce',
+    MARKETING_TITLE,
+    MARKETING_TITLE,
+  );
+  const ecommerceDesc = applyPageDescriptionOverride(
+    'agencia-e-commerce',
+    MARKETING_DESCRIPTION,
+    MARKETING_DESCRIPTION,
+  );
+  assert.deepEqual(
+    twitterFromOpenGraph(ecommerce.ogTitle, ecommerceDesc.ogDescription),
+    {
+      title: ecommerce.ogTitle,
+      description: ecommerceDesc.ogDescription,
+    },
+  );
+  const seo = applyPageTitleOverride('agencia-seo', 'Yoast title', 'Yoast OG');
+  const seoDesc = applyPageDescriptionOverride('agencia-seo', 'Yoast desc', 'Yoast OG desc');
+  assert.deepEqual(twitterFromOpenGraph(seo.ogTitle, seoDesc.ogDescription), {
+    title: seo.ogTitle,
+    description: seoDesc.ogDescription,
+  });
+});
+
+test('non-blog generateMetadata wires twitter from the same og values', async () => {
+  const slugPage = await readFile(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
+  const shopifyPage = await readFile(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+  const casosPage = await readFile(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+  const nosotrosPage = await readFile(new URL('../app/nosotros/page.tsx', import.meta.url), 'utf8');
+  const blogPage = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+
+  assert.match(slugPage, /twitterFromOpenGraph\(ogTitle, ogDescription\)/);
+  assert.match(shopifyPage, /twitterFromOpenGraph\(SHOPIFY_META\.title, SHOPIFY_META\.description\)/);
+  assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);
+  assert.match(nosotrosPage, /twitterFromOpenGraph\(title, description\)/);
+  assert.doesNotMatch(blogPage, /twitterFromOpenGraph/);
 });
 
 test('pagos-online and pasarela no longer share one title', () => {
