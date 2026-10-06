@@ -6,7 +6,10 @@ import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
 export const revalidate = 300;
-export const dynamicParams = true;
+// Unknown slugs must not enter this page: generateMetadata+notFound()
+// still ships the empty __next_error__ shell. dynamicParams=false makes
+// a miss the same prerendered 404 as /a/b/c, with the H1 in the HTML.
+export const dynamicParams = false;
 
 const SERVICE_SLUGS = [
   'agencia-seo',

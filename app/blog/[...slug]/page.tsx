@@ -42,6 +42,8 @@ import {
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
   // getBlogPosts(1, 100) + `_embed` path was 3.5–4.7 MB and Next
