@@ -29,16 +29,17 @@ const H2S = [
 ];
 
 test('meta title, description and path match the SEO-signed copy', () => {
-  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce: tienda y cobros | Playful Agency');
+  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce en Venezuela | Playful Agency');
   assert.equal(
     WOOCOMMERCE_META.description,
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress, con Redsys y Bizum en España y pagos automáticos en Venezuela. Reserva reunión.',
+    'Agencia WooCommerce: montamos tu tienda en Venezuela con SiTef, Instapago, Cashea, Banesco y Zelle prevalidado. Reserva 30 a 40 minutos con Playful Agency.',
   );
   assert.equal(WOOCOMMERCE_META.path, '/agencia-woocommerce');
   assert.equal(
     WOOCOMMERCE_COPY.hero.h1,
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda online',
+    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress',
   );
+  assert.doesNotMatch(WOOCOMMERCE_META.title, /\| Playful Agency \| Playful/);
 });
 
 test('canonical is the new SEO URL without a trailing slash', () => {
@@ -58,15 +59,29 @@ test('JSON-LD is Service + BreadcrumbList + FAQPage with the seven signed questi
   );
 });
 
-test('H2s stay literal and the page never links the dead Venezuela payments URL', () => {
+test('H2s stay literal and landing hrefs are only pasarela and Shopify', () => {
   assert.deepEqual(
     [...WOOCOMMERCE_COPY.sections.map((section) => section.h2), WOOCOMMERCE_COPY.process.h2, WOOCOMMERCE_COPY.faq.h2, WOOCOMMERCE_COPY.closing.h2],
     H2S,
   );
   const published = JSON.stringify(WOOCOMMERCE_COPY);
-  assert.doesNotMatch(published, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(copySource, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(landing, /pasarela-de-pagos-venezuela/);
+  const landingHrefs = [...published.matchAll(/https:\/\/playfulagency\.com(\/[^)"\s]+)/g)]
+    .map((match) => match[1])
+    .filter((href) => href.startsWith('/agencia-') || href.startsWith('/pasarela-'));
+  assert.deepEqual([...new Set(landingHrefs)].sort(), [
+    '/agencia-shopify',
+    '/pasarela-de-pagos-venezuela',
+  ]);
+  assert.match(published, /métodos de cobro que ya usa Venezuela/);
+  assert.match(published, /página de agencia de diseño web/);
+  assert.match(published, /página de agencia de e-commerce/);
+  assert.match(published, /página de agencia SEO/);
+  assert.doesNotMatch(published, /agencia-diseno-web/);
+  assert.doesNotMatch(published, /agencia-e-commerce/);
+  assert.doesNotMatch(published, /\/agencia-seo/);
+  assert.doesNotMatch(copySource, /agencia-diseno-web/);
+  assert.doesNotMatch(copySource, /agencia-e-commerce/);
+  assert.doesNotMatch(landing, /agencia-diseno-web/);
   assert.doesNotMatch(published, /Preguntas para José/);
   assert.doesNotMatch(published, /\[NO COMPROBADO/);
 });
