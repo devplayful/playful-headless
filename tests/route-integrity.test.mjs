@@ -31,6 +31,15 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(await readFile(path.join(root, 'config/expected-routes.json'), 'utf8'));
+const BLOG_LISTING_CATEGORY_SLUGS = [
+  'e-commerce',
+  'email-marketing',
+  'mas-vistos',
+  'otros',
+  'pautas-digitales',
+  'seo',
+  'tecnologia',
+];
 
 async function writeJson(file, payload) {
   await writeFile(file, JSON.stringify(payload));
@@ -175,6 +184,32 @@ test('accepts the exact governed template and concrete inventory', () => {
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
   assert.equal(validArtifact().concreteRoutes.length, 110);
+});
+
+test('blog category indexes stay out of the governed inventory (middleware 308, not next.config)', () => {
+  const blogConcretes = manifest.governedConcreteRoutes['/blog/[...slug]'];
+  assert.ok(Array.isArray(blogConcretes));
+  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
+    assert.equal(
+      blogConcretes.includes(`/blog/${slug}`),
+      false,
+      `/blog/${slug} is a category index, not a governed post`,
+    );
+    assert.equal(
+      manifest.nextRouting.redirects.some((rule) => rule.source === `/blog/${slug}`
+        || rule.source === `/blog/${slug}/`
+        || rule.destination === `/blog?category=${slug}`),
+      false,
+      `/blog/${slug} must not become a next.config redirect`,
+    );
+  }
+  assert.deepEqual(manifest.nextRouting.redirects, [{
+    destination: '/:path+',
+    internal: true,
+    regex: '^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$',
+    source: '/:path+/',
+    statusCode: 308,
+  }]);
 });
 
 test('requires each of the four dynamic source templates in the artifact', async (t) => {
