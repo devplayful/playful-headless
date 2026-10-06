@@ -41,3 +41,15 @@ export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDesc
     ogDescription: override ?? (yoastOgDescription || yoastDescription),
   };
 }
+
+/**
+ * Next.js merges root-layout twitter:* into child pages. Non-blog routes
+ * that set openGraph but omit twitter inherit the home generic card.
+ * Mirror the page OG (override or Yoast OG already resolved) onto twitter.
+ */
+export function twitterFromOpenGraph(ogTitle, ogDescription) {
+  return {
+    title: ogTitle,
+    description: ogDescription,
+  };
+}

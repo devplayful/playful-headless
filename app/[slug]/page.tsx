@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { canonicalForPath } from '@/utils/canonical';
 import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
-import { applyPageTitleOverride, applyPageDescriptionOverride } from '@/utils/page-seo-overrides.mjs';
+import { applyPageTitleOverride, applyPageDescriptionOverride, twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
 export const revalidate = 300;
@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url,
       images: metadata.yoast_wpseo_og_image ? [metadata.yoast_wpseo_og_image] : undefined,
     },
+    twitter: twitterFromOpenGraph(ogTitle, ogDescription),
   };
 }
 

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -45,6 +46,7 @@ export const metadata: Metadata = {
     description: SHOPIFY_META.description,
     url: PAGE_URL,
   },
+  twitter: twitterFromOpenGraph(SHOPIFY_META.title, SHOPIFY_META.description),
 };
 
 const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
