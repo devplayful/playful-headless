@@ -197,6 +197,10 @@ assert.ok(
   'sitemap must include /agencia-shopify without a trailing slash',
 );
 assert.ok(
+  urls.includes('https://playfulagency.com/agencia-ux-ui'),
+  'sitemap must include /agencia-ux-ui without a trailing slash',
+);
+assert.ok(
   !urls.includes('https://playfulagency.com/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical'),
   'sitemap must exclude closed José v2 posts',
 );
