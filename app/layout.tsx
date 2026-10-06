@@ -13,6 +13,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import AttributionCapture from '@/components/AttributionCapture';
 import BookingQueryPropagator from '@/components/BookingQueryPropagator';
+import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -105,8 +106,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+  const { gtmId, gaId } = productionAnalyticsIds();
 
   return (
     <html lang="es" suppressHydrationWarning>
