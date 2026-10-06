@@ -390,7 +390,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
   const html = rewriteElementorBodyHrefs(
-    rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml)), slug),
+    rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
     slug,
   );
   const title = stripHtml(page.title?.rendered || slug);
