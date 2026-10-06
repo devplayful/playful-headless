@@ -8,7 +8,30 @@ import { isClosedBlogPath } from '../utils/blog-closed-paths.ts';
 import { isCanibalizacionOriginPath } from '../utils/blog-canibalizacion-redirects.ts';
 
 const BASE = (process.argv[2] || 'https://playfulagency.com').replace(/\/+$/, '');
+const SHARE_TOKEN = process.env.VERCEL_SHARE || '';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) PlayfulAgency/1.0';
+let shareCookie = '';
+
+async function bootstrapShareCookie() {
+  if (!SHARE_TOKEN) return;
+  const response = await fetch(`${BASE}/?_vercel_share=${SHARE_TOKEN}`, {
+    headers: { 'user-agent': UA, accept: 'text/html' },
+    redirect: 'manual',
+  });
+  const cookies = typeof response.headers.getSetCookie === 'function'
+    ? response.headers.getSetCookie()
+    : String(response.headers.get('set-cookie') || '').split(/,(?=\s*[^;=]+=)/);
+  shareCookie = cookies.map((cookie) => cookie.split(';')[0]).filter(Boolean).join('; ');
+  if (!shareCookie) {
+    console.error(`share bootstrap ${response.status}; no cookie`);
+  }
+}
+
+function requestHeaders() {
+  const headers = { 'user-agent': UA, accept: 'text/html' };
+  if (shareCookie) headers.cookie = shareCookie;
+  return headers;
+}
 const LANDINGS = [
   '/agencia-e-commerce',
   '/agencia-seo',
@@ -72,7 +95,7 @@ function probeUrl(href) {
 
 async function fetchText(path) {
   const response = await fetch(`${BASE}${path}`, {
-    headers: { 'user-agent': UA, accept: 'text/html' },
+    headers: requestHeaders(),
     redirect: 'follow',
   });
   return { status: response.status, html: await response.text() };
@@ -85,7 +108,7 @@ async function probe(href) {
   try {
     const response = await fetch(target, {
       method: 'GET',
-      headers: { 'user-agent': UA, accept: 'text/html' },
+      headers: requestHeaders(),
       redirect: 'manual',
       signal: controller.signal,
     });
@@ -100,6 +123,8 @@ async function probe(href) {
 function isBrokenStatus(status) {
   return status === 0 || status === 404 || status === 410 || (status >= 300 && status < 400);
 }
+
+await bootstrapShareCookie();
 
 const postPaths = SITEMAP_BLOG_PATHS.filter(
   (path) => !isClosedBlogPath(path) && !isCanibalizacionOriginPath(path),
@@ -151,12 +176,17 @@ for (const href of unique) {
   }
 }
 
+const leftovers = [...statusByHref.entries()]
+  .filter(([, status]) => isBrokenStatus(status))
+  .map(([href, status]) => ({ href, status }));
+
 const report = {
   base: BASE,
   posts: { scanned: postPaths.length, pagesWithBroken: posts.pages, brokenLinks: posts.links },
   landings: { scanned: LANDINGS.length, pagesWithBroken: landings.pages, brokenLinks: landings.links },
   uniqueInternal: unique.length,
   uniqueBrokenByStatus: byStatus,
+  leftovers,
 };
 
 console.log(JSON.stringify(report, null, 2));
