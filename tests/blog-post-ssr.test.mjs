@@ -125,7 +125,7 @@ test('JSON-LD BlogPosting must be unique, valid and aligned with H1/meta/OG', ()
     publisher: {
       '@type': 'Organization',
       name: 'Playful Agency',
-      logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logov.svg' },
+      logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logo-schema.png' },
     },
     mainEntityOfPage: canonical,
     url: canonical,
@@ -204,7 +204,7 @@ test('JSON-LD description with leftover WP entities still matches decoded meta',
       publisher: {
         '@type': 'Organization',
         name: 'Playful Agency',
-        logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logov.svg' },
+        logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logo-schema.png' },
       },
       mainEntityOfPage:
         'https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online',
