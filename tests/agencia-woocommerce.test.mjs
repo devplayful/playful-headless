@@ -72,11 +72,21 @@ test('H2s stay literal and the page never links the dead Venezuela payments URL'
 });
 
 test('landing uses the agency template and booking hop', () => {
+  const sharedLanding = readFileSync(
+    new URL('../components/AgencyCopyLanding.tsx', import.meta.url),
+    'utf8',
+  );
   assert.match(landing, /AgencyCopyLanding/);
   assert.match(landing, /twitterFromOpenGraph/);
   assert.match(landing, /SITE_OG_IMAGE/);
   assert.equal(CTA_LABEL, 'Reserva una reunión de 30 a 40 minutos');
   assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.match(sharedLanding, /AgencyIllustrationSlot/);
+  assert.match(sharedLanding, /BleedIllustrationCard/);
+  assert.match(sharedLanding, /TwoColumnCtaSection/);
+  assert.match(sharedLanding, /data-placeholder="PLACEHOLDER"/);
+  assert.doesNotMatch(sharedLanding, /TestimonialsSection/);
+  assert.doesNotMatch(sharedLanding, /BlogRelatedPostsSection/);
 });
 
 test('sitemap and expected-routes include the dedicated Next route', () => {

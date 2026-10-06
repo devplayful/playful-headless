@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import ServiceFaqAccordion from '@/app/agencia-shopify/ServiceFaqAccordion';
+import BleedIllustrationCard from '@/components/ui/BleedIllustrationCard';
+import AgencyIllustrationSlot from '@/components/ui/AgencyIllustrationSlot';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import {
   isExternalHref,
@@ -9,6 +12,25 @@ import {
   type AgencyLandingCopy,
   type AgencySection,
 } from '@/lib/agency-copy-landing';
+
+const CARD_SLOT_COLOR: Record<'cream' | 'mint', string> = {
+  cream: 'bg-[#FFEFD1]',
+  mint: 'bg-[#B3FFF3]',
+};
+
+function slotSlug(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48);
+}
+
+function landingAssetDir(path: string): string {
+  return `/images${path}`;
+}
 
 function LinkedMarkdown({
   text,
@@ -75,9 +97,11 @@ function TalkCta({ label }: { label: string }) {
 function SectionShell({
   section,
   children,
+  media,
 }: {
   section: AgencySection;
   children: ReactNode;
+  media?: ReactNode;
 }) {
   if (section.variant === 'purple') {
     return (
@@ -85,6 +109,17 @@ function SectionShell({
         <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat opacity-40" />
         <div className="relative z-10 max-w-4xl space-y-4">{children}</div>
       </div>
+    );
+  }
+
+  if ((section.variant === 'cream' || section.variant === 'mint') && media) {
+    return (
+      <BleedIllustrationCard
+        className={`${CARD_SLOT_COLOR[section.variant]} !text-left`}
+        media={media}
+      >
+        {children}
+      </BleedIllustrationCard>
     );
   }
 
@@ -126,6 +161,9 @@ export default function AgencyCopyLanding({
   jsonLd: object;
 }) {
   const purpleLink = '!text-[#E9D7FF] font-semibold underline underline-offset-2';
+  const assetDir = landingAssetDir(copy.meta.path);
+  const heroSlotId = 'hero';
+  const ctaSlotId = 'cta';
 
   return (
     <>
@@ -137,28 +175,53 @@ export default function AgencyCopyLanding({
       <article data-copy-root="true" className="w-full pb-20">
         <section className="relative overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
-            <div className="max-w-3xl space-y-6">
-              <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
-                {copy.hero.h1}
-              </h1>
-              {copy.hero.paragraphs.map((paragraph) => (
-                <p key={paragraph.slice(0, 48)} className="playful-contenido-p">
-                  <LinkedMarkdown text={paragraph} />
-                </p>
-              ))}
-              <TalkCta label={copy.ctaLabel} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
+                  {copy.hero.h1}
+                </h1>
+                {copy.hero.paragraphs.map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)} className="playful-contenido-p">
+                    <LinkedMarkdown text={paragraph} />
+                  </p>
+                ))}
+                <TalkCta label={copy.ctaLabel} />
+              </div>
+              <AgencyIllustrationSlot
+                id={heroSlotId}
+                size="hero"
+                src1x={`${assetDir}/hero@1x.png`}
+                src2x={`${assetDir}/hero@2x.png`}
+                alt={`PLACEHOLDER: ilustración del hero de ${copy.meta.serviceName}. Diseño sustituye.`}
+              />
             </div>
           </div>
         </section>
 
         {copy.sections.map((section) => {
           const purple = section.variant === 'purple';
+          const cardSlot =
+            section.variant === 'cream' || section.variant === 'mint'
+              ? slotSlug(section.h2)
+              : null;
           return (
             <section
               key={section.h2}
               className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12"
             >
-              <SectionShell section={section}>
+              <SectionShell
+                section={section}
+                media={
+                  cardSlot ? (
+                    <AgencyIllustrationSlot
+                      id={cardSlot}
+                      src1x={`${assetDir}/${cardSlot}@1x.png`}
+                      src2x={`${assetDir}/${cardSlot}@2x.png`}
+                      alt={`PLACEHOLDER: ilustración de «${section.h2}» (${copy.meta.serviceName}). Diseño sustituye.`}
+                    />
+                  ) : null
+                }
+              >
                 <SectionHeading title={section.h2} purple={purple} />
                 {section.blocks.map((block) => {
                   if (block.type === 'quote') {
@@ -238,43 +301,23 @@ export default function AgencyCopyLanding({
           </div>
         </section>
 
-        <section className="py-12">
+        <section
+          className="py-12"
+          data-illustration-slot={ctaSlotId}
+          data-placeholder="PLACEHOLDER"
+        >
           <div className="max-w-[1200px] mx-auto px-4 md:px-6">
-            <div className="w-full mb-[40px]">
-              <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
-                <div className="lg:w-1/2 mb-12 lg:mb-0">
-                  <div className="relative rounded-2xl overflow-hidden">
-                    <img
-                      src="/images/imagen-nueva-cta-home.png"
-                      alt=""
-                      className="w-full h-auto object-cover"
-                    />
-                  </div>
-                </div>
-                <div className="lg:w-1/2 h-full min-h-[500px] rounded-2xl relative overflow-hidden">
-                  <div
-                    className="absolute inset-0 w-full h-full"
-                    style={{
-                      backgroundColor: '#B3FFF3',
-                      backgroundImage: 'url(/images/background.webp)',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      backgroundRepeat: 'no-repeat',
-                    }}
-                  />
-                  <div className="absolute inset-0" style={{ backgroundColor: '#B3FFF340' }} />
-                  <div className="relative z-10 h-full flex flex-col items-center justify-center p-5 lg:p-12">
-                    <h2 className="text-3xl md:text-4xl text-center font-normal mb-6 leading-tight text-[#453A53]">
-                      {copy.closing.h2}
-                    </h2>
-                    <p className="text-lg text-[#453A53] text-center mb-8">{copy.closing.body}</p>
-                    <div className="w-full flex justify-center px-5 py-5 md:p-0">
-                      <TalkCta label={copy.ctaLabel} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* PLACEHOLDER: misma foto de CTA que /agencia-shopify. Diseño puede sustituir por `${assetDir}/cta.png`. */}
+            <TwoColumnCtaSection
+              contentBgColor="#B3FFF3"
+              imageUrl="/images/imagen-nueva-cta-home.png"
+              imageAlt={`PLACEHOLDER: ilustración de cierre de ${copy.meta.serviceName}. Diseño sustituye.`}
+              title={copy.closing.h2}
+              subtitle={copy.closing.body}
+              ctaTitle=""
+              buttonText={copy.ctaLabel}
+              buttonLink={SERVICE_BOOKING_HREF}
+            />
           </div>
         </section>
       </article>
