@@ -14,6 +14,7 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { resolveBookingWidgetRedirect } from './utils/booking-attribution';
+import { isWpProbePath } from './utils/wp-probe-paths';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -68,6 +69,12 @@ function normalizePath(pathname: string): string {
 
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
+
+  if (isWpProbePath(path)) {
+    const target = request.nextUrl.clone();
+    target.pathname = '/_not-found';
+    return attachAttributionCookies(request, NextResponse.rewrite(target));
+  }
 
   const closed = blogClosedDecision(path);
   if (closed.type === 'gone') {
@@ -165,6 +172,13 @@ export const config = {
     '/project/bottle-mockup/',
     '/agencylog',
     '/agencylog/',
+    '/wp-login.php',
+    '/wp-login.php/',
+    '/xmlrpc.php',
+    '/xmlrpc.php/',
+    '/wp-admin',
+    '/wp-admin/',
+    '/wp-admin/:path*',
     '/blog',
     '/blog/',
     '/blog/:path*',
