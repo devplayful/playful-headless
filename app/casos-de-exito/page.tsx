@@ -1,4 +1,5 @@
-import { getPageMetadataBySlug } from '@/services/wordpress';
+import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress';
+import { mapCaseStudyToListingCard } from '@/lib/case-study-listing-card';
 import { canonicalForPath } from '@/utils/canonical';
 import {
   CASE_STUDIES_HUB_DESCRIPTION,
@@ -9,8 +10,11 @@ import {
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import CaseStudiesContent from './CaseStudiesContent';
 
-export default function CaseStudiesPage() {
-  return <CaseStudiesContent />;
+export default async function CaseStudiesPage() {
+  const items = await getAllCaseStudies();
+  const initialCaseStudies = items.map(mapCaseStudyToListingCard);
+
+  return <CaseStudiesContent initialCaseStudies={initialCaseStudies} />;
 }
 
 export async function generateMetadata() {
