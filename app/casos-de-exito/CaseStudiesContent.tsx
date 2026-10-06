@@ -6,7 +6,11 @@ import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
-import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
+import { CASE_STUDIES_LISTING_EMBED_URL } from "@/lib/case-study-listing-image";
+import {
+  mapCaseStudyToListingCard,
+  type CaseStudyListingCard,
+} from "@/lib/case-study-listing-card";
 import { mergePublicCaseStudies } from "@/lib/public-case-studies";
 import { CASE_STUDIES_HUB_H1, CASE_STUDIES_HUB_LEAD } from "@/utils/case-study-hub";
 
@@ -15,19 +19,7 @@ const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
   ssr: false,
 });
 
-// Interfaz para los casos de estudio transformados
-export interface CaseStudy {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  categories: string[];
-  badge: string;
-  badgeColor: string;
-  buttonText: string;
-  buttonColor: string;
-  image: string;
-}
+export type CaseStudy = CaseStudyListingCard;
 
 // Componente para la tarjeta de caso de estudio
 const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
@@ -104,22 +96,27 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   );
 };
 
-export default function CaseStudiesContent() {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function CaseStudiesContent({
+  initialCaseStudies = [],
+}: {
+  initialCaseStudies?: CaseStudy[];
+}) {
+  const hasServerCaseStudies = initialCaseStudies.length > 0;
+  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(initialCaseStudies);
+  const [loading, setLoading] = useState(!hasServerCaseStudies);
   const [error, setError] = useState<string | null>(null);
 
   // State para filtros
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   useEffect(() => {
+    if (hasServerCaseStudies) return;
+
     const fetchCaseStudies = async () => {
       try {
         let wpItems: any[] = [];
         try {
-          const response = await fetch(
-            "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed"
-          );
+          const response = await fetch(CASE_STUDIES_LISTING_EMBED_URL);
           if (response.ok) {
             const payload = await response.json();
             if (Array.isArray(payload)) {
@@ -138,50 +135,7 @@ export default function CaseStudiesContent() {
           return;
         }
 
-        const transformedData: CaseStudy[] = data.map((item: any) => {
-          const title = item.title?.rendered || "Sin título";
-
-          let description = "";
-          if (item.excerpt?.rendered) {
-            description = item.excerpt.rendered
-              .replace(/<[^>]*>?/gm, "")
-              .replace(/\[\/?(p|br|strong|em|h[1-6])\]/g, "")
-              .trim();
-          } else if (item.content?.rendered) {
-            description =
-              item.content.rendered.replace(/<[^>]*>?/gm, "").substring(0, 200) +
-              "...";
-          }
-
-          const image = resolveCaseStudyListingImage(item);
-
-          const categories = [
-            item.acf?.categoria1,
-            item.acf?.categoria2,
-            item.acf?.categoria3,
-            item.acf?.categoria4,
-            item.acf?.categoria5,
-          ].filter(Boolean) as string[];
-
-          return {
-            id: item.id,
-            title,
-            slug: item.slug || `caso-${item.id}`,
-            description: description || "Descripción no disponible",
-            categories,
-            badge: item.acf?.badge || item.meta?._case_study_badge || "",
-            badgeColor:
-              item.acf?.badge_color ||
-              item.meta?._case_study_badge_color ||
-              "bg-purple-600",
-            buttonText: item.acf?.button_text || "Ver más",
-            buttonColor:
-              item.acf?.button_color || "bg-blue-600 hover:bg-blue-700",
-            image,
-          };
-        });
-
-        setCaseStudies(transformedData);
+        setCaseStudies(data.map(mapCaseStudyToListingCard));
       } catch (err) {
         console.error("Error fetching case studies:", err);
         setError(
@@ -193,7 +147,7 @@ export default function CaseStudiesContent() {
     };
 
     fetchCaseStudies();
-  }, []);
+  }, [hasServerCaseStudies]);
 
   // All available categories
   const allCategories = Array.from(

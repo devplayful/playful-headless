@@ -19,6 +19,7 @@ const listing = readFileSync(
   'utf8',
 );
 const header = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
 
 const jumex = {
   id: 86237,
@@ -95,5 +96,7 @@ test('nav and listing consume the shared merge helper', () => {
   assert.match(wordpress, /mergePublicCaseStudies\(published\)/);
   assert.match(wordpress, /export async function getAllCaseStudies/);
   assert.match(header, /getAllCaseStudies\(\)/);
+  assert.match(hubPage, /getAllCaseStudies\(\)/);
   assert.match(listing, /mergePublicCaseStudies\(/);
+  assert.match(listing, /mapCaseStudyToListingCard/);
 });
