@@ -1,4 +1,5 @@
 import { isClosedBlogPath } from './blog-closed-paths.ts';
+import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
@@ -159,7 +160,9 @@ export const SITEMAP_BLOG_PATHS = [
 export function getSitemapPaths(): string[] {
   return [
     ...SITEMAP_STATIC_PATHS,
-    ...SITEMAP_BLOG_PATHS.filter((path) => !isClosedBlogPath(path)),
+    ...SITEMAP_BLOG_PATHS.filter((path) => (
+      !isClosedBlogPath(path) && !isCanibalizacionOriginPath(path)
+    )),
   ];
 }
 

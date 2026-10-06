@@ -1,4 +1,5 @@
 import type { WPPost } from '@/services/wordpress';
+import { remapCanibalizacionHref } from './blog-canibalizacion-redirects.ts';
 
 const FALLBACK_CATEGORY = 'sin-categoria';
 
@@ -29,7 +30,7 @@ export function getPrimaryCategorySlug(post: Pick<WPPost, 'categories'>): string
 }
 
 export function blogPostPath(post: Pick<WPPost, 'categories' | 'slug'>): string {
-  return `/blog/${getPrimaryCategorySlug(post)}/${post.slug}`;
+  return remapCanibalizacionHref(`/blog/${getPrimaryCategorySlug(post)}/${post.slug}`);
 }
 
 /**
