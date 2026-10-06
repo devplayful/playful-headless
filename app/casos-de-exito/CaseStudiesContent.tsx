@@ -24,7 +24,8 @@ export type CaseStudy = CaseStudyListingCard;
 // Componente para la tarjeta de caso de estudio
 const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // Server HTML already has the src; starting at 0 hides tapas if onLoad already fired.
+  const [imageLoaded, setImageLoaded] = useState(Boolean(caseStudy.image));
   const hasImage = caseStudy.image && !imageError;
 
   return (

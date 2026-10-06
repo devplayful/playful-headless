@@ -43,6 +43,7 @@ test('hub still paints the existing H1; it does not add another', () => {
   assert.match(CASE_STUDIES_HUB_LEAD, /Aquí no vas a encontrar promesas de agencia/);
   assert.match(hubContent, /initialCaseStudies/);
   assert.match(hubContent, /hasServerCaseStudies/);
+  assert.match(hubContent, /useState\(Boolean\(caseStudy\.image\)\)/);
 });
 
 test('listing mapper keeps the same card fields the hub already showed', () => {
