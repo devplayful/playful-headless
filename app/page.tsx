@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
   const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
-  const defaultOgImage = 'https://playfulagency.com/og.jpg';
+  const defaultOgImage = ogJpegForPath('/') || '/images/og/home.jpg';
 
   // Next.js 15 resolveAbsoluteUrlWithPathname collapses pathname `/` to origin
   // (no trailing slash). Home canonical + og:url are emitted as raw tags below
@@ -24,12 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',
@@ -48,12 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',

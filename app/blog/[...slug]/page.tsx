@@ -16,12 +16,13 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
-  BLOG_COVER_SIZE,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
   resolveBlogOgUrl,
 } from '@/lib/blog-cover-image';
+import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
+import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import {
@@ -243,6 +244,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   alt={post.featured_media_alt || post.title.rendered}
                   fill
                   className="object-contain p-8"
+                  sizes={BLOG_POST_FEATURED_SIZES}
                   priority
                 />
               </div>
@@ -465,13 +467,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
   const ogOverride = blogOgForSlug(postSlug);
+  const jpeg = ogJpegForBlogSlug(postSlug);
   const imageUrl =
-    ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
-  const imageSize = ogOverride
+    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
-    : coverOverride
-      ? BLOG_COVER_SIZE
-      : { width: 1200, height: 630 };
+    : { width: 2560, height: 1440 };
   const imageAlt = post.featured_media_alt || post.title.rendered;
   const editorial = resolveBlogEditorialUpdate(postSlug, {
     published: post.date,
@@ -493,12 +494,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
-        {
-          url: imageUrl,
-          width: imageSize.width,
-          height: imageSize.height,
-          alt: imageAlt,
-        },
+        jpeg
+          ? ogJpegMeta(imageUrl, imageAlt)
+          : {
+              url: imageUrl,
+              width: imageSize.width,
+              height: imageSize.height,
+              alt: imageAlt,
+            },
       ],
     },
     twitter: {

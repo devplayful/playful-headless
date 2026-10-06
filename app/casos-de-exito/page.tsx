@@ -8,6 +8,7 @@ import {
   CASE_STUDIES_HUB_WP_SLUG,
 } from '@/utils/case-study-hub';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import CaseStudiesContent from './CaseStudiesContent';
 
 export default async function CaseStudiesPage() {
@@ -35,18 +36,27 @@ export async function generateMetadata() {
         description,
         type: 'website',
         url,
-        images: metadata.yoast_wpseo_og_image
-          ? [
-              {
-                url: metadata.yoast_wpseo_og_image,
-                width: 1200,
-                height: 630,
-                alt: title,
-              },
-            ]
-          : [],
+        images: (() => {
+          const jpeg = ogJpegForPath(CASE_STUDIES_HUB_PATH);
+          if (jpeg) return [ogJpegMeta(jpeg, title)];
+          return metadata.yoast_wpseo_og_image
+            ? [
+                {
+                  url: metadata.yoast_wpseo_og_image,
+                  width: 1200,
+                  height: 630,
+                  alt: title,
+                },
+              ]
+            : [];
+        })(),
       },
-      twitter: twitterFromOpenGraph(title, description),
+      twitter: {
+        ...twitterFromOpenGraph(title, description),
+        ...(ogJpegForPath(CASE_STUDIES_HUB_PATH)
+          ? { images: [ogJpegForPath(CASE_STUDIES_HUB_PATH)] }
+          : {}),
+      },
     };
   } catch (error) {
     console.error('Error al generar metadatos de la página de casos de éxito:', error);
