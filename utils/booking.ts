@@ -10,7 +10,8 @@ export const BOOKING_HREF = BOOKING_WIDGET_HREF;
 
 /**
  * Visible/canonical href for every booking CTA.
- * `/reunion-playful` 302s to BOOKING_HREF after filling gclid/utm from URL or cookie.
+ * `/reunion-playful` 302s to BOOKING_HREF after forwarding the incoming query
+ * and filling missing gclid/utm from cookie.
  */
 export const SERVICE_BOOKING_HREF = CANONICAL_SERVICE_BOOKING_HREF;
 
