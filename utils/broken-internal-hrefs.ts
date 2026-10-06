@@ -81,6 +81,7 @@ export const BROKEN_HREF_DEFAULTS: Readonly<Record<string, string | null>> = Obj
   '/contactanos': CONTACT_HREF,
   '/blog/pautas-digitales/implementa-publicidad-online-en-tus-estrategias': PUBLICIDAD_DIGITAL_HREF,
   '/implementa-publicidad-online-en-tus-estrategias': PUBLICIDAD_DIGITAL_HREF,
+  /** Posts 75 and 60 (items 15 and 23). Same dest. */
   '/blog/pautas-digitales/por-que-debes-hacer-publicidad-digital-en-tu-negocio': PUBLICIDAD_DIGITAL_HREF,
   '/blog/email-marketing/como-hacer-un-email-marketing-eficaz-durante-la-pandemia':
     '/blog/email-marketing/estrategia-de-email-marketing',
@@ -117,6 +118,7 @@ export const BROKEN_HREF_DEFAULTS: Readonly<Record<string, string | null>> = Obj
   '/blog/pautas-digitales/google-grants-descubre-que-es-y-como-funciona': UNWRAP,
   '/google-grants-descubre-que-es-y-como-funciona': UNWRAP,
   '/blog/pautas-digitales/porque-tener-un-perfil-empresarial-en-linkedin': UNWRAP,
+  '/seo-internacional': UNWRAP,
 });
 
 type SourceDest = string | null;

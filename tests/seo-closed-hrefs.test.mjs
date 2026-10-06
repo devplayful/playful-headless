@@ -63,7 +63,8 @@ const REWRITES = [
   { source: '/blog/pautas-digitales/el-pixel-de-facebook-y-como-te-ayuda-con-tus-campanas', from: '/blog/pautas-digitales/implementa-publicidad-online-en-tus-estrategias', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'cómo puede mejorar tus estrategias' },
   { source: '/blog/otros/conoce-todo-sobre-instagram-ads', from: '/implementa-publicidad-online-en-tus-estrategias', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'Implementa la publicidad online' },
   { source: '/blog/pautas-digitales/que-son-los-buyer-persona-y-como-se-determinan', from: '/email-marketing-una-herramienta-que-no-puedes-dejar-de-usar-en-tu-empresa', to: GUIA_MARKETING_HREF, anchor: 'estrategia de marketing' },
-  { source: '/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti', from: '/blog/pautas-digitales/por-que-debes-hacer-publicidad-digital-en-tu-negocio', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'publicidad de display' },
+  { source: '/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti', from: '/blog/pautas-digitales/por-que-debes-hacer-publicidad-digital-en-tu-negocio', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'Un resumen de la publicidad de display' },
+  { source: '/blog/pautas-digitales/como-usar-el-remarketing-para-tener-mas-clientes', from: '/blog/pautas-digitales/por-que-debes-hacer-publicidad-digital-en-tu-negocio', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'Publicidad Digital: distintas formas de atraer tráfico a tu web' },
   { source: '/blog/mas-vistos/ecosistema-digital-de-tu-marca', from: '/blog/email-marketing', to: '/blog/email-marketing/estrategia-de-email-marketing', anchor: 'Email Marketing' },
   { source: '/blog/email-marketing/como-crear-una-base-de-datos-de-email-marketing', from: '/blog/email-marketing/como-hacer-un-email-marketing-eficaz-durante-la-pandemia', to: '/blog/email-marketing/estrategia-de-email-marketing', anchor: 'campañas de email marketing.' },
   { source: '/blog/tecnologia/que-es-wordpress-por-que-tengo-que-usarlo', from: '/blog/tecnologia/lenguajes-de-programacion-para-que-sirve-y-cuales-son-los-mas-usados', to: '/blog/tecnologia/programacion-web-que-es-como-puede-servirle-a-mi-marca', anchor: 'Lenguajes de programación' },
@@ -91,6 +92,7 @@ const UNWRAPS = [
   { source: '/blog/seo/que-es-un-blog', from: '/blog/pautas-digitales/google-grants-descubre-que-es-y-como-funciona', anchor: 'Google Grants' },
   { source: '/blog/seo/que-es-un-blog', from: '/google-grants-descubre-que-es-y-como-funciona', anchor: 'Google Grants' },
   { source: '/blog/mas-vistos/que-es-una-agencia-de-sem', from: '/blog/pautas-digitales/porque-tener-un-perfil-empresarial-en-linkedin', anchor: 'LinkedIn Ads' },
+  { source: '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad', from: '/seo-internacional', anchor: 'agencia de SEO' },
 ];
 
 const LANDING_REWRITES = [
@@ -150,6 +152,15 @@ test('does not rewrite inside #211 origin posts or unpublished landings', () => 
   }
   const unpublished = SKIP_BROKEN_HREF_PATHS.map((path) => `<a href="${path}">x</a>`).join('');
   assert.equal(rewriteInSitePageHrefs(unpublished, '/blog/seo/aprende-todo-sobre-el-seo'), unpublished);
+});
+
+test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', () => {
+  const html = '<h2><a href="/seo-internacional">agencia de SEO</a></h2>';
+  const rewritten = rewriteInSitePageHrefs(
+    html,
+    '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+  );
+  assert.equal(rewritten, '<h2>agencia de SEO</h2>');
 });
 
 test('does not invent dests outside the closed list', () => {

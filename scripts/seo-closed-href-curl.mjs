@@ -10,6 +10,11 @@ import { isCanibalizacionOriginPath } from '../utils/blog-canibalizacion-redirec
 const BASE = (process.argv[2] || 'https://playfulagency.com').replace(/\/+$/, '');
 const SHARE_TOKEN = process.env.VERCEL_SHARE || '';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) PlayfulAgency/1.0';
+const REQUEST_GAP_MS = 1000;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 let shareCookie = '';
 
 async function bootstrapShareCookie() {
@@ -133,6 +138,7 @@ const pages = [...postPaths, ...LANDINGS];
 
 const pageHrefs = new Map();
 for (const path of pages) {
+  await sleep(REQUEST_GAP_MS);
   try {
     const { html } = await fetchText(path);
     const hrefs = extractHrefs(html).filter(isInternal);
@@ -144,15 +150,10 @@ for (const path of pages) {
 
 const unique = [...new Set([...pageHrefs.values()].flat())];
 const statusByHref = new Map();
-const queue = [...unique];
-const workers = Array.from({ length: 8 }, async () => {
-  while (queue.length) {
-    const href = queue.shift();
-    if (!href) return;
-    statusByHref.set(href, await probe(href));
-  }
-});
-await Promise.all(workers);
+for (const href of unique) {
+  await sleep(REQUEST_GAP_MS);
+  statusByHref.set(href, await probe(href));
+}
 
 function tally(paths) {
   let links = 0;
