@@ -92,6 +92,9 @@ export const BLOG_COVER_OVERRIDES = {
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
 export const BLOG_OG_SIZE = { width: 1200, height: 630 } as const;
 
+/** When WP has no featured image. Same JPEG `/blog` and the site layout already use as OG. */
+export const BLOG_COVER_FALLBACK = '/images/og/home.jpg';
+
 /**
  * 1200×630 center-crop (no stretch) for og:image + JSON-LD only.
  * Featured/hero still uses BLOG_COVER_OVERRIDES / WordPress.
@@ -127,9 +130,9 @@ export function blogOgForSlug(slug: string | undefined | null): string {
 /** Prefer the local Magnific cover when the slug is in lote 1–6. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
-  fallback = '',
+  fallback = BLOG_COVER_FALLBACK,
 ): string {
-  return blogCoverForSlug(slug) || fallback;
+  return blogCoverForSlug(slug) || fallback || BLOG_COVER_FALLBACK;
 }
 
 /** Prefer the 1200×630 JPEG, then the older webp crop, then the featured cover. */

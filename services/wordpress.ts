@@ -17,7 +17,7 @@ import {
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
-import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
+import { BLOG_COVER_FALLBACK, resolveBlogCoverUrl } from '@/lib/blog-cover-image';
 import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
@@ -553,7 +553,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       categorySlug = lookup.fallback.slug || categorySlug;
     }
   }
-  let imageUrl = post.featured_media_url || '/images/blog/placeholder.jpg';
+  let imageUrl = post.featured_media_url || BLOG_COVER_FALLBACK;
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
   if (!post.featured_media_url && featuredMedia) {
     imageUrl = featuredMedia.source_url
@@ -935,7 +935,7 @@ function toRelatedIndexPost(
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
     featuredMediaId,
-    featuredMediaUrl: resolveBlogCoverUrl(post.slug, '/images/blog/placeholder.jpg'),
+    featuredMediaUrl: resolveBlogCoverUrl(post.slug, BLOG_COVER_FALLBACK),
     categoryIds,
     categorySlug,
     categoryName,
@@ -960,7 +960,7 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       },
       'slash',
     ),
-    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || '/images/blog/placeholder.jpg'),
+    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
     slug: post.slug,
     href: post.href,
   };

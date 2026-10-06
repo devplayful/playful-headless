@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const {
+  BLOG_COVER_FALLBACK,
   BLOG_COVER_OVERRIDES,
   BLOG_COVER_SIZE,
   BLOG_OG_OVERRIDES,
@@ -510,6 +511,18 @@ test('unknown slugs keep the WordPress featured fallback', () => {
     resolveBlogCoverUrl('cintillos-de-promocion', 'https://endpoint.example/old.jpg'),
     'https://endpoint.example/old.jpg',
   );
+});
+
+test('cover fallback points at a file that exists in public/', async () => {
+  assert.equal(BLOG_COVER_FALLBACK, '/images/og/home.jpg');
+  assert.ok(
+    existsSync(join(root, 'public', BLOG_COVER_FALLBACK.replace(/^\//, ''))),
+    BLOG_COVER_FALLBACK,
+  );
+  assert.equal(resolveBlogCoverUrl('unknown-slug-without-cover', ''), BLOG_COVER_FALLBACK);
+  const wordpress = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(wordpress, /placeholder\.jpg/);
+  assert.match(wordpress, /BLOG_COVER_FALLBACK/);
 });
 
 test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async () => {
