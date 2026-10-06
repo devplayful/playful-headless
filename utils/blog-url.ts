@@ -2,6 +2,28 @@ import type { WPPost } from '@/services/wordpress';
 
 const FALLBACK_CATEGORY = 'sin-categoria';
 
+/** Slugs the listing chips already navigate with `blogListingPath({ category })`. */
+export const BLOG_LISTING_CATEGORY_SLUGS = [
+  'e-commerce',
+  'email-marketing',
+  'mas-vistos',
+  'otros',
+  'pautas-digitales',
+  'seo',
+  'tecnologia',
+] as const;
+
+const BLOG_LISTING_CATEGORY_SLUG_SET = new Set<string>(BLOG_LISTING_CATEGORY_SLUGS);
+
+export function blogCategoryIndexSlug(pathname: string): string | null {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  const parts = path.split('/').filter(Boolean);
+  if (parts.length === 2 && parts[0] === 'blog' && BLOG_LISTING_CATEGORY_SLUG_SET.has(parts[1])) {
+    return parts[1];
+  }
+  return null;
+}
+
 export function getPrimaryCategorySlug(post: Pick<WPPost, 'categories'>): string {
   return post.categories?.[0]?.slug || FALLBACK_CATEGORY;
 }
