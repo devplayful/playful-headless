@@ -154,6 +154,54 @@ test('does not rewrite inside #211 origin posts or unpublished landings', () => 
   assert.equal(rewriteInSitePageHrefs(unpublished, '/blog/seo/aprende-todo-sobre-el-seo'), unpublished);
 });
 
+test('posts 96, 81 and 124 change only the banner href and leave alt and paragraph hrefs', () => {
+  const cases = [
+    {
+      source: '/blog/seo/que-es-data-studio-de-google-y-como-funciona',
+      from: '/servicios/seo',
+      to: AGENCIA_SEO_HREF,
+      img: '<img class="aligncenter size-full wp-image-72109" src="https://endpoint.playfulagency.com/wp-content/uploads/2020/06/BANNER-CTA_PLAYFUL_DataStudio.png" alt="" width="834" height="348" />',
+      keep: [
+        '<a href="/blog/seo/6-herramientas-para-crear-informes-seo"><b>herramienta SEO</b></a>',
+        '<a href="/blog/seo/diseno-web-y-posicionamiento-seo"><img alt="otro banner" src="/x.png" /></a>',
+      ],
+    },
+    {
+      source: '/blog/seo/6-herramientas-para-crear-informes-seo',
+      from: '/servicios/automatizacion-del-marketing',
+      to: AGENCIA_SEO_HREF,
+      img: '<img class="size-full wp-image-72103" src="https://endpoint.playfulagency.com/wp-content/uploads/2020/06/BANNER-CTA_PLAYFUL_6-Herramientas-para-crear-informes-SEO.png" alt="6 herramientas para crear informes SEO" width="834" height="348" />',
+      keep: [
+        '<a href="/blog/seo/consejos-para-la-optimizacion-web"><span>optimizar una página web</span></a>',
+      ],
+    },
+    {
+      source: '/blog/seo/que-es-la-intencion-de-busqueda-y-cuales-son-sus-beneficios',
+      from: '/servicios/automatizacion-del-marketing',
+      to: AGENCIA_SEO_HREF,
+      img: '<img class="alignnone size-full wp-image-77702" src="https://endpoint.playfulagency.com/wp-content/uploads/2022/11/banner.png" alt="BANNER CTA_PLAYFUL_Implementa hoy la intención de búsqueda" width="600" height="250" />',
+      keep: [
+        '<a href="/blog/seo/conoce-los-tipos-de-enlaces-seo">el usuario encuentre lo que desea</a>',
+      ],
+    },
+  ];
+
+  for (const item of cases) {
+    const html = `<p>${item.keep.join(' ')}</p><p><a href="https://endpoint.playfulagency.com${item.from}/">${item.img}</a></p>`;
+    const rewritten = rewriteInSitePageHrefs(html, item.source);
+    assert.doesNotMatch(
+      rewritten,
+      new RegExp(`${item.from.replaceAll('/', '\\/')}/?`),
+      `${item.source} ${item.from}`,
+    );
+    assert.match(rewritten, new RegExp(`href="${item.to.replaceAll('/', '\\/')}"`));
+    assert.equal(rewritten.includes(item.img), true, `${item.source} img/alt`);
+    for (const neighbor of item.keep) {
+      assert.equal(rewritten.includes(neighbor), true, `${item.source} keep ${neighbor}`);
+    }
+  }
+});
+
 test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', () => {
   const html = '<h2><a href="/seo-internacional">agencia de SEO</a></h2>';
   const rewritten = rewriteInSitePageHrefs(

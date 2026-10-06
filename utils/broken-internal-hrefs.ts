@@ -76,6 +76,7 @@ const GRANTS_SLUG = 'google-grants-descubre-que-es-y-como-funciona';
 export const BROKEN_HREF_DEFAULTS: Readonly<Record<string, string | null>> = Object.freeze({
   '/landing-seo': AGENCIA_SEO_HREF,
   '/seo': AGENCIA_SEO_HREF,
+  /** Post 96 banner (empty alt) and the item-6 text links. Same dest. */
   '/servicios/seo': AGENCIA_SEO_HREF,
   '/servicios/desarrollo-web': AGENCIA_DISENO_HREF,
   '/contactanos': CONTACT_HREF,
@@ -131,9 +132,11 @@ export const BROKEN_HREF_BY_SOURCE: Readonly<Record<string, Readonly<Record<stri
   'posicionamiento-organico-vs-pago': {
     '/servicios/automatizacion-del-marketing': AGENCIA_SEM_HREF,
   },
+  /** Post 81: the only matching href is the banner image (item 8). */
   '6-herramientas-para-crear-informes-seo': {
     '/servicios/automatizacion-del-marketing': AGENCIA_SEO_HREF,
   },
+  /** Post 124: the only matching href is the CTA banner (item 8). */
   'que-es-la-intencion-de-busqueda-y-cuales-son-sus-beneficios': {
     '/servicios/automatizacion-del-marketing': AGENCIA_SEO_HREF,
   },
