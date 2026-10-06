@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 const IN_SITE_PAGE_HOSTS = new Set([
   'endpoint.playfulagency.com',
   'old.playfulagency.com',
@@ -10,6 +12,36 @@ const WP_ASSET_PATH_PREFIXES = ['/wp-content', '/wp-includes', '/wp-json', '/wp-
 const APEX_ORIGIN = 'https://playfulagency.com';
 const LEGACY_CASE_STUDIES_HUB_PATH = '/casos-de-exito-agencia-de-marketing-digital';
 const CASE_STUDIES_HUB_PATH = '/casos-de-exito';
+
+const CANIBALIZACION_301 = JSON.parse(
+  readFileSync(new URL('../utils/blog-canibalizacion-redirect-map.json', import.meta.url), 'utf8'),
+);
+
+function normalizeRedirectPath(pathname) {
+  const path = pathname.split(/[?#]/)[0];
+  return path.length > 1 ? path.replace(/\/+$/, '') : path || '/';
+}
+
+export function remapCanibalizacionHref(href) {
+  if (typeof href !== 'string' || !href) return href;
+  try {
+    const absolute = href.startsWith('//') ? `https:${href}` : href;
+    const url = absolute.startsWith('http')
+      ? new URL(absolute)
+      : new URL(absolute, `${APEX_ORIGIN}/`);
+    const dest = CANIBALIZACION_301[normalizeRedirectPath(url.pathname)];
+    if (!dest) return href;
+    const destUrl = new URL(dest);
+    destUrl.search = url.search;
+    destUrl.hash = url.hash;
+    if (href.startsWith('http') || href.startsWith('//')) {
+      return destUrl.href;
+    }
+    return `${destUrl.pathname}${url.search}${url.hash}`;
+  } catch {
+    return href;
+  }
+}
 
 /** Absolute or protocol-relative in-site page URLs (not /wp-* assets). */
 const IN_SITE_URL_RE = /(?:https?:)?\/\/(?:endpoint\.|old\.|www\.)?playfulagency\.com[^\s"'<>]*/gi;
@@ -49,7 +81,7 @@ export function rewritePageHref(url) {
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
 export function rewriteInSitePageHrefs(html) {
   return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
-    return `href=${quote}${remapLegacyCaseStudiesHubHref(rewritePageHref(href))}${quote}`;
+    return `href=${quote}${remapCanibalizacionHref(remapLegacyCaseStudiesHubHref(rewritePageHref(href)))}${quote}`;
   });
 }
 

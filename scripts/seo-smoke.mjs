@@ -304,7 +304,7 @@ assert.equal(invalidBlogPage.status, 404, 'invalid/negative blog page stays 404'
 const gsc301 = [
   [
     '/blog/email-marketing/tipos-de-publicidad-online',
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   ],
   [
     '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads',

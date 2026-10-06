@@ -18,7 +18,7 @@ const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.ur
 const GSC_301 = [
   [
     '/blog/email-marketing/tipos-de-publicidad-online',
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   ],
   [
     '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads',
