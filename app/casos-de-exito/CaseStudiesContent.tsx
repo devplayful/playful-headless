@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import { CASE_LISTING_CARD_SIZES } from "@/lib/blog-image-sizes";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
 import { CASE_STUDIES_LISTING_EMBED_URL } from "@/lib/case-study-listing-image";
@@ -34,10 +36,12 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         {/* Imagen */}
         <div className="relative h-56 bg-gray-200 overflow-hidden group">
           {hasImage ? (
-            <img
+            <Image
               src={caseStudy.image}
               alt={caseStudy.title}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
+              fill
+              sizes={CASE_LISTING_CARD_SIZES}
+              className={`object-cover transition-opacity duration-300 ${
                 imageLoaded ? "opacity-100" : "opacity-0"
               }`}
               onLoad={() => setImageLoaded(true)}

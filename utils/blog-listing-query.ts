@@ -1,6 +1,7 @@
 import { canonicalForPath } from './canonical.ts';
 import { shouldNoindexBlogListing } from './blog-listing-robots.ts';
 import { twitterFromOpenGraph } from './page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '../lib/og-images.ts';
 
 export const BLOG_LISTING_REVALIDATE_SECONDS = 300;
 export const BLOG_LISTING_PER_PAGE = 10;
@@ -61,18 +62,16 @@ export function buildBlogListingMetadata(searchParams?: BlogListingSearchParams 
       description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
       url,
       images: [
-        {
-          url: '/images/og-blog.jpg',
-          width: 1200,
-          height: 630,
-          alt: 'Blog - Playful Agency',
-        },
+        ogJpegMeta(
+          ogJpegForPath('/blog') || '/images/og/home.jpg',
+          'Blog - Playful Agency',
+        ),
       ],
     },
     twitter: twitterFromOpenGraph(
       'Blog - Playful Agency',
       'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
-      '/images/og-blog.jpg',
+      ogJpegForPath('/blog') || '/images/og/home.jpg',
     ),
   };
 }

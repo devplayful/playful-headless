@@ -9,6 +9,7 @@ import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
+import { BLOG_LISTING_CARD_SIZES, BLOG_LISTING_HERO_SIZES } from '@/lib/blog-image-sizes';
 
 // Función para extraer el texto del excerpt (eliminar etiquetas HTML)
 const getExcerpt = (excerpt: string) => {
@@ -116,8 +117,8 @@ export default async function BlogListingView({
                         src={posts[0].featured_media_url}
                         alt={posts[0].featured_media_alt || posts[0].title.rendered}
                         fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 80vw"
+                        className="object-contain p-8"
+                        sizes={BLOG_LISTING_HERO_SIZES}
                         priority
                     />
                   ) : (
@@ -216,8 +217,8 @@ export default async function BlogListingView({
                             src={post.featured_media_url}
                             alt={post.featured_media_alt || post.title.rendered}
                             fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-contain p-6 hover:scale-105 transition-transform duration-300"
+                            sizes={BLOG_LISTING_CARD_SIZES}
                           />
                         </div>
                       ) : (

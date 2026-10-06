@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { canonicalForPath } from '@/utils/canonical';
 import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
 import { applyPageTitleOverride, applyPageDescriptionOverride, twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
 export const revalidate = 300;
@@ -34,6 +35,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     metadata.yoast_wpseo_metadesc,
     metadata.yoast_wpseo_og_description,
   );
+  const jpeg = ogJpegForPath(`/${slug}`);
+  const images = jpeg
+    ? [ogJpegMeta(jpeg, ogTitle || title || 'Playful Agency')]
+    : metadata.yoast_wpseo_og_image
+      ? [metadata.yoast_wpseo_og_image]
+      : undefined;
   return {
     title,
     description,
@@ -43,9 +50,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: ogTitle,
       description: ogDescription,
       url,
-      images: metadata.yoast_wpseo_og_image ? [metadata.yoast_wpseo_og_image] : undefined,
+      images,
     },
-    twitter: twitterFromOpenGraph(ogTitle, ogDescription),
+    twitter: {
+      ...twitterFromOpenGraph(ogTitle, ogDescription),
+      ...(jpeg ? { images: [jpeg] } : {}),
+    },
   };
 }
 

@@ -42,6 +42,7 @@
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
  */
+import { ogJpegForBlogSlug } from './og-images.ts';
 export const BLOG_COVER_OVERRIDES = {
   // lote 1
   'actualizar-tu-e-commerce': '/images/blog/01-actualizar-magnific-mELf0NZhJQ.png',
@@ -139,10 +140,10 @@ export function resolveBlogCoverUrl(
   return blogCoverForSlug(slug) || fallback;
 }
 
-/** Prefer the 1200×630 OG crop, then the featured cover, then fallback. */
+/** Prefer the 1200×630 JPEG, then the older webp crop, then the featured cover. */
 export function resolveBlogOgUrl(
   slug: string | undefined | null,
   fallback = '',
 ): string {
-  return blogOgForSlug(slug) || blogCoverForSlug(slug) || fallback;
+  return ogJpegForBlogSlug(slug) || blogOgForSlug(slug) || blogCoverForSlug(slug) || fallback;
 }

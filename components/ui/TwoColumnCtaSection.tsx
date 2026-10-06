@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { CTA_ILLUSTRATION_SIZES } from "@/lib/blog-image-sizes";
 
 interface TwoColumnCtaSectionProps {
   imageUrl?: string;
@@ -45,7 +46,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               alt={imageAlt}
               width={2048}
               height={2048}
-              sizes="(min-width: 1024px) 560px, 100vw"
+              sizes={CTA_ILLUSTRATION_SIZES}
               className="w-full h-auto object-cover"
             />
           </div>

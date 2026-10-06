@@ -16,6 +16,7 @@ import PhoneCarouselSection from './PhoneCarouselSection';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 
 
@@ -28,6 +29,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const url = canonicalForPath(`/casos-de-exito/${slug}`);
   const override = getPublicCaseStudySeoOverride(slug);
+  const jpeg = ogJpegForPath(`/casos-de-exito/${slug}`);
+  const images = jpeg ? [ogJpegMeta(jpeg, override?.title || 'Caso de éxito | Playful Agency')] : undefined;
   if (override) {
     return {
       title: override.title,
@@ -37,13 +40,20 @@ export async function generateMetadata({
         title: override.title,
         description: override.description,
         url,
+        images,
       },
-      twitter: twitterFromOpenGraph(override.title, override.description),
+      twitter: {
+        ...twitterFromOpenGraph(override.title, override.description),
+        ...(jpeg ? { images: [jpeg] } : {}),
+      },
     };
   }
   return {
     alternates: { canonical: url },
-    openGraph: { url },
+    openGraph: { url, images },
+    twitter: jpeg
+      ? { card: 'summary_large_image' as const, images: [jpeg] }
+      : undefined,
   };
 }
 

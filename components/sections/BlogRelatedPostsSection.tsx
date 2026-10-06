@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, type ReactNode } from 'react';
 import { excludeCurrentBlogPost } from '@/lib/blog-related-posts';
+import { BLOG_CARD_SIZES } from '@/lib/blog-image-sizes';
 
 interface BlogPost {
   id: number | string;
@@ -118,7 +119,7 @@ export default function BlogRelatedPostsSection({
             <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
               <div className="relative h-48 bg-gray-100">
                 {post.imageUrl ? (
-                  <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
+                  <Image src={post.imageUrl} alt={post.title} fill className="object-cover" sizes={BLOG_CARD_SIZES} />
                 ) : (
                   <div className="w-full h-full bg-gray-200" />
                 )}

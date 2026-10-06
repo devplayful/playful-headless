@@ -27,6 +27,8 @@ jobs:
         run: npm run verify:lockfile
       - name: Run adversarial route tests
         run: npm run test:route-integrity
+      - name: Run blog cannibalization redirect tests
+        run: node --experimental-strip-types --test tests/blog-canibalizacion-redirects.test.mjs
       - name: Type-check
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact

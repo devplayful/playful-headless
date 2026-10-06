@@ -3,6 +3,8 @@ import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
+import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
+import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
   ATTRIBUTION_COOKIE_LAST,
@@ -29,7 +31,7 @@ function attachAttributionCookies(request: NextRequest, response: NextResponse):
   return response;
 }
 
-const PERMANENT_301: Record<string, string> = {
+const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent301({
   '/servicios': '/agencia-e-commerce',
   '/services': '/agencia-e-commerce',
   '/contacto': '/contactar-agencia-de-marketing-digital',
@@ -38,14 +40,21 @@ const PERMANENT_301: Record<string, string> = {
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
   '/gracias-v2': '/gracias',
   '/blog/email-marketing/tipos-de-publicidad-online':
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
     'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
   '/otros/conoce-todo-sobre-instagram-ads':
     'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
   '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
     'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
-};
+  '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ...canibalizacionOrigins,
+}, categoryRedirects);
 
 function normalizePath(pathname: string): string {
   return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;

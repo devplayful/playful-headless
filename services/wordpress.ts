@@ -3,6 +3,7 @@ import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrid
 import { mergePublicCaseStudies } from '@/lib/public-case-studies';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
+import { remapCanibalizacionHref } from '@/utils/blog-canibalizacion-redirects';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import {
   rewriteInSitePageHrefs,
@@ -580,7 +581,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
     date: formattedDate,
     imageUrl,
     slug: post.slug,
-    href: `/blog/${categorySlug}/${post.slug}`,
+    href: remapCanibalizacionHref(`/blog/${categorySlug}/${post.slug}`),
   };
 }
 
@@ -937,7 +938,7 @@ function toRelatedIndexPost(
     categorySlug,
     categoryName,
     status: post.status || 'publish',
-    href: `/blog/${categorySlug}/${post.slug}`,
+    href: remapCanibalizacionHref(`/blog/${categorySlug}/${post.slug}`),
   };
 }
 
