@@ -100,10 +100,6 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
           type: 'p',
           text: 'Revisamos los módulos y el tema cuando hay que actualizarlos, comprobamos que el cobro y el envío siguen funcionando después de cada cambio y hablamos con tu proveedor de hosting cuando el servidor necesita algo, como la reescritura de URL.',
         },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿ofrecemos el mantenimiento de PrestaShop como servicio mensual con nombre propio, o solo dentro de un proyecto?]',
-        },
       ],
     },
     {
@@ -117,10 +113,6 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
         {
           type: 'p',
           text: 'En la reunión vemos qué tienes contratado con tu banco y cómo encaja en el checkout de tu tienda.',
-        },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿hemos integrado nosotros la pasarela de Redsys en una tienda PrestaShop?]',
         },
       ],
     },
@@ -163,10 +155,6 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
         {
           type: 'p',
           text: 'En Venezuela, nuestro caso publicado es [SoyTechno](https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela), una tienda de tecnología.',
-        },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿qué proyectos PrestaShop podemos citar?]',
         },
       ],
     },
