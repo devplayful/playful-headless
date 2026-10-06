@@ -1,5 +1,10 @@
 'use client';
 
+// Out of this change: converting the episode page to a server component is not
+// a trivial/safe lift. A missing slug paints a custom "Episodio no encontrado"
+// block (H1 "404") instead of app/not-found.tsx, so a server notFound() would
+// change the 404 the site already shows.
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getPodcastEpisodeBySlug, PodcastEpisode } from '@/services/wordpress';

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { blogListingPath } = await import('../utils/blog-url.ts');
+const { blogListingPath, BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/blog-url.ts');
 
 const listingPage = readFileSync(
   new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
@@ -69,6 +69,12 @@ test('pagination component navigates with buttons, not indexable hrefs', () => {
   assert.doesNotMatch(pagination, CRAWLABLE_QUERY_HREF);
   assert.doesNotMatch(pagination, /from ['"]next\/link['"]/);
   assert.doesNotMatch(pagination, /<Link/);
+});
+
+test('listing chips and the category-index 308 share the same slugs', () => {
+  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
+    assert.match(categories, new RegExp(`slug: '${slug}'`));
+  }
 });
 
 test('category UI has no crawlable ?category= hrefs', () => {
