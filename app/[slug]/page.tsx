@@ -26,6 +26,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
+  // notFound() here (not only in the page) so Next paints app/not-found.tsx
+  // as HTML. A successful generateMetadata + later notFound() leaves the
+  // empty __next_error__ shell.
+  const page = await getPageBySlug(slug);
+  if (!page) {
+    notFound();
+  }
   const url = canonicalForPath(`/${slug}`);
   const metadata = await getPageMetadataBySlug(slug);
   const { title, ogTitle } = applyPageTitleOverride(

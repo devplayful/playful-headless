@@ -29,6 +29,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const url = canonicalForPath(`/casos-de-exito/${slug}`);
   const override = getPublicCaseStudySeoOverride(slug);
+  if (!override && slug !== 'soytechno-ecommerce-venezuela') {
+    const story = await getSuccessStoryBySlug(slug);
+    if (!story) {
+      notFound();
+    }
+  }
   const jpeg = ogJpegForPath(`/casos-de-exito/${slug}`);
   const images = jpeg ? [ogJpegMeta(jpeg, override?.title || 'Caso de éxito | Playful Agency')] : undefined;
   if (override) {
