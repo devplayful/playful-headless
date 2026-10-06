@@ -6,6 +6,7 @@ import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { remapCanibalizacionHref } from '@/utils/blog-canibalizacion-redirects';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
+import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -390,12 +391,14 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = rewriteElementorBodyHrefs(
-    rewriteEcommerceZelleCover(
-      rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
+  const html = applyImageAltOverrides(
+    rewriteElementorBodyHrefs(
+      rewriteEcommerceZelleCover(
+        rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
+        slug,
+      ),
       slug,
     ),
-    slug,
   );
   const title = stripHtml(page.title?.rendered || slug);
   const stylesheetIds = collectStylesheetIds(html, page.id);

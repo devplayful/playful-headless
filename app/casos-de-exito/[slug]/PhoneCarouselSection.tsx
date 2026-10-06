@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { resolveImageAlt } from '@/lib/image-alt-overrides'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -93,7 +94,7 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
                   <div className="relative w-full h-[650px] rounded-[18px] overflow-hidden p-4">
                     <Image
                       src={src}
-                      alt={`Teléfono ${index + 1}`}
+                      alt={resolveImageAlt(src, `Teléfono ${index + 1}`)}
                       fill
                       className="object-contain"
                       sizes="(max-width: 768px) 320px, (max-width: 1024px) 50vw, 25vw"
