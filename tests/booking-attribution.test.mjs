@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 const {
   BOOKING_QUERY_KEYS,
@@ -20,6 +20,22 @@ const {
   searchFromBookingValues,
   toServiceBookingHref,
 } = await import('../utils/booking-attribution.ts');
+const {
+  applyBookingIframeAttrToSrc,
+  BOOKING_IFRAME_ATTR_KEYS,
+  BOOKING_IFRAME_ATTR_STORAGE_KEY,
+  bookingCompleteHasContactIdentity,
+  bookingIframeAttrFromSearch,
+  bookingQueryParamsReply,
+  deserializeBookingIframeAttr,
+  handleBookingWidgetMessage,
+  isAllowedBookingMessageOrigin,
+  isBookingWidgetIframeSrc,
+  mergeBookingIframeAttr,
+  parseBookingWidgetMessage,
+  resolveBookingIframeAttr,
+  serializeBookingIframeAttr,
+} = await import('../utils/booking-widget-bridge.ts');
 const {
   emptyAttribution,
   serializeAttributionCookie,
@@ -283,5 +299,159 @@ test('Shopify, gracias and blog CTAs go through /reunion-playful; layout propaga
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);
+  assert.match(layout, /BookingWidgetAttribution/);
   assert.match(layout, /AttributionCapture/);
+});
+
+test('iframe persist keeps the seven visit keys and ignores unknown fields', () => {
+  const fromUrl = bookingIframeAttrFromSearch(
+    '?utm_source=facebook&utm_medium=paid_social&utm_campaign=set1&utm_content=ad1&utm_term=shoes&fbclid=TEST123&gclid=G456&foo=bar',
+  );
+  assert.deepEqual([...BOOKING_IFRAME_ATTR_KEYS], [
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content',
+    'utm_term',
+    'fbclid',
+    'gclid',
+  ]);
+  assert.deepEqual(fromUrl, {
+    utm_source: 'facebook',
+    utm_medium: 'paid_social',
+    utm_campaign: 'set1',
+    utm_content: 'ad1',
+    utm_term: 'shoes',
+    fbclid: 'TEST123',
+    gclid: 'G456',
+  });
+  assert.equal(deserializeBookingIframeAttr(serializeBookingIframeAttr({
+    ...fromUrl,
+    not_a_key: 'drop',
+  })).utm_source, 'facebook');
+  assert.equal(deserializeBookingIframeAttr('{not-json').utm_source, undefined);
+  assert.deepEqual(
+    mergeBookingIframeAttr({ utm_source: 'facebook' }, { utm_source: 'google', fbclid: 'KEEP' }),
+    { utm_source: 'facebook', fbclid: 'KEEP' },
+  );
+});
+
+test('iframe src merge only touches GHL booking widgets and keeps widget-only keys', () => {
+  const values = {
+    utm_source: 'facebook',
+    utm_medium: 'paid_social',
+    utm_campaign: 'set1',
+    utm_content: 'ad1',
+    utm_term: 'shoes',
+    fbclid: 'TEST123',
+    gclid: 'G456',
+  };
+  assert.equal(isBookingWidgetIframeSrc(BOOKING_WIDGET_HREF), true);
+  assert.equal(isBookingWidgetIframeSrc(`${BOOKING_WIDGET_HREF}?timezone=America/Managua`), true);
+  assert.equal(isBookingWidgetIframeSrc('https://widgets.leadconnectorhq.com/chat-widget/loader.js'), false);
+  assert.equal(isBookingWidgetIframeSrc('https://www.googletagmanager.com/ns.html?id=GTM-X'), false);
+
+  const merged = applyBookingIframeAttrToSrc(
+    `${BOOKING_WIDGET_HREF}?timezone=America/Managua&utm_source=widget-default`,
+    values,
+  );
+  const target = new URL(merged);
+  assert.equal(target.origin, 'https://api.playfulagency.com');
+  assert.equal(target.pathname, '/widget/bookings/reunion-playful');
+  assert.equal(target.searchParams.get('timezone'), 'America/Managua');
+  assert.equal(target.searchParams.get('utm_source'), 'facebook');
+  assert.equal(target.searchParams.get('utm_medium'), 'paid_social');
+  assert.equal(target.searchParams.get('utm_campaign'), 'set1');
+  assert.equal(target.searchParams.get('utm_content'), 'ad1');
+  assert.equal(target.searchParams.get('utm_term'), 'shoes');
+  assert.equal(target.searchParams.get('fbclid'), 'TEST123');
+  assert.equal(target.searchParams.get('gclid'), 'G456');
+  assert.equal(
+    applyBookingIframeAttrToSrc('https://www.googletagmanager.com/ns.html?id=GTM-X', values),
+    'https://www.googletagmanager.com/ns.html?id=GTM-X',
+  );
+});
+
+test('cookie fallback fills iframe keys when the page URL omitted them', () => {
+  const lastCookie = serializeAttributionCookie(emptyAttribution({
+    captured: true,
+    source: 'facebook',
+    landing: '/agencia-shopify?fbclid=COOKIE-FB&gclid=COOKIE-G&utm_source=facebook',
+    utm_source: 'facebook',
+    fbclid: 'COOKIE-FB',
+    gclid: 'COOKIE-G',
+  }));
+  const values = resolveBookingIframeAttr({
+    search: '?utm_medium=paid_social',
+    stored: serializeBookingIframeAttr({ utm_campaign: 'stored-set' }),
+    lastCookie,
+  });
+  assert.equal(values.utm_medium, 'paid_social');
+  assert.equal(values.utm_campaign, 'stored-set');
+  assert.equal(values.utm_source, 'facebook');
+  assert.equal(values.fbclid, 'COOKIE-FB');
+  assert.equal(values.gclid, 'COOKIE-G');
+  assert.equal(BOOKING_IFRAME_ATTR_STORAGE_KEY, 'playful:booking-iframe-attr:v1');
+});
+
+test('GHL calendar postMessage: query-params reply only for allowed origins; confirm has no identity', () => {
+  const values = {
+    utm_source: 'facebook',
+    fbclid: 'TEST123',
+    gclid: 'G456',
+  };
+  const fetchMsg = ['fetch-query-params', 'calendar-frame', 'loc_123'];
+  const allowed = handleBookingWidgetMessage({
+    origin: 'https://api.playfulagency.com',
+    data: fetchMsg,
+    pageUrl: 'https://playfulagency.com/agencia-shopify?utm_source=facebook',
+    referrer: 'https://www.facebook.com/',
+    values,
+  });
+  assert.equal(allowed?.kind, 'query-params');
+  if (allowed?.kind !== 'query-params') throw new Error('expected query-params');
+  assert.equal(allowed.targetOrigin, 'https://api.playfulagency.com');
+  assert.equal(allowed.reply[0], 'query-params');
+  assert.deepEqual(allowed.reply[1], values);
+  assert.equal(allowed.reply[2], 'https://playfulagency.com/agencia-shopify?utm_source=facebook');
+  assert.equal(allowed.reply[3], 'https://www.facebook.com/');
+
+  assert.equal(
+    handleBookingWidgetMessage({
+      origin: 'https://evil.example',
+      data: fetchMsg,
+      pageUrl: 'https://playfulagency.com/',
+      referrer: '',
+      values,
+    }),
+    null,
+  );
+  assert.equal(isAllowedBookingMessageOrigin('https://stcdn.leadconnectorhq.com'), true);
+  assert.equal(isAllowedBookingMessageOrigin('http://api.playfulagency.com'), false);
+
+  const complete = parseBookingWidgetMessage([
+    'msgsndr-booking-complete',
+    { fingerprint: 'fp_1', calendarId: 'cal_1' },
+  ]);
+  assert.equal(complete?.type, 'msgsndr-booking-complete');
+  if (complete?.type !== 'msgsndr-booking-complete') throw new Error('expected complete');
+  assert.equal(complete.fingerprint, 'fp_1');
+  assert.equal(complete.calendarId, 'cal_1');
+  assert.equal(complete.email, '');
+  assert.equal(complete.contactId, '');
+  assert.equal(bookingCompleteHasContactIdentity(complete), false);
+  assert.equal(
+    bookingQueryParamsReply(values, 'https://playfulagency.com/', '')[0],
+    'query-params',
+  );
+});
+
+test('no booking upsert route: GHL confirm does not send email or contactId', () => {
+  const apiDir = new URL('../app/api', import.meta.url);
+  const names = existsSync(apiDir) ? readdirSync(apiDir) : [];
+  assert.equal(names.includes('booking-attribution'), false);
+  assert.equal(names.includes('eshow-lista'), false);
+  const component = readFileSync(new URL('../components/BookingWidgetAttribution.tsx', import.meta.url), 'utf8');
+  assert.match(component, /does not upsert/);
+  assert.doesNotMatch(component, /fetch\('\/api\//);
 });
