@@ -32,6 +32,7 @@ import {
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
+import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import {
   RelatedIndexUnavailableError,
@@ -40,6 +41,8 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
@@ -417,9 +420,9 @@ function blogPostSeoCopy(
 ): { title: string; description: string } {
   const override = BLOG_SEO_OVERRIDES[postSlug];
   return {
-    title:
-      override?.title ??
-      `${decodeHtmlEntities(post.title.rendered)} | Playful`,
+    title: withPlayfulTitleSuffix(
+      override?.title ?? decodeHtmlEntities(post.title.rendered),
+    ),
     description: override?.description
       ? wordpressSeoText(override.description)
       : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
@@ -447,19 +450,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const [, postSlug] = slug;
   
   if (slug.length !== 2 || !postSlug) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+    notFound();
   }
 
   const post = await getBlogPostBySlug(postSlug);
-  
-  if (!post) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+  if (!post || getPrimaryCategorySlug(post) !== slug[0]) {
+    notFound();
   }
 
   const url = canonicalForPath(blogPostPath(post));

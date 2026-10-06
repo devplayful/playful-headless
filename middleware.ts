@@ -31,6 +31,12 @@ function attachAttributionCookies(request: NextRequest, response: NextResponse):
   return response;
 }
 
+const PUBLIC_CASE_STUDY_SLUGS = new Set([
+  'soytechno-ecommerce-venezuela',
+  'jumex-shopify-dtc-ecommerce',
+  'odwalla-shopify-dtc-ecommerce',
+]);
+
 const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent301({
   '/servicios': '/agencia-e-commerce',
   '/services': '/agencia-e-commerce',
@@ -80,6 +86,15 @@ export function middleware(request: NextRequest) {
       status,
       headers: { 'Cache-Control': 'private, no-store' },
     }));
+  }
+
+  if (path.startsWith('/casos-de-exito/')) {
+    const slug = path.slice('/casos-de-exito/'.length);
+    if (slug && !slug.includes('/') && !PUBLIC_CASE_STUDY_SLUGS.has(slug)) {
+      const target = request.nextUrl.clone();
+      target.pathname = '/_not-found';
+      return attachAttributionCookies(request, NextResponse.rewrite(target));
+    }
   }
 
   const dest = PERMANENT_301[path];

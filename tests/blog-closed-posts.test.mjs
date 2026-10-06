@@ -139,7 +139,8 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
     assert.equal(governed.has(path), false, path);
   }
   assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
-  assert.equal(governed.size, 73);
+  // #188 added 30 open WP page-2 posts to the inventory; the 31 410s stay out.
+  assert.equal(governed.size, 103);
 });
 
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {

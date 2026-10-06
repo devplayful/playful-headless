@@ -57,16 +57,14 @@ test('blog post title suffix is | Playful and never doubles or keeps the old suf
     blogPost.indexOf('const BLOG_SEO_OVERRIDES'),
   );
 
-  assert.match(
-    seoCopy,
-    /decodeHtmlEntities\(post\.title\.rendered\)\} \| Playful`/,
-  );
+  assert.match(seoCopy, /withPlayfulTitleSuffix\(/);
+  assert.match(blogPost, /from '@\/lib\/blog-title-suffix'/);
   assert.doesNotMatch(blogPost, /\| Blog - Playful Agency/);
   assert.match(blogPost, /Cintillos de promoción en ecommerce \| Playful/);
   assert.match(blogPost, /Zelle en Venezuela: cobra en tu tienda online \| Playful/);
   assert.doesNotMatch(blogPost, /\| Playful \| Playful/);
   assert.doesNotMatch(
     seoCopy,
-    /override\?\.title \?\?[\s\S]*\| Playful`[\s\S]*\| Playful/,
+    /override\?\.title \?\?[\s\S]*decodeHtmlEntities\(post\.title\.rendered\)\} \| Playful/,
   );
 });

@@ -12,6 +12,10 @@ export async function generateMetadata({
 }: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const parsed = parseBlogListingSearchParams(await searchParams);
+  if (parsed.invalidPage) {
+    notFound();
+  }
   return buildBlogListingMetadata(await searchParams);
 }
 
