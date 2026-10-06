@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Paytone_One, Montserrat, DM_Sans } from 'next/font/google'
 import './globals.css'
@@ -36,10 +36,6 @@ const dmSans = DM_Sans({
   variable: '--font-dm-sans',
   display: 'swap',
 })
-
-export const viewport: Viewport = {
-  themeColor: '#440099',
-};
 
 export async function generateMetadata(): Promise<Metadata> {
   // Valores por defecto explícitos (fuente de verdad para OG)
