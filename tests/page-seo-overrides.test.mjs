@@ -12,24 +12,25 @@ const MARKETING_TITLE =
   'Marketing Internacional: Lleva tu negocio al mundo (sin complicaciones)';
 const MARKETING_DESCRIPTION =
   'Expandirte globalmente puede parecer complicado, pero con Playful Agency es pan comido. Te ayudamos a crear estrategias de Marketing Internacional que conectan con clientes.';
-const CONTENTO_ECOMMERCE_DESCRIPTION =
-  'Agencia e-Commerce para marcas D2C que ya venden y quieren crecer con margen. Ordenamos e implementamos tu catálogo en Shopify o WooCommerce. Agenda tu llamada diagnóstica.';
+const OPTION_A_ECOMMERCE_DESCRIPTION =
+  'Para marcas que ya venden directo al consumidor (D2C): ordenamos tu tienda online, el posicionamiento y el diseño para que venda más. Agenda tu llamada.';
 const STALE_PR64_DESCRIPTION =
   'Diseño, desarrollo y optimización de tiendas online. En Playful mejoramos el rendimiento, la experiencia de compra y el SEO de tu ecommerce.';
 
-test('ecommerce overrides both cloned descriptions with Contento canonical copy', () => {
+test('ecommerce overrides both cloned descriptions with opción A firmada', () => {
   assert.deepEqual(Object.keys(PAGE_DESCRIPTION_OVERRIDES), ['agencia-e-commerce']);
   assert.equal(
     PAGE_DESCRIPTION_OVERRIDES['agencia-e-commerce'],
-    CONTENTO_ECOMMERCE_DESCRIPTION,
+    OPTION_A_ECOMMERCE_DESCRIPTION,
   );
+  assert.equal(OPTION_A_ECOMMERCE_DESCRIPTION.length, 152);
   const result = applyPageDescriptionOverride(
     'agencia-e-commerce',
     MARKETING_DESCRIPTION,
     MARKETING_DESCRIPTION,
   );
-  assert.equal(result.description, CONTENTO_ECOMMERCE_DESCRIPTION);
-  assert.equal(result.ogDescription, CONTENTO_ECOMMERCE_DESCRIPTION);
+  assert.equal(result.description, OPTION_A_ECOMMERCE_DESCRIPTION);
+  assert.equal(result.ogDescription, OPTION_A_ECOMMERCE_DESCRIPTION);
   assert.doesNotMatch(result.description, /Marketing Internacional/i);
   assert.doesNotMatch(result.description, /tiendas online/);
   assert.notEqual(result.description, STALE_PR64_DESCRIPTION);
@@ -81,8 +82,9 @@ test('agencia-e-commerce no longer inherits the marketing-internacional title', 
   );
   assert.equal(
     title,
-    'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+    'Agencia ecommerce para venta directa | Playful Agency',
   );
+  assert.equal(title.length, 53);
   assert.equal(ogTitle, title);
   assert.doesNotMatch(title, /Marketing Internacional/i);
   assert.equal(PAGE_TITLE_OVERRIDES['marketing-internacional'], undefined);
