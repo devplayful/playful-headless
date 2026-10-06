@@ -1,3 +1,5 @@
+import { rewriteBrokenInternalHref } from '../utils/broken-internal-hrefs.ts';
+
 const IN_SITE_PAGE_HOSTS = new Set([
   'endpoint.playfulagency.com',
   'old.playfulagency.com',
@@ -47,9 +49,10 @@ export function rewritePageHref(url) {
 }
 
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
-export function rewriteInSitePageHrefs(html) {
+export function rewriteInSitePageHrefs(html, sourcePath = '') {
   return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
-    return `href=${quote}${remapLegacyCaseStudiesHubHref(rewritePageHref(href))}${quote}`;
+    const relative = remapLegacyCaseStudiesHubHref(rewritePageHref(href));
+    return `href=${quote}${rewriteBrokenInternalHref(relative, sourcePath)}${quote}`;
   });
 }
 
@@ -135,13 +138,13 @@ export function rewriteWpYoastFields(item) {
   return rewriteYoastTree(item);
 }
 
-function rewriteRenderedField(field) {
+function rewriteRenderedField(field, sourcePath = '') {
   if (!field || typeof field !== 'object' || typeof field.rendered !== 'string') {
     return field;
   }
   return {
     ...field,
-    rendered: rewriteInSitePageHrefs(field.rendered),
+    rendered: rewriteInSitePageHrefs(field.rendered, sourcePath),
   };
 }
 
@@ -152,8 +155,9 @@ function rewriteRenderedField(field) {
  */
 export function rewriteWpRenderedHtmlFields(item) {
   if (!item || typeof item !== 'object') return item;
+  const sourcePath = typeof item.slug === 'string' && item.slug ? `/${item.slug}` : '';
   const next = { ...item };
-  if ('content' in item) next.content = rewriteRenderedField(item.content);
-  if ('excerpt' in item) next.excerpt = rewriteRenderedField(item.excerpt);
+  if ('content' in item) next.content = rewriteRenderedField(item.content, sourcePath);
+  if ('excerpt' in item) next.excerpt = rewriteRenderedField(item.excerpt, sourcePath);
   return next;
 }

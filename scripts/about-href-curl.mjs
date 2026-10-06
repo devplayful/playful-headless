@@ -47,7 +47,7 @@ for (const slug of SLUGS) {
   }
   const pages = await response.json();
   const raw = pages[0]?.content?.rendered ?? '';
-  const pipeline = rewriteElementorBodyHrefs(rewriteInSitePageHrefs(raw), slug);
+  const pipeline = rewriteElementorBodyHrefs(rewriteInSitePageHrefs(raw, `/${slug}`), slug);
   const rewritten = rewriteAboutHrefs(raw, slug);
   const nosotros = listAnchors(pipeline, '/nosotros');
   const leftoverRaw = leftoverAboutHrefs(rewritten);
