@@ -62,7 +62,7 @@ export default function LeadThankYou({ fit }: { fit?: string }) {
                 ))}
               </div>
             </section>
-            <div className="mt-8 text-center">
+            <div data-cta-section="gracias" className="mt-8 text-center">
               <BookingLink
                 href={SERVICE_BOOKING_HREF}
                 target="_blank"

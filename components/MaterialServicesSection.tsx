@@ -8,7 +8,7 @@ export default function MaterialServicesSection({
   className?: string;
 }) {
   return (
-    <section className={className}>
+    <section data-cta-section="problemas" className={className}>
       <div className="playful-contenedor playful-contenedor-FFEFD1">
         <h2 className="playful-h2 max-w-3xl mx-auto">
           {HOME_PROBLEMAS.h2}

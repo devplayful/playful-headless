@@ -62,7 +62,7 @@ export default function SolucionesPlayful({
   ];
 
   return (
-    <section className={`${className} pb-[1rem]`}>
+    <section data-cta-section="soluciones" className={`${className} pb-[1rem]`}>
       <style
         dangerouslySetInnerHTML={{
           __html: `

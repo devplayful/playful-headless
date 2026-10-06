@@ -84,6 +84,7 @@ test('layout gates gtag/GTM through productionAnalyticsIds', () => {
   assert.match(layout, /productionAnalyticsIds/);
   assert.match(layout, /\{gtmId && <GoogleTagManager gtmId=\{gtmId\} \/>\}/);
   assert.match(layout, /\{gaId && <GoogleAnalytics gaId=\{gaId\} \/>\}/);
+  assert.match(layout, /<CtaClickTracker \/>/);
   assert.doesNotMatch(layout, /process\.env\.NEXT_PUBLIC_GTM_ID/);
   assert.doesNotMatch(layout, /process\.env\.NEXT_PUBLIC_GA_MEASUREMENT_ID/);
 });

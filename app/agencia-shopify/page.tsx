@@ -207,7 +207,7 @@ export default async function AgenciaShopifyPage() {
       />
 
       <article className="w-full pb-20">
-        <section className="relative overflow-hidden">
+        <section data-cta-section="hero" className="relative overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
