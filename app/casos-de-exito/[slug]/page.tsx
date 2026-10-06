@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/components/casos/CaseStudyMedia';
 import { getSuccessStoryBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
