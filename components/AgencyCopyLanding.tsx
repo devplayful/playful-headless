@@ -213,16 +213,16 @@ export default function AgencyCopyLanding({
         <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
           <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px] !text-left">
             <h2 className="playful-h2">{copy.process.h2}</h2>
-            <ol className="space-y-6 max-w-4xl mt-6">
+            <div className="space-y-6 max-w-4xl mt-6">
               {copy.process.steps.map((step, index) => (
-                <li key={step.lead} className="playful-contenido-p">
+                <p key={step.lead} className="playful-contenido-p">
                   <strong className="font-bold">
                     {index + 1}. {step.lead}
                   </strong>{' '}
                   {step.body}
-                </li>
+                </p>
               ))}
-            </ol>
+            </div>
           </div>
         </section>
 
