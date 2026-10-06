@@ -56,6 +56,17 @@ const CERRAR_SAMPLE_410 = [
 
 const TEMPORADA_2 = '/blog/categoria/temporada-2';
 
+test('humanizar origin 301s in one hop to storytelling', () => {
+  assert.match(
+    middlewareSource,
+    /'\/blog\/pautas-digitales\/aprende-a-humanizar-la-marca-de-tu-negocio':\s*'\/blog\/pautas-digitales\/storytelling-en-el-marketing-digital'/,
+  );
+  assert.equal(
+    blogClosedDecision('/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio').type,
+    'next',
+  );
+});
+
 test('GSC 301 aliases use absolute playfulagency.com destinations', () => {
   for (const [source, dest] of GSC_301) {
     const escaped = source.replaceAll('/', '\\/');

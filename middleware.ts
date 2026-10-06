@@ -50,6 +50,8 @@ const PERMANENT_301: Record<string, string> = {
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
+    '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
 };
 
 function normalizePath(pathname: string): string {

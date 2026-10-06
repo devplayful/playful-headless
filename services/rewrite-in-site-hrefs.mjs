@@ -1,3 +1,13 @@
+import {
+  CLOSED_BLOG_PATHS,
+  blogClosedDecision,
+  normalizeBlogPath,
+} from '../utils/blog-closed-paths.ts';
+
+const CLOSED_BLOG_SLUGS = new Set(
+  CLOSED_BLOG_PATHS.map((path) => path.split('/').filter(Boolean).at(-1)),
+);
+
 const IN_SITE_PAGE_HOSTS = new Set([
   'endpoint.playfulagency.com',
   'old.playfulagency.com',
@@ -10,21 +20,90 @@ const WP_ASSET_PATH_PREFIXES = ['/wp-content', '/wp-includes', '/wp-json', '/wp-
 const APEX_ORIGIN = 'https://playfulagency.com';
 const LEGACY_CASE_STUDIES_HUB_PATH = '/casos-de-exito-agencia-de-marketing-digital';
 const CASE_STUDIES_HUB_PATH = '/casos-de-exito';
+const HUMANIZAR_BLOG_PATH =
+  '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio';
+const STORYTELLING_BLOG_PATH =
+  '/blog/pautas-digitales/storytelling-en-el-marketing-digital';
+
+const EXACT_PATH_REWRITES = new Map([
+  [LEGACY_CASE_STUDIES_HUB_PATH, CASE_STUDIES_HUB_PATH],
+  ['/grupo-automotriz-multimarca', CASE_STUDIES_HUB_PATH],
+  ['/caso-de-exito-pcm', CASE_STUDIES_HUB_PATH],
+  [HUMANIZAR_BLOG_PATH, STORYTELLING_BLOG_PATH],
+]);
 
 /** Absolute or protocol-relative in-site page URLs (not /wp-* assets). */
 const IN_SITE_URL_RE = /(?:https?:)?\/\/(?:endpoint\.|old\.|www\.)?playfulagency\.com[^\s"'<>]*/gi;
+const ANCHOR_RE = /<a\b([^>]*?)>([\s\S]*?)<\/a>/gi;
+
+function normalizePathname(pathname) {
+  if (!pathname) return '/';
+  return pathname === '/' ? '/' : pathname.replace(/\/+$/, '');
+}
+
+function remapKnownPathname(pathname) {
+  const withoutLegacyHub = pathname.replace(
+    /^(\/casos-de-exito-agencia-de-marketing-digital)(?=\/|$)/,
+    CASE_STUDIES_HUB_PATH,
+  );
+  const normalized = normalizePathname(withoutLegacyHub);
+  return EXACT_PATH_REWRITES.get(normalized) ?? normalized;
+}
 
 export function remapLegacyCaseStudiesHubHref(href) {
   if (typeof href !== 'string' || !href) return href;
-  return href.replace(
-    /^(\/casos-de-exito-agencia-de-marketing-digital)(?=\/|$|\?|#)/,
-    CASE_STUDIES_HUB_PATH,
-  ).replace(/^\/casos-de-exito\/(?=\?|#|$)/, `${CASE_STUDIES_HUB_PATH}`);
+  const match = href.match(/^([^?#]*)(\?[^#]*)?(#.*)?$/);
+  if (!match) return href;
+  const [, rawPath, query = '', hash = ''] = match;
+  if (!rawPath.startsWith('/')) return href;
+  return `${remapKnownPathname(rawPath)}${query}${hash}`;
 }
 
 function remapLegacyHubPathname(pathname) {
-  const normalized = pathname === '/' ? '/' : pathname.replace(/\/+$/, '');
-  return normalized === LEGACY_CASE_STUDIES_HUB_PATH ? CASE_STUDIES_HUB_PATH : normalized;
+  return remapKnownPathname(pathname);
+}
+
+function hrefFromAttrs(attrs) {
+  const match = attrs.match(/\bhref\s*=\s*(["'])([^"']*)\1/i);
+  return match ? match[2] : '';
+}
+
+function isImageOnlyBlockCta(inner) {
+  const withoutImages = inner.replace(/<img\b[^>]*>/gi, '');
+  return withoutImages.replace(/&nbsp;|&#160;|\s+/g, '') === '';
+}
+
+export function isGoneInternalHref(href) {
+  if (typeof href !== 'string' || !href.trim()) return false;
+  const trimmed = href.trim();
+  try {
+    const absolute = trimmed.startsWith('//') ? `https:${trimmed}` : trimmed;
+    const url = absolute.startsWith('http')
+      ? new URL(absolute)
+      : new URL(absolute, 'https://playfulagency.com');
+    if (/^https?:/i.test(absolute) || trimmed.startsWith('//')) {
+      if (!IN_SITE_PAGE_HOSTS.has(url.hostname.toLowerCase())) return false;
+    }
+    const path = normalizeBlogPath(url.pathname);
+    if (blogClosedDecision(path).type === 'gone') return true;
+    if (!path.startsWith('/blog/')) return false;
+    return CLOSED_BLOG_SLUGS.has(path.split('/').filter(Boolean).at(-1));
+  } catch {
+    const path = normalizeBlogPath(trimmed);
+    if (blogClosedDecision(path).type === 'gone') return true;
+    if (!path.startsWith('/blog/')) return false;
+    return CLOSED_BLOG_SLUGS.has(path.split('/').filter(Boolean).at(-1));
+  }
+}
+
+/** Drop <a> to 410 destinations. Image-only banner/CTA blocks go away entirely. */
+export function unwrapGoneInternalAnchors(html) {
+  if (typeof html !== 'string' || !html) return html;
+  return html.replace(ANCHOR_RE, (full, attrs, inner) => {
+    const href = hrefFromAttrs(attrs);
+    if (!href || !isGoneInternalHref(href)) return full;
+    return isImageOnlyBlockCta(inner) ? '' : inner;
+  });
 }
 
 export function rewritePageHref(url) {
@@ -48,9 +127,10 @@ export function rewritePageHref(url) {
 
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
 export function rewriteInSitePageHrefs(html) {
-  return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
+  const rewritten = html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
     return `href=${quote}${remapLegacyCaseStudiesHubHref(rewritePageHref(href))}${quote}`;
   });
+  return unwrapGoneInternalAnchors(rewritten);
 }
 
 /**
