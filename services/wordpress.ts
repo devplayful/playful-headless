@@ -17,7 +17,11 @@ import {
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
-import { BLOG_COVER_FALLBACK, resolveBlogCoverUrl } from '@/lib/blog-cover-image';
+import {
+  BLOG_COVER_FALLBACK,
+  resolveBlogCoverAlt,
+  resolveBlogCoverUrl,
+} from '@/lib/blog-cover-image';
 import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
@@ -748,7 +752,7 @@ async function hydrateListingPosts(
       ...rewritten,
       categories,
       featured_media_url: resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
-      featured_media_alt: mediaItem?.alt_text || '',
+      featured_media_alt: resolveBlogCoverAlt(rewritten.slug, mediaItem?.alt_text || ''),
       author_name: author?.name || 'Playful Agency',
       author: author
         ? { id: author.id, name: author.name, slug: author.slug || '' }
@@ -1139,6 +1143,7 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
   post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
+  post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
   return rewriteWpRenderedHtmlFields(post);
 });
 
