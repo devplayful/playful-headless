@@ -1,0 +1,313 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { getPodcastEpisodes, PodcastEpisode } from '@/services/wordpress';
+import { loadPodcastEpisodesState, resolvePodcastEpisodesView } from '@/services/podcast-loader.mjs';
+
+function LoadingSpinner() {
+  return (
+    <div className="flex justify-center items-center py-12">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  );
+}
+
+function EpisodeCard({ episode }: { episode: PodcastEpisode }) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const cleanExcerpt = (excerpt: string) => {
+    return excerpt.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, '');
+  };
+
+  return (
+    <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      {episode.featured_media_url && (
+        <div className="aspect-video w-full overflow-hidden">
+          <img
+            src={episode.featured_media_url}
+            alt={episode.featured_media_alt || episode.title.rendered}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      )}
+      
+      <div className="p-6">
+        <div className="text-sm text-gray-500 mb-2">
+          {formatDate(episode.date)}
+        </div>
+        
+        <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+          <a 
+            href={`/podcast/${episode.slug}`}
+            className="hover:text-blue-600 transition-colors duration-200"
+            dangerouslySetInnerHTML={{ __html: episode.title.rendered }}
+          />
+        </h2>
+        
+        <p className="text-gray-600 mb-4 line-clamp-3">
+          {cleanExcerpt(episode.excerpt.rendered)}
+        </p>
+        
+        <a
+          href={`/podcast/${episode.slug}`}
+          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+        >
+          Escuchar episodio
+          <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function Pagination({ currentPage, totalPages, onPageChange }: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) {
+  const getVisiblePages = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
+
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex justify-center items-center space-x-2 mt-12">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+        className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Anterior
+      </button>
+
+      {getVisiblePages().map((page, index) => (
+        <button
+          key={index}
+          onClick={() => typeof page === 'number' && onPageChange(page)}
+          disabled={typeof page !== 'number'}
+          className={`px-3 py-2 rounded-md ${
+            page === currentPage
+              ? 'bg-blue-600 text-white'
+              : typeof page === 'number'
+              ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              : 'bg-transparent text-gray-500 cursor-default'
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+        className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Siguiente
+      </button>
+    </div>
+  );
+}
+
+type InitialState = Awaited<ReturnType<typeof loadPodcastEpisodesState>>;
+
+export default function PodcastHubContent({
+  initialState,
+  episodesPerPage,
+}: {
+  initialState: InitialState;
+  episodesPerPage: number;
+}) {
+  const hasServerEpisodes = initialState.status === 'ready';
+  const [episodes, setEpisodes] = useState<PodcastEpisode[]>(
+    hasServerEpisodes ? initialState.episodes : [],
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(
+    hasServerEpisodes ? initialState.totalPages : 0,
+  );
+  const [episodesLoading, setEpisodesLoading] = useState(false);
+  const [episodesError, setEpisodesError] = useState<'unavailable' | 'unexpected' | null>(
+    hasServerEpisodes ? null : initialState.status,
+  );
+  const [retryKey, setRetryKey] = useState(0);
+
+  useEffect(() => {
+    if (currentPage === 1 && retryKey === 0 && hasServerEpisodes) {
+      return;
+    }
+
+    async function loadEpisodes() {
+      setEpisodesLoading(true);
+      setEpisodesError(null);
+      const result = await loadPodcastEpisodesState(
+        getPodcastEpisodes,
+        currentPage,
+        episodesPerPage,
+      );
+      if (result.status === 'ready') {
+        setEpisodes(result.episodes);
+        setTotalPages(result.totalPages);
+      } else {
+        setEpisodesError(result.status);
+      }
+      setEpisodesLoading(false);
+    }
+    loadEpisodes();
+  }, [currentPage, retryKey, episodesPerPage, hasServerEpisodes]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const episodesView = resolvePodcastEpisodesView({
+    loading: episodesLoading,
+    error: episodesError,
+    episodes,
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Bendita Web Podcast
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
+              Tu podcast sobre marketing digital, SEO, desarrollo web y más. 
+              Donde hablamos de tu activo más importante: tu página web.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Episodios Recientes
+          </h2>
+          
+          {episodesView === 'loading' ? (
+            <LoadingSpinner />
+          ) : episodesView === 'error' ? (
+            <div className="text-center py-12">
+              <p className="text-gray-900 text-xl font-semibold mb-3">
+                Episodios temporalmente no disponibles
+              </p>
+              <p className="text-gray-600 text-lg mb-6">
+                {episodesError === 'unavailable'
+                  ? 'No pudimos consultar WordPress. Inténtalo de nuevo en unos minutos.'
+                  : 'No pudimos cargar los episodios. Inténtalo de nuevo.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => setRetryKey((value) => value + 1)}
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Reintentar
+              </button>
+            </div>
+          ) : episodesView === 'episodes' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {episodes.map((episode) => (
+                <EpisodeCard key={episode.id} episode={episode} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">
+                No hay episodios disponibles en este momento.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+
+      <div className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-4">
+              ¡No te pierdas ningún episodio!
+            </h2>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Suscríbete a nuestro podcast en tu plataforma favorita y mantente al día 
+              con las últimas tendencias en marketing digital.
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href="https://benditaweb.buzzsprout.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Buzzsprout
+              </a>
+              
+              <a
+                href="#"
+                className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Apple Podcasts
+              </a>
+              
+              <a
+                href="#"
+                className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Spotify
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

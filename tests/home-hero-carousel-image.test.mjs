@@ -30,4 +30,5 @@ test('case-study carousel cards use lazy next/image fill, not a raw img', () => 
       : carousel.indexOf('const CarouselResultados'),
   );
   assert.doesNotMatch(card, /priority/);
+  assert.match(card, /useState\(Boolean\(caseStudy\.image\)\)/);
 });
