@@ -3,6 +3,7 @@ import { getSuccessStoryBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
 import { normalizeCaseStudyAcf } from '@/utils/case-study-acf-fields';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
@@ -37,6 +38,7 @@ export async function generateMetadata({
         description: override.description,
         url,
       },
+      twitter: twitterFromOpenGraph(override.title, override.description),
     };
   }
   return {

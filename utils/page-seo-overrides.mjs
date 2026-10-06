@@ -51,9 +51,10 @@ export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDesc
  * that set openGraph but omit twitter inherit the home generic card.
  * Mirror the page OG (override or Yoast OG already resolved) onto twitter.
  */
-export function twitterFromOpenGraph(ogTitle, ogDescription) {
+export function twitterFromOpenGraph(ogTitle, ogDescription, ogImage) {
   return {
     title: ogTitle,
     description: ogDescription,
+    ...(ogImage ? { images: Array.isArray(ogImage) ? ogImage : [ogImage] } : {}),
   };
 }
