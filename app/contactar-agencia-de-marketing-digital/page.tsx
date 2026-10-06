@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { getAllCaseStudies } from '@/services/wordpress';
 import ContactPageClient from '@/app/contactar-agencia-de-marketing-digital/ContactPageClient';
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
     description: CONTACT_DESCRIPTION,
     url: CONTACT_URL,
   },
+  twitter: twitterFromOpenGraph(CONTACT_TITLE, CONTACT_DESCRIPTION),
 };
 
 export default async function ContactPage() {
