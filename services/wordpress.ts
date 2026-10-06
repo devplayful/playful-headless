@@ -397,7 +397,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const rawHtml: string = page.content?.rendered || '';
   const html = rewriteElementorBodyHrefs(
     rewriteEcommerceZelleCover(
-      rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml)), slug),
+      rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
       slug,
     ),
     slug,
