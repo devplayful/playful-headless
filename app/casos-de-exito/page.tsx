@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress';
 import { mapCaseStudyToListingCard } from '@/lib/case-study-listing-card';
 import { canonicalForPath } from '@/utils/canonical';
@@ -15,11 +14,7 @@ export default async function CaseStudiesPage() {
   const items = await getAllCaseStudies();
   const initialCaseStudies = items.map(mapCaseStudyToListingCard);
 
-  return (
-    <Suspense fallback={null}>
-      <CaseStudiesContent initialCaseStudies={initialCaseStudies} />
-    </Suspense>
-  );
+  return <CaseStudiesContent initialCaseStudies={initialCaseStudies} />;
 }
 
 export async function generateMetadata() {

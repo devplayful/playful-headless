@@ -18,7 +18,7 @@ test('hub page fetches cases on the server and keeps generateMetadata', () => {
   assert.match(hubPage, /getAllCaseStudies\(\)/);
   assert.match(hubPage, /mapCaseStudyToListingCard/);
   assert.match(hubPage, /initialCaseStudies=\{initialCaseStudies\}/);
-  assert.match(hubPage, /<Suspense fallback=\{null\}>/);
+  assert.doesNotMatch(hubPage, /<Suspense/);
   assert.doesNotMatch(hubPage, /<h1[\s>]/);
   assert.match(metadataFn, /CASE_STUDIES_HUB_TITLE/);
   assert.match(metadataFn, /CASE_STUDIES_HUB_DESCRIPTION/);
