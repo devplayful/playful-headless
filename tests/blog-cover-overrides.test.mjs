@@ -527,11 +527,11 @@ test('blog post generateMetadata points OG and Twitter at the OG crop when prese
   const source = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.match(source, /blogCoverForSlug/);
   assert.match(source, /blogOgForSlug/);
-  assert.match(source, /BLOG_COVER_SIZE/);
   assert.match(source, /BLOG_OG_SIZE/);
+  assert.match(source, /ogJpegForBlogSlug/);
   assert.match(source, /resolveBlogOgUrl/);
   const meta = functionBody(source, 'generateMetadata');
-  assert.match(meta, /ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
+  assert.match(meta, /jpeg \|\| ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
   assert.match(meta, /twitter:\s*\{/);
   assert.match(meta, /images:\s*\[imageUrl\]/);
   assert.doesNotMatch(
@@ -587,7 +587,7 @@ test('six Magnific posts get a 1200×630 OG crop under 200 KB without changing f
   for (const [slug, path] of OG_LOTE) {
     assert.equal(BLOG_OG_OVERRIDES[slug], path);
     assert.equal(blogOgForSlug(slug), path);
-    assert.equal(resolveBlogOgUrl(slug, 'https://endpoint.example/old.jpg'), path);
+    assert.match(resolveBlogOgUrl(slug, 'https://endpoint.example/old.jpg'), /\/images\/og\//);
     assert.ok(blogCoverForSlug(slug), `featured cover missing for ${slug}`);
     assert.notEqual(blogCoverForSlug(slug), path);
     const file = join(root, 'public', path.replace(/^\//, ''));
@@ -597,8 +597,8 @@ test('six Magnific posts get a 1200×630 OG crop under 200 KB without changing f
     assert.deepEqual(webpSize(buffer), { width: 1200, height: 630 }, path);
   }
   assert.equal(blogOgForSlug('cintillos-de-promocion'), '');
-  assert.equal(
+  assert.match(
     resolveBlogOgUrl('cintillos-de-promocion', 'https://endpoint.example/old.jpg'),
-    'https://endpoint.example/old.jpg',
+    /\/images\/og\/blog-tecnologia-cintillos-de-promocion\.jpg/,
   );
 });

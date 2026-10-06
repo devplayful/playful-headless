@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { WPPost } from '@/services/wordpress';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
+import { BLOG_MOST_VIEWED_SIZES } from '@/lib/blog-image-sizes';
 
 interface MostViewedArticlesProps {
   posts: WPPost[];
@@ -70,7 +71,7 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
                     alt={post.featured_media_alt || post.title.rendered}
                     fill
                     className="object-contain p-4"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes={BLOG_MOST_VIEWED_SIZES}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
