@@ -139,7 +139,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: {
   );
 }
 
-type InitialState = Awaited<ReturnType<typeof loadPodcastEpisodesState>>;
+type InitialState = Awaited<
+  ReturnType<typeof loadPodcastEpisodesState<PodcastEpisode>>
+>;
 
 export default function PodcastHubContent({
   initialState,
@@ -170,7 +172,7 @@ export default function PodcastHubContent({
     async function loadEpisodes() {
       setEpisodesLoading(true);
       setEpisodesError(null);
-      const result = await loadPodcastEpisodesState(
+      const result = await loadPodcastEpisodesState<PodcastEpisode>(
         getPodcastEpisodes,
         currentPage,
         episodesPerPage,

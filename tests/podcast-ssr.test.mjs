@@ -15,7 +15,7 @@ const episodePage = readFileSync(
 test('podcast hub fetches episodes on the server and keeps the existing H1', () => {
   assert.doesNotMatch(hubPage, /^['"]use client['"]/m);
   assert.match(hubPage, /export default async function PodcastPage/);
-  assert.match(hubPage, /loadPodcastEpisodesState/);
+  assert.match(hubPage, /loadPodcastEpisodesState<PodcastEpisode>/);
   assert.match(hubPage, /getPodcastEpisodes/);
   assert.match(hubPage, /initialState=\{initialState\}/);
   assert.doesNotMatch(hubPage, /<Suspense/);
@@ -33,6 +33,7 @@ test('podcast hub still paints Bendita Web Podcast; it does not add another H1',
   assert.match(hubContent, /Bendita Web Podcast/);
   assert.doesNotMatch(hubContent, /if \(!metadata\)/);
   assert.doesNotMatch(hubContent, /from 'next\/head'/);
+  assert.match(hubContent, /loadPodcastEpisodesState<PodcastEpisode>/);
 });
 
 test('podcast episode page stays client-only and is annotated as out of this change', () => {
