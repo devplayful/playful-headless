@@ -31,6 +31,7 @@ import {
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import {
   RelatedIndexUnavailableError,
   emptyRelatedBehavior,
@@ -416,7 +417,7 @@ function blogPostSeoCopy(
   return {
     title:
       override?.title ??
-      `${decodeHtmlEntities(post.title.rendered)} | Blog - Playful Agency`,
+      `${decodeHtmlEntities(post.title.rendered)} | Playful`,
     description: override?.description
       ? wordpressSeoText(override.description)
       : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
@@ -500,13 +501,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
       ],
     },
-    ...(ogOverride || coverOverride
-      ? {
-          twitter: {
-            card: 'summary_large_image' as const,
-            images: [imageUrl],
-          },
-        }
-      : {}),
+    twitter: {
+      ...twitterFromOpenGraph(title, description),
+      card: 'summary_large_image' as const,
+      images: [imageUrl],
+    },
   };
 }

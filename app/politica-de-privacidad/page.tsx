@@ -1,15 +1,23 @@
 import { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 
 // Metadata para SEO
 const PRIVACY_URL = canonicalForPath('/politica-de-privacidad');
+const PRIVACY_TITLE = 'Política de Privacidad | Playful Agency';
+const PRIVACY_DESCRIPTION = 'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.';
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidad | Playful Agency',
-  description: 'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.',
+  title: PRIVACY_TITLE,
+  description: PRIVACY_DESCRIPTION,
   alternates: { canonical: PRIVACY_URL },
-  openGraph: { url: PRIVACY_URL },
+  openGraph: {
+    title: PRIVACY_TITLE,
+    description: PRIVACY_DESCRIPTION,
+    url: PRIVACY_URL,
+  },
+  twitter: twitterFromOpenGraph(PRIVACY_TITLE, PRIVACY_DESCRIPTION),
 };
 
 export default function PoliticaDePrivacidad() {

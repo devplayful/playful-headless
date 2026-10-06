@@ -1,5 +1,6 @@
 import { canonicalForPath } from './canonical.ts';
 import { shouldNoindexBlogListing } from './blog-listing-robots.ts';
+import { twitterFromOpenGraph } from './page-seo-overrides.mjs';
 
 export const BLOG_LISTING_REVALIDATE_SECONDS = 300;
 export const BLOG_LISTING_PER_PAGE = 10;
@@ -68,5 +69,10 @@ export function buildBlogListingMetadata(searchParams?: BlogListingSearchParams 
         },
       ],
     },
+    twitter: twitterFromOpenGraph(
+      'Blog - Playful Agency',
+      'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      '/images/og-blog.jpg',
+    ),
   };
 }
