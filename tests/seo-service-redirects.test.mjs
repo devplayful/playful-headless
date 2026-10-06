@@ -64,14 +64,14 @@ test('closed SEO service 301s are one hop to an absolute apex 200', () => {
   }
 });
 
-test('pautas and automatizacion stay 404 and /agencia-ux-ui stays out of the sitemap', () => {
+test('pautas and automatizacion stay 404; /agencia-ux-ui sitemap is #218', () => {
   for (const path of STAY_404) {
     assert.equal(seoServiceRedirects[path], undefined, path);
     assert.equal(permanent301[path], undefined, path);
     assert.doesNotMatch(middlewareSource, new RegExp(`'${path.replaceAll('/', '\\/')}':`));
   }
-  assert.equal(getSitemapLocs().includes(`${APEX}/agencia-ux-ui`), false);
-  assert.equal(SITEMAP_STATIC_PATHS.includes('/agencia-ux-ui'), false);
+  assert.equal(getSitemapLocs().includes(`${APEX}/agencia-ux-ui`), true);
+  assert.equal(SITEMAP_STATIC_PATHS.includes('/agencia-ux-ui'), true);
 });
 
 test('middleware 301s the new origins in one hop with an absolute Location', () => {
