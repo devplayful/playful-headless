@@ -12,8 +12,8 @@ import GoogleTagManager from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import AttributionCapture from '@/components/AttributionCapture';
-import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import BookingQueryPropagator from '@/components/BookingQueryPropagator';
+import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',

@@ -10,19 +10,15 @@ export function isProductionVercelEnv(env: Environment = process.env): boolean {
 }
 
 /**
- * Apex and www only. Preview hosts (playful-headless-*.vercel.app,
- * preview.playfulagency.com) and the production Vercel alias must not load tags.
+ * Apex and www only. Staging client leftovers still call this so a production
+ * build served on *.vercel.app does not inject tags. The layout gate is
+ * VERCEL_ENV only (main after #203).
  */
 export function isProductionAnalyticsHostname(hostname: string): boolean {
   const host = hostname.trim().toLowerCase().split(':')[0].replace(/\.$/, '');
   return host === 'playfulagency.com' || host === 'www.playfulagency.com';
 }
 
-/**
- * Server layout uses VERCEL_ENV so Preview/staging builds omit the tags.
- * Client components also pass location.hostname so a production build served
- * on playful-headless.vercel.app still does not inject gtag/gtm.
- */
 export function shouldLoadProductionAnalytics(input: {
   env?: Environment;
   hostname?: string | null;
@@ -33,11 +29,15 @@ export function shouldLoadProductionAnalytics(input: {
   return isProductionAnalyticsHostname(input.hostname);
 }
 
+/**
+ * Server layout only. Preview and staging builds omit the IDs so gtag/GTM
+ * never render. Production keeps the same env IDs as today.
+ */
 export function productionAnalyticsIds(env: Environment = process.env): {
   gtmId: string;
   gaId: string;
 } {
-  if (!shouldLoadProductionAnalytics({ env })) {
+  if (!isProductionVercelEnv(env)) {
     return { gtmId: '', gaId: '' };
   }
   return {
