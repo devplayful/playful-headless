@@ -80,7 +80,7 @@ async function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section data-cta-section="hero" className="relative overflow-hidden">
         <div className={`${shell} pt-4 pb-20`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}

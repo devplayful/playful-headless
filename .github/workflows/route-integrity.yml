@@ -31,6 +31,8 @@ jobs:
         run: node --experimental-strip-types --test tests/blog-canibalizacion-redirects.test.mjs
       - name: Run closed SEO service 301 and href tests
         run: node --experimental-strip-types --test tests/seo-service-redirects.test.mjs tests/seo-closed-hrefs.test.mjs
+      - name: Unit-test CTA click classification
+        run: npm run test:cta-click
       - name: Type-check
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact

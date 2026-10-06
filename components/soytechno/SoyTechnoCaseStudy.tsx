@@ -272,7 +272,7 @@ export default function SoyTechnoCaseStudy() {
         <blockquote>“Se ve que la página está hecha en base a los requerimientos que nosotros teníamos y más. No sólo se quedaron con la idea de vender el producto, sino que también buscaron más soluciones, como agregar un comparador de productos para que la gente pueda verlo.”</blockquote>
       </section>
 
-      <section className={styles.cta}>
+      <section data-cta-section="caso-cta" className={styles.cta}>
         <Image className={styles.ctaArt} src={image('cta-illustration.png')} width={720} height={720} alt="Equipo de comercio electrónico" />
         <div className={styles.ctaCopy}>
           <h2>¿Listo para convertir la complejidad en una mejor experiencia de compra?</h2>
