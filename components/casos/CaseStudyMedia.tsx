@@ -1,4 +1,5 @@
 import NextImage, { type ImageProps } from 'next/image';
+import type { CSSProperties } from 'react';
 import { caseStudyGifVideoForSrc } from '@/lib/case-study-gif-video';
 
 export default function CaseStudyMedia(props: ImageProps) {
@@ -7,10 +8,12 @@ export default function CaseStudyMedia(props: ImageProps) {
     return <NextImage {...props} />;
   }
 
-  const fit = props.className?.includes('object-cover') ? 'cover' : 'contain';
-  const fillStyle = props.fill
+  const fit: NonNullable<CSSProperties['objectFit']> = props.className?.includes('object-cover')
+    ? 'cover'
+    : 'contain';
+  const fillStyle: CSSProperties | undefined = props.fill
     ? {
-        position: 'absolute' as const,
+        position: 'absolute',
         inset: 0,
         width: '100%',
         height: '100%',
