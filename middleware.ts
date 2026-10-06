@@ -4,6 +4,7 @@ import { blogSeoRedirectDecision } from './utils/amp-junk-query';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
+import seoServiceRedirects from './utils/seo-service-redirect-map.json';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -59,6 +60,7 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ...seoServiceRedirects,
   ...canibalizacionOrigins,
 }, categoryRedirects);
 
@@ -149,8 +151,16 @@ export const config = {
   matcher: [
     '/servicios',
     '/servicios/',
+    '/servicios/seo',
+    '/servicios/seo/',
+    '/servicios/desarrollo-web',
+    '/servicios/desarrollo-web/',
     '/services',
     '/services/',
+    '/landing-seo',
+    '/landing-seo/',
+    '/seo',
+    '/seo/',
     '/contacto',
     '/contacto/',
     '/contactanos',
