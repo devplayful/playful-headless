@@ -65,15 +65,13 @@ test('JSON-LD is Service + BreadcrumbList + FAQPage with the eight signed questi
   );
 });
 
-test('H2s and unchecked marks stay literal', () => {
+test('H2s stay literal and unchecked marks are gone', () => {
   assert.deepEqual(
     [...PRESTASHOP_COPY.sections.map((section) => section.h2), PRESTASHOP_COPY.process.h2, PRESTASHOP_COPY.faq.h2, PRESTASHOP_COPY.closing.h2],
     H2S,
   );
   const published = JSON.stringify(PRESTASHOP_COPY);
-  assert.match(published, /\[NO COMPROBADO: ¿ofrecemos el mantenimiento de PrestaShop/);
-  assert.match(published, /\[NO COMPROBADO: ¿hemos integrado nosotros la pasarela de Redsys/);
-  assert.match(published, /\[NO COMPROBADO: ¿qué proyectos PrestaShop podemos citar\?\]/);
+  assert.doesNotMatch(published, /NO COMPROBADO/);
   assert.doesNotMatch(published, /Preguntas para José/);
   assert.doesNotMatch(published, /pasarela-de-pagos-venezuela/);
 });
