@@ -84,26 +84,26 @@ export default function SolucionesPlayful({
           {steps.map(({ item, body }, index) => (
             <article
               key={item.h3}
-              className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-6 md:p-8 w-full text-left flex flex-col md:flex-row md:items-start md:gap-10"
+              className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-6 md:p-8 w-full text-left flex flex-col md:flex-row md:items-center md:gap-10"
             >
-              <div className="md:w-[34%] md:flex-shrink-0 mb-5 md:mb-0">
+              <div className="md:w-[34%] md:flex-shrink-0 mb-5 md:mb-0 flex items-center justify-center">
+                <div className="card-icon flex-shrink-0 w-[200px] h-[200px] md:w-[260px] md:h-[260px] relative">
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={260}
+                    height={260}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+              </div>
+              <div className="md:flex-1 min-w-0">
                 <span
                   className="playful-h2 home-metodo-paso-num mb-3 block"
                   data-n={String(index + 1).padStart(2, "0")}
                   aria-hidden="true"
                 />
-                <div className="card-icon flex-shrink-0 mb-4 w-24 h-24 relative">
-                  <Image
-                    src={item.icon}
-                    alt=""
-                    width={96}
-                    height={96}
-                    className="object-contain"
-                  />
-                </div>
-                <h3 className="playful-h3">{item.h3}</h3>
-              </div>
-              <div className="md:flex-1 min-w-0">
+                <h3 className="playful-h3 mb-4">{item.h3}</h3>
                 {body}
               </div>
             </article>

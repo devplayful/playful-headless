@@ -80,7 +80,7 @@ test('hero keeps only the first paragraph with the H1 and CTAs; the rest follows
 test('metodo steps are full-width rows, not a three-column grid', () => {
   assert.doesNotMatch(metodo, /md:grid-cols-3/);
   assert.match(metodo, /flex flex-col gap-6 md:gap-8/);
-  assert.match(metodo, /md:flex-row md:items-start/);
+  assert.match(metodo, /md:flex-row md:items-center/);
   assert.match(metodo, /HOME_METODO\.items/);
   assert.match(metodo, /home-metodo-paso-num/);
   assert.doesNotMatch(metodo, />0[123]</);
