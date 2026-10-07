@@ -161,19 +161,22 @@ async function HomeContent() {
 
       <section className="relative">
         <div className={`${shell} pt-2 pb-16 md:pb-20`}>
-          <div className="max-w-[40rem] md:max-w-[42rem] space-y-6">
-            {HOME_HERO.cuerpo.map((paragraph) => (
-              <p key={paragraph} className="playful-contenido-p leading-7 md:leading-8">
-                {paragraph}
+          <div className="playful-contenedor playful-contenedor-B3FFF3 rounded-[32px] md:rounded-[48px] !mt-0">
+            <h2 className="playful-h2 text-center">[SUBTÍTULO PENDIENTE · Contenido]</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {HOME_HERO.cuerpo.map((paragraph) => (
+                <p key={paragraph} className="playful-contenido-p leading-7 md:leading-8">
+                  {paragraph}
+                </p>
+              ))}
+              <p className="playful-contenido-p leading-7 md:leading-8">
+                {HOME_HERO.shopifyAntes}
+                <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
+                  {HOME_HERO.shopifyAnchor}
+                </Link>
+                {HOME_HERO.shopifyDespues}
               </p>
-            ))}
-            <p className="playful-contenido-p leading-7 md:leading-8">
-              {HOME_HERO.shopifyAntes}
-              <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
-                {HOME_HERO.shopifyAnchor}
-              </Link>
-              {HOME_HERO.shopifyDespues}
-            </p>
+            </div>
           </div>
         </div>
       </section>
