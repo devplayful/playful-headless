@@ -181,7 +181,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
     authorName: 'Stefanni Parabavidez',
     url,
     publisherName: 'Playful Agency',
-    publisherLogo: 'https://playfulagency.com/images/logos/playful-logov.svg',
+    publisherLogo: 'https://playfulagency.com/images/logos/playful-logo-schema.png',
   });
   assert.equal(jsonLd['@type'], 'BlogPosting');
   assert.equal(jsonLd.headline, 'Zelle en Venezuela: Un método de pago');
@@ -198,7 +198,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
     name: 'Playful Agency',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://playfulagency.com/images/logos/playful-logov.svg',
+      url: 'https://playfulagency.com/images/logos/playful-logo-schema.png',
     },
   });
   assert.equal(jsonLd.mainEntityOfPage, url);

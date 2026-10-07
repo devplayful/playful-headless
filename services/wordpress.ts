@@ -1289,7 +1289,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
           })(),
           linkedin_url: linkedinUrl,
           imagen: {
-            url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/nosotros/placeholder-avatar.png',
+            url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/avatar-playful.svg',
             alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
           }
         }

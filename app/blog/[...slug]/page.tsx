@@ -16,6 +16,7 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
+  BLOG_COVER_FALLBACK,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
@@ -157,7 +158,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const postCanonical = canonicalForPath(blogPostPath(post));
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
-    resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
+    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
@@ -465,7 +466,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ogOverride = blogOgForSlug(postSlug);
   const jpeg = ogJpegForBlogSlug(postSlug);
   const imageUrl =
-    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+    jpeg || ogOverride || coverOverride || post.featured_media_url || BLOG_COVER_FALLBACK;
   const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };
