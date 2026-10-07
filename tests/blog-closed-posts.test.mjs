@@ -8,10 +8,13 @@ const closedPostsJson = require('../config/blog-closed-posts.json');
 
 const {
   CLOSED_BLOG_PATHS,
+  HUMANIZAR_BLOG_PATH,
+  STORYTELLING_BLOG_PATH,
   blogClosedDecision,
   filterOpenBlogPosts,
   isClosedBlogPath,
   isClosedBlogPost,
+  isRedirectedBlogPath,
 } = await import('../utils/blog-closed-paths.ts');
 const { buildSitemapXml, getSitemapLocs } = await import('../utils/apex-sitemap.ts');
 
@@ -114,6 +117,9 @@ test('sitemap excludes the 31 closed URLs and keeps open posts', () => {
   assert.match(xml, /https:\/\/playfulagency\.com\/blog\/otros\/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo</);
   assert.match(xml, /https:\/\/playfulagency\.com\/blog\/mas-vistos\/ecosistema-digital-de-tu-marca</);
   assert.match(xml, /https:\/\/playfulagency\.com\/agencia-shopify</);
+  assert.equal(locs.includes(`https://playfulagency.com${HUMANIZAR_BLOG_PATH}`), false);
+  assert.match(xml, new RegExp(`https://playfulagency.com${STORYTELLING_BLOG_PATH}<`));
+  assert.doesNotMatch(xml, /aprende-a-humanizar-la-marca-de-tu-negocio/);
 });
 
 test('listing helpers drop closed cards that still arrive from WordPress', () => {
@@ -128,8 +134,15 @@ test('listing helpers drop closed cards that still arrive from WordPress', () =>
       href: '/blog/mas-vistos/ecosistema-digital-de-tu-marca',
       categories: [{ slug: 'mas-vistos' }],
     },
+    {
+      slug: 'aprende-a-humanizar-la-marca-de-tu-negocio',
+      href: HUMANIZAR_BLOG_PATH,
+      categories: [{ slug: 'pautas-digitales' }],
+    },
   ]);
   assert.deepEqual(posts.map((post) => post.slug), ['ecosistema-digital-de-tu-marca']);
+  assert.equal(isRedirectedBlogPath(HUMANIZAR_BLOG_PATH), true);
+  assert.equal(isRedirectedBlogPath(STORYTELLING_BLOG_PATH), false);
 });
 
 test('route-integrity inventory no longer governs the 31 closed posts', () => {
@@ -139,8 +152,10 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
     assert.equal(governed.has(path), false, path);
   }
   assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
-  // #188 added 30 open WP page-2 posts to the inventory; the 31 410s stay out.
-  assert.equal(governed.size, 103);
+  assert.equal(governed.has(HUMANIZAR_BLOG_PATH), false);
+  assert.equal(governed.has(STORYTELLING_BLOG_PATH), true);
+  // #188 added 30 open WP page-2 posts; #228 removed the humanizar origin.
+  assert.equal(governed.size, 102);
 });
 
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {

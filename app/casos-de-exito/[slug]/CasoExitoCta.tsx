@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { CASE_CTA_ILLUSTRATION_SIZES } from '@/lib/blog-image-sizes';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
 interface CasoExitoCtaProps {
   title: string;
@@ -37,7 +38,7 @@ const CasoExitoCta: React.FC<CasoExitoCtaProps> = ({
           <div className="relative rounded-2xl overflow-hidden w-full max-w-[450px] h-[300px] sm:h-[400px] lg:w-[450px] lg:h-[500px]">
             <Image
               src={imageUrl}
-              alt="CTA Casos de Éxito"
+              alt={resolveImageAlt(imageUrl, 'CTA Casos de Éxito')}
               fill
               sizes={CASE_CTA_ILLUSTRATION_SIZES}
               className="object-contain"

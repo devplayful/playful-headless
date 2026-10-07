@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { SoyTechnoSeccionE } from '@/services/wordpress';
 import { formatTextWithBullets } from '@/utils/formatBullets';
+import { resolveMediaAlt } from '@/lib/image-alt-overrides';
 
 interface Props {
   data: SoyTechnoSeccionE;
@@ -46,7 +47,7 @@ export default function SoyTechnoSectionE({ data }: Props) {
             <div className="relative w-full h-[400px] lg:h-[800px] rounded-xl overflow-hidden">
               <Image
                 src={data.imagen_izquierda.url}
-                alt={data.imagen_izquierda.alt || 'Sección E'}
+                alt={resolveMediaAlt(data.imagen_izquierda, 'Sección E')}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain"

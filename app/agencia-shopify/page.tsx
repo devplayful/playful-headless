@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -80,7 +81,7 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
           src={HERO_ART_1X}
           srcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
           sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
-          alt=""
+          alt={resolveImageAlt(HERO_ART_1X)}
           width={552}
           height={360}
           decoding="async"
@@ -122,7 +123,7 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
           src={src1x}
           srcSet={`${src1x} 200w, ${src2x} 400w`}
           sizes="200px"
-          alt=""
+          alt={resolveImageAlt(src1x)}
           width={200}
           height={180}
           decoding="async"
@@ -281,7 +282,7 @@ export default async function AgenciaShopifyPage() {
             <div className="w-20 h-20 relative mb-4">
               <Image
                 src="/images/avatar-playful.svg"
-                alt="Avatar Playful"
+                alt={resolveImageAlt('/images/avatar-playful.svg', 'Avatar Playful')}
                 fill
                 className="object-contain"
               />

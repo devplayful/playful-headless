@@ -1,9 +1,10 @@
 import { isBookingHref } from '../../utils/booking-attribution.ts';
+import { GTAG_EVENT_TIMEOUT_MS, sendGtagEvent } from './gtag-event.ts';
 
 export const CTA_REUNION_EVENT = 'cta_reunion_click';
 export const CTA_CONTACT_EVENT = 'cta_contact_click';
 export const CTA_TEXT_MAX = 100;
-export const CTA_EVENT_TIMEOUT_MS = 300;
+export const CTA_EVENT_TIMEOUT_MS = GTAG_EVENT_TIMEOUT_MS;
 
 export type CtaEventName = typeof CTA_REUNION_EVENT | typeof CTA_CONTACT_EVENT;
 
@@ -193,33 +194,17 @@ export function sendCtaEvent(
   params: CtaClickParams,
   options?: { onDone?: () => void },
 ): void {
-  const finish = () => {
-    options?.onDone?.();
-  };
-
-  if (typeof window === 'undefined') {
-    finish();
-    return;
-  }
-
-  const payload = {
-    page_path: params.page_path,
-    cta_section: params.cta_section,
-    cta_text: params.cta_text,
-    link_url: params.link_url,
-    transport_type: 'beacon',
-  };
-
-  if (typeof window.gtag === 'function') {
-    window.gtag('event', eventName, {
-      ...payload,
-      event_callback: finish,
-      event_timeout: CTA_EVENT_TIMEOUT_MS,
-    });
-    return;
-  }
-
-  finish();
+  sendGtagEvent(
+    eventName,
+    {
+      page_path: params.page_path,
+      cta_section: params.cta_section,
+      cta_text: params.cta_text,
+      link_url: params.link_url,
+      transport_type: 'beacon',
+    },
+    { onDone: options?.onDone, timeoutMs: CTA_EVENT_TIMEOUT_MS },
+  );
 }
 
 export function ctaSectionHintsFromElement(el: Element): {

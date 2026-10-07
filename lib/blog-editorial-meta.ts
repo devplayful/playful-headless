@@ -228,7 +228,7 @@ export function buildBlogArticleJsonLd(input: {
       name: input.publisherName || 'Playful Agency',
       logo: {
         '@type': 'ImageObject',
-        url: input.publisherLogo || 'https://playfulagency.com/images/logos/playful-logov.svg',
+        url: input.publisherLogo || 'https://playfulagency.com/images/logos/playful-logo-schema.png',
       },
     },
     mainEntityOfPage: canonical,

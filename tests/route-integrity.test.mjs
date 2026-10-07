@@ -78,12 +78,22 @@ test('discovers baseline App Router sources including metadata routes', () => {
     'app/blog/[...slug]/page.tsx',
     'app/robots.ts',
     'app/sitemap.xml/route.ts',
+    'app/manifest.ts',
+    'app/favicon.ico',
+    'app/icon.png',
+    'app/icon.svg',
+    'app/apple-icon.png',
     'app/layout.tsx',
   ];
   assert.deepEqual(discoverSourceRoutes(files), [
     '/',
     '/api/contact',
+    '/apple-icon.png',
     '/blog/[...slug]',
+    '/favicon.ico',
+    '/icon.png',
+    '/icon.svg',
+    '/manifest.webmanifest',
     '/nosotros',
     '/robots.txt',
     '/sitemap.xml',
@@ -183,7 +193,7 @@ test('accepts the exact governed template and concrete inventory', () => {
     manifest,
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(validArtifact().concreteRoutes.length, 111);
+  assert.equal(validArtifact().concreteRoutes.length, 110);
 });
 
 test('blog category indexes stay out of the governed inventory (middleware 308, not next.config)', () => {

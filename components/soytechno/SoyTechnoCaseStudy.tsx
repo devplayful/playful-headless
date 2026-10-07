@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import styles from './SoyTechnoCaseStudy.module.css'
+import { resolveImageAlt } from '@/lib/image-alt-overrides'
 
 const base = '/images/casos/soytechno'
 const image = (name: string) => `${base}/images/${name}`
@@ -99,9 +100,9 @@ export default function SoyTechnoCaseStudy() {
         <h2>El desafío no era tecnológico, era de confianza</h2>
         <p>{caseCopy.insight[0]}</p>
         <div className={styles.introIcons} aria-hidden="true">
-          <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
-          <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
-          <span className={styles.blueIcon}><Image src={image('lifestyle-f-alt.png')} width={76} height={76} alt="" /></span>
+          <Image src={image('lifestyle-i.png')} width={120} height={120} alt={resolveImageAlt(image('lifestyle-i.png'))} />
+          <Image src={image('lifestyle-1.png')} width={120} height={120} alt={resolveImageAlt(image('lifestyle-1.png'))} />
+          <span className={styles.blueIcon}><Image src={image('lifestyle-f-alt.png')} width={76} height={76} alt={resolveImageAlt(image('lifestyle-f-alt.png'))} /></span>
         </div>
       </section>
 
@@ -125,7 +126,7 @@ export default function SoyTechnoCaseStudy() {
         </div>
         <div className={styles.challengePhone}>
           <Image className={styles.challengePhoneScreen} src={image('iphone-frame-01.png')} width={720} height={1558} alt="Catálogo móvil de SoyTechno" />
-          <Image className={styles.challengePhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt="" aria-hidden="true" />
+          <Image className={styles.challengePhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt={resolveImageAlt(image('iphone-frame-02.png'))} aria-hidden="true" />
         </div>
         <div className={styles.challengeProducts}>
           <Image src={image('electrodomesticos-composition.png')} width={386} height={512} alt="Composición de electrodomésticos de SoyTechno" />
@@ -136,9 +137,9 @@ export default function SoyTechnoCaseStudy() {
         <h2>Una estrategia trimestral para construir autonomía y confianza</h2>
         <p>{caseCopy.strategy[0]}</p>
         <div className={styles.introIcons} aria-hidden="true">
-          <Image src={image('lifestyle-i.png')} width={120} height={120} alt="" />
-          <Image src={image('lifestyle-1.png')} width={120} height={120} alt="" />
-          <Image className={styles.roundPhoto} src={image('lifestyle-f.jpg')} width={120} height={120} alt="" />
+          <Image src={image('lifestyle-i.png')} width={120} height={120} alt={resolveImageAlt(image('lifestyle-i.png'))} />
+          <Image src={image('lifestyle-1.png')} width={120} height={120} alt={resolveImageAlt(image('lifestyle-1.png'))} />
+          <Image className={styles.roundPhoto} src={image('lifestyle-f.jpg')} width={120} height={120} alt={resolveImageAlt(image('lifestyle-f.jpg'))} />
         </div>
       </section>
 
@@ -173,9 +174,9 @@ export default function SoyTechnoCaseStudy() {
               <div className={styles.brandPhoneScreen}>
                 <Image className={styles.brandPhoneContent} src={image('iphone-mockup.gif')} width={353} height={647} unoptimized alt="Interfaz móvil de SoyTechno" />
               </div>
-              <Image className={styles.brandPhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt="" aria-hidden="true" />
+              <Image className={styles.brandPhoneFrame} src={image('iphone-frame-02.png')} width={720} height={1558} alt={resolveImageAlt(image('iphone-frame-02.png'))} aria-hidden="true" />
             </div>
-            <div className={styles.circuitCard}><span>Circuito</span><Image src={image('circuito.png')} width={720} height={786} alt="Elemento gráfico Circuito" /></div>
+            <div className={styles.circuitCard}><span>Circuito</span><Image src={image('circuito.png')} width={720} height={786} alt={resolveImageAlt(image('circuito.png'), 'Elemento gráfico Circuito')} /></div>
           </div>
           <div className={styles.brandCopyColumn}>
             <div className={styles.logoCard}><Image src={image('soytechno-logo-white.png')} width={384} height={69} alt="SoyTechno" /></div>
@@ -225,7 +226,7 @@ export default function SoyTechnoCaseStudy() {
             <div className={styles.ipadScreen}>
               <Image src={image('ipad-mockup-01.png')} width={1640} height={2360} alt="Formulario del checkout multistep de SoyTechno" />
             </div>
-            <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
+            <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt={resolveImageAlt(image('ipad-mockup-02.png'))} aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
             <p>{caseCopy.idea[0]}</p>
@@ -263,7 +264,7 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.testimonial}>
-        <Image className={styles.quoteArt} src={vector('quote-background.svg')} width={841} height={599} alt="" aria-hidden="true" />
+        <Image className={styles.quoteArt} src={vector('quote-background.svg')} width={841} height={599} alt={resolveImageAlt(vector('quote-background.svg'))} aria-hidden="true" />
         <div className={styles.client}>
           <Image src={image('testimonial-avatar.png')} width={249} height={249} alt="Eva Cristina Luciani" />
           <h2>Eva Cristina Luciani</h2>

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { SoyTechnoSeccionB } from '@/services/wordpress';
+import { resolveMediaAlt } from '@/lib/image-alt-overrides';
 
 interface Props {
   data: SoyTechnoSeccionB;
@@ -58,7 +59,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-[320px] h-[300px] rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_1.url}
-                      alt={collage.imagen_1.alt || 'Tile 1'}
+                      alt={resolveMediaAlt(collage.imagen_1, 'Tile 1')}
                       fill
                       sizes="320px"
                       className="object-contain"
@@ -69,7 +70,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-[320px] h-[300px] rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_2.url}
-                      alt={collage.imagen_2.alt || 'Tile 2'}
+                      alt={resolveMediaAlt(collage.imagen_2, 'Tile 2')}
                       fill
                       sizes="320px"
                       className="object-contain"
@@ -80,7 +81,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-[320px] h-[300px] rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_3.url}
-                      alt={collage.imagen_3.alt || 'Tile 3'}
+                      alt={resolveMediaAlt(collage.imagen_3, 'Tile 3')}
                       fill
                       sizes="320px"
                       className="object-contain"
@@ -96,7 +97,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-[340px] h-[650px] mx-auto rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_del_telefono.url}
-                      alt={collage.imagen_del_telefono.alt || 'Teléfono'}
+                      alt={resolveMediaAlt(collage.imagen_del_telefono, 'Teléfono')}
                       fill
                       sizes="340px"
                       className="object-contain"
@@ -109,7 +110,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-[320px] h-[300px] rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_4.url}
-                      alt={collage.imagen_4.alt || 'Circuito'}
+                      alt={resolveMediaAlt(collage.imagen_4, 'Circuito')}
                       fill
                       sizes="320px"
                       className="object-contain"
@@ -124,7 +125,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-full h-48 rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_del_logo.url}
-                      alt={collage.imagen_del_logo.alt || 'Logo SoyTechno'}
+                      alt={resolveMediaAlt(collage.imagen_del_logo, 'Logo SoyTechno')}
                       fill
                       sizes="33vw"
                       className="object-contain object-top"
@@ -161,7 +162,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                 <div className="relative w-full max-w-xs mx-auto h-[360px] sm:h-[420px] rounded-lg overflow-hidden">
                   <Image
                     src={collage.imagen_del_telefono.url}
-                    alt={collage.imagen_del_telefono.alt || 'Teléfono'}
+                    alt={resolveMediaAlt(collage.imagen_del_telefono, 'Teléfono')}
                     fill
                     sizes="(max-width: 640px) 80vw, 384px"
                     className="object-contain"
@@ -174,7 +175,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                 <div className="relative w-full h-48 sm:h-56 rounded-lg overflow-hidden">
                   <Image
                     src={collage.imagen_del_logo.url}
-                    alt={collage.imagen_del_logo.alt || 'Banner'}
+                    alt={resolveMediaAlt(collage.imagen_del_logo, 'Banner')}
                     fill
                     sizes="100vw"
                     className="object-contain"
@@ -188,7 +189,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-full h-24 sm:h-28 rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_1.url}
-                      alt={collage.imagen_1.alt || 'Tile 1'}
+                      alt={resolveMediaAlt(collage.imagen_1, 'Tile 1')}
                       fill
                       sizes="33vw"
                       className="object-contain"
@@ -199,7 +200,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-full h-24 sm:h-28 rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_2.url}
-                      alt={collage.imagen_2.alt || 'Tile 2'}
+                      alt={resolveMediaAlt(collage.imagen_2, 'Tile 2')}
                       fill
                       sizes="33vw"
                       className="object-contain"
@@ -210,7 +211,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                   <div className="relative w-full h-24 sm:h-28 rounded-lg overflow-hidden">
                     <Image
                       src={collage.imagen_3.url}
-                      alt={collage.imagen_3.alt || 'Tile 3'}
+                      alt={resolveMediaAlt(collage.imagen_3, 'Tile 3')}
                       fill
                       sizes="33vw"
                       className="object-contain"
@@ -224,7 +225,7 @@ export default function SoyTechnoSectionB({ data }: Props) {
                 <div className="relative w-full h-32 rounded-lg overflow-hidden">
                   <Image
                     src={collage.imagen_4.url}
-                    alt={collage.imagen_4.alt || 'Circuito'}
+                    alt={resolveMediaAlt(collage.imagen_4, 'Circuito')}
                     fill
                     sizes="100vw"
                     className="object-contain"

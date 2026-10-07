@@ -3,6 +3,7 @@ import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
@@ -117,7 +118,7 @@ async function HomeContent() {
             <div className="relative">
               <Image
                 src="/images/playful-imagen-banner.png"
-                alt=""
+                alt={resolveImageAlt('/images/playful-imagen-banner.png')}
                 width={2048}
                 height={2048}
                 priority
