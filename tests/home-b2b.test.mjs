@@ -17,8 +17,9 @@ test('home keeps organization JSON-LD and trailing-slash canonical', () => {
 test('home has a single visible h1 and antetitulo is not a heading', () => {
   assert.match(home, /<h1 className="playful-h1">/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
-  assert.match(home, /<p className="playful-miga-pan">\{HOME_HERO.antetitulo\}<\/p>/);
+  assert.match(home, /<p className="playful-contenido-p">\{HOME_HERO.antetitulo\}<\/p>/);
   assert.doesNotMatch(home, /<(h[1-6])[^>]*>\{HOME_HERO.antetitulo\}/);
+  assert.match(home, /<h1 className="playful-h1">[\s\S]*\{HOME_HERO.h1\}[\s\S]*\{HOME_HERO.antetitulo\}/);
 });
 
 test('home booking CTAs use /reunion-playful, not the GHL widget', () => {
