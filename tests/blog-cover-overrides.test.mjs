@@ -6,12 +6,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const {
+  BLOG_COVER_ALTS,
+  BLOG_COVER_FALLBACK,
   BLOG_COVER_OVERRIDES,
   BLOG_COVER_SIZE,
   BLOG_OG_OVERRIDES,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
+  resolveBlogCoverAlt,
   resolveBlogCoverUrl,
   resolveBlogOgUrl,
 } = await import('../lib/blog-cover-image.ts');
@@ -510,6 +513,45 @@ test('unknown slugs keep the WordPress featured fallback', () => {
     resolveBlogCoverUrl('cintillos-de-promocion', 'https://endpoint.example/old.jpg'),
     'https://endpoint.example/old.jpg',
   );
+});
+
+test('cover fallback points at a file that exists in public/', async () => {
+  assert.equal(BLOG_COVER_FALLBACK, '/images/og/home.jpg');
+  assert.ok(
+    existsSync(join(root, 'public', BLOG_COVER_FALLBACK.replace(/^\//, ''))),
+    BLOG_COVER_FALLBACK,
+  );
+  assert.equal(resolveBlogCoverUrl('unknown-slug-without-cover', ''), BLOG_COVER_FALLBACK);
+  const wordpress = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(wordpress, /placeholder\.jpg/);
+  assert.match(wordpress, /BLOG_COVER_FALLBACK/);
+});
+
+test('cover alts map every Magnific override and never resolve empty', () => {
+  const altSlugs = Object.keys(BLOG_COVER_ALTS);
+  assert.equal(altSlugs.length, 30);
+  const missingFromOverrides = altSlugs.filter((slug) => !(slug in BLOG_COVER_OVERRIDES));
+  assert.deepEqual(missingFromOverrides, []);
+  for (const slug of altSlugs) {
+    const mapped = BLOG_COVER_ALTS[slug];
+    assert.equal(typeof mapped, 'string');
+    assert.ok(mapped.trim().length > 0, slug);
+    assert.equal(resolveBlogCoverAlt(slug, 'WP fallback'), mapped);
+  }
+  assert.equal(resolveBlogCoverAlt('unknown-slug-without-cover', 'WP fallback'), 'WP fallback');
+  assert.equal(resolveBlogCoverAlt('', 'WP fallback'), 'WP fallback');
+  assert.equal(resolveBlogCoverAlt(undefined, 'WP fallback'), 'WP fallback');
+});
+
+test('listing and by-slug pipelines apply resolveBlogCoverAlt', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(source, /resolveBlogCoverAlt/);
+  assert.match(functionBody(source, 'hydrateListingPosts'), /resolveBlogCoverAlt\(/);
+  assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverAlt\(/);
+  const listing = await readFile(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  assert.match(listing, /featured_media_alt \|\| .*title\.rendered/);
+  const article = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  assert.match(article, /featured_media_alt \|\| post\.title\.rendered/);
 });
 
 test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async () => {
