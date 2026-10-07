@@ -43,6 +43,23 @@ export const GSC_GONE_PATHS: readonly string[] = Object.freeze([
 
 const GSC_GONE_PATH_SET = new Set(GSC_GONE_PATHS);
 
+/** Live posts that 301 away. Keep them out of sitemap / related / listings. */
+export const HUMANIZAR_BLOG_PATH =
+  '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio';
+export const STORYTELLING_BLOG_PATH =
+  '/blog/pautas-digitales/storytelling-en-el-marketing-digital';
+
+export const REDIRECTED_BLOG_PATHS: readonly string[] = Object.freeze([
+  HUMANIZAR_BLOG_PATH,
+]);
+
+const REDIRECTED_BLOG_PATH_SET = new Set(REDIRECTED_BLOG_PATHS);
+const REDIRECTED_BLOG_SLUG_SET = new Set(
+  REDIRECTED_BLOG_PATHS
+    .map((path) => path.split('/').filter(Boolean).at(-1))
+    .filter((slug): slug is string => Boolean(slug)),
+);
+
 export function normalizeBlogPath(pathname: string): string {
   const path = pathname.split(/[?#]/)[0];
   return path.length > 1 ? path.replace(/\/+$/, '') : path || '/';
@@ -58,6 +75,18 @@ export function isClosedBlogPost(post: {
 }): boolean {
   const category = post.categories?.[0]?.slug || 'sin-categoria';
   return isClosedBlogPath(`/blog/${category}/${post.slug}`);
+}
+
+export function isRedirectedBlogPath(pathname: string): boolean {
+  return REDIRECTED_BLOG_PATH_SET.has(normalizeBlogPath(pathname));
+}
+
+export function isRedirectedBlogPost(post: { slug: string }): boolean {
+  return REDIRECTED_BLOG_SLUG_SET.has(post.slug);
+}
+
+export function isHiddenFromBlogListings(pathname: string): boolean {
+  return isClosedBlogPath(pathname) || isRedirectedBlogPath(pathname);
 }
 
 export type BlogClosedDecision =
@@ -77,8 +106,11 @@ export function filterOpenBlogPosts<T extends {
   categories?: Array<{ slug: string }>;
 }>(posts: T[]): T[] {
   return posts.filter((post) => {
+    if (post.slug && isRedirectedBlogPost({ slug: post.slug })) {
+      return false;
+    }
     if (typeof post.href === 'string' && post.href.includes('/blog/')) {
-      return !isClosedBlogPath(post.href);
+      return !isClosedBlogPath(post.href) && !isRedirectedBlogPath(post.href);
     }
     if (post.slug) {
       return !isClosedBlogPost({

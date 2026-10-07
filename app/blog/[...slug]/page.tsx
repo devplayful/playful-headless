@@ -26,6 +26,7 @@ import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
+import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
@@ -111,7 +112,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = rewriteBookingWidgetHrefs(
-    blogBodyForSlug(postSlug) || post.content?.rendered || '',
+    rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
   );
   const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
