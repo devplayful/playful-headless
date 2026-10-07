@@ -37,7 +37,9 @@ test('home keeps the /agencia-shopify internado', () => {
 
 test('home title, meta and H1 come from the B2B piece', () => {
   assert.match(copy, /Playful Agency: tienda online de marca en Shopify y WooCommerce/);
-  assert.match(copy, /La tienda online de tu marca, entregada a tiempo y conectada a tu operación/);
+  assert.match(copy, /Diseñamos, integramos y migramos tiendas online de marcas de consumo/);
+  assert.match(copy, /h1: 'Tiendas online para marcas de consumo'/);
+  assert.doesNotMatch(copy, /h1: 'La tienda online de tu marca, entregada a tiempo y conectada a tu operación'/);
   assert.match(home, /title: HOME_META.title/);
   assert.match(home, /description: HOME_META.description/);
 });

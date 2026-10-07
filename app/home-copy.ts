@@ -9,7 +9,7 @@ export const HOME_META = {
 export const HOME_HERO = {
   antetitulo:
     'Playful Agency, tiendas online para marcas de consumo en Shopify, WooCommerce, Medusa y apps móviles',
-  h1: 'La tienda online de tu marca, entregada a tiempo y conectada a tu operación',
+  h1: 'Tiendas online para marcas de consumo',
   subtitulo:
     'Diseñamos, desarrollamos e integramos la tienda online de marcas de consumo, y la publicamos en el plazo que acordamos con tu equipo. Lo hemos hecho para Jumex, Odwalla y SoyTechno.',
   cuerpo: [
