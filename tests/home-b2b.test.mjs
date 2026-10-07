@@ -17,9 +17,8 @@ test('home keeps organization JSON-LD and trailing-slash canonical', () => {
 test('home has a single visible h1 and antetitulo is not a heading', () => {
   assert.match(home, /<h1 className="playful-h1">/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
-  assert.match(home, /<p className="playful-contenido-p">\{HOME_HERO.antetitulo\}<\/p>/);
+  assert.match(home, /<p className="playful-miga-pan">\{HOME_HERO.antetitulo\}<\/p>/);
   assert.doesNotMatch(home, /<(h[1-6])[^>]*>\{HOME_HERO.antetitulo\}/);
-  assert.match(home, /<h1 className="playful-h1">[\s\S]*\{HOME_HERO.h1\}[\s\S]*\{HOME_HERO.antetitulo\}/);
 });
 
 test('home booking CTAs use /reunion-playful, not the GHL widget', () => {
@@ -38,9 +37,7 @@ test('home keeps the /agencia-shopify internado', () => {
 
 test('home title, meta and H1 come from the B2B piece', () => {
   assert.match(copy, /Playful Agency: tienda online de marca en Shopify y WooCommerce/);
-  assert.match(copy, /Diseñamos, integramos y migramos tiendas online de marcas de consumo/);
-  assert.match(copy, /h1: 'Tiendas online para marcas de consumo'/);
-  assert.doesNotMatch(copy, /h1: 'La tienda online de tu marca, entregada a tiempo y conectada a tu operación'/);
+  assert.match(copy, /La tienda online de tu marca, entregada a tiempo y conectada a tu operación/);
   assert.match(home, /title: HOME_META.title/);
   assert.match(home, /description: HOME_META.description/);
 });

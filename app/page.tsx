@@ -101,13 +101,13 @@ async function HomeContent() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-2">
+                <p className="playful-miga-pan">{HOME_HERO.antetitulo}</p>
                 <h1 className="playful-h1">
                   {HOME_HERO.h1}
                 </h1>
               </div>
 
               <div className="space-y-4 text-purple-800">
-                <p className="playful-contenido-p">{HOME_HERO.antetitulo}</p>
                 <p className="playful-contenido-p">{HOME_HERO.subtitulo}</p>
               </div>
 
