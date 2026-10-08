@@ -68,8 +68,12 @@
 
 .heroCopy p {
   font-size: 18px;
-  line-height: 1.5;
-  margin: 0 0 10px;
+  line-height: 1.65;
+  margin: 0 0 1.15em;
+}
+
+.heroCopy p:last-child {
+  margin-bottom: 0;
 }
 
 .heroArtwork {
@@ -109,9 +113,15 @@
 .introSectionSmall > p,
 .resultsIntro > p {
   font-size: 18px;
-  line-height: 1.5;
-  margin: 0 auto;
+  line-height: 1.65;
+  margin: 0 auto 1.15em;
   max-width: 900px;
+}
+
+.introSection > p:last-of-type,
+.introSectionSmall > p:last-of-type,
+.resultsIntro > p:last-of-type {
+  margin-bottom: 0;
 }
 
 .introIcons {
@@ -247,8 +257,12 @@
 .contentItem p,
 .textStack > p {
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.65;
   margin: 0;
+}
+
+.contentItem p + p {
+  margin-top: 1.15em;
 }
 
 .challengeCopy .contentItem:nth-child(1) h3 { color: #00193f; }
@@ -598,7 +612,7 @@
   .breadcrumb { padding: 22px 20px; }
   .hero { border-radius: 24px 24px 0 0; gap: 28px; grid-template-columns: 1fr; margin: 0 16px; min-height: 0; padding: 36px 20px 28px; }
   .heroCopy h1 { font-size: 32px; line-height: 1.18; margin-bottom: 22px; }
-  .heroCopy p { font-size: 16px; line-height: 1.55; }
+  .heroCopy p { font-size: 16px; line-height: 1.65; }
   .heroArtwork { height: auto; }
   .heroArtwork img { height: auto; max-width: 290px; width: 100%; }
   .introSection,
@@ -609,7 +623,7 @@
   .resultsIntro > h2 { font-size: 30px; line-height: 1.2; }
   .introSection > p,
   .introSectionSmall > p,
-  .resultsIntro > p { font-size: 16px; line-height: 1.55; }
+  .resultsIntro > p { font-size: 16px; line-height: 1.65; }
   .introIcons { gap: 24px; margin-top: 36px; }
   .introIcons > img,
   .blueIcon { height: 72px; width: 72px; }
@@ -631,7 +645,7 @@
   .challengeProducts { height: 210px; order: 5; }
   .contentItem h3 { font-size: 18px; }
   .contentItem p,
-  .textStack > p { font-size: 16px; }
+  .textStack > p { font-size: 16px; line-height: 1.65; }
 
   .standardSection { padding: 72px 20px 0; }
   .sectionTitle { border-radius: 24px; min-height: 0; padding: 18px 20px; }
