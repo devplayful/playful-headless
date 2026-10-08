@@ -391,7 +391,7 @@
   border-radius: 20px;
   display: grid;
   gap: 36px;
-  grid-template-columns: 350px 350px minmax(0, 1fr);
+  grid-template-columns: 200px 350px minmax(0, 1fr);
   margin-top: 40px;
   padding: 40px;
 }
@@ -401,16 +401,16 @@
 .brandCopyColumn { display: flex; flex-direction: column; gap: 36px; }
 
 .paletteCard {
+  align-items: center;
+  aspect-ratio: 1;
   border-radius: 20px;
   display: flex;
-  flex-direction: column;
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 18px;
-  height: 304px;
-  padding: 36px;
+  justify-content: center;
+  padding: 40px;
+  width: 200px;
 }
 
-.paletteCard img { align-self: center; height: 120px; margin-top: auto; object-fit: contain; width: 120px; }
+.paletteCard img { height: 120px; object-fit: contain; width: 120px; }
 .darkCard { background: #00193f; color: white; }
 .greenCard { background: #297dff; color: white; }
 .orangeCard { background: #d4e5ff; color: #00193f; }
@@ -462,7 +462,6 @@
   position: relative;
 }
 
-.circuitCard span { color: white; font: 700 18px var(--font-dm-sans), sans-serif; left: 20px; position: absolute; top: 18px; z-index: 1; }
 .circuitCard img { height: 100%; object-fit: cover; width: 100%; }
 
 .logoCard {
@@ -647,10 +646,9 @@
   .brandPanel { display: flex; flex-direction: column; gap: 24px; margin-top: 28px; padding: 16px; }
   .brandMediaColumn { align-items: center; order: 1; }
   .brandPhoneMask { height: auto; max-width: 300px; width: 100%; }
-  .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); order: 2; }
-  .paletteCard { font-size: 13px; height: 230px; padding: 18px 14px; }
-  .paletteCard img { height: 84px; width: 84px; }
-  .paletteCard:last-child { grid-column: 1 / -1; }
+  .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 104px)); justify-content: center; order: 2; }
+  .paletteCard { padding: 20px; width: 100%; }
+  .paletteCard img { height: 64px; width: 64px; }
   .circuitCard { height: 220px; width: 100%; }
   .brandCopyColumn { order: 3; }
   .logoCard { height: 150px; }

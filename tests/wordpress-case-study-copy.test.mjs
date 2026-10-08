@@ -97,8 +97,32 @@ test('SoyTechno QA redlines: Q1–Q4 diagram, named pillars, no A/C letters', ()
 test('SoyTechno QA redlines: drop duplicate circles/employees and overlapping catalog gif', () => {
   assert.doesNotMatch(soytechnoBody, /lifestyle-f\.jpg/);
   assert.doesNotMatch(soytechnoBody, /giffycanvas-01\.gif/);
-  assert.match(soytechnoBody, /mobile-screen-01\.png/);
-  assert.match(soytechnoBody, /mobile-screen-04\.png/);
+  assert.doesNotMatch(soytechnoBody, /mobile-screen-01\.png/);
+  assert.doesNotMatch(soytechnoBody, /mobile-screen-04\.png/);
+  assert.equal(soytechnoBody.match(/giffycanvas-01-sin-solape\.gif/g)?.length, 2);
+});
+
+test('SoyTechno Ale v2 (7 oct): no numbering, icon cards without text', () => {
+  assert.doesNotMatch(soytechnoBody, /\((1|2|3)\) (Autonomía|Transparencia|Arquitectura)/);
+  assert.doesNotMatch(soytechnoBody, /<SectionTitle>\d\. /);
+  assert.doesNotMatch(soytechnoBody, /DARK BLUE-GRAY|MAY GREEN|CADMIUM ORANGE|HEX: |CMYK: /);
+  assert.doesNotMatch(soytechnoBody, /<span>Circuito<\/span>/);
+});
+
+test('SoyTechno Ale v2 (7 oct): Contenido copy for checkout, 73% mobile and results intro', () => {
+  const renderedBody = soytechnoBody.split('export default function', 2)[1];
+  assert.match(renderedBody, /<SectionTitle>Autonomía financiera: checkout propio y Botón de Pago de Cashea<\/SectionTitle>/);
+  assert.match(renderedBody, />Facturación, envío y pago en un mismo flujo de compra</);
+  assert.match(renderedBody, /title="Métodos de pago según la moneda"/);
+  assert.match(renderedBody, /title="Cuotas con Cashea"/);
+  assert.doesNotMatch(renderedBody, /Smart Checkout y Cashea/);
+  assert.doesNotMatch(renderedBody, /title="Confianza como consecuencia"/);
+  assert.match(soytechnoBody, /Más del 73% de los usuarios se conecta a través de sus dispositivos móviles/);
+  const mobileFirstBlock = renderedBody.split('experiencia Mobile-First', 2)[1];
+  assert.ok(mobileFirstBlock.indexOf('caseCopy.mobileShare[0]') < mobileFirstBlock.indexOf('caseCopy.strategicResponse[1]'));
+  const resultsIntro = renderedBody.split('Resultados que cambiaron la categoría', 2)[1].split('resultsGrid', 2)[0];
+  assert.match(resultsIntro, /resultsIntro\[0\][\s\S]*resultsIntro\[1\][\s\S]*resultsIntro\[2\]/);
+  assert.doesNotMatch(resultsIntro, /caseCopy\.results\[1\]/);
 });
 
 test('SoyTechno QA redlines: Mobile-First keeps philosophy; metrics live in Resultados', () => {
@@ -126,8 +150,8 @@ test('SoyTechno distributes unique source fragments without repeating them', () 
   const fragments = [...renderedBody.matchAll(/caseCopy\.([A-Za-z]+)\[(\d+)\]/g)]
     .map((match) => `${match[1]}:${match[2]}`);
 
-  assert.equal(fragments.length, 30);
-  assert.equal(new Set(fragments).size, 30);
+  assert.equal(fragments.length, 33);
+  assert.equal(new Set(fragments).size, 33);
   assert.doesNotMatch(renderedBody, /approvedCopy\.(?!title)/);
   assert.match(soytechnoBody, /Eva Cristina Luciani/);
   assert.match(soytechnoBody, /comparador de productos/);
