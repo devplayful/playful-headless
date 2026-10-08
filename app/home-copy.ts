@@ -17,6 +17,20 @@ export const HOME_HERO = {
   ],
   logos: [
     {
+      name: 'Jumex',
+      href: '/casos-de-exito/jumex-shopify-dtc-ecommerce',
+      src: '/images/logos/jumex.png',
+      width: 160,
+      height: 96,
+    },
+    {
+      name: 'Odwalla',
+      href: '/casos-de-exito/odwalla-shopify-dtc-ecommerce',
+      src: '/images/logos/odwalla.png',
+      width: 160,
+      height: 96,
+    },
+    {
       name: 'SoyTechno',
       href: '/casos-de-exito/soytechno-ecommerce-venezuela',
       src: '/images/logos/soytechno.png',
