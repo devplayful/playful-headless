@@ -85,11 +85,18 @@ test('hero keeps H1, subtitle, chips and CTAs; the first section follows with lo
   const followup = afterHero.slice(0, followupEnd);
   assert.match(followup, /HOME_HERO\.cuerpo/);
   assert.match(followup, /HOME_HERO\.shopifyHref/);
+  const microIdx = followup.indexOf('HOME_HERO.microcopiaSeccion');
+  const shopifyIdx = followup.indexOf('HOME_HERO.shopifyAntes');
+  assert.ok(microIdx > 0 && shopifyIdx > microIdx);
   assert.match(copy, /Shopify, WooCommerce y Medusa/);
   assert.match(copy, /En el plazo acordado/);
   assert.match(copy, /Facturación e inventario conectados/);
   assert.match(copy, /Abrir el canal, migrar o conectar tu tienda/);
-  assert.match(copy, /alt: 'SoyTechno'|name: 'SoyTechno'/);
+  assert.match(copy, /name: 'Jumex'/);
+  assert.match(copy, /\/casos-de-exito\/jumex-shopify-dtc-ecommerce/);
+  assert.match(copy, /name: 'Odwalla'/);
+  assert.match(copy, /\/casos-de-exito\/odwalla-shopify-dtc-ecommerce/);
+  assert.match(copy, /name: 'SoyTechno'/);
   assert.match(copy, /\/casos-de-exito\/soytechno-ecommerce-venezuela/);
 });
 

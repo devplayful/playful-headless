@@ -190,14 +190,14 @@ async function HomeContent() {
                 </p>
               ))}
               <p className="playful-contenido-p leading-7 md:leading-8">
+                {HOME_HERO.microcopiaSeccion}
+              </p>
+              <p className="playful-contenido-p leading-7 md:leading-8">
                 {HOME_HERO.shopifyAntes}
                 <Link href={HOME_HERO.shopifyHref} className="font-medium text-[#440099] underline">
                   {HOME_HERO.shopifyAnchor}
                 </Link>
                 {HOME_HERO.shopifyDespues}
-              </p>
-              <p className="playful-contenido-p leading-7 md:leading-8">
-                {HOME_HERO.microcopiaSeccion}
               </p>
             </div>
           </div>
