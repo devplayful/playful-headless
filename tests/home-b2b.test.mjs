@@ -14,11 +14,12 @@ test('home keeps organization JSON-LD and trailing-slash canonical', () => {
   assert.match(home, /rel="canonical" href=\{HOME_CANONICAL\}/);
 });
 
-test('home has a single visible h1 and antetitulo is not a heading', () => {
+test('home has a single visible h1 and no eyebrow', () => {
   assert.match(home, /<h1 className="playful-h1">/);
   assert.equal((home.match(/<h1\b/g) || []).length, 1);
-  assert.match(home, /<p className="playful-miga-pan">\{HOME_HERO.antetitulo\}<\/p>/);
-  assert.doesNotMatch(home, /<(h[1-6])[^>]*>\{HOME_HERO.antetitulo\}/);
+  assert.doesNotMatch(home, /playful-miga-pan/);
+  assert.doesNotMatch(home, /HOME_HERO\.antetitulo/);
+  assert.doesNotMatch(copy, /\bantetitulo\b/);
 });
 
 test('home booking CTAs use /reunion-playful, not the GHL widget', () => {
@@ -35,9 +36,13 @@ test('home keeps the /agencia-shopify internado', () => {
   assert.match(home, /HOME_HERO.shopifyHref/);
 });
 
-test('home title, meta and H1 come from the B2B piece', () => {
-  assert.match(copy, /Playful Agency: tienda online de marca en Shopify y WooCommerce/);
-  assert.match(copy, /La tienda online de tu marca, entregada a tiempo y conectada a tu operación/);
+test('home title, meta and H1 come from propuesta A', () => {
+  assert.match(copy, /Tiendas online en Shopify y WooCommerce \| Playful Agency/);
+  assert.match(
+    copy,
+    /Diseñamos, integramos y migramos tiendas online de marcas de consumo en Shopify o WooCommerce, a tiempo y con 30 días de garantía\. Reserva tu reunión\./,
+  );
+  assert.match(copy, /Tiendas online para marcas de consumo/);
   assert.match(home, /title: HOME_META.title/);
   assert.match(home, /description: HOME_META.description/);
 });
@@ -57,24 +62,35 @@ test('home paints the two signed testimonials in a static two-column block', () 
   assert.match(copy, /Eva Cristina Luciani/);
 });
 
-test('hero keeps only the first paragraph with the H1 and CTAs; the rest follows as a text module', () => {
+test('hero keeps H1, subtitle, chips and CTAs; the first section follows with logos and copy', () => {
   const heroStart = home.indexOf('{/* Hero Section */}');
   const heroEnd = home.indexOf('</section>', heroStart);
   const hero = home.slice(heroStart, heroEnd);
   const afterHero = home.slice(heroEnd);
   assert.match(hero, /HOME_HERO\.subtitulo/);
+  assert.match(hero, /HOME_HERO\.chips\.map/);
   assert.match(hero, /HOME_HERO\.ctaPrincipal/);
   assert.match(hero, /HOME_HERO\.microcopia/);
   assert.match(hero, /HOME_HERO\.ctaSecundario/);
   assert.doesNotMatch(hero, /HOME_HERO\.cuerpo/);
   assert.doesNotMatch(hero, /HOME_HERO\.shopifyAntes/);
+  assert.doesNotMatch(home, /SUBTÍTULO PENDIENTE/);
+  assert.match(afterHero, /HOME_HERO\.logos\.map/);
+  assert.match(afterHero, /HOME_HERO\.seccionH2/);
   assert.match(afterHero, /HOME_HERO\.cuerpo\.map/);
   assert.match(afterHero, /HOME_HERO\.shopifyAntes/);
+  assert.match(afterHero, /HOME_HERO\.microcopiaSeccion/);
   assert.match(afterHero, /<MaterialServicesSection/);
   const followupEnd = afterHero.indexOf('<MaterialServicesSection');
   const followup = afterHero.slice(0, followupEnd);
   assert.match(followup, /HOME_HERO\.cuerpo/);
   assert.match(followup, /HOME_HERO\.shopifyHref/);
+  assert.match(copy, /Shopify, WooCommerce y Medusa/);
+  assert.match(copy, /En el plazo acordado/);
+  assert.match(copy, /Facturación e inventario conectados/);
+  assert.match(copy, /Abrir el canal, migrar o conectar tu tienda/);
+  assert.match(copy, /alt: 'SoyTechno'|name: 'SoyTechno'/);
+  assert.match(copy, /\/casos-de-exito\/soytechno-ecommerce-venezuela/);
 });
 
 test('metodo steps are full-width rows, not a three-column grid', () => {
