@@ -100,15 +100,22 @@ async function HomeContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              <div className="space-y-2">
-                <p className="playful-miga-pan">{HOME_HERO.antetitulo}</p>
-                <h1 className="playful-h1">
-                  {HOME_HERO.h1}
-                </h1>
-              </div>
+              <h1 className="playful-h1">
+                {HOME_HERO.h1}
+              </h1>
 
               <div className="space-y-4 text-purple-800">
                 <p className="playful-contenido-p">{HOME_HERO.subtitulo}</p>
+                <div className="flex flex-wrap gap-2">
+                  {HOME_HERO.chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="flex items-center px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-700 whitespace-nowrap"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -161,8 +168,21 @@ async function HomeContent() {
 
       <section className="relative">
         <div className={`${shell} pt-2 pb-16 md:pb-20`}>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 pb-8">
+            {HOME_HERO.logos.map((logo) => (
+              <Link key={logo.name} href={logo.href}>
+                <Image
+                  src={logo.src}
+                  alt={logo.name}
+                  width={logo.width}
+                  height={logo.height}
+                  className="object-contain"
+                />
+              </Link>
+            ))}
+          </div>
           <div className="playful-contenedor playful-contenedor-B3FFF3 rounded-[32px] md:rounded-[48px] !mt-0">
-            <h2 className="playful-h2 text-center">[SUBTÍTULO PENDIENTE · Contenido]</h2>
+            <h2 className="playful-h2 text-center">{HOME_HERO.seccionH2}</h2>
             <div className="space-y-6 max-w-4xl mx-auto">
               {HOME_HERO.cuerpo.map((paragraph) => (
                 <p key={paragraph} className="playful-contenido-p leading-7 md:leading-8">
@@ -175,6 +195,9 @@ async function HomeContent() {
                   {HOME_HERO.shopifyAnchor}
                 </Link>
                 {HOME_HERO.shopifyDespues}
+              </p>
+              <p className="playful-contenido-p leading-7 md:leading-8">
+                {HOME_HERO.microcopiaSeccion}
               </p>
             </div>
           </div>

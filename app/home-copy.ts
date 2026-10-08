@@ -1,18 +1,32 @@
 import { CONTACT_HREF, SERVICE_BOOKING_HREF } from '@/utils/booking';
 
 export const HOME_META = {
-  title: 'Playful Agency: tienda online de marca en Shopify y WooCommerce',
+  title: 'Tiendas online en Shopify y WooCommerce | Playful Agency',
   description:
     'Diseñamos, integramos y migramos tiendas online de marcas de consumo en Shopify o WooCommerce, a tiempo y con 30 días de garantía. Reserva tu reunión.',
 } as const;
 
 export const HOME_HERO = {
-  antetitulo:
-    'Playful Agency, tiendas online para marcas de consumo en Shopify, WooCommerce, Medusa y apps móviles',
-  h1: 'La tienda online de tu marca, entregada a tiempo y conectada a tu operación',
+  h1: 'Tiendas online para marcas de consumo',
   subtitulo:
-    'Diseñamos, desarrollamos e integramos la tienda online de marcas de consumo, y la publicamos en el plazo que acordamos con tu equipo. Lo hemos hecho para Jumex, Odwalla y SoyTechno.',
+    'Diseñamos e integramos el canal de venta directa de tu marca, y tu equipo lo administra después sin depender de nosotros para lo básico.',
+  chips: [
+    'Shopify, WooCommerce y Medusa',
+    'En el plazo acordado',
+    'Facturación e inventario conectados',
+  ],
+  logos: [
+    {
+      name: 'SoyTechno',
+      href: '/casos-de-exito/soytechno-ecommerce-venezuela',
+      src: '/images/logos/soytechno.png',
+      width: 160,
+      height: 96,
+    },
+  ],
+  seccionH2: 'Abrir el canal, migrar o conectar tu tienda',
   cuerpo: [
+    'Diseñamos, desarrollamos e integramos la tienda online de marcas de consumo, y la publicamos en el plazo que acordamos con tu equipo. Lo hemos hecho para Jumex, Odwalla y SoyTechno.',
     'Si tu equipo quiere abrir el canal de venta directa de la marca, llevar la tienda actual a otra plataforma o conectarla de una vez con la facturación y el inventario, el primer paso es una reunión.',
     'En 30 a 40 minutos revisamos el proyecto con tu equipo y te decimos qué plataforma, qué integraciones y qué fases necesita el canal.',
   ],
@@ -24,9 +38,11 @@ export const HOME_HERO = {
   ctaPrincipal: 'Reservar reunión de 30 a 40 minutos',
   ctaHref: SERVICE_BOOKING_HREF,
   microcopia:
-    'La reunión es sin compromiso y sirve para recoger la información del proyecto. Con ella preparamos el presupuesto y te lo presentamos en otra reunión, unos días después.',
+    'La reunión es sin compromiso y sirve para recoger la información del proyecto.',
   ctaSecundario: 'O cuéntanos el proyecto por el formulario',
   ctaSecundarioHref: CONTACT_HREF,
+  microcopiaSeccion:
+    'Con ella preparamos el presupuesto y te lo presentamos en otra reunión, unos días después.',
 } as const;
 
 export const HOME_PROBLEMAS = {
