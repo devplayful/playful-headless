@@ -68,8 +68,12 @@
 
 .heroCopy p {
   font-size: 18px;
-  line-height: 1.5;
-  margin: 0 0 10px;
+  line-height: 1.65;
+  margin: 0 0 1.15em;
+}
+
+.heroCopy p:last-child {
+  margin-bottom: 0;
 }
 
 .heroArtwork {
@@ -109,9 +113,15 @@
 .introSectionSmall > p,
 .resultsIntro > p {
   font-size: 18px;
-  line-height: 1.5;
-  margin: 0 auto;
+  line-height: 1.65;
+  margin: 0 auto 1.15em;
   max-width: 900px;
+}
+
+.introSection > p:last-of-type,
+.introSectionSmall > p:last-of-type,
+.resultsIntro > p:last-of-type {
+  margin-bottom: 0;
 }
 
 .introIcons {
@@ -139,6 +149,77 @@
 
 .blueIcon img { height: 58px; object-fit: contain; width: 58px; }
 .roundPhoto { border-radius: 50%; object-fit: cover !important; }
+
+.quarterTrack {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: 48px auto 0;
+  max-width: 900px;
+  padding: 0;
+  position: relative;
+}
+
+.quarterTrack::before {
+  background: #d5cdd8;
+  content: '';
+  height: 2px;
+  left: 12%;
+  position: absolute;
+  right: 12%;
+  top: 28px;
+}
+
+.quarterTrack li {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  text-align: center;
+}
+
+.quarterLabel {
+  align-items: center;
+  background: var(--lavender);
+  border-radius: 50%;
+  display: flex;
+  font-family: var(--font-paytone-one), sans-serif;
+  font-size: 20px;
+  height: 56px;
+  justify-content: center;
+  line-height: 1;
+  width: 56px;
+}
+
+.quarterName {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.pillarList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  margin: 36px auto 0;
+  max-width: 900px;
+  padding: 0;
+}
+
+.pillarList li {
+  background: var(--lavender);
+  border-radius: 36px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  padding: 22px 36px;
+  text-align: center;
+}
 
 .challenge {
   background: var(--lavender);
@@ -176,8 +257,12 @@
 .contentItem p,
 .textStack > p {
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.65;
   margin: 0;
+}
+
+.contentItem p + p {
+  margin-top: 1.15em;
 }
 
 .challengeCopy .contentItem:nth-child(1) h3 { color: #00193f; }
@@ -320,7 +405,7 @@
   border-radius: 20px;
   display: grid;
   gap: 36px;
-  grid-template-columns: 350px 350px minmax(0, 1fr);
+  grid-template-columns: 200px 350px minmax(0, 1fr);
   margin-top: 40px;
   padding: 40px;
 }
@@ -330,16 +415,16 @@
 .brandCopyColumn { display: flex; flex-direction: column; gap: 36px; }
 
 .paletteCard {
+  align-items: center;
+  aspect-ratio: 1;
   border-radius: 20px;
   display: flex;
-  flex-direction: column;
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 18px;
-  height: 304px;
-  padding: 36px;
+  justify-content: center;
+  padding: 40px;
+  width: 200px;
 }
 
-.paletteCard img { align-self: center; height: 120px; margin-top: auto; object-fit: contain; width: 120px; }
+.paletteCard img { height: 120px; object-fit: contain; width: 120px; }
 .darkCard { background: #00193f; color: white; }
 .greenCard { background: #297dff; color: white; }
 .orangeCard { background: #d4e5ff; color: #00193f; }
@@ -391,7 +476,6 @@
   position: relative;
 }
 
-.circuitCard span { color: white; font: 700 18px var(--font-dm-sans), sans-serif; left: 20px; position: absolute; top: 18px; z-index: 1; }
 .circuitCard img { height: 100%; object-fit: cover; width: 100%; }
 
 .logoCard {
@@ -415,9 +499,10 @@
 .divider { background: #d5cdd8; height: 1px; margin: 100px auto 0; max-width: 1235px; }
 .ipadComposite {
   align-items: center;
-  aspect-ratio: 750 / 541;
+  aspect-ratio: 1484 / 2000;
   display: flex;
   justify-content: center;
+  max-width: 650px;
   min-height: 0;
   overflow: hidden;
   position: relative;
@@ -426,12 +511,13 @@
 
 .ipadScreen {
   background: #f7f7f7;
-  height: 87.5%;
-  left: 4.55%;
+  border-radius: 2%;
+  height: 85.6%;
+  left: 9.703%;
   overflow: hidden;
   position: absolute;
-  top: 6.25%;
-  width: 90.9%;
+  top: 7.2%;
+  width: 80.593%;
   z-index: 1;
 }
 
@@ -528,7 +614,7 @@
   .breadcrumb { padding: 22px 20px; }
   .hero { border-radius: 24px 24px 0 0; gap: 28px; grid-template-columns: 1fr; margin: 0 16px; min-height: 0; padding: 36px 20px 28px; }
   .heroCopy h1 { font-size: 32px; line-height: 1.18; margin-bottom: 22px; }
-  .heroCopy p { font-size: 16px; line-height: 1.55; }
+  .heroCopy p { font-size: 16px; line-height: 1.65; }
   .heroArtwork { height: auto; }
   .heroArtwork img { height: auto; max-width: 290px; width: 100%; }
   .introSection,
@@ -539,11 +625,18 @@
   .resultsIntro > h2 { font-size: 30px; line-height: 1.2; }
   .introSection > p,
   .introSectionSmall > p,
-  .resultsIntro > p { font-size: 16px; line-height: 1.55; }
+  .resultsIntro > p { font-size: 16px; line-height: 1.65; }
   .introIcons { gap: 24px; margin-top: 36px; }
   .introIcons > img,
   .blueIcon { height: 72px; width: 72px; }
   .blueIcon img { height: 44px; width: 44px; }
+  .quarterTrack { gap: 20px 12px; grid-template-columns: repeat(2, 1fr); margin-top: 32px; }
+  .quarterTrack::before { display: none; }
+  .quarterTrack li { gap: 10px; }
+  .quarterLabel { font-size: 18px; height: 52px; width: 52px; }
+  .quarterName { font-size: 15px; }
+  .pillarList { gap: 12px; margin-top: 28px; }
+  .pillarList li { border-radius: 24px; font-size: 16px; padding: 18px 20px; }
 
   .challenge { display: flex; flex-direction: column; gap: 16px; margin: 36px 16px 0; padding: 16px; }
   .challengeCopy { gap: 22px; order: 1; padding: 28px 22px; }
@@ -554,7 +647,7 @@
   .challengeProducts { height: 210px; order: 5; }
   .contentItem h3 { font-size: 18px; }
   .contentItem p,
-  .textStack > p { font-size: 16px; }
+  .textStack > p { font-size: 16px; line-height: 1.65; }
 
   .standardSection { padding: 72px 20px 0; }
   .sectionTitle { border-radius: 24px; min-height: 0; padding: 18px 20px; }
@@ -569,10 +662,9 @@
   .brandPanel { display: flex; flex-direction: column; gap: 24px; margin-top: 28px; padding: 16px; }
   .brandMediaColumn { align-items: center; order: 1; }
   .brandPhoneMask { height: auto; max-width: 300px; width: 100%; }
-  .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); order: 2; }
-  .paletteCard { font-size: 13px; height: 230px; padding: 18px 14px; }
-  .paletteCard img { height: 84px; width: 84px; }
-  .paletteCard:last-child { grid-column: 1 / -1; }
+  .paletteColumn { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 104px)); justify-content: center; order: 2; }
+  .paletteCard { padding: 20px; width: 100%; }
+  .paletteCard img { height: 64px; width: 64px; }
   .circuitCard { height: 220px; width: 100%; }
   .brandCopyColumn { order: 3; }
   .logoCard { height: 150px; }
