@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 type AgencyIllustrationSlotSize = 'hero' | 'card';
 
 type AgencyIllustrationSlotProps = {
@@ -8,6 +10,8 @@ type AgencyIllustrationSlotProps = {
   src1x: string;
   /** Intended @2x path for Diseño. Not rendered until the asset exists. */
   src2x: string;
+  /** When true, render src1x instead of the site og placeholder. */
+  ready?: boolean;
 };
 
 /**
@@ -27,6 +31,7 @@ export default function AgencyIllustrationSlot({
   size = 'card',
   src1x,
   src2x,
+  ready = false,
 }: AgencyIllustrationSlotProps) {
   if (size === 'hero') {
     return (
@@ -34,19 +39,30 @@ export default function AgencyIllustrationSlot({
         data-illustration-slot={id}
         data-illustration-src-1x={src1x}
         data-illustration-src-2x={src2x}
-        data-placeholder="PLACEHOLDER"
+        {...(ready ? {} : { 'data-placeholder': 'PLACEHOLDER' })}
         className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
       >
-        {/* PLACEHOLDER: Diseño sustituye por src1x / src2x (552×360 / 1104×720). */}
-        <img
-          src={PLACEHOLDER_ART}
-          alt={alt}
-          width={AGENCY_HERO_SLOT_SIZE.width}
-          height={AGENCY_HERO_SLOT_SIZE.height}
-          decoding="async"
-          fetchPriority="high"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {ready ? (
+          <Image
+            src={src1x}
+            alt={alt}
+            width={AGENCY_HERO_SLOT_SIZE.width}
+            height={AGENCY_HERO_SLOT_SIZE.height}
+            priority
+            sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <img
+            src={PLACEHOLDER_ART}
+            alt={alt}
+            width={AGENCY_HERO_SLOT_SIZE.width}
+            height={AGENCY_HERO_SLOT_SIZE.height}
+            decoding="async"
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
       </div>
     );
   }
