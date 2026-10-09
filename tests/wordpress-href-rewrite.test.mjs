@@ -12,8 +12,8 @@ import {
   isGoneInternalHref,
 } from '../services/rewrite-in-site-hrefs.mjs';
 
-const TIPOS_POST =
-  'https://endpoint.playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online';
+const LIVE_POST =
+  'https://endpoint.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social';
 const BLACK_FRIDAY_POST =
   'https://endpoint.playfulagency.com/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias';
 const MEDIA_SRC =
@@ -28,12 +28,12 @@ function countHostHrefs(html, host) {
 
 test('rewrites endpoint, old, www, and apex in-site hrefs to same-path relatives', () => {
   const html = [
-    `<a href="${TIPOS_POST}">LinkedIn</a>`,
+    `<a href="${LIVE_POST}">LinkedIn</a>`,
     `<a href="${BLACK_FRIDAY_POST}">Black Friday</a>`,
     `<a href="https://old.playfulagency.com/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias">old</a>`,
-    `<a href="https://www.playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online">www</a>`,
-    `<a href="https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online">apex</a>`,
-    `<a href="//endpoint.playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online?utm=1#toc">proto</a>`,
+    `<a href="https://www.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social">www</a>`,
+    `<a href="https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social">apex</a>`,
+    `<a href="//endpoint.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social?utm=1#toc">proto</a>`,
   ].join('');
 
   const rewritten = rewriteInSitePageHrefs(html);
@@ -42,14 +42,14 @@ test('rewrites endpoint, old, www, and apex in-site hrefs to same-path relatives
   assert.equal(countHostHrefs(rewritten, 'old.playfulagency.com'), 0);
   assert.equal(countHostHrefs(rewritten, 'www.playfulagency.com'), 0);
   assert.equal(countHostHrefs(rewritten, 'playfulagency.com'), 0);
-  assert.match(rewritten, /href="\/blog\/pautas-digitales\/tipos-de-publicidad-online"/);
+  assert.match(rewritten, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.match(
     rewritten,
     /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/,
   );
   assert.match(
     rewritten,
-    /href="\/blog\/pautas-digitales\/tipos-de-publicidad-online\?utm=1#toc"/,
+    /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social\?utm=1#toc"/,
   );
 });
 
@@ -57,14 +57,14 @@ test('leaves /wp-content media srcs and hrefs on the WordPress endpoint', () => 
   const html = [
     `<img src="${MEDIA_SRC}" alt="">`,
     `<a href="${MEDIA_HREF}">PDF</a>`,
-    `<a href="${TIPOS_POST}">LinkedIn</a>`,
+    `<a href="${LIVE_POST}">LinkedIn</a>`,
   ].join('');
 
   const rewritten = rewriteInSitePageHrefs(html);
 
   assert.match(rewritten, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
   assert.match(rewritten, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
-  assert.match(rewritten, /href="\/blog\/pautas-digitales\/tipos-de-publicidad-online"/);
+  assert.match(rewritten, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.equal(countHostHrefs(rewritten, 'endpoint.playfulagency.com'), 1);
 });
 
@@ -202,14 +202,14 @@ test('rewriteWpRenderedHtmlFields rewrites excerpt and content hrefs; leaves wp-
   const post = rewriteWpRenderedHtmlFields({
     id: 1,
     excerpt: {
-      rendered: `<p>Lee <a href="${TIPOS_POST}">LinkedIn</a> y <a href="${MEDIA_HREF}">PDF</a>.</p>`,
+      rendered: `<p>Lee <a href="${LIVE_POST}">LinkedIn</a> y <a href="${MEDIA_HREF}">PDF</a>.</p>`,
     },
     content: {
       rendered: `<p><a href="${BLACK_FRIDAY_POST}">Black Friday</a><img src="${MEDIA_SRC}" alt=""></p>`,
     },
   });
 
-  assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/tipos-de-publicidad-online"/);
+  assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.match(post.excerpt.rendered, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
   assert.match(post.content.rendered, /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/);
   assert.match(post.content.rendered, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
@@ -250,8 +250,8 @@ test('getLatestBlogPosts rewrites excerpt HTML before stripping tags', async () 
 
 test('rewriteInSiteUrlToApex maps endpoint/old/www page URLs to apex same-path', () => {
   assert.equal(
-    rewriteInSiteUrlToApex(`${TIPOS_POST}/`),
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    rewriteInSiteUrlToApex(`${LIVE_POST}/`),
+    'https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social',
   );
   assert.equal(
     rewriteInSiteUrlToApex('https://old.playfulagency.com/blog/'),
@@ -271,7 +271,7 @@ test('rewriteInSiteUrlToApex maps endpoint/old/www page URLs to apex same-path',
 test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-content', () => {
   const ogUrl = 'https://endpoint.playfulagency.com/blog/seo/tendencias-seo-2020/';
   const listingOg = 'https://endpoint.playfulagency.com/blog/';
-  const oldOg = 'https://old.playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online/';
+  const oldOg = 'https://old.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social/';
   const yoastHead = [
     `<meta property="og:url" content="${ogUrl}" />`,
     `<link rel="canonical" href="${listingOg}" />`,
@@ -293,7 +293,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
 
   const post = rewriteWpYoastFields({
     id: 68047,
-    excerpt: { rendered: `<p><a href="${TIPOS_POST}">keep excerpt for later</a></p>` },
+    excerpt: { rendered: `<p><a href="${LIVE_POST}">keep excerpt for later</a></p>` },
     yoast_head: yoastHead,
     yoast_head_json: {
       og_url: ogUrl,
@@ -325,7 +325,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
   );
   assert.equal(
     post.yoast_head_json.canonical,
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social',
   );
   assert.equal(post.yoast_head_json.og_image[0].url, MEDIA_SRC);
   assert.equal(
@@ -336,7 +336,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
     post.yoast_head_json.schema['@graph'][0].itemListElement[1].item,
     'https://playfulagency.com/blog',
   );
-  assert.match(post.excerpt.rendered, new RegExp(TIPOS_POST.replaceAll('/', '\\/')));
+  assert.match(post.excerpt.rendered, new RegExp(LIVE_POST.replaceAll('/', '\\/')));
 });
 
 test('getBlogPosts rewrites Yoast og:url / breadcrumb fields in the listing pipeline', async () => {
