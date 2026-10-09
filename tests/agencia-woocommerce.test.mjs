@@ -93,7 +93,9 @@ test('landing uses the agency template and booking hop', () => {
   );
   assert.match(landing, /AgencyCopyLanding/);
   assert.match(landing, /twitterFromOpenGraph/);
-  assert.match(landing, /SITE_OG_IMAGE/);
+  assert.match(landing, /\/images\/heros\/agencia-woocommerce-og\.jpg/);
+  assert.match(landing, /\/images\/heros\/agencia-woocommerce-hero\.webp/);
+  assert.match(landing, /heroImage=/);
   assert.equal(CTA_LABEL, 'Reserva una reunión de 30 a 40 minutos');
   assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
   assert.match(sharedLanding, /AgencyIllustrationSlot/);

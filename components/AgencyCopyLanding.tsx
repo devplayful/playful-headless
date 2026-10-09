@@ -156,9 +156,11 @@ function SectionHeading({ title, purple }: { title: string; purple: boolean }) {
 export default function AgencyCopyLanding({
   copy,
   jsonLd,
+  heroImage,
 }: {
   copy: AgencyLandingCopy;
   jsonLd: object;
+  heroImage?: { src: string; alt: string };
 }) {
   const purpleLink = '!text-[#E9D7FF] font-semibold underline underline-offset-2';
   const assetDir = landingAssetDir(copy.meta.path);
@@ -190,9 +192,13 @@ export default function AgencyCopyLanding({
               <AgencyIllustrationSlot
                 id={heroSlotId}
                 size="hero"
-                src1x={`${assetDir}/hero@1x.png`}
-                src2x={`${assetDir}/hero@2x.png`}
-                alt={`PLACEHOLDER: ilustración del hero de ${copy.meta.serviceName}. Diseño sustituye.`}
+                src1x={heroImage?.src ?? `${assetDir}/hero@1x.png`}
+                src2x={heroImage?.src ?? `${assetDir}/hero@2x.png`}
+                ready={Boolean(heroImage)}
+                alt={
+                  heroImage?.alt ??
+                  `PLACEHOLDER: ilustración del hero de ${copy.meta.serviceName}. Diseño sustituye.`
+                }
               />
             </div>
           </div>
