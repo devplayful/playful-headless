@@ -17,6 +17,11 @@ import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import {
+  applyImageAltOverrides,
+  resolveImageAlt,
+  resolveMediaAlt,
+} from '@/lib/image-alt-overrides';
 
 
 
@@ -87,6 +92,10 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+function acfHtml(value: string | undefined): string {
+  return applyImageAltOverrides(value || '');
+}
+
 export default async function SuccessStoryPage({
   params,
 }: {
@@ -142,7 +151,7 @@ export default async function SuccessStoryPage({
               </h1>
               <p
                 className="text-base sm:text-lg text-[#4A4453]"
-                dangerouslySetInnerHTML={{ __html: story.acf.primerap || '' }}
+                dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.primerap) }}
               />
               {isShopifyCaseStudySlug(slug) ? <ShopifyServiceLink /> : null}
             </div>
@@ -155,7 +164,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.imagenbanner
                         : story.acf.imagenbanner.url
                     }
-                    alt={story.title.rendered}
+                    alt={resolveMediaAlt(story.acf.imagenbanner, story.title.rendered)}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-opacity duration-300"
@@ -184,12 +193,12 @@ export default async function SuccessStoryPage({
           {story.acf.segundap && (
             <div
               className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6"
-              dangerouslySetInnerHTML={{ __html: story.acf.segundap }}
+              dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.segundap) }}
             />
           )}
           <div
             className="text-base sm:text-lg text-gray-600 mb-8 sm:mb-12"
-            dangerouslySetInnerHTML={{ __html: story.acf.tercerap || '' }}
+            dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.tercerap) }}
           />
           {Array.isArray(story.acf?.challenge_logos) &&
             story.acf.challenge_logos.length > 0 && (
@@ -201,7 +210,7 @@ export default async function SuccessStoryPage({
                   >
                     <Image
                       src={logo.url}
-                      alt={logo.alt || `Logo ${index + 1}`}
+                      alt={resolveMediaAlt(logo, logo.alt || `Logo ${index + 1}`)}
                       fill
                       sizes="(max-width: 768px) 8rem, 10rem"
                       className="object-contain object-center opacity-70 hover:opacity-100 transition-opacity duration-300"
@@ -239,7 +248,7 @@ export default async function SuccessStoryPage({
                   >
                     <Image
                       src={src}
-                      alt={`Imagen ${index + 1}`}
+                      alt={resolveImageAlt(src, `Imagen ${index + 1}`)}
                       width={120}
                       height={120}
                       className="object-contain w-full h-full"
@@ -257,7 +266,7 @@ export default async function SuccessStoryPage({
               ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: story.acf?.tercerap || '' }}
+                dangerouslySetInnerHTML={{ __html: acfHtml(story.acf?.tercerap) }}
               />
             </div>
           </div>
@@ -323,7 +332,7 @@ export default async function SuccessStoryPage({
                         <div
                           key={`texto-grid-${index}`}
                           className={item.className}
-                          dangerouslySetInnerHTML={{ __html: item.content || '' }}
+                          dangerouslySetInnerHTML={{ __html: acfHtml(item.content) }}
                         />
                       ))}
                   </div>
@@ -338,7 +347,7 @@ export default async function SuccessStoryPage({
                               ? story.acf.desafioimagen3
                               : (story.acf.desafioimagen3 as { url: string }).url
                           }
-                          alt="Mockup móvil"
+                          alt={resolveMediaAlt(story.acf.desafioimagen3, 'Mockup móvil')}
                           fill
                           className="object-contain"
                           sizes="450px"
@@ -359,7 +368,7 @@ export default async function SuccessStoryPage({
                             ? story.acf.desafioimagen1
                             : (story.acf.desafioimagen1 as { url: string }).url
                         }
-                        alt="Logo cliente"
+                        alt={resolveMediaAlt(story.acf.desafioimagen1, 'Logo cliente')}
                         fill
                         className="object-contain"
                         sizes="450px"
@@ -376,7 +385,7 @@ export default async function SuccessStoryPage({
                             ? story.acf.desafioimagen2
                             : (story.acf.desafioimagen2 as { url: string }).url
                         }
-                        alt="Teléfono mockup"
+                        alt={resolveMediaAlt(story.acf.desafioimagen2, 'Teléfono mockup')}
                         fill
                         className="object-contain"
                         sizes="450px"
@@ -393,7 +402,7 @@ export default async function SuccessStoryPage({
                             ? story.acf.desafioimagen4
                             : (story.acf.desafioimagen4 as { url: string }).url
                         }
-                        alt="Mockup desktop"
+                        alt={resolveMediaAlt(story.acf.desafioimagen4, 'Mockup desktop')}
                         fill
                         className="object-contain"
                         sizes="450px"
@@ -428,7 +437,7 @@ export default async function SuccessStoryPage({
               ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
-                dangerouslySetInnerHTML={{ __html: story.acf?.decima || '' }}
+                dangerouslySetInnerHTML={{ __html: acfHtml(story.acf?.decima) }}
               />
             </div>
 
@@ -449,7 +458,7 @@ export default async function SuccessStoryPage({
                     >
                       <Image
                         src={src}
-                        alt={`Imagen ${index + 1}`}
+                        alt={resolveImageAlt(src, `Imagen ${index + 1}`)}
                         width={120}
                         height={120}
                         className="object-contain w-full h-full"
@@ -468,7 +477,7 @@ export default async function SuccessStoryPage({
               ) : null}
               <div
                 className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 sm:mb-12"
-                dangerouslySetInnerHTML={{ __html: story.acf?.otropst || '' }}
+                dangerouslySetInnerHTML={{ __html: acfHtml(story.acf?.otropst) }}
               />
             </div>
           </div>
@@ -507,7 +516,7 @@ export default async function SuccessStoryPage({
                           ? story.acf.imagendesarrollo
                           : story.acf.imagendesarrollo.url
                       }
-                      alt="Proceso de desarrollo"
+                      alt={resolveMediaAlt(story.acf.imagendesarrollo, 'Proceso de desarrollo')}
                       fill
                       sizes="(max-width: 1024px) 100vw, 50%"
                       className="object-contain"
@@ -527,7 +536,7 @@ export default async function SuccessStoryPage({
                       </h3>
                       <div
                         className="text-gray-700 leading-relaxed text-lg"
-                        dangerouslySetInnerHTML={{ __html: story.acf.primerapdesarrollo }}
+                        dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.primerapdesarrollo) }}
                       />
                     </div>
                   )}
@@ -539,7 +548,7 @@ export default async function SuccessStoryPage({
                       </h3>
                       <div
                         className="text-gray-700 leading-relaxed text-lg"
-                        dangerouslySetInnerHTML={{ __html: story.acf.segundapdesarrollo }}
+                        dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.segundapdesarrollo) }}
                       />
                     </div>
                   )}
@@ -551,7 +560,7 @@ export default async function SuccessStoryPage({
                       </h3>
                       <div
                         className="text-gray-700 leading-relaxed text-lg"
-                        dangerouslySetInnerHTML={{ __html: story.acf.tercerapdesarrollo }}
+                        dangerouslySetInnerHTML={{ __html: acfHtml(story.acf.tercerapdesarrollo) }}
                       />
                     </div>
                   )}
@@ -586,7 +595,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla1
                         : story.acf.grilla1.url
                     }
-                    alt="Gallery image 1"
+                    alt={resolveMediaAlt(story.acf.grilla1, 'Gallery image 1')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -602,7 +611,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla4
                         : story.acf.grilla4.url
                     }
-                    alt="Gallery image 4"
+                    alt={resolveMediaAlt(story.acf.grilla4, 'Gallery image 4')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -618,7 +627,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla5
                         : (story.acf.grilla5 as { url: string }).url
                     }
-                    alt="Gallery image 5"
+                    alt={resolveMediaAlt(story.acf.grilla5, 'Gallery image 5')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -638,7 +647,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla2
                         : story.acf.grilla2.url
                     }
-                    alt="Gallery image 2"
+                    alt={resolveMediaAlt(story.acf.grilla2, 'Gallery image 2')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -654,7 +663,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla6
                         : story.acf.grilla6.url
                     }
-                    alt="Gallery image 6"
+                    alt={resolveMediaAlt(story.acf.grilla6, 'Gallery image 6')}
                     width={400}
                     height={600}
                     className="w-full h-auto object-cover"
@@ -674,7 +683,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla3
                         : story.acf.grilla3.url
                     }
-                    alt="Gallery image 3"
+                    alt={resolveMediaAlt(story.acf.grilla3, 'Gallery image 3')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -690,7 +699,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla7
                         : story.acf.grilla7.url
                     }
-                    alt="Gallery image 7"
+                    alt={resolveMediaAlt(story.acf.grilla7, 'Gallery image 7')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -706,7 +715,7 @@ export default async function SuccessStoryPage({
                         ? story.acf.grilla8
                         : (story.acf.grilla8 as { url: string }).url
                     }
-                    alt="Gallery image 8"
+                    alt={resolveMediaAlt(story.acf.grilla8, 'Gallery image 8')}
                     width={400}
                     height={300}
                     className="w-full h-auto object-cover"
@@ -733,7 +742,7 @@ export default async function SuccessStoryPage({
               <div
                 className="text-lg text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{
-                  __html: story.acf?.resultadodescripcion || '',
+                      __html: acfHtml(story.acf?.resultadodescripcion),
                 }}
               />
             </div>
@@ -754,7 +763,7 @@ export default async function SuccessStoryPage({
                   <div
                     className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
                     dangerouslySetInnerHTML={{
-                      __html: story.acf?.resultadop1 || '',
+                      __html: acfHtml(story.acf?.resultadop1),
                     }}
                   />
                 </div>
@@ -768,7 +777,7 @@ export default async function SuccessStoryPage({
             <div
               className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
               dangerouslySetInnerHTML={{
-                __html: story.acf?.resultadop2 || '',
+                __html: acfHtml(story.acf?.resultadop2),
               }}
             />
           </div>
@@ -782,7 +791,7 @@ export default async function SuccessStoryPage({
             <div
               className="text-base md:text-[17px] leading-relaxed text-[#4A4453] font-dmsans"
               dangerouslySetInnerHTML={{
-                __html: story.acf?.resultadop3 || '',
+                __html: acfHtml(story.acf?.resultadop3),
               }}
             />
           </div>
@@ -820,7 +829,10 @@ export default async function SuccessStoryPage({
                               ? (story.acf.testimonial_foto as string)
                               : (story.acf.testimonial_foto as { url: string }).url
                           }
-                          alt={story.acf?.testimonialnombre || 'Testimonial'}
+                          alt={resolveMediaAlt(
+                            story.acf.testimonial_foto,
+                            story.acf?.testimonialnombre || 'Testimonial',
+                          )}
                           fill
                           sizes="160px"
                           className="object-cover"
@@ -848,7 +860,7 @@ export default async function SuccessStoryPage({
                       <div className="pointer-events-none absolute inset-0 opacity-45">
                         <Image
                           src="/images/comillas.png"
-                          alt=""
+                          alt={resolveImageAlt('/images/comillas.png', '')}
                           width={520}
                           height={520}
                           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
