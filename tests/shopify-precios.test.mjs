@@ -69,13 +69,19 @@ test('landing keeps one H1 and booking CTAs on /reunion-playful', () => {
   assert.doesNotMatch(copy, /href=\{BOOKING_HREF\}/);
 });
 
-test('illustration slot reserves a fixed 552x360 box without invented art', () => {
+test('hero uses the approved illustration with fixed size, priority and og:image', () => {
   assert.equal(HERO_SLOT.width, 552);
   assert.equal(HERO_SLOT.height, 360);
   assert.equal(HERO_SLOT.src1x, '/images/shopify-precios/hero@1x.png');
   assert.equal(HERO_SLOT.src2x, '/images/shopify-precios/hero@2x.png');
   assert.match(landing, /data-illustration-slot=\{HERO_SLOT\.id\}/);
   assert.match(landing, /aspectRatio: `\$\{HERO_SLOT\.width\} \/ \$\{HERO_SLOT\.height\}`/);
+  assert.match(landing, /\/images\/heros\/shopify-precios-hero\.webp/);
+  assert.match(landing, /\/images\/heros\/shopify-precios-og\.jpg/);
+  assert.match(landing, /width=\{HERO_SLOT\.width\}/);
+  assert.match(landing, /height=\{HERO_SLOT\.height\}/);
+  assert.match(landing, /\spriority\b/);
+  assert.match(landing, /twitter:/);
   assert.doesNotMatch(landing, /src=\{HERO_SLOT/);
   assert.doesNotMatch(landing, /\/images\/shopify-precios\/hero@1x\.png/);
 });

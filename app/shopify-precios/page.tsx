@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
@@ -27,6 +28,9 @@ import {
 } from './copy';
 
 const PAGE_URL = canonicalForPath(PRECIOS_META.path);
+const HERO_IMAGE = '/images/heros/shopify-precios-hero.webp';
+const HERO_OG_IMAGE = '/images/heros/shopify-precios-og.jpg';
+const HERO_ALT = 'Ilustración de una persona sosteniendo etiquetas de precio de colores';
 
 export const metadata: Metadata = {
   title: PRECIOS_META.title,
@@ -36,6 +40,19 @@ export const metadata: Metadata = {
     title: PRECIOS_META.title,
     description: PRECIOS_META.description,
     url: PAGE_URL,
+    images: [
+      {
+        url: HERO_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: HERO_ALT,
+      },
+    ],
+  },
+  twitter: {
+    title: PRECIOS_META.title,
+    description: PRECIOS_META.description,
+    images: [HERO_OG_IMAGE],
   },
 };
 
@@ -104,12 +121,19 @@ function HeroIllustrationSlot() {
   return (
     <div
       data-illustration-slot={HERO_SLOT.id}
-      data-illustration-src-1x={HERO_SLOT.src1x}
-      data-illustration-src-2x={HERO_SLOT.src2x}
-      aria-hidden="true"
-      className="relative w-full overflow-hidden rounded-[32px] border border-dashed border-[#C4B5D4] bg-[#FEF7FF]"
+      className="relative w-full overflow-hidden rounded-[32px]"
       style={{ aspectRatio: `${HERO_SLOT.width} / ${HERO_SLOT.height}` }}
-    />
+    >
+      <Image
+        src={HERO_IMAGE}
+        alt={HERO_ALT}
+        width={HERO_SLOT.width}
+        height={HERO_SLOT.height}
+        priority
+        sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+        className="h-full w-full object-cover"
+      />
+    </div>
   );
 }
 
