@@ -17,8 +17,8 @@ interface TwoColumnCtaSectionProps {
 }
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
-  imageUrl = "/images/imagen-nueva-cta-home.png",
-  imageAlt = "Agencia de Marketing Digital",
+  imageUrl = "/images/cta-global-hablemos.webp",
+  imageAlt = "Ilustración de una persona sentada en una taza, con la mano extendida, sobre un fondo lavanda",
   contentBgColor = "#FFEFD1",
   title = "¡Es Hora de Dejar de Perder y Empezar a Vender Más!",
   subtitle = "Deja de arreglar tu web con parches y evita perder clientes por fallas que no puedes ver.",
@@ -36,8 +36,8 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
             <Image
               src={imageUrl}
               alt={imageAlt}
-              width={2048}
-              height={2048}
+              width={1200}
+              height={1200}
               sizes={CTA_ILLUSTRATION_SIZES}
               className="w-full h-auto object-cover"
             />

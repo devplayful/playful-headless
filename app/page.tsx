@@ -172,7 +172,7 @@ async function HomeContent() {
         <div className={shell}>
           <TwoColumnCtaSection 
             contentBgColor="#B3FFF3"
-            imageUrl="/images/imagen-nueva-cta-home.png"
+            imageUrl="/images/cta-global-hablemos.webp"
             buttonText="Llena el formulario y hablemos sobre tu web"
             buttonLink="/contactar-agencia-de-marketing-digital"
           />
