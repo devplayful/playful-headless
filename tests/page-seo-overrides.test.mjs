@@ -184,8 +184,8 @@ test('non-blog generateMetadata wires twitter from the same og values', async ()
 
   assert.match(slugPage, /twitterFromOpenGraph\(ogTitle, ogDescription\)/);
   assert.match(shopifyPage, /twitterFromOpenGraph\(SHOPIFY_META\.title, SHOPIFY_META\.description\)/);
-  assert.match(prestashopPage, /twitterFromOpenGraph\(\s*PRESTASHOP_META\.title,\s*PRESTASHOP_META\.description,\s*SITE_OG_IMAGE/);
-  assert.match(woocommercePage, /twitterFromOpenGraph\(\s*WOOCOMMERCE_META\.title,\s*WOOCOMMERCE_META\.description,\s*SITE_OG_IMAGE/);
+  assert.match(prestashopPage, /twitterFromOpenGraph\(\s*PRESTASHOP_META\.title,\s*PRESTASHOP_META\.description,\s*PAGE_OG_IMAGE/);
+  assert.match(woocommercePage, /twitterFromOpenGraph\(\s*WOOCOMMERCE_META\.title,\s*WOOCOMMERCE_META\.description,\s*PAGE_OG_IMAGE/);
   assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);
   assert.match(nosotrosPage, /twitterFromOpenGraph\(title, description\)/);
 });

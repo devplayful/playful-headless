@@ -81,7 +81,9 @@ test('landing uses the agency template, booking hop and generic og image', () =>
   assert.equal((landing.match(/<h1\b/g) || []).length, 0);
   assert.match(landing, /AgencyCopyLanding/);
   assert.match(landing, /twitterFromOpenGraph/);
-  assert.match(landing, /SITE_OG_IMAGE/);
+  assert.match(landing, /\/images\/heros\/agencia-prestashop-og\.jpg/);
+  assert.match(landing, /\/images\/heros\/agencia-prestashop-hero\.webp/);
+  assert.match(landing, /heroImage=/);
   assert.match(sharedLanding, /ServiceFaqAccordion/);
   assert.match(sharedLanding, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.equal(CTA_LABEL, 'Reserva una reunión de 30 a 40 minutos');
