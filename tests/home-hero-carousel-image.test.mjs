@@ -10,11 +10,12 @@ const carousel = readFileSync(
 
 test('home hero banner uses next/image with priority and fetchPriority high', () => {
   assert.match(home, /from ['"]next\/image['"]/);
-  assert.match(home, /src="\/images\/playful-imagen-banner\.png"/);
+  assert.match(home, /src="\/images\/home-hero-producto\.webp"/);
   assert.match(home, /priority/);
   assert.match(home, /fetchPriority="high"/);
   assert.match(home, /sizes="\(min-width: 1024px\) 560px, 100vw"/);
-  assert.doesNotMatch(home, /<img[\s\S]*playful-imagen-banner/);
+  assert.match(home, /object-contain object-\[center_20%\]/);
+  assert.doesNotMatch(home, /<img[\s\S]*home-hero-producto/);
 });
 
 test('case-study carousel cards use lazy next/image fill, not a raw img', () => {
