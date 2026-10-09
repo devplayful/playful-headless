@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { SoyTechnoSeccionC } from '@/services/wordpress';
 import { formatTextWithBullets } from '@/utils/formatBullets';
+import { resolveMediaAlt } from '@/lib/image-alt-overrides';
 
 interface Props {
   data: SoyTechnoSeccionC;
@@ -45,7 +46,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
             <div className="relative w-full h-[400px] lg:h-[800px] rounded-xl overflow-hidden">
               <Image
                 src={data.imagen_izquierda.url}
-                alt={data.imagen_izquierda.alt || 'Sección C'}
+                alt={resolveMediaAlt(data.imagen_izquierda, 'Sección C')}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain"
@@ -128,7 +129,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
                 <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
                   <Image
                     src={data.imagen_pantalla_1.url}
-                    alt={data.imagen_pantalla_1.alt || 'Pantalla 1'}
+                    alt={resolveMediaAlt(data.imagen_pantalla_1, 'Pantalla 1')}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-contain"
@@ -139,7 +140,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
                 <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
                   <Image
                     src={data.imagen_pantalla_2.url}
-                    alt={data.imagen_pantalla_2.alt || 'Pantalla 2'}
+                    alt={resolveMediaAlt(data.imagen_pantalla_2, 'Pantalla 2')}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-contain"
@@ -150,7 +151,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
                 <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
                   <Image
                     src={data.imagen_pantalla_3.url}
-                    alt={data.imagen_pantalla_3.alt || 'Pantalla 3'}
+                    alt={resolveMediaAlt(data.imagen_pantalla_3, 'Pantalla 3')}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-contain"
@@ -161,7 +162,7 @@ export default function SoyTechnoSectionC({ data }: Props) {
                 <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
                   <Image
                     src={data.imagen_pantalla_4.url}
-                    alt={data.imagen_pantalla_4.alt || 'Pantalla 4'}
+                    alt={resolveMediaAlt(data.imagen_pantalla_4, 'Pantalla 4')}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-contain"
