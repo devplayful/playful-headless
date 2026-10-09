@@ -4,7 +4,7 @@ import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
 import { HOME_META } from './home-copy';
 
 const HOME_CANONICAL = canonicalForPath('/');
-const HOME_OG_IMAGE = 'https://playfulagency.com/og.jpg';
+const HOME_OG_IMAGE = '/images/og-home.jpg';
 
 export const metadata: Metadata = {
   title: HOME_META.title,
@@ -137,14 +137,14 @@ async function HomeContent() {
             {/* Right Illustration Area */}
             <div className="relative">
               <Image
-                src="/images/playful-imagen-banner.png"
-                alt=""
-                width={2048}
-                height={2048}
+                src="/images/home-hero-producto.webp"
+                alt="Ilustración de una mujer levantando un tarro de crema"
+                width={1200}
+                height={1525}
                 priority
                 fetchPriority="high"
                 sizes="(min-width: 1024px) 560px, 100vw"
-                className="w-full h-auto"
+                className="w-full h-auto object-contain object-[center_20%]"
               />
             </div>
           </div>

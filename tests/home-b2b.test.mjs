@@ -49,7 +49,8 @@ test('home title, meta and H1 come from propuesta A', () => {
 
 test('home keeps the next\/image hero and the case carousel', () => {
   assert.match(home, /from ['"]next\/image['"]/);
-  assert.match(home, /src="\/images\/playful-imagen-banner\.png"/);
+  assert.match(home, /src="\/images\/home-hero-producto\.webp"/);
+  assert.match(home, /HOME_OG_IMAGE = '\/images\/og-home\.jpg'/);
   assert.match(home, /<CarouselResultados/);
   assert.match(home, /cases=\{homeCases\}/);
   assert.match(home, /fullDescription/);
