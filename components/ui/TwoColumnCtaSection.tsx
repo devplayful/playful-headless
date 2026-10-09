@@ -2,6 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
+import { CTA_ILLUSTRATION_SIZES } from "@/lib/blog-image-sizes";
+import { resolveImageAlt } from "@/lib/image-alt-overrides";
 
 interface TwoColumnCtaSectionProps {
   imageUrl?: string;
@@ -17,7 +19,7 @@ interface TwoColumnCtaSectionProps {
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   imageUrl = "/images/imagen-nueva-cta-home.png",
-  imageAlt = "Agencia de Marketing Digital",
+  imageAlt = "Ilustración de un equipo revisando gráficas de crecimiento y conversión en una pantalla grande",
   contentBgColor = "#FFEFD1",
   title = "¡Es Hora de Dejar de Perder y Empezar a Vender Más!",
   subtitle = "Deja de arreglar tu web con parches y evita perder clientes por fallas que no puedes ver.",
@@ -27,17 +29,17 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   onButtonClick,
 }) => {
   return (
-    <div className="w-full mb-[40px]">
+    <div data-cta-section="cta-final" className="w-full mb-[40px]">
       <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-1/2 mb-12 lg:mb-0">
           <div className="relative rounded-2xl overflow-hidden">
             <Image
               src={imageUrl}
-              alt={imageAlt}
+              alt={resolveImageAlt(imageUrl, imageAlt)}
               width={2048}
               height={2048}
-              sizes="(min-width: 1024px) 560px, 100vw"
+              sizes={CTA_ILLUSTRATION_SIZES}
               className="w-full h-auto object-cover"
             />
           </div>

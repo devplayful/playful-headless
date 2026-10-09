@@ -144,13 +144,85 @@ export function buildBookingQueryValues(input: {
   );
 }
 
+/** Incoming may overwrite these on the widget URL. Widget-only keys stay. */
+const ATTRIBUTION_OVERWRITE_KEYS = new Set<string>([
+  ...BOOKING_QUERY_KEYS,
+  'fbclid',
+  'msclkid',
+  'ttclid',
+]);
+
+export function isAttributionQueryKey(key: string): boolean {
+  const normalized = key.trim().toLowerCase();
+  return ATTRIBUTION_OVERWRITE_KEYS.has(normalized) || normalized.startsWith('utm_');
+}
+
+function clickIdFromLanding(landing: string | undefined | null, key: string): string {
+  if (!landing) return '';
+  try {
+    const search = /^https?:\/\//i.test(landing)
+      ? new URL(landing).search
+      : landing.includes('?')
+        ? landing.slice(landing.indexOf('?'))
+        : '';
+    return firstNonEmptyBookingValue(searchFromInput(search).get(key));
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Copy incoming search onto the widget URL.
+ * Attribution keys (utm_*, click ids) overwrite; any other widget key is kept.
+ * Unknown incoming keys are added when the widget does not already have them.
+ */
+export function mergeIncomingQueryOntoWidget(widgetHref: string, incomingSearch: string): URL {
+  const target = new URL(widgetHref);
+  const incoming = searchFromInput(incomingSearch);
+  Array.from(incoming.entries()).forEach(([key, value]) => {
+    const trimmed = trimBookingValue(value);
+    if (!trimmed) return;
+    if (isAttributionQueryKey(key) || !target.searchParams.has(key)) {
+      target.searchParams.set(key, trimmed);
+    }
+  });
+  return target;
+}
+
+function applyCookieFallback(target: URL, input: {
+  lastCookie?: string | null;
+  firstCookie?: string | null;
+}): void {
+  const fromCookies = buildBookingQueryValues({
+    search: '',
+    lastCookie: input.lastCookie,
+    firstCookie: input.firstCookie,
+  });
+  for (const key of BOOKING_QUERY_KEYS) {
+    if (firstNonEmptyBookingValue(target.searchParams.get(key))) continue;
+    const value = firstNonEmptyBookingValue(fromCookies[key]);
+    if (value) target.searchParams.set(key, value);
+  }
+
+  if (firstNonEmptyBookingValue(target.searchParams.get('fbclid'))) return;
+  const last = deserializeAttributionCookie(input.lastCookie);
+  const first = deserializeAttributionCookie(input.firstCookie);
+  const fbclid = firstNonEmptyBookingValue(
+    last?.fbclid,
+    first?.fbclid,
+    clickIdFromLanding(last?.landing, 'fbclid'),
+    clickIdFromLanding(first?.landing, 'fbclid'),
+  );
+  if (fbclid) target.searchParams.set('fbclid', fbclid);
+}
+
 export function buildBookingWidgetUrl(input: {
   search?: string;
   lastCookie?: string | null;
   firstCookie?: string | null;
 }): string {
-  const target = new URL(BOOKING_WIDGET_HREF);
-  target.search = searchFromBookingValues(buildBookingQueryValues(input)).replace(/^\?/, '');
+  const target = mergeIncomingQueryOntoWidget(BOOKING_WIDGET_HREF, input.search || '');
+  applyCookieFallback(target, input);
   return target.toString();
 }
 

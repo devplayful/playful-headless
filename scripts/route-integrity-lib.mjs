@@ -17,6 +17,10 @@ const ROOT_METADATA_ROUTES = new Map([
   ['app/sitemap.ts', '/sitemap.xml'],
   ['app/manifest.js', '/manifest.webmanifest'],
   ['app/manifest.ts', '/manifest.webmanifest'],
+  ['app/favicon.ico', '/favicon.ico'],
+  ['app/icon.png', '/icon.png'],
+  ['app/icon.svg', '/icon.svg'],
+  ['app/apple-icon.png', '/apple-icon.png'],
 ]);
 
 function compareStrings(left, right) {
@@ -744,7 +748,7 @@ async function loadVercelArtifact(outputDirectory) {
     for (const file of files) {
       const relative = path.relative(staticDirectory, file).replaceAll('\\', '/');
       const isRouteFile = relative.endsWith('.html')
-        || ['robots.txt', 'sitemap.xml', 'manifest.webmanifest'].includes(relative);
+        || ['robots.txt', 'sitemap.xml', 'manifest.webmanifest', 'favicon.ico', 'icon.png', 'icon.svg', 'apple-icon.png'].includes(relative);
       if (!isRouteFile || relative.startsWith('_next/')) continue;
       const route = publicStaticRoute(relative, overrides);
       const sourceTemplate = exactDynamicMappingForRoute(configRoutes.exactDynamicMappings, route);

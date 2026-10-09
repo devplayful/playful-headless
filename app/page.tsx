@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
   const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
-  const defaultOgImage = 'https://playfulagency.com/og.jpg';
+  const defaultOgImage = ogJpegForPath('/') || '/images/og/home.jpg';
 
   // Next.js 15 resolveAbsoluteUrlWithPathname collapses pathname `/` to origin
   // (no trailing slash). Home canonical + og:url are emitted as raw tags below
@@ -24,12 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',
@@ -48,12 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',
@@ -89,7 +81,7 @@ async function HomeContent() {
   return (
     <div className="">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section data-cta-section="hero" className="relative overflow-hidden">
         <div className={`${shell} pt-4 pb-20`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -126,7 +118,7 @@ async function HomeContent() {
             <div className="relative">
               <Image
                 src="/images/playful-imagen-banner.png"
-                alt=""
+                alt={resolveImageAlt('/images/playful-imagen-banner.png')}
                 width={2048}
                 height={2048}
                 priority

@@ -6,12 +6,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const {
+  BLOG_COVER_ALTS,
+  BLOG_COVER_FALLBACK,
   BLOG_COVER_OVERRIDES,
   BLOG_COVER_SIZE,
   BLOG_OG_OVERRIDES,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
+  resolveBlogCoverAlt,
   resolveBlogCoverUrl,
   resolveBlogOgUrl,
 } = await import('../lib/blog-cover-image.ts');
@@ -512,6 +515,45 @@ test('unknown slugs keep the WordPress featured fallback', () => {
   );
 });
 
+test('cover fallback points at a file that exists in public/', async () => {
+  assert.equal(BLOG_COVER_FALLBACK, '/images/og/home.jpg');
+  assert.ok(
+    existsSync(join(root, 'public', BLOG_COVER_FALLBACK.replace(/^\//, ''))),
+    BLOG_COVER_FALLBACK,
+  );
+  assert.equal(resolveBlogCoverUrl('unknown-slug-without-cover', ''), BLOG_COVER_FALLBACK);
+  const wordpress = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(wordpress, /placeholder\.jpg/);
+  assert.match(wordpress, /BLOG_COVER_FALLBACK/);
+});
+
+test('cover alts map every Magnific override and never resolve empty', () => {
+  const altSlugs = Object.keys(BLOG_COVER_ALTS);
+  assert.equal(altSlugs.length, 30);
+  const missingFromOverrides = altSlugs.filter((slug) => !(slug in BLOG_COVER_OVERRIDES));
+  assert.deepEqual(missingFromOverrides, []);
+  for (const slug of altSlugs) {
+    const mapped = BLOG_COVER_ALTS[slug];
+    assert.equal(typeof mapped, 'string');
+    assert.ok(mapped.trim().length > 0, slug);
+    assert.equal(resolveBlogCoverAlt(slug, 'WP fallback'), mapped);
+  }
+  assert.equal(resolveBlogCoverAlt('unknown-slug-without-cover', 'WP fallback'), 'WP fallback');
+  assert.equal(resolveBlogCoverAlt('', 'WP fallback'), 'WP fallback');
+  assert.equal(resolveBlogCoverAlt(undefined, 'WP fallback'), 'WP fallback');
+});
+
+test('listing and by-slug pipelines apply resolveBlogCoverAlt', async () => {
+  const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(source, /resolveBlogCoverAlt/);
+  assert.match(functionBody(source, 'hydrateListingPosts'), /resolveBlogCoverAlt\(/);
+  assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverAlt\(/);
+  const listing = await readFile(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  assert.match(listing, /featured_media_alt \|\| .*title\.rendered/);
+  const article = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  assert.match(article, /featured_media_alt \|\| post\.title\.rendered/);
+});
+
 test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   assert.match(source, /resolveBlogCoverUrl/);
@@ -527,11 +569,11 @@ test('blog post generateMetadata points OG and Twitter at the OG crop when prese
   const source = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.match(source, /blogCoverForSlug/);
   assert.match(source, /blogOgForSlug/);
-  assert.match(source, /BLOG_COVER_SIZE/);
   assert.match(source, /BLOG_OG_SIZE/);
+  assert.match(source, /ogJpegForBlogSlug/);
   assert.match(source, /resolveBlogOgUrl/);
   const meta = functionBody(source, 'generateMetadata');
-  assert.match(meta, /ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
+  assert.match(meta, /jpeg \|\| ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
   assert.match(meta, /twitter:\s*\{/);
   assert.match(meta, /images:\s*\[imageUrl\]/);
   assert.doesNotMatch(
@@ -587,7 +629,7 @@ test('six Magnific posts get a 1200×630 OG crop under 200 KB without changing f
   for (const [slug, path] of OG_LOTE) {
     assert.equal(BLOG_OG_OVERRIDES[slug], path);
     assert.equal(blogOgForSlug(slug), path);
-    assert.equal(resolveBlogOgUrl(slug, 'https://endpoint.example/old.jpg'), path);
+    assert.match(resolveBlogOgUrl(slug, 'https://endpoint.example/old.jpg'), /\/images\/og\//);
     assert.ok(blogCoverForSlug(slug), `featured cover missing for ${slug}`);
     assert.notEqual(blogCoverForSlug(slug), path);
     const file = join(root, 'public', path.replace(/^\//, ''));
@@ -597,8 +639,8 @@ test('six Magnific posts get a 1200×630 OG crop under 200 KB without changing f
     assert.deepEqual(webpSize(buffer), { width: 1200, height: 630 }, path);
   }
   assert.equal(blogOgForSlug('cintillos-de-promocion'), '');
-  assert.equal(
+  assert.match(
     resolveBlogOgUrl('cintillos-de-promocion', 'https://endpoint.example/old.jpg'),
-    'https://endpoint.example/old.jpg',
+    /\/images\/og\/blog-tecnologia-cintillos-de-promocion\.jpg/,
   );
 });

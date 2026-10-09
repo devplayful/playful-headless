@@ -1,4 +1,5 @@
 import { isHiddenFromBlogListings } from './blog-closed-paths.ts';
+import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
@@ -11,6 +12,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
+  "/agencia-ux-ui",
   "/casos-de-exito",
   "/casos-de-exito/soytechno-ecommerce-venezuela",
   "/casos-de-exito/jumex-shopify-dtc-ecommerce",
@@ -158,7 +160,9 @@ export const SITEMAP_BLOG_PATHS = [
 export function getSitemapPaths(): string[] {
   return [
     ...SITEMAP_STATIC_PATHS,
-    ...SITEMAP_BLOG_PATHS.filter((path) => !isHiddenFromBlogListings(path)),
+    ...SITEMAP_BLOG_PATHS.filter((path) => (
+      !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
+    )),
   ];
 }
 

@@ -1,6 +1,9 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
+import { CASE_CTA_ILLUSTRATION_SIZES } from '@/lib/blog-image-sizes';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
 interface CasoExitoCtaProps {
   title: string;
@@ -18,7 +21,7 @@ const CasoExitoCta: React.FC<CasoExitoCtaProps> = ({
   imageUrl = "/images/caso-de-exito-imagen-cta.png"
 }) => {
   return (
-    <div className="w-full mb-[80px] max-w-[1200px] mx-auto px-4 md:px-6 rounded-[36px] relative overflow-hidden" style={{
+    <div data-cta-section="caso-cta" className="w-full mb-[80px] max-w-[1200px] mx-auto px-4 md:px-6 rounded-[36px] relative overflow-hidden" style={{
       backgroundColor: "#B3FFF3",
       backgroundImage: "url(/images/background.webp)",
       backgroundSize: "cover",
@@ -33,10 +36,12 @@ const CasoExitoCta: React.FC<CasoExitoCtaProps> = ({
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-[40%] mb-12 lg:mb-0 flex justify-center lg:justify-end items-center">
           <div className="relative rounded-2xl overflow-hidden w-full max-w-[450px] h-[300px] sm:h-[400px] lg:w-[450px] lg:h-[500px]">
-            <img
+            <Image
               src={imageUrl}
-              alt="CTA Casos de Éxito"
-              className="w-full h-full object-contain"
+              alt={resolveImageAlt(imageUrl, 'CTA Casos de Éxito')}
+              fill
+              sizes={CASE_CTA_ILLUSTRATION_SIZES}
+              className="object-contain"
             />
           </div>
         </div>

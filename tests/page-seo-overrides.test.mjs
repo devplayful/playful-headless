@@ -111,6 +111,14 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
       description: 'OG descripción de página',
     },
   );
+  assert.deepEqual(
+    twitterFromOpenGraph('OG título', 'OG desc', '/images/og-blog.jpg'),
+    {
+      title: 'OG título',
+      description: 'OG desc',
+      images: ['/images/og-blog.jpg'],
+    },
+  );
   const ecommerce = applyPageTitleOverride(
     'agencia-e-commerce',
     MARKETING_TITLE,
@@ -141,13 +149,11 @@ test('non-blog generateMetadata wires twitter from the same og values', async ()
   const shopifyPage = await readFile(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
   const casosPage = await readFile(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
   const nosotrosPage = await readFile(new URL('../app/nosotros/page.tsx', import.meta.url), 'utf8');
-  const blogPage = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 
   assert.match(slugPage, /twitterFromOpenGraph\(ogTitle, ogDescription\)/);
   assert.match(shopifyPage, /twitterFromOpenGraph\(SHOPIFY_META\.title, SHOPIFY_META\.description\)/);
   assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);
   assert.match(nosotrosPage, /twitterFromOpenGraph\(title, description\)/);
-  assert.doesNotMatch(blogPage, /twitterFromOpenGraph/);
 });
 
 

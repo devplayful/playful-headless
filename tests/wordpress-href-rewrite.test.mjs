@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 import {
+  remapCanibalizacionHref,
   rewriteInSitePageHrefs,
   rewriteInSiteUrlToApex,
   rewriteWpRenderedHtmlFields,
@@ -87,6 +88,23 @@ test('remaps the legacy casos hub path to /casos-de-exito', () => {
   assert.equal(
     rewriteInSiteUrlToApex('https://old.playfulagency.com/casos-de-exito-agencia-de-marketing-digital/'),
     'https://playfulagency.com/casos-de-exito',
+  );
+});
+
+test('remaps cannibalization origin hrefs and keeps the anchor', () => {
+  const html = [
+    `<a href="/blog/seo/todo-sobre-el-seo">Todo sobre el SEO</a>`,
+    `<a href="https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online">Tipos</a>`,
+    `<a href="/blog/mas-vistos/que-es-una-agencia-de-sem">SEM</a>`,
+  ].join('');
+
+  const rewritten = rewriteInSitePageHrefs(html);
+  assert.match(rewritten, /href="\/blog\/seo\/aprende-todo-sobre-el-seo">Todo sobre el SEO</);
+  assert.match(rewritten, /href="\/blog\/pautas-digitales\/publicidad-digital-en-tu-negocio">Tipos</);
+  assert.match(rewritten, /href="\/blog\/mas-vistos\/que-es-una-agencia-de-sem">SEM</);
+  assert.equal(
+    remapCanibalizacionHref('/blog/seo/todo-sobre-el-seo'),
+    '/blog/seo/aprende-todo-sobre-el-seo',
   );
 });
 

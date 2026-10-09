@@ -73,7 +73,7 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-transparent pointer-events-none transition-colors duration-300">
+    <header data-cta-section="header" className="sticky top-0 z-50 w-full bg-transparent pointer-events-none transition-colors duration-300">
       <div className="playful-header pointer-events-auto">
         <nav className="max-w-7xl mx-auto md:px-6 lg:px-8 w-full relative">
         {/* Mobile Layout - Pantallas >= 400px */}

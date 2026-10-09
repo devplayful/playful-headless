@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { CONTACT_HERO_SIZES } from '@/lib/blog-image-sizes';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -225,7 +227,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
   return (
     <main className="min-h-screen bg-cover bg-center">
       {/* Sección principal con dos columnas según el diseño */}
-      <section className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-12 md:pb-16">
+      <section data-cta-section="formulario" className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-12 md:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Columna Izquierda: textos e ilustración */}
           <div className="flex flex-col justify-center items-start text-left">
@@ -236,7 +238,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
             ¿Tienes un proyecto en la mira o una pregunta técnica que necesita respuesta? Estamos listos para escuchar. Completa el formulario o escríbenos directamente. Analizaremos tu necesidad y nos pondremos en contacto contigo lo antes posible. <strong className="font-bold">Empecemos a planificar tus resultados.</strong>
             </p>
             <div className="mt-8 hidden lg:block">
-              <img src="/images/contacto-imagen.png" alt="Ilustración de contacto" className="w-full max-w-[620px] h-auto object-contain" />
+              <Image src="/images/contacto-imagen.png" alt="Ilustración de contacto" width={2048} height={2048} sizes={CONTACT_HERO_SIZES} className="w-full max-w-[620px] h-auto object-contain" />
             </div>
           </div>
 

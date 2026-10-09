@@ -16,12 +16,13 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
-  BLOG_COVER_SIZE,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
   resolveBlogOgUrl,
 } from '@/lib/blog-cover-image';
+import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
+import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
@@ -32,6 +33,8 @@ import {
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
+import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import {
   RelatedIndexUnavailableError,
   emptyRelatedBehavior,
@@ -39,6 +42,8 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
@@ -243,6 +248,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   alt={post.featured_media_alt || post.title.rendered}
                   fill
                   className="object-contain p-8"
+                  sizes={BLOG_POST_FEATURED_SIZES}
                   priority
                 />
               </div>
@@ -415,9 +421,9 @@ function blogPostSeoCopy(
 ): { title: string; description: string } {
   const override = BLOG_SEO_OVERRIDES[postSlug];
   return {
-    title:
-      override?.title ??
-      `${decodeHtmlEntities(post.title.rendered)} | Blog - Playful Agency`,
+    title: withPlayfulTitleSuffix(
+      override?.title ?? decodeHtmlEntities(post.title.rendered),
+    ),
     description: override?.description
       ? wordpressSeoText(override.description)
       : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
@@ -445,19 +451,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const [, postSlug] = slug;
   
   if (slug.length !== 2 || !postSlug) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+    notFound();
   }
 
   const post = await getBlogPostBySlug(postSlug);
-  
-  if (!post) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+  if (!post || getPrimaryCategorySlug(post) !== slug[0]) {
+    notFound();
   }
 
   const url = canonicalForPath(blogPostPath(post));
@@ -465,13 +464,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
   const ogOverride = blogOgForSlug(postSlug);
+  const jpeg = ogJpegForBlogSlug(postSlug);
   const imageUrl =
-    ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
-  const imageSize = ogOverride
+    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
-    : coverOverride
-      ? BLOG_COVER_SIZE
-      : { width: 1200, height: 630 };
+    : { width: 2560, height: 1440 };
   const imageAlt = post.featured_media_alt || post.title.rendered;
   const editorial = resolveBlogEditorialUpdate(postSlug, {
     published: post.date,
@@ -493,21 +491,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
-        {
-          url: imageUrl,
-          width: imageSize.width,
-          height: imageSize.height,
-          alt: imageAlt,
-        },
+        jpeg
+          ? ogJpegMeta(imageUrl, imageAlt)
+          : {
+              url: imageUrl,
+              width: imageSize.width,
+              height: imageSize.height,
+              alt: imageAlt,
+            },
       ],
     },
-    ...(ogOverride || coverOverride
-      ? {
-          twitter: {
-            card: 'summary_large_image' as const,
-            images: [imageUrl],
-          },
-        }
-      : {}),
+    twitter: {
+      ...twitterFromOpenGraph(title, description),
+      card: 'summary_large_image' as const,
+      images: [imageUrl],
+    },
   };
 }

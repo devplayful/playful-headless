@@ -29,7 +29,7 @@ export default function SolucionesPlayful({
   className?: string;
 }) {
   return (
-    <section className={`${className} pb-[1rem]`}>
+    <section data-cta-section="soluciones" className={`${className} pb-[1rem]`}>
       <div className="playful-contenedor playful-contenedor-B3FFF3 ">
         <h2 className="playful-h2 max-w-3xl mx-auto">
         Soluciones Playful: Tecnología de E-commerce para Escalar

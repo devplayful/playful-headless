@@ -9,6 +9,7 @@ const {
   isAboutHrefRewriteSlug,
   rewriteAboutHrefs,
   rewriteElementorBodyHrefs,
+  rewriteInternacionalSeoHrefs,
   rewriteServiceBookingCtas,
 } = await import('../utils/booking.ts');
 
@@ -151,7 +152,10 @@ test('composed Elementor rewriter still books contact CTAs and remaps /about', (
   assert.match(rewritten, /Contacta a tu Agencia SEO/);
   assert.equal(
     rewriteElementorBodyHrefs(html, 'agencia-seo'),
-    rewriteAboutHrefs(rewriteServiceBookingCtas(html, 'agencia-seo'), 'agencia-seo'),
+    rewriteInternacionalSeoHrefs(
+      rewriteAboutHrefs(rewriteServiceBookingCtas(html, 'agencia-seo'), 'agencia-seo'),
+      'agencia-seo',
+    ),
   );
 });
 
