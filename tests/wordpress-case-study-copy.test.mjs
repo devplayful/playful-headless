@@ -101,6 +101,10 @@ test('SoyTechno QA redlines: drop duplicate circles/employees and overlapping ca
   assert.doesNotMatch(soytechnoBody, /mobile-screen-04\.png/);
   assert.doesNotMatch(soytechnoBody, /giffycanvas-01-sin-solape\.gif/);
   assert.equal(soytechnoBody.match(/giffycanvas-01-sin-solape\.webp/g)?.length, 2);
+  assert.doesNotMatch(soytechnoBody, /giffycanvas-02\.gif/);
+  assert.equal(soytechnoBody.match(/giffycanvas-02\.webp/g)?.length, 1);
+  assert.doesNotMatch(soytechnoBody, /ipad-mockup-02\.png/);
+  assert.match(soytechnoBody, /ipad-frame-ale\.png/);
 });
 
 test('SoyTechno Ale v2 (7 oct): no numbering, icon cards without text', () => {

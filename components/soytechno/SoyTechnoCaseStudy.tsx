@@ -179,7 +179,7 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.standardSection}>
         <SectionTitle>El ecosistema digital como medio principal</SectionTitle>
         <div className={styles.mediaTextGrid}>
-          <Image className={styles.tallMedia} src={image('giffycanvas-01-sin-solape.webp')} width={1654} height={2268} unoptimized alt="Ficha de producto y ofertas de SoyTechno en iPad" />
+          <Image className={styles.tallMedia} src={image('giffycanvas-01-sin-solape.webp')} width={1484} height={2000} unoptimized alt="Ficha de producto y ofertas de SoyTechno en iPad" />
           <div className={styles.textStack}>
             <ContentItem title="Una audiencia hiperconectada"><p>{caseCopy.audience[0]}</p></ContentItem>
             <ContentItem title="Compra móvil en siete ciudades"><p>{caseCopy.audience[1]}</p></ContentItem>
@@ -220,7 +220,7 @@ export default function SoyTechnoCaseStudy() {
       <section className={styles.standardSection}>
         <SectionTitle>Innovación y aporte más allá de la interfaz</SectionTitle>
         <div className={styles.mediaTextGrid}>
-          <Image className={styles.tallMedia} src={image('giffycanvas-01-sin-solape.webp')} width={1654} height={2268} unoptimized alt="Catálogo, ficha y especificaciones de producto de SoyTechno en iPad" />
+          <Image className={styles.tallMedia} src={image('giffycanvas-01-sin-solape.webp')} width={1484} height={2000} unoptimized alt="Catálogo, ficha y especificaciones de producto de SoyTechno en iPad" />
           <div className={styles.textStack}>
             <ContentItem title="Tecnología adaptada a Venezuela"><p>{caseCopy.innovation[0]}</p></ContentItem>
             <ContentItem title="IA y filtros que reducen la fricción"><p>{caseCopy.innovation[1]}</p></ContentItem>
@@ -243,7 +243,7 @@ export default function SoyTechnoCaseStudy() {
             <ContentItem title="Métodos de pago según la moneda"><p>{caseCopy.checkout[1]}</p></ContentItem>
             <ContentItem title="Cuotas con Cashea"><p>{caseCopy.checkout[2]}</p></ContentItem>
           </div>
-          <Image className={styles.tallMedia} src={image('giffycanvas-02.gif')} width={729} height={1000} unoptimized alt="Integración Cashea" />
+          <Image className={styles.tallMedia} src={image('giffycanvas-02.webp')} width={1484} height={2000} unoptimized alt="Integración Cashea" />
         </div>
       </section>
 
@@ -254,7 +254,7 @@ export default function SoyTechnoCaseStudy() {
             <div className={styles.ipadScreen}>
               <Image src={image('ipad-mockup-01.png')} width={1640} height={2360} alt="Formulario del checkout multistep de SoyTechno" />
             </div>
-            <Image className={styles.ipadFrame} src={image('ipad-mockup-02.png')} width={750} height={541} alt="" aria-hidden="true" />
+            <Image className={styles.ipadFrame} src={image('ipad-frame-ale.png')} width={1484} height={2000} alt="" aria-hidden="true" />
           </div>
           <div className={styles.textStack}>
             <p>{caseCopy.mobileShare[0]}</p>

@@ -499,9 +499,10 @@
 .divider { background: #d5cdd8; height: 1px; margin: 100px auto 0; max-width: 1235px; }
 .ipadComposite {
   align-items: center;
-  aspect-ratio: 750 / 541;
+  aspect-ratio: 1484 / 2000;
   display: flex;
   justify-content: center;
+  max-width: 650px;
   min-height: 0;
   overflow: hidden;
   position: relative;
@@ -510,12 +511,13 @@
 
 .ipadScreen {
   background: #f7f7f7;
-  height: 87.5%;
-  left: 4.55%;
+  border-radius: 2%;
+  height: 85.6%;
+  left: 9.703%;
   overflow: hidden;
   position: absolute;
-  top: 6.25%;
-  width: 90.9%;
+  top: 7.2%;
+  width: 80.593%;
   z-index: 1;
 }
 
