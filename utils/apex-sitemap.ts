@@ -1,4 +1,4 @@
-import { isClosedBlogPath } from './blog-closed-paths.ts';
+import { isHiddenFromBlogListings } from './blog-closed-paths.ts';
 import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
@@ -72,7 +72,6 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/pautas-digitales/actualizaciones-de-instagram",
   "/blog/pautas-digitales/analitica-web-que-es-como-puede-ayudar-a-mi-marca",
   "/blog/pautas-digitales/anuncios-en-linkedin",
-  "/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio",
   "/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social",
   "/blog/pautas-digitales/como-crear-anuncios-en-facebook",
   "/blog/pautas-digitales/como-crear-anuncios-en-instagram",
@@ -162,7 +161,7 @@ export function getSitemapPaths(): string[] {
   return [
     ...SITEMAP_STATIC_PATHS,
     ...SITEMAP_BLOG_PATHS.filter((path) => (
-      !isClosedBlogPath(path) && !isCanibalizacionOriginPath(path)
+      !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
     )),
   ];
 }
