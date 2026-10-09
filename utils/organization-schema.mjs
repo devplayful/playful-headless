@@ -6,7 +6,7 @@ export const ORGANIZATION_SCHEMA = Object.freeze({
   '@id': 'https://playfulagency.com/#organization',
   name: 'Playful Agency',
   url: 'https://playfulagency.com/',
-  logo: 'https://playfulagency.com/images/logos/playful-logov.svg',
+  logo: 'https://playfulagency.com/images/logos/playful-logo-schema.png',
 });
 
 export const ORGANIZATION_JSON_LD = JSON.stringify(ORGANIZATION_SCHEMA)
