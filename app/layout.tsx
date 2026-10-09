@@ -104,7 +104,6 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         {gaId && <GoogleAnalytics gaId={gaId} />}
       </head>

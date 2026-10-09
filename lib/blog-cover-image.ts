@@ -97,8 +97,81 @@ export const BLOG_COVER_OVERRIDES = {
     '/images/blog/18-live-stream-shopping-magnific-0eQHuiWTfW.png',
 } as const;
 
+export const BLOG_COVER_ALTS: Record<string, string> = {
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+    'Una persona sale volando de un móvil envuelta en un remolino de billetes y monedas',
+  'como-elegir-el-mejor-framework-para-tu-web':
+    'Una mujer sonriente compara bloques de colores de distintas alturas antes de elegir uno',
+  'optimizacion-multimedia':
+    'Dos manos sostienen un móvil del que salen tarjetas de colores con contenido',
+  'seo-y-sem-que-son-y-en-que-se-diferencian':
+    'Una mujer sonriente sentada entre dos puertas en arco, una rosa y otra violeta',
+  'diseno-web-de-paginas-web':
+    'Dos manos colocan piezas de papel de colores sobre una mesa para componer un diseño',
+  'publicidad-digital-en-tu-negocio':
+    'Una persona grita con las manos alrededor de la boca entre burbujas de colores',
+  'que-es-una-agencia-de-sem':
+    'Una mujer con gafas sonríe dentro de un puesto con toldo de rayas iluminado',
+  'como-posicionar-tu-negocio-en-google-ads':
+    'Tres personas celebran con los brazos en alto sobre peldaños de distintas alturas',
+  'desarrollo-ui-ux':
+    'Dos personas encajan tarjetas y piezas de interfaz sobre un fondo violeta oscuro',
+  'rediseno-web':
+    'Una mujer reorganiza los productos de un mostrador en una tienda luminosa y renovada',
+  'que-es-data-studio-de-google-y-como-funciona':
+    'Una mujer sonriente abraza un gran montón de piezas de colores sobre fondo nocturno',
+  'ecommerce-mi-negocio-online':
+    'Un hombre con peto abre la puerta de su tienda bajo un toldo de colores',
+  'live-stream-shopping-compra-mientras-interactuas':
+    'Un globo aerostático con una tienda lanza paquetes en paracaídas a gente que los recoge',
+  'crear-un-e-commerce':
+    'Una mujer dibuja los planos de su tienda en una tableta junto a un casco',
+  'actualizar-tu-e-commerce':
+    'Un hombre agobiado se lleva las manos a la cabeza frente a un ordenador antiguo',
+  'pasos-para-aumentar-clientes-en-tu-negocio':
+    'Dos mujeres sentadas en un sofá rosa se dan la mano para cerrar un acuerdo',
+  'chat-gpt-puede-mejorar-el-seo-de-una-pagina-web':
+    'Un hombre con una tableta mientras una mano ordena una cuadrícula de bloques de colores',
+  '7-consejos-seo-para-posicionar-tu-pagina':
+    'Una mujer sube una escalera de peldaños amarillos hacia la cima iluminada',
+  'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
+    'Una mujer enciende la luz y descubre un montón de billetes en una habitación oscura',
+  'aprende-todo-sobre-el-seo':
+    'Una mujer sonriente sostiene un gran círculo con tres estrellas doradas de valoración',
+  'auditoria-seo-que-es-como-se-hace':
+    'Un hombre se mira en un espejo que le devuelve el reflejo de su esqueleto',
+  'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web':
+    'Una mujer mira su móvil de pie en una tienda con estanterías llenas de productos',
+  'como-crear-anuncios-en-facebook':
+    'Unas manos sostienen un móvil donde un hombre presenta una botella en un anuncio',
+  'como-elegir-tus-palabras-claves':
+    'Una mujer deja caer monedas con cuidado dentro de un embudo verde',
+  'como-usar-el-remarketing-para-tener-mas-clientes':
+    'Una mujer con bolsas recorre un pasillo de pantallas donde aparece siempre el mismo vendedor',
+  'conoce-los-tipos-de-marketing':
+    'Tres personas sostienen un megáfono, un corazón y un paquete sobre fondo violeta',
+  'contenido-duplicado':
+    'Dos manos abiertas sostienen dos tarjetas rosas idénticas, una frente a la otra',
+  'estrategia-de-email-marketing':
+    'Una mujer monta en un carrusel rodeada de sobres con alas junto a una tienda',
+  'google-y-su-inteligencia-artificial':
+    'Una mujer sonriente mira a través de una lupa rodeada de puntos de colores',
+  'la-nueva-gestion-de-google-ads':
+    'Un pulpo sobre una tienda reparte paquetes, correos y bolsas a los clientes con sus tentáculos',
+};
+
+export function resolveBlogCoverAlt(
+  slug: string | undefined | null,
+  fallback: string,
+): string {
+  return (slug && BLOG_COVER_ALTS[slug]) || fallback;
+}
+
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;
 export const BLOG_OG_SIZE = { width: 1200, height: 630 } as const;
+
+/** When WP has no featured image. Same JPEG `/blog` and the site layout already use as OG. */
+export const BLOG_COVER_FALLBACK = '/images/og/home.jpg';
 
 /**
  * 1200×630 center-crop (no stretch) for og:image + JSON-LD only.
@@ -135,9 +208,9 @@ export function blogOgForSlug(slug: string | undefined | null): string {
 /** Prefer the local Magnific cover when the slug is in lote 1–11. */
 export function resolveBlogCoverUrl(
   slug: string | undefined | null,
-  fallback = '',
+  fallback = BLOG_COVER_FALLBACK,
 ): string {
-  return blogCoverForSlug(slug) || fallback;
+  return blogCoverForSlug(slug) || fallback || BLOG_COVER_FALLBACK;
 }
 
 /** Prefer the 1200×630 JPEG, then the older webp crop, then the featured cover. */

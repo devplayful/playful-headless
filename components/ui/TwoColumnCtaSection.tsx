@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { CTA_ILLUSTRATION_SIZES } from "@/lib/blog-image-sizes";
+import { resolveImageAlt } from "@/lib/image-alt-overrides";
 
 interface TwoColumnCtaSectionProps {
   imageUrl?: string;
@@ -22,7 +23,7 @@ interface TwoColumnCtaSectionProps {
 
 const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   imageUrl = "/images/imagen-nueva-cta-home.png",
-  imageAlt = "Agencia de Marketing Digital",
+  imageAlt = "Ilustración de un equipo revisando gráficas de crecimiento y conversión en una pantalla grande",
   contentBgColor = "#FFEFD1",
   title = "¡Es Hora de Dejar de Perder y Empezar a Vender Más!",
   subtitle = "Deja de arreglar tu web con parches y evita perder clientes por fallas que no puedes ver.",
@@ -43,7 +44,7 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
           <div className="relative rounded-2xl overflow-hidden">
             <Image
               src={imageUrl}
-              alt={imageAlt}
+              alt={resolveImageAlt(imageUrl, imageAlt)}
               width={2048}
               height={2048}
               sizes={CTA_ILLUSTRATION_SIZES}

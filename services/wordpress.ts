@@ -6,6 +6,7 @@ import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { remapCanibalizacionHref } from '@/utils/blog-canibalizacion-redirects';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
+import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -16,7 +17,11 @@ import {
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
-import { resolveBlogCoverUrl } from '@/lib/blog-cover-image';
+import {
+  BLOG_COVER_FALLBACK,
+  resolveBlogCoverAlt,
+  resolveBlogCoverUrl,
+} from '@/lib/blog-cover-image';
 import {
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
@@ -395,12 +400,14 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = rewriteElementorBodyHrefs(
-    rewriteEcommerceZelleCover(
-      rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
+  const html = applyImageAltOverrides(
+    rewriteElementorBodyHrefs(
+      rewriteEcommerceZelleCover(
+        rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
+        slug,
+      ),
       slug,
     ),
-    slug,
   );
   const title = stripHtml(page.title?.rendered || slug);
   const stylesheetIds = collectStylesheetIds(html, page.id);
@@ -555,7 +562,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       categorySlug = lookup.fallback.slug || categorySlug;
     }
   }
-  let imageUrl = post.featured_media_url || '/images/blog/placeholder.jpg';
+  let imageUrl = post.featured_media_url || BLOG_COVER_FALLBACK;
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
   if (!post.featured_media_url && featuredMedia) {
     imageUrl = featuredMedia.source_url
@@ -750,7 +757,7 @@ async function hydrateListingPosts(
       ...rewritten,
       categories,
       featured_media_url: resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
-      featured_media_alt: mediaItem?.alt_text || '',
+      featured_media_alt: resolveBlogCoverAlt(rewritten.slug, mediaItem?.alt_text || ''),
       author_name: author?.name || 'Playful Agency',
       author: author
         ? { id: author.id, name: author.name, slug: author.slug || '' }
@@ -937,7 +944,7 @@ function toRelatedIndexPost(
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
     featuredMediaId,
-    featuredMediaUrl: resolveBlogCoverUrl(post.slug, '/images/blog/placeholder.jpg'),
+    featuredMediaUrl: resolveBlogCoverUrl(post.slug, BLOG_COVER_FALLBACK),
     categoryIds,
     categorySlug,
     categoryName,
@@ -962,7 +969,7 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       },
       'slash',
     ),
-    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || '/images/blog/placeholder.jpg'),
+    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
     slug: post.slug,
     href: post.href,
   };
@@ -1147,6 +1154,7 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
   post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
+  post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
   return rewriteWpRenderedHtmlFields(post);
 });
 

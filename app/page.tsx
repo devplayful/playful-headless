@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
 import { HOME_META } from './home-copy';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
 const HOME_CANONICAL = canonicalForPath('/');
 const HOME_OG_IMAGE = '/images/og-home.jpg';
@@ -138,7 +139,7 @@ async function HomeContent() {
             <div className="relative">
               <Image
                 src="/images/home-hero-producto.webp"
-                alt="Ilustración de una mujer levantando un tarro de crema"
+                alt={resolveImageAlt('/images/home-hero-producto.webp', 'Ilustración de una mujer levantando un tarro de crema')}
                 width={1200}
                 height={1525}
                 priority
