@@ -16,6 +16,7 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
+  BLOG_COVER_FALLBACK,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
@@ -25,6 +26,7 @@ import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
+import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
@@ -110,7 +112,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = rewriteBookingWidgetHrefs(
-    blogBodyForSlug(postSlug) || post.content?.rendered || '',
+    rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
   );
   const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
@@ -157,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const postCanonical = canonicalForPath(blogPostPath(post));
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
-    resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
+    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
@@ -465,7 +467,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ogOverride = blogOgForSlug(postSlug);
   const jpeg = ogJpegForBlogSlug(postSlug);
   const imageUrl =
-    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+    jpeg || ogOverride || coverOverride || post.featured_media_url || BLOG_COVER_FALLBACK;
   const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };

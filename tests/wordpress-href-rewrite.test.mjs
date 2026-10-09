@@ -8,10 +8,12 @@ import {
   rewriteInSiteUrlToApex,
   rewriteWpRenderedHtmlFields,
   rewriteWpYoastFields,
+  unwrapGoneInternalAnchors,
+  isGoneInternalHref,
 } from '../services/rewrite-in-site-hrefs.mjs';
 
-const LINKEDIN_POST =
-  'https://endpoint.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin';
+const LIVE_POST =
+  'https://endpoint.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social';
 const BLACK_FRIDAY_POST =
   'https://endpoint.playfulagency.com/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias';
 const MEDIA_SRC =
@@ -26,12 +28,12 @@ function countHostHrefs(html, host) {
 
 test('rewrites endpoint, old, www, and apex in-site hrefs to same-path relatives', () => {
   const html = [
-    `<a href="${LINKEDIN_POST}">LinkedIn</a>`,
+    `<a href="${LIVE_POST}">LinkedIn</a>`,
     `<a href="${BLACK_FRIDAY_POST}">Black Friday</a>`,
     `<a href="https://old.playfulagency.com/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias">old</a>`,
-    `<a href="https://www.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin">www</a>`,
-    `<a href="https://playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin">apex</a>`,
-    `<a href="//endpoint.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin?utm=1#toc">proto</a>`,
+    `<a href="https://www.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social">www</a>`,
+    `<a href="https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social">apex</a>`,
+    `<a href="//endpoint.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social?utm=1#toc">proto</a>`,
   ].join('');
 
   const rewritten = rewriteInSitePageHrefs(html);
@@ -40,14 +42,14 @@ test('rewrites endpoint, old, www, and apex in-site hrefs to same-path relatives
   assert.equal(countHostHrefs(rewritten, 'old.playfulagency.com'), 0);
   assert.equal(countHostHrefs(rewritten, 'www.playfulagency.com'), 0);
   assert.equal(countHostHrefs(rewritten, 'playfulagency.com'), 0);
-  assert.match(rewritten, /href="\/blog\/pautas-digitales\/anuncios-en-linkedin"/);
+  assert.match(rewritten, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.match(
     rewritten,
     /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/,
   );
   assert.match(
     rewritten,
-    /href="\/blog\/pautas-digitales\/anuncios-en-linkedin\?utm=1#toc"/,
+    /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social\?utm=1#toc"/,
   );
 });
 
@@ -55,14 +57,14 @@ test('leaves /wp-content media srcs and hrefs on the WordPress endpoint', () => 
   const html = [
     `<img src="${MEDIA_SRC}" alt="">`,
     `<a href="${MEDIA_HREF}">PDF</a>`,
-    `<a href="${LINKEDIN_POST}">LinkedIn</a>`,
+    `<a href="${LIVE_POST}">LinkedIn</a>`,
   ].join('');
 
   const rewritten = rewriteInSitePageHrefs(html);
 
   assert.match(rewritten, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
   assert.match(rewritten, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
-  assert.match(rewritten, /href="\/blog\/pautas-digitales\/anuncios-en-linkedin"/);
+  assert.match(rewritten, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.equal(countHostHrefs(rewritten, 'endpoint.playfulagency.com'), 1);
 });
 
@@ -116,18 +118,98 @@ test('does not rewrite external or already-relative hrefs', () => {
   assert.equal(rewriteInSitePageHrefs(html), html);
 });
 
+test('remaps retired case-study slugs and the humanizar origin in one hop', () => {
+  const html = [
+    `<a href="/grupo-automotriz-multimarca">PLAYFUL CASOS DE EXITO_MULTIMARCA</a>`,
+    `<a href="/grupo-automotriz-multimarca/">slash</a>`,
+    `<a href="https://endpoint.playfulagency.com/grupo-automotriz-multimarca/">wp-multi</a>`,
+    `<a href="/caso-de-exito-pcm">PLAYFUL CASOS DE EXITO_Fundahigado</a>`,
+    `<a href="https://playfulagency.com/caso-de-exito-pcm/">apex-pcm</a>`,
+    `<a href="/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio">origen</a>`,
+    `<a href="https://endpoint.playfulagency.com/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio/">wp-origen</a>`,
+    `<a href="/casos-de-exito/jumex-shopify-dtc-ecommerce">child</a>`,
+  ].join('');
+
+  const rewritten = rewriteInSitePageHrefs(html);
+
+  assert.equal((rewritten.match(/href="\/casos-de-exito"/g) || []).length, 5);
+  assert.match(rewritten, /href="\/casos-de-exito">PLAYFUL CASOS DE EXITO_MULTIMARCA</);
+  assert.match(rewritten, /href="\/casos-de-exito">PLAYFUL CASOS DE EXITO_Fundahigado</);
+  assert.match(
+    rewritten,
+    /href="\/blog\/pautas-digitales\/storytelling-en-el-marketing-digital">origen</,
+  );
+  assert.match(
+    rewritten,
+    /href="\/blog\/pautas-digitales\/storytelling-en-el-marketing-digital">wp-origen</,
+  );
+  assert.match(rewritten, /href="\/casos-de-exito\/jumex-shopify-dtc-ecommerce">child</);
+  assert.doesNotMatch(rewritten, /grupo-automotriz-multimarca/);
+  assert.doesNotMatch(rewritten, /caso-de-exito-pcm/);
+  assert.doesNotMatch(rewritten, /aprende-a-humanizar-la-marca-de-tu-negocio/);
+});
+
+test('unwraps 410 body links and drops image-only banner CTAs', () => {
+  const html = [
+    `<p>Lee <a href="/blog/mas-vistos/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok">TikTok.</a></p>`,
+    `<p>Ver <a href="/blog/otros/quiero-ver-mi-negocio-en-google-maps/">Google Maps</a></p>`,
+    `<p>Lee <a href="https://endpoint.playfulagency.com/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical/">Bad Bunny como marca</a></p>`,
+    `<p>Sigue <a href="/blog/tecnologia/actualizar-tu-e-commerce">ecommerce</a>.</p>`,
+    `<a href="/blog/otros/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok/" class="broken_link"><img src="https://endpoint.playfulagency.com/wp-content/uploads/2022/02/BANNER-CTA_PLAYFUL_Gana-dinero-con-Tiktok.png" alt="Banner CTA Tik Tok " /></a>`,
+  ].join('');
+
+  const rewritten = rewriteInSitePageHrefs(html);
+
+  assert.match(rewritten, /Lee TikTok\./);
+  assert.match(rewritten, /Ver Google Maps/);
+  assert.match(rewritten, /Lee Bad Bunny como marca/);
+  assert.match(rewritten, /href="\/blog\/tecnologia\/actualizar-tu-e-commerce"/);
+  assert.doesNotMatch(rewritten, /todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok/);
+  assert.doesNotMatch(rewritten, /quiero-ver-mi-negocio-en-google-maps/);
+  assert.doesNotMatch(rewritten, /bad-bunny-como-marca-la-potencia-del-marketing-musical/);
+  assert.doesNotMatch(rewritten, /Banner CTA Tik Tok/);
+  assert.doesNotMatch(rewritten, /BANNER-CTA_PLAYFUL_Gana-dinero-con-Tiktok/);
+  assert.doesNotMatch(rewritten, /<a[^>]+href="\/blog\/mas-vistos\/todo-lo-que/);
+});
+
+test('isGoneInternalHref follows category aliases into the 410 list', () => {
+  assert.equal(
+    isGoneInternalHref('/blog/mas-vistos/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok'),
+    true,
+  );
+  assert.equal(
+    isGoneInternalHref('/blog/otros/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok/'),
+    true,
+  );
+  assert.equal(
+    isGoneInternalHref('https://endpoint.playfulagency.com/blog/otros/quiero-ver-mi-negocio-en-google-maps/'),
+    true,
+  );
+  assert.equal(isGoneInternalHref('/agencylog'), true);
+  assert.equal(isGoneInternalHref('/blog/tecnologia/actualizar-tu-e-commerce'), false);
+  assert.equal(
+    isGoneInternalHref('/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio'),
+    false,
+  );
+  assert.equal(isGoneInternalHref('https://linkedin.com/blog/mas-vistos/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok'), false);
+  assert.equal(
+    unwrapGoneInternalAnchors('<a href="/blog/seo/black-hat-seo">texto</a>'),
+    'texto',
+  );
+});
+
 test('rewriteWpRenderedHtmlFields rewrites excerpt and content hrefs; leaves wp-content', () => {
   const post = rewriteWpRenderedHtmlFields({
     id: 1,
     excerpt: {
-      rendered: `<p>Lee <a href="${LINKEDIN_POST}">LinkedIn</a> y <a href="${MEDIA_HREF}">PDF</a>.</p>`,
+      rendered: `<p>Lee <a href="${LIVE_POST}">LinkedIn</a> y <a href="${MEDIA_HREF}">PDF</a>.</p>`,
     },
     content: {
       rendered: `<p><a href="${BLACK_FRIDAY_POST}">Black Friday</a><img src="${MEDIA_SRC}" alt=""></p>`,
     },
   });
 
-  assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/anuncios-en-linkedin"/);
+  assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
   assert.match(post.excerpt.rendered, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
   assert.match(post.content.rendered, /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/);
   assert.match(post.content.rendered, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
@@ -168,8 +250,8 @@ test('getLatestBlogPosts rewrites excerpt HTML before stripping tags', async () 
 
 test('rewriteInSiteUrlToApex maps endpoint/old/www page URLs to apex same-path', () => {
   assert.equal(
-    rewriteInSiteUrlToApex(`${LINKEDIN_POST}/`),
-    'https://playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin',
+    rewriteInSiteUrlToApex(`${LIVE_POST}/`),
+    'https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social',
   );
   assert.equal(
     rewriteInSiteUrlToApex('https://old.playfulagency.com/blog/'),
@@ -189,7 +271,7 @@ test('rewriteInSiteUrlToApex maps endpoint/old/www page URLs to apex same-path',
 test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-content', () => {
   const ogUrl = 'https://endpoint.playfulagency.com/blog/seo/tendencias-seo-2020/';
   const listingOg = 'https://endpoint.playfulagency.com/blog/';
-  const oldOg = 'https://old.playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin/';
+  const oldOg = 'https://old.playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social/';
   const yoastHead = [
     `<meta property="og:url" content="${ogUrl}" />`,
     `<link rel="canonical" href="${listingOg}" />`,
@@ -211,7 +293,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
 
   const post = rewriteWpYoastFields({
     id: 68047,
-    excerpt: { rendered: `<p><a href="${LINKEDIN_POST}">keep excerpt for later</a></p>` },
+    excerpt: { rendered: `<p><a href="${LIVE_POST}">keep excerpt for later</a></p>` },
     yoast_head: yoastHead,
     yoast_head_json: {
       og_url: ogUrl,
@@ -243,7 +325,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
   );
   assert.equal(
     post.yoast_head_json.canonical,
-    'https://playfulagency.com/blog/pautas-digitales/anuncios-en-linkedin',
+    'https://playfulagency.com/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social',
   );
   assert.equal(post.yoast_head_json.og_image[0].url, MEDIA_SRC);
   assert.equal(
@@ -254,7 +336,7 @@ test('rewriteWpYoastFields rewrites og:url and breadcrumb JSON-LD; leaves wp-con
     post.yoast_head_json.schema['@graph'][0].itemListElement[1].item,
     'https://playfulagency.com/blog',
   );
-  assert.match(post.excerpt.rendered, new RegExp(LINKEDIN_POST.replaceAll('/', '\\/')));
+  assert.match(post.excerpt.rendered, new RegExp(LIVE_POST.replaceAll('/', '\\/')));
 });
 
 test('getBlogPosts rewrites Yoast og:url / breadcrumb fields in the listing pipeline', async () => {
