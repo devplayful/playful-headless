@@ -344,7 +344,7 @@ export default async function AgenciaShopifyPage() {
           <div className="max-w-[1200px] mx-auto px-4 md:px-6">
             <TwoColumnCtaSection
               contentBgColor="#B3FFF3"
-              imageUrl="/images/imagen-nueva-cta-home.png"
+              imageUrl="/images/cta-global-hablemos.webp"
               title={CTA.h2}
               subtitle={CTA.body}
               ctaTitle={CTA.question}
