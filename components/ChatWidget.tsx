@@ -2,6 +2,7 @@
 
 /** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
+import { attachChatWidgetAnalytics } from '@/lib/analytics/chat-widget'
 import {
   HIGHLEVEL_CHAT_WIDGET_ID,
   HIGHLEVEL_CHAT_WIDGET_LOADER,
@@ -42,6 +43,9 @@ export default function ChatWidget() {
   }, [policy.externalTracking])
 
   useEffect(() => {
+    // HighLevel fires LC_chatWidgetLoaded once; hook it before the loader.
+    attachChatWidgetAnalytics()
+
     const chat = document.createElement('script')
     chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
     chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')

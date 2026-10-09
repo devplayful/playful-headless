@@ -16,6 +16,7 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import {
+  BLOG_COVER_FALLBACK,
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
@@ -29,6 +30,7 @@ import {
   MIGRACION_SEO_PLAN_PATH,
 } from '@/lib/blog-body-overrides';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
+import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
@@ -135,7 +137,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = rewriteBookingWidgetHrefs(
-    blogBodyForSlug(postSlug) || post.content?.rendered || '',
+    rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
   );
   const $ = cheerio.load(sourceHtml);
   $('[data-eshow-lista-form]').replaceWith(ESHOW_LISTA_FORM_MARKER);
@@ -185,7 +187,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
-    resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
+    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
   const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
   const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
@@ -559,7 +561,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ogOverride = blogOgForSlug(postSlug);
   const jpeg = ogJpegForBlogSlug(postSlug);
   const imageUrl =
-    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+    jpeg || ogOverride || coverOverride || post.featured_media_url || BLOG_COVER_FALLBACK;
   const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };

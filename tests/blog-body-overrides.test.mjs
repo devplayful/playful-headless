@@ -57,6 +57,10 @@ test('Zelle rewrite headings have ids for TOC and preserve in-site links', () =>
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /https:\/\/playfulagency\.com\/agencia-e-commerce/);
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /https:\/\/playfulagency\.com\/agencia-shopify/);
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /https:\/\/playfulagency\.com\/reunion-playful/);
+  assert.match(ZELLE_VE_BLOG_BODY_HTML, /uno de los métodos de pago más utilizados/);
+  assert.match(ZELLE_VE_BLOG_BODY_HTML, /trabajamos la integración de pagos para marcas/);
+  assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pagos-online-ecommerce/);
+  assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pasarela-de-pago-ecommerce/);
 });
 
 test('Cashea rewrite keeps the signed opening, headings and in-site links', () => {
@@ -80,6 +84,7 @@ test('Cashea rewrite keeps the signed opening, headings and in-site links', () =
 });
 
 test('blog post page prefers the body override before WP rendered HTML', () => {
+  assert.match(blogPage, /rewriteInSitePageHrefs\(/);
   assert.match(blogPage, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);
   assert.match(blogPage, /BLOG_SEO_OVERRIDES\[postSlug\]\?\.h1/);
   assert.match(blogPage, /zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/);

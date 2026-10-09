@@ -20,13 +20,11 @@ test('mapped slug produces the Agencia SEM service href', () => {
   assert.match(cta.label, /Agencia SEM/i);
 });
 
-test('Zelle slug produces the Agencia Shopify service href', () => {
+test('Zelle slug does not wrap or append a Shopify service href', () => {
   const cta = getBlogServiceCta(
     'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   );
-  assert.ok(cta, 'expected a CTA for the Zelle post slug');
-  assert.equal(cta.href, '/agencia-shopify');
-  assert.match(cta.label, /Shopify/i);
+  assert.equal(cta, null);
 });
 
 test('other slugs do not add the SEM CTA', () => {
@@ -112,32 +110,18 @@ test('other slugs do not wrap SEM mentions', () => {
   assert.equal(applyBlogServiceMentionLink(input, 'otro-articulo'), input);
 });
 
-test('Zelle slug wraps a natural Shopify mention, not a forced Zelle word', () => {
+test('Zelle wrap stays off even when the copy mentions Shopify', () => {
   const shopify = applyBlogServiceMentionLink(
     '<p>Montamos tu tienda Shopify para cobrar sin fricción.</p>',
     'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   );
-  assert.match(shopify, /<a href="\/agencia-shopify">tienda Shopify<\/a>/);
+  assert.doesNotMatch(shopify, /href="\/agencia-shopify"/);
+  assert.match(shopify, /tienda Shopify/);
 
-  const bareShopify = applyBlogServiceMentionLink(
-    '<p>El checkout en Shopify queda listo para cobrar.</p>',
-    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  );
-  assert.match(bareShopify, /<a href="\/agencia-shopify">Shopify<\/a>/);
-
-  const zelleOnly = applyBlogServiceMentionLink(
-    '<p>Zelle es un método de pago popular en Venezuela.</p>',
-    'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  );
-  assert.doesNotMatch(zelleOnly, /href="\/agencia-shopify"/);
-});
-
-test('Zelle fallback appends a compact CTA when the post never says Shopify', () => {
   const html = applyBlogServiceEnsureLink(
     '<p>Si tu tienda en línea trabaja con WooCommerce, puedes integrar Zelle.</p>',
     'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   );
-  assert.match(html, /href="\/agencia-shopify"/);
-  assert.match(html, /Conoce nuestro servicio Shopify/);
-  assert.doesNotMatch(html, /<a href="\/agencia-shopify">Zelle<\/a>/);
+  assert.doesNotMatch(html, /href="\/agencia-shopify"/);
+  assert.doesNotMatch(html, /Conoce nuestro servicio Shopify/);
 });

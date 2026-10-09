@@ -11,6 +11,10 @@ export type BlogServiceCta = {
 /**
  * Post slug → service landing. Only mapped posts get the compact CTA
  * and the first-mention internal link. Canonical stays on the post.
+ *
+ * Zelle is intentionally unmapped: its override already links
+ * `/agencia-e-commerce`. Wrapping the first Shopify mention (or appending
+ * the compact CTA) would inject `/agencia-shopify`.
  */
 export const ZELLE_BLOG_POST_HREF =
   '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
@@ -20,13 +24,6 @@ export const BLOG_SERVICE_CTAS: Record<string, BlogServiceCta> = {
     href: '/agencia-sem',
     label: 'Conoce nuestro servicio de Agencia SEM',
     mentionRe: /agencia(?:\s+de)?\s+SEM/i,
-  },
-  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
-    href: '/agencia-shopify',
-    label: 'Conoce nuestro servicio Shopify',
-    // Prefer a Shopify-service mention. The live Zelle post is WooCommerce /
-    // pasarela copy — do not wrap the first "Zelle". Longer phrases first.
-    mentionRe: /tienda Shopify|agencia Shopify|Shopify/i,
   },
 };
 
@@ -101,7 +98,6 @@ export function linkFirstUnlinkedServiceMention(
 
 /**
  * If the article has no href to the service landing, append a compact CTA.
- * Used when mentionRe does not match (Zelle live copy never says Shopify).
  */
 export function appendBlogServiceCtaIfMissing($: CheerioRoot, cta: BlogServiceCta): boolean {
   if (htmlAlreadyLinksToService($, cta.href)) return false;

@@ -22,12 +22,16 @@ test('serialized script is valid JSON and cannot contain HTML terminators', () =
   assert.doesNotMatch(ORGANIZATION_JSON_LD, /</);
 });
 
-test('logo is the existing public header asset', () => {
+test('logo is a raster PNG of the header logo, at least 112 px', () => {
   const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
+  assert.ok(header.includes('/images/logos/playful-logov.svg'));
   const path = new URL(ORGANIZATION_SCHEMA.logo).pathname;
-  assert.ok(header.includes(path));
-  const svg = readFileSync(new URL(`../public${path}`, import.meta.url), 'utf8');
-  assert.match(svg, /viewBox="0 0 1057 250"/);
+  assert.match(path, /\.png$/);
+  const png = readFileSync(new URL(`../public${path}`, import.meta.url));
+  assert.equal(png.subarray(1, 4).toString('ascii'), 'PNG');
+  const width = png.readUInt32BE(16);
+  const height = png.readUInt32BE(20);
+  assert.ok(width >= 112 && height >= 112, `${width}x${height}`);
 });
 
 test('home emits the organization script once without client-only loading', () => {
