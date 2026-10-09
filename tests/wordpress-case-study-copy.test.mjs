@@ -72,13 +72,91 @@ test('SoyTechno editorial H2/H3 labels match the signed SEO set', () => {
   assert.doesNotMatch(soytechnoBody, /Por favor mencione cuáles fueron sus medios claves/);
 });
 
-test('SoyTechno distributes 32 unique source fragments without repeating them', () => {
+test('SoyTechno QA redlines: Q1–Q4 diagram, named pillars, no A/C letters', () => {
+  assert.match(soytechnoBody, /quarterTrack/);
+  assert.match(soytechnoBody, />Q1</);
+  assert.match(soytechnoBody, />Q2</);
+  assert.match(soytechnoBody, />Q3</);
+  assert.match(soytechnoBody, />Q4</);
+  assert.match(soytechnoBody, /Reconocimiento/);
+  assert.match(soytechnoBody, /Expansión/);
+  assert.match(soytechnoBody, /Escalabilidad/);
+  assert.match(soytechnoBody, /Fidelización/);
+  assert.match(soytechnoBody, /pillarList/);
+  assert.match(
+    soytechnoBody,
+    /basado en tres pilares: el ecosistema digital como medio principal; medios\s+clave: Cashea, MRW y checkout; e innovación y aporte más allá de la interfaz/,
+  );
+  assert.match(soytechnoBody, /El ecosistema digital como medio principal/);
+  assert.match(soytechnoBody, /Innovación y aporte más allá de la interfaz/);
+  assert.doesNotMatch(soytechnoBody, /A\. El ecosistema digital como medio principal/);
+  assert.doesNotMatch(soytechnoBody, /C\. Innovación y aporte más allá de la interfaz/);
+  assert.doesNotMatch(soytechnoBody, /B\. Medios clave/);
+});
+
+test('SoyTechno QA redlines: drop duplicate circles/employees and overlapping catalog gif', () => {
+  assert.doesNotMatch(soytechnoBody, /lifestyle-f\.jpg/);
+  assert.doesNotMatch(soytechnoBody, /giffycanvas-01\.gif/);
+  assert.doesNotMatch(soytechnoBody, /mobile-screen-01\.png/);
+  assert.doesNotMatch(soytechnoBody, /mobile-screen-04\.png/);
+  assert.doesNotMatch(soytechnoBody, /giffycanvas-01-sin-solape\.gif/);
+  assert.equal(soytechnoBody.match(/giffycanvas-01-sin-solape\.webp/g)?.length, 2);
+  assert.doesNotMatch(soytechnoBody, /giffycanvas-02\.gif/);
+  assert.equal(soytechnoBody.match(/giffycanvas-02\.webp/g)?.length, 1);
+  assert.doesNotMatch(soytechnoBody, /ipad-mockup-02\.png/);
+  assert.match(soytechnoBody, /ipad-frame-ale\.png/);
+});
+
+test('SoyTechno Ale v2 (7 oct): no numbering, icon cards without text', () => {
+  assert.doesNotMatch(soytechnoBody, /\((1|2|3)\) (Autonomía|Transparencia|Arquitectura)/);
+  assert.doesNotMatch(soytechnoBody, /<SectionTitle>\d\. /);
+  assert.doesNotMatch(soytechnoBody, /DARK BLUE-GRAY|MAY GREEN|CADMIUM ORANGE|HEX: |CMYK: /);
+  assert.doesNotMatch(soytechnoBody, /<span>Circuito<\/span>/);
+});
+
+test('SoyTechno Ale v2 (7 oct): Contenido copy for checkout, 73% mobile and results intro', () => {
+  const renderedBody = soytechnoBody.split('export default function', 2)[1];
+  assert.match(renderedBody, /<SectionTitle>Autonomía financiera: checkout propio y Botón de Pago de Cashea<\/SectionTitle>/);
+  assert.match(renderedBody, />Facturación, envío y pago en un mismo flujo de compra</);
+  assert.match(renderedBody, /title="Métodos de pago según la moneda"/);
+  assert.match(renderedBody, /title="Cuotas con Cashea"/);
+  assert.doesNotMatch(renderedBody, /Smart Checkout y Cashea/);
+  assert.doesNotMatch(renderedBody, /title="Confianza como consecuencia"/);
+  assert.match(soytechnoBody, /Más del 73% de los usuarios se conecta a través de sus dispositivos móviles/);
+  const mobileFirstBlock = renderedBody.split('experiencia Mobile-First', 2)[1];
+  assert.ok(mobileFirstBlock.indexOf('caseCopy.mobileShare[0]') < mobileFirstBlock.indexOf('caseCopy.strategicResponse[1]'));
+  const resultsIntro = renderedBody.split('Resultados que cambiaron la categoría', 2)[1].split('resultsGrid', 2)[0];
+  assert.match(resultsIntro, /resultsIntro\[0\][\s\S]*resultsIntro\[1\][\s\S]*resultsIntro\[2\]/);
+  assert.doesNotMatch(resultsIntro, /caseCopy\.results\[1\]/);
+});
+
+test('SoyTechno QA redlines: Mobile-First keeps philosophy; metrics live in Resultados', () => {
+  const renderedBody = soytechnoBody.split('export default function', 2)[1];
+  const mobileFirstBlock = renderedBody.split('experiencia Mobile-First', 2)[1].split('Resultados frente a los KPIs', 2)[0];
+  const resultsBlock = renderedBody.split('Resultados frente a los KPIs', 2)[1];
+
+  assert.match(mobileFirstBlock, /caseCopy\.strategicResponse\[1\]/);
+  assert.match(mobileFirstBlock, /caseCopy\.idea\[0\]/);
+  assert.ok(
+    mobileFirstBlock.indexOf('caseCopy.strategicResponse[1]') <
+      mobileFirstBlock.indexOf('caseCopy.idea[0]'),
+    'Mobile-First copy must lead with the Mobile-First sentence',
+  );
+  assert.doesNotMatch(mobileFirstBlock, /caseCopy\.executiveResults/);
+  assert.doesNotMatch(mobileFirstBlock, /caseCopy\.results\[0\]/);
+  assert.doesNotMatch(mobileFirstBlock, /Escala alcanzada/);
+  assert.doesNotMatch(mobileFirstBlock, /Conversión por encima del promedio/);
+  assert.match(resultsBlock, /caseCopy\.results\[0\]/);
+  assert.match(resultsBlock, /El hábito de consumo cambió/);
+});
+
+test('SoyTechno distributes unique source fragments without repeating them', () => {
   const renderedBody = soytechnoBody.split('export default function', 2)[1];
   const fragments = [...renderedBody.matchAll(/caseCopy\.([A-Za-z]+)\[(\d+)\]/g)]
     .map((match) => `${match[1]}:${match[2]}`);
 
-  assert.equal(fragments.length, 32);
-  assert.equal(new Set(fragments).size, 32);
+  assert.equal(fragments.length, 33);
+  assert.equal(new Set(fragments).size, 33);
   assert.doesNotMatch(renderedBody, /approvedCopy\.(?!title)/);
   assert.match(soytechnoBody, /Eva Cristina Luciani/);
   assert.match(soytechnoBody, /comparador de productos/);
