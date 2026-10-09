@@ -60,7 +60,7 @@ const MUST_STAY_OPEN = [
 ];
 
 const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const listingSource = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
+const listingSource = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
 const wordpressSource = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 
 test('closed set equals José Excel v2 — exactly these 31 paths', () => {
@@ -139,7 +139,8 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
     assert.equal(governed.has(path), false, path);
   }
   assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
-  assert.equal(governed.size, 73);
+  // #188 added 30 open WP page-2 posts to the inventory; the 31 410s stay out.
+  assert.equal(governed.size, 103);
 });
 
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {

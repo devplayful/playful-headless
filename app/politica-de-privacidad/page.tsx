@@ -1,15 +1,32 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { PRIVACY_HERO_SIZES } from '@/lib/blog-image-sizes';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 // Metadata para SEO
 const PRIVACY_URL = canonicalForPath('/politica-de-privacidad');
+const PRIVACY_TITLE = 'Política de Privacidad | Playful Agency';
+const PRIVACY_DESCRIPTION = 'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.';
+
+const PRIVACY_OG = ogJpegForPath('/politica-de-privacidad') || '/images/og/home.jpg';
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidad | Playful Agency',
-  description: 'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.',
+  title: PRIVACY_TITLE,
+  description: PRIVACY_DESCRIPTION,
   alternates: { canonical: PRIVACY_URL },
-  openGraph: { url: PRIVACY_URL },
+  openGraph: {
+    title: PRIVACY_TITLE,
+    description: PRIVACY_DESCRIPTION,
+    url: PRIVACY_URL,
+    images: [ogJpegMeta(PRIVACY_OG, PRIVACY_TITLE)],
+  },
+  twitter: {
+    ...twitterFromOpenGraph(PRIVACY_TITLE, PRIVACY_DESCRIPTION),
+    images: [PRIVACY_OG],
+  },
 };
 
 export default function PoliticaDePrivacidad() {
@@ -21,23 +38,6 @@ export default function PoliticaDePrivacidad() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Columna izquierda: textos */}
             <div className="flex flex-col justify-center items-start text-left">
-              {/* Breadcrumb */}
-              <nav className="mb-6 [font-family:var(--font-paytone-one)] text-[28px] leading-[32px] font-normal" aria-label="Breadcrumb">
-                <ol className="flex items-center space-x-2 text-[#4A4453]">
-                  <li>
-                    <a href="/" className="hover:text-[#440099] transition-colors">
-                      Home
-                    </a>
-                  </li>
-                  <li>
-                    <span className="mx-2">&gt;</span>
-                  </li>
-                  <li>
-                    <span className="text-[#440099] font-normal">Política de Privacidad</span>
-                  </li>
-                </ol>
-              </nav>
-
             <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
             <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Protegemos tu Identidad: Seguridad y Confianza para Tus Datos</h2>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px] mb-4">
@@ -50,10 +50,13 @@ export default function PoliticaDePrivacidad() {
 
             {/* Columna derecha: ilustración */}
             <div className="flex justify-center items-center">
-              <img 
-                src="/images/politica-privacidad-imagen.png" 
-                alt="Ilustración de persona leyendo política de privacidad" 
-                className="w-full max-w-[500px] h-auto object-contain" 
+              <Image
+                src="/images/politica-privacidad-imagen.png"
+                alt="Ilustración de persona leyendo política de privacidad"
+                width={2048}
+                height={2048}
+                sizes={PRIVACY_HERO_SIZES}
+                className="w-full max-w-[500px] h-auto object-contain"
               />
             </div>
           </div>

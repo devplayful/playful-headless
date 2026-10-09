@@ -1,4 +1,5 @@
-import { getPageMetadataBySlug } from '@/services/wordpress';
+import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress';
+import { mapCaseStudyToListingCard } from '@/lib/case-study-listing-card';
 import { canonicalForPath } from '@/utils/canonical';
 import {
   CASE_STUDIES_HUB_DESCRIPTION,
@@ -6,10 +7,15 @@ import {
   CASE_STUDIES_HUB_TITLE,
   CASE_STUDIES_HUB_WP_SLUG,
 } from '@/utils/case-study-hub';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import CaseStudiesContent from './CaseStudiesContent';
 
-export default function CaseStudiesPage() {
-  return <CaseStudiesContent />;
+export default async function CaseStudiesPage() {
+  const items = await getAllCaseStudies();
+  const initialCaseStudies = items.map(mapCaseStudyToListingCard);
+
+  return <CaseStudiesContent initialCaseStudies={initialCaseStudies} />;
 }
 
 export async function generateMetadata() {
@@ -30,16 +36,26 @@ export async function generateMetadata() {
         description,
         type: 'website',
         url,
-        images: metadata.yoast_wpseo_og_image
-          ? [
-              {
-                url: metadata.yoast_wpseo_og_image,
-                width: 1200,
-                height: 630,
-                alt: title,
-              },
-            ]
-          : [],
+        images: (() => {
+          const jpeg = ogJpegForPath(CASE_STUDIES_HUB_PATH);
+          if (jpeg) return [ogJpegMeta(jpeg, title)];
+          return metadata.yoast_wpseo_og_image
+            ? [
+                {
+                  url: metadata.yoast_wpseo_og_image,
+                  width: 1200,
+                  height: 630,
+                  alt: title,
+                },
+              ]
+            : [];
+        })(),
+      },
+      twitter: {
+        ...twitterFromOpenGraph(title, description),
+        ...(ogJpegForPath(CASE_STUDIES_HUB_PATH)
+          ? { images: [ogJpegForPath(CASE_STUDIES_HUB_PATH)] }
+          : {}),
       },
     };
   } catch (error) {
@@ -53,6 +69,7 @@ export async function generateMetadata() {
         description,
         url,
       },
+      twitter: twitterFromOpenGraph(title, description),
     };
   }
 }

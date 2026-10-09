@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
+import { CTA_ILLUSTRATION_SIZES } from "@/lib/blog-image-sizes";
 
 interface TwoColumnCtaSectionProps {
   imageUrl?: string;
@@ -26,14 +28,17 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   onButtonClick,
 }) => {
   return (
-    <div className="w-full mb-[40px]">
+    <div data-cta-section="cta-final" className="w-full mb-[40px]">
       <div className="lg:flex lg:items-center lg:gap-8 xl:gap-12">
         {/* Columna izquierda - Imagen */}
         <div className="lg:w-1/2 mb-12 lg:mb-0">
           <div className="relative rounded-2xl overflow-hidden">
-            <img
+            <Image
               src={imageUrl}
               alt={imageAlt}
+              width={2048}
+              height={2048}
+              sizes={CTA_ILLUSTRATION_SIZES}
               className="w-full h-auto object-cover"
             />
           </div>

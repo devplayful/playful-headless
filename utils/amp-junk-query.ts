@@ -1,3 +1,5 @@
+import { blogCategoryIndexSlug } from './blog-url.ts';
+
 const AMP_JUNK_PARAM_NAMES = new Set(['amp', 'noamp']);
 
 export function isAmpJunkParam(name: string): boolean {
@@ -73,6 +75,17 @@ export function blogSeoRedirectDecision(
   }
 
   const { stripped, params } = stripAmpJunkParams(searchParams);
+  const categorySlug = blogCategoryIndexSlug(path);
+  if (categorySlug) {
+    params.set('category', categorySlug);
+    return {
+      type: 'redirect',
+      pathname: '/blog',
+      search: searchFromParams(params),
+      status: 308,
+    };
+  }
+
   const canonicalPath = categoryRedirects[path] ?? path;
   const pathChanged = canonicalPath !== path;
 

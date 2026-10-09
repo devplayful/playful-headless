@@ -1,7 +1,112 @@
 const DEFAULT_MAX_ATTEMPTS = 3;
+const BUILD_MAX_ATTEMPTS = 2;
 const DEFAULT_BASE_DELAY_MS = 150;
 const DEFAULT_MAX_DELAY_MS = 1_000;
 const DEFAULT_TIMEOUT_MS = 8_000;
+const BUILD_TIMEOUT_MS = 20_000;
+/** Extra 5xx/network retries across the whole `next build`, not per page. */
+const BUILD_GLOBAL_RETRY_BUDGET = 8;
+
+const meterState = { requests: [], hookInstalled: false };
+
+function isWordPressMeterEnabled(env = process.env) {
+  return env.WP_FETCH_METER === '1' || env.WP_FETCH_METER === 'true';
+}
+
+function recordWordPressFetch({ url, status, bytes }) {
+  if (!isWordPressMeterEnabled()) return;
+  meterState.requests.push({
+    url: String(url),
+    status: Number(status) || 0,
+    bytes: Number(bytes) || 0,
+  });
+  let path = String(url);
+  try { path = new URL(url).pathname + new URL(url).search; } catch { /* keep */ }
+  console.log(`[wp-fetch-meter] 1x ${Number(bytes) || 0}B ${path}`);
+  if (!meterState.hookInstalled && typeof process !== 'undefined' && process.once) {
+    meterState.hookInstalled = true;
+    process.once('beforeExit', () => {
+      let total = 0;
+      let largest = { url: '', bytes: 0 };
+      const byEndpoint = new Map();
+      for (const entry of meterState.requests) {
+        total += entry.bytes;
+        if (entry.bytes > largest.bytes) largest = entry;
+        let path = entry.url;
+        try { path = new URL(entry.url).pathname + new URL(entry.url).search; } catch { /* keep */ }
+        const row = byEndpoint.get(path) || { count: 0, bytes: 0 };
+        row.count += 1;
+        row.bytes += entry.bytes;
+        byEndpoint.set(path, row);
+      }
+      console.log(`[wp-fetch-meter] requests=${meterState.requests.length} totalBytes=${total} largest=${largest.bytes} ${largest.url}`);
+      for (const [endpoint, row] of [...byEndpoint.entries()].sort((a, b) => b[1].bytes - a[1].bytes)) {
+        console.log(`[wp-fetch-meter] ${row.count}x ${row.bytes}B ${endpoint}`);
+      }
+    });
+  }
+}
+
+let remainingBuildRetries = BUILD_GLOBAL_RETRY_BUDGET;
+let buildRetryBudgetInitialized = false;
+
+/**
+ * Resolve the WordPress REST deadline.
+ *
+ * Runtime stays at 8s. `next build` uses 20s because the deadline covers
+ * fetch + retries + backoff, and the heaviest build collection
+ * (`posts?_fields=…` listing pages, ~0.05–0.53 MB) already takes
+ * ~1–2s on a healthy origin — a single transient retry would miss 8s.
+ * `WORDPRESS_REQUEST_TIMEOUT_MS` wins when set to a positive number.
+ */
+export function resolveWordPressRequestTimeoutMs(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_REQUEST_TIMEOUT_MS);
+  if (Number.isFinite(fromEnv) && fromEnv > 0) return fromEnv;
+  if (env.NEXT_PHASE === 'phase-production-build') return BUILD_TIMEOUT_MS;
+  return DEFAULT_TIMEOUT_MS;
+}
+
+export function isWordPressProductionBuild(env = process.env) {
+  return env.NEXT_PHASE === 'phase-production-build';
+}
+
+export function resolveWordPressMaxAttempts(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_MAX_ATTEMPTS);
+  if (Number.isInteger(fromEnv) && fromEnv > 0) return fromEnv;
+  if (isWordPressProductionBuild(env)) return BUILD_MAX_ATTEMPTS;
+  return DEFAULT_MAX_ATTEMPTS;
+}
+
+export function resolveWordPressBuildRetryBudget(env = process.env) {
+  const fromEnv = Number(env.WORDPRESS_BUILD_RETRY_BUDGET);
+  if (Number.isInteger(fromEnv) && fromEnv >= 0) return fromEnv;
+  return BUILD_GLOBAL_RETRY_BUDGET;
+}
+
+export function resetWordPressBuildRetryBudget(env = process.env) {
+  remainingBuildRetries = resolveWordPressBuildRetryBudget(env);
+  buildRetryBudgetInitialized = true;
+  return remainingBuildRetries;
+}
+
+export function remainingWordPressBuildRetries() {
+  return remainingBuildRetries;
+}
+
+/**
+ * Extra attempts (not the first GET) share one process-wide budget during
+ * `next build`. Runtime keeps the per-request cap so a single 5xx still
+ * retries without multiplying across 100 static pages.
+ */
+export function consumeWordPressBuildRetry(env = process.env) {
+  if (!isWordPressProductionBuild(env)) return true;
+  if (!buildRetryBudgetInitialized) {
+    resetWordPressBuildRetryBudget(env);
+  }
+  if (remainingBuildRetries <= 0) return false;
+  remainingBuildRetries -= 1;
+  return true;
+}
 
 const TRANSIENT_STATUSES = new Set([408, 425, 429]);
 
@@ -73,10 +178,10 @@ async function wordpressRequest(input, init, options, consumeResponse) {
   const fetchImpl = options.fetchImpl ?? fetch;
   const sleep = options.sleep ?? defaultSleep;
   const random = options.random ?? Math.random;
-  const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
+  const maxAttempts = options.maxAttempts ?? resolveWordPressMaxAttempts();
   const baseDelayMs = options.baseDelayMs ?? DEFAULT_BASE_DELAY_MS;
   const maxDelayMs = options.maxDelayMs ?? DEFAULT_MAX_DELAY_MS;
-  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timeoutMs = options.timeoutMs ?? resolveWordPressRequestTimeoutMs();
   const url = requestUrl(input);
   const requestSignal = init.signal ?? (
     typeof Request !== 'undefined' && input instanceof Request ? input.signal : undefined
@@ -117,7 +222,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
         }
 
         const retryable = isTransientWordPressStatus(response.status);
-        if (!retryable || attempt === maxAttempts) {
+        if (!retryable || attempt === maxAttempts || !consumeWordPressBuildRetry()) {
           throw new WordPressUnavailableError(
             `WordPress request failed with ${response.status} ${response.statusText}`,
             { url, status: response.status, attempts: attempt },
@@ -141,7 +246,7 @@ async function wordpressRequest(input, init, options, consumeResponse) {
         }
         if (error?.name === 'AbortError') throw error;
 
-        if (attempt === maxAttempts) {
+        if (attempt === maxAttempts || !consumeWordPressBuildRetry()) {
           throw new WordPressUnavailableError(
             `WordPress request failed after ${attempt} attempts`,
             { url, attempts: attempt, cause: error },
@@ -183,8 +288,11 @@ async function wordpressRequest(input, init, options, consumeResponse) {
 }
 
 export async function wordpressFetch(input, init = {}, options = {}) {
-  return wordpressRequest(input, init, options, async (response) => {
+  return wordpressRequest(input, init, options, async (response, { url }) => {
     const body = await response.arrayBuffer();
+    if (isWordPressMeterEnabled()) {
+      recordWordPressFetch({ url, status: response.status, bytes: body.byteLength });
+    }
     return bufferedResponse(response, body);
   });
 }
@@ -199,7 +307,21 @@ export async function wordpressFetchCollection(input, init = {}, options = {}) {
       );
     }
 
-    const items = await response.json();
+    const body = await response.arrayBuffer();
+    if (isWordPressMeterEnabled()) {
+      recordWordPressFetch({ url, status: response.status, bytes: body.byteLength });
+    }
+    let items;
+    try {
+      items = JSON.parse(new TextDecoder().decode(body));
+    } catch (error) {
+      throw new WordPressUnavailableError('WordPress collection returned invalid JSON', {
+        url,
+        status: response.status,
+        attempts: attempt,
+        cause: error,
+      });
+    }
     if (!Array.isArray(items)) {
       throw new WordPressUnavailableError('WordPress collection returned a non-array payload', {
         url,
@@ -207,6 +329,6 @@ export async function wordpressFetchCollection(input, init = {}, options = {}) {
         attempts: attempt,
       });
     }
-    return { items, response };
+    return { items, response: bufferedResponse(response, body) };
   });
 }

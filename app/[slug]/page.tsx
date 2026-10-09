@@ -1,11 +1,15 @@
 import { notFound } from 'next/navigation';
 import { canonicalForPath } from '@/utils/canonical';
 import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
-import { applyPageTitleOverride, applyPageDescriptionOverride } from '@/utils/page-seo-overrides.mjs';
+import { applyPageTitleOverride, applyPageDescriptionOverride, twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
 export const revalidate = 300;
-export const dynamicParams = true;
+// Unknown slugs must not enter this page: generateMetadata+notFound()
+// still ships the empty __next_error__ shell. dynamicParams=false makes
+// a miss the same prerendered 404 as /a/b/c, with the H1 in the HTML.
+export const dynamicParams = false;
 
 const SERVICE_SLUGS = [
   'agencia-seo',
@@ -25,6 +29,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
+  // notFound() here (not only in the page) so Next paints app/not-found.tsx
+  // as HTML. A successful generateMetadata + later notFound() leaves the
+  // empty __next_error__ shell.
+  const page = await getPageBySlug(slug);
+  if (!page) {
+    notFound();
+  }
   const url = canonicalForPath(`/${slug}`);
   const metadata = await getPageMetadataBySlug(slug);
   const { title, ogTitle } = applyPageTitleOverride(
@@ -37,6 +48,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     metadata.yoast_wpseo_metadesc,
     metadata.yoast_wpseo_og_description,
   );
+  const jpeg = ogJpegForPath(`/${slug}`);
+  const images = jpeg
+    ? [ogJpegMeta(jpeg, ogTitle || title || 'Playful Agency')]
+    : metadata.yoast_wpseo_og_image
+      ? [metadata.yoast_wpseo_og_image]
+      : undefined;
   return {
     title,
     description,
@@ -46,7 +63,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: ogTitle,
       description: ogDescription,
       url,
-      images: metadata.yoast_wpseo_og_image ? [metadata.yoast_wpseo_og_image] : undefined,
+      images,
+    },
+    twitter: {
+      ...twitterFromOpenGraph(ogTitle, ogDescription),
+      ...(jpeg ? { images: [jpeg] } : {}),
     },
   };
 }

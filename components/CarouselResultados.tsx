@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
 import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
@@ -130,16 +131,9 @@ interface CarouselResultadosProps {
 // Componente para la tarjeta de caso de estudio (mismo patrón que home)
 export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const imageRef = useRef<HTMLImageElement>(null);
+  // Server HTML already has the src; starting at 0 hides tapas if onLoad already fired.
+  const [imageLoaded, setImageLoaded] = useState(Boolean(caseStudy.image));
   const hasImage = caseStudy.image && !imageError;
-
-  useEffect(() => {
-    const image = imageRef.current;
-    if (image?.complete && image.naturalWidth > 0) {
-      setImageLoaded(true);
-    }
-  }, [caseStudy.image]);
 
   return (
     <div className="px-2 h-full">
@@ -148,11 +142,12 @@ export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           {/* Imagen */}
           <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
             {hasImage ? (
-              <img
-                ref={imageRef}
+              <Image
                 src={caseStudy.image}
                 alt={caseStudy.title}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                fill
+                sizes="(min-width: 1024px) 360px, (min-width: 768px) 45vw, 90vw"
+                className={`object-cover transition-opacity duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
                 onLoad={() => setImageLoaded(true)}

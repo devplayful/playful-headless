@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogPosts, getLatestBlogPosts, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogStaticParams, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -15,23 +15,40 @@ import TableOfContents from '@/components/blog/TableOfContents';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
-import { BLOG_COVER_SIZE, blogCoverForSlug } from '@/lib/blog-cover-image';
+import {
+  BLOG_OG_SIZE,
+  blogCoverForSlug,
+  blogOgForSlug,
+  resolveBlogOgUrl,
+} from '@/lib/blog-cover-image';
+import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
+import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import {
   buildBlogArticleJsonLd,
   formatCombinedByline,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
+import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
+import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import {
+  RelatedIndexUnavailableError,
+  emptyRelatedBehavior,
+  excludeCurrentBlogPost,
+} from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  // getBlogPosts already drops José v2 closed paths, so they are not SSG'd.
-  const { posts } = await getBlogPosts(1, 100);
-  return posts.map((post) => ({
-    slug: [getPrimaryCategorySlug(post), post.slug],
-  }));
+  // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
+  // getBlogPosts(1, 100) + `_embed` path was 3.5–4.7 MB and Next
+  // refused to cache it.
+  return getBlogStaticParams();
 }
 
 const formatDate = (dateString: string) => {
@@ -63,13 +80,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const [post, relatedPosts] = await Promise.all([
-    getBlogPostBySlug(postSlug),
-    getLatestBlogPosts(6),
-  ]);
+  const post = await getBlogPostBySlug(postSlug);
   
   if (!post) {
     notFound();
+  }
+
+  const relatedPosts = excludeCurrentBlogPost(
+    await getRelatedBlogPostsForPost(post, {
+      categorySlug: category,
+    }),
+    {
+      slug: post.slug,
+      id: post.id,
+    },
+  );
+  if (relatedPosts.length === 0 && emptyRelatedBehavior() === 'throw') {
+    throw new RelatedIndexUnavailableError();
   }
 
   const postCategory = getPrimaryCategorySlug(post);
@@ -82,7 +109,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const sourceHtml = blogBodyForSlug(postSlug) || post.content?.rendered || '';
+  const sourceHtml = rewriteBookingWidgetHrefs(
+    blogBodyForSlug(postSlug) || post.content?.rendered || '',
+  );
   const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
     .map((_, el) => {
@@ -126,14 +155,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       ? post.author.avatar_urls?.['48']
       : undefined;
   const postCanonical = canonicalForPath(blogPostPath(post));
-  const seoOverride = BLOG_SEO_OVERRIDES[postSlug];
-  const metaDescription =
-    seoOverride?.description ??
-    (post.excerpt?.rendered
-      ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160)
-      : '');
+  const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
-    blogCoverForSlug(postSlug) || post.featured_media_url || '/images/og-blog.jpg';
+    resolveBlogOgUrl(postSlug, post.featured_media_url || '/images/og-blog.jpg');
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
     description: metaDescription,
@@ -223,6 +247,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   alt={post.featured_media_alt || post.title.rendered}
                   fill
                   className="object-contain p-8"
+                  sizes={BLOG_POST_FEATURED_SIZES}
                   priority
                 />
               </div>
@@ -369,10 +394,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
       </main>
       
-      {/* Sección de artículos relacionados */}
+      {/* Sección de artículos relacionados: never an empty carousel. */}
+      {relatedPosts.length > 0 ? (
       <div className="mt-16">
-        <BlogRelatedPostsSection posts={relatedPosts} />
+        <BlogRelatedPostsSection
+          posts={relatedPosts}
+          excludeSlug={post.slug}
+          excludeId={post.id}
+        />
       </div>
+      ) : null}
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
@@ -381,6 +412,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     </div>
     </>
   );
+}
+
+function blogPostSeoCopy(
+  post: Pick<WPPost, 'title' | 'excerpt'>,
+  postSlug: string,
+): { title: string; description: string } {
+  const override = BLOG_SEO_OVERRIDES[postSlug];
+  return {
+    title: withPlayfulTitleSuffix(
+      override?.title ?? decodeHtmlEntities(post.title.rendered),
+    ),
+    description: override?.description
+      ? wordpressSeoText(override.description)
+      : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
+  };
 }
 
 const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; h1?: string }> = {
@@ -404,29 +450,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const [, postSlug] = slug;
   
   if (slug.length !== 2 || !postSlug) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+    notFound();
   }
 
   const post = await getBlogPostBySlug(postSlug);
-  
-  if (!post) {
-    return {
-      title: 'Artículo no encontrado',
-      robots: { index: false, follow: false },
-    };
+  if (!post || getPrimaryCategorySlug(post) !== slug[0]) {
+    notFound();
   }
 
   const url = canonicalForPath(blogPostPath(post));
 
-  const override = BLOG_SEO_OVERRIDES[postSlug];
-  const title = override?.title ?? `${post.title.rendered} | Blog - Playful Agency`;
-  const description = override?.description ?? (post.excerpt?.rendered ? post.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 160) : '');
+  const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
-  const imageUrl = coverOverride || post.featured_media_url || '/images/og-blog.jpg';
-  const imageSize = coverOverride ? BLOG_COVER_SIZE : { width: 1200, height: 630 };
+  const ogOverride = blogOgForSlug(postSlug);
+  const jpeg = ogJpegForBlogSlug(postSlug);
+  const imageUrl =
+    jpeg || ogOverride || coverOverride || post.featured_media_url || '/images/og-blog.jpg';
+  const imageSize = jpeg || ogOverride || !coverOverride
+    ? BLOG_OG_SIZE
+    : { width: 2560, height: 1440 };
   const imageAlt = post.featured_media_alt || post.title.rendered;
   const editorial = resolveBlogEditorialUpdate(postSlug, {
     published: post.date,
@@ -448,21 +490,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ...(editorial ? { modifiedTime: editorial.updatedAt } : {}),
       authors: [post.author_name || 'Playful Agency'],
       images: [
-        {
-          url: imageUrl,
-          width: imageSize.width,
-          height: imageSize.height,
-          alt: imageAlt,
-        },
+        jpeg
+          ? ogJpegMeta(imageUrl, imageAlt)
+          : {
+              url: imageUrl,
+              width: imageSize.width,
+              height: imageSize.height,
+              alt: imageAlt,
+            },
       ],
     },
-    ...(coverOverride
-      ? {
-          twitter: {
-            card: 'summary_large_image' as const,
-            images: [imageUrl],
-          },
-        }
-      : {}),
+    twitter: {
+      ...twitterFromOpenGraph(title, description),
+      card: 'summary_large_image' as const,
+      images: [imageUrl],
+    },
   };
 }

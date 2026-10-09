@@ -11,7 +11,12 @@ import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
+import CtaClickTracker from '@/components/CtaClickTracker';
 import AttributionCapture from '@/components/AttributionCapture';
+import BookingQueryPropagator from '@/components/BookingQueryPropagator';
+import BookingWidgetAttribution from '@/components/BookingWidgetAttribution';
+import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -36,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // Valores por defecto explícitos (fuente de verdad para OG)
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
   const defaultDescription = '¿Tu e-commerce está perdiendo dinero sin que lo sepas? En Playful Agency transformamos plataformas mediocres en máquinas de conversión de alto rendimiento.';
-  const defaultOgImage = 'https://playfulagency.com/og.jpg';
+  const defaultOgImage = ogJpegForPath('/') || '/images/og/home.jpg';
   
   try {
     const yoastData = await getHomePageMetadata();
@@ -51,12 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',
@@ -82,12 +82,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: 'website',
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [{
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: 'Playful Agency - Agencia de E-commerce',
-        }],
+        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
       twitter: {
         card: 'summary_large_image',
@@ -104,8 +99,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+  const { gtmId, gaId } = productionAnalyticsIds();
 
   return (
     <html lang="es" suppressHydrationWarning>
@@ -120,6 +114,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <AnalyticsSpaPageView />
           </Suspense>
+          <CtaClickTracker />
           <Header />
           <main className="min-h-screen">
             {children}
@@ -127,6 +122,10 @@ export default function RootLayout({
           <Footer />
           <ChatWidget />
           <AttributionCapture />
+          <Suspense fallback={null}>
+            <BookingQueryPropagator />
+            <BookingWidgetAttribution />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

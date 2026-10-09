@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { getAllCaseStudies } from '@/services/wordpress';
 import ContactPageClient from '@/app/contactar-agencia-de-marketing-digital/ContactPageClient';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 
 const CONTACT_URL = canonicalForPath('/contactar-agencia-de-marketing-digital');
@@ -17,6 +19,15 @@ export const metadata: Metadata = {
     title: CONTACT_TITLE,
     description: CONTACT_DESCRIPTION,
     url: CONTACT_URL,
+    images: ogJpegForPath('/contactar-agencia-de-marketing-digital')
+      ? [ogJpegMeta(ogJpegForPath('/contactar-agencia-de-marketing-digital'), CONTACT_TITLE)]
+      : undefined,
+  },
+  twitter: {
+    ...twitterFromOpenGraph(CONTACT_TITLE, CONTACT_DESCRIPTION),
+    ...(ogJpegForPath('/contactar-agencia-de-marketing-digital')
+      ? { images: [ogJpegForPath('/contactar-agencia-de-marketing-digital')] }
+      : {}),
   },
 };
 

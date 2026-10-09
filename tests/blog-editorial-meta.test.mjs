@@ -13,12 +13,15 @@ const {
   decodeHtmlEntities,
   formatCombinedByline,
   formatEditorialDate,
+  formatBlogListingDate,
   isMeaningfullyAfter,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
   toIsoDateTime,
+  wordpressSeoText,
 } = await import('../lib/blog-editorial-meta.ts');
 const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const plainText = await import('../lib/wordpress-plain-text.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -206,7 +209,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
 test('JSON-LD headline decodes WordPress entities to match the H1', () => {
   const jsonLd = buildBlogArticleJsonLd({
     headline: 'SEO &#8211; guía &amp; checklist',
-    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.',
+    description: '¿Cuáles son sus ventajas? y&#8230; si realmente puede.\n',
     datePublished: ZELLE_PUBLISHED,
     dateModified: ZELLE_PUBLISHED,
     url: 'https://playfulagency.com/blog/seo/ejemplo',
@@ -214,6 +217,35 @@ test('JSON-LD headline decodes WordPress entities to match the H1', () => {
   assert.equal(jsonLd.headline, 'SEO – guía & checklist');
   assert.equal(jsonLd.description, '¿Cuáles son sus ventajas? y… si realmente puede.');
   assert.equal(decodeHtmlEntities('&#x2013;'), '–');
+});
+
+test('wordpressSeoText decodes WP entities once and trims descriptions', () => {
+  assert.equal(plainText.decodeHtmlEntities, decodeHtmlEntities);
+  assert.equal(plainText.wordpressSeoText, wordpressSeoText);
+  assert.equal(decodeHtmlEntities('y&#8230;'), 'y…');
+  assert.equal(decodeHtmlEntities('y&amp;#8230;'), 'y&#8230;');
+  assert.equal(decodeHtmlEntities('H&amp;M'), 'H&M');
+  assert.equal(decodeHtmlEntities('&amp;amp;'), '&amp;');
+  assert.equal(
+    wordpressSeoText(
+      '<p>¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y&#8230; si realmente puede ser una alternativa para tu negocio.</p>\n',
+      { stripTags: true, maxLength: 160 },
+    ),
+    '¿Quieres conocer que es una ecommerce? ¿Cuáles son sus ventajas? y… si realmente puede ser una alternativa para tu negocio.',
+  );
+  assert.equal(wordpressSeoText('texto con salto\n'), 'texto con salto');
+  assert.doesNotMatch(wordpressSeoText('H&amp;M y más'), /&amp;/);
+});
+
+test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter and JSON-LD', () => {
+  assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
+  assert.match(blogPage, /function blogPostSeoCopy/);
+  assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
+  assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
+  assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);
+  assert.match(blogPage, /description: metaDescription/);
 });
 
 test('combined byline joins author and editorial with y', () => {
@@ -244,6 +276,52 @@ test('editorial avatar asset remains available but is not the byline face', () =
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
 });
 
+test('listing cards use honored update or publication, long and slash formats', () => {
+  const zelleDates = { published: '2025-04-22T23:28:54', modified: '2025-04-22T23:28:54' };
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates),
+    '24 de septiembre de 2026',
+  );
+  assert.equal(
+    formatBlogListingDate(ZELLE_VE_BLOG_SLUG, zelleDates, 'slash'),
+    '24 / 09 / 2026',
+  );
+  assert.equal(
+    formatBlogListingDate('como-elegir-el-mejor-framework-para-tu-web', {
+      published: '2024-04-26T19:17:40',
+      modified: '2024-11-05T22:09:53',
+    }),
+    '26 de abril de 2024',
+  );
+  assert.equal(
+    formatBlogListingDate(
+      'como-elegir-el-mejor-framework-para-tu-web',
+      {
+        published: '2024-04-26T19:17:40',
+        modified: '2024-11-05T22:09:53',
+      },
+      'slash',
+    ),
+    '26 / 04 / 2024',
+  );
+});
+
+test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
+  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(listingPage, /formatBlogListingDate\(posts\[0\]\.slug/);
+  assert.match(listingPage, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(listingPage, /formatDate\(posts\[0\]\.date\)/);
+  assert.match(mostViewed, /formatBlogListingDate\(post\.slug/);
+  assert.doesNotMatch(mostViewed, /formatDate\(post\.date\)/);
+  assert.match(wordpress, /function toRelatedBlogCard[\s\S]*formatBlogListingDate\(\s*post\.slug/);
+  assert.match(wordpress, /'slash'/);
+});
+
 test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
@@ -251,10 +329,16 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /type="application\/ld\+json"/);
   assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
   assert.doesNotMatch(blogPage, /articleJsonLd \?/);
-  assert.match(blogPage, /<BlogRelatedPostsSection posts=\{relatedPosts\} \/>/);
-  assert.match(blogPage, /getLatestBlogPosts\(6\)/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(/);
+  assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -11,8 +13,8 @@ import ServiceFaqAccordion from './ServiceFaqAccordion';
 import { toShopifyCaseCards } from './shopify-cases';
 import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
 import {
-  BOOKING_HREF,
   CONTACT_HREF,
+  SERVICE_BOOKING_HREF,
   CTA,
   FAQ,
   HERO,
@@ -44,6 +46,15 @@ export const metadata: Metadata = {
     title: SHOPIFY_META.title,
     description: SHOPIFY_META.description,
     url: PAGE_URL,
+    images: ogJpegForPath(SHOPIFY_META.path)
+      ? [ogJpegMeta(ogJpegForPath(SHOPIFY_META.path), SHOPIFY_META.title)]
+      : undefined,
+  },
+  twitter: {
+    ...twitterFromOpenGraph(SHOPIFY_META.title, SHOPIFY_META.description),
+    ...(ogJpegForPath(SHOPIFY_META.path)
+      ? { images: [ogJpegForPath(SHOPIFY_META.path)] }
+      : {}),
   },
 };
 
@@ -153,7 +164,7 @@ function LinkedCopy({ text }: { text: string }) {
   );
 }
 
-function TalkCta({ href = BOOKING_HREF }: { href?: string }) {
+function TalkCta({ href = SERVICE_BOOKING_HREF }: { href?: string }) {
   return (
     <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
       {HERO.cta}
@@ -193,7 +204,7 @@ export default async function AgenciaShopifyPage() {
       />
 
       <article className="w-full pb-20">
-        <section className="relative overflow-hidden">
+        <section data-cta-section="hero" className="relative overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
@@ -338,7 +349,7 @@ export default async function AgenciaShopifyPage() {
               subtitle={CTA.body}
               ctaTitle={CTA.question}
               buttonText={CTA.cta}
-              buttonLink={BOOKING_HREF}
+              buttonLink={SERVICE_BOOKING_HREF}
             />
           </div>
         </section>

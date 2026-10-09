@@ -9,6 +9,7 @@ const {
   CTA,
   BOOKING_HREF,
   CONTACT_HREF,
+  SERVICE_BOOKING_HREF,
   SERVICES,
   SERVICE_GRID_ITEMS,
   SERVICE_BAND_ITEMS,
@@ -52,7 +53,7 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /{HERO\.h1}/);
   assert.match(landing, /TwoColumnCtaSection/);
   assert.match(landing, /buttonText=\{CTA\.cta\}/);
-  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(landing, /buttonLink=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /ContactLeadForm/);
   assert.doesNotMatch(landing, /servicio-operar/);
@@ -167,24 +168,27 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
     BOOKING_HREF,
     'https://api.playfulagency.com/widget/bookings/reunion-playful',
   );
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
-  assert.match(landing, /href = BOOKING_HREF/);
-  assert.match(landing, /buttonLink=\{BOOKING_HREF\}/);
+  assert.match(landing, /href = SERVICE_BOOKING_HREF/);
+  assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(landing, /href=\{CONTACT_HREF\}/);
   assert.doesNotMatch(landing, /TalkCta\(\{ href = CONTACT_HREF/);
+  assert.doesNotMatch(landing, /buttonLink=\{BOOKING_HREF\}/);
   assert.doesNotMatch(HERO.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.match(HERO.cta, /Agendar|Reservar/i);
   assert.match(CTA.cta, /Agendar|Reservar/i);
 });
 
-test('middleware 301s /reunion-playful to the GHL booking widget', () => {
-  assert.match(
+test('middleware 302s /reunion-playful to the GHL booking widget after filling query', () => {
+  assert.match(middleware, /resolveBookingWidgetRedirect/);
+  assert.match(middleware, /'\/reunion-playful'/);
+  assert.match(middleware, /'\/reunion-playful\/'/);
+  assert.doesNotMatch(
     middleware,
     /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
   );
-  assert.match(middleware, /'\/reunion-playful'/);
-  assert.match(middleware, /'\/reunion-playful\/'/);
   assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);
 });
 

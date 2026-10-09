@@ -49,10 +49,9 @@ export default function ThankYouV2() {
             ))}
           </div>
         </section>
-        <div className="mt-8 text-center">
-          <a href="https://playfulagency.com/reunion-playful" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
+        <div data-cta-section="gracias" className="mt-8 text-center">
+          <a href="/reunion-playful" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
             Cumplo estas condiciones: agendar sesión
-            <span className="sr-only"> (abre en otra pestaña)</span>
           </a>
           <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
         </div>

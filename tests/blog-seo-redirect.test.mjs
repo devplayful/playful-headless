@@ -9,6 +9,7 @@ const categoryRedirects = JSON.parse(
   readFileSync(new URL('../utils/blog-category-redirect-map.json', import.meta.url), 'utf8'),
 );
 const { blogSeoRedirectDecision } = await import('../utils/amp-junk-query.ts');
+const { BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/blog-url.ts');
 
 const BAD_BUNNY_ALIAS = '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical';
 const BAD_BUNNY_CANONICAL = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
@@ -62,6 +63,52 @@ test('no category change and no junk → next()', () => {
   assert.deepEqual(decide(`${BAD_BUNNY_CANONICAL}?utm_source=x`), { type: 'next' });
   assert.deepEqual(decide('/blog?page=2'), { type: 'next' });
   assert.deepEqual(decide('/agencia-sem?noamp=mobile'), { type: 'next' });
+});
+
+test('blog category indexes 308 once to /blog?category=, with or without a trailing slash', () => {
+  assert.deepEqual([...BLOG_LISTING_CATEGORY_SLUGS], [
+    'e-commerce',
+    'email-marketing',
+    'mas-vistos',
+    'otros',
+    'pautas-digitales',
+    'seo',
+    'tecnologia',
+  ]);
+  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
+    assert.deepEqual(decide(`/blog/${slug}`), {
+      type: 'redirect',
+      pathname: '/blog',
+      search: `?category=${slug}`,
+      status: 308,
+    });
+    assert.deepEqual(decide(`/blog/${slug}/`), {
+      type: 'redirect',
+      pathname: '/blog',
+      search: `?category=${slug}`,
+      status: 308,
+    });
+  }
+});
+
+test('category index + AMP junk is still one hop to the listing query', () => {
+  assert.deepEqual(decide('/blog/seo/?amp=1&utm_source=gsc'), {
+    type: 'redirect',
+    pathname: '/blog',
+    search: '?utm_source=gsc&category=seo',
+    status: 308,
+  });
+});
+
+test('category index redirect does not touch /blog/{category}/{post}', () => {
+  assert.deepEqual(
+    decide('/blog/seo/que-es-un-blog'),
+    { type: 'next' },
+  );
+  assert.deepEqual(
+    decide('/blog/q'),
+    { type: 'next' },
+  );
 });
 
 test('builder still emits secondary-category aliases', () => {

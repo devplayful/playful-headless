@@ -47,7 +47,7 @@ await expectRedirect(
 
 {
   const reunion = await request('/reunion-playful?utm_source=seo-smoke');
-  assert.equal(reunion.status, 301, '/reunion-playful should return 301');
+  assert.equal(reunion.status, 302, '/reunion-playful should return 302');
   const location = reunion.headers.get('location');
   assert.ok(location, '/reunion-playful should include a Location header');
   const target = new URL(location);
@@ -167,7 +167,7 @@ function extractOgTitle(html) {
 
 const expectedTitles = {
   '/agencia-e-commerce':
-    'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+    'Agencia ecommerce para venta directa | Playful Agency',
   '/agencia-shopify':
     'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':
@@ -216,7 +216,8 @@ assert.match(shopifyHtml, /<h1[^>]*>Agencia Shopify\. Playful Agency, expertos e
 assert.doesNotMatch(shopifyHtml, /Shopify Plus/i);
 assert.doesNotMatch(shopifyHtml, /Cocina/i);
 assert.match(shopifyHtml, /Conversemos sobre tu tienda Shopify/);
-assert.match(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
+assert.match(shopifyHtml, /href=["']\/reunion-playful["']/);
+assert.doesNotMatch(shopifyHtml, /api\.playfulagency\.com\/widget\/bookings\/reunion-playful/);
 assert.match(shopifyHtml, /Agendar Reunión con Playful/);
 assert.match(shopifyHtml, /contactar-agencia-de-marketing-digital/);
 assert.doesNotMatch(shopifyHtml, /name=["']decisionRole["']/);
@@ -303,7 +304,7 @@ assert.equal(invalidBlogPage.status, 404, 'invalid/negative blog page stays 404'
 const gsc301 = [
   [
     '/blog/email-marketing/tipos-de-publicidad-online',
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   ],
   [
     '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads',
@@ -316,6 +317,18 @@ const gsc301 = [
   [
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
     'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+  ],
+  [
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   ],
 ];
 for (const [source, dest] of gsc301) {

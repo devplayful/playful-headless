@@ -1,12 +1,19 @@
-/** Shopify CTAs keep the GHL widget URL. Middleware 301s the apex path there. */
-export const BOOKING_HREF =
-  'https://api.playfulagency.com/widget/bookings/reunion-playful';
+import {
+  BOOKING_WIDGET_HREF,
+  SERVICE_BOOKING_HREF as CANONICAL_SERVICE_BOOKING_HREF,
+  isBookingHref,
+  toServiceBookingHref,
+} from './booking-attribution.ts';
+
+/** Widget destination. Visible CTAs use SERVICE_BOOKING_HREF so the hop can fill query. */
+export const BOOKING_HREF = BOOKING_WIDGET_HREF;
 
 /**
- * Visible/canonical href on the four GO service landings.
- * Copy (e-com PR #21) and web must match; `/reunion-playful` 301s to BOOKING_HREF.
+ * Visible/canonical href for every booking CTA.
+ * `/reunion-playful` 302s to BOOKING_HREF after forwarding the incoming query
+ * and filling missing gclid/utm from cookie.
  */
-export const SERVICE_BOOKING_HREF = '/reunion-playful';
+export const SERVICE_BOOKING_HREF = CANONICAL_SERVICE_BOOKING_HREF;
 
 export const BOOKING_CTA_LABEL = 'Agendar Reunión con Playful';
 
@@ -33,8 +40,19 @@ export const ABOUT_HREF_REWRITE_SLUGS = [
   'agencia-diseno-web',
 ] as const;
 
+/** Body href on SEO/SEM that today 301s from the short 2025 slug. */
+export const INTERNACIONAL_SEO_HREF =
+  '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad';
+
+export const INTERNACIONAL_SEO_HREF_REWRITE_SLUGS = [
+  'agencia-seo',
+  'agencia-sem',
+] as const;
+
 export type ServiceBookingCtaSlug = (typeof SERVICE_BOOKING_CTA_SLUGS)[number];
 export type AboutHrefRewriteSlug = (typeof ABOUT_HREF_REWRITE_SLUGS)[number];
+export type InternacionalSeoHrefRewriteSlug =
+  (typeof INTERNACIONAL_SEO_HREF_REWRITE_SLUGS)[number];
 
 const SERVICE_BOOKING_CTA_SLUG_SET: ReadonlySet<string> = new Set(
   SERVICE_BOOKING_CTA_SLUGS,
@@ -44,7 +62,12 @@ const ABOUT_HREF_REWRITE_SLUG_SET: ReadonlySet<string> = new Set(
   ABOUT_HREF_REWRITE_SLUGS,
 );
 
+const INTERNACIONAL_SEO_HREF_REWRITE_SLUG_SET: ReadonlySet<string> = new Set(
+  INTERNACIONAL_SEO_HREF_REWRITE_SLUGS,
+);
+
 const ABOUT_PATH = '/about';
+const INTERNACIONAL_SEO_OLD_PATH = '/agencia-seo-internacional-en-el-2025-es-una-necesidad';
 
 const CONTACT_PATH = CONTACT_HREF;
 const IN_SITE_PAGE_HOSTS = new Set([
@@ -63,6 +86,12 @@ export function isServiceBookingCtaSlug(slug: string): slug is ServiceBookingCta
 
 export function isAboutHrefRewriteSlug(slug: string): slug is AboutHrefRewriteSlug {
   return ABOUT_HREF_REWRITE_SLUG_SET.has(slug);
+}
+
+export function isInternacionalSeoHrefRewriteSlug(
+  slug: string,
+): slug is InternacionalSeoHrefRewriteSlug {
+  return INTERNACIONAL_SEO_HREF_REWRITE_SLUG_SET.has(slug);
 }
 
 function decodeBasicEntities(text: string): string {
@@ -104,6 +133,11 @@ export function isContactPageHref(href: string): boolean {
 /** True for relative, apex, www, endpoint, or old host URLs to the legacy WP about page. */
 export function isAboutPageHref(href: string): boolean {
   return pathnameOfHref(href) === ABOUT_PATH;
+}
+
+/** Short 2025 slug that already 301s to the blog article. */
+export function isInternacionalSeoOldHref(href: string): boolean {
+  return pathnameOfHref(href) === INTERNACIONAL_SEO_OLD_PATH;
 }
 
 function normalizeCtaLabel(text: string): string {
@@ -158,8 +192,20 @@ function isGlobalChromeAnchor(pre: string, post: string): boolean {
 }
 
 /**
+ * Any rendered HTML (Elementor, ACF, blog): send widget / apex booking
+ * hrefs through `/reunion-playful` so middleware can attach attribution.
+ */
+export function rewriteBookingWidgetHrefs(html: string): string {
+  if (!html) return html;
+  return html.replace(/href\s*=\s*(["'])([^"']*)\1/gi, (full, quote: string, href: string) => {
+    if (!isBookingHref(href)) return full;
+    return `href=${quote}${toServiceBookingHref(href)}${quote}`;
+  });
+}
+
+/**
  * On the four GO service landings, rewrite body anchors that point at the
- * contact page to the canonical `/reunion-playful` path (301 → GHL widget).
+ * contact page to the canonical `/reunion-playful` path (302 → GHL widget).
  * Header/footer live outside this HTML; `playful-boton-header` is skipped.
  */
 export function rewriteServiceBookingCtas(html: string, slug: string): string {
@@ -191,7 +237,29 @@ export function rewriteAboutHrefs(html: string, slug: string): string {
   });
 }
 
-/** Elementor body pipeline: booking CTAs, then leftover `/about` anchors. */
+/**
+ * On /agencia-seo and /agencia-sem only: send the short 2025 slug href
+ * straight to the live blog path. Anchor text stays as WordPress left it.
+ */
+export function rewriteInternacionalSeoHrefs(html: string, slug: string): string {
+  if (!html || !isInternacionalSeoHrefRewriteSlug(slug)) return html;
+
+  return html.replace(ANCHOR_RE, (full, pre: string, quote: string, href: string, post: string, inner: string) => {
+    if (isGlobalChromeAnchor(pre, post) || !isInternacionalSeoOldHref(href)) {
+      return full;
+    }
+
+    return `<a${pre}href=${quote}${INTERNACIONAL_SEO_HREF}${quote}${post}>${inner}</a>`;
+  });
+}
+
+/** Elementor body pipeline: widget URLs, booking CTAs, leftover `/about`, then the 2025 SEO href. */
 export function rewriteElementorBodyHrefs(html: string, slug: string): string {
-  return rewriteAboutHrefs(rewriteServiceBookingCtas(html, slug), slug);
+  return rewriteInternacionalSeoHrefs(
+    rewriteAboutHrefs(
+      rewriteServiceBookingCtas(rewriteBookingWidgetHrefs(html), slug),
+      slug,
+    ),
+    slug,
+  );
 }

@@ -18,7 +18,7 @@ const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.ur
 const GSC_301 = [
   [
     '/blog/email-marketing/tipos-de-publicidad-online',
-    'https://playfulagency.com/blog/pautas-digitales/tipos-de-publicidad-online',
+    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   ],
   [
     '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads',
@@ -31,6 +31,18 @@ const GSC_301 = [
   [
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
     'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+  ],
+  [
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  ],
+  [
+    '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   ],
 ];
 

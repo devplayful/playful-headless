@@ -8,9 +8,17 @@ const listingPage = readFileSync(
   new URL('../app/blog/page.tsx', import.meta.url),
   'utf8',
 );
+const queryPage = readFileSync(
+  new URL('../app/blog/q/page.tsx', import.meta.url),
+  'utf8',
+);
+const listingQuery = readFileSync(
+  new URL('../utils/blog-listing-query.ts', import.meta.url),
+  'utf8',
+);
 
-const metadataFn = listingPage.slice(
-  listingPage.indexOf('export async function generateMetadata'),
+const metadataFn = listingQuery.slice(
+  listingQuery.indexOf('export function buildBlogListingMetadata'),
 );
 
 test('clean /blog stays indexable', () => {
@@ -44,9 +52,12 @@ test('invalid or negative page values still count as a query', () => {
 });
 
 test('listing generateMetadata noindexes any query and keeps /blog canonical', () => {
-  assert.match(listingPage, /shouldNoindexBlogListing/);
-  assert.match(metadataFn, /shouldNoindexBlogListing\(resolved\)/);
+  assert.match(listingQuery, /shouldNoindexBlogListing/);
+  assert.match(queryPage, /buildBlogListingMetadata\(await searchParams\)/);
+  assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
   assert.match(metadataFn, /canonicalForPath\('\/blog'\)/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.doesNotMatch(metadataFn, /parsedPage\s*>=\s*2/);
+  assert.match(listingPage, /buildBlogListingMetadata\(\)/);
+  assert.doesNotMatch(listingPage, /await searchParams/);
 });

@@ -7,7 +7,7 @@
  */
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
-    'Tu Agencia e-Commerce para Resultados Reales | Playful Agency',
+    'Agencia ecommerce para venta directa | Playful Agency',
   'agencia-seo':
     'Agencia SEO Playful Agency | Mejora tu Posicionamiento',
   'pagos-online-ecommerce':
@@ -29,7 +29,7 @@ export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
 
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
-    'Agencia e-Commerce para marcas D2C que ya venden y quieren crecer con margen. Ordenamos e implementamos tu catálogo en Shopify o WooCommerce. Agenda tu llamada diagnóstica.',
+    'Para marcas que ya venden directo al consumidor (D2C): ordenamos tu tienda online, el posicionamiento y el diseño para que venda más. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDescription) {
@@ -39,5 +39,18 @@ export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDesc
   return {
     description: override ?? yoastDescription,
     ogDescription: override ?? (yoastOgDescription || yoastDescription),
+  };
+}
+
+/**
+ * Next.js merges root-layout twitter:* into child pages. Non-blog routes
+ * that set openGraph but omit twitter inherit the home generic card.
+ * Mirror the page OG (override or Yoast OG already resolved) onto twitter.
+ */
+export function twitterFromOpenGraph(ogTitle, ogDescription, ogImage) {
+  return {
+    title: ogTitle,
+    description: ogDescription,
+    ...(ogImage ? { images: Array.isArray(ogImage) ? ogImage : [ogImage] } : {}),
   };
 }

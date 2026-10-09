@@ -25,8 +25,13 @@ test('blog post page is a server component and renders article HTML directly', (
   assert.match(blogPage, /<h1 className="sr-only">\{pageH1\}<\/h1>/);
   assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
   assert.match(blogPage, /<article className="bg-white rounded-\[36px\]/);
-  assert.match(blogPage, /<BlogRelatedPostsSection posts=\{relatedPosts\} \/>/);
-  assert.match(blogPage, /getLatestBlogPosts\(6\)/);
+  assert.match(blogPage, /<BlogRelatedPostsSection/);
+  assert.match(blogPage, /posts=\{relatedPosts\}/);
+  assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
+  assert.match(blogPage, /excludeId=\{post\.id\}/);
+  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /excludeCurrentBlogPost\(/);
+  assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
 });
 
 test('RSC payload paragraphs do not count as initial HTML', () => {

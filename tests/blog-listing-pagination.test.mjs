@@ -2,9 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { blogListingPath } = await import('../utils/blog-url.ts');
+const { blogListingPath, BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/blog-url.ts');
 
 const listingPage = readFileSync(
+  new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
+  'utf8',
+);
+const listingIndex = readFileSync(
   new URL('../app/blog/page.tsx', import.meta.url),
   'utf8',
 );
@@ -17,8 +21,12 @@ const categories = readFileSync(
   'utf8',
 );
 
-const metadataFn = listingPage.slice(
-  listingPage.indexOf('export async function generateMetadata'),
+const listingQuery = readFileSync(
+  new URL('../utils/blog-listing-query.ts', import.meta.url),
+  'utf8',
+);
+const metadataFn = listingQuery.slice(
+  listingQuery.indexOf('export function buildBlogListingMetadata'),
 );
 
 const CRAWLABLE_QUERY_HREF = /href=\{?[`'"][^`'"]*\?(?:page|category)=/i;
@@ -63,6 +71,12 @@ test('pagination component navigates with buttons, not indexable hrefs', () => {
   assert.doesNotMatch(pagination, /<Link/);
 });
 
+test('listing chips and the category-index 308 share the same slugs', () => {
+  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
+    assert.match(categories, new RegExp(`slug: '${slug}'`));
+  }
+});
+
 test('category UI has no crawlable ?category= hrefs', () => {
   assert.match(categories, /blogListingPath\(\{\s*category:/);
   assert.match(categories, /href="\/blog"/);
@@ -77,7 +91,9 @@ test('clean /blog generateMetadata title and robots stay unchanged', () => {
     metadataFn,
     /description:\s*'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog\.'/,
   );
-  assert.match(metadataFn, /shouldNoindexBlogListing\(resolved\)/);
+  assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
   assert.match(metadataFn, /canonicalForPath\('\/blog'\)/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
+  assert.match(listingIndex, /buildBlogListingMetadata\(\)/);
+  assert.match(listingIndex, /export const revalidate = 300/);
 });

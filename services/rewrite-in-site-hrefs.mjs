@@ -1,3 +1,6 @@
+import canibalizacionOrigins from '../utils/blog-canibalizacion-redirect-map.json' with { type: 'json' };
+import { rewriteBrokenInternalAnchors } from '../utils/broken-internal-hrefs.ts';
+
 const IN_SITE_PAGE_HOSTS = new Set([
   'endpoint.playfulagency.com',
   'old.playfulagency.com',
@@ -10,6 +13,34 @@ const WP_ASSET_PATH_PREFIXES = ['/wp-content', '/wp-includes', '/wp-json', '/wp-
 const APEX_ORIGIN = 'https://playfulagency.com';
 const LEGACY_CASE_STUDIES_HUB_PATH = '/casos-de-exito-agencia-de-marketing-digital';
 const CASE_STUDIES_HUB_PATH = '/casos-de-exito';
+
+const CANIBALIZACION_301 = canibalizacionOrigins;
+
+function normalizeRedirectPath(pathname) {
+  const path = pathname.split(/[?#]/)[0];
+  return path.length > 1 ? path.replace(/\/+$/, '') : path || '/';
+}
+
+export function remapCanibalizacionHref(href) {
+  if (typeof href !== 'string' || !href) return href;
+  try {
+    const absolute = href.startsWith('//') ? `https:${href}` : href;
+    const url = absolute.startsWith('http')
+      ? new URL(absolute)
+      : new URL(absolute, `${APEX_ORIGIN}/`);
+    const dest = CANIBALIZACION_301[normalizeRedirectPath(url.pathname)];
+    if (!dest) return href;
+    const destUrl = new URL(dest);
+    destUrl.search = url.search;
+    destUrl.hash = url.hash;
+    if (href.startsWith('http') || href.startsWith('//')) {
+      return destUrl.href;
+    }
+    return `${destUrl.pathname}${url.search}${url.hash}`;
+  } catch {
+    return href;
+  }
+}
 
 /** Absolute or protocol-relative in-site page URLs (not /wp-* assets). */
 const IN_SITE_URL_RE = /(?:https?:)?\/\/(?:endpoint\.|old\.|www\.)?playfulagency\.com[^\s"'<>]*/gi;
@@ -46,11 +77,16 @@ export function rewritePageHref(url) {
   return `${normalized}${query}${hash}`;
 }
 
+function remapInSiteHref(href) {
+  return remapCanibalizacionHref(remapLegacyCaseStudiesHubHref(rewritePageHref(href)));
+}
+
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
-export function rewriteInSitePageHrefs(html) {
-  return html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
-    return `href=${quote}${remapLegacyCaseStudiesHubHref(rewritePageHref(href))}${quote}`;
+export function rewriteInSitePageHrefs(html, sourcePath = '') {
+  const remapped = html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
+    return `href=${quote}${remapInSiteHref(href)}${quote}`;
   });
+  return rewriteBrokenInternalAnchors(remapped, sourcePath);
 }
 
 /**
@@ -135,13 +171,13 @@ export function rewriteWpYoastFields(item) {
   return rewriteYoastTree(item);
 }
 
-function rewriteRenderedField(field) {
+function rewriteRenderedField(field, sourcePath = '') {
   if (!field || typeof field !== 'object' || typeof field.rendered !== 'string') {
     return field;
   }
   return {
     ...field,
-    rendered: rewriteInSitePageHrefs(field.rendered),
+    rendered: rewriteInSitePageHrefs(field.rendered, sourcePath),
   };
 }
 
@@ -152,8 +188,9 @@ function rewriteRenderedField(field) {
  */
 export function rewriteWpRenderedHtmlFields(item) {
   if (!item || typeof item !== 'object') return item;
+  const sourcePath = typeof item.slug === 'string' && item.slug ? `/${item.slug}` : '';
   const next = { ...item };
-  if ('content' in item) next.content = rewriteRenderedField(item.content);
-  if ('excerpt' in item) next.excerpt = rewriteRenderedField(item.excerpt);
+  if ('content' in item) next.content = rewriteRenderedField(item.content, sourcePath);
+  if ('excerpt' in item) next.excerpt = rewriteRenderedField(item.excerpt, sourcePath);
   return next;
 }

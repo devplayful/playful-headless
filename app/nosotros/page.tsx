@@ -1,5 +1,7 @@
 import { getPageMetadataBySlug, TeamMember, getTeamMembers } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
+import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
@@ -442,6 +444,13 @@ export async function generateMetadata() {
       title,
       description,
       url,
+      images: ogJpegForPath('/nosotros')
+        ? [ogJpegMeta(ogJpegForPath('/nosotros'), title)]
+        : undefined,
+    },
+    twitter: {
+      ...twitterFromOpenGraph(title, description),
+      ...(ogJpegForPath('/nosotros') ? { images: [ogJpegForPath('/nosotros')] } : {}),
     },
   };
 }
