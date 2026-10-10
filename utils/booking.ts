@@ -46,6 +46,15 @@ export const SERVICE_BOOKING_CTA_SLUGS = [
   'agencia-seo',
   'agencia-sem',
   'agencia-diseno-web',
+  'agencia-ux-ui',
+] as const;
+
+/** Generic contact labels we retitle. /agencia-ux-ui keeps its visible CTA copy. */
+export const SERVICE_BOOKING_RELABEL_SLUGS = [
+  'agencia-e-commerce',
+  'agencia-seo',
+  'agencia-sem',
+  'agencia-diseno-web',
 ] as const;
 
 /**
@@ -68,6 +77,7 @@ export const INTERNACIONAL_SEO_HREF_REWRITE_SLUGS = [
 ] as const;
 
 export type ServiceBookingCtaSlug = (typeof SERVICE_BOOKING_CTA_SLUGS)[number];
+export type ServiceBookingRelabelSlug = (typeof SERVICE_BOOKING_RELABEL_SLUGS)[number];
 export type AboutHrefRewriteSlug = (typeof ABOUT_HREF_REWRITE_SLUGS)[number];
 export type BookingAttributionKey = (typeof BOOKING_ATTRIBUTION_KEYS)[number];
 export type InternacionalSeoHrefRewriteSlug =
@@ -86,6 +96,10 @@ export type BookingHrefInput = {
 
 const SERVICE_BOOKING_CTA_SLUG_SET: ReadonlySet<string> = new Set(
   SERVICE_BOOKING_CTA_SLUGS,
+);
+
+const SERVICE_BOOKING_RELABEL_SLUG_SET: ReadonlySet<string> = new Set(
+  SERVICE_BOOKING_RELABEL_SLUGS,
 );
 
 const ABOUT_HREF_REWRITE_SLUG_SET: ReadonlySet<string> = new Set(
@@ -112,6 +126,10 @@ const ANCHOR_RE =
 
 export function isServiceBookingCtaSlug(slug: string): slug is ServiceBookingCtaSlug {
   return SERVICE_BOOKING_CTA_SLUG_SET.has(slug);
+}
+
+export function isServiceBookingRelabelSlug(slug: string): slug is ServiceBookingRelabelSlug {
+  return SERVICE_BOOKING_RELABEL_SLUG_SET.has(slug);
 }
 
 export function isAboutHrefRewriteSlug(slug: string): slug is AboutHrefRewriteSlug {
@@ -338,9 +356,10 @@ export function rewriteBookingWidgetHrefs(html: string): string {
 }
 
 /**
- * On the four GO service landings, rewrite body anchors that point at the
+ * On the GO service landings, rewrite body anchors that point at the
  * contact page to the canonical `/reunion-playful` path (302 → GHL widget).
  * Header/footer live outside this HTML; `playful-boton-header` is skipped.
+ * /agencia-ux-ui only changes the href so the visible CTA copy stays put.
  */
 export function rewriteServiceBookingCtas(html: string, slug: string): string {
   if (!html || !isServiceBookingCtaSlug(slug)) return html;
@@ -350,7 +369,10 @@ export function rewriteServiceBookingCtas(html: string, slug: string): string {
       return full;
     }
 
-    return `<a${pre}href=${quote}${SERVICE_BOOKING_HREF}${quote}${post}>${rewriteContactCtaLabels(inner)}</a>`;
+    const nextInner = isServiceBookingRelabelSlug(slug)
+      ? rewriteContactCtaLabels(inner)
+      : inner;
+    return `<a${pre}href=${quote}${SERVICE_BOOKING_HREF}${quote}${post}>${nextInner}</a>`;
   });
 }
 
