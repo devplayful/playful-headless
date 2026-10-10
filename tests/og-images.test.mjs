@@ -35,7 +35,15 @@ test('og maps cover home, blog listing, cases and a Magnific post', () => {
   assert.equal(OG_JPEG_SIZE.height, 630);
   assert.equal(ogJpegForPath('/'), '/images/og/home.jpg');
   assert.equal(ogJpegForPath('/blog'), '/images/og/home.jpg');
-  assert.equal(ogJpegForPath('/nosotros'), '/images/og/home.jpg');
+  assert.equal(ogJpegForPath('/nosotros'), '/images/og/nosotros.jpg');
+  assert.equal(
+    ogJpegForPath('/contactar-agencia-de-marketing-digital'),
+    '/images/og/contactar-agencia-de-marketing-digital.jpg',
+  );
+  assert.equal(ogJpegForPath('/agencia-shopify'), '/images/og/agencia-shopify.jpg');
+  assert.equal(ogJpegForPath('/agencia-seo'), '/images/og/agencia-seo.jpg');
+  assert.equal(ogJpegForPath('/agencia-sem'), '/images/og/agencia-sem.jpg');
+  assert.equal(ogJpegForPath('/pasarela-de-pagos-venezuela'), '');
   assert.match(ogJpegForPath('/casos-de-exito/jumex-shopify-dtc-ecommerce'), /jumex/);
   assert.match(ogJpegForBlogSlug('actualizar-tu-e-commerce'), /\/images\/og\//);
   assert.deepEqual(ogJpegMeta('/images/og/home.jpg', 'X'), {
@@ -52,6 +60,7 @@ test('every mapped OG JPEG exists, is 1200×630 and ≤300 KB', async () => {
   const unique = new Set([
     ...Object.values(OG_JPEG_BY_PATH),
     ...Object.values(OG_JPEG_BY_BLOG_SLUG),
+    '/images/og/pasarela-de-pagos-venezuela.jpg',
   ]);
   for (const rel of unique) {
     const file = join(root, 'public', rel.replace(/^\//, ''));
