@@ -99,7 +99,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en nuestra página de [agencia Shopify](https://playfulagency.com/agencia-shopify).',
+          text: 'Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en [tienda Shopify cuando vendes fuera](https://playfulagency.com/agencia-shopify).',
         },
       ],
     },

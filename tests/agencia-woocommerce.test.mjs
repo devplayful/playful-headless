@@ -72,13 +72,15 @@ test('H2s stay literal and landing hrefs are only pasarela and Shopify', () => {
     '/agencia-shopify',
     '/pasarela-de-pagos-venezuela',
   ]);
-  assert.match(published, /métodos de cobro que ya usa Venezuela/);
+  assert.match(published, /\[métodos de cobro que ya usa Venezuela\]\(https:\/\/playfulagency\.com\/pasarela-de-pagos-venezuela\)/);
+  assert.match(published, /\[tienda Shopify cuando vendes fuera\]\(https:\/\/playfulagency\.com\/agencia-shopify\)/);
   assert.match(published, /página de agencia de diseño web/);
   assert.match(published, /página de agencia de e-commerce/);
   assert.match(published, /página de agencia SEO/);
   assert.doesNotMatch(published, /agencia-diseno-web/);
   assert.doesNotMatch(published, /agencia-e-commerce/);
   assert.doesNotMatch(published, /\/agencia-seo/);
+  assert.doesNotMatch(published, /\[agencia Shopify\]/);
   assert.doesNotMatch(copySource, /agencia-diseno-web/);
   assert.doesNotMatch(copySource, /agencia-e-commerce/);
   assert.doesNotMatch(landing, /agencia-diseno-web/);
