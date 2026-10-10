@@ -4,6 +4,11 @@ import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
 import { applyPageTitleOverride, applyPageDescriptionOverride, twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import ElementorPageContent from '@/components/ElementorPageContent';
+import {
+  AGENCIA_UX_UI_SLUG,
+  buildAgenciaUxUiJsonLd,
+  serializeServiceLandingJsonLd,
+} from '@/utils/service-landing-jsonld';
 
 export const revalidate = 300;
 // Unknown slugs must not enter this page: generateMetadata+notFound()
@@ -84,12 +89,38 @@ export default async function WordPressPage({
     notFound();
   }
 
+  const uxUiJsonLd = slug === AGENCIA_UX_UI_SLUG
+    ? buildAgenciaUxUiJsonLd(
+        applyPageDescriptionOverride(
+          slug,
+          (await getPageMetadataBySlug(slug)).yoast_wpseo_metadesc,
+          undefined,
+        ).description,
+      )
+    : null;
+
   return (
-    <ElementorPageContent
-      html={page.html}
-      pageId={page.id}
-      stylesheetIds={page.stylesheetIds}
-      slug={slug}
-    />
+    <>
+      {uxUiJsonLd ? (
+        <>
+          <script
+            id="playful-service"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(uxUiJsonLd.service) }}
+          />
+          <script
+            id="playful-breadcrumb"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(uxUiJsonLd.breadcrumb) }}
+          />
+        </>
+      ) : null}
+      <ElementorPageContent
+        html={page.html}
+        pageId={page.id}
+        stylesheetIds={page.stylesheetIds}
+        slug={slug}
+      />
+    </>
   );
 }

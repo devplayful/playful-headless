@@ -8,9 +8,11 @@ const {
   CONTACT_HREF,
   SERVICE_BOOKING_HREF,
   SERVICE_BOOKING_CTA_SLUGS,
+  SERVICE_BOOKING_RELABEL_SLUGS,
   isContactCtaLabel,
   isContactPageHref,
   isServiceBookingCtaSlug,
+  isServiceBookingRelabelSlug,
   rewriteServiceBookingCtas,
 } = await import('../utils/booking.ts');
 
@@ -41,16 +43,24 @@ test('shared booking constant matches the Shopify GHL widget', () => {
   assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF \} from '\.\.\/\.\.\/utils\/booking\.ts'/);
 });
 
-test('allowlist is only the four GO service landings', () => {
+test('allowlist is the GO service landings including /agencia-ux-ui', () => {
   assert.deepEqual([...SERVICE_BOOKING_CTA_SLUGS], [
+    'agencia-e-commerce',
+    'agencia-seo',
+    'agencia-sem',
+    'agencia-diseno-web',
+    'agencia-ux-ui',
+  ]);
+  assert.deepEqual([...SERVICE_BOOKING_RELABEL_SLUGS], [
     'agencia-e-commerce',
     'agencia-seo',
     'agencia-sem',
     'agencia-diseno-web',
   ]);
   assert.equal(isServiceBookingCtaSlug('agencia-seo'), true);
+  assert.equal(isServiceBookingCtaSlug('agencia-ux-ui'), true);
+  assert.equal(isServiceBookingRelabelSlug('agencia-ux-ui'), false);
   assert.equal(isServiceBookingCtaSlug('marketing-internacional'), false);
-  assert.equal(isServiceBookingCtaSlug('agencia-ux-ui'), false);
   assert.equal(isServiceBookingCtaSlug('seo-expertos'), false);
 });
 
@@ -145,8 +155,21 @@ test('does not rewrite other SERVICE_SLUGS such as marketing-internacional', () 
     '¡Contáctanos y empieza ya!',
   );
   assert.equal(rewriteServiceBookingCtas(html, 'marketing-internacional'), html);
-  assert.equal(rewriteServiceBookingCtas(html, 'agencia-ux-ui'), html);
   assert.equal(rewriteServiceBookingCtas(html, 'seo-vigo'), html);
+});
+
+test('/agencia-ux-ui sends body CTAs to /reunion-playful and keeps the visible label', () => {
+  const html = [
+    MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', 'Quiero una experiencia que atrape'),
+    MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', '¡Contáctanos y empieza ya!'),
+  ].join('');
+
+  const rewritten = rewriteServiceBookingCtas(html, 'agencia-ux-ui');
+  assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
+  assert.equal((rewritten.match(/href="\/reunion-playful"/g) || []).length, 2);
+  assert.match(rewritten, /Quiero una experiencia que atrape/);
+  assert.match(rewritten, /¡Contáctanos y empieza ya!/);
+  assert.doesNotMatch(rewritten, new RegExp(BOOKING_CTA_LABEL));
 });
 
 test('skips the sticky header Contáctanos even if it appears in the HTML fragment', () => {

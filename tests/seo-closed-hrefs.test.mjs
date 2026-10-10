@@ -134,7 +134,7 @@ test('unwraps listed anchors and leaves the text', () => {
 });
 
 test('landing carousel hrefs resolve without changing the markup around them', () => {
-  for (const landing of ['/agencia-e-commerce', '/agencia-seo', '/agencia-sem', '/agencia-diseno-web']) {
+  for (const landing of ['/agencia-e-commerce', '/agencia-seo', '/agencia-sem', '/agencia-diseno-web', '/agencia-ux-ui']) {
     for (const item of LANDING_REWRITES) {
       const html = `<div class="mae-news-carousel"><a href="${item.from}">${item.anchor}</a></div>`;
       const rewritten = rewriteInSitePageHrefs(html, landing);
