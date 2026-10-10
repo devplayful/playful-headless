@@ -8,9 +8,9 @@ export const OG_JPEG_SIZE = { width: 1200, height: 630 } as const;
 
 export const OG_JPEG_BY_PATH = {
   "/politica-de-privacidad": "/images/og/home.jpg",
-  "/agencia-shopify": "/images/og/home.jpg",
-  "/contactar-agencia-de-marketing-digital": "/images/og/home.jpg",
-  "/nosotros": "/images/og/home.jpg",
+  "/agencia-shopify": "/images/og/agencia-shopify.jpg",
+  "/contactar-agencia-de-marketing-digital": "/images/og/contactar-agencia-de-marketing-digital.jpg",
+  "/nosotros": "/images/og/nosotros.jpg",
   "/blog": "/images/og/home.jpg",
   "/": "/images/og/home.jpg",
   "/casos-de-exito/soytechno-ecommerce-venezuela": "/images/og/casos-de-exito-soytechno-ecommerce-venezuela.jpg",
