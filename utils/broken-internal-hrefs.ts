@@ -40,6 +40,7 @@ export const LANDING_CAROUSEL_SOURCE_SLUGS = Object.freeze([
   'agencia-seo',
   'agencia-sem',
   'agencia-diseno-web',
+  'agencia-ux-ui',
 ]);
 
 /** Do not invent dests for unpublished landings. */
