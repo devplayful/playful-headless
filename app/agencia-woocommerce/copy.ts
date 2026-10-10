@@ -1,7 +1,7 @@
 import type { AgencyLandingCopy } from '@/lib/agency-copy-landing';
 
 export const WOOCOMMERCE_META = {
-  title: 'Agencia WooCommerce: tienda y cobros | Playful Agency',
+  title: 'Agencia WooCommerce en Venezuela | Playful Agency',
   description:
     'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress, con Redsys y Bizum en España y pagos automáticos en Venezuela. Reserva reunión.',
   path: '/agencia-woocommerce',
@@ -14,7 +14,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
   meta: WOOCOMMERCE_META,
   ctaLabel: CTA_LABEL,
   hero: {
-    h1: 'Agencia WooCommerce para montar, conectar y mejorar tu tienda online',
+    h1: 'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress',
     paragraphs: [
       'Si buscas una agencia WooCommerce, lo normal es que tengas una tienda en WordPress que quieres montar, conectar con tu inventario o mejorar porque se ha quedado atrás. En Playful somos una agencia WooCommerce que diseña la tienda, la conecta con tu cobro y con tus sistemas, y la mantiene después de la entrega.',
       'Conectamos el cobro con el banco con el que ya trabajas en España, y en Venezuela WooCommerce es la plataforma con la que integramos los pagos locales de forma automática. Trabajamos con tiendas que ya funcionan, con tiendas físicas que dan el paso a internet y con proyectos que empiezan desde cero.',
@@ -27,7 +27,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'Diseñamos la tienda para el móvil y el ordenador, con fichas que enseñan lo que el comprador necesita para decidir. Cuando el proyecto incluye diseño, te presentamos 2 propuestas visuales y eliges sobre ellas, como contamos en nuestra página de [agencia de diseño web](https://playfulagency.com/agencia-diseno-web).',
+          text: 'Diseñamos la tienda para el móvil y el ordenador, con fichas que enseñan lo que el comprador necesita para decidir. Cuando el proyecto incluye diseño, te presentamos 2 propuestas visuales y eliges sobre ellas, como contamos en nuestra página de agencia de diseño web.',
         },
         {
           type: 'p',
@@ -35,7 +35,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'Si tu proyecto va más allá de la tienda, en nuestra página de [agencia de e-commerce](https://playfulagency.com/agencia-e-commerce) tienes todo lo que hacemos alrededor.',
+          text: 'Si tu proyecto va más allá de la tienda, en nuestra página de agencia de e-commerce tienes todo lo que hacemos alrededor.',
         },
       ],
     },
@@ -95,11 +95,11 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'En Venezuela, WooCommerce es nuestra plataforma probada para cobrar de forma automática con SiTef, Instapago, Cashea, Banesco, Zelle y BDV. Hacemos lo mismo en apps y en tiendas sobre Medusa, así que el pago se confirma en el pedido sin que nadie lo valide a mano.',
+          text: 'En Venezuela, WooCommerce es nuestra plataforma probada para cobrar de forma automática con los [métodos de cobro que ya usa Venezuela](https://playfulagency.com/pasarela-de-pagos-venezuela): SiTef, Instapago, Cashea, Banesco, Zelle y BDV. Hacemos lo mismo en apps y en tiendas sobre Medusa, así que el pago se confirma en el pedido sin que nadie lo valide a mano.',
         },
         {
           type: 'p',
-          text: 'Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en nuestra página de [agencia Shopify](https://playfulagency.com/agencia-shopify).',
+          text: 'Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en [tienda Shopify cuando vendes fuera](https://playfulagency.com/agencia-shopify).',
         },
       ],
     },
@@ -129,7 +129,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'Trabajamos la tienda y su posicionamiento desde el mismo equipo, así que cada categoría, cada ficha y cada cambio de estructura se piensa también para Google. Si quieres ver cómo trabajamos el SEO fuera de la tienda, lo tienes en nuestra página de [agencia SEO](https://playfulagency.com/agencia-seo).',
+          text: 'Trabajamos la tienda y su posicionamiento desde el mismo equipo, así que cada categoría, cada ficha y cada cambio de estructura se piensa también para Google. Si quieres ver cómo trabajamos el SEO fuera de la tienda, lo tienes en nuestra página de agencia SEO.',
         },
       ],
     },

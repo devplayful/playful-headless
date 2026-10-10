@@ -29,7 +29,7 @@ const H2S = [
 ];
 
 test('meta title, description and path match the SEO-signed copy', () => {
-  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce: tienda y cobros | Playful Agency');
+  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce en Venezuela | Playful Agency');
   assert.equal(
     WOOCOMMERCE_META.description,
     'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress, con Redsys y Bizum en España y pagos automáticos en Venezuela. Reserva reunión.',
@@ -37,7 +37,7 @@ test('meta title, description and path match the SEO-signed copy', () => {
   assert.equal(WOOCOMMERCE_META.path, '/agencia-woocommerce');
   assert.equal(
     WOOCOMMERCE_COPY.hero.h1,
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda online',
+    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress',
   );
 });
 
@@ -58,15 +58,19 @@ test('JSON-LD is Service + BreadcrumbList + FAQPage with the seven signed questi
   );
 });
 
-test('H2s stay literal and the page never links the dead Venezuela payments URL', () => {
+test('H2s stay literal and body landings are only pasarela and Shopify', () => {
   assert.deepEqual(
     [...WOOCOMMERCE_COPY.sections.map((section) => section.h2), WOOCOMMERCE_COPY.process.h2, WOOCOMMERCE_COPY.faq.h2, WOOCOMMERCE_COPY.closing.h2],
     H2S,
   );
   const published = JSON.stringify(WOOCOMMERCE_COPY);
-  assert.doesNotMatch(published, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(copySource, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(landing, /pasarela-de-pagos-venezuela/);
+  assert.match(published, /\[métodos de cobro que ya usa Venezuela\]\(https:\/\/playfulagency\.com\/pasarela-de-pagos-venezuela\)/);
+  assert.match(copySource, /pasarela-de-pagos-venezuela/);
+  assert.match(published, /\[tienda Shopify cuando vendes fuera\]\(https:\/\/playfulagency\.com\/agencia-shopify\)/);
+  assert.doesNotMatch(published, /agencia-diseno-web/);
+  assert.doesNotMatch(published, /agencia-e-commerce/);
+  assert.doesNotMatch(published, /agencia-seo/);
+  assert.doesNotMatch(published, /\[agencia Shopify\]/);
   assert.doesNotMatch(published, /Preguntas para José/);
   assert.doesNotMatch(published, /\[NO COMPROBADO/);
 });

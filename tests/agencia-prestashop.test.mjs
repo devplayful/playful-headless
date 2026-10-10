@@ -35,13 +35,13 @@ const H2S = [
 ];
 
 test('meta title, description and path match the signed copy', () => {
-  assert.equal(PRESTASHOP_META.title, 'Agencia PrestaShop: tienda, SEO y migración | Playful Agency');
+  assert.equal(PRESTASHOP_META.title, 'Agencia PrestaShop: tienda, catálogo y SEO | Playful Agency');
   assert.equal(
     PRESTASHOP_META.description,
-    'Agencia PrestaShop para tu tienda online: catálogo, fichas, SEO y cobros con un solo equipo, y migración a Shopify si la necesitas. Reserva tu reunión.',
+    'Agencia PrestaShop para tu tienda: catálogo, fichas, SEO y cobros desde el mismo equipo. Reserva 30 a 40 minutos y miramos tu tienda con Playful Agency.',
   );
   assert.equal(PRESTASHOP_META.path, '/agencia-prestashop');
-  assert.equal(PRESTASHOP_COPY.hero.h1, 'Agencia PrestaShop para tu tienda online: catálogo, SEO y cobros');
+  assert.equal(PRESTASHOP_COPY.hero.h1, 'Agencia PrestaShop para tu tienda: catálogo, SEO y cobros');
 });
 
 test('canonical stays on the existing slug without a trailing slash', () => {

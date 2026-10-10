@@ -1,9 +1,9 @@
 import type { AgencyLandingCopy } from '@/lib/agency-copy-landing';
 
 export const PRESTASHOP_META = {
-  title: 'Agencia PrestaShop: tienda, SEO y migración | Playful Agency',
+  title: 'Agencia PrestaShop: tienda, catálogo y SEO | Playful Agency',
   description:
-    'Agencia PrestaShop para tu tienda online: catálogo, fichas, SEO y cobros con un solo equipo, y migración a Shopify si la necesitas. Reserva tu reunión.',
+    'Agencia PrestaShop para tu tienda: catálogo, fichas, SEO y cobros desde el mismo equipo. Reserva 30 a 40 minutos y miramos tu tienda con Playful Agency.',
   path: '/agencia-prestashop',
   serviceName: 'Agencia PrestaShop',
 } as const;
@@ -14,7 +14,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
   meta: PRESTASHOP_META,
   ctaLabel: CTA_LABEL,
   hero: {
-    h1: 'Agencia PrestaShop para tu tienda online: catálogo, SEO y cobros',
+    h1: 'Agencia PrestaShop para tu tienda: catálogo, SEO y cobros',
     paragraphs: [
       'Cuando comparas agencias PrestaShop, lo que quieres saber es quién se ocupa de tu tienda cada vez que hay que cambiar algo. En Playful somos una agencia PrestaShop que lleva el catálogo, las fichas, el backoffice, el SEO y el cobro desde el mismo equipo.',
       'Hoy es habitual que uno toque el servidor, otro instale un módulo y otro escriba las fichas, y que nadie revise si Google encuentra la tienda. Nosotros lo juntamos todo y te decimos con claridad cuándo te conviene seguir en PrestaShop y cuándo te conviene migrar a Shopify.',
