@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
 import GoogleTagManager from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import ApolloTracker from '@/components/ApolloTracker';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import CtaClickTracker from '@/components/CtaClickTracker';
 import AttributionCapture from '@/components/AttributionCapture';
@@ -99,13 +100,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { gtmId, gaId } = productionAnalyticsIds();
+  const { gtmId, gaId, apolloAppId } = productionAnalyticsIds();
 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         {gaId && <GoogleAnalytics gaId={gaId} />}
+        {apolloAppId && <ApolloTracker appId={apolloAppId} />}
         <script
           id="playful-organization"
           type="application/ld+json"
