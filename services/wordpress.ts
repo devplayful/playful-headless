@@ -488,14 +488,14 @@ export interface WPPost {
   _embedded?: {
     'wp:featuredmedia'?: WPFeaturedMedia[];
     'wp:term'?: any[][];
-    'author'?: Array<{ id: number; name: string; slug: string; avatar_urls?: { [key: string]: string } }>;
+    'author'?: Array<{ id: number; name: string; slug: string; url?: string; avatar_urls?: { [key: string]: string } }>;
   };
   featured_media?: number;
   featured_media_url?: string;
   featured_media_alt?: string;
   categories?: any[];
   tags?: any[];
-  author?: number | { id: number; name: string; slug: string; avatar_urls?: { [key: string]: string } };
+  author?: number | { id: number; name: string; slug: string; url?: string; avatar_urls?: { [key: string]: string } };
   author_name?: string;
   author_avatar_urls?: { [key: string]: string };
   modified?: string;
@@ -660,7 +660,7 @@ export async function getLatestBlogPosts(
 }
 
 type ListingMedia = { id: number; source_url: string; alt_text?: string };
-type ListingAuthor = { id: number; name: string; slug?: string };
+type ListingAuthor = { id: number; name: string; slug?: string; url?: string };
 
 function uniquePositiveIds(values: unknown[]): number[] {
   return Array.from(new Set(
@@ -769,7 +769,7 @@ async function hydrateListingPosts(
       featured_media_alt: resolveBlogCoverAlt(rewritten.slug, mediaItem?.alt_text || ''),
       author_name: author?.name || 'Playful Agency',
       author: author
-        ? { id: author.id, name: author.name, slug: author.slug || '' }
+        ? { id: author.id, name: author.name, slug: author.slug || '', url: author.url }
         : rewritten.author,
     };
   });

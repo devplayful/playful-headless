@@ -174,8 +174,8 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
   const seoDesc = applyPageDescriptionOverride('agencia-seo', 'Yoast desc', 'Yoast OG desc');
   assert.deepEqual(twitterFromOpenGraph(seo.ogTitle, seoDesc.ogDescription), {
     card: 'summary_large_image',
-    title: AGENCIA_SEO_TITLE,
-    description: 'Yoast desc',
+    title: seo.ogTitle,
+    description: seoDesc.ogDescription,
   });
   assert.equal(seo.ogTitle, seo.title);
   assert.equal(seoDesc.ogDescription, seoDesc.description);

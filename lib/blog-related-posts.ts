@@ -39,7 +39,7 @@ export const BLOG_ARTICLE_POST_FIELDS =
 /** Media lookup used by listings instead of embedding every image size. */
 export const BLOG_MEDIA_FIELDS = 'id,source_url,alt_text';
 /** Author lookup used by listings instead of embedding avatar maps. */
-export const BLOG_AUTHOR_FIELDS = 'id,name,slug';
+export const BLOG_AUTHOR_FIELDS = 'id,name,slug,url';
 /**
  * Next cannot cache REST bodies over 2 MB. Measured listing+embed-media at
  * 100 posts is ~0.53 MB; 1.5 MB is the hard ceiling we paginate against.

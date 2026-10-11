@@ -16,11 +16,15 @@ const {
   formatCombinedByline,
   formatEditorialDate,
   formatBlogListingDate,
+  formatUpdatedAtShort,
+  formatUpdatedByline,
   isMeaningfullyAfter,
+  resolveBlogAuthorHref,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
   toIsoDateTime,
   wordpressSeoText,
+  BLOG_AUTHOR_HREF,
 } = await import('../lib/blog-editorial-meta.ts');
 const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
 const plainText = await import('../lib/wordpress-plain-text.ts');
@@ -357,6 +361,17 @@ test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', 
   assert.match(wordpress, /'slash'/);
 });
 
+test('updated byline uses short Spanish month without a new design', () => {
+  assert.equal(formatUpdatedAtShort('2026-10-11'), '11 oct 2026');
+  assert.equal(formatUpdatedByline('2026-10-11'), 'Actualizado el 11 oct 2026');
+  assert.equal(formatUpdatedAtShort('2026-09-24T00:00:00.000Z'), '24 sept 2026');
+  assert.equal(resolveBlogAuthorHref('https://playfulagency.com/nosotros'), BLOG_AUTHOR_HREF);
+  assert.equal(resolveBlogAuthorHref('https://playfulagency.com/nosotros/'), BLOG_AUTHOR_HREF);
+  assert.equal(resolveBlogAuthorHref('/nosotros'), BLOG_AUTHOR_HREF);
+  assert.equal(resolveBlogAuthorHref(''), BLOG_AUTHOR_HREF);
+  assert.equal(resolveBlogAuthorHref('https://endpoint.playfulagency.com/author/jose/'), BLOG_AUTHOR_HREF);
+});
+
 test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
@@ -373,6 +388,10 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.match(blogPage, /formatUpdatedByline\(/);
+  assert.match(blogPage, /resolveBlogAuthorHref\(/);
+  assert.match(blogPage, /href=\{authorHref\}/);
+  assert.match(blogPage, /updatedLabel=\{updatedByline\}/);
   assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
@@ -383,7 +402,14 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.match(chipSource, /rounded-full bg-\[#440099\]/);
   assert.match(chipSource, /text-sm font-medium/);
   assert.match(chipSource, /h-6 w-6/);
+  assert.match(chipSource, /href/);
+  assert.match(chipSource, /updatedLabel/);
   assert.doesNotMatch(chipSource, /detail/);
   assert.doesNotMatch(chipSource, /text-xs/);
   assert.match(overridesSource, /lib\/blog-editorial-meta\.ts/);
+  const titleIdx = blogPage.indexOf('text-4xl md:text-5xl lg:text-6xl');
+  const chipIdx = blogPage.indexOf('<BlogBylineChip');
+  const excerptIdx = blogPage.indexOf('excerptText ?');
+  assert.ok(titleIdx !== -1 && chipIdx !== -1 && excerptIdx !== -1);
+  assert.ok(titleIdx < chipIdx && chipIdx < excerptIdx);
 });
