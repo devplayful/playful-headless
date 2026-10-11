@@ -159,7 +159,8 @@ function remapInSiteHref(href) {
   return remapCanibalizacionHref(remapLegacyCaseStudiesHubHref(rewritePageHref(href)));
 }
 
-const UX_UI_ANCHOR = 'UX/UI';
+const AGENCIA_UX_UI_IMG_ALT = 'Agencia UX/UI de Playful';
+const BLANK_REL_TOKENS = new Set(['noopener', 'noreferrer']);
 
 function pathnameFromHref(href) {
   if (typeof href !== 'string' || !href.trim()) return '';
@@ -175,16 +176,43 @@ function pathnameFromHref(href) {
   }
 }
 
+function stripBlankNavigationAttrs(attrs) {
+  const withoutTarget = attrs.replace(/\s+target\s*=\s*(["'])_blank\1/i, '');
+  return withoutTarget.replace(/\s+rel\s*=\s*(["'])([^"']*)\1/i, (full, _quote, value) => {
+    const tokens = value.split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return '';
+    const blankOnly = tokens.every((token) => BLANK_REL_TOKENS.has(token.toLowerCase()));
+    return blankOnly ? '' : full;
+  });
+}
+
+function setImgAlt(inner, alt) {
+  if (/\balt\s*=/i.test(inner)) {
+    return inner.replace(/\balt\s*=\s*(["'])[\s\S]*?\1/i, (_, quote) => `alt=${quote}${alt}${quote}`);
+  }
+  return inner.replace(/<img\b/i, `<img alt="${alt}"`);
+}
+
+function isAgenciaUxUiBannerCta(inner) {
+  if (!/<img\b/i.test(inner)) return false;
+  if (/Banner-CTA|Banner UIUX|wp-image-77442/i.test(inner)) return true;
+  const withoutFiller = inner.replace(/\s*UX\/UI\s*/g, '');
+  return isImageOnlyBlockCta(withoutFiller);
+}
+
 /**
- * The only editorial entry to /agencia-ux-ui is an image-only <a> on
- * /blog/seo/desarrollo-ui-ux. Keep the image and put the visible anchor.
+ * The only editorial entry to /agencia-ux-ui is the Banner-CTA <a> on
+ * /blog/seo/desarrollo-ui-ux (WordPress HTML). SEO reads the image alt,
+ * not trailing text after the <img>, so set a descriptive alt, drop
+ * target=_blank (and its rel), and keep the visible image-only markup.
  */
-export function fillEmptyAgenciaUxUiAnchors(html) {
+export function rewriteAgenciaUxUiBannerCta(html) {
   if (typeof html !== 'string' || !html) return html;
   return html.replace(ANCHOR_RE, (full, attrs, inner) => {
     if (pathnameFromHref(hrefFromAttrs(attrs)) !== '/agencia-ux-ui') return full;
-    if (!isImageOnlyBlockCta(inner)) return full;
-    return `<a${attrs}>${inner}${UX_UI_ANCHOR}</a>`;
+    if (!isAgenciaUxUiBannerCta(inner)) return full;
+    const nextInner = setImgAlt(inner.replace(/\s*UX\/UI\s*/g, ''), AGENCIA_UX_UI_IMG_ALT);
+    return `<a${stripBlankNavigationAttrs(attrs)}>${nextInner}</a>`;
   });
 }
 
@@ -193,7 +221,7 @@ export function rewriteInSitePageHrefs(html, sourcePath = '') {
   const remapped = html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
     return `href=${quote}${remapInSiteHref(href)}${quote}`;
   });
-  return fillEmptyAgenciaUxUiAnchors(
+  return rewriteAgenciaUxUiBannerCta(
     unwrapGoneInternalAnchors(rewriteBrokenInternalAnchors(remapped, sourcePath)),
   );
 }
