@@ -22,6 +22,7 @@ import {
   resolveBlogCoverAlt,
   resolveBlogCoverUrl,
 } from '@/lib/blog-cover-image';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
@@ -568,7 +569,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       || featuredMedia.media_details?.sizes?.medium?.source_url
       || imageUrl;
   }
-  imageUrl = resolveBlogCoverUrl(post.slug, imageUrl);
+  imageUrl = publicWebpIfPresent(resolveBlogCoverUrl(post.slug, imageUrl));
   const imageAlt = resolveBlogCoverAlt(
     post.slug,
     post.featured_media_alt || featuredMedia?.alt_text || '',
@@ -757,7 +758,9 @@ async function hydrateListingPosts(
     return {
       ...rewritten,
       categories,
-      featured_media_url: resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
+      featured_media_url: publicWebpIfPresent(
+        resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
+      ),
       featured_media_alt: resolveBlogCoverAlt(rewritten.slug, mediaItem?.alt_text || ''),
       author_name: author?.name || 'Playful Agency',
       author: author
@@ -945,7 +948,7 @@ function toRelatedIndexPost(
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
     featuredMediaId,
-    featuredMediaUrl: resolveBlogCoverUrl(post.slug, BLOG_COVER_FALLBACK),
+    featuredMediaUrl: publicWebpIfPresent(resolveBlogCoverUrl(post.slug, BLOG_COVER_FALLBACK)),
     categoryIds,
     categorySlug,
     categoryName,
@@ -970,7 +973,9 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       },
       'slash',
     ),
-    imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+    imageUrl: publicWebpIfPresent(
+      resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+    ),
     imageAlt: resolveBlogCoverAlt(post.slug, ''),
     slug: post.slug,
     href: post.href,
@@ -1149,7 +1154,9 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
     }
     if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
   }
-  post.featured_media_url = resolveBlogCoverUrl(post.slug, post.featured_media_url || '');
+  post.featured_media_url = publicWebpIfPresent(
+    resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
+  );
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
   return rewriteWpRenderedHtmlFields(post);
 });

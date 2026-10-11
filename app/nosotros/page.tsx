@@ -5,6 +5,11 @@ import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
+import {
+  buildBreadcrumbListJsonLd,
+  serializeServiceLandingJsonLd,
+} from '@/utils/service-landing-jsonld';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 
@@ -359,8 +364,15 @@ export default async function Nosotros() {
   // Obtener casos de éxito una sola vez en el servidor
   const { getAllCaseStudies } = await import('@/services/wordpress');
   const casosDeExito = await getAllCaseStudies();
+  const breadcrumb = buildBreadcrumbListJsonLd({ name: 'Nosotros', path: '/nosotros' });
   
   return (
+    <>
+    <script
+      id="playful-breadcrumb"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(breadcrumb) }}
+    />
     <div className="max-w-[1200px] mx-auto px-4 md:px-6 w-full">
       {/* Sección Superior "Nosotros" */}
       <div className="w-full">
@@ -386,7 +398,7 @@ export default async function Nosotros() {
                 <div className="md:w-1/2 flex justify-center w-full">
                   <div className="relative w-full max-w-[580px] min-h-[300px] md:h-[480px]">
                     <Image
-                      src="/images/nosotros-playful-imagen.png"
+                      src={publicWebpIfPresent('/images/nosotros-playful-imagen.png')}
                       alt="Playful Agency"
                       width={580}
                       height={480}
@@ -428,6 +440,7 @@ export default async function Nosotros() {
         <TwoColumnCtaSection buttonLink={SERVICE_BOOKING_HREF} />
       </section>
     </div>
+    </>
   );
 }
 

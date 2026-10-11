@@ -60,6 +60,8 @@ test('existing body CTAs point at /reunion-playful without touching header Cont√
   assert.match(blogPost, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(blogListing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(nosotros, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
+  assert.match(nosotros, /id="playful-breadcrumb"/);
+  assert.match(nosotros, /buildBreadcrumbListJsonLd/);
   assert.match(header, /href="\/contactar-agencia-de-marketing-digital"/);
   assert.match(header, /aria-expanded=\{isCasesOpen\}/);
   assert.match(header, /aria-expanded=\{isServicesOpen\}/);

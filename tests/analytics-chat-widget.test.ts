@@ -61,6 +61,8 @@ test('ChatWidget hooks analytics before appending the classic loader', () => {
   assert(loaderAt > chatScriptAt);
   assert.match(source, /data-resources-url.*chat-widget\/loader\.js/);
   assert.match(source, /data-widget-id.*HIGHLEVEL_CHAT_WIDGET_ID/);
+  assert.doesNotMatch(source, /requestIdleCallback/);
+  assert.doesNotMatch(source, /setTimeout\(load/);
 });
 
 test('before-submit always allows the chat and never forwards PII', () => {

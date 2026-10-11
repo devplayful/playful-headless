@@ -6,6 +6,7 @@ const {
   ECOMMERCE_ZELLE_COVER_SLUG,
   ZELLE_POST_SLUG,
   ZELLE_APPROVED_COVER,
+  ZELLE_APPROVED_COVER_SRC,
   rewriteEcommerceZelleCover,
 } = await import('../utils/ecommerce-zelle-cover.ts');
 
@@ -46,13 +47,17 @@ test('constants target the approved JN0rWQjOq4 cover on the e-commerce landing',
     ZELLE_APPROVED_COVER,
     '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
   );
+  assert.equal(
+    ZELLE_APPROVED_COVER_SRC,
+    '/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.webp',
+  );
 });
 
 test('replaces the Zelle card img src and srcset on /agencia-e-commerce', () => {
   const html = `<section>${zelleCard()}${otherCard()}</section>`;
   const rewritten = rewriteEcommerceZelleCover(html, 'agencia-e-commerce');
-  assert.match(rewritten, new RegExp(`src="${ZELLE_APPROVED_COVER}"`));
-  assert.match(rewritten, new RegExp(`srcset="${ZELLE_APPROVED_COVER} 1200w"`));
+  assert.match(rewritten, new RegExp(`src="${ZELLE_APPROVED_COVER_SRC}"`));
+  assert.match(rewritten, new RegExp(`srcset="${ZELLE_APPROVED_COVER_SRC} 1200w"`));
   assert.doesNotMatch(rewritten, /Playful-E-Commerce-Sistema-de-gestion/);
   assert.match(rewritten, new RegExp(OTHER_SRC.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 });
