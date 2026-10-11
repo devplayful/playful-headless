@@ -159,12 +159,43 @@ function remapInSiteHref(href) {
   return remapCanibalizacionHref(remapLegacyCaseStudiesHubHref(rewritePageHref(href)));
 }
 
+const UX_UI_ANCHOR = 'UX/UI';
+
+function pathnameFromHref(href) {
+  if (typeof href !== 'string' || !href.trim()) return '';
+  const trimmed = href.trim();
+  try {
+    const absolute = trimmed.startsWith('//') ? `https:${trimmed}` : trimmed;
+    const url = absolute.startsWith('http')
+      ? new URL(absolute)
+      : new URL(absolute, `${APEX_ORIGIN}/`);
+    return normalizePathname(url.pathname);
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * The only editorial entry to /agencia-ux-ui is an image-only <a> on
+ * /blog/seo/desarrollo-ui-ux. Keep the image and put the visible anchor.
+ */
+export function fillEmptyAgenciaUxUiAnchors(html) {
+  if (typeof html !== 'string' || !html) return html;
+  return html.replace(ANCHOR_RE, (full, attrs, inner) => {
+    if (pathnameFromHref(hrefFromAttrs(attrs)) !== '/agencia-ux-ui') return full;
+    if (!isImageOnlyBlockCta(inner)) return full;
+    return `<a${attrs}>${inner}${UX_UI_ANCHOR}</a>`;
+  });
+}
+
 /** Rewrites in-site page hrefs to relative Next paths; leaves wp-content/assets untouched. */
 export function rewriteInSitePageHrefs(html, sourcePath = '') {
   const remapped = html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
     return `href=${quote}${remapInSiteHref(href)}${quote}`;
   });
-  return unwrapGoneInternalAnchors(rewriteBrokenInternalAnchors(remapped, sourcePath));
+  return fillEmptyAgenciaUxUiAnchors(
+    unwrapGoneInternalAnchors(rewriteBrokenInternalAnchors(remapped, sourcePath)),
+  );
 }
 
 /**

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 import {
+  fillEmptyAgenciaUxUiAnchors,
   remapCanibalizacionHref,
   rewriteInSitePageHrefs,
   rewriteInSiteUrlToApex,
@@ -433,4 +434,17 @@ test('rewriteWpYoastFields clears live /blog payload: escaped category og:url + 
   assert.match(rewritten.yoast_head, /https:\/\/playfulagency\.com\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce#breadcrumb/);
   assert.equal(rewritten.categories[0].yoast_head_json.og_image[0].url, MEDIA_SRC);
   assert.match(rewritten.categories[0].yoast_head, new RegExp(MEDIA_SRC.replaceAll('/', '\\/')));
+});
+
+test('empty editorial /agencia-ux-ui image link gets visible UX/UI text', () => {
+  const img = '<img class="wp-image-77442" src="https://endpoint.playfulagency.com/wp-content/uploads/2022/10/Banner-CTA-Playful_-aun-no-sabes-si-te-conviene-UIUX.png" alt="Banner UIUX" />';
+  const html = `<figure class="wp-caption"><a href="/agencia-ux-ui" target="_blank" rel="noopener">${img}</a><figcaption>Servicio de UIUX, Interfaz y experiencia de Usuario</figcaption></figure>`;
+  const rewritten = rewriteInSitePageHrefs(html, '/blog/seo/desarrollo-ui-ux');
+  assert.match(rewritten, /href="\/agencia-ux-ui"[^>]*>[\s\S]*UX\/UI<\/a>/);
+  assert.match(rewritten, /Banner UIUX/);
+  assert.match(rewritten, /Servicio de UIUX, Interfaz y experiencia de Usuario/);
+  assert.equal(
+    fillEmptyAgenciaUxUiAnchors('<a href="/agencia-ux-ui">Interfaz y experiencia de Usuario</a>'),
+    '<a href="/agencia-ux-ui">Interfaz y experiencia de Usuario</a>',
+  );
 });

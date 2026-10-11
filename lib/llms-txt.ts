@@ -82,11 +82,19 @@ export const SHOPIFY_FAQ_PUBLISHED = [
 export const ZELLE_NOTICE_PUBLISHED =
   'Playful Agency no abre, no crea y no gestiona cuentas Zelle. Somos una agencia de ecommerce que integra métodos de pago en tiendas online. Si necesitas abrir una cuenta Zelle, esa relación es directamente entre tu y tu banco en Estados Unidos.';
 
+const JUMEX_CASE_URL =
+  'https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce';
+
 export function buildLlmsFullTxt(): string {
   const faqs = SHOPIFY_FAQ_PUBLISHED.map(
     (item) => `${item.question}\n${item.answer}`,
   ).join('\n\n');
-  return `${LLMS_TXT_BODY.trimEnd()}\n\n${SHOPIFY_OPENING_PUBLISHED}\n\n${faqs}\n\n${ZELLE_NOTICE_PUBLISHED}\n`;
+  // Plain-text crawlers treat the sentence period as part of the href.
+  // The published FAQ copy stays as-is; only this file drops that period.
+  return `${LLMS_TXT_BODY.trimEnd()}\n\n${SHOPIFY_OPENING_PUBLISHED}\n\n${faqs}\n\n${ZELLE_NOTICE_PUBLISHED}\n`.replace(
+    `${JUMEX_CASE_URL}.`,
+    JUMEX_CASE_URL,
+  );
 }
 
 export const LLMS_FULL_TXT_BODY = buildLlmsFullTxt();

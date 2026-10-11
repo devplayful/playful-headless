@@ -41,6 +41,18 @@ test('llms-full.txt appends live Shopify opening, seven FAQ and the Zelle notice
   );
   assert.match(LLMS_FULL_TXT_BODY, new RegExp(ZELLE_NOTICE_PUBLISHED.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.doesNotMatch(LLMS_FULL_TXT_BODY, /Shopify Partner/);
+  assert.match(
+    LLMS_FULL_TXT_BODY,
+    /https:\/\/playfulagency\.com\/casos-de-exito\/jumex-shopify-dtc-ecommerce(?:\s|En)/,
+  );
+  assert.doesNotMatch(
+    LLMS_FULL_TXT_BODY,
+    /https:\/\/playfulagency\.com\/casos-de-exito\/jumex-shopify-dtc-ecommerce\./,
+  );
+  assert.match(
+    SHOPIFY_FAQ_PUBLISHED.map((item) => item.answer).join('\n'),
+    /https:\/\/playfulagency\.com\/casos-de-exito\/jumex-shopify-dtc-ecommerce\./,
+  );
 });
 
 test('llms routes return text/plain without noindex', () => {
