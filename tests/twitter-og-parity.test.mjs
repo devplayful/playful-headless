@@ -21,12 +21,14 @@ async function readAll() {
 
 test('twitterFromOpenGraph copies og title, description and optional image', () => {
   assert.deepEqual(twitterFromOpenGraph('Título OG', 'Descripción OG'), {
+    card: 'summary_large_image',
     title: 'Título OG',
     description: 'Descripción OG',
   });
   assert.deepEqual(
     twitterFromOpenGraph('Título OG', 'Descripción OG', '/images/og-blog.jpg'),
     {
+      card: 'summary_large_image',
       title: 'Título OG',
       description: 'Descripción OG',
       images: ['/images/og-blog.jpg'],
@@ -47,7 +49,9 @@ test('post, caso, /blog, contactar y privacidad wire twitter from the same og va
   assert.match(listingMeta, /twitterFromOpenGraph\(\s*'Blog - Playful Agency'/);
   assert.match(src.contact, /twitterFromOpenGraph\(CONTACT_TITLE, CONTACT_DESCRIPTION\)/);
   assert.match(src.privacy, /twitterFromOpenGraph\(PRIVACY_TITLE, PRIVACY_DESCRIPTION\)/);
-  assert.match(caseMeta, /twitterFromOpenGraph\(override\.title, override\.description\)/);
+  assert.match(caseMeta, /pageSocialMetadata\(/);
+  assert.match(caseMeta, /title: override\.title/);
+  assert.match(caseMeta, /description: override\.description/);
 });
 
 test('blog post title suffix is | Playful and never doubles or keeps the old suffix', async () => {

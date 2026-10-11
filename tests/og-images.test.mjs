@@ -41,6 +41,7 @@ test('og maps cover home, blog listing, cases and a Magnific post', () => {
     '/images/og/contactar-agencia-de-marketing-digital.jpg',
   );
   assert.equal(ogJpegForPath('/agencia-shopify'), '/images/og/agencia-shopify.jpg');
+  assert.equal(ogJpegForPath('/agencia-ux-ui'), '/images/og/agencia-ux-ui.jpg');
   assert.equal(ogJpegForPath('/agencia-seo'), '/images/og/agencia-seo.jpg');
   assert.equal(ogJpegForPath('/agencia-sem'), '/images/og/agencia-sem.jpg');
   assert.equal(ogJpegForPath('/pasarela-de-pagos-venezuela'), '');
