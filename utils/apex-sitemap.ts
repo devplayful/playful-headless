@@ -24,6 +24,8 @@ export const SITEMAP_STATIC_PATHS = [
   "/casos-de-exito/odwalla-shopify-dtc-ecommerce",
   "/blog",
   "/politica-de-privacidad",
+  "/llms.txt",
+  "/llms-full.txt",
 ] as const;
 
 export const SITEMAP_BLOG_PATHS = [

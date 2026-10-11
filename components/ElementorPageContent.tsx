@@ -6,6 +6,7 @@ import { BOOKING_CTA_LABEL, rewriteElementorBodyHrefs } from '@/utils/booking';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
+import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -94,7 +95,7 @@ function restoreOldBodyCopy(html: string): string {
     '<h1 class="elementor-heading-title elementor-size-default">Agencia SEM: Potencia tu presencia con publicidad</h1>',
   );
 
-  return out;
+  return applyElementorAeoRewrites(out);
 }
 
 function firstHeroImageSrc(html: string): string | null {

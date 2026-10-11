@@ -193,7 +193,7 @@ test('accepts the exact governed template and concrete inventory', () => {
     manifest,
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(validArtifact().concreteRoutes.length, 110);
+  assert.equal(validArtifact().concreteRoutes.length, 111);
 });
 
 test('blog category indexes stay out of the governed inventory (middleware 308, not next.config)', () => {
@@ -264,18 +264,18 @@ test('rejects an ungoverned root concrete instead of allowing /[slug] to cover i
 
 test('rejects a missing governed concrete and a wrong source-template mapping', () => {
   const missingArtifact = validArtifact();
-  missingArtifact.concreteRoutes = missingArtifact.concreteRoutes.filter((item) => item.route !== '/agencia-seo');
+  missingArtifact.concreteRoutes = missingArtifact.concreteRoutes.filter((item) => item.route !== '/agencia-e-commerce');
   const missing = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact: missingArtifact, manifest });
   assert.equal(missing.ok, false);
-  assert.deepEqual(missing.missingConcreteRoutes, ['/[slug]:/agencia-seo']);
+  assert.deepEqual(missing.missingConcreteRoutes, ['/[slug]:/agencia-e-commerce']);
 
   const wrongArtifact = validArtifact();
-  const target = wrongArtifact.concreteRoutes.find((item) => item.route === '/agencia-seo');
+  const target = wrongArtifact.concreteRoutes.find((item) => item.route === '/agencia-e-commerce');
   target.sourceTemplate = '/blog/[...slug]';
   const wrong = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact: wrongArtifact, manifest });
   assert.equal(wrong.ok, false);
-  assert.deepEqual(wrong.unexpectedConcreteRoutes, ['/blog/[...slug]:/agencia-seo']);
-  assert.deepEqual(wrong.missingConcreteRoutes, ['/[slug]:/agencia-seo']);
+  assert.deepEqual(wrong.unexpectedConcreteRoutes, ['/blog/[...slug]:/agencia-e-commerce']);
+  assert.deepEqual(wrong.missingConcreteRoutes, ['/[slug]:/agencia-e-commerce']);
 });
 
 test('treats only reachable GET and HEAD exact Vercel rewrites as provenance candidates', () => {

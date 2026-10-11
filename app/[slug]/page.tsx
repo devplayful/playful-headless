@@ -9,6 +9,7 @@ import {
   isServiceLandingSlug,
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
+import { getServiceFaqJsonLd } from '@/utils/service-faq-jsonld';
 
 export const revalidate = 300;
 // Unknown slugs must not enter this page: generateMetadata+notFound()
@@ -96,6 +97,7 @@ export default async function WordPressPage({
         ).description,
       )
     : null;
+  const faqJsonLd = getServiceFaqJsonLd(slug);
 
   return (
     <>
@@ -112,6 +114,13 @@ export default async function WordPressPage({
             dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(landingJsonLd.breadcrumb) }}
           />
         </>
+      ) : null}
+      {faqJsonLd ? (
+        <script
+          id="playful-faq"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(faqJsonLd) }}
+        />
       ) : null}
       <ElementorPageContent
         html={page.html}
