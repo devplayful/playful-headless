@@ -16,15 +16,10 @@ export const PAGE_TITLE_OVERRIDES = {
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
 };
 
-export function applyPageTitleOverride(slug, yoastTitle, yoastOgTitle) {
+export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {
   const override = PAGE_TITLE_OVERRIDES[slug];
-  if (override) {
-    return { title: override, ogTitle: override };
-  }
-  return {
-    title: yoastTitle,
-    ogTitle: yoastOgTitle || yoastTitle,
-  };
+  const title = override || yoastTitle;
+  return { title, ogTitle: title };
 }
 
 export const PAGE_DESCRIPTION_OVERRIDES = {
@@ -32,25 +27,70 @@ export const PAGE_DESCRIPTION_OVERRIDES = {
     'Para marcas que ya venden directo al consumidor (D2C): ordenamos tu tienda online, el posicionamiento y el diseño para que venda más. Agenda tu llamada.',
 };
 
-export function applyPageDescriptionOverride(slug, yoastDescription, yoastOgDescription) {
+export function applyPageDescriptionOverride(slug, yoastDescription, _yoastOgDescription) {
   const override = Object.hasOwn(PAGE_DESCRIPTION_OVERRIDES, slug)
     ? PAGE_DESCRIPTION_OVERRIDES[slug]
     : undefined;
-  return {
-    description: override ?? yoastDescription,
-    ogDescription: override ?? (yoastOgDescription || yoastDescription),
-  };
+  const description = override ?? yoastDescription;
+  return { description, ogDescription: description };
 }
 
 /**
  * Next.js merges root-layout twitter:* into child pages. Non-blog routes
  * that set openGraph but omit twitter inherit the home generic card.
- * Mirror the page OG (override or Yoast OG already resolved) onto twitter.
+ * Title and description always come from the page <title> / meta description.
  */
 export function twitterFromOpenGraph(ogTitle, ogDescription, ogImage) {
   return {
+    card: 'summary_large_image',
     title: ogTitle,
     description: ogDescription,
     ...(ogImage ? { images: Array.isArray(ogImage) ? ogImage : [ogImage] } : {}),
+  };
+}
+
+function socialImageUrls(images) {
+  if (!images) return undefined;
+  const list = Array.isArray(images) ? images : [images];
+  const urls = list
+    .map((img) => (typeof img === 'string' ? img : img?.url))
+    .filter(Boolean);
+  return urls.length ? urls : undefined;
+}
+
+/**
+ * OG + Twitter inherit the page title and meta description. No own social copy.
+ * `type` defaults to website (home, landings, casos).
+ *
+ * @param {{
+ *   title?: string,
+ *   description?: string,
+ *   url?: string,
+ *   images?: import('next').Metadata['openGraph'] extends infer Og
+ *     ? Og extends { images?: infer Img } ? Img : never
+ *     : never,
+ *   type?: 'website' | 'article',
+ * }} [opts]
+ * @returns {{
+ *   openGraph: NonNullable<import('next').Metadata['openGraph']>,
+ *   twitter: NonNullable<import('next').Metadata['twitter']>,
+ * }}
+ */
+export function pageSocialMetadata({
+  title,
+  description,
+  url,
+  images,
+  type = 'website',
+} = {}) {
+  return {
+    openGraph: {
+      ...(title != null ? { title } : {}),
+      ...(description != null ? { description } : {}),
+      type,
+      ...(url ? { url } : {}),
+      ...(images ? { images } : {}),
+    },
+    twitter: twitterFromOpenGraph(title, description, socialImageUrls(images)),
   };
 }

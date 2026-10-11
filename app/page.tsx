@@ -4,6 +4,7 @@ import { canonicalForPath } from '@/utils/canonical';
 import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
@@ -17,42 +18,40 @@ export async function generateMetadata(): Promise<Metadata> {
   // so they stay exactly `https://playfulagency.com/` to match the sitemap.
   try {
     const yoastData = await getHomePageMetadata();
+    const title = yoastData.yoast_wpseo_title || defaultTitle;
+    const description = yoastData.yoast_wpseo_metadesc || defaultDescription;
+    const social = pageSocialMetadata({
+      title,
+      description,
+      images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
+      type: 'website',
+    });
     return {
-      title: yoastData.yoast_wpseo_title || defaultTitle,
-      description: yoastData.yoast_wpseo_metadesc || defaultDescription,
+      title,
+      description,
       openGraph: {
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        type: 'website',
+        ...social.openGraph,
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
-      twitter: {
-        card: 'summary_large_image',
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        images: [defaultOgImage],
-      },
+      twitter: social.twitter,
     };
   } catch {
+    const social = pageSocialMetadata({
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
+      type: 'website',
+    });
     return {
       title: defaultTitle,
       description: defaultDescription,
       openGraph: {
-        title: defaultTitle,
-        description: defaultDescription,
-        type: 'website',
+        ...social.openGraph,
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
-      twitter: {
-        card: 'summary_large_image',
-        title: defaultTitle,
-        description: defaultDescription,
-        images: [defaultOgImage],
-      },
+      twitter: social.twitter,
     };
   }
 }

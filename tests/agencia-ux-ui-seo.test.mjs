@@ -132,3 +132,8 @@ test('ux-ui technical SEO does not add title or description overrides', () => {
   assert.equal(Object.hasOwn(PAGE_TITLE_OVERRIDES, 'agencia-ux-ui'), false);
   assert.equal(Object.hasOwn(PAGE_DESCRIPTION_OVERRIDES, 'agencia-ux-ui'), false);
 });
+
+test('[slug] metadata inherits title/meta onto OG/Twitter and sets website type', () => {
+  assert.match(slugPage, /pageSocialMetadata\(/);
+  assert.match(slugPage, /type: 'website'/);
+});

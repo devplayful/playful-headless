@@ -9,6 +9,7 @@ export const OG_JPEG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_JPEG_BY_PATH = {
   "/politica-de-privacidad": "/images/og/home.jpg",
   "/agencia-shopify": "/images/og/agencia-shopify.jpg",
+  "/agencia-ux-ui": "/images/og/agencia-ux-ui.jpg",
   "/contactar-agencia-de-marketing-digital": "/images/og/contactar-agencia-de-marketing-digital.jpg",
   "/nosotros": "/images/og/nosotros.jpg",
   "/blog": "/images/og/home.jpg",

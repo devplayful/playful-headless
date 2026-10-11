@@ -9,6 +9,7 @@ import {
   PAGE_DESCRIPTION_OVERRIDES,
   applyPageDescriptionOverride,
   twitterFromOpenGraph,
+  pageSocialMetadata,
 } from '../utils/page-seo-overrides.mjs';
 
 const MARKETING_TITLE =
@@ -39,11 +40,11 @@ test('ecommerce overrides both cloned descriptions with opción A firmada', () =
   assert.notEqual(result.description, STALE_PR64_DESCRIPTION);
 });
 
-test('description overrides preserve other slugs and original Open Graph fallback', () => {
+test('description overrides preserve other slugs and drop Yoast-only OG copy', () => {
   for (const slug of ['marketing-internacional', 'agencia-seo', 'agencia-sem', 'constructor', '__proto__']) {
     assert.deepEqual(applyPageDescriptionOverride(slug, 'Original', 'Social'), {
       description: 'Original',
-      ogDescription: 'Social',
+      ogDescription: 'Original',
     });
     assert.deepEqual(applyPageDescriptionOverride(slug, 'Original', ''), {
       description: 'Original',
@@ -107,6 +108,7 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
   assert.deepEqual(
     twitterFromOpenGraph('OG título de página', 'OG descripción de página'),
     {
+      card: 'summary_large_image',
       title: 'OG título de página',
       description: 'OG descripción de página',
     },
@@ -114,6 +116,7 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
   assert.deepEqual(
     twitterFromOpenGraph('OG título', 'OG desc', '/images/og-blog.jpg'),
     {
+      card: 'summary_large_image',
       title: 'OG título',
       description: 'OG desc',
       images: ['/images/og-blog.jpg'],
@@ -132,6 +135,7 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
   assert.deepEqual(
     twitterFromOpenGraph(ecommerce.ogTitle, ecommerceDesc.ogDescription),
     {
+      card: 'summary_large_image',
       title: ecommerce.ogTitle,
       description: ecommerceDesc.ogDescription,
     },
@@ -139,19 +143,43 @@ test('twitterFromOpenGraph mirrors the resolved og title and description', () =>
   const seo = applyPageTitleOverride('agencia-seo', 'Yoast title', 'Yoast OG');
   const seoDesc = applyPageDescriptionOverride('agencia-seo', 'Yoast desc', 'Yoast OG desc');
   assert.deepEqual(twitterFromOpenGraph(seo.ogTitle, seoDesc.ogDescription), {
+    card: 'summary_large_image',
     title: AGENCIA_SEO_TITLE,
-    description: 'Yoast OG desc',
+    description: 'Yoast desc',
   });
+  assert.equal(seo.ogTitle, seo.title);
+  assert.equal(seoDesc.ogDescription, seoDesc.description);
+});
+
+test('pageSocialMetadata inherits title and meta and sets og:type', () => {
+  const social = pageSocialMetadata({
+    title: 'Título de página',
+    description: 'Meta de página',
+    url: 'https://playfulagency.com/agencia-ux-ui',
+    images: [{ url: '/images/og/agencia-ux-ui.jpg', width: 1200, height: 630 }],
+    type: 'website',
+  });
+  assert.equal(social.openGraph.title, 'Título de página');
+  assert.equal(social.openGraph.description, 'Meta de página');
+  assert.equal(social.openGraph.type, 'website');
+  assert.equal(social.twitter.title, social.openGraph.title);
+  assert.equal(social.twitter.description, social.openGraph.description);
+  assert.equal(social.twitter.card, 'summary_large_image');
 });
 
 test('non-blog generateMetadata wires twitter from the same og values', async () => {
   const slugPage = await readFile(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
   const shopifyPage = await readFile(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
   const casosPage = await readFile(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+  const caseStudyPage = await readFile(new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
   const nosotrosPage = await readFile(new URL('../app/nosotros/page.tsx', import.meta.url), 'utf8');
 
-  assert.match(slugPage, /twitterFromOpenGraph\(ogTitle, ogDescription\)/);
-  assert.match(shopifyPage, /twitterFromOpenGraph\(SHOPIFY_META\.title, SHOPIFY_META\.description\)/);
+  assert.match(slugPage, /pageSocialMetadata\(/);
+  assert.match(slugPage, /type: 'website'/);
+  assert.match(shopifyPage, /pageSocialMetadata\(/);
+  assert.match(shopifyPage, /type: 'website'/);
+  assert.match(caseStudyPage, /pageSocialMetadata\(/);
+  assert.match(caseStudyPage, /type: 'website'/);
   assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);
   assert.match(nosotrosPage, /twitterFromOpenGraph\(title, description\)/);
 });
