@@ -488,6 +488,51 @@ function belongsToCategorySlug(
 }
 
 /**
+ * Audit #239 orphans: sitemap posts with no inbound from other sitemap pages.
+ * Listing chips/pagination stay non-crawlable (`?category=` / `?page=`).
+ * Same-category related cards on sibling articles are the inbound source.
+ */
+export const BLOG_INBOUND_COVERAGE_PATHS = [
+  '/blog/pautas-digitales/conoce-los-tipos-de-marketing',
+  '/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti',
+  '/blog/pautas-digitales/tiktok-ads-ahora-puedes-hacer-publicidad-en-tiktok',
+  '/blog/pautas-digitales/tipos-de-publicidad-online-conceptos-y-datos-curiosos',
+  '/blog/seo/blog-corporativo-aumenta-el-trafico-de-tu-sitio-web',
+  '/blog/seo/posicionamiento-organico-vs-pago',
+] as const;
+
+/**
+ * Walk the category (already date-desc) so older siblings occupy cards of
+ * the posts just above them. Newest posts still see the next-newest six.
+ */
+export function rotateRelatedAfterCurrent<T extends RelatedBlogPostIdentity>(
+  posts: T[],
+  current: RelatedBlogPostIdentity,
+): T[] {
+  const idx = posts.findIndex((post) => isCurrentPost(post, current));
+  if (idx === -1) return posts;
+  return [...posts.slice(idx + 1), ...posts.slice(0, idx)];
+}
+
+export function relatedInboundSources(
+  index: RelatedBlogIndex,
+  targetHref: string,
+  options: {
+    isUsable?: (post: RelatedIndexPost) => boolean;
+  } = {},
+): RelatedIndexPost[] {
+  const wanted = targetHref.replace(/\/$/, '');
+  return index.posts.filter((host) => {
+    if (host.href.replace(/\/$/, '') === wanted) return false;
+    return selectRelatedFromIndex(index, {
+      current: host,
+      categorySlug: host.categorySlug,
+      isUsable: options.isUsable,
+    }).some((card) => card.href.replace(/\/$/, '') === wanted);
+  });
+}
+
+/**
  * Field IDs → same URL-category (primary slug first) → latest.
  * Always published, never the current post, capped at 6.
  */
@@ -513,14 +558,17 @@ export function selectRelatedFromIndex(
       categorySlug,
     );
 
-  const sameCategory = published
-    .filter((post) => belongsToCategorySlug(post, categorySlug, categoryId))
-    .sort((left, right) => {
-      const leftPrimary = left.categorySlug === categorySlug ? 0 : 1;
-      const rightPrimary = right.categorySlug === categorySlug ? 0 : 1;
-      if (leftPrimary !== rightPrimary) return leftPrimary - rightPrimary;
-      return sortByDateDesc(left, right);
-    });
+  const sameCategory = rotateRelatedAfterCurrent(
+    published
+      .filter((post) => belongsToCategorySlug(post, categorySlug, categoryId))
+      .sort((left, right) => {
+        const leftPrimary = left.categorySlug === categorySlug ? 0 : 1;
+        const rightPrimary = right.categorySlug === categorySlug ? 0 : 1;
+        if (leftPrimary !== rightPrimary) return leftPrimary - rightPrimary;
+        return sortByDateDesc(left, right);
+      }),
+    input.current,
+  );
   const latest = published.slice().sort(sortByDateDesc);
 
   return resolveRelatedBlogPosts({

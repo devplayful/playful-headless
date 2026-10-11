@@ -66,12 +66,13 @@ test('publicWebpIfPresent leaves remotes, svg and missing siblings alone', () =>
 
 test('wordpress listing and shopify hero consume the helper without rewriting overrides', () => {
   const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../components/HomeHeroArt.tsx', import.meta.url), 'utf8');
   const shopify = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
   const zelle = readFileSync(new URL('../utils/ecommerce-zelle-cover.ts', import.meta.url), 'utf8');
   const covers = readFileSync(new URL('../lib/blog-cover-image.ts', import.meta.url), 'utf8');
   assert.match(wordpress, /publicWebpIfPresent\(\s*resolveBlogCoverUrl/);
-  assert.match(home, /publicWebpIfPresent\('\/images\/playful-imagen-banner\.png'\)/);
+  assert.match(home, /publicWebpIfPresent\(HOME_HERO_POSTER_PNG\)/);
+  assert.match(home, /HOME_HERO_POSTER_PNG = '\/images\/playful-imagen-banner\.png'/);
   assert.match(shopify, /publicWebpIfPresent\(HERO_ART_1X\)/);
   assert.match(shopify, /<Image[\s\S]*publicWebpIfPresent\(HERO_ART_1X\)/);
   assert.match(zelle, /ZELLE_APPROVED_COVER_SRC = publicWebpIfPresent\(ZELLE_APPROVED_COVER\)/);

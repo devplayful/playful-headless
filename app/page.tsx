@@ -4,8 +4,6 @@ import { canonicalForPath } from '@/utils/canonical';
 import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
-import { resolveImageAlt } from '@/lib/image-alt-overrides';
-import { publicWebpIfPresent } from '@/lib/public-webp-src';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
@@ -59,16 +57,14 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-import Image from "next/image";
 import Link from "next/link";
-import AnimatedButton from "@/components/AnimatedButton";
+import HomeHeroArt from "@/components/HomeHeroArt";
 import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
-import BlogPosts from "@/components/BlogPosts";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
 
@@ -118,16 +114,7 @@ async function HomeContent() {
 
             {/* Right Illustration Area */}
             <div className="relative">
-              <Image
-                src={publicWebpIfPresent('/images/playful-imagen-banner.png')}
-                alt={resolveImageAlt('/images/playful-imagen-banner.png')}
-                width={2048}
-                height={2048}
-                priority
-                fetchPriority="high"
-                sizes="(min-width: 1024px) 560px, 100vw"
-                className="w-full h-auto"
-              />
+              <HomeHeroArt />
             </div>
           </div>
         </div>

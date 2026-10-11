@@ -9,12 +9,22 @@ const carousel = readFileSync(
 );
 
 test('home hero banner uses next/image with priority and fetchPriority high', () => {
-  assert.match(home, /from ['"]next\/image['"]/);
-  assert.match(home, /publicWebpIfPresent\('\/images\/playful-imagen-banner\.png'\)/);
-  assert.match(home, /priority/);
-  assert.match(home, /fetchPriority="high"/);
-  assert.match(home, /sizes="\(min-width: 1024px\) 560px, 100vw"/);
-  assert.doesNotMatch(home, /<img[\s\S]*playful-imagen-banner/);
+  const art = readFileSync(new URL('../components/HomeHeroArt.tsx', import.meta.url), 'utf8');
+  const lottie = readFileSync(new URL('../components/HomeHeroLottie.tsx', import.meta.url), 'utf8');
+  assert.match(home, /<HomeHeroArt/);
+  assert.doesNotMatch(home, /AnimatedButton/);
+  assert.doesNotMatch(home, /from ['"]lottie-react['"]/);
+  assert.match(art, /from ['"]next\/image['"]/);
+  assert.match(art, /publicWebpIfPresent\(HOME_HERO_POSTER_PNG\)/);
+  assert.match(art, /priority/);
+  assert.match(art, /fetchPriority="high"/);
+  assert.match(art, /sizes="\(min-width: 1024px\) 560px, 100vw"/);
+  assert.match(art, /width=\{HOME_HERO_WIDTH\}/);
+  assert.match(art, /height=\{HOME_HERO_HEIGHT\}/);
+  assert.doesNotMatch(art, /<img[\s\S]*playful-imagen-banner/);
+  assert.match(lottie, /import\('lottie-react'\)/);
+  assert.match(lottie, /requestIdleCallback|addEventListener\('load'/);
+  assert.match(lottie, /opacity: ready \? 1 : 0/);
 });
 
 test('case-study carousel cards use lazy next/image fill, not a raw img', () => {
