@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { canonicalForPath, toAbsoluteSiteUrl } from '@/utils/canonical';
-import { ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
+import { ORGANIZATION_LOGO_URL, ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
 import {
   getBlogServiceCta,
@@ -30,6 +30,7 @@ import {
   MIGRACION_SEO_ALT_BLOG_SLUG,
   MIGRACION_SEO_PLAN_PATH,
 } from '@/lib/blog-body-overrides';
+import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
@@ -206,10 +207,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     authorName: jsonLdExtras.authorType === 'Organization' ? 'Playful Agency' : authorName,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
-    publisherLogo: ORGANIZATION_SCHEMA.logo,
+    publisherLogo: ORGANIZATION_LOGO_URL,
     ...jsonLdExtras,
   });
-  const faqJsonLd = blogFaqPageJsonLd(postSlug);
+  const faqJsonLd = blogFaqPageJsonLd(postSlug) || getBlogFaqJsonLd(postSlug);
   const eshowUpdatedLine = isEshow ? formatEshowActualizadoLine() : null;
   const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
   const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm
@@ -219,6 +220,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     categorySlug: category,
     headline: pageH1,
     url: postCanonical,
+    slug: postSlug,
   });
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
@@ -237,6 +239,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     />
     {faqJsonLd ? (
       <script
+        id="playful-faq"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
       />
