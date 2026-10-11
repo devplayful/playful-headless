@@ -33,7 +33,11 @@ const {
   selectRelatedFromIndex,
   shouldCacheRelatedPostsResult,
   withRelatedFetchTimeout,
+  BLOG_INBOUND_COVERAGE_PATHS,
+  relatedInboundSources,
+  rotateRelatedAfterCurrent,
 } = await import('../lib/blog-related-posts.ts');
+const { SITEMAP_BLOG_PATHS } = await import('../utils/apex-sitemap.ts');
 
 const blogPage = readFileSync(
   new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
@@ -519,6 +523,54 @@ test('selectRelatedFromIndex prefers field IDs, then URL category, then latest',
     related.filter((post) => post.categoryIds.includes(25) || post.categorySlug === 'pautas-digitales').length,
     4,
   );
+});
+
+test('rotateRelatedAfterCurrent walks older siblings so they occupy existing cards', () => {
+  const row = [
+    { slug: 'nuevo', href: '/blog/seo/nuevo' },
+    { slug: 'medio', href: '/blog/seo/medio' },
+    { slug: 'viejo', href: '/blog/seo/viejo' },
+  ];
+  assert.deepEqual(
+    rotateRelatedAfterCurrent(row, { slug: 'nuevo' }).map((post) => post.slug),
+    ['medio', 'viejo'],
+  );
+  assert.deepEqual(
+    rotateRelatedAfterCurrent(row, { slug: 'medio' }).map((post) => post.slug),
+    ['viejo', 'nuevo'],
+  );
+});
+
+test('same-category related cards give the 6 audit orphans an inbound sibling', () => {
+  const terms = [
+    { id: 1, slug: 'pautas-digitales', name: 'Pautas Digitales' },
+    { id: 2, slug: 'seo', name: 'Seo' },
+    { id: 3, slug: 'email-marketing', name: 'Email Marketing' },
+    { id: 4, slug: 'mas-vistos', name: 'Más vistos' },
+    { id: 5, slug: 'otros', name: 'Otros' },
+    { id: 6, slug: 'tecnologia', name: 'Tecnologia' },
+  ];
+  const termId = Object.fromEntries(terms.map((term) => [term.slug, term.id]));
+  const posts = SITEMAP_BLOG_PATHS.map((href, index) => {
+    const parts = href.split('/').filter(Boolean);
+    const categorySlug = parts[1];
+    const slug = parts[2];
+    return indexPost({
+      id: index + 1,
+      slug,
+      href,
+      categorySlug,
+      categoryIds: [termId[categorySlug] || 0],
+      date: new Date(Date.UTC(2020, 0, 1 + index)).toISOString(),
+    });
+  });
+  const index = { fetchedAt: 1, terms, posts };
+  assert.equal(BLOG_INBOUND_COVERAGE_PATHS.length, 6);
+  for (const href of BLOG_INBOUND_COVERAGE_PATHS) {
+    const hosts = relatedInboundSources(index, href);
+    assert.ok(hosts.length > 0, `${href} needs a related-card inbound`);
+    assert.equal(hosts[0].categorySlug, href.split('/')[2]);
+  }
 });
 
 test('last-known-good index ignores empty refreshes and empty related hides or throws', () => {
