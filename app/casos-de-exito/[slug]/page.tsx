@@ -3,7 +3,7 @@ import { getSuccessStoryBySlug } from '@/services/wordpress';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
-import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
 import { normalizeCaseStudyAcf } from '@/utils/case-study-acf-fields';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
@@ -53,24 +53,24 @@ export async function generateMetadata({
       title: override.title,
       description: override.description,
       alternates: { canonical: url },
-      openGraph: {
+      ...pageSocialMetadata({
         title: override.title,
         description: override.description,
         url,
         images,
-      },
-      twitter: {
-        ...twitterFromOpenGraph(override.title, override.description),
-        ...(jpeg ? { images: [jpeg] } : {}),
-      },
+        type: 'website',
+      }),
     };
   }
   return {
     alternates: { canonical: url },
-    openGraph: { url, images },
-    twitter: jpeg
-      ? { card: 'summary_large_image' as const, images: [jpeg] }
-      : undefined,
+    ...pageSocialMetadata({
+      title: undefined,
+      description: undefined,
+      url,
+      images,
+      type: 'website',
+    }),
   };
 }
 

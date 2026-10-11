@@ -3,32 +3,32 @@ import { canonicalForPath } from '@/utils/canonical';
 import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { HOME_META } from './home-copy';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 
 const HOME_CANONICAL = canonicalForPath('/');
 const HOME_OG_IMAGE = '/images/og-home.jpg';
+
+const homeSocial = pageSocialMetadata({
+  title: HOME_META.title,
+  description: HOME_META.description,
+  images: [{
+    url: HOME_OG_IMAGE,
+    width: 1200,
+    height: 630,
+    alt: HOME_META.title,
+  }],
+  type: 'website',
+});
 
 export const metadata: Metadata = {
   title: HOME_META.title,
   description: HOME_META.description,
   openGraph: {
-    title: HOME_META.title,
-    description: HOME_META.description,
-    type: 'website',
+    ...homeSocial.openGraph,
     locale: 'es_ES',
     siteName: 'Playful Agency',
-    images: [{
-      url: HOME_OG_IMAGE,
-      width: 1200,
-      height: 630,
-      alt: HOME_META.title,
-    }],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: HOME_META.title,
-    description: HOME_META.description,
-    images: [HOME_OG_IMAGE],
-  },
+  twitter: homeSocial.twitter,
 };
 
 import Image from "next/image";

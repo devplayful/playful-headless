@@ -17,6 +17,7 @@ import BookingQueryPropagator from '@/components/BookingQueryPropagator';
 import BookingWidgetAttribution from '@/components/BookingWidgetAttribution';
 import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
 
 const paytoneOne = Paytone_One({ 
@@ -47,24 +48,24 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const yoastData = await getHomePageMetadata();
     
+    const title = yoastData.yoast_wpseo_title || defaultTitle;
+    const description = yoastData.yoast_wpseo_metadesc || defaultDescription;
+    const social = pageSocialMetadata({
+      title,
+      description,
+      images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
+      type: 'website',
+    });
     const metadata: Metadata = {
-      title: yoastData.yoast_wpseo_title || defaultTitle,
-      description: yoastData.yoast_wpseo_metadesc || defaultDescription,
+      title,
+      description,
       metadataBase: new URL('https://playfulagency.com'),
       openGraph: {
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        type: 'website',
+        ...social.openGraph,
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
-      twitter: {
-        card: 'summary_large_image',
-        title: yoastData.yoast_wpseo_og_title || yoastData.yoast_wpseo_title || defaultTitle,
-        description: yoastData.yoast_wpseo_og_description || yoastData.yoast_wpseo_metadesc || defaultDescription,
-        images: [defaultOgImage],
-      },
+      twitter: social.twitter,
     };
     
     return metadata;
@@ -73,24 +74,22 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error('Error generando metadatos:', error);
     
     // Fallback con metadata completa
+    const social = pageSocialMetadata({
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
+      type: 'website',
+    });
     return {
       title: defaultTitle,
       description: defaultDescription,
       metadataBase: new URL('https://playfulagency.com'),
       openGraph: {
-        title: defaultTitle,
-        description: defaultDescription,
-        type: 'website',
+        ...social.openGraph,
         locale: 'es_ES',
         siteName: 'Playful Agency',
-        images: [ogJpegMeta(defaultOgImage, 'Playful Agency - Agencia de E-commerce')],
       },
-      twitter: {
-        card: 'summary_large_image',
-        title: defaultTitle,
-        description: defaultDescription,
-        images: [defaultOgImage],
-      },
+      twitter: social.twitter,
     };
   }
 }
