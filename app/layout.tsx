@@ -17,6 +17,7 @@ import BookingQueryPropagator from '@/components/BookingQueryPropagator';
 import BookingWidgetAttribution from '@/components/BookingWidgetAttribution';
 import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
 
 const paytoneOne = Paytone_One({ 
   weight: '400',
@@ -106,6 +107,11 @@ export default function RootLayout({
       <head>
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         {gaId && <GoogleAnalytics gaId={gaId} />}
+        <script
+          id="playful-organization"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
+        />
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>

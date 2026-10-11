@@ -4,17 +4,18 @@ import { ORGANIZATION_SCHEMA } from './organization-schema.mjs';
 export const AGENCIA_UX_UI_SLUG = 'agencia-ux-ui';
 export const AGENCIA_UX_UI_PATH = '/agencia-ux-ui';
 
-/** Stable schema labels — same wording already used in the WP menu / header. */
+/** Stable schema labels — Service NAME/TYPE from LISTA-WEB; breadcrumbName when they differ. */
 export const AGENCIA_UX_UI_SERVICE = Object.freeze({
   slug: AGENCIA_UX_UI_SLUG,
   path: AGENCIA_UX_UI_PATH,
   name: 'Agencia UX/UI',
+  breadcrumbName: 'Agencia UX/UI',
   serviceType: 'Diseño UX/UI',
 });
 
 /**
  * Sitemap service landings that emit Service + BreadcrumbList.
- * Names match the public nav; serviceType is the offer, not a new H1.
+ * Service names follow LISTA-WEB; breadcrumbs use breadcrumbName.
  */
 export const SERVICE_LANDING_SCHEMAS = Object.freeze({
   'agencia-ux-ui': AGENCIA_UX_UI_SERVICE,
@@ -22,30 +23,35 @@ export const SERVICE_LANDING_SCHEMAS = Object.freeze({
     slug: 'agencia-seo',
     path: '/agencia-seo',
     name: 'Agencia SEO',
+    breadcrumbName: 'Agencia SEO',
     serviceType: 'SEO',
   }),
   'agencia-sem': Object.freeze({
     slug: 'agencia-sem',
     path: '/agencia-sem',
     name: 'Agencia SEM',
+    breadcrumbName: 'Agencia SEM',
     serviceType: 'SEM',
   }),
   'agencia-diseno-web': Object.freeze({
     slug: 'agencia-diseno-web',
     path: '/agencia-diseno-web',
-    name: 'Agencia Diseño Web',
-    serviceType: 'Diseño Web',
+    name: 'Agencia diseño web',
+    breadcrumbName: 'Agencia diseño web',
+    serviceType: 'Web design',
   }),
   'agencia-e-commerce': Object.freeze({
     slug: 'agencia-e-commerce',
     path: '/agencia-e-commerce',
-    name: 'Agencia E-commerce',
+    name: 'Agencia ecommerce para venta directa',
+    breadcrumbName: 'Agencia e-commerce',
     serviceType: 'E-commerce',
   }),
   'agencia-shopify': Object.freeze({
     slug: 'agencia-shopify',
     path: '/agencia-shopify',
-    name: 'Agencia Shopify',
+    name: 'Agencia Shopify para marcas que ya venden',
+    breadcrumbName: 'Agencia Shopify',
     serviceType: 'Shopify',
   }),
 });
@@ -121,7 +127,7 @@ export function buildServiceLandingJsonLd(
       description,
     }),
     breadcrumb: buildBreadcrumbListJsonLd({
-      name: schema.name,
+      name: schema.breadcrumbName,
       path: schema.path,
     }),
   };

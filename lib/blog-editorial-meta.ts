@@ -209,11 +209,50 @@ export const BLOG_CATEGORY_BREADCRUMB_NAMES: Record<string, string> = {
   tecnologia: 'Tecnologia',
 };
 
+export const BLOG_POST_BREADCRUMB_NAMES: Record<string, string> = {
+  'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': 'Zelle en Venezuela',
+  'diseno-web-de-paginas-web': 'Diseño web: qué es',
+  'rediseno-web': 'Rediseño web',
+  'diseno-web-y-posicionamiento-seo': 'Diseño web y SEO',
+  'posicionamiento-organico-vs-pago': 'Posicionamiento orgánico vs pago',
+};
+
+export const BLOG_AUTHOR_URL = 'https://playfulagency.com/nosotros';
+
 export function buildBlogBreadcrumbJsonLd(input: {
   categorySlug: string;
   headline: string;
   url: string;
+  slug?: string;
 }): Record<string, unknown> {
+  const shortName = input.slug ? BLOG_POST_BREADCRUMB_NAMES[input.slug] : undefined;
+  if (shortName) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Inicio',
+          item: 'https://playfulagency.com/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Blog',
+          item: 'https://playfulagency.com/blog',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: shortName,
+          item: input.url,
+        },
+      ],
+    };
+  }
+
   const categoryName = BLOG_CATEGORY_BREADCRUMB_NAMES[input.categorySlug] || input.categorySlug;
   return {
     '@context': 'https://schema.org',
@@ -290,6 +329,7 @@ export function buildBlogArticleJsonLd(input: {
     author: {
       '@type': 'Person',
       name: input.authorName || 'Playful Agency',
+      url: BLOG_AUTHOR_URL,
     },
     publisher: {
       '@type': 'Organization',

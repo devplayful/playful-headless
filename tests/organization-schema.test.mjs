@@ -1,20 +1,53 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { ORGANIZATION_SCHEMA, ORGANIZATION_JSON_LD, WEBSITE_SCHEMA, WEBSITE_JSON_LD } from '../utils/organization-schema.mjs';
+import {
+  ORGANIZATION_JSON_LD,
+  ORGANIZATION_LOGO_URL,
+  ORGANIZATION_SAME_AS,
+  ORGANIZATION_SCHEMA,
+  WEBSITE_JSON_LD,
+  WEBSITE_SCHEMA,
+} from '../utils/organization-schema.mjs';
 
-test('organization contains only verified identity, not commercial or legal claims', () => {
-  assert.deepEqual(Object.keys(ORGANIZATION_SCHEMA).sort(), ['@context', '@type', '@id', 'name', 'url', 'logo'].sort());
+test('organization includes verified sameAs, contactPoint and areaServed', () => {
+  assert.deepEqual(Object.keys(ORGANIZATION_SCHEMA).sort(), [
+    '@context',
+    '@id',
+    '@type',
+    'areaServed',
+    'contactPoint',
+    'logo',
+    'name',
+    'sameAs',
+    'url',
+  ].sort());
   assert.equal(ORGANIZATION_SCHEMA['@type'], 'Organization');
   assert.equal(ORGANIZATION_SCHEMA.name, 'Playful Agency');
-  assert.equal(ORGANIZATION_SCHEMA.sameAs, undefined);
+  assert.deepEqual(ORGANIZATION_SCHEMA.sameAs, ORGANIZATION_SAME_AS);
+  assert.equal(ORGANIZATION_SAME_AS.length, 5);
+  assert.deepEqual(ORGANIZATION_SCHEMA.logo, {
+    '@type': 'ImageObject',
+    url: ORGANIZATION_LOGO_URL,
+  });
+  assert.equal(ORGANIZATION_SCHEMA.contactPoint.length, 2);
+  assert.equal(ORGANIZATION_SCHEMA.contactPoint[0].url, 'https://playfulagency.com/reunion-playful');
+  assert.equal(
+    ORGANIZATION_SCHEMA.contactPoint[1].url,
+    'https://playfulagency.com/contactar-agencia-de-marketing-digital',
+  );
+  assert.deepEqual(
+    ORGANIZATION_SCHEMA.areaServed.map((item) => item.name),
+    ['Venezuela', 'Spain', 'Mexico'],
+  );
+  assert.doesNotMatch(ORGANIZATION_JSON_LD, /Shopify Partner|clutch|sortlist|goodfirms|linkedin\.com\/in\//i);
 });
 
 test('identity remains canonical across preview and production', () => {
   assert.equal(ORGANIZATION_SCHEMA['@context'], 'https://schema.org');
   assert.equal(ORGANIZATION_SCHEMA.url, 'https://playfulagency.com/');
   assert.equal(ORGANIZATION_SCHEMA['@id'], `${ORGANIZATION_SCHEMA.url}#organization`);
-  assert.equal(new URL(ORGANIZATION_SCHEMA.logo).origin, new URL(ORGANIZATION_SCHEMA.url).origin);
+  assert.equal(new URL(ORGANIZATION_LOGO_URL).origin, new URL(ORGANIZATION_SCHEMA.url).origin);
 });
 
 test('serialized script is valid JSON and cannot contain HTML terminators', () => {
@@ -25,7 +58,7 @@ test('serialized script is valid JSON and cannot contain HTML terminators', () =
 test('logo is a raster PNG of the header logo, at least 112 px', () => {
   const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
   assert.ok(header.includes('/images/logos/playful-logov.svg'));
-  const path = new URL(ORGANIZATION_SCHEMA.logo).pathname;
+  const path = new URL(ORGANIZATION_LOGO_URL).pathname;
   assert.match(path, /\.png$/);
   const png = readFileSync(new URL(`../public${path}`, import.meta.url));
   assert.equal(png.subarray(1, 4).toString('ascii'), 'PNG');
@@ -34,16 +67,18 @@ test('logo is a raster PNG of the header logo, at least 112 px', () => {
   assert.ok(width >= 112 && height >= 112, `${width}x${height}`);
 });
 
-test('home emits the organization script once without client-only loading', () => {
+test('root layout emits the organization script once for every page', () => {
+  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
-  assert.equal((home.match(/id="playful-organization"/g) || []).length, 1);
-  assert.match(home, /type="application\/ld\+json"/);
-  assert.match(home, /__html: ORGANIZATION_JSON_LD/);
+  assert.equal((layout.match(/id="playful-organization"/g) || []).length, 1);
+  assert.match(layout, /type="application\/ld\+json"/);
+  assert.match(layout, /__html: ORGANIZATION_JSON_LD/);
+  assert.doesNotMatch(home, /id="playful-organization"/);
   assert.match(home, /rel="canonical" href=\{HOME_CANONICAL\}/);
   assert.doesNotMatch(home, /^["']use client["']/);
 });
 
-test('home emits WebSite JSON-LD next to Organization', () => {
+test('home emits WebSite JSON-LD next to the global Organization', () => {
   const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
   assert.equal(WEBSITE_SCHEMA['@type'], 'WebSite');
   assert.equal(WEBSITE_SCHEMA['@id'], 'https://playfulagency.com/#website');

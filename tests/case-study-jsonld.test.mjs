@@ -38,6 +38,21 @@ test('case studies emit Article + BreadcrumbList without inventing CaseStudy', (
   assert.equal(crumbs['@type'], 'BreadcrumbList');
   assert.equal(crumbs.itemListElement.length, 3);
   assert.equal(crumbs.itemListElement[1].item, 'https://playfulagency.com/casos-de-exito');
+  assert.equal(crumbs.itemListElement[2].name, 'Jumex Shopify DTC');
+  assert.equal(
+    buildCaseStudyBreadcrumbJsonLd({
+      name: 'ignored',
+      path: '/casos-de-exito/odwalla-shopify-dtc-ecommerce',
+    }).itemListElement[2].name,
+    'Odwalla Shopify DTC',
+  );
+  assert.equal(
+    buildCaseStudyBreadcrumbJsonLd({
+      name: 'ignored',
+      path: '/casos-de-exito/soytechno-ecommerce-venezuela',
+    }).itemListElement[2].name,
+    'SoyTechno Venezuela',
+  );
 
   const hub = buildCaseStudiesHubBreadcrumbJsonLd();
   assert.equal(hub.itemListElement.length, 2);

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
-import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
+import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
@@ -190,11 +190,6 @@ export default function Home() {
     <>
       <link rel="canonical" href={HOME_CANONICAL} />
       <meta property="og:url" content={HOME_CANONICAL} />
-      <script
-        id="playful-organization"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
-      />
       <script
         id="playful-website"
         type="application/ld+json"
