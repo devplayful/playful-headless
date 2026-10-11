@@ -15,7 +15,8 @@ export const GTAG_EVENT_TIMEOUT_MS = 300;
  */
 export const GTAG_EP_PAGE_PATH_KEY = '_&ep.page_path';
 
-export const COLLECT_PAGE_PATH_TTL_MS = 2500;
+// gtag often holds the hit 3–8s (`_et`, batching). 2.5s expired before collect.
+export const COLLECT_PAGE_PATH_TTL_MS = 20_000;
 
 type PendingPagePath = {
   eventName: string;
@@ -69,6 +70,7 @@ export function queueCollectPagePath(
   now = Date.now(),
 ): void {
   if (!eventName || !pagePath) return;
+  pendingPagePaths = prunePending(now).filter((item) => item.eventName !== eventName);
   pendingPagePaths.push({
     eventName,
     pagePath,
