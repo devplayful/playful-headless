@@ -199,10 +199,10 @@ test('creates a Revisar opportunity without an SLA task for marketplace-transiti
   ]);
   assert(!gateway.calls.some((call) => call.operation === 'create-task'));
   const upsert = gateway.calls[0].value as UpsertContactInput;
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.sales_model && item.fieldValue === 'mercado_libre'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.qualification_level && item.fieldValue === 'transition'
   )));
   const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')
@@ -298,19 +298,19 @@ test('persists free-text otros on contact and opportunity fields', async () => {
   assert.equal(result.taskId, undefined);
 
   const upsert = gateway.calls[0].value as UpsertContactInput;
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.decision_role_other && item.fieldValue === 'Consultora externa'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.sales_model_other && item.fieldValue === 'Retail físico + web'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.monthly_revenue_other && item.fieldValue === 'Estacional 80k'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.project_timing_other && item.fieldValue === 'Tras Black Friday'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert((upsert.customFields ?? []).some((item) => (
     item.id === config.customFieldIds.project_context && item.fieldValue === 'Contexto libre del proyecto'
   )));
 
