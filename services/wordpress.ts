@@ -518,6 +518,7 @@ export type RelatedBlogCard = {
   category: string;
   date: string;
   imageUrl: string;
+  imageAlt: string;
   slug: string;
   href: string;
 };
@@ -573,6 +574,10 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       || imageUrl;
   }
   imageUrl = resolveBlogCoverUrl(post.slug, imageUrl);
+  const imageAlt = resolveBlogCoverAlt(
+    post.slug,
+    post.featured_media_alt || featuredMedia?.alt_text || '',
+  );
   const formattedDate = formatBlogListingDate(
     post.slug,
     {
@@ -591,6 +596,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
     category,
     date: formattedDate,
     imageUrl,
+    imageAlt,
     slug: post.slug,
     href: remapCanibalizacionHref(`/blog/${categorySlug}/${post.slug}`),
   };
@@ -970,6 +976,7 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       'slash',
     ),
     imageUrl: resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+    imageAlt: resolveBlogCoverAlt(post.slug, ''),
     slug: post.slug,
     href: post.href,
   };
