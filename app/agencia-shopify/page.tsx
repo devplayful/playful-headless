@@ -5,6 +5,7 @@ import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -81,15 +82,14 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
         data-illustration-slot={id}
         className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
       >
-        <img
-          src={HERO_ART_1X}
-          srcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
-          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+        <Image
+          src={publicWebpIfPresent(HERO_ART_1X)}
           alt={resolveImageAlt(HERO_ART_1X)}
           width={552}
           height={360}
-          decoding="async"
+          priority
           fetchPriority="high"
+          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
@@ -110,27 +110,17 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
           : id === 'servicio-catalogo'
             ? CATALOGO_ART_1X
             : CHECKOUT_ART_1X;
-    const src2x =
-      id === 'servicio-diseno'
-        ? DISENO_ART_2X
-        : id === 'servicio-desarrollo'
-          ? DESARROLLO_ART_2X
-          : id === 'servicio-catalogo'
-            ? CATALOGO_ART_2X
-            : CHECKOUT_ART_2X;
     return (
       <div
         data-illustration-slot={id}
         className="relative w-full max-w-[200px] h-[180px] mx-auto overflow-hidden rounded-2xl"
       >
-        <img
-          src={src1x}
-          srcSet={`${src1x} 200w, ${src2x} 400w`}
-          sizes="200px"
+        <Image
+          src={publicWebpIfPresent(src1x)}
           alt={resolveImageAlt(src1x)}
           width={200}
           height={180}
-          decoding="async"
+          sizes="200px"
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
@@ -207,8 +197,8 @@ export default async function AgenciaShopifyPage() {
       <link
         rel="preload"
         as="image"
-        href={HERO_ART_1X}
-        imageSrcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
+        href={publicWebpIfPresent(HERO_ART_1X)}
+        imageSrcSet={`${publicWebpIfPresent(HERO_ART_1X)} 552w, ${publicWebpIfPresent(HERO_ART_2X)} 1104w`}
         imageSizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
       />
       <script

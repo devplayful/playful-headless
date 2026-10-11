@@ -123,6 +123,7 @@ export default async function BlogListingView({
                         className="object-contain p-8"
                         sizes={BLOG_LISTING_HERO_SIZES}
                         priority
+                        fetchPriority="high"
                       />
                     </div>
                   ) : (

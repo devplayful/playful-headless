@@ -5,6 +5,7 @@ import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from '@/utils/organization-sche
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
 
 const HOME_CANONICAL = canonicalForPath('/');
 
@@ -118,7 +119,7 @@ async function HomeContent() {
             {/* Right Illustration Area */}
             <div className="relative">
               <Image
-                src="/images/playful-imagen-banner.png"
+                src={publicWebpIfPresent('/images/playful-imagen-banner.png')}
                 alt={resolveImageAlt('/images/playful-imagen-banner.png')}
                 width={2048}
                 height={2048}

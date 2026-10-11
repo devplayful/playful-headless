@@ -10,7 +10,7 @@ const carousel = readFileSync(
 
 test('home hero banner uses next/image with priority and fetchPriority high', () => {
   assert.match(home, /from ['"]next\/image['"]/);
-  assert.match(home, /src="\/images\/playful-imagen-banner\.png"/);
+  assert.match(home, /publicWebpIfPresent\('\/images\/playful-imagen-banner\.png'\)/);
   assert.match(home, /priority/);
   assert.match(home, /fetchPriority="high"/);
   assert.match(home, /sizes="\(min-width: 1024px\) 560px, 100vw"/);
