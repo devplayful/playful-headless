@@ -11,3 +11,18 @@ export const ORGANIZATION_SCHEMA = Object.freeze({
 
 export const ORGANIZATION_JSON_LD = JSON.stringify(ORGANIZATION_SCHEMA)
   .replace(/</g, '\\u003c');
+
+export const WEBSITE_SCHEMA = Object.freeze({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://playfulagency.com/#website',
+  name: ORGANIZATION_SCHEMA.name,
+  url: ORGANIZATION_SCHEMA.url,
+  inLanguage: 'es',
+  publisher: {
+    '@id': ORGANIZATION_SCHEMA['@id'],
+  },
+});
+
+export const WEBSITE_JSON_LD = JSON.stringify(WEBSITE_SCHEMA)
+  .replace(/</g, '\\u003c');

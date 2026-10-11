@@ -43,28 +43,57 @@ export default function ChatWidget() {
   }, [policy.externalTracking])
 
   useEffect(() => {
-    // HighLevel fires LC_chatWidgetLoaded once; hook it before the loader.
-    attachChatWidgetAnalytics()
+    let loaded = false
+    let chatEl: HTMLScriptElement | null = null
+    let idleId = 0
+    let timeoutId = 0
+    const events = ['pointerdown', 'keydown', 'scroll', 'touchstart'] as const
 
-    const chat = document.createElement('script')
-    chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
-    chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
-    chat.setAttribute('data-widget-id', HIGHLEVEL_CHAT_WIDGET_ID)
-    chat.async = true
-
-    chat.onload = () => {
-      console.log('✅ ChatWidget: Widget de High Level cargado')
-    }
-    chat.onerror = (error) => {
-      console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
+    const detach = () => {
+      events.forEach((type) => window.removeEventListener(type, load))
+      if (idleId && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      window.clearTimeout(timeoutId)
     }
 
-    document.body.appendChild(chat)
-    console.log('📝 ChatWidget: Script de chat agregado al DOM')
+    const load = () => {
+      if (loaded) return
+      loaded = true
+      detach()
+      // HighLevel fires LC_chatWidgetLoaded once; hook it before the loader.
+      attachChatWidgetAnalytics()
+
+      const chat = document.createElement('script')
+      chatEl = chat
+      chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
+      chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
+      chat.setAttribute('data-widget-id', HIGHLEVEL_CHAT_WIDGET_ID)
+      chat.async = true
+
+      chat.onload = () => {
+        console.log('✅ ChatWidget: Widget de High Level cargado')
+      }
+      chat.onerror = (error) => {
+        console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
+      }
+
+      document.body.appendChild(chat)
+      console.log('📝 ChatWidget: Script de chat agregado al DOM')
+    }
+
+    events.forEach((type) => {
+      window.addEventListener(type, load, { once: true, passive: true })
+    })
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(load, { timeout: 4000 })
+    }
+    timeoutId = window.setTimeout(load, 4000)
 
     return () => {
-      if (document.body.contains(chat)) {
-        document.body.removeChild(chat)
+      detach()
+      if (chatEl && document.body.contains(chatEl)) {
+        document.body.removeChild(chatEl)
       }
       console.log('🗑️ ChatWidget: Scripts removidos del DOM')
     }

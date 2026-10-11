@@ -10,6 +10,8 @@ const {
   EDITORIAL_AVATAR_SRC,
   WP_MODIFIED_HONOR_ON_OR_AFTER,
   buildBlogArticleJsonLd,
+  buildBlogBreadcrumbJsonLd,
+  buildBlogListingBreadcrumbJsonLd,
   decodeHtmlEntities,
   formatCombinedByline,
   formatEditorialDate,
@@ -204,6 +206,20 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
   assert.equal(jsonLd.mainEntityOfPage, url);
   assert.equal(jsonLd.url, url);
   assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
+});
+
+test('blog BreadcrumbList uses listing chip labels and the post canonical', () => {
+  const url =
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+  const crumbs = buildBlogBreadcrumbJsonLd({
+    categorySlug: 'tecnologia',
+    headline: 'Zelle en Venezuela',
+    url,
+  });
+  assert.equal(crumbs['@type'], 'BreadcrumbList');
+  assert.equal(crumbs.itemListElement[2].name, 'Tecnologia');
+  assert.equal(crumbs.itemListElement[3].item, url);
+  assert.equal(buildBlogListingBreadcrumbJsonLd().itemListElement.length, 2);
 });
 
 test('JSON-LD headline decodes WordPress entities to match the H1', () => {

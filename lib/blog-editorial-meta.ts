@@ -199,6 +199,74 @@ export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
+export const BLOG_CATEGORY_BREADCRUMB_NAMES: Record<string, string> = {
+  'e-commerce': 'E-commerce',
+  'email-marketing': 'Email Marketing',
+  'mas-vistos': 'Más vistos',
+  otros: 'Otros',
+  'pautas-digitales': 'Pautas Digitales',
+  seo: 'Seo',
+  tecnologia: 'Tecnologia',
+};
+
+export function buildBlogBreadcrumbJsonLd(input: {
+  categorySlug: string;
+  headline: string;
+  url: string;
+}): Record<string, unknown> {
+  const categoryName = BLOG_CATEGORY_BREADCRUMB_NAMES[input.categorySlug] || input.categorySlug;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://playfulagency.com/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://playfulagency.com/blog',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: categoryName,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: decodeHtmlEntities(input.headline),
+        item: input.url,
+      },
+    ],
+  };
+}
+
+export function buildBlogListingBreadcrumbJsonLd(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://playfulagency.com/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://playfulagency.com/blog',
+      },
+    ],
+  };
+}
+
 export function buildBlogArticleJsonLd(input: {
   headline: string;
   description?: string;

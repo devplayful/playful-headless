@@ -96,6 +96,35 @@ function restoreOldBodyCopy(html: string): string {
   return out;
 }
 
+function firstHeroImageSrc(html: string): string | null {
+  const re = /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(html))) {
+    const src = match[1];
+    if (!src || src.startsWith('data:') || /\.svg(\?|$)/i.test(src) || /icon|sprite|favicon/i.test(src)) {
+      continue;
+    }
+    return src;
+  }
+  return null;
+}
+
+function markFirstHeroImagePriority(html: string): string {
+  let done = false;
+  return html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {
+    if (done) return full;
+    const src = /src=["']([^"']+)["']/i.exec(attrs)?.[1] || '';
+    if (!src || src.startsWith('data:') || /\.svg(\?|$)/i.test(src) || /icon|sprite|favicon/i.test(src)) {
+      return full;
+    }
+    done = true;
+    let next = attrs;
+    if (!/fetchpriority=/i.test(next)) next += ' fetchpriority="high"';
+    if (!/\bdecoding=/i.test(next)) next += ' decoding="async"';
+    return `<img${next}>`;
+  });
+}
+
 type ElementorPageContentProps = {
   html: string;
   pageId: number;
@@ -109,15 +138,18 @@ export default function ElementorPageContent({
   stylesheetIds,
   slug = '',
 }: ElementorPageContentProps) {
-  const bodyHtml = applyImageAltOverrides(
-    rewriteElementorBodyHrefs(
-      rewriteEcommerceZelleCover(
-        rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+  const bodyHtml = markFirstHeroImagePriority(
+    applyImageAltOverrides(
+      rewriteElementorBodyHrefs(
+        rewriteEcommerceZelleCover(
+          rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+          slug,
+        ),
         slug,
       ),
-      slug,
     ),
   );
+  const lcpSrc = firstHeroImageSrc(bodyHtml);
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
@@ -125,6 +157,10 @@ export default function ElementorPageContent({
 
   return (
     <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="preconnect" href={WP_HOST} />
+      {lcpSrc ? <link rel="preload" as="image" href={lcpSrc} /> : null}
       <link rel="stylesheet" href={FONTS} />
       {CORE_STYLESHEETS.map((href) => (
         <link key={href} rel="stylesheet" href={href} />

@@ -29,6 +29,10 @@ import {
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
 } from './copy';
+import {
+  buildServiceLandingJsonLd,
+  serializeServiceLandingJsonLd,
+} from '@/utils/service-landing-jsonld';
 
 const PAGE_URL = canonicalForPath(SHOPIFY_META.path);
 const PORTFOLIO_URL = 'https://playfulagency.com/agencia-e-commerce';
@@ -191,6 +195,7 @@ function PurpleBand({ title, body }: { title: string; body: string }) {
 
 export default async function AgenciaShopifyPage() {
   const faqJsonLd = buildFaqPageJsonLd();
+  const shopifyJsonLd = buildServiceLandingJsonLd('agencia-shopify', SHOPIFY_META.description);
   const [casosDeExito, blogPosts] = await Promise.all([
     getAllCaseStudies().catch(() => []),
     getLatestBlogPosts(6).catch(() => []),
@@ -199,10 +204,32 @@ export default async function AgenciaShopifyPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      <link
+        rel="preload"
+        as="image"
+        href={HERO_ART_1X}
+        imageSrcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
+        imageSizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
       />
+      <script
+        id="playful-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(faqJsonLd) }}
+      />
+      {shopifyJsonLd ? (
+        <>
+          <script
+            id="playful-service"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.service) }}
+          />
+          <script
+            id="playful-breadcrumb"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.breadcrumb) }}
+          />
+        </>
+      ) : null}
 
       <article className="w-full pb-20">
         <section data-cta-section="hero" className="relative overflow-hidden">

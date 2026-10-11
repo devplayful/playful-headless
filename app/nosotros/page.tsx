@@ -4,6 +4,7 @@ import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 
@@ -360,7 +361,7 @@ export default async function Nosotros() {
   const casosDeExito = await getAllCaseStudies();
   
   return (
-    <main className="max-w-[1200px] mx-auto px-4 md:px-6 w-full">
+    <div className="max-w-[1200px] mx-auto px-4 md:px-6 w-full">
       {/* Sección Superior "Nosotros" */}
       <div className="w-full">
           <div className="min-h-[480px] flex items-center pt-4 pb-12">
@@ -424,9 +425,9 @@ export default async function Nosotros() {
 
       {/* Sección CTA */}
       <section className="w-full my-8 mb-[80px]">
-        <TwoColumnCtaSection />
+        <TwoColumnCtaSection buttonLink={SERVICE_BOOKING_HREF} />
       </section>
-    </main>
+    </div>
   );
 }
 
