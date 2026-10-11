@@ -60,7 +60,7 @@ test('blog post title suffix is | Playful and never doubles or keeps the old suf
   assert.match(seoCopy, /withPlayfulTitleSuffix\(/);
   assert.match(blogPost, /from '@\/lib\/blog-title-suffix'/);
   assert.doesNotMatch(blogPost, /\| Blog - Playful Agency/);
-  assert.match(blogPost, /Cintillos de promoción en ecommerce \| Playful/);
+  assert.match(blogPost, /Cintillos publicitarios en ecommerce: guía práctica \| Playful/);
   assert.match(blogPost, /Zelle en Venezuela: cobra en tu tienda online \| Playful/);
   assert.doesNotMatch(blogPost, /\| Playful \| Playful/);
   assert.doesNotMatch(
