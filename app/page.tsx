@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
-import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
+import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { HOME_META } from './home-copy';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
@@ -278,6 +278,11 @@ export default function Home() {
         id="playful-organization"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
+      />
+      <script
+        id="playful-website"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
       />
       <HomePageContent>
         <HomeContent />

@@ -5,6 +5,7 @@ import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { CaseStudyCard } from '@/components/CarouselResultados';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -32,6 +33,10 @@ import {
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
 } from './copy';
+import {
+  buildServiceLandingJsonLd,
+  serializeServiceLandingJsonLd,
+} from '@/utils/service-landing-jsonld';
 
 const PAGE_URL = canonicalForPath(SHOPIFY_META.path);
 const PORTFOLIO_URL = 'https://playfulagency.com/agencia-e-commerce';
@@ -80,15 +85,14 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
         data-illustration-slot={id}
         className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
       >
-        <img
-          src={HERO_ART_1X}
-          srcSet={`${HERO_ART_1X} 552w, ${HERO_ART_2X} 1104w`}
-          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+        <Image
+          src={publicWebpIfPresent(HERO_ART_1X)}
           alt={resolveImageAlt(HERO_ART_1X)}
           width={552}
           height={360}
-          decoding="async"
+          priority
           fetchPriority="high"
+          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
@@ -123,8 +127,8 @@ function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | '
         className="absolute inset-0 overflow-hidden"
       >
         <img
-          src={src1x}
-          srcSet={`${src1x} 560w, ${src2x} 1120w`}
+          src={publicWebpIfPresent(src1x)}
+          srcSet={`${publicWebpIfPresent(src1x)} 560w, ${publicWebpIfPresent(src2x)} 1120w`}
           sizes="(min-width: 768px) 45vw, calc(100vw - 2rem)"
           alt={resolveImageAlt(src1x)}
           width={560}
@@ -194,6 +198,7 @@ function PurpleBand({ title, body }: { title: string; body: string }) {
 
 export default async function AgenciaShopifyPage() {
   const faqJsonLd = buildFaqPageJsonLd();
+  const shopifyJsonLd = buildServiceLandingJsonLd('agencia-shopify', SHOPIFY_META.description);
   const [casosDeExito, blogPosts] = await Promise.all([
     getAllCaseStudies().catch(() => []),
     getLatestBlogPosts(6).catch(() => []),
@@ -202,10 +207,32 @@ export default async function AgenciaShopifyPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      <link
+        rel="preload"
+        as="image"
+        href={publicWebpIfPresent(HERO_ART_1X)}
+        imageSrcSet={`${publicWebpIfPresent(HERO_ART_1X)} 552w, ${publicWebpIfPresent(HERO_ART_2X)} 1104w`}
+        imageSizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
       />
+      <script
+        id="playful-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(faqJsonLd) }}
+      />
+      {shopifyJsonLd ? (
+        <>
+          <script
+            id="playful-service"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.service) }}
+          />
+          <script
+            id="playful-breadcrumb"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.breadcrumb) }}
+          />
+        </>
+      ) : null}
 
       <article className="w-full pb-20">
         <section data-cta-section="hero" className="relative overflow-hidden">

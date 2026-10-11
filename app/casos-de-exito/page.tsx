@@ -10,12 +10,25 @@ import {
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import CaseStudiesContent from './CaseStudiesContent';
+import { buildCaseStudiesHubBreadcrumbJsonLd } from '@/utils/case-study-jsonld';
+import { serializeServiceLandingJsonLd } from '@/utils/service-landing-jsonld';
 
 export default async function CaseStudiesPage() {
   const items = await getAllCaseStudies();
   const initialCaseStudies = items.map(mapCaseStudyToListingCard);
 
-  return <CaseStudiesContent initialCaseStudies={initialCaseStudies} />;
+  return (
+    <>
+      <script
+        id="playful-breadcrumb"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeServiceLandingJsonLd(buildCaseStudiesHubBreadcrumbJsonLd()),
+        }}
+      />
+      <CaseStudiesContent initialCaseStudies={initialCaseStudies} />
+    </>
+  );
 }
 
 export async function generateMetadata() {

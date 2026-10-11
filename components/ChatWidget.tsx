@@ -16,59 +16,72 @@ export default function ChatWidget() {
   )
 
   useEffect(() => {
-    if (!policy.externalTracking) return
+    let loaded = false
+    let chatEl: HTMLScriptElement | null = null
+    let trackingEl: HTMLScriptElement | null = null
+    const events = ['pointerdown', 'keydown', 'scroll', 'touchstart'] as const
 
-    console.log('🤖 ChatWidget: Iniciando carga del script de LeadConnector...')
-
-    const tracking = document.createElement('script')
-    tracking.src = HIGHLEVEL_EXTERNAL_TRACKING_SRC
-    tracking.setAttribute('data-tracking-id', 'tk_7f428930606f48999b6809f35a288399')
-    tracking.async = true
-
-    tracking.onload = () => {
-      console.log('✅ ChatWidget: Script de tracking cargado exitosamente')
-    }
-    tracking.onerror = (error) => {
-      console.error('❌ ChatWidget: Error al cargar el script de tracking', error)
+    const detach = () => {
+      events.forEach((type) => window.removeEventListener(type, load))
     }
 
-    document.body.appendChild(tracking)
+    const load = () => {
+      if (loaded) return
+      loaded = true
+      detach()
 
-    return () => {
-      if (document.body.contains(tracking)) {
-        document.body.removeChild(tracking)
+      if (policy.externalTracking) {
+        console.log('🤖 ChatWidget: Iniciando carga del script de LeadConnector...')
+        const tracking = document.createElement('script')
+        trackingEl = tracking
+        tracking.src = HIGHLEVEL_EXTERNAL_TRACKING_SRC
+        tracking.setAttribute('data-tracking-id', 'tk_7f428930606f48999b6809f35a288399')
+        tracking.async = true
+        tracking.onload = () => {
+          console.log('✅ ChatWidget: Script de tracking cargado exitosamente')
+        }
+        tracking.onerror = (error) => {
+          console.error('❌ ChatWidget: Error al cargar el script de tracking', error)
+        }
+        document.body.appendChild(tracking)
       }
-      console.log('🗑️ ChatWidget: Script de tracking removido del DOM')
+
+      // HighLevel fires LC_chatWidgetLoaded once; hook it before the loader.
+      attachChatWidgetAnalytics()
+
+      const chat = document.createElement('script')
+      chatEl = chat
+      chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
+      chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
+      chat.setAttribute('data-widget-id', HIGHLEVEL_CHAT_WIDGET_ID)
+      chat.async = true
+
+      chat.onload = () => {
+        console.log('✅ ChatWidget: Widget de High Level cargado')
+      }
+      chat.onerror = (error) => {
+        console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
+      }
+
+      document.body.appendChild(chat)
+      console.log('📝 ChatWidget: Script de chat agregado al DOM')
     }
-  }, [policy.externalTracking])
 
-  useEffect(() => {
-    // HighLevel fires LC_chatWidgetLoaded once; hook it before the loader.
-    attachChatWidgetAnalytics()
-
-    const chat = document.createElement('script')
-    chat.src = HIGHLEVEL_CHAT_WIDGET_LOADER
-    chat.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js')
-    chat.setAttribute('data-widget-id', HIGHLEVEL_CHAT_WIDGET_ID)
-    chat.async = true
-
-    chat.onload = () => {
-      console.log('✅ ChatWidget: Widget de High Level cargado')
-    }
-    chat.onerror = (error) => {
-      console.error('❌ ChatWidget: Error al cargar el widget de High Level', error)
-    }
-
-    document.body.appendChild(chat)
-    console.log('📝 ChatWidget: Script de chat agregado al DOM')
+    events.forEach((type) => {
+      window.addEventListener(type, load, { once: true, passive: true })
+    })
 
     return () => {
-      if (document.body.contains(chat)) {
-        document.body.removeChild(chat)
+      detach()
+      if (trackingEl && document.body.contains(trackingEl)) {
+        document.body.removeChild(trackingEl)
+      }
+      if (chatEl && document.body.contains(chatEl)) {
+        document.body.removeChild(chatEl)
       }
       console.log('🗑️ ChatWidget: Scripts removidos del DOM')
     }
-  }, [])
+  }, [policy.externalTracking])
 
   return null
 }

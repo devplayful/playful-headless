@@ -34,10 +34,12 @@ import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
+  buildBlogBreadcrumbJsonLd,
   formatCombinedByline,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
@@ -213,6 +215,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm
     ? contentWithIds.split(ESHOW_LISTA_FORM_MARKER)
     : [contentWithIds, null];
+  const breadcrumbJsonLd = buildBlogBreadcrumbJsonLd({
+    categorySlug: category,
+    headline: pageH1,
+    url: postCanonical,
+  });
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -224,6 +231,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <>
     <script
+      id="playful-article"
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
     />
@@ -232,6 +240,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
       />
+    ) : null}
+    <script
+      id="playful-breadcrumb"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+    />
+    {serviceCta ? (
+      <p data-playful-service-cta="" className="sr-only">
+        <a href={serviceCta.href}>{serviceCta.label}</a>
+      </p>
     ) : null}
     <h1 className="sr-only">{pageH1}</h1>
     <div className="min-h-screen">
@@ -401,7 +419,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </section>
 
       {/* Main Content */}
-      <main className="detalle-blog-fondo max-w-[1200px] mx-auto px-4 md:px-6 py-12">
+      <div className="detalle-blog-fondo max-w-[1200px] mx-auto px-4 md:px-6 py-12">
         <article className="bg-white rounded-[36px] p-8 md:p-12">
           
           {/* Table of Contents - Antes del contenido */}
@@ -464,7 +482,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           )}
         </article>
-      </main>
+      </div>
       
       {/* Sección de artículos relacionados: never an empty carousel. */}
       {relatedPosts.length > 0 ? (
@@ -479,7 +497,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
-        <TwoColumnCtaSection />
+        <TwoColumnCtaSection buttonLink={SERVICE_BOOKING_HREF} />
       </section>
     </div>
     </>
