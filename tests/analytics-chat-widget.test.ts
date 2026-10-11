@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { CTA_EVENT_TIMEOUT_MS } from '../lib/analytics/cta-click.ts';
+import { GTAG_EP_PAGE_PATH_KEY } from '../lib/analytics/gtag-event.ts';
 import {
   CHAT_LEAD_EVENT,
   CHAT_OPEN_EVENT,
@@ -84,6 +85,7 @@ test('before-submit always allows the chat and never forwards PII', () => {
     assert.equal(calls[0][1], CHAT_LEAD_EVENT);
     const payload = calls[0][2] as Record<string, unknown>;
     assert.equal(payload.page_path, '/agencia-shopify?utm_source=li');
+    assert.equal(payload[GTAG_EP_PAGE_PATH_KEY], '/agencia-shopify?utm_source=li');
     assert.equal(payload.event_timeout, CTA_EVENT_TIMEOUT_MS);
     const serialized = JSON.stringify({
       page_path: payload.page_path,
@@ -227,7 +229,9 @@ test('chat_open fires on the documented isActive rising edge, not on close', () 
       observerCallback?.([], {} as MutationObserver);
       assert.equal(calls.length, 1);
       assert.equal(calls[0][1], CHAT_OPEN_EVENT);
-      assert.equal((calls[0][2] as { page_path: string }).page_path, '/agencia-shopify?utm_source=li');
+      const openPayload = calls[0][2] as Record<string, unknown>;
+      assert.equal(openPayload.page_path, '/agencia-shopify?utm_source=li');
+      assert.equal(openPayload[GTAG_EP_PAGE_PATH_KEY], '/agencia-shopify?utm_source=li');
 
       observerCallback?.([], {} as MutationObserver);
       assert.equal(calls.length, 1, 'open must not duplicate while already active');
