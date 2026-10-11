@@ -38,8 +38,14 @@
  * 1200×630 solo para og:image y JSON-LD. La destacada visible no cambia.
  *
  * Only featured/OG/Twitter. Body stock images stay on WordPress.
+ *
+ * 11 oct 2026 (arreglo técnico a11y/SEO, regla 4 oct: sin GO):
+ * BLOG_COVER_ALT_OVERRIDES describe la escena de 73 portadas WP
+ * cuyo alt repetía el título. Un slug ausente del mapa no cambia.
  */
 import { ogJpegForBlogSlug } from './og-images.ts';
+import BLOG_COVER_ALT_OVERRIDE_ENTRIES from './blog-cover-alt-overrides.json' with { type: 'json' };
+
 export const BLOG_COVER_OVERRIDES = {
   // lote 1
   'actualizar-tu-e-commerce': '/images/blog/01-actualizar-magnific-mELf0NZhJQ.png',
@@ -152,11 +158,15 @@ export const BLOG_COVER_ALTS: Record<string, string> = {
     'Un pulpo sobre una tienda reparte paquetes, correos y bolsas a los clientes con sus tentáculos',
 };
 
+/** Scene alts for WP featured covers (73 slugs). Magnific lote stays in BLOG_COVER_ALTS. */
+export const BLOG_COVER_ALT_OVERRIDES: Record<string, string> = BLOG_COVER_ALT_OVERRIDE_ENTRIES;
+
 export function resolveBlogCoverAlt(
   slug: string | undefined | null,
   fallback: string,
 ): string {
-  return (slug && BLOG_COVER_ALTS[slug]) || fallback;
+  if (!slug) return fallback;
+  return BLOG_COVER_ALT_OVERRIDES[slug] || BLOG_COVER_ALTS[slug] || fallback;
 }
 
 export const BLOG_COVER_SIZE = { width: 2560, height: 1440 } as const;

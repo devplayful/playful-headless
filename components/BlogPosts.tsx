@@ -20,6 +20,7 @@ interface BlogPost {
   category: string;
   date: string;
   imageUrl?: string;
+  imageAlt?: string;
   readMoreLink?: string;
 }
 
@@ -138,7 +139,7 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
                       {post.imageUrl ? (
                         <img
                           src={post.imageUrl}
-                          alt={post.title}
+                          alt={post.imageAlt || post.title}
                           className="w-full h-full object-cover"
                         />
                       ) : (
