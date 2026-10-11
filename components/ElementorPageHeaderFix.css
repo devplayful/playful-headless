@@ -478,14 +478,14 @@ body:has(.playful-wp-page) .playful-header nav {
   align-items: center;
   gap: 6px;
   background: transparent !important;
-  border: 1px solid #886CFF !important;
-  color: #886CFF !important;
+  border: 1px solid #440099 !important;
+  color: #440099 !important;
   font-weight: 600;
   padding: 4px 10px 4px 8px !important;
   border-radius: 4px !important;
 }
 .playful-wp-page .post-meta-categories a {
-  color: #886CFF !important;
+  color: #440099 !important;
   background: none !important;
 }
 .playful-wp-page .post-meta-categories::before,
@@ -496,7 +496,7 @@ body:has(.playful-wp-page) .playful-header nav {
   font-style: normal !important;
   font-size: 11px !important;
   line-height: 1 !important;
-  color: #886CFF !important;
+  color: #440099 !important;
   display: inline-block !important;
   width: auto !important;
   height: auto !important;
@@ -627,7 +627,7 @@ body:has(.playful-wp-page) .playful-header nav {
 }
 .playful-wp-page .master-news:hover .post-meta-categories,
 .playful-wp-page .master-news:hover .post-meta-categories a {
-  color: #886CFF !important;
+  color: #440099 !important;
   background: transparent !important;
 }
 .playful-wp-page .playful-post-home .recent-news h3 a:hover {
@@ -2194,4 +2194,17 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elemen
   max-width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+/*
+ * AA contrast on old Elementor landings (axe-core + computed scan 2026-10-11).
+ * Kit grays #7A7A7A (4.34:1) and #7B88A8 (3.56:1) on white miss 4.5:1.
+ * Category chips #886CFF on white are 3.73:1. Darken within the brand palette
+ * (#54595F kit gray, #440099 primary) — no copy change.
+ */
+.playful-wp-page,
+.elementor-kit-8.playful-wp-page,
+body.playful-elementor-plain {
+  --e-global-color-text: #54595F;
+  --e-global-color-pollock_text: #54595F;
 }
