@@ -23,6 +23,10 @@ const {
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
 const elementor = readFileSync(new URL('../components/ElementorPageContent.tsx', import.meta.url), 'utf8');
+const elementorCss = readFileSync(
+  new URL('../components/ElementorPageHeaderFix.css', import.meta.url),
+  'utf8',
+);
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 const shopifyCopy = readFileSync(new URL('../app/agencia-shopify/copy.ts', import.meta.url), 'utf8');
@@ -249,6 +253,16 @@ test('slug page passes the WP slug into ElementorPageContent', () => {
   assert.match(elementor, /rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\)/);
   assert.match(slugPage, /'marketing-internacional'/);
   assert.match(slugPage, /'agencia-e-commerce'/);
+});
+
+test('Elementor landings darken kit gray and category chips to AA', () => {
+  assert.match(elementorCss, /\.post-meta-categories \{[\s\S]*?color: #440099 !important;/);
+  assert.match(elementorCss, /--e-global-color-text: #54595F;/);
+  assert.match(elementorCss, /--e-global-color-pollock_text: #54595F;/);
+  assert.doesNotMatch(
+    elementorCss,
+    /\.playful-wp-page \.post-meta-categories \{\s*[^}]*color: #886CFF !important;/,
+  );
 });
 
 test('header and footer Contáctanos still go to the contact page', () => {
