@@ -10,6 +10,7 @@ import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_LISTING_CARD_SIZES, BLOG_LISTING_HERO_SIZES } from '@/lib/blog-image-sizes';
+import { resolveBlogCoverAlt } from '@/lib/blog-cover-image';
 
 // Función para extraer el texto del excerpt (eliminar etiquetas HTML)
 const getExcerpt = (excerpt: string) => {
@@ -116,7 +117,7 @@ export default async function BlogListingView({
                     <div className="relative w-full h-full flex items-center justify-center p-8">
                       <Image
                         src={posts[0].featured_media_url}
-                        alt={posts[0].featured_media_alt || posts[0].title.rendered}
+                        alt={resolveBlogCoverAlt(posts[0].slug, posts[0].featured_media_alt || posts[0].title.rendered)}
                         fill
                         className="object-contain p-8"
                         sizes={BLOG_LISTING_HERO_SIZES}
@@ -217,7 +218,7 @@ export default async function BlogListingView({
                         <div className="relative w-full h-full">
                           <Image
                             src={post.featured_media_url}
-                            alt={post.featured_media_alt || post.title.rendered}
+                            alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
                             fill
                             className="object-contain p-6 hover:scale-105 transition-transform duration-300"
                             sizes={BLOG_LISTING_CARD_SIZES}

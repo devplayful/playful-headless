@@ -20,6 +20,7 @@ import {
   BLOG_OG_SIZE,
   blogCoverForSlug,
   blogOgForSlug,
+  resolveBlogCoverAlt,
   resolveBlogOgUrl,
 } from '@/lib/blog-cover-image';
 import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
@@ -246,7 +247,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#DFFFFE] to-[#E0F7FA]">
                 <Image
                   src={post.featured_media_url}
-                  alt={post.featured_media_alt || post.title.rendered}
+                  alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
                   fill
                   className="object-contain p-8"
                   sizes={BLOG_POST_FEATURED_SIZES}
@@ -471,7 +472,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };
-  const imageAlt = post.featured_media_alt || post.title.rendered;
+  const imageAlt = resolveBlogCoverAlt(postSlug, post.featured_media_alt || post.title.rendered);
   const editorial = resolveBlogEditorialUpdate(postSlug, {
     published: post.date,
     publishedGmt: post.date_gmt,
