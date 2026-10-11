@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { CASE_CTA_ILLUSTRATION_SIZES } from '@/lib/blog-image-sizes';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 
 interface CasoExitoCtaProps {
   title: string;
@@ -75,7 +76,7 @@ const CasoExitoCta: React.FC<CasoExitoCtaProps> = ({
 
             <div className="w-full flex justify-center px-5 py-5 md:p-0">
               <a
-                href="/contactar-agencia-de-marketing-digital"
+                href={SERVICE_BOOKING_HREF}
                 className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
               >
                 ¡Hablemos de tu proyecto!

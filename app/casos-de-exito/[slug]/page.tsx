@@ -18,6 +18,12 @@ import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import {
+  buildCaseStudyArticleJsonLd,
+  buildCaseStudyBreadcrumbJsonLd,
+} from '@/utils/case-study-jsonld';
+import { serializeServiceLandingJsonLd } from '@/utils/service-landing-jsonld';
+import { toAbsoluteSiteUrl } from '@/utils/canonical';
+import {
   applyImageAltOverrides,
   resolveImageAlt,
   resolveMediaAlt,
@@ -111,7 +117,37 @@ export default async function SuccessStoryPage({
   // This case study is intentionally self-contained so its Figma-faithful
   // layout and media do not depend on the legacy WordPress field structure.
   if (slug === 'soytechno-ecommerce-venezuela') {
-    return <SoyTechnoCaseStudy />;
+    const override = getPublicCaseStudySeoOverride(slug);
+    const path = `/casos-de-exito/${slug}`;
+    const headline = override?.title || 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
+    const jpeg = ogJpegForPath(path);
+    return (
+      <>
+        <script
+          id="playful-article"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeServiceLandingJsonLd(buildCaseStudyArticleJsonLd({
+              headline,
+              description: override?.description,
+              path,
+              image: jpeg ? toAbsoluteSiteUrl(jpeg) : undefined,
+            })),
+          }}
+        />
+        <script
+          id="playful-breadcrumb"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeServiceLandingJsonLd(buildCaseStudyBreadcrumbJsonLd({
+              name: headline,
+              path,
+            })),
+          }}
+        />
+        <SoyTechnoCaseStudy />
+      </>
+    );
   }
 
   const rawStory = await getSuccessStoryBySlug(slug);
@@ -139,8 +175,35 @@ export default async function SuccessStoryPage({
   console.log('st?.seccion_f:', st?.seccion_f);
   console.log('=== END DEBUG ===');
 
+  const path = `/casos-de-exito/${slug}`;
+  const override = getPublicCaseStudySeoOverride(slug);
+  const headline = override?.title || story.title.rendered;
+  const jpeg = ogJpegForPath(path);
+
   return (
     <div className="text-gray-800">
+      <script
+        id="playful-article"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeServiceLandingJsonLd(buildCaseStudyArticleJsonLd({
+            headline,
+            description: override?.description,
+            path,
+            image: jpeg ? toAbsoluteSiteUrl(jpeg) : undefined,
+          })),
+        }}
+      />
+      <script
+        id="playful-breadcrumb"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeServiceLandingJsonLd(buildCaseStudyBreadcrumbJsonLd({
+            name: headline,
+            path,
+          })),
+        }}
+      />
       {/* Hero Section */}
       <section className="text-white">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6 bg-[#E9D7FF] rounded-t-[18px] p-5 md:p-[80px] mt-[40px]">

@@ -6,6 +6,7 @@ import BlogCategories from './BlogCategories';
 import BlogListingPagination from './BlogListingPagination';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
@@ -294,7 +295,7 @@ export default async function BlogListingView({
 
       {/* CTA Section */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-8 mb-20">
-        <TwoColumnCtaSection />
+        <TwoColumnCtaSection buttonLink={SERVICE_BOOKING_HREF} />
       </section>
     </div>
   );

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { ORGANIZATION_SCHEMA, ORGANIZATION_JSON_LD } from '../utils/organization-schema.mjs';
+import { ORGANIZATION_SCHEMA, ORGANIZATION_JSON_LD, WEBSITE_SCHEMA, WEBSITE_JSON_LD } from '../utils/organization-schema.mjs';
 
 test('organization contains only verified identity, not commercial or legal claims', () => {
   assert.deepEqual(Object.keys(ORGANIZATION_SCHEMA).sort(), ['@context', '@type', '@id', 'name', 'url', 'logo'].sort());
@@ -41,6 +41,18 @@ test('home emits the organization script once without client-only loading', () =
   assert.match(home, /__html: ORGANIZATION_JSON_LD/);
   assert.match(home, /rel="canonical" href=\{HOME_CANONICAL\}/);
   assert.doesNotMatch(home, /^["']use client["']/);
+});
+
+test('home emits WebSite JSON-LD next to Organization', () => {
+  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  assert.equal(WEBSITE_SCHEMA['@type'], 'WebSite');
+  assert.equal(WEBSITE_SCHEMA['@id'], 'https://playfulagency.com/#website');
+  assert.equal(WEBSITE_SCHEMA.url, ORGANIZATION_SCHEMA.url);
+  assert.deepEqual(WEBSITE_SCHEMA.publisher, { '@id': ORGANIZATION_SCHEMA['@id'] });
+  assert.deepEqual(JSON.parse(WEBSITE_JSON_LD), WEBSITE_SCHEMA);
+  assert.doesNotMatch(WEBSITE_JSON_LD, /</);
+  assert.equal((home.match(/id="playful-website"/g) || []).length, 1);
+  assert.match(home, /__html: WEBSITE_JSON_LD/);
 });
 
 test('root layout keeps chat and gates analytics to production', () => {

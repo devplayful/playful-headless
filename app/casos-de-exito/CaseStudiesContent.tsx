@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
+import { SERVICE_BOOKING_HREF } from "@/utils/booking";
 import { CASE_LISTING_CARD_SIZES } from "@/lib/blog-image-sizes";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
@@ -351,7 +352,7 @@ export default function CaseStudiesContent({
 
         {/* Sección de dos columnas */}
         <div className="my-16">
-          <TwoColumnCtaSection contentBgColor="#FFEFD1" />
+          <TwoColumnCtaSection contentBgColor="#FFEFD1" buttonLink={SERVICE_BOOKING_HREF} />
         </div>
       </div>
     </div>

@@ -118,14 +118,13 @@ test('Service and BreadcrumbList JSON-LD follow the shopify script pattern', () 
   assert.doesNotMatch(serializeServiceLandingJsonLd(breadcrumb), /</);
 });
 
-test('[slug] page emits both JSON-LD scripts only for /agencia-ux-ui', () => {
+test('[slug] page emits Service + BreadcrumbList for mapped landings including ux-ui', () => {
   assert.match(slugPage, /id="playful-service"/);
   assert.match(slugPage, /id="playful-breadcrumb"/);
   assert.match(slugPage, /type="application\/ld\+json"/);
-  assert.match(slugPage, /buildAgenciaUxUiJsonLd/);
-  assert.match(slugPage, /serializeServiceLandingJsonLd\(uxUiJsonLd\.service\)/);
-  assert.match(slugPage, /serializeServiceLandingJsonLd\(uxUiJsonLd\.breadcrumb\)/);
-  assert.match(slugPage, new RegExp(`slug === ${AGENCIA_UX_UI_SLUG}|slug === AGENCIA_UX_UI_SLUG`));
+  assert.match(slugPage, /buildServiceLandingJsonLd/);
+  assert.match(slugPage, /serializeServiceLandingJsonLd\(landingJsonLd\.service\)/);
+  assert.match(slugPage, /serializeServiceLandingJsonLd\(landingJsonLd\.breadcrumb\)/);
   assert.doesNotMatch(slugPage, /^["']use client["']/);
 });
 

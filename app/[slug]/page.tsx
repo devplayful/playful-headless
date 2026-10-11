@@ -5,8 +5,8 @@ import { applyPageTitleOverride, applyPageDescriptionOverride, twitterFromOpenGr
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import ElementorPageContent from '@/components/ElementorPageContent';
 import {
-  AGENCIA_UX_UI_SLUG,
-  buildAgenciaUxUiJsonLd,
+  buildServiceLandingJsonLd,
+  isServiceLandingSlug,
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
 
@@ -89,8 +89,9 @@ export default async function WordPressPage({
     notFound();
   }
 
-  const uxUiJsonLd = slug === AGENCIA_UX_UI_SLUG
-    ? buildAgenciaUxUiJsonLd(
+  const landingJsonLd = isServiceLandingSlug(slug)
+    ? buildServiceLandingJsonLd(
+        slug,
         applyPageDescriptionOverride(
           slug,
           (await getPageMetadataBySlug(slug)).yoast_wpseo_metadesc,
@@ -101,17 +102,17 @@ export default async function WordPressPage({
 
   return (
     <>
-      {uxUiJsonLd ? (
+      {landingJsonLd ? (
         <>
           <script
             id="playful-service"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(uxUiJsonLd.service) }}
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(landingJsonLd.service) }}
           />
           <script
             id="playful-breadcrumb"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(uxUiJsonLd.breadcrumb) }}
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(landingJsonLd.breadcrumb) }}
           />
         </>
       ) : null}

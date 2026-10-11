@@ -190,6 +190,8 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                 <button
                   onClick={toggleCases}
                   className={`flex items-center ${getLinkClass('/casos-de-exito')} cursor-pointer md:pointer-events-none`}
+                  aria-expanded={isCasesOpen}
+                  aria-haspopup="true"
                 >
                   CASOS DE ÉXITO
                   <svg 
@@ -231,6 +233,8 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                 <button
                   onClick={toggleServices}
                   className="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors cursor-pointer md:pointer-events-none"
+                  aria-expanded={isServicesOpen}
+                  aria-haspopup="true"
                 >
                   SERVICIOS
                   <svg 
@@ -329,6 +333,8 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                     <button
                       onClick={toggleCases}
                       className={`w-full text-left px-6 py-4 text-lg font-normal flex justify-between items-center hover:bg-white/5 transition-colors border-b border-white/10 ${pathname.includes('/casos-de-exito') ? 'text-[#2CD5C4] bg-white/10' : ''}`}
+                      aria-expanded={isCasesOpen}
+                      aria-haspopup="true"
                     >
                       <span>Casos de éxito</span>
                       <svg
@@ -374,6 +380,8 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
                     <button
                       onClick={toggleServices}
                       className="w-full text-left px-6 py-4 text-lg font-normal flex justify-between items-center hover:bg-white/5 transition-colors border-b border-white/10"
+                      aria-expanded={isServicesOpen}
+                      aria-haspopup="true"
                     >
                       <span>Servicios</span>
                       <svg

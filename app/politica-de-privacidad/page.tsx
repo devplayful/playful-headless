@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function PoliticaDePrivacidad() {
   return (
-    <main className="min-h-screen bg-[#E9D7FF] bg-[url('/images/background.webp')] bg-cover bg-center">
+    <div className="min-h-screen bg-[#E9D7FF] bg-[url('/images/background.webp')] bg-cover bg-center">
       {/* Hero Section - Sección principal con dos columnas según el diseño */}
       <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto">
         <div className="bg-[#E9D7FF] rounded-t-[18px] p-[80px]">
@@ -316,6 +316,6 @@ export default function PoliticaDePrivacidad() {
       <section className="w-[calc(100%-80px)] max-w-[1200px] mx-auto mt-8 mb-20">
         <TwoColumnCtaSection />
       </section>
-    </main>
+    </div>
   );
 }

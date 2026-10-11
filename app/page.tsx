@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
-import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
+import { ORGANIZATION_JSON_LD, WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
 
@@ -175,7 +176,7 @@ async function HomeContent() {
             contentBgColor="#B3FFF3"
             imageUrl="/images/imagen-nueva-cta-home.png"
             buttonText="Llena el formulario y hablemos sobre tu web"
-            buttonLink="/contactar-agencia-de-marketing-digital"
+            buttonLink={SERVICE_BOOKING_HREF}
           />
         </div>
       </section>
@@ -192,6 +193,11 @@ export default function Home() {
         id="playful-organization"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
+      />
+      <script
+        id="playful-website"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
       />
       <h1 className="sr-only">
         ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
