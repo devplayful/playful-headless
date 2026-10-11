@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
-import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
@@ -51,20 +51,15 @@ export const metadata: Metadata = {
   title: SHOPIFY_META.title,
   description: SHOPIFY_META.description,
   alternates: { canonical: PAGE_URL },
-  openGraph: {
+  ...pageSocialMetadata({
     title: SHOPIFY_META.title,
     description: SHOPIFY_META.description,
     url: PAGE_URL,
     images: ogJpegForPath(SHOPIFY_META.path)
       ? [ogJpegMeta(ogJpegForPath(SHOPIFY_META.path), SHOPIFY_META.title)]
       : undefined,
-  },
-  twitter: {
-    ...twitterFromOpenGraph(SHOPIFY_META.title, SHOPIFY_META.description),
-    ...(ogJpegForPath(SHOPIFY_META.path)
-      ? { images: [ogJpegForPath(SHOPIFY_META.path)] }
-      : {}),
-  },
+    type: 'website',
+  }),
 };
 
 const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
