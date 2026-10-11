@@ -37,6 +37,8 @@ import {
   buildBlogArticleJsonLd,
   buildBlogBreadcrumbJsonLd,
   formatCombinedByline,
+  formatUpdatedByline,
+  resolveBlogAuthorHref,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
@@ -228,7 +230,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       ? editorial
         ? formatCombinedByline(post.author.name, editorial.updatedBy)
         : post.author.name
-      : '';
+      : authorName;
+  const authorHref = resolveBlogAuthorHref(
+    post.author && typeof post.author === 'object' ? post.author.url : undefined,
+  );
+  const updatedByline = formatUpdatedByline(
+    editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+  );
 
   return (
     <>
@@ -302,20 +310,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {pageH1}
               </h2>
+
+              <div className="mb-6">
+                <BlogBylineChip
+                  name={bylineName}
+                  href={authorHref}
+                  updatedLabel={updatedByline}
+                  avatarSrc={authorAvatar}
+                  avatarAlt={
+                    post.author && typeof post.author === 'object'
+                      ? post.author.name
+                      : authorName
+                  }
+                />
+              </div>
               
               {excerptText ? (
                 <div className="text-lg text-gray-700 leading-relaxed mb-4">
                   {excerptText}
                 </div>
               ) : null}
-
-              {post.author && typeof post.author === 'object' && (
-                <BlogBylineChip
-                  name={bylineName}
-                  avatarSrc={authorAvatar}
-                  avatarAlt={post.author.name}
-                />
-              )}
             </div>
 
             {/* Columna derecha: Imagen destacada */}

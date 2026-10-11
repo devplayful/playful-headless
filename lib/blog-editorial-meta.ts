@@ -117,6 +117,38 @@ export function formatEditorialDate(value: string): string {
   });
 }
 
+/** Short Spanish month for the post-header chip: «11 oct 2026». */
+export const UPDATED_AT_SHORT_MONTHS = [
+  'ene',
+  'feb',
+  'mar',
+  'abr',
+  'may',
+  'jun',
+  'jul',
+  'ago',
+  'sept',
+  'oct',
+  'nov',
+  'dic',
+] as const;
+
+export function formatUpdatedAtShort(value: string): string {
+  const iso = toIsoDateTime(value);
+  const date = new Date(iso);
+  if (!Number.isFinite(date.getTime())) return '';
+  const day = date.getUTCDate();
+  const month = UPDATED_AT_SHORT_MONTHS[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  return `${day} ${month} ${year}`;
+}
+
+/** Visible last-updated chip copy: «Actualizado el 11 oct 2026». */
+export function formatUpdatedByline(value: string): string {
+  const short = formatUpdatedAtShort(value);
+  return short ? `Actualizado el ${short}` : '';
+}
+
 function pickPublished(dates: BlogEditorialDates): string | null {
   return dates.publishedGmt || dates.published || null;
 }
@@ -222,6 +254,21 @@ export const BLOG_POST_BREADCRUMB_NAMES: Record<string, string> = {
 };
 
 export const BLOG_AUTHOR_URL = 'https://playfulagency.com/nosotros';
+export const BLOG_AUTHOR_HREF = '/nosotros';
+
+/** Visible author chip href: `author.url` when it already points at /nosotros. */
+export function resolveBlogAuthorHref(url?: string | null): string {
+  const raw = (url || '').trim();
+  if (!raw) return BLOG_AUTHOR_HREF;
+  try {
+    const parsed = new URL(raw, 'https://playfulagency.com');
+    const path = parsed.pathname.replace(/\/+$/, '') || '/';
+    if (path === BLOG_AUTHOR_HREF) return BLOG_AUTHOR_HREF;
+  } catch {
+    if (raw.replace(/\/+$/, '') === BLOG_AUTHOR_HREF) return BLOG_AUTHOR_HREF;
+  }
+  return BLOG_AUTHOR_HREF;
+}
 
 export function buildBlogBreadcrumbJsonLd(input: {
   categorySlug: string;
