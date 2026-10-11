@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const {
   BLOG_COVER_ALTS,
+  BLOG_COVER_ALT_OVERRIDES,
   BLOG_COVER_FALLBACK,
   BLOG_COVER_OVERRIDES,
   BLOG_COVER_SIZE,
@@ -697,15 +698,64 @@ test('cover alts map every Magnific override and never resolve empty', () => {
   assert.equal(resolveBlogCoverAlt(undefined, 'WP fallback'), 'WP fallback');
 });
 
+test('BLOG_COVER_ALT_OVERRIDES maps 73 WP cover scenes without touching Magnific alts', async () => {
+  const expected = JSON.parse(
+    await readFile(new URL('../lib/blog-cover-alt-overrides.json', import.meta.url), 'utf8'),
+  );
+  const slugs = Object.keys(BLOG_COVER_ALT_OVERRIDES);
+  assert.equal(slugs.length, 73);
+  assert.deepEqual(BLOG_COVER_ALT_OVERRIDES, expected);
+  assert.equal(
+    BLOG_COVER_ALT_OVERRIDES['cintillos-de-promocion'],
+    'Una mujer de pelo coral señala un monitor con el cintillo de promoción de una tienda',
+  );
+  assert.equal(
+    BLOG_COVER_ALT_OVERRIDES['todo-sobre-el-seo'],
+    'Una mujer junto a un móvil y un bocadillo de Google con la palabra SEO',
+  );
+  assert.equal(
+    resolveBlogCoverAlt('whatsapp-business', 'WP fallback'),
+    'Un hombre y una mujer junto a un móvil gigante con el logo de WhatsApp Business',
+  );
+  assert.equal(
+    resolveBlogCoverAlt('es-tiktok-el-nuevo-google', 'WP fallback'),
+    'Una mujer con el móvil sentada sobre una forma coral junto a un pin de ubicación',
+  );
+  assert.equal(
+    resolveBlogCoverAlt('storytelling-en-el-marketing-digital', 'título'),
+    'Una mujer sostiene una hoja mientras sale de una página amarilla, como quien cuenta una historia',
+  );
+  for (const slug of slugs) {
+    assert.equal(typeof BLOG_COVER_ALT_OVERRIDES[slug], 'string');
+    assert.ok(BLOG_COVER_ALT_OVERRIDES[slug].trim().length > 0, slug);
+    assert.ok(!(slug in BLOG_COVER_ALTS), `WP alt slug collided with Magnific alt: ${slug}`);
+  }
+  assert.equal(
+    resolveBlogCoverAlt('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', 'WP fallback'),
+    BLOG_COVER_ALTS['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
+  );
+  assert.equal(resolveBlogCoverAlt('unknown-slug-without-cover', 'WP fallback'), 'WP fallback');
+});
+
 test('listing and by-slug pipelines apply resolveBlogCoverAlt', async () => {
   const source = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   assert.match(source, /resolveBlogCoverAlt/);
   assert.match(functionBody(source, 'hydrateListingPosts'), /resolveBlogCoverAlt\(/);
   assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverAlt\(/);
+  assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverAlt\(/);
+  assert.match(source, /function relatedCardFromIndexPost[\s\S]*resolveBlogCoverAlt\(/);
   const listing = await readFile(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  assert.match(listing, /resolveBlogCoverAlt/);
   assert.match(listing, /featured_media_alt \|\| .*title\.rendered/);
   const article = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  assert.match(article, /resolveBlogCoverAlt/);
   assert.match(article, /featured_media_alt \|\| post\.title\.rendered/);
+  const carousel = await readFile(new URL('../components/blog/MostViewedArticles.tsx', import.meta.url), 'utf8');
+  assert.match(carousel, /featured_media_alt \|\| post\.title\.rendered/);
+  const related = await readFile(new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url), 'utf8');
+  assert.match(related, /imageAlt \|\| post\.title/);
+  const home = await readFile(new URL('../components/sections/NosotrosBlogSectionClient.tsx', import.meta.url), 'utf8');
+  assert.match(home, /imageAlt \|\| post\.title/);
 });
 
 test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async () => {
