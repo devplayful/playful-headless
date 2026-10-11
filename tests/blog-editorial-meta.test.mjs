@@ -194,7 +194,11 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
   );
   assert.equal(jsonLd.datePublished, toIsoDateTime(ZELLE_PUBLISHED));
   assert.equal(jsonLd.dateModified, '2026-09-24T00:00:00.000Z');
-  assert.deepEqual(jsonLd.author, { '@type': 'Person', name: 'Stefanni Parabavidez' });
+  assert.deepEqual(jsonLd.author, {
+    '@type': 'Person',
+    name: 'Stefanni Parabavidez',
+    url: 'https://playfulagency.com/nosotros',
+  });
   assert.deepEqual(jsonLd.publisher, {
     '@type': 'Organization',
     name: 'Playful Agency',
@@ -213,13 +217,28 @@ test('blog BreadcrumbList uses listing chip labels and the post canonical', () =
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const crumbs = buildBlogBreadcrumbJsonLd({
     categorySlug: 'tecnologia',
-    headline: 'Zelle en Venezuela',
+    headline: 'Zelle en Venezuela: Un método de pago',
     url,
   });
   assert.equal(crumbs['@type'], 'BreadcrumbList');
   assert.equal(crumbs.itemListElement[2].name, 'Tecnologia');
   assert.equal(crumbs.itemListElement[3].item, url);
   assert.equal(buildBlogListingBreadcrumbJsonLd().itemListElement.length, 2);
+});
+
+test('listed AEO posts use a 3-level BreadcrumbList with the short name', () => {
+  const url =
+    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+  const crumbs = buildBlogBreadcrumbJsonLd({
+    categorySlug: 'tecnologia',
+    headline: 'Zelle en Venezuela: Un método de pago',
+    url,
+    slug: 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+  });
+  assert.equal(crumbs.itemListElement.length, 3);
+  assert.equal(crumbs.itemListElement[1].name, 'Blog');
+  assert.equal(crumbs.itemListElement[2].name, 'Zelle en Venezuela');
+  assert.equal(crumbs.itemListElement[2].item, url);
 });
 
 test('JSON-LD headline decodes WordPress entities to match the H1', () => {

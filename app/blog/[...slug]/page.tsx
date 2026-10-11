@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { canonicalForPath, toAbsoluteSiteUrl } from '@/utils/canonical';
-import { ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
+import { ORGANIZATION_LOGO_URL, ORGANIZATION_SCHEMA } from '@/utils/organization-schema.mjs';
 import { blogPostPath, getPrimaryCategorySlug } from '@/utils/blog-url';
 import {
   getBlogServiceCta,
@@ -26,6 +26,7 @@ import {
 import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
@@ -173,13 +174,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     authorName,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
-    publisherLogo: ORGANIZATION_SCHEMA.logo,
+    publisherLogo: ORGANIZATION_LOGO_URL,
   });
   const breadcrumbJsonLd = buildBlogBreadcrumbJsonLd({
     categorySlug: category,
     headline: pageH1,
     url: postCanonical,
+    slug: postSlug,
   });
+  const faqJsonLd = getBlogFaqJsonLd(postSlug);
   const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName =
     post.author && typeof post.author === 'object'
@@ -200,6 +203,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
     />
+    {faqJsonLd ? (
+      <script
+        id="playful-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
+      />
+    ) : null}
     <h1 className="sr-only">{pageH1}</h1>
     {serviceCta ? (
       <p data-playful-service-cta="" className="sr-only">
