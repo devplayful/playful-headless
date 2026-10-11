@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 import {
-  fillEmptyAgenciaUxUiAnchors,
   remapCanibalizacionHref,
+  rewriteAgenciaUxUiBannerCta,
   rewriteInSitePageHrefs,
   rewriteInSiteUrlToApex,
   rewriteWpRenderedHtmlFields,
@@ -436,15 +436,32 @@ test('rewriteWpYoastFields clears live /blog payload: escaped category og:url + 
   assert.match(rewritten.categories[0].yoast_head, new RegExp(MEDIA_SRC.replaceAll('/', '\\/')));
 });
 
-test('empty editorial /agencia-ux-ui image link gets visible UX/UI text', () => {
-  const img = '<img class="wp-image-77442" src="https://endpoint.playfulagency.com/wp-content/uploads/2022/10/Banner-CTA-Playful_-aun-no-sabes-si-te-conviene-UIUX.png" alt="Banner UIUX" />';
+test('editorial /agencia-ux-ui Banner-CTA gets descriptive alt and drops _blank', () => {
+  const img =
+    '<img fetchpriority="high" decoding="async" class="wp-image-77442 size-full" src="https://endpoint.playfulagency.com/wp-content/uploads/2022/10/Banner-CTA-Playful_-aun-no-sabes-si-te-conviene-UIUX.png" alt="Banner UIUX" width="600" height="250" />';
   const html = `<figure class="wp-caption"><a href="/agencia-ux-ui" target="_blank" rel="noopener">${img}</a><figcaption>Servicio de UIUX, Interfaz y experiencia de Usuario</figcaption></figure>`;
   const rewritten = rewriteInSitePageHrefs(html, '/blog/seo/desarrollo-ui-ux');
-  assert.match(rewritten, /href="\/agencia-ux-ui"[^>]*>[\s\S]*UX\/UI<\/a>/);
-  assert.match(rewritten, /Banner UIUX/);
+  assert.match(rewritten, /<a href="\/agencia-ux-ui">/);
+  assert.doesNotMatch(rewritten, /target=/);
+  assert.doesNotMatch(rewritten, /rel=/);
+  assert.match(rewritten, /alt="Agencia UX\/UI de Playful"/);
+  assert.doesNotMatch(rewritten, /Banner UIUX/);
+  assert.doesNotMatch(rewritten, /<a href="\/agencia-ux-ui">[\s\S]*UX\/UI<\/a>/);
   assert.match(rewritten, /Servicio de UIUX, Interfaz y experiencia de Usuario/);
   assert.equal(
-    fillEmptyAgenciaUxUiAnchors('<a href="/agencia-ux-ui">Interfaz y experiencia de Usuario</a>'),
+    rewriteAgenciaUxUiBannerCta('<a href="/agencia-ux-ui">Interfaz y experiencia de Usuario</a>'),
     '<a href="/agencia-ux-ui">Interfaz y experiencia de Usuario</a>',
   );
+});
+
+test('strips the #252 UX/UI filler and keeps the Banner-CTA image-only', () => {
+  const img =
+    '<img class="wp-image-77442" src="https://endpoint.playfulagency.com/wp-content/uploads/2022/10/Banner-CTA-Playful_-aun-no-sabes-si-te-conviene-UIUX.png" alt="Banner UIUX" />';
+  const html = `<a href="https://playfulagency.com/agencia-ux-ui/" target="_blank" rel="noopener noreferrer">${img}UX/UI</a>`;
+  const rewritten = rewriteInSitePageHrefs(html, '/blog/seo/desarrollo-ui-ux');
+  assert.match(rewritten, /<a href="\/agencia-ux-ui">/);
+  assert.match(rewritten, /alt="Agencia UX\/UI de Playful"/);
+  assert.doesNotMatch(rewritten, /target="_blank"/);
+  assert.doesNotMatch(rewritten, /rel="noopener/);
+  assert.doesNotMatch(rewritten, />UX\/UI<\/a>/);
 });
