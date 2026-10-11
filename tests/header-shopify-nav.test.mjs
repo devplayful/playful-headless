@@ -20,10 +20,12 @@ test('SERVICIOS dropdown lists Shopify next to E-commerce with /agencia-shopify'
   assert.match(block, /title: 'Diseño Web', url: '\/agencia-diseno-web'/);
   assert.match(block, /title: 'E-commerce', url: '\/agencia-e-commerce'/);
   assert.match(block, /title: 'Shopify', url: '\/agencia-shopify'/);
+  assert.match(block, /title: 'UX\/UI', url: '\/agencia-ux-ui'/);
 
   const titles = [...block.matchAll(/title: '([^']+)'/g)].map((m) => m[1]);
-  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Shopify']);
+  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Shopify', 'UX/UI']);
   assert.equal(titles.indexOf('Shopify'), titles.indexOf('E-commerce') + 1);
+  assert.equal(titles.indexOf('UX/UI'), titles.indexOf('Shopify') + 1);
 });
 
 test('desktop and mobile SERVICIOS both iterate the same services array', () => {
@@ -32,6 +34,7 @@ test('desktop and mobile SERVICIOS both iterate the same services array', () => 
 
 test('footer SERVICIOS is unchanged (CEO GO is header only)', () => {
   assert.doesNotMatch(footer, /agencia-shopify/);
+  assert.doesNotMatch(footer, /agencia-ux-ui/);
   assert.match(footer, /href="\/agencia-seo"/);
   assert.match(footer, /href="\/agencia-sem"/);
   assert.match(footer, /href="\/agencia-diseno-web"/);

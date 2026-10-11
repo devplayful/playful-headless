@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { GTAG_EP_PAGE_PATH_KEY } from '../lib/analytics/gtag-event.ts';
 import {
   CTA_CONTACT_EVENT,
   CTA_EVENT_TIMEOUT_MS,
@@ -136,6 +137,7 @@ test('sendCtaEvent uses gtag with beacon transport', () => {
     const payload = calls[0][2] as Record<string, unknown>;
     assert.equal(payload.transport_type, 'beacon');
     assert.equal(payload.page_path, '/agencia-shopify');
+    assert.equal(payload[GTAG_EP_PAGE_PATH_KEY], '/agencia-shopify');
     assert.equal(payload.cta_section, 'hero');
     assert.equal(payload.link_url, '/reunion-playful');
     assert.equal(payload.event_timeout, CTA_EVENT_TIMEOUT_MS);
