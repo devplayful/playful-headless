@@ -372,7 +372,7 @@ test('updated byline uses short Spanish month without a new design', () => {
   assert.equal(resolveBlogAuthorHref('https://endpoint.playfulagency.com/author/jose/'), BLOG_AUTHOR_HREF);
 });
 
-test('blog post page wires one combined chip, meta updated row and Article JSON-LD', () => {
+test('blog post page wires one combined chip under H1 and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
   assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
   assert.match(blogPage, /buildBlogArticleJsonLd/);
@@ -387,7 +387,7 @@ test('blog post page wires one combined chip, meta updated row and Article JSON-
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
   assert.match(blogPage, /formatDate\(post\.date\)/);
-  assert.match(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
+  assert.doesNotMatch(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
   assert.match(blogPage, /formatUpdatedByline\(/);
   assert.match(blogPage, /resolveBlogAuthorHref\(/);
   assert.match(blogPage, /href=\{authorHref\}/);

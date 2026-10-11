@@ -68,7 +68,6 @@ import {
   blogArticleJsonLdExtras,
   blogFaqPageJsonLd,
   eshowMadrid2026DateModified,
-  formatEshowActualizadoLine,
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 
@@ -213,7 +212,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     ...jsonLdExtras,
   });
   const faqJsonLd = blogFaqPageJsonLd(postSlug) || getBlogFaqJsonLd(postSlug);
-  const eshowUpdatedLine = isEshow ? formatEshowActualizadoLine() : null;
   const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
   const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm
     ? contentWithIds.split(ESHOW_LISTA_FORM_MARKER)
@@ -281,19 +279,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       })
                     : formatDate(post.date)}
                 </span>
-                {eshowUpdatedLine ? (
-                  <>
-                    <span className="text-gray-300">•</span>
-                    <span className="text-sm text-gray-500">{eshowUpdatedLine}</span>
-                  </>
-                ) : editorial ? (
-                  <>
-                    <span className="text-gray-300">•</span>
-                    <span className="text-sm text-gray-500">
-                      actualizado el {editorial.updatedAtLabel}
-                    </span>
-                  </>
-                ) : null}
                 {post.categories && post.categories.length > 0 && (
                   <>
                     <span className="text-gray-300">•</span>
