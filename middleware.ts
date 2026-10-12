@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
+import { blogLegacyListingRedirectDecision } from './utils/blog-legacy-listing-redirects';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
@@ -119,6 +120,14 @@ export function middleware(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname = dest;
     return attachAttributionCookies(request, NextResponse.redirect(target, 301));
+  }
+
+  const legacyListing = blogLegacyListingRedirectDecision(path);
+  if (legacyListing.type === 'redirect') {
+    const target = request.nextUrl.clone();
+    target.pathname = legacyListing.pathname;
+    target.search = legacyListing.search;
+    return attachAttributionCookies(request, NextResponse.redirect(target, legacyListing.status));
   }
 
   const blogSeo = blogSeoRedirectDecision(
