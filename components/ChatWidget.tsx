@@ -2,6 +2,7 @@
 
 /** Official GHL loader: widgets.leadconnectorhq.com widget 67ac6d90a81d1c5969d763e7. No iframe. */
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { attachChatWidgetAnalytics } from '@/lib/analytics/chat-widget'
 import { attachChatWidgetDeferredLoad } from '@/lib/chat-widget-deferred-load'
 import {
@@ -12,11 +13,15 @@ import {
 } from '@/lib/highlevel/external-tracking'
 
 export default function ChatWidget() {
+  const pathname = usePathname()
   const policy = highLevelScriptPolicy(
     process.env.NEXT_PUBLIC_HIGHLEVEL_EXTERNAL_TRACKING_ENABLED === 'true',
   )
 
   useEffect(() => {
+    if (pathname === '/links') {
+      return undefined
+    }
     let chatEl: HTMLScriptElement | null = null
     let trackingEl: HTMLScriptElement | null = null
 
@@ -70,7 +75,11 @@ export default function ChatWidget() {
       }
       console.log('🗑️ ChatWidget: Scripts removidos del DOM')
     }
-  }, [policy.externalTracking])
+  }, [pathname, policy.externalTracking])
+
+  if (pathname === '/links') {
+    return null
+  }
 
   return null
 }
