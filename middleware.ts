@@ -63,6 +63,10 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
     '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
+  '/blog/mas-vistos/los-5-procesos-de-e-commerce':
+    '/blog/mas-vistos/los-5-problemas-de-e-commerce',
+  '/blog/mas-vistos/como-elegir-un-buen-framework':
+    '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
   ...seoServiceRedirects,
   ...canibalizacionOrigins,
 }, categoryRedirects);

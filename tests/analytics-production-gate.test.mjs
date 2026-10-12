@@ -73,7 +73,8 @@ test('layout and tag components stay server-gated so production HTML is unchange
   assert.doesNotMatch(meta, /lazyOnload/);
   assert.match(meta, /connect\.facebook\.net\/en_US\/fbevents\.js/);
   assert.match(apollo, /id="apollo-tracker"/);
-  assert.match(apollo, /strategy="afterInteractive"/);
+  assert.match(apollo, /strategy="lazyOnload"/);
+  assert.doesNotMatch(apollo, /strategy="afterInteractive"/);
   assert.match(apollo, /assets\.apollo\.io\/micro\/website-tracker\/tracker\.iife\.js/);
   assert.match(apollo, /window\.trackingFunctions\.onLoad\(\{appId:"\$\{appId\}"\}\)/);
   assert.doesNotMatch(ga, /isProductionAnalyticsHostname|useState/);

@@ -3,7 +3,7 @@ import { shouldNoindexBlogListing } from './blog-listing-robots.ts';
 import { twitterFromOpenGraph } from './page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '../lib/og-images.ts';
 
-export const BLOG_LISTING_REVALIDATE_SECONDS = 300;
+export const BLOG_LISTING_REVALIDATE_SECONDS = 600;
 export const BLOG_LISTING_PER_PAGE = 10;
 export const BLOG_LISTING_QUERY_PATH = '/blog/q';
 

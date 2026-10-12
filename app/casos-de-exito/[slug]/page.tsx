@@ -13,6 +13,7 @@ import SoyTechnoSectionD from '@/components/soytechno/SoyTechnoSectionD';
 import SoyTechnoSectionE from '@/components/soytechno/SoyTechnoSectionE';
 import SoyTechnoSectionF from '@/components/soytechno/SoyTechnoSectionF';
 import PhoneCarouselSection from './PhoneCarouselSection';
+import '@/styles/slick-font-swap.css';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
@@ -232,6 +233,7 @@ export default async function SuccessStoryPage({
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-opacity duration-300"
                     priority
+                    fetchPriority="high"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">

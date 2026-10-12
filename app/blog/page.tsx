@@ -2,7 +2,7 @@ import BlogListingView from './blog-listing-view';
 import { buildBlogListingMetadata } from '@/utils/blog-listing-query';
 import { buildBlogListingBreadcrumbJsonLd, serializeJsonLd } from '@/lib/blog-editorial-meta';
 
-export const revalidate = 300;
+export const revalidate = 600;
 
 export function generateMetadata() {
   return buildBlogListingMetadata();

@@ -49,8 +49,10 @@ import {
 } from '@/lib/blog-related-posts';
 import { formatBlogHeroExcerpt } from '@/lib/blog-hero-excerpt';
 import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
+import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
 
 export const dynamicParams = false;
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
@@ -117,8 +119,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const sourceHtml = rewriteBookingWidgetHrefs(
-    rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+  const sourceHtml = optimizeBlogInlineMedia(
+    rewriteBookingWidgetHrefs(
+      rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+    ),
+    postSlug,
   );
   const $ = cheerio.load(sourceHtml);
   const headings = $('h2, h3, h4')
