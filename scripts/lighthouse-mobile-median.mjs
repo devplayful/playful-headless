@@ -54,19 +54,17 @@ for (const url of urls) {
   const lcp = [];
   const tbt = [];
   let loaderSeen = false;
-  const dir = join(tmpdir(), `lh-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-  mkdirSync(dir, { recursive: true });
   for (let i = 0; i < PASSES; i += 1) {
-    const passDir = join(dir, `p${i}`);
+    const passDir = join(tmpdir(), `lh-${Date.now()}-${i}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(passDir, { recursive: true });
     const row = runLh(url, passDir);
+    rmSync(passDir, { recursive: true, force: true });
     perf.push(row.perf);
     seo.push(row.seo);
     lcp.push(row.lcp);
     tbt.push(row.tbt);
     loaderSeen = loaderSeen || row.loader;
   }
-  rmSync(dir, { recursive: true, force: true });
   rows.push({
     url,
     perf: median(perf),
