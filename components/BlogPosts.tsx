@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useSliderSettings } from "../hooks/useSliderSettings";
 
@@ -137,10 +138,12 @@ const BlogPosts: React.FC<BlogPostsProps> = ({
                     {/* Post Image */}
                     <div className="h-48 bg-gray-200 relative">
                       {post.imageUrl ? (
-                        <img
+                        <Image
                           src={post.imageUrl}
                           alt={post.imageAlt || post.title}
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="(min-width: 1024px) 360px, 90vw"
+                          className="object-cover"
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">

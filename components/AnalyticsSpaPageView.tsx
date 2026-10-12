@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { sendSpaPageView, spaPagePath } from '@/lib/analytics/spa-page-view';
 
@@ -10,17 +10,17 @@ import { sendSpaPageView, spaPagePath } from '@/lib/analytics/spa-page-view';
  */
 export default function AnalyticsSpaPageView() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const skipInitialLoad = useRef(true);
 
   useEffect(() => {
-    const path = spaPagePath(pathname, searchParams.toString());
+    const search = typeof window !== 'undefined' ? window.location.search.slice(1) : '';
+    const path = spaPagePath(pathname, search);
     if (skipInitialLoad.current) {
       skipInitialLoad.current = false;
       return;
     }
     sendSpaPageView(path);
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }

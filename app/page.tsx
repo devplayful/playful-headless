@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import Link from "next/link";
-import HomeHeroArt from "@/components/HomeHeroArt";
+import HomeHeroArt, { homeHeroLcpHref } from "@/components/HomeHeroArt";
 import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados from "@/components/CarouselResultados";
@@ -176,6 +176,7 @@ export default function Home() {
     <>
       <link rel="canonical" href={HOME_CANONICAL} />
       <meta property="og:url" content={HOME_CANONICAL} />
+      <link rel="preload" as="image" href={homeHeroLcpHref()} fetchPriority="high" />
       <script
         id="playful-website"
         type="application/ld+json"

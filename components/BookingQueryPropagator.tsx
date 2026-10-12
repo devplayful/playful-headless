@@ -1,17 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { bookingHrefFromPageSearch, isBookingHref } from '@/utils/booking-attribution';
 
 /** Rewrites booking anchors to /reunion-playful plus the current page query. */
 export default function BookingQueryPropagator() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const search = searchParams.toString();
-    const nextHref = bookingHrefFromPageSearch(search ? `?${search}` : '');
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    const nextHref = bookingHrefFromPageSearch(search || '');
 
     const applyHref = (anchor: HTMLAnchorElement) => {
       const href = anchor.getAttribute('href') || '';
@@ -48,7 +47,7 @@ export default function BookingQueryPropagator() {
       attributeFilter: ['href'],
     });
     return () => observer.disconnect();
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }
