@@ -161,7 +161,9 @@ export default function ElementorPageContent({
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="preconnect" href={WP_HOST} />
-      {lcpSrc ? <link rel="preload" as="image" href={lcpSrc} /> : null}
+      {lcpSrc ? (
+        <link rel="preload" as="image" href={lcpSrc} fetchPriority="high" />
+      ) : null}
       <link rel="stylesheet" href={FONTS} />
       {CORE_STYLESHEETS.map((href) => (
         <link key={href} rel="stylesheet" href={href} />

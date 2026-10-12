@@ -12,6 +12,9 @@ test('home hero banner uses next/image with priority and fetchPriority high', ()
   const art = readFileSync(new URL('../components/HomeHeroArt.tsx', import.meta.url), 'utf8');
   const lottie = readFileSync(new URL('../components/HomeHeroLottie.tsx', import.meta.url), 'utf8');
   assert.match(home, /<HomeHeroArt/);
+  assert.match(home, /rel="preload" as="image"/);
+  assert.match(home, /homeHeroLcpHref\(\)/);
+  assert.match(home, /fetchPriority="high"/);
   assert.doesNotMatch(home, /AnimatedButton/);
   assert.doesNotMatch(home, /from ['"]lottie-react['"]/);
   assert.match(art, /from ['"]next\/image['"]/);

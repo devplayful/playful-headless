@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import { Paytone_One, Montserrat, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
@@ -8,8 +7,9 @@ import ChatWidget from '@/components/ChatWidget'
 import { BodyClassManager } from '@/components/BodyClassManager';
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { getHomePageMetadata } from '@/services/wordpress';
-import GoogleTagManager, { GoogleTagManagerNoscript } from '@/components/GoogleTagManager';
+import GoogleTagManager from '@/components/GoogleTagManager';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import MetaPixel from '@/components/MetaPixel';
 import ApolloTracker from '@/components/ApolloTracker';
 import AnalyticsSpaPageView from '@/components/AnalyticsSpaPageView';
 import CtaClickTracker from '@/components/CtaClickTracker';
@@ -100,13 +100,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { gtmId, gaId, apolloAppId } = productionAnalyticsIds();
+  const { gtmId, gaId, apolloAppId, metaPixelId } = productionAnalyticsIds();
 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
+        {gaId ? (
+          <script
+            id="gtag-data-layer-stub"
+            dangerouslySetInnerHTML={{
+              __html:
+                'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;',
+            }}
+          />
+        ) : null}
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         {gaId && <GoogleAnalytics gaId={gaId} />}
+        {metaPixelId && <MetaPixel pixelId={metaPixelId} />}
         {apolloAppId && <ApolloTracker appId={apolloAppId} />}
         <script
           id="playful-organization"
@@ -117,9 +127,7 @@ export default function RootLayout({
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>
           <BodyClassManager />
-          <Suspense fallback={null}>
-            <AnalyticsSpaPageView />
-          </Suspense>
+          <AnalyticsSpaPageView />
           <CtaClickTracker />
           <Header />
           <main className="min-h-screen">
@@ -128,10 +136,8 @@ export default function RootLayout({
           <Footer />
           <ChatWidget />
           <AttributionCapture />
-          <Suspense fallback={null}>
-            <BookingQueryPropagator />
-            <BookingWidgetAttribution />
-          </Suspense>
+          <BookingQueryPropagator />
+          <BookingWidgetAttribution />
         </ThemeProvider>
       </body>
     </html>
