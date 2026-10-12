@@ -9,6 +9,7 @@ const categoryRedirects = JSON.parse(
   readFileSync(new URL('../utils/blog-category-redirect-map.json', import.meta.url), 'utf8'),
 );
 const { blogSeoRedirectDecision } = await import('../utils/amp-junk-query.ts');
+const { blogLegacyListingRedirectDecision } = await import('../utils/blog-legacy-listing-redirects.ts');
 const { BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/blog-url.ts');
 
 const BAD_BUNNY_ALIAS = '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical';
@@ -109,6 +110,48 @@ test('category index redirect does not touch /blog/{category}/{post}', () => {
     decide('/blog/q'),
     { type: 'next' },
   );
+});
+
+test('legacy WordPress category archives 308 once to the blog listing', () => {
+  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
+    assert.deepEqual(blogLegacyListingRedirectDecision(`/category/${slug}`), {
+      type: 'redirect',
+      pathname: '/blog',
+      search: `?category=${slug}`,
+      status: 308,
+    });
+    assert.deepEqual(blogLegacyListingRedirectDecision(`/blog/category/${slug}`), {
+      type: 'redirect',
+      pathname: '/blog',
+      search: `?category=${slug}`,
+      status: 308,
+    });
+  }
+  assert.deepEqual(blogLegacyListingRedirectDecision('/category/unknown-slug'), {
+    type: 'redirect',
+    pathname: '/blog',
+    search: '',
+    status: 308,
+  });
+});
+
+test('legacy paginated category paths 308 once to /blog?page&category', () => {
+  assert.deepEqual(blogLegacyListingRedirectDecision('/blog/seo/page/2'), {
+    type: 'redirect',
+    pathname: '/blog',
+    search: '?page=2&category=seo',
+    status: 308,
+  });
+  assert.deepEqual(blogLegacyListingRedirectDecision('/blog/page/2'), {
+    type: 'redirect',
+    pathname: '/blog',
+    search: '?page=2',
+    status: 308,
+  });
+});
+
+test('/blog/categoria/* stays out of legacy listing redirects', () => {
+  assert.deepEqual(blogLegacyListingRedirectDecision('/blog/categoria/temporada-2'), { type: 'next' });
 });
 
 test('builder still emits secondary-category aliases', () => {

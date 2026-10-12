@@ -390,6 +390,25 @@ for (const gonePath of ['/project/bottle-mockup', '/agencylog']) {
   }
 }
 
+for (const [source, search] of [
+  ['/category/seo', '?category=seo'],
+  ['/category/seo/', '?category=seo'],
+  ['/blog/category/seo', '?category=seo'],
+  ['/blog/seo/page/2', '?page=2&category=seo'],
+  ['/blog/seo/page/2/', '?page=2&category=seo'],
+  ['/blog/page/2', '?page=2'],
+]) {
+  const response = await request(source);
+  assert.equal(response.status, 308, `${source} should return 308`);
+  const location = response.headers.get('location');
+  assert.ok(location, `${source} should include Location`);
+  const target = new URL(location, origin);
+  assert.equal(target.pathname, '/blog', `${source} pathname`);
+  assert.equal(target.search, search, `${source} search`);
+  const destResponse = await request(`${target.pathname}${target.search}`, { redirect: 'follow' });
+  assert.equal(destResponse.status, 200, `${source} destination should be 200`);
+}
+
 {
   const temporada = await request('/blog/categoria/temporada-2');
   assert.ok(
