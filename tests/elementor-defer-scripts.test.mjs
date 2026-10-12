@@ -16,18 +16,19 @@ test('defer slug set covers the four heavy Elementor service landings', async ()
     'agencia-e-commerce',
     'agencia-sem',
     'agencia-seo',
+    'agencia-ux-ui',
   ]);
-  assert.equal(shouldDeferElementorScriptsUntilLoad('agencia-ux-ui'), false);
+  assert.equal(shouldDeferElementorScriptsUntilLoad('agencia-ux-ui'), true);
 });
 
-test('e-commerce defer keeps swiper and flickity on the critical path', () => {
-  assert.match(source, /DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES/);
+test('partial defer keeps flickity path critical and defers Elementor + swiper', () => {
+  assert.match(source, /CRITICAL_WHEN_DEFER_PATH_SNIPPETS/);
   assert.doesNotMatch(source, /deferUntilLoad && document\.readyState !== 'complete'/);
   assert.match(source, /shouldDeferScript\(src, deferUntilLoad\)/);
-  for (const keep of ['swiper.min.js', 'flickity.js', 'frontend.min.js', 'init.js']) {
-    assert.match(source, new RegExp(keep.replace('.', '\\.')));
+  for (const keep of ['flickity.js', 'init.js', 'masterlayer-addons-for-elementor/assets/js/core.min.js']) {
+    assert.match(source, new RegExp(keep.replace(/\./g, '\\.')));
   }
-  for (const defer of ['gsap.min.js', 'cubeportfolio.js', 'parallax-scroll.js', 'magnific.popup.js']) {
+  for (const defer of ['swiper.min.js', 'frontend.min.js', 'gsap.min.js', 'cubeportfolio.js']) {
     assert.match(source, new RegExp(defer.replace('.', '\\.')));
   }
 });

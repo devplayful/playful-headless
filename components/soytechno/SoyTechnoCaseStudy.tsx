@@ -1,8 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import BookingLink from '@/components/BookingLink'
-import { BOOKING_CTA_LABEL, SERVICE_BOOKING_HREF } from '@/utils/booking'
 import styles from './SoyTechnoCaseStudy.module.css'
 import { resolveImageAlt } from '@/lib/image-alt-overrides'
 
@@ -84,6 +82,16 @@ export default function SoyTechnoCaseStudy() {
   return (
     <article className={`soytechno-case-study ${styles.page}`}>
       <div className={styles.heroBackdrop}>
+        <Image
+          src={image('background-texture.png')}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+          className={styles.heroBackdropImage}
+          aria-hidden
+        />
         <div className={styles.breadcrumb}>
           <Link href="/">Home</Link><span>/</span>
           <Link href="/casos-de-exito">Casos de éxito</Link>
@@ -309,7 +317,7 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.ctaCopy}>
           <h2>¿Listo para convertir la complejidad en una mejor experiencia de compra?</h2>
           <p>Diseñemos un eCommerce preparado para pagos, logística y atención a la escala de tu negocio.</p>
-          <BookingLink href={SERVICE_BOOKING_HREF}>{BOOKING_CTA_LABEL}</BookingLink>
+          <Link href="/reunion-playful">Agenda una reunión</Link>
         </div>
       </section>
 

@@ -17,6 +17,7 @@ const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
 // Importar estilos de slick
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "@/styles/slick-font-swap.css";
 
 // Estilos CSS para line-clamp
 const cardStyles = `
@@ -35,21 +36,18 @@ const cardStyles = `
     word-wrap: break-word;
     line-height: 1.25rem;
   }
-  .conversion-cards-wrapper .slick-list {
-    height: auto;
-  }
-  .conversion-cards-wrapper .slick-track {
-    display: flex !important;
-    align-items: stretch;
-  }
   .conversion-cards-wrapper .slick-slide {
     height: auto;
-    display: flex !important;
   }
   .conversion-cards-wrapper .slick-slide > div {
     height: 100%;
-    width: 100%;
+  }
+  .conversion-cards-wrapper .slick-track {
     display: flex;
+    align-items: stretch;
+  }
+  .conversion-cards-wrapper .slick-list {
+    height: 100%;
   }
 `;
 
@@ -129,17 +127,10 @@ interface CarouselResultadosProps {
   cardBgColor?: string;
   badgeColor?: string;
   actionButtonColor?: string;
-  fullDescription?: boolean;
 }
 
 // Componente para la tarjeta de caso de estudio (mismo patrón que home)
-export const CaseStudyCard = ({
-  caseStudy,
-  fullDescription = false,
-}: {
-  caseStudy: CaseStudy;
-  fullDescription?: boolean;
-}) => {
+export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [imageError, setImageError] = useState(false);
   // Server HTML already has the src; starting at 0 hides tapas if onLoad already fired.
   const [imageLoaded, setImageLoaded] = useState(Boolean(caseStudy.image));
@@ -147,8 +138,8 @@ export const CaseStudyCard = ({
 
   return (
     <div className="px-2 h-full">
-      <div className={`bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full ${fullDescription ? 'min-h-[500px]' : 'h-[500px]'}`}>
-        <Link href={`/casos-de-exito/${caseStudy.slug}`} className="flex flex-col h-full">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-[500px]">
+        <Link href={`/casos-de-exito/${caseStudy.slug}`} className="block h-full flex flex-col">
           {/* Imagen */}
           <div className="relative h-48 bg-gray-200 overflow-hidden group flex-shrink-0">
             {hasImage ? (
@@ -198,27 +189,21 @@ export const CaseStudyCard = ({
               ))}
             </div>
 
-            {/* Descripción: crece para igualar alturas; el botón queda anclado abajo */}
+            {/* Descripción */}
             <div className="text-gray-600 text-sm mb-6 flex-1 leading-5">
-              <p
-                className={fullDescription ? '' : 'line-clamp-3'}
-                style={
-                  fullDescription
-                    ? { lineHeight: '1.25rem' }
-                    : {
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        lineHeight: '1.25rem',
-                      }
-                }
-              >
+              <p className="line-clamp-3" style={{ 
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                lineHeight: '1.25rem'
+              }}>
                 {caseStudy.description || 'Descripción no disponible'}
               </p>
             </div>
 
-            <div className={`flex mt-auto ${fullDescription ? 'justify-center' : 'justify-end'}`}>
+            {/* Botón alineado a la derecha */}
+            <div className="flex justify-end mt-auto">
               <button
                 className={`${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0`}
               >
@@ -249,7 +234,6 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   cardBgColor = "white",
   badgeColor = "#7C3AED",
   actionButtonColor = "#2563EB",
-  fullDescription = false,
 }) => {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -411,7 +395,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
             >
               {caseStudies.map((caseStudy) => (
                 <div key={caseStudy.id} className="h-full">
-                  <CaseStudyCard caseStudy={caseStudy} fullDescription={fullDescription} />
+                  <CaseStudyCard caseStudy={caseStudy} />
                 </div>
               ))}
             </Slider>

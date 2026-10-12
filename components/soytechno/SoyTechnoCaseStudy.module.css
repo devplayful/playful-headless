@@ -28,14 +28,19 @@
 }
 
 .heroBackdrop {
+  position: relative;
   background-color: #6750a4;
-  background-image: url('/images/casos/soytechno/images/background-texture.png');
-  background-position: center top;
-  background-repeat: repeat;
-  background-size: 1024px auto;
+  overflow: hidden;
+}
+
+.heroBackdropImage {
+  object-fit: cover;
+  object-position: center top;
 }
 
 .breadcrumb {
+  position: relative;
+  z-index: 1;
   color: #fef7ff;
   display: flex;
   gap: 10px;
@@ -48,6 +53,8 @@
 .breadcrumb a { color: inherit; }
 
 .hero {
+  position: relative;
+  z-index: 1;
   align-items: center;
   background: var(--lavender);
   border-radius: 36px 36px 0 0;
