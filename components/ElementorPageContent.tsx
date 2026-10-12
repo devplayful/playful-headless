@@ -9,20 +9,9 @@ import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
-  firstUxUiGalleryLcpSrc,
   optimizeElementorLcpHero,
-  optimizeUxUiGalleryLcp,
-  UX_UI_SLUG,
 } from '@/lib/elementor-html-optimize';
-import {
-  shouldDeferElementorScriptsUntilLoad,
-  shouldDeferElementorWpCss,
-} from '@/lib/elementor-defer-slugs';
-import {
-  ELEMENTOR_HERO_CRITICAL_CSS,
-  shouldInlineElementorHeroCriticalCss,
-} from '@/lib/elementor-hero-critical-css';
-import ElementorDeferredWpCss from '@/components/ElementorDeferredWpCss';
+import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -169,15 +158,11 @@ export default function ElementorPageContent({
       ),
     ),
   );
-  const withDimensions = applyElementorIntrinsicDimensions(preparedHtml);
-  const withGalleryLcp = optimizeUxUiGalleryLcp(withDimensions, slug);
-  const lcpSrc =
-    slug === UX_UI_SLUG
-      ? firstUxUiGalleryLcpSrc(withGalleryLcp, slug) ?? firstHeroImageSrc(withGalleryLcp, slug)
-      : firstHeroImageSrc(withGalleryLcp, slug);
-  const bodyHtml = optimizeElementorLcpHero(withGalleryLcp, slug);
-  const inlineHeroCritical = shouldInlineElementorHeroCriticalCss(slug);
-  const deferWpCss = shouldDeferElementorWpCss(slug);
+  const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
+  const bodyHtml = optimizeElementorLcpHero(
+    applyElementorIntrinsicDimensions(preparedHtml),
+    slug,
+  );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
@@ -185,10 +170,6 @@ export default function ElementorPageContent({
 
   return (
     <>
-      {deferWpCss ? <ElementorDeferredWpCss /> : null}
-      {inlineHeroCritical ? (
-        <style id="playful-elementor-hero-critical">{ELEMENTOR_HERO_CRITICAL_CSS}</style>
-      ) : null}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="preconnect" href={WP_HOST} />
