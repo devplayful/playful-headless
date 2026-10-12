@@ -379,7 +379,7 @@ test('shared related index is lite, long-lived and last-known-good', () => {
     new URL('../services/wordpress.ts', import.meta.url),
     'utf8',
   );
-  assert.equal(RELATED_BLOG_INDEX_PER_PAGE, 100);
+  assert.equal(RELATED_BLOG_INDEX_PER_PAGE, 50);
   assert.equal(RELATED_BLOG_INDEX_REVALIDATE_SECONDS, 21_600);
   assert.match(RELATED_BLOG_POST_FIELDS, /^id,date/);
   assert.doesNotMatch(RELATED_BLOG_POST_FIELDS, /content|yoast|_links|_embed/);

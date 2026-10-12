@@ -56,6 +56,17 @@ const CERRAR_SAMPLE_410 = [
 
 const TEMPORADA_2 = '/blog/categoria/temporada-2';
 
+test('mas-vistos typo slugs 301 to the canonical article paths', () => {
+  assert.match(
+    middlewareSource,
+    /'\/blog\/mas-vistos\/los-5-procesos-de-e-commerce':\s*'\/blog\/mas-vistos\/los-5-problemas-de-e-commerce'/,
+  );
+  assert.match(
+    middlewareSource,
+    /'\/blog\/mas-vistos\/como-elegir-un-buen-framework':\s*'\/blog\/mas-vistos\/como-elegir-el-mejor-framework-para-tu-web'/,
+  );
+});
+
 test('humanizar origin 301s in one hop to storytelling', () => {
   assert.match(
     middlewareSource,

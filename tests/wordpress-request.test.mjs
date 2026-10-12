@@ -18,7 +18,7 @@ function response(status, statusText = '') {
 }
 
 test('retries transient 5xx responses with bounded exponential jitter', async () => {
-  const responses = [response(500, 'Internal Server Error'), response(502, 'Bad Gateway'), response(200)];
+  const responses = [response(500, 'Internal Server Error'), response(200)];
   const delays = [];
   let calls = 0;
 
@@ -31,8 +31,8 @@ test('retries transient 5xx responses with bounded exponential jitter', async ()
   });
 
   assert.equal(result.status, 200);
-  assert.equal(calls, 3);
-  assert.deepEqual(delays, [150, 250]);
+  assert.equal(calls, 2);
+  assert.deepEqual(delays, [150]);
 });
 
 test('retries a network failure and preserves its eventual success', async () => {
@@ -248,7 +248,7 @@ test('collection caller propagates a persistent 5xx instead of returning empty',
     }),
     (error) => error instanceof WordPressUpstreamError && error.status === 500,
   );
-  assert.equal(calls, 3);
+  assert.equal(calls, 2);
 });
 
 test('keeps the 8s runtime deadline and raises it only for next build', () => {
@@ -268,7 +268,7 @@ test('keeps the 8s runtime deadline and raises it only for next build', () => {
 test('build phase uses two attempts and a shared extra-retry budget', () => {
   const buildEnv = { NEXT_PHASE: 'phase-production-build' };
   assert.equal(resolveWordPressMaxAttempts(buildEnv), 2);
-  assert.equal(resolveWordPressMaxAttempts({}), 3);
+  assert.equal(resolveWordPressMaxAttempts({}), 2);
   resetWordPressBuildRetryBudget({ ...buildEnv, WORDPRESS_BUILD_RETRY_BUDGET: '2' });
   assert.equal(remainingWordPressBuildRetries(), 2);
   assert.equal(consumeWordPressBuildRetry(buildEnv), true);

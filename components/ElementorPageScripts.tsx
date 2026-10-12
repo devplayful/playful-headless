@@ -330,7 +330,13 @@ function injectQa2Style() {
   document.body.appendChild(style);
 }
 
-export default function ElementorPageScripts({ pageId }: { pageId: number }) {
+export default function ElementorPageScripts({
+  pageId,
+  deferUntilLoad = false,
+}: {
+  pageId: number;
+  deferUntilLoad?: boolean;
+}) {
   useEffect(() => {
     document.body.classList.add('playful-elementor-plain');
     initPillsMarquee();
@@ -409,26 +415,38 @@ export default function ElementorPageScripts({ pageId }: { pageId: number }) {
     };
 
     let cancelled = false;
-    (async () => {
-      for (const src of SCRIPTS) {
-        if (cancelled) return;
-        await loadScript(src);
-      }
-      if (!cancelled) {
-        initMaeCarousels(pageId);
-        applyQa2Fixes();
-        fixSemClosedList(pageId);
-      }
-    })();
+    const runScripts = () => {
+      (async () => {
+        for (const src of SCRIPTS) {
+          if (cancelled) return;
+          await loadScript(src);
+        }
+        if (!cancelled) {
+          initMaeCarousels(pageId);
+          applyQa2Fixes();
+          fixSemClosedList(pageId);
+        }
+      })();
+    };
+
+    const onDeferScripts = () => {
+      runScripts();
+    };
+    if (deferUntilLoad && document.readyState !== 'complete') {
+      window.addEventListener('load', onDeferScripts, { once: true });
+    } else {
+      runScripts();
+    }
 
     return () => {
       cancelled = true;
+      window.removeEventListener('load', onDeferScripts);
       window.removeEventListener('load', onLoad);
       window.clearTimeout(t500);
       window.clearTimeout(t1500);
       document.body.classList.remove('playful-elementor-plain');
     };
-  }, [pageId]);
+  }, [pageId, deferUntilLoad]);
 
   return null;
 }
