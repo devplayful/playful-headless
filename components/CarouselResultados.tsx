@@ -17,6 +17,7 @@ const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
 // Importar estilos de slick
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "@/styles/slick-font-swap.css";
 
 // Estilos CSS para line-clamp
 const cardStyles = `

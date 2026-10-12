@@ -43,7 +43,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'var(--font-dm-sans), Roboto, Arial, sans-serif',
+    fontFamily: 'var(--font-dm-sans), Arial, sans-serif',
     h1: {
       fontFamily: 'var(--font-paytone-one)',
       fontSize: '3.5rem',

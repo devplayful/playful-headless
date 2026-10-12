@@ -77,6 +77,22 @@ body.playful-elementor-plain {
   color: var(--e-global-color-pollock_primary);
 }
 
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box.flickity-enabled .flickity-slider,
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box.flickity-enabled .item-carousel {
+  min-height: 100%;
+}
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box.flickity-enabled .item-carousel {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+.playful-wp-page .elementor-widget-mae-testimonial-carousel .master-carousel-box.flickity-enabled .master-testimonial {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
 /* Demo leftover IDs only (aef3423, 4948de9, adc0a19, c622b2e). Do not hide
    the real CTA 4d2eb64 / 0bc6e91 / ede2e59. */
 
@@ -1836,6 +1852,72 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elemen
   opacity: 1 !important;
 }
 
+/* SEO (83510) + diseño (83849): shared accordion d6df9c2 — SVG +/−, readable copy. */
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  margin-right: 10px !important;
+  color: #453A53 !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i,
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fas,
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fa-plus,
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fa-minus,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fas,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fa-plus,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fa-minus {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  font-family: inherit !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i::before,
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fas::before,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i::before,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon i.fas::before {
+  content: none !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon-closed i,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon-closed i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-accordion-icon-opened i,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-accordion-icon-opened i {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23453A53' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E") !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2.playful-tabs .elementor-tab-title.elementor-active,
+.playful-wp-page[data-playful-page="83510"] .playful-tabs.elementor-element-d6df9c2 .elementor-tab-title.elementor-active,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2.playful-tabs .elementor-tab-title.elementor-active,
+.playful-wp-page[data-playful-page="83849"] .playful-tabs.elementor-element-d6df9c2 .elementor-tab-title.elementor-active {
+  background: #D3B0FF !important;
+  color: #453A53 !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2.playful-tabs .elementor-tab-content.elementor-active,
+.playful-wp-page[data-playful-page="83510"] .playful-tabs.elementor-element-d6df9c2 .elementor-accordion-item:has(.elementor-tab-title.elementor-active) .elementor-tab-content,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2.playful-tabs .elementor-tab-content.elementor-active,
+.playful-wp-page[data-playful-page="83849"] .playful-tabs.elementor-element-d6df9c2 .elementor-accordion-item:has(.elementor-tab-title.elementor-active) .elementor-tab-content {
+  background: #E9D7FF !important;
+  color: #453A53 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.playful-wp-page[data-playful-page="83510"] .elementor-element-d6df9c2 .elementor-tab-content,
+.playful-wp-page[data-playful-page="83849"] .elementor-element-d6df9c2 .elementor-tab-content {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
 /* 3) FAQ 18ebac6 / ea23e47 / eec3d51: unhide titular, SVG +/−, lavender active. */
 .playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-ea23e47.elementor-invisible,
@@ -1898,6 +1980,13 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elemen
 .playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51.playful-tabs .elementor-tab-content.elementor-active,
 .playful-wp-page[data-playful-page="83848"] .playful-tabs.elementor-element-eec3d51 .elementor-accordion-item:has(.elementor-tab-title.elementor-active) .elementor-tab-content {
   background: #E9D7FF !important;
+  color: #453A53 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.playful-wp-page[data-playful-page="83848"] .elementor-element-eec3d51 .elementor-tab-content {
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 /* 4) Hero 1b21b92: old header is 90px + 30px air; Next header is 120px
