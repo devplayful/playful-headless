@@ -7,6 +7,19 @@ const source = readFileSync(
   'utf8',
 );
 
+test('defer slug set covers the four heavy Elementor service landings', async () => {
+  const { ELEMENTOR_DEFER_UNTIL_LOAD_SLUGS, shouldDeferElementorScriptsUntilLoad } = await import(
+    '../lib/elementor-defer-slugs.ts'
+  );
+  assert.deepEqual([...ELEMENTOR_DEFER_UNTIL_LOAD_SLUGS].sort(), [
+    'agencia-diseno-web',
+    'agencia-e-commerce',
+    'agencia-sem',
+    'agencia-seo',
+  ]);
+  assert.equal(shouldDeferElementorScriptsUntilLoad('agencia-ux-ui'), false);
+});
+
 test('e-commerce defer keeps swiper and flickity on the critical path', () => {
   assert.match(source, /DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES/);
   assert.doesNotMatch(source, /deferUntilLoad && document\.readyState !== 'complete'/);
