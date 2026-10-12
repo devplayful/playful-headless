@@ -390,7 +390,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const { items: pages } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
     {
-      next: { revalidate: 300 },
+      next: { revalidate: 3600 },
       headers: { 'Content-Type': 'application/json' },
     }
   );

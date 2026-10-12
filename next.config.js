@@ -37,7 +37,24 @@ const nextConfig = {
   },
   // Opcional: Configuración de cabeceras de seguridad
   async headers() {
+    const agencyCache = {
+      key: 'Cache-Control',
+      value: 'public, s-maxage=3600, stale-while-revalidate=86400',
+    };
     return [
+      {
+        source:
+          '/:slug(agencia-e-commerce|agencia-seo|agencia-sem|agencia-diseno-web|agencia-ux-ui|marketing-internacional|seo-expertos|seo-vigo)',
+        headers: [agencyCache],
+      },
+      {
+        source: '/casos-de-exito',
+        headers: [agencyCache],
+      },
+      {
+        source: '/casos-de-exito/:path*',
+        headers: [agencyCache],
+      },
       {
         // Aplica estas cabeceras a todas las rutas
         source: '/(.*)',

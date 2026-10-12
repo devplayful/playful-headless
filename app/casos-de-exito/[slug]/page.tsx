@@ -30,8 +30,8 @@ import {
   resolveMediaAlt,
 } from '@/lib/image-alt-overrides';
 
-
-
+/** ISR + CDN cache for case studies (TTFB). */
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
