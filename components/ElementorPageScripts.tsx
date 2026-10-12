@@ -21,6 +21,19 @@ const SCRIPTS = [
   `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js`,
 ];
 
+/** Non-carousel Masterlayer payloads; safe to defer on e-commerce for TBT. */
+const DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES = [
+  'gsap.min.js',
+  'cubeportfolio.js',
+  'parallax-scroll.js',
+  'magnific.popup.js',
+];
+
+function shouldDeferScript(src: string, deferUntilLoad: boolean): boolean {
+  if (!deferUntilLoad) return false;
+  return DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES.some((suffix) => src.endsWith(suffix));
+}
+
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve) => {
     if (document.querySelector(`script[data-playful-el="${src}"]`)) {
@@ -146,6 +159,20 @@ function fixSemClosedList(pageId?: number) {
       firstContent.classList.add('elementor-active');
       firstContent.style.setProperty('display', 'block', 'important');
     }
+  }
+}
+
+function reinitElementorFrontend() {
+  const w = window as MaeWindow & {
+    elementorFrontend?: { init?: () => void; elementsHandler?: { runReadyTrigger?: (scope: string) => void } };
+  };
+  const ef = w.elementorFrontend;
+  if (!ef) return;
+  try {
+    ef.init?.();
+    ef.elementsHandler?.runReadyTrigger?.('global');
+  } catch {
+    /* widgets still get CSS fallbacks */
   }
 }
 
@@ -415,32 +442,38 @@ export default function ElementorPageScripts({
     };
 
     let cancelled = false;
-    const runScripts = () => {
+    const runDeferredHeavyScripts = () => {
       (async () => {
         for (const src of SCRIPTS) {
-          if (cancelled) return;
+          if (cancelled || !shouldDeferScript(src, deferUntilLoad)) continue;
           await loadScript(src);
-        }
-        if (!cancelled) {
-          initMaeCarousels(pageId);
-          applyQa2Fixes();
-          fixSemClosedList(pageId);
         }
       })();
     };
 
-    const onDeferScripts = () => {
-      runScripts();
-    };
-    if (deferUntilLoad && document.readyState !== 'complete') {
-      window.addEventListener('load', onDeferScripts, { once: true });
-    } else {
-      runScripts();
-    }
+    (async () => {
+      for (const src of SCRIPTS) {
+        if (cancelled) return;
+        if (shouldDeferScript(src, deferUntilLoad)) continue;
+        await loadScript(src);
+      }
+      if (!cancelled) {
+        initMaeCarousels(pageId);
+        reinitElementorFrontend();
+        applyQa2Fixes();
+        fixSemClosedList(pageId);
+      }
+      if (!deferUntilLoad || cancelled) return;
+      if (document.readyState === 'complete') {
+        runDeferredHeavyScripts();
+      } else {
+        window.addEventListener('load', runDeferredHeavyScripts, { once: true });
+      }
+    })();
 
     return () => {
       cancelled = true;
-      window.removeEventListener('load', onDeferScripts);
+      window.removeEventListener('load', runDeferredHeavyScripts);
       window.removeEventListener('load', onLoad);
       window.clearTimeout(t500);
       window.clearTimeout(t1500);
