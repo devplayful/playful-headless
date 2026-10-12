@@ -26,8 +26,13 @@ test('carousel logos gain intrinsic width and height', () => {
   assert.match(out, /height="200"/);
 });
 
-test('non-LCP slugs leave the hero URL untouched', () => {
+test('agencia-e-commerce hero uses /_next/image like other LCP slugs', () => {
   const out = optimizeElementorLcpHero(HERO, 'agencia-e-commerce');
+  assert.match(out, /\/_next\/image/);
+});
+
+test('marketing-internacional leaves the hero URL untouched', () => {
+  const out = optimizeElementorLcpHero(HERO, 'marketing-internacional');
   assert.match(out, /Potencia-tu-presencia-con-publicidad\.png/);
   assert.doesNotMatch(out, /\/_next\/image/);
 });
