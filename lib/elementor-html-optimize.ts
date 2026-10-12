@@ -6,7 +6,7 @@ export const ELEMENTOR_LCP_SLUGS = new Set([
   'agencia-diseno-web',
   'agencia-seo',
   'agencia-e-commerce',
-  'agencia-ux-ui',
+  // agencia-ux-ui: hero /_next/image regressed mobile LCP vs f805e38 in LH batch (a7cbdfc, #265, #268).
 ]);
 
 export const ELEMENTOR_HERO_LCP_SIZES = '(max-width: 768px) 100vw, 437px';
