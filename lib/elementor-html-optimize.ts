@@ -11,6 +11,35 @@ export const ELEMENTOR_LCP_SLUGS = new Set([
 
 export const ELEMENTOR_HERO_LCP_SIZES = '(max-width: 768px) 100vw, 437px';
 
+export const UX_UI_SLUG = 'agencia-ux-ui';
+
+const UX_UI_GALLERY_LCP_RE =
+  /<div class="master-fancy-image[^"]*"[\s\S]*?<div class="image-wrap">\s*<img\b([^>]*)>/i;
+
+/** First gallery stack fancy image (mobile LCP). Hero SVG is left on the WP URL. */
+export function optimizeUxUiGalleryLcp(html: string, slug: string): string {
+  if (slug !== UX_UI_SLUG) return html;
+  const match = UX_UI_GALLERY_LCP_RE.exec(html);
+  if (!match) return html;
+  const full = match[0];
+  const attrs = match[1];
+  let next = attrs.replace(/\sloading=["']lazy["']/gi, '');
+  if (!/fetchpriority=/i.test(next)) next += ' fetchpriority="high"';
+  if (!/\bdecoding=/i.test(next)) next += ' decoding="async"';
+  if (!/\bsizes=/i.test(next)) next += ` sizes="${ELEMENTOR_HERO_LCP_SIZES}"`;
+  const optimizedImg = `<img${next}>`;
+  const optimizedBlock = full.replace(/<img\b[^>]*>/i, optimizedImg);
+  return html.replace(full, optimizedBlock);
+}
+
+export function firstUxUiGalleryLcpSrc(html: string, slug: string): string | null {
+  if (slug !== UX_UI_SLUG) return null;
+  const match = UX_UI_GALLERY_LCP_RE.exec(html);
+  if (!match) return null;
+  const src = /\bsrc=["']([^"']+)["']/i.exec(match[1])?.[1];
+  return src || null;
+}
+
 const CAROUSEL_LOGO_SIZE = { width: 300, height: 200 } as const;
 
 const PROJECT_WEBP_SIZES: Record<string, { width: number; height: number }> = {

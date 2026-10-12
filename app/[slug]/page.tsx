@@ -11,7 +11,8 @@ import {
 } from '@/utils/service-landing-jsonld';
 import { getServiceFaqJsonLd } from '@/utils/service-faq-jsonld';
 
-export const revalidate = 300;
+/** Align with CDN s-maxage; WP failures rethrow so ISR keeps the last good HTML. */
+export const revalidate = 3600;
 // Unknown slugs must not enter this page: generateMetadata+notFound()
 // still ships the empty __next_error__ shell. dynamicParams=false makes
 // a miss the same prerendered 404 as /a/b/c, with the H1 in the HTML.
