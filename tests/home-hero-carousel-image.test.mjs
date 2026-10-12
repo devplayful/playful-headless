@@ -13,6 +13,8 @@ test('home hero banner uses next/image with priority and fetchPriority high', ()
   const lottie = readFileSync(new URL('../components/HomeHeroLottie.tsx', import.meta.url), 'utf8');
   assert.match(home, /from ['"]next\/image['"]/);
   assert.match(home, /src="\/images\/home-hero-producto\.webp"/);
+  assert.match(home, /rel="preload" as="image"/);
+  assert.match(home, /HOME_HERO_LCP_SRC/);
   assert.match(home, /priority/);
   assert.match(home, /fetchPriority="high"/);
   assert.match(home, /sizes="\(min-width: 1024px\) 560px, 100vw"/);

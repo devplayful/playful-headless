@@ -29,8 +29,6 @@ export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${gaId}', {
               page_path: window.location.pathname,

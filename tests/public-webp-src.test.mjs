@@ -72,6 +72,7 @@ test('wordpress listing and shopify hero consume the helper without rewriting ov
   const covers = readFileSync(new URL('../lib/blog-cover-image.ts', import.meta.url), 'utf8');
   assert.match(wordpress, /publicWebpIfPresent\(\s*resolveBlogCoverUrl/);
   assert.match(home, /publicWebpIfPresent\(HOME_HERO_POSTER_PNG\)/);
+  assert.match(home, /export function homeHeroLcpHref/);
   assert.match(home, /HOME_HERO_POSTER_PNG = '\/images\/playful-imagen-banner\.png'/);
   assert.match(shopify, /publicWebpIfPresent\(HERO_ART_1X\)/);
   assert.match(shopify, /<Image[\s\S]*publicWebpIfPresent\(HERO_ART_1X\)/);

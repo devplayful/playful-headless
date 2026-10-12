@@ -154,6 +154,14 @@ export function sendGtagEvent(
     return;
   }
 
+  if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+    window.dataLayer.push({
+      event: eventName,
+      ...encodeGtagEventParams(params, finish, options?.timeoutMs),
+    });
+    return;
+  }
+
   finish();
 }
 

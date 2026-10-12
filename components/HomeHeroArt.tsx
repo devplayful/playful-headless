@@ -7,6 +7,11 @@ export const HOME_HERO_POSTER_PNG = '/images/playful-imagen-banner.png';
 export const HOME_HERO_WIDTH = 2048;
 export const HOME_HERO_HEIGHT = 2048;
 
+/** LCP href for preload links (webp sibling when present). */
+export function homeHeroLcpHref(): string {
+  return publicWebpIfPresent(HOME_HERO_POSTER_PNG);
+}
+
 /** SSR poster (webp, priority) + deferred Lottie of the same first frame. */
 export default function HomeHeroArt() {
   return (

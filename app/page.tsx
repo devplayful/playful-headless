@@ -53,6 +53,7 @@ import {
 } from "./home-copy";
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
+const HOME_HERO_LCP_SRC = '/images/home-hero-producto.webp';
 
 function homeCaseStudies(
   casosDeExito: Array<Record<string, unknown>>,
@@ -274,6 +275,7 @@ export default function Home() {
     <>
       <link rel="canonical" href={HOME_CANONICAL} />
       <meta property="og:url" content={HOME_CANONICAL} />
+      <link rel="preload" as="image" href={HOME_HERO_LCP_SRC} fetchPriority="high" />
       <script
         id="playful-website"
         type="application/ld+json"
