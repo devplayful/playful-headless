@@ -24,6 +24,10 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
   const [isCasesOpen, setIsCasesOpen] = useState(false)
   const pathname = usePathname()
 
+  if (pathname === '/links') {
+    return null
+  }
+
   // Cerrar menú cuando cambia la ruta
   useEffect(() => {
     setIsMenuOpen(false)
