@@ -19,10 +19,16 @@ export default function ChatWidget() {
     let loaded = false
     let chatEl: HTMLScriptElement | null = null
     let trackingEl: HTMLScriptElement | null = null
+    let idleId = 0
+    let timeoutId = 0
     const events = ['pointerdown', 'keydown', 'scroll', 'touchstart'] as const
 
     const detach = () => {
       events.forEach((type) => window.removeEventListener(type, load))
+      if (idleId && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      window.clearTimeout(timeoutId)
     }
 
     const load = () => {
@@ -70,6 +76,10 @@ export default function ChatWidget() {
     events.forEach((type) => {
       window.addEventListener(type, load, { once: true, passive: true })
     })
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(load, { timeout: 4000 })
+    }
+    timeoutId = window.setTimeout(load, 4000)
 
     return () => {
       detach()
