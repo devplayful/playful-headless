@@ -69,9 +69,19 @@ test('ChatWidget hooks analytics before appending the classic loader', () => {
   assert(loaderAt > chatScriptAt);
   assert.match(source, /data-resources-url.*chat-widget\/loader\.js/);
   assert.match(source, /data-widget-id.*HIGHLEVEL_CHAT_WIDGET_ID/);
-  assert.match(source, /requestIdleCallback\(load,\s*\{\s*timeout:\s*CHAT_IDLE_FALLBACK_MS\s*\}/);
+  assert.match(source, /attachChatWidgetDeferredLoad/);
   assert.doesNotMatch(source, /setTimeout\(load,\s*4000\)/);
-  assert.match(source, /addEventListener\('load',\s*loadListener/);
+});
+
+test('chat deferred load avoids idle callback and bare scroll', () => {
+  const source = readFileSync(new URL('../lib/chat-widget-deferred-load.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /requestIdleCallback/);
+  assert.match(source, /CHAT_LOAD_FALLBACK_MS/);
+  assert.match(source, /setTimeout\(run,\s*CHAT_LOAD_FALLBACK_MS\)/);
+  assert.match(source, /wheel/);
+  assert.match(source, /touchmove/);
+  assert.match(source, /scrollY\s*>\s*0/);
+  assert.doesNotMatch(source, /addEventListener\('scroll',\s*run/);
 });
 
 test('before-submit always allows the chat and never forwards PII', () => {

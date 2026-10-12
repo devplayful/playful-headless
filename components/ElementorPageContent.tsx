@@ -11,6 +11,7 @@ import {
   firstOptimizableHeroSrc,
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
+import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -193,7 +194,7 @@ html body .playful-wp-page .playful-post-home .recent-news li .texts .playful-me
 html body .playful-wp-page .elementor-element-145155f,
 html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
 `}</style>
-      <ElementorPageScripts pageId={pageId} deferUntilLoad={slug === 'agencia-e-commerce'} />
+      <ElementorPageScripts pageId={pageId} deferUntilLoad={shouldDeferElementorScriptsUntilLoad(slug)} />
     </>
   );
 }
