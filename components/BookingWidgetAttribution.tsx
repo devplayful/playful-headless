@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { ATTRIBUTION_COOKIE_FIRST, ATTRIBUTION_COOKIE_LAST } from '@/lib/contact/attribution';
 import {
   applyBookingIframeAttrToSrc,
@@ -62,12 +62,11 @@ function bindBookingIframes(values: BookingIframeAttrValues): void {
  */
 export default function BookingWidgetAttribution() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const valuesRef = useRef<BookingIframeAttrValues>({});
 
   useEffect(() => {
-    const search = searchParams.toString();
-    const values = currentValues(search ? `?${search}` : '');
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    const values = currentValues(search || '');
     valuesRef.current = values;
     writeStoredAttr(values);
     bindBookingIframes(values);
@@ -118,7 +117,7 @@ export default function BookingWidgetAttribution() {
       observer.disconnect();
       window.removeEventListener('message', onMessage);
     };
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }

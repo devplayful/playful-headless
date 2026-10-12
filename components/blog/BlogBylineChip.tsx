@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 type BlogBylineChipProps = {
   name: string;
   href?: string;
@@ -25,9 +27,11 @@ export function BlogBylineChip({
   return (
     <div className="inline-flex max-w-full min-w-0 items-center gap-2 rounded-full bg-[#440099] px-4 py-2 text-white">
       {avatarSrc ? (
-        <img
+        <Image
           src={avatarSrc}
           alt={avatarAlt || name}
+          width={24}
+          height={24}
           className="h-6 w-6 shrink-0 rounded-full"
         />
       ) : null}

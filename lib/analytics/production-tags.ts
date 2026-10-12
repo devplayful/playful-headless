@@ -41,13 +41,15 @@ export function productionAnalyticsIds(env: Environment = process.env): {
   gtmId: string;
   gaId: string;
   apolloAppId: string;
+  metaPixelId: string;
 } {
   if (!isProductionVercelEnv(env)) {
-    return { gtmId: '', gaId: '', apolloAppId: '' };
+    return { gtmId: '', gaId: '', apolloAppId: '', metaPixelId: '' };
   }
   return {
     gtmId: env.NEXT_PUBLIC_GTM_ID?.trim() || '',
     gaId: env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || '',
     apolloAppId: APOLLO_WEBSITE_TRACKER_APP_ID,
+    metaPixelId: env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || '',
   };
 }
