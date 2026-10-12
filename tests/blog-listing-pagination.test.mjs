@@ -95,5 +95,5 @@ test('clean /blog generateMetadata title and robots stay unchanged', () => {
   assert.match(metadataFn, /canonicalForPath\('\/blog'\)/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.match(listingIndex, /buildBlogListingMetadata\(\)/);
-  assert.match(listingIndex, /export const revalidate = 300/);
+  assert.match(listingIndex, /export const revalidate = 600/);
 });

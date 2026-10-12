@@ -49,7 +49,7 @@ export const WP_FETCH_SAFE_BODY_BYTES = 1_500_000;
 /** Shared index lives in Next Data Cache this long. Related pages read it; they do not refetch WP. */
 export const RELATED_BLOG_INDEX_REVALIDATE_SECONDS = 21_600;
 /** WP REST max per_page. Two pages of `_fields`-only posts stay ~54 KB each. */
-export const RELATED_BLOG_INDEX_PER_PAGE = 100;
+export const RELATED_BLOG_INDEX_PER_PAGE = 50;
 /** Latest-N overscan after dropping closed paths. Was +40 with full `_embed` (~2.1 MB). */
 export const BLOG_LATEST_OVERSCAN = 8;
 export const RELATED_INDEX_UNAVAILABLE = 'RELATED_INDEX_UNAVAILABLE';

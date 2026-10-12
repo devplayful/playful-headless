@@ -6,6 +6,11 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
+import {
+  applyElementorIntrinsicDimensions,
+  firstOptimizableHeroSrc,
+  optimizeElementorLcpHero,
+} from '@/lib/elementor-html-optimize';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -97,7 +102,9 @@ function restoreOldBodyCopy(html: string): string {
   return applyElementorAeoRewrites(out);
 }
 
-function firstHeroImageSrc(html: string): string | null {
+function firstHeroImageSrc(html: string, slug: string): string | null {
+  const optimized = firstOptimizableHeroSrc(html, slug);
+  if (optimized) return optimized;
   const re = /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
   let match: RegExpExecArray | null;
   while ((match = re.exec(html))) {
@@ -139,7 +146,7 @@ export default function ElementorPageContent({
   stylesheetIds,
   slug = '',
 }: ElementorPageContentProps) {
-  const bodyHtml = markFirstHeroImagePriority(
+  const preparedHtml = markFirstHeroImagePriority(
     applyImageAltOverrides(
       rewriteElementorBodyHrefs(
         rewriteEcommerceZelleCover(
@@ -150,7 +157,11 @@ export default function ElementorPageContent({
       ),
     ),
   );
-  const lcpSrc = firstHeroImageSrc(bodyHtml);
+  const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
+  const bodyHtml = optimizeElementorLcpHero(
+    applyElementorIntrinsicDimensions(preparedHtml),
+    slug,
+  );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageStylesheets = ids
     .filter((id) => id !== 8)
@@ -182,7 +193,7 @@ html body .playful-wp-page .playful-post-home .recent-news li .texts .playful-me
 html body .playful-wp-page .elementor-element-145155f,
 html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
 `}</style>
-      <ElementorPageScripts pageId={pageId} />
+      <ElementorPageScripts pageId={pageId} deferUntilLoad={slug === 'agencia-e-commerce'} />
     </>
   );
 }

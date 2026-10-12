@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
 import { mergePublicCaseStudies } from '@/lib/public-case-studies';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
@@ -615,7 +616,7 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   }
   const { items: posts, response } = await wordpressFetchCollection<WPPost>(
     url.toString(),
-    { next: { revalidate: 300 }, headers: { 'Content-Type': 'application/json' } },
+    { next: { revalidate: 600 }, headers: { 'Content-Type': 'application/json' } },
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
   const processedPosts = await hydrateListingPosts(posts);
@@ -1041,15 +1042,26 @@ function cacheRelatedIndexResult(result: RelatedBlogIndex | null): boolean {
   return shouldCacheRelatedPostsResult(result) && isUsableRelatedIndex(result);
 }
 
+const fetchBlogRelatedIndexFromWp = unstable_cache(
+  async () => loadBlogRelatedIndex(relatedIndexFetchGuard),
+  ['playful-blog-related-index'],
+  { revalidate: RELATED_BLOG_INDEX_REVALIDATE_SECONDS },
+);
+
 export async function getBlogRelatedIndex(): Promise<RelatedBlogIndex | null> {
   try {
     const loaded = await fetchWithRelatedPostsTtl(
       relatedIndexCache,
       () => withRelatedFetchTimeout(
-        (signal) => loadBlogRelatedIndex({
-          signal,
-          ...relatedIndexFetchGuard,
-        }),
+        async (signal) => {
+          if (process.env.NEXT_PHASE === 'phase-production-build') {
+            return fetchBlogRelatedIndexFromWp();
+          }
+          return loadBlogRelatedIndex({
+            signal,
+            ...relatedIndexFetchGuard,
+          });
+        },
         null,
       ),
       Date.now,
@@ -1378,7 +1390,7 @@ const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
 
 async function loadAllCaseStudies(): Promise<any[]> {
   const { items: casos } = await wordpressFetchCollection<any>(
-    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&_embed&per_page=100`,
+    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status&_embed=wp:featuredmedia`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
   const published = casos.map((caso: Record<string, unknown>) => {

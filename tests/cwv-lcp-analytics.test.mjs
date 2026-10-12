@@ -25,6 +25,9 @@ test('agencia-seo elementor LCP preloads the hero with high fetch priority', () 
   assert.match(elementor, /fetchPriority="high"/);
   assert.match(elementor, /fetchpriority="high"/i);
   assert.match(elementor, /markFirstHeroImagePriority/);
+  assert.match(elementor, /optimizeElementorLcpHero/);
+  assert.match(elementor, /optimizeElementorLcpHero/);
+  assert.match(elementor, /firstOptimizableHeroSrc/);
 });
 
 test('SPA and booking helpers avoid useSearchParams so layout does not CSR-bailout', () => {

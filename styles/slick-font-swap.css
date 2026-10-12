@@ -1,0 +1,8 @@
+/* Loaded after slick-theme on caso pages so font-display:swap wins for LCP. */
+@font-face {
+  font-family: slick;
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  src: url('../node_modules/slick-carousel/slick/fonts/slick.woff') format('woff');
+}

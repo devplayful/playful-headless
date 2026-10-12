@@ -23,11 +23,13 @@ Blog listings no longer request `content` or a full `_embed`. Measured 2026-09-3
 ## Availability behavior
 
 - WordPress requests have one 8-second operation deadline covering fetch attempts and backoff (20 s during `next build`, #151).
-- Runtime: 408, 425, 429, 5xx, and network errors receive at most three attempts with bounded jitter (150 ms × 2^(n-1) + jitter, cap 1 s).
+- Runtime: 408, 425, 429, 5xx, and network errors receive at most **two** attempts (one retry) with bounded jitter (150 ms × 2^(n-1) + jitter, cap 1 s) inside the 8 s deadline.
 - Before this change, `next build` used the same **three** attempts **per request**. Pagination and ~100 article routes multiplied that (a 5xx on every page could mean hundreds of extra GETs to the origin).
 - `next build` now uses at most **two** attempts per request, plus a process-wide budget of **8** extra 5xx/network retries. The 20 s deadline (#151) is unchanged.
 - Caller cancellation interrupts both an active fetch and retry backoff; no subsequent request is allowed.
 - Only a successful `200 []` collection is an absence. A collection 404 and persistent upstream failures throw `WordPressUnavailableError`.
+- Observed collection **404** sources (GSC / logs, mostly blog): (1) `GET /wp/v2/posts?page=N` when `N` is beyond `X-WP-TotalPages` after a publish/unpublish; (2) `?categories=` with a deleted or mistyped category id; (3) legacy inventory scripts hitting removed CPT bases (`/wp/v2/<old-type>`); (4) slug lookups rewritten to collection endpoints that no longer exist. Those are upstream failures, not “empty” — ISR must rethrow and keep the last good HTML.
+- Related-post index is built at **`per_page=50`** with `_fields` only, cached via `unstable_cache` during `next build`, and reused at runtime through the in-memory TTL layer.
 - Slug pages may render a 404 only after confirmed absence. Build inventory failures stop the build.
 
 ## Rollback

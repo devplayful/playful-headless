@@ -192,20 +192,34 @@ body.playful-elementor-plain {
   src: url("https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff") format("woff");
   font-weight: 400;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }
 @font-face {
   font-family: eicons;
   src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
+}
+@font-face {
+  font-family: eicons;
+  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: eicons;
+  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 @font-face {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
   src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
 }
 

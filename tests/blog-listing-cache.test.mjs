@@ -17,9 +17,9 @@ const expectedRoutes = JSON.parse(
 const related = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 const booking = readFileSync(new URL('../utils/booking-attribution.ts', import.meta.url), 'utf8');
 
-test('clean /blog is ISR at 300s and does not read searchParams', () => {
-  assert.equal(BLOG_LISTING_REVALIDATE_SECONDS, 300);
-  assert.match(listingPage, /export const revalidate = 300/);
+test('clean /blog is ISR at 600s and does not read searchParams', () => {
+  assert.equal(BLOG_LISTING_REVALIDATE_SECONDS, 600);
+  assert.match(listingPage, /export const revalidate = 600/);
   assert.match(listingPage, /currentPage=\{1\}/);
   assert.doesNotMatch(listingPage, /searchParams/);
   assert.doesNotMatch(listingPage, /cookies\(/);
@@ -70,10 +70,11 @@ test('bare /blog is the cacheable listing; queries are not', () => {
 });
 
 test('related-posts fetch cache and booking hop stay on their own files', () => {
+  assert.match(related, /unstable_cache/);
   assert.match(related, /RELATED_BLOG_CATEGORY_REVALIDATE_SECONDS|revalidate: 3600/);
   assert.match(
     related,
-    /export async function getBlogPosts[\s\S]*revalidate: 300/,
+    /export async function getBlogPosts[\s\S]*revalidate: 600/,
   );
   assert.match(booking, /reunion-playful/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/blog/q'));
