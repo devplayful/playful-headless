@@ -4,7 +4,7 @@ import { buildNextImageUrl, isOptimizableWpUpload } from './next-image-url.ts';
 export const ELEMENTOR_LCP_SLUGS = new Set([
   'agencia-sem',
   'agencia-diseno-web',
-  'agencia-ux-ui',
+  // agencia-ux-ui: hero /_next/image regressed mobile LCP vs f805e38 in LH batch (a7cbdfc).
 ]);
 
 export const ELEMENTOR_HERO_LCP_SIZES = '(max-width: 768px) 100vw, 437px';
