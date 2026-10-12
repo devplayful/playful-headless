@@ -10,6 +10,9 @@ import {
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import CaseStudiesContent from './CaseStudiesContent';
+
+/** ISR + CDN cache for case-study hub (TTFB). */
+export const revalidate = 3600;
 import { buildCaseStudiesHubBreadcrumbJsonLd } from '@/utils/case-study-jsonld';
 import { serializeServiceLandingJsonLd } from '@/utils/service-landing-jsonld';
 
