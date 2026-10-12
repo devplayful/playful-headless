@@ -21,7 +21,7 @@ const SCRIPTS = [
   `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js`,
 ];
 
-/** Flickity testimonial carousels need these before Elementor/Swiper (not full deferUntilLoad). */
+/** Flickity testimonial carousels need these on the critical path when deferring Elementor. */
 const CRITICAL_WHEN_DEFER_PATH_SNIPPETS = [
   'jquery/jquery.min.js',
   'waitforimages.js',
@@ -30,25 +30,9 @@ const CRITICAL_WHEN_DEFER_PATH_SNIPPETS = [
   'init.js',
 ];
 
-/** Elementor + jQuery UI + Swiper load after first paint / window.load. */
-const DEFERRED_UNTIL_LOAD_SNIPPETS = [
-  'webpack.runtime.min.js',
-  'frontend-modules.min.js',
-  'jquery/ui/core.min.js',
-  'frontend.min.js',
-  'swiper.min.js',
-  'gsap.min.js',
-  'cubeportfolio.js',
-  'parallax-scroll.js',
-  'magnific.popup.js',
-];
-
 function shouldDeferScript(src: string, deferUntilLoad: boolean): boolean {
   if (!deferUntilLoad) return false;
-  if (CRITICAL_WHEN_DEFER_PATH_SNIPPETS.some((snippet) => src.includes(snippet))) {
-    return false;
-  }
-  return DEFERRED_UNTIL_LOAD_SNIPPETS.some((snippet) => src.includes(snippet));
+  return !CRITICAL_WHEN_DEFER_PATH_SNIPPETS.some((snippet) => src.includes(snippet));
 }
 
 function loadScript(src: string): Promise<void> {
@@ -462,7 +446,7 @@ export default function ElementorPageScripts({
       })();
     };
 
-    const loadCarouselScripts = async () => {
+    (async () => {
       for (const src of SCRIPTS) {
         if (cancelled) return;
         if (shouldDeferScript(src, deferUntilLoad)) continue;
@@ -474,27 +458,13 @@ export default function ElementorPageScripts({
         applyQa2Fixes();
         fixSemClosedList(pageId);
       }
-    };
-
-    const startCarouselScripts = () => {
-      void loadCarouselScripts();
-    };
-
-    if (deferUntilLoad) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(startCarouselScripts);
-      });
-    } else {
-      startCarouselScripts();
-    }
-
-    if (!deferUntilLoad || cancelled) {
-      /* heavy scripts only when deferring */
-    } else if (document.readyState === 'complete') {
-      runDeferredHeavyScripts();
-    } else {
-      window.addEventListener('load', runDeferredHeavyScripts, { once: true });
-    }
+      if (!deferUntilLoad || cancelled) return;
+      if (document.readyState === 'complete') {
+        runDeferredHeavyScripts();
+      } else {
+        window.addEventListener('load', runDeferredHeavyScripts, { once: true });
+      }
+    })();
 
     return () => {
       cancelled = true;
