@@ -20,8 +20,6 @@ import { productionAnalyticsIds } from '@/lib/analytics/production-tags';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { ORGANIZATION_JSON_LD } from '@/utils/organization-schema.mjs';
-import { HIGHLEVEL_CHAT_WIDGET_LOADER } from '@/lib/highlevel/external-tracking';
-
 const paytoneOne = Paytone_One({ 
   weight: '400',
   subsets: ['latin'],
@@ -125,7 +123,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: ORGANIZATION_JSON_LD }}
         />
         <link rel="dns-prefetch" href="https://widgets.leadconnectorhq.com" />
-        <link rel="preload" as="script" href={HIGHLEVEL_CHAT_WIDGET_LOADER} />
       </head>
       <body className={`${paytoneOne.variable} ${montserrat.variable} ${dmSans.variable} font-sans`} suppressHydrationWarning>
         <ThemeProvider>

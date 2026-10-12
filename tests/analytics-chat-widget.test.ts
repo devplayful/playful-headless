@@ -53,6 +53,13 @@ function fakeWindow(overrides: Record<string, unknown> = {}) {
   };
 }
 
+test('root layout dns-prefetches GHL but does not preload loader.js', () => {
+  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  assert.match(layout, /dns-prefetch.*widgets\.leadconnectorhq\.com/);
+  assert.doesNotMatch(layout, /preload.*loader\.js/);
+  assert.doesNotMatch(layout, /HIGHLEVEL_CHAT_WIDGET_LOADER/);
+});
+
 test('ChatWidget hooks analytics before appending the classic loader', () => {
   const source = readFileSync(new URL('../components/ChatWidget.tsx', import.meta.url), 'utf8');
   const attachAt = source.indexOf('attachChatWidgetAnalytics()');
@@ -62,8 +69,9 @@ test('ChatWidget hooks analytics before appending the classic loader', () => {
   assert(loaderAt > chatScriptAt);
   assert.match(source, /data-resources-url.*chat-widget\/loader\.js/);
   assert.match(source, /data-widget-id.*HIGHLEVEL_CHAT_WIDGET_ID/);
-  assert.match(source, /requestIdleCallback\(load/);
-  assert.match(source, /setTimeout\(load,\s*4000\)/);
+  assert.match(source, /requestIdleCallback\(load,\s*\{\s*timeout:\s*CHAT_IDLE_FALLBACK_MS\s*\}/);
+  assert.doesNotMatch(source, /setTimeout\(load,\s*4000\)/);
+  assert.match(source, /addEventListener\('load',\s*loadListener/);
 });
 
 test('before-submit always allows the chat and never forwards PII', () => {
