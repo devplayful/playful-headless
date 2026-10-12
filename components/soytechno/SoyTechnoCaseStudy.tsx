@@ -82,6 +82,16 @@ export default function SoyTechnoCaseStudy() {
   return (
     <article className={`soytechno-case-study ${styles.page}`}>
       <div className={styles.heroBackdrop}>
+        <Image
+          src={image('background-texture.png')}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+          className={styles.heroBackdropImage}
+          aria-hidden
+        />
         <div className={styles.breadcrumb}>
           <Link href="/">Home</Link><span>/</span>
           <Link href="/casos-de-exito">Casos de éxito</Link>

@@ -21,17 +21,18 @@ const SCRIPTS = [
   `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js`,
 ];
 
-/** Non-carousel Masterlayer payloads; safe to defer on e-commerce for TBT. */
-const DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES = [
-  'gsap.min.js',
-  'cubeportfolio.js',
-  'parallax-scroll.js',
-  'magnific.popup.js',
+/** Flickity testimonial carousels need these on the critical path when deferring Elementor. */
+const CRITICAL_WHEN_DEFER_PATH_SNIPPETS = [
+  'jquery/jquery.min.js',
+  'waitforimages.js',
+  'masterlayer-addons-for-elementor/assets/js/core.min.js',
+  'flickity.js',
+  'init.js',
 ];
 
 function shouldDeferScript(src: string, deferUntilLoad: boolean): boolean {
   if (!deferUntilLoad) return false;
-  return DEFER_UNTIL_LOAD_SCRIPT_SUFFIXES.some((suffix) => src.endsWith(suffix));
+  return !CRITICAL_WHEN_DEFER_PATH_SNIPPETS.some((snippet) => src.includes(snippet));
 }
 
 function loadScript(src: string): Promise<void> {
@@ -96,26 +97,14 @@ function fixSemLogoCarousel(pageId?: number) {
     }
     try {
       swiper.update();
-      if (typeof swiper.slideToLoop === 'function' && swiper.params.loop) {
-        swiper.slideToLoop(0, 0);
-      } else {
-        swiper.slideTo(0, 0);
+      if (swiper.autoplay && typeof swiper.autoplay.start === 'function') {
+        swiper.autoplay.start();
       }
     } catch {
       /* CSS overflow/object-fit still clip the frame */
     }
   }
 
-  root.querySelectorAll('.swiper-slide-image').forEach((img) => {
-    const el = img as HTMLImageElement;
-    el.style.setProperty('object-fit', 'contain', 'important');
-    el.style.setProperty('object-position', 'center', 'important');
-    el.style.setProperty('max-width', 'none', 'important');
-    el.style.removeProperty('max-height');
-    el.style.setProperty('max-height', 'none', 'important');
-    el.style.setProperty('width', '300px', 'important');
-    el.style.setProperty('height', '200px', 'important');
-  });
 }
 
 
@@ -447,6 +436,12 @@ export default function ElementorPageScripts({
         for (const src of SCRIPTS) {
           if (cancelled || !shouldDeferScript(src, deferUntilLoad)) continue;
           await loadScript(src);
+        }
+        if (!cancelled) {
+          initMaeCarousels(pageId);
+          reinitElementorFrontend();
+          applyQa2Fixes();
+          fixSemClosedList(pageId);
         }
       })();
     };

@@ -13,6 +13,7 @@ const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "@/styles/slick-font-swap.css";
 
 interface BlogPost {
   id: number;

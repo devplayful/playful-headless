@@ -31,6 +31,15 @@ test('agencia-e-commerce hero uses /_next/image like other LCP slugs', () => {
   assert.match(out, /\/_next\/image/);
 });
 
+test('agencia-ux-ui hero SVG is rewritten to /_next/image with fixed dimensions', () => {
+  const svgHero =
+    '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/11/Playful-Transforma-tu-experiencia-digital-con-nuestra-Agencia-UX.svg" alt="UX hero" />';
+  const out = optimizeElementorLcpHero(svgHero, 'agencia-ux-ui');
+  assert.match(out, /\/_next\/image/);
+  assert.match(out, /width="437"/);
+  assert.match(out, /height="417"/);
+});
+
 test('marketing-internacional leaves the hero URL untouched', () => {
   const out = optimizeElementorLcpHero(HERO, 'marketing-internacional');
   assert.match(out, /Potencia-tu-presencia-con-publicidad\.png/);

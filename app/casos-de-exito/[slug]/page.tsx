@@ -166,16 +166,6 @@ export default async function SuccessStoryPage({
   const isSoyTechno = story.acf?.template === "soytechno_extended";
   const st = story.acf?.soytechno;
 
-  // Debug logs
-  console.log('=== SOYTECHNO DEBUG ===');
-  console.log('isSoyTechno:', isSoyTechno);
-  console.log('story.acf.template:', story.acf?.template);
-  console.log('story.acf.soytechno:', story.acf?.soytechno);
-  console.log('st:', st);
-  console.log('st?.seccion_a:', st?.seccion_a);
-  console.log('st?.seccion_f:', st?.seccion_f);
-  console.log('=== END DEBUG ===');
-
   const path = `/casos-de-exito/${slug}`;
   const override = getPublicCaseStudySeoOverride(slug);
   const headline = override?.title || story.title.rendered;
@@ -230,7 +220,7 @@ export default async function SuccessStoryPage({
                     }
                     alt={resolveMediaAlt(story.acf.imagenbanner, story.title.rendered)}
                     fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 390px) 100vw, (max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-opacity duration-300"
                     priority
                     fetchPriority="high"
@@ -556,10 +546,7 @@ export default async function SuccessStoryPage({
       {isSoyTechno && st?.seccion_c && <SoyTechnoSectionC data={st.seccion_c} />}
       {isSoyTechno && st?.seccion_d && <SoyTechnoSectionD data={st.seccion_d} />}
       {isSoyTechno && st?.seccion_e && <SoyTechnoSectionE data={st.seccion_e} />}
-      {isSoyTechno && (() => {
-        console.log('seccion_f raw', st?.seccion_f);
-        return st?.seccion_f && <SoyTechnoSectionF data={st.seccion_f} />;
-      })()}
+      {isSoyTechno && st?.seccion_f && <SoyTechnoSectionF data={st.seccion_f} />}
 
       {/* Development Process Section */}
       {(story.acf?.imagendesarrollo ||
