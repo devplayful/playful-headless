@@ -299,15 +299,21 @@ test('combined byline joins author and editorial with y', () => {
   assert.equal(formatCombinedByline('  ', 'Equipo editorial de Playful Agency'), DEFAULT_EDITORIAL_BYLINE);
 });
 
-test('hero excerpt omits empty text and only adds ellipsis when truncated', () => {
+test('hero excerpt omits empty text and ends on the last full stop inside the limit', () => {
   assert.equal(formatBlogHeroExcerpt(''), '');
   assert.equal(formatBlogHeroExcerpt('<p></p>'), '');
   assert.equal(formatBlogHeroExcerpt('   <p>  </p>  '), '');
   assert.equal(formatBlogHeroExcerpt('<p>Texto corto.</p>'), 'Texto corto.');
   assert.equal(formatBlogHeroExcerpt('Exactamente veinte.'.padEnd(200, 'x')), 'Exactamente veinte.'.padEnd(200, 'x'));
   const long = 'a'.repeat(201);
-  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), `${'a'.repeat(200)}...`);
+  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), 'a'.repeat(200));
   assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
+  const eshow =
+    'El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital de Tech Show Madrid, y si tienes una tienda online te permite ver en dos días plataformas, pagos, logística y herramientas de captación que normalmente tendrías que buscar por separado.';
+  const hero = formatBlogHeroExcerpt(`<p>${eshow}</p>`);
+  assert.match(hero, /de 10:00 a 19:00\.$/);
+  assert.doesNotMatch(hero, /Tech Show Madrid/);
+  assert.doesNotMatch(hero, /\.\.\.$/);
 });
 
 test('editorial avatar asset remains available but is not the byline face', () => {

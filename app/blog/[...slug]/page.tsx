@@ -59,6 +59,7 @@ import {
   ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
   ESHOW_MADRID_2026_H1,
   ESHOW_MADRID_2026_META,
+  ESHOW_MADRID_2026_AUTHOR_NAME,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
   GOOGLE_MERCHANT_CENTER_H1,
@@ -212,7 +213,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     dateModified: isEshow
       ? eshowMadrid2026DateModified()
       : editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
-    authorName: jsonLdExtras.authorType === 'Organization' ? 'Playful Agency' : authorName,
+    authorName: isEshow
+      ? ESHOW_MADRID_2026_AUTHOR_NAME
+      : jsonLdExtras.authorType === 'Organization'
+        ? 'Playful Agency'
+        : authorName,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_LOGO_URL,
@@ -637,7 +642,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         : editorial
           ? { modifiedTime: editorial.updatedAt }
           : {}),
-      authors: [post.author_name || 'Playful Agency'],
+      authors: [
+        isEshow ? ESHOW_MADRID_2026_AUTHOR_NAME : post.author_name || 'Playful Agency',
+      ],
       images: [
         jpeg
           ? ogJpegMeta(imageUrl, imageAlt)

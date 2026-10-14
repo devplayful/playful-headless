@@ -44,14 +44,17 @@ export const ESHOW_MADRID_2026_PROGRAMA_SRC =
   '/images/blog/eshow-madrid-2026-programa.webp';
 export const ESHOW_MADRID_2026_FAN_IMAGE_WIDTH = 1728;
 export const ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT = 2304;
-export const ESHOW_MADRID_2026_PROGRAMA_IMAGE_WIDTH = 1600;
-export const ESHOW_MADRID_2026_PROGRAMA_IMAGE_HEIGHT = 900;
+export const ESHOW_MADRID_2026_PROGRAMA_IMAGE_WIDTH = ESHOW_MADRID_2026_FAN_IMAGE_WIDTH;
+export const ESHOW_MADRID_2026_PROGRAMA_IMAGE_HEIGHT = ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT;
 export const ESHOW_MADRID_2026_CABECERA_ALT =
   'Ilustración de un asistente del eShow con los brazos abiertos en gesto de presentación, sobre fondo lavanda';
 export const ESHOW_MADRID_2026_FIG1_ALT =
   'Ilustración de un asistente del eShow saludando con la mano, sobre fondo lavanda';
 export const ESHOW_MADRID_2026_PROGRAMA_ALT =
-  'Ilustración de una persona con un megáfono y siluetas de público, sobre fondo morado y lavanda';
+  'Ilustración de un asistente del eShow con un ventilador portátil, sobre fondo lavanda';
+
+/** Autor visible en staging (post local; no viene de WP en este slug). */
+export const ESHOW_MADRID_2026_AUTHOR_NAME = 'Equipo editorial de Playful Agency';
 
 export const ESHOW_LISTA_FORM_SLOT = '<p data-eshow-lista-form="" hidden></p>';
 export const ESHOW_LISTA_FORM_MARKER = '<!--eshow-lista-form-->';

@@ -101,8 +101,8 @@ test('local eShow post is gated and shaped like a WP otros article', () => {
   assert.equal(post.slug, 'eshow-madrid-2026');
   assert.equal(post.categories[0].slug, 'otros');
   assert.equal(post.categories[0].name, 'Otros');
-  assert.equal(post.author.name, 'Stefanni Parabavidez');
-  assert.equal(post.author.avatar_urls['48'], '/images/authors/stefanni-parabavidez.jpg');
+  assert.equal(post.author.name, 'Equipo editorial de Playful Agency');
+  assert.equal(post.author.avatar_urls['48'], '/images/avatar-playful.svg');
   assert.equal(post.featured_media_url, ESHOW_MADRID_2026_FEATURED_SRC);
   assert.equal(post.date, ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL);
   assert.equal(post.date_gmt, '2026-10-07T00:00:00+02:00');
@@ -185,7 +185,7 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
     description: ESHOW_MADRID_2026_META,
     datePublished: ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
     dateModified: eshowMadrid2026DateModified(),
-    authorName: 'Playful Agency',
+    authorName: 'Equipo editorial de Playful Agency',
     url: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
     ...extras,
   });
@@ -196,7 +196,7 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
   assert.equal(jsonLd.inLanguage, 'es-ES');
   assert.deepEqual(jsonLd.author, {
     '@type': 'Organization',
-    name: 'Playful Agency',
+    name: 'Equipo editorial de Playful Agency',
     url: 'https://playfulagency.com',
   });
   assert.doesNotMatch(JSON.stringify(jsonLd), /"Event"/);

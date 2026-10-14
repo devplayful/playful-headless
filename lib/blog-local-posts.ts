@@ -20,8 +20,10 @@ import {
   ESHOW_MADRID_2026_PATH,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
+  ESHOW_MADRID_2026_AUTHOR_NAME,
   eshowMadrid2026DateModified,
 } from './eshow-madrid-2026.ts';
+import { EDITORIAL_AVATAR_SRC } from './blog-editorial-meta.ts';
 
 export {
   ESHOW_LISTA_FORM_ID,
@@ -50,6 +52,7 @@ export {
   ESHOW_MADRID_2026_PROGRAMA_SRC,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
+  ESHOW_MADRID_2026_AUTHOR_NAME,
   eshowMadrid2026DateModified,
   formatEshowActualizadoLine,
 } from './eshow-madrid-2026.ts';
@@ -368,16 +371,16 @@ function buildEshowMadrid2026Post(): WPPost {
     ],
     tags: [],
     author: {
-      id: 21,
-      name: 'Stefanni Parabavidez',
-      slug: 'stefanniparabavidez',
+      id: 0,
+      name: ESHOW_MADRID_2026_AUTHOR_NAME,
+      slug: 'equipo-editorial-playful-agency',
       avatar_urls: {
-        '24': STEFANNI_AVATAR,
-        '48': STEFANNI_AVATAR,
-        '96': STEFANNI_AVATAR,
+        '24': EDITORIAL_AVATAR_SRC,
+        '48': EDITORIAL_AVATAR_SRC,
+        '96': EDITORIAL_AVATAR_SRC,
       },
     },
-    author_name: 'Stefanni Parabavidez',
+    author_name: ESHOW_MADRID_2026_AUTHOR_NAME,
     status: 'publish',
     type: 'post',
   };
