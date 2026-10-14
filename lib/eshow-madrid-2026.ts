@@ -34,7 +34,7 @@ export const ESHOW_MADRID_2026_ABOUT_NAME = 'E-SHOW Madrid 2026';
 export const ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL =
   '2026-10-07T00:00:00+02:00';
 
-/** Ilustraciones provisionales de Diseño (fans 3:4 sobre lavanda, object-contain). */
+/** Ilustraciones provisionales de Diseño (3:4, fondo lavanda transparente en WebP, object-contain ~88% del hueco). */
 export const ESHOW_MADRID_2026_CABECERA_SRC =
   '/images/blog/eshow-madrid-2026-cabecera.webp';
 export const ESHOW_MADRID_2026_FEATURED_SRC = ESHOW_MADRID_2026_CABECERA_SRC;

@@ -60,6 +60,8 @@ import {
   ESHOW_MADRID_2026_H1,
   ESHOW_MADRID_2026_META,
   ESHOW_MADRID_2026_AUTHOR_NAME,
+  ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT,
+  ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
   GOOGLE_MERCHANT_CENTER_H1,
@@ -337,18 +339,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div
                 className={
                   isEshow
-                    ? 'relative flex w-full h-64 md:h-80 lg:h-96 items-center justify-center rounded-2xl overflow-hidden bg-[#EADDFF] p-8'
+                    ? 'relative flex w-full h-64 md:h-80 lg:h-96 items-center justify-center rounded-2xl overflow-hidden bg-[#EADDFF] px-3'
                     : 'relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden'
                 }
               >
-                <Image
-                  src={post.featured_media_url}
-                  alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
-                  fill
-                  className="object-contain object-center p-4"
-                  sizes={BLOG_POST_FEATURED_SIZES}
-                  priority
-                />
+                {isEshow ? (
+                  <Image
+                    src={post.featured_media_url}
+                    alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
+                    width={ESHOW_MADRID_2026_FAN_IMAGE_WIDTH}
+                    height={ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT}
+                    className="max-h-[88%] max-w-full h-auto w-auto object-contain object-center"
+                    sizes={BLOG_POST_FEATURED_SIZES}
+                    priority
+                  />
+                ) : (
+                  <Image
+                    src={post.featured_media_url}
+                    alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
+                    fill
+                    className="object-contain object-center p-4"
+                    sizes={BLOG_POST_FEATURED_SIZES}
+                    priority
+                  />
+                )}
               </div>
             )}
           </div>
