@@ -4,7 +4,7 @@ import {
   snapNextImageWidth,
 } from './next-image-widths.ts';
 
-/** Service landings whose hero PNG/SVG should be served via `/_next/image`. */
+/** Service landings whose raster hero is rewritten to `/_next/image`. SVG stays on origin. */
 export const ELEMENTOR_LCP_SLUGS = new Set([
   'agencia-sem',
   'agencia-diseno-web',
@@ -74,6 +74,9 @@ function isHeroCandidate(attrs: string, src: string): boolean {
   return true;
 }
 
+const ECOM_HERO_SLUG = 'agencia-e-commerce';
+const ECOM_HERO_INTRINSIC = { width: 437, height: 417 } as const;
+
 /** Next image optimizer 400s on remote SVG and on some RGBA → WebP paths; serve the origin URL. */
 function shouldServeHeroViaNextImage(src: string): boolean {
   if (!isOptimizableWpUpload(src)) return false;
@@ -82,18 +85,52 @@ function shouldServeHeroViaNextImage(src: string): boolean {
 }
 
 /**
- * Hero rewrite policy. `agencia-e-commerce` keeps main behaviour (SVG via `/_next/image`,
- * which 400s but avoids mobile CLS from painting the origin SVG). Other LCP slugs skip SVG.
+ * Hero rewrite policy. Remote SVG never goes through `/_next/image` (400).
+ * `#280` briefly kept the e-commerce SVG on the optimizer so the broken
+ * `height:auto` box stayed at 0 (CLS 0, image invisible). Origin SVG + a
+ * reserved 437/417 box is the intended path.
  */
-function shouldRewriteHeroThroughNextImage(slug: string, src: string): boolean {
-  if (!isOptimizableWpUpload(src)) return false;
-  if (slug === 'agencia-e-commerce') return true;
+function shouldRewriteHeroThroughNextImage(src: string): boolean {
   return shouldServeHeroViaNextImage(src);
+}
+
+function isEcommerceSvgHero(slug: string, src: string): boolean {
+  return slug === ECOM_HERO_SLUG && /\.svg(\?|#|$)/i.test(src);
+}
+
+function mergeStyleAttr(attrs: string, extra: string): string {
+  const match = /\sstyle=(["'])([^"']*)\1/i.exec(attrs);
+  if (match) {
+    const merged = `${match[2].replace(/;?\s*$/, '')};${extra}`;
+    return attrs.replace(match[0], ` style=${match[1]}${merged}${match[1]}`);
+  }
+  return `${attrs} style="${extra}"`;
+}
+
+/**
+ * Origin SVG + intrinsic box before paint. Drops optimizer srcset/sizes so
+ * the browser does not request `/_next/image` for the illustration.
+ */
+function reserveEcommerceSvgHero(attrs: string): string {
+  const width = readNumericAttr(attrs, 'width') ?? ECOM_HERO_INTRINSIC.width;
+  const height = readNumericAttr(attrs, 'height') ?? ECOM_HERO_INTRINSIC.height;
+  const reserveStyle =
+    `display:block;width:100%;max-width:100%;height:auto;aspect-ratio:${width}/${height};object-fit:contain`;
+  let next = attrs.replace(/\s*\/\s*$/, '');
+  next = setOrReplaceAttr(next, 'width', String(width));
+  next = setOrReplaceAttr(next, 'height', String(height));
+  next = mergeStyleAttr(next, reserveStyle);
+  next = next.replace(/\s+srcset=("[^"]*"|'[^']*')/i, '');
+  next = next.replace(/\s+sizes=("[^"]*"|'[^']*')/i, '');
+  if (!/fetchpriority=/i.test(next)) next += ' fetchpriority="high"';
+  if (!/\bdecoding=/i.test(next)) next += ' decoding="async"';
+  return `<img${next}>`;
 }
 
 /**
  * First content hero on SEM / diseño / UX: optimized `/_next/image` URL,
  * intrinsic size, sizes, fetchpriority and matching srcset when present.
+ * `/agencia-e-commerce` SVG stays on the origin URL with a reserved box.
  */
 export function optimizeElementorLcpHero(html: string, slug: string): string {
   if (!ELEMENTOR_LCP_SLUGS.has(slug)) return html;
@@ -101,7 +138,12 @@ export function optimizeElementorLcpHero(html: string, slug: string): string {
   return html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {
     if (done) return full;
     const src = /src=["']([^"']+)["']/i.exec(attrs)?.[1] || '';
-    if (!isHeroCandidate(attrs, src) || !shouldRewriteHeroThroughNextImage(slug, src)) return full;
+    if (!isHeroCandidate(attrs, src)) return full;
+    if (isEcommerceSvgHero(slug, src)) {
+      done = true;
+      return reserveEcommerceSvgHero(attrs);
+    }
+    if (!shouldRewriteHeroThroughNextImage(src)) return full;
     done = true;
 
     const width = readNumericAttr(attrs, 'width') ?? 437;
@@ -128,13 +170,46 @@ export function firstOptimizableHeroSrc(html: string, slug: string): string | nu
   while ((match = re.exec(html))) {
     const src = match[1];
     if (!isHeroCandidate(match[0], src)) continue;
-    if (shouldRewriteHeroThroughNextImage(slug, src)) {
+    if (isEcommerceSvgHero(slug, src)) return src;
+    if (shouldRewriteHeroThroughNextImage(src)) {
       const width = readNumericAttr(match[0], 'width') ?? 437;
       return buildNextImageUrl(src, snapNextImageWidth(Math.max(width, 750)));
     }
   }
   return null;
 }
+
+/**
+ * Inlined before WP stylesheets on /agencia-e-commerce.
+ * LH/trace: 9102780 jumped when in-flow MAE `.master-shape` (761px)
+ * later became `position:absolute` (module CSS). Also pin 022b469
+ * flex-start/nowrap + 437/417. Do not min-height 9102780.
+ */
+export const ECOM_HERO_CRITICAL_CSS = `.playful-wp-page[data-playful-page="85582"] .master-shape,
+.playful-wp-page[data-playful-page="85582"] .master-decor,
+.playful-wp-page[data-playful-page="85582"] .image-width-auto.elementor-widget-mae-gallery-stack{
+position:absolute!important;pointer-events:none!important}
+@media (max-width:767px){
+.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469>.elementor-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469.elementor-section-content-middle>.elementor-container{
+align-items:flex-start!important;flex-wrap:nowrap!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
+flex:0 0 50%!important;width:50%!important;max-width:50%!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
+align-self:flex-start!important;height:calc(50vw * 417 / 437)!important;min-height:calc(50vw * 417 / 437)!important;max-height:calc(50vw * 417 / 437)!important;overflow:hidden!important;contain:layout!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{
+aspect-ratio:437/417!important;width:100%!important;height:auto!important;display:block!important;object-fit:contain!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p{
+font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;max-height:14em!important;overflow:hidden!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .sub-heading{
+font-family:var(--font-dm-sans),"DM Sans",sans-serif!important;font-size:18px!important;line-height:28px!important;color:#F7F7F7!important}
+}`;
 
 /** Carousel logos, portfolio thumbs and tracking pixels missing width/height. */
 export function applyElementorIntrinsicDimensions(html: string): string {
