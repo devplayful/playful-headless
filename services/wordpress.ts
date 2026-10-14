@@ -26,6 +26,11 @@ import {
 import { repairBlogPostYoastCanonical } from '@/utils/blog-yoast-canonical';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import {
+  getStagingLocalBlogPost,
+  listStagingLocalBlogStaticParams,
+  localBlogPostBySlug,
+} from '@/lib/blog-local-posts';
+import {
   BLOG_ARTICLE_POST_FIELDS,
   BLOG_AUTHOR_FIELDS,
   BLOG_LATEST_OVERSCAN,
@@ -932,6 +937,7 @@ function categoryIdsFromPost(post: Pick<WPPost, 'categories'>): number[] {
 function toRelatedIndexPost(
   post: WPPost,
   terms: Map<number, RelatedIndexTerm>,
+  media?: ListingMedia,
 ): RelatedIndexPost {
   const categoryIds = categoryIdsFromPost(post);
   const primary = categoryIds.map((id) => terms.get(id)).find(Boolean);
@@ -952,7 +958,10 @@ function toRelatedIndexPost(
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
     featuredMediaId,
-    featuredMediaUrl: publicWebpIfPresent(resolveBlogCoverUrl(post.slug, BLOG_COVER_FALLBACK)),
+    featuredMediaUrl: publicWebpIfPresent(
+      resolveBlogCoverUrl(post.slug, media?.source_url || BLOG_COVER_FALLBACK),
+    ),
+    featuredMediaAlt: resolveBlogCoverAlt(post.slug, media?.alt_text || ''),
     categoryIds,
     categorySlug,
     categoryName,
@@ -980,7 +989,7 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
     imageUrl: publicWebpIfPresent(
       resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
     ),
-    imageAlt: resolveBlogCoverAlt(post.slug, ''),
+    imageAlt: resolveBlogCoverAlt(post.slug, post.featuredMediaAlt || ''),
     slug: post.slug,
     href: post.href,
   };
@@ -1027,10 +1036,24 @@ async function loadBlogRelatedIndex(
   }
   if (posts.length === 0) return null;
 
+  const mediaIds = uniquePositiveIds(posts.map((post) => post.featured_media));
+  const media = new Map<number, ListingMedia>();
+  for (let offset = 0; offset < mediaIds.length; offset += 100) {
+    try {
+      const batch = await loadBlogMediaByIds(mediaIds.slice(offset, offset + 100), query);
+      batch.forEach((item, id) => media.set(id, item));
+    } catch {
+      // Keep BLOG_COVER_FALLBACK for this batch; the related index must not throw.
+    }
+  }
+
   const termList: RelatedIndexTerm[] = Array.from(terms.values());
   const entries = posts.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
-    return toRelatedIndexPost(rewritten, terms);
+    const mediaItem = typeof rewritten.featured_media === 'number'
+      ? media.get(rewritten.featured_media)
+      : undefined;
+    return toRelatedIndexPost(rewritten, terms, mediaItem);
   });
   const open = filterOpenBlogPosts(entries);
   if (open.length === 0) return null;
@@ -1124,9 +1147,12 @@ export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> 
       .map((term) => ({ ...term, taxonomy: 'category' }));
     return { ...post, categories };
   });
-  return filterOpenBlogPosts(hydrated).map((post) => ({
-    slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
-  }));
+  return [
+    ...filterOpenBlogPosts(hydrated).map((post) => ({
+      slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
+    })),
+    ...listStagingLocalBlogStaticParams(),
+  ];
 }
 
 async function loadBlogStaticParamsPage(
@@ -1150,6 +1176,9 @@ async function loadBlogStaticParamsPage(
 const blogPostBySlugBuildCache = new Map<string, Promise<WPPost | null>>();
 
 const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> => {
+  const local = localBlogPostBySlug(slug);
+  if (local) return local;
+
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard&_fields=${BLOG_ARTICLE_POST_FIELDS}`,
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
@@ -1184,6 +1213,9 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
  * fetched once, not twice per route.
  */
 export async function getBlogPostBySlug(slug: string): Promise<WPPost | null> {
+  const stagingLocal = getStagingLocalBlogPost(slug);
+  if (stagingLocal) return stagingLocal;
+
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     const hit = blogPostBySlugBuildCache.get(slug);
     if (hit) return hit;

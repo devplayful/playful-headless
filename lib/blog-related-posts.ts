@@ -398,6 +398,7 @@ export type RelatedIndexPost = RelatedBlogCandidate & {
   modifiedGmt?: string;
   featuredMediaId?: number;
   featuredMediaUrl?: string;
+  featuredMediaAlt?: string;
   categoryIds: number[];
   categorySlug: string;
   categoryName: string;
