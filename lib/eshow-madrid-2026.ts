@@ -34,12 +34,15 @@ export const ESHOW_MADRID_2026_ABOUT_NAME = 'E-SHOW Madrid 2026';
 export const ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL =
   '2026-10-07T00:00:00+02:00';
 
+/** Ilustraciones temporales de Diseño (lavanda, fans centrados, sin recorte). */
+export const ESHOW_MADRID_2026_FEATURED_SRC =
+  '/images/blog/eshow-madrid-2026-featured.webp';
 export const ESHOW_MADRID_2026_CABECERA_SRC =
   '/images/blog/eshow-madrid-2026-cabecera.webp';
 export const ESHOW_MADRID_2026_PROGRAMA_SRC =
   '/images/blog/eshow-madrid-2026-programa.webp';
-export const ESHOW_MADRID_2026_IMAGE_WIDTH = 1044;
-export const ESHOW_MADRID_2026_IMAGE_HEIGHT = 1030;
+export const ESHOW_MADRID_2026_IMAGE_WIDTH = 1376;
+export const ESHOW_MADRID_2026_IMAGE_HEIGHT = 768;
 export const ESHOW_MADRID_2026_CABECERA_ALT =
   'Cabecera de la web oficial de E-SHOW Madrid 2026 con las fechas del 4 y 5 de noviembre y los pabellones 3 a 5 de IFEMA Madrid';
 export const ESHOW_MADRID_2026_PROGRAMA_ALT =
@@ -152,8 +155,8 @@ export function buildEshowMadrid2026BodyHtml(
 <p>El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital de Tech Show Madrid, y si tienes una tienda online te permite ver en dos días plataformas, pagos, logística y herramientas de captación que normalmente tendrías que buscar por separado.</p>
 <p>Hasta la feria, esta página recoge lo que publica la organización y las preguntas que vamos a llevar a IFEMA. El 4 y el 5 de noviembre se actualiza con bloques fechados en la <a href="#cobertura">cobertura del eShow</a>, y después queda como resumen de la edición, con un informe para quien se apunte a la lista.</p>
 <h2 id="fechas-horario-y-como-llegar-a-ifema">Fechas, horario y cómo llegar a IFEMA</h2>
-<figure>
-  <img src="${ESHOW_MADRID_2026_CABECERA_SRC}" alt="${ESHOW_MADRID_2026_CABECERA_ALT}" width="${ESHOW_MADRID_2026_IMAGE_WIDTH}" height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}" />
+<figure class="eshow-design-figure">
+  <img class="eshow-design-image" src="${ESHOW_MADRID_2026_CABECERA_SRC}" alt="${ESHOW_MADRID_2026_CABECERA_ALT}" width="${ESHOW_MADRID_2026_IMAGE_WIDTH}" height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}" />
 </figure>
 <p>Según la web oficial del eShow, estos son los datos básicos de la edición de 2026.</p>
 <ul>
@@ -169,8 +172,8 @@ export function buildEshowMadrid2026BodyHtml(
 <p>El eShow es la parte de ecommerce de ese evento, y la web oficial lo presenta junto a Technology for Marketing como el punto de encuentro de ecommerce, marketing digital y tecnología aplicada al negocio digital en España. Por eso «Tech Show Madrid» y «eShow Madrid» comparten fechas, recinto y registro, pero lo que interesa a una tienda online está en las salas y en las zonas del eShow.</p>
 <p>La web oficial dice que la edición de 2025 de E-SHOW y Technology for Marketing reunió a más de 470 empresas expositoras y patrocinadoras, más de 400 ponentes y más de 27.000 profesionales.</p>
 <h2 id="que-trae-el-eshow-2026-si-tienes-tienda-online">Qué trae el eShow 2026 si tienes tienda online</h2>
-<figure>
-  <img src="${ESHOW_MADRID_2026_PROGRAMA_SRC}" alt="${ESHOW_MADRID_2026_PROGRAMA_ALT}" width="${ESHOW_MADRID_2026_IMAGE_WIDTH}" height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}" />
+<figure class="eshow-design-figure">
+  <img class="eshow-design-image" src="${ESHOW_MADRID_2026_PROGRAMA_SRC}" alt="${ESHOW_MADRID_2026_PROGRAMA_ALT}" width="${ESHOW_MADRID_2026_IMAGE_WIDTH}" height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}" />
 </figure>
 <p>El eShow tiene tres salas de conferencias propias, el E-SHOW Keynote Theatre, el Ecommerce Strategies Theatre y el Future Commerce Theatre, y comparte recinto con el Technology for Marketing Theatre. El programa está publicado por día y por sala, con sesiones todavía por confirmar, así que conviene volver a mirarlo a finales de octubre.</p>
 <h3 id="las-zonas-del-eshow">Las zonas del eShow</h3>

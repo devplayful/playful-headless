@@ -1,0 +1,20 @@
+.root :global(.eshow-design-figure) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: #eaddff;
+  min-height: 16rem;
+}
+
+.root :global(.eshow-design-figure img.eshow-design-image) {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 30rem;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+}

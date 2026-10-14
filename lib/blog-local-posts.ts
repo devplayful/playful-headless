@@ -9,6 +9,7 @@ import {
   ESHOW_MADRID_2026_BODY_HTML,
   ESHOW_MADRID_2026_CABECERA_ALT,
   ESHOW_MADRID_2026_CABECERA_SRC,
+  ESHOW_MADRID_2026_FEATURED_SRC,
   ESHOW_MADRID_2026_CANONICAL,
   ESHOW_MADRID_2026_CATEGORY_ID,
   ESHOW_MADRID_2026_CATEGORY_SLUG,
@@ -30,6 +31,7 @@ export {
   ESHOW_MADRID_2026_BODY_HTML,
   ESHOW_MADRID_2026_CABECERA_ALT,
   ESHOW_MADRID_2026_CABECERA_SRC,
+  ESHOW_MADRID_2026_FEATURED_SRC,
   ESHOW_MADRID_2026_CANONICAL,
   ESHOW_MADRID_2026_CATEGORY_ID,
   ESHOW_MADRID_2026_CATEGORY_SLUG,
@@ -297,8 +299,7 @@ export const GOOGLE_MERCHANT_CENTER_FAQS: Array<{ question: string; answer: stri
   },
 ];
 
-const STEFANNI_AVATAR =
-  'https://secure.gravatar.com/avatar/0f4c6477fcdde767d8b99e553bf16a6c658373005f85299e5eb6e1a576571645?s=48&d=mm&r=g';
+const STEFANNI_AVATAR = '/images/authors/stefanni-parabavidez.jpg';
 
 function buildGoogleMerchantCenterPost(): WPPost {
   return {
@@ -326,9 +327,9 @@ function buildGoogleMerchantCenterPost(): WPPost {
       name: 'Stefanni Parabavidez',
       slug: 'stefanniparabavidez',
       avatar_urls: {
-        '24': STEFANNI_AVATAR.replace('s=48', 's=24'),
+        '24': STEFANNI_AVATAR,
         '48': STEFANNI_AVATAR,
-        '96': STEFANNI_AVATAR.replace('s=48', 's=96'),
+        '96': STEFANNI_AVATAR,
       },
     },
     author_name: 'Stefanni Parabavidez',
@@ -351,7 +352,7 @@ function buildEshowMadrid2026Post(): WPPost {
     title: { rendered: ESHOW_MADRID_2026_H1 },
     content: { rendered: ESHOW_MADRID_2026_BODY_HTML, protected: false },
     excerpt: { rendered: `<p>${ESHOW_MADRID_2026_EXCERPT}</p>`, protected: false },
-    featured_media_url: ESHOW_MADRID_2026_CABECERA_SRC,
+    featured_media_url: ESHOW_MADRID_2026_FEATURED_SRC,
     featured_media_alt: ESHOW_MADRID_2026_CABECERA_ALT,
     categories: [
       {
@@ -367,9 +368,9 @@ function buildEshowMadrid2026Post(): WPPost {
       name: 'Stefanni Parabavidez',
       slug: 'stefanniparabavidez',
       avatar_urls: {
-        '24': STEFANNI_AVATAR.replace('s=48', 's=24'),
+        '24': STEFANNI_AVATAR,
         '48': STEFANNI_AVATAR,
-        '96': STEFANNI_AVATAR.replace('s=48', 's=96'),
+        '96': STEFANNI_AVATAR,
       },
     },
     author_name: 'Stefanni Parabavidez',

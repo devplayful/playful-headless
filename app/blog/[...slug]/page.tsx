@@ -68,9 +68,11 @@ import {
   blogArticleJsonLdExtras,
   blogFaqPageJsonLd,
   eshowMadrid2026DateModified,
+  formatEshowActualizadoLine,
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
+import eshowArticleStyles from '../eshow-article.module.css';
 
 export const dynamicParams = false;
 export const revalidate = 600;
@@ -237,9 +239,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const authorHref = resolveBlogAuthorHref(
     post.author && typeof post.author === 'object' ? post.author.url : undefined,
   );
-  const updatedByline = formatUpdatedByline(
-    editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
-  );
+  const updatedByline = isEshow
+    ? formatEshowActualizadoLine()
+    : formatUpdatedByline(
+        editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+      );
 
   return (
     <>
@@ -324,12 +328,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Columna derecha: Imagen destacada */}
             {post.featured_media_url && (
-              <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden">
+              <div
+                className={
+                  isEshow
+                    ? 'relative flex w-full h-64 md:h-80 lg:h-96 items-center justify-center rounded-2xl overflow-hidden bg-[#EADDFF] p-8'
+                    : 'relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden'
+                }
+              >
                 <Image
                   src={post.featured_media_url}
                   alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
                   fill
-                  className="object-contain p-8"
+                  className="object-contain object-center p-4"
                   sizes={BLOG_POST_FEATURED_SIZES}
                   priority
                 />
@@ -427,7 +437,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Main Content */}
       <div className="detalle-blog-fondo max-w-[1200px] mx-auto px-4 md:px-6 py-12">
-        <article className="bg-white rounded-[36px] p-8 md:p-12">
+        <article
+          className={
+            isEshow
+              ? `bg-white rounded-[36px] p-8 md:p-12 ${eshowArticleStyles.root}`
+              : 'bg-white rounded-[36px] p-8 md:p-12'
+          }
+        >
           
           {/* Table of Contents - Antes del contenido */}
           {headings.length > 0 && (
