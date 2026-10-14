@@ -13,11 +13,15 @@ const {
   ESHOW_MADRID_2026_BODY_HTML,
   ESHOW_MADRID_2026_CABECERA_SRC,
   ESHOW_MADRID_2026_FEATURED_SRC,
+  ESHOW_MADRID_2026_FIG1_SRC,
   ESHOW_MADRID_2026_PROGRAMA_SRC,
   ESHOW_MADRID_2026_CABECERA_ALT,
+  ESHOW_MADRID_2026_FIG1_ALT,
   ESHOW_MADRID_2026_PROGRAMA_ALT,
-  ESHOW_MADRID_2026_IMAGE_WIDTH,
-  ESHOW_MADRID_2026_IMAGE_HEIGHT,
+  ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
+  ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT,
+  ESHOW_MADRID_2026_PROGRAMA_IMAGE_WIDTH,
+  ESHOW_MADRID_2026_PROGRAMA_IMAGE_HEIGHT,
   ESHOW_LISTA_FORM_MARKER,
   ESHOW_LISTA_FORM_SLOT,
   isStagingLocalBlogEnabled,
@@ -115,7 +119,7 @@ test('local eShow post is gated and shaped like a WP otros article', () => {
   );
 });
 
-test('eShow body is the live copy: no H1, two official WebP captures, form marker and coverage', () => {
+test('eShow body is the live copy: no H1, two design WebP figures, form marker and coverage', () => {
   const html = ESHOW_MADRID_2026_BODY_HTML;
   assert.doesNotMatch(html, /<h1[\s>]/);
   assert.match(html, /El eShow Madrid 2026 se celebra el miércoles 4/);
@@ -127,15 +131,19 @@ test('eShow body is the live copy: no H1, two official WebP captures, form marke
   const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);
   assert.equal(images.length, 2);
   assert.match(images[0], /class="eshow-design-image"/);
-  assert.match(images[0], new RegExp(`src="${ESHOW_MADRID_2026_CABECERA_SRC}"`));
-  assert.match(images[0], new RegExp(`alt="${ESHOW_MADRID_2026_CABECERA_ALT}"`));
-  assert.match(images[0], new RegExp(`width="${ESHOW_MADRID_2026_IMAGE_WIDTH}"`));
-  assert.match(images[0], new RegExp(`height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}"`));
+  assert.match(images[0], new RegExp(`src="${ESHOW_MADRID_2026_FIG1_SRC}"`));
+  assert.match(images[0], new RegExp(`alt="${ESHOW_MADRID_2026_FIG1_ALT}"`));
+  assert.match(images[0], new RegExp(`width="${ESHOW_MADRID_2026_FAN_IMAGE_WIDTH}"`));
+  assert.match(images[0], new RegExp(`height="${ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT}"`));
   assert.match(images[1], /class="eshow-design-image"/);
   assert.match(images[1], new RegExp(`src="${ESHOW_MADRID_2026_PROGRAMA_SRC}"`));
   assert.match(images[1], new RegExp(`alt="${ESHOW_MADRID_2026_PROGRAMA_ALT}"`));
-  assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_CABECERA_SRC)));
+  assert.match(images[1], new RegExp(`width="${ESHOW_MADRID_2026_PROGRAMA_IMAGE_WIDTH}"`));
+  assert.match(images[1], new RegExp(`height="${ESHOW_MADRID_2026_PROGRAMA_IMAGE_HEIGHT}"`));
+  assert.doesNotMatch(html, new RegExp(`src="${ESHOW_MADRID_2026_CABECERA_SRC}"`));
+  assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_FIG1_SRC)));
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_PROGRAMA_SRC)));
+  assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_CABECERA_SRC)));
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_FEATURED_SRC)));
   assert.ok(existsSync(publicPath('/images/authors/stefanni-parabavidez.jpg')));
 });
