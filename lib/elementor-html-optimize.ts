@@ -69,9 +69,15 @@ function heroImageSrcset(fullSizeSrc: string): string {
 
 function isHeroCandidate(attrs: string, src: string): boolean {
   if (!src || src.startsWith('data:')) return false;
+  if (/\.svg(\?|#|$)/i.test(src)) return false;
   if (/icon|sprite|favicon|pixel\.gif/i.test(src)) return false;
   if (/playful-logov\.svg/i.test(src)) return false;
   return true;
+}
+
+/** WordPress often ships XHTML-style `loading="eager" /` inside the attr string. */
+function normalizeImgAttrs(attrs: string): string {
+  return attrs.replace(/\s*\/\s*$/, '');
 }
 
 /**
@@ -91,7 +97,7 @@ export function optimizeElementorLcpHero(html: string, slug: string): string {
     const height = readNumericAttr(attrs, 'height') ?? 417;
     const optimizedSrc = buildNextImageUrl(src, snapNextImageWidth(Math.max(width, 750)));
 
-    let next = attrs;
+    let next = normalizeImgAttrs(attrs);
     next = setOrReplaceAttr(next, 'src', optimizedSrc);
     next = setOrReplaceAttr(next, 'width', String(width));
     next = setOrReplaceAttr(next, 'height', String(height));

@@ -35,6 +35,17 @@ test('agencia-e-commerce hero uses /_next/image like other LCP slugs', () => {
   assert.match(out, /\/_next\/image/);
 });
 
+test('agencia-e-commerce skips SVG heroes and optimizes the first raster hero', () => {
+  const html =
+    '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/10/Payful.svg" alt="svg" />'
+    + HERO;
+  const out = optimizeElementorLcpHero(html, 'agencia-e-commerce');
+  assert.match(out, /Payful\.svg/);
+  assert.doesNotMatch(out, /Payful\.svg[^>]*\/_next\/image/);
+  assert.match(out, /Potencia-tu-presencia[^"]*\/_next\/image/);
+  assert.doesNotMatch(out, /loading="eager" \/ sizes=/);
+});
+
 test('agencia-ux-ui leaves the hero SVG URL untouched (/_next/image regresses mobile LCP)', () => {
   const svgHero =
     '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/11/Playful-Transforma-tu-experiencia-digital-con-nuestra-Agencia-UX.svg" alt="UX hero" />';
