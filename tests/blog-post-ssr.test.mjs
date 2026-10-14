@@ -24,7 +24,7 @@ test('blog post page is a server component and renders article HTML directly', (
   assert.doesNotMatch(blogPage, /useSearchParams/);
   assert.match(blogPage, /<h1 className="sr-only">\{pageH1\}<\/h1>/);
   assert.match(blogPage, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
-  assert.match(blogPage, /<article className="bg-white rounded-\[36px\]/);
+  assert.match(blogPage, /bg-white rounded-\[36px\] p-8 md:p-12/);
   assert.match(blogPage, /<BlogRelatedPostsSection/);
   assert.match(blogPage, /posts=\{relatedPosts\}/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);

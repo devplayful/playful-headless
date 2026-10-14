@@ -2019,7 +2019,7 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .conten
 }
 
 
-/* SEM mobile: chat launcher sits above hero CTA without changing GHL load timing. */
+/* SEM mobile: keep GHL load timing; lift chat and reserve air so hero CTA stays tappable. */
 @media (max-width: 599px) {
   body:has(.playful-wp-page[data-playful-page="83848"]) #lc_chat-widget,
   body:has(.playful-wp-page[data-playful-page="83848"]) #chat-widget-container,
@@ -2027,6 +2027,14 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .conten
   body:has(.playful-wp-page[data-playful-page="83848"]) [class*="chat-widget-launcher"],
   body:has(.playful-wp-page[data-playful-page="83848"]) iframe#lc_widget_iframe {
     bottom: 5.5rem !important;
+  }
+  .playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92 > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-1b21b92 > .elementor-container {
+    padding-bottom: 5.25rem !important;
+  }
+  .playful-wp-page[data-playful-page="83848"] .elementor-element-dcec13b,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .elementor-element-dcec13b {
+    margin-bottom: 0.5rem !important;
   }
 }
 

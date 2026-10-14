@@ -172,7 +172,7 @@ export default async function SuccessStoryPage({
   const jpeg = ogJpegForPath(path);
 
   return (
-    <div className="text-gray-800">
+    <div className="text-gray-800 overflow-x-clip max-w-[100vw]">
       <script
         id="playful-article"
         type="application/ld+json"

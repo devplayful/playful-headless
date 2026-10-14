@@ -74,6 +74,23 @@ function isHeroCandidate(attrs: string, src: string): boolean {
   return true;
 }
 
+/** Next image optimizer 400s on remote SVG and on some RGBA → WebP paths; serve the origin URL. */
+function shouldServeHeroViaNextImage(src: string): boolean {
+  if (!isOptimizableWpUpload(src)) return false;
+  if (/\.svg(\?|#|$)/i.test(src)) return false;
+  return true;
+}
+
+/**
+ * Hero rewrite policy. `agencia-e-commerce` keeps main behaviour (SVG via `/_next/image`,
+ * which 400s but avoids mobile CLS from painting the origin SVG). Other LCP slugs skip SVG.
+ */
+function shouldRewriteHeroThroughNextImage(slug: string, src: string): boolean {
+  if (!isOptimizableWpUpload(src)) return false;
+  if (slug === 'agencia-e-commerce') return true;
+  return shouldServeHeroViaNextImage(src);
+}
+
 /**
  * First content hero on SEM / diseño / UX: optimized `/_next/image` URL,
  * intrinsic size, sizes, fetchpriority and matching srcset when present.
@@ -84,7 +101,7 @@ export function optimizeElementorLcpHero(html: string, slug: string): string {
   return html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {
     if (done) return full;
     const src = /src=["']([^"']+)["']/i.exec(attrs)?.[1] || '';
-    if (!isHeroCandidate(attrs, src) || !isOptimizableWpUpload(src)) return full;
+    if (!isHeroCandidate(attrs, src) || !shouldRewriteHeroThroughNextImage(slug, src)) return full;
     done = true;
 
     const width = readNumericAttr(attrs, 'width') ?? 437;
@@ -110,7 +127,8 @@ export function firstOptimizableHeroSrc(html: string, slug: string): string | nu
   let match: RegExpExecArray | null;
   while ((match = re.exec(html))) {
     const src = match[1];
-    if (isHeroCandidate(match[0], src) && isOptimizableWpUpload(src)) {
+    if (!isHeroCandidate(match[0], src)) continue;
+    if (shouldRewriteHeroThroughNextImage(slug, src)) {
       const width = readNumericAttr(match[0], 'width') ?? 437;
       return buildNextImageUrl(src, snapNextImageWidth(Math.max(width, 750)));
     }

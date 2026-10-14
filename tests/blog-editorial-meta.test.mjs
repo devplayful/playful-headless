@@ -216,7 +216,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
   assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
 });
 
-test('blog BreadcrumbList uses listing chip labels and the post canonical', () => {
+test('blog BreadcrumbList omits category without item URL (Inicio > Blog > Post)', () => {
   const url =
     'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const crumbs = buildBlogBreadcrumbJsonLd({
@@ -225,9 +225,30 @@ test('blog BreadcrumbList uses listing chip labels and the post canonical', () =
     url,
   });
   assert.equal(crumbs['@type'], 'BreadcrumbList');
-  assert.equal(crumbs.itemListElement[2].name, 'Tecnologia');
-  assert.equal(crumbs.itemListElement[3].item, url);
+  assert.equal(crumbs.itemListElement.length, 3);
+  assert.equal(crumbs.itemListElement[1].name, 'Blog');
+  assert.equal(crumbs.itemListElement[2].name, 'Zelle en Venezuela: Un método de pago');
+  assert.equal(crumbs.itemListElement[2].item, url);
+  assert.equal(crumbs.itemListElement[2].position, 3);
   assert.equal(buildBlogListingBreadcrumbJsonLd().itemListElement.length, 2);
+});
+
+test('eShow and other 4-level posts use 3-level BreadcrumbList JSON-LD', () => {
+  const url = 'https://playfulagency.com/blog/otros/eshow-madrid-2026';
+  const crumbs = buildBlogBreadcrumbJsonLd({
+    categorySlug: 'otros',
+    headline: 'eShow Madrid 2026: guía para marcas',
+    url,
+    slug: 'eshow-madrid-2026',
+  });
+  assert.equal(crumbs.itemListElement.length, 3);
+  assert.deepEqual(crumbs.itemListElement.map((item) => item.name), [
+    'Inicio',
+    'Blog',
+    'eShow Madrid 2026: guía para marcas',
+  ]);
+  assert.equal(crumbs.itemListElement[2].item, url);
+  assert.doesNotMatch(JSON.stringify(crumbs), /"position":\s*4/);
 });
 
 test('listed AEO posts use a 3-level BreadcrumbList with the short name', () => {
@@ -306,7 +327,7 @@ test('hero excerpt omits empty text and only adds ellipsis when truncated', () =
   assert.equal(formatBlogHeroExcerpt('<p>Texto corto.</p>'), 'Texto corto.');
   assert.equal(formatBlogHeroExcerpt('Exactamente veinte.'.padEnd(200, 'x')), 'Exactamente veinte.'.padEnd(200, 'x'));
   const long = 'a'.repeat(201);
-  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), `${'a'.repeat(200)}...`);
+  assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), 'a'.repeat(200));
   assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
 });
 
@@ -395,7 +416,7 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
-  assert.doesNotMatch(blogPage, /EDITORIAL_AVATAR_SRC/);
+  assert.match(blogPage, /avatarSrc=\{isEshow \? EDITORIAL_AVATAR_SRC : authorAvatar\}/);
   assert.doesNotMatch(blogPage, /detail=/);
   assert.doesNotMatch(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
   assert.doesNotMatch(blogPage, /substring\(0, 200\) \+ '\.\.\.'/);

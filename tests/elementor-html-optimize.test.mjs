@@ -30,7 +30,16 @@ test('carousel logos gain intrinsic width and height', () => {
   assert.match(out, /height="200"/);
 });
 
-test('agencia-e-commerce hero uses /_next/image like other LCP slugs', () => {
+test('agencia-e-commerce SVG hero matches main: /_next/image (SVG 400 avoids CLS vs origin paint)', () => {
+  const svgHero =
+    '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg" alt="e-commerce hero" />';
+  const out = optimizeElementorLcpHero(svgHero, 'agencia-e-commerce');
+  assert.match(out, /src="\/_next\/image\?url=/);
+  assert.doesNotMatch(out, /src="https:\/\/endpoint[^"]*Payful-Agencia-de-Marketing-Internacional0\.svg/);
+  assert.match(firstOptimizableHeroSrc(svgHero, 'agencia-e-commerce'), /\/_next\/image/);
+});
+
+test('agencia-e-commerce raster hero still uses /_next/image', () => {
   const out = optimizeElementorLcpHero(HERO, 'agencia-e-commerce');
   assert.match(out, /\/_next\/image/);
 });

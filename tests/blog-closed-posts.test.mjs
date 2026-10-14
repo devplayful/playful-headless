@@ -154,8 +154,8 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
   assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
   assert.equal(governed.has(HUMANIZAR_BLOG_PATH), false);
   assert.equal(governed.has(STORYTELLING_BLOG_PATH), true);
-  // #188 added 30 open WP page-2 posts; this PR drops the humanizar origin.
-  assert.equal(governed.size, 102);
+  // #188 added 30 open WP page-2 posts; #281 adds governed local posts (e.g. eShow Madrid).
+  assert.equal(governed.size, 105);
 });
 
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {
