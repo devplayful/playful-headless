@@ -1,4 +1,4 @@
-# REFS-LEIDAS — avisos-eshow-formulario v2 + title SEO (14 oct 2026)
+# REFS-LEIDAS — avisos-eshow-formulario v3 + title SEO (14 oct 2026)
 
 Una línea por entrada. Sin fuente = la pieza no pasa a Por firmar.
 
@@ -14,20 +14,24 @@ Una línea por entrada. Sin fuente = la pieza no pasa a Por firmar.
 ## Encargo y lock
 
 - Lock / NEED de esta pieza → `refs/NEED-avisos-eshow.md`
-- Reescritura v2 (motivo del viaje, qué recibe quien se apunta, botón y gracias nuevos, campos y legal sin cambios) → `refs/rewrite-v2-14oct.md`
+- Revisión editorial v3 (tres ángulos, concreto del evento, qué recibe el suscriptor, botón y gracias) → `refs/rewrite-v3-14oct.md`
+- Reescritura v2 (histórico) → `refs/rewrite-v2-14oct.md`
 - NEED.md vivo de playful-copy (Zelle; no indica pieza anterior sin firmar) → https://github.com/playfulagency-dev/playful-copy/blob/main/NEED.md
 - Lote 14 oct 2026, card 14 (formulario Avisos eShow) → `refs/lote-14oct-card-14.md`
-- Finalidad del formulario (avisos y notas de José sobre el eShow, sin CTA de venta) → `refs/NEED-avisos-eshow.md` y `refs/rewrite-v2-14oct.md`
-- José va al E-SHOW para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas → `refs/rewrite-v2-14oct.md`
-- Quién se apunta recibe las notas de José sobre el E-SHOW → `refs/NEED-avisos-eshow.md` y `refs/rewrite-v2-14oct.md`
+- Finalidad del formulario (avisos de José sobre el eShow, sin CTA de venta) → `refs/NEED-avisos-eshow.md` y `refs/rewrite-v3-14oct.md`
+- Quién se apunta recibe lo útil para su tienda de lo que José ve el 4 y el 5 de noviembre → `refs/rewrite-v3-14oct.md`
+- Ángulos A (cara a cara con dueños), B (cambios de este año), C (si no puedes ir) → `refs/rewrite-v3-14oct.md`
 - Público del brief (dueños de e-commerce que ya venden; no se imprime) → `refs/NEED-avisos-eshow.md`
-- Palabras que no van en el texto publicable (visitante, charla, stand) → `refs/rewrite-v2-14oct.md`
+- Palabras que no van en el texto publicable (visitante, charla, stand) → `refs/rewrite-v3-14oct.md`
 
 ## Evento
 
 - Nombre oficial E-SHOW y marco Tech Show Madrid → https://www.techshowmadrid.es/e-show (citas en `refs/fuente-techshow-eshow-2026.md`)
 - Fechas: 4 y 5 de noviembre de 2026 → https://www.techshowmadrid.es/e-show
 - Lugar: IFEMA Madrid → https://www.techshowmadrid.es/e-show y https://www.techshowmadrid.es/
+- Temas 2026 que tocan a una tienda (pagos flexibles y multicurrency, CRO, logística, Verifactu) → https://www.techshowmadrid.es/e-show (listas de auditorio; citas en `refs/fuente-techshow-eshow-2026.md`)
+- Espacio dedicado de PrestaShop → https://www.techshowmadrid.es/e-show («tendrá un espacio dedicado: el PrestaShop Village»)
+- Shopify Partner Village → https://www.techshowmadrid.es/e-show
 
 ## Título SEO del post
 
@@ -35,7 +39,7 @@ Una línea por entrada. Sin fuente = la pieza no pasa a Por firmar.
 - Title actual y conteo → `refs/fuente-title-blog-eshow.md`
 - Fechas e IFEMA del post, ya contrastadas con el organizador → `refs/fuente-techshow-eshow-2026.md`
 
-## Legal (sin cambios en v2)
+## Legal (sin cambios en v2 ni v3)
 
 - Información por capas (1.ª capa: responsable, fines, base jurídica, cesiones/transferencias, derechos) → https://www.aepd.es/derechos-y-deberes/conoce-tus-derechos/derecho-de-informacion
 - Tabla de 1.ª capa y ejemplos de destinatarios/derechos → https://www.aepd.es/guias/guia-modelo-clausula-informativa.pdf
