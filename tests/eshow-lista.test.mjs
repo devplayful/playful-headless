@@ -16,6 +16,7 @@ const {
   readEshowListaLocationId,
   readEshowListaTag,
   readEshowListaToken,
+  resolveEshowListaHighLevelAuth,
   syncEshowListaToHighLevel,
   validateEshowLista,
   withEshowListaAttribution,
@@ -289,7 +290,8 @@ test('when the tag is set the sync writes fields first and the tag after', async
   assert.equal(gateway.calls.some((item) => item[0] === 'opportunities'), false);
   assert.equal(gateway.calls.some((item) => item[0] === 'create-opportunity'), false);
   assert.equal(gateway.calls.some((item) => item[0] === 'create-task'), false);
-  assert.doesNotMatch(syncSource, /readHighLevelConfig|PLAYFUL-TSS/);
+  assert.match(syncSource, /readHighLevelConfig/);
+  assert.doesNotMatch(syncSource, /PLAYFUL-TSS/);
   assert.doesNotMatch(syncSource, /split\(\s*['\"]\\s/);
   assert.match(syncSource, /ESHOW_LISTA_FORBIDDEN_TAGS/);
   assert.match(apiSource, /syncEshowListaToHighLevel/);
@@ -375,7 +377,80 @@ test('token and location prefer HIGHLEVEL_* and fall back to GHL_*', () => {
   assert.match(syncSource, /GHL_PRIVATE_INTEGRATION_TOKEN/);
   assert.match(syncSource, /HIGHLEVEL_LOCATION_ID/);
   assert.match(syncSource, /GHL_LOCATION_ID/);
-  assert.doesNotMatch(syncSource, /readHighLevelConfig\(/);
+  assert.match(syncSource, /resolveEshowListaHighLevelAuth/);
+  assert.match(syncSource, /readHighLevelConfig\(/);
+});
+
+test('resolveEshowListaHighLevelAuth falls back to readHighLevelConfig like contact', () => {
+  assert.deepEqual(resolveEshowListaHighLevelAuth({
+    GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
+    GHL_LOCATION_ID: 'ghl-loc',
+    GHL_PRIVATE_INTEGRATION_TOKEN: 'ghl-token',
+  }), {
+    token: 'ghl-token',
+    locationId: 'ghl-loc',
+    testMode: false,
+    timeoutMs: 8000,
+  });
+
+  assert.deepEqual(resolveEshowListaHighLevelAuth({
+    GHL_TAG_ESHOW_LISTA: 'lista-sigue-eshow-2026',
+    HIGHLEVEL_ENABLED: 'true',
+    HIGHLEVEL_EXTERNAL_FORM_SUBMISSIONS_DISABLED: 'true',
+    HIGHLEVEL_TEST_MODE: 'false',
+    HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN: 'contact-token',
+    HIGHLEVEL_LOCATION_ID: 'contact-loc',
+    HIGHLEVEL_PIPELINE_ID: 'pipe',
+    HIGHLEVEL_STAGE_CONSULTA_ID: 'stage-a',
+    HIGHLEVEL_STAGE_REVISAR_ID: 'stage-b',
+    HIGHLEVEL_DEFAULT_OWNER_ID: 'owner',
+    HIGHLEVEL_CONTACT_TAG: 'website-inbound',
+    HIGHLEVEL_SLA_HOURS: '24',
+    HIGHLEVEL_REQUEST_TIMEOUT_MS: '9000',
+    HIGHLEVEL_CUSTOM_FIELD_IDS_JSON: JSON.stringify({
+      original_source: 'a',
+      original_landing: 'b',
+      recent_source: 'c',
+      recent_landing: 'd',
+      utm_source: 'e',
+      utm_medium: 'f',
+      utm_campaign: 'g',
+      utm_term: 'h',
+      utm_content: 'i',
+      form_id: 'j',
+      privacy_consent_at: 'k',
+      marketing_consent: 'l',
+      decision_role: 'm',
+      decision_role_other: 'n',
+      sales_model: 'o',
+      sales_model_other: 'p',
+      secondary_marketplaces: 'q',
+      monthly_revenue: 'r',
+      monthly_revenue_other: 's',
+      project_timing: 't',
+      project_timing_other: 'u',
+      qualification_level: 'v',
+      project_context: 'w',
+    }),
+    HIGHLEVEL_OPPORTUNITY_CUSTOM_FIELD_IDS_JSON: JSON.stringify({
+      decision_role: '1',
+      sales_model: '2',
+      marketplaces: '3',
+      monthly_revenue: '4',
+      project_timing: '5',
+      qualification_level: '6',
+      project_context: '7',
+    }),
+    CONTACT_IDEMPOTENCY_REDIS_REST_URL: 'https://redis.example',
+    CONTACT_IDEMPOTENCY_REDIS_REST_TOKEN: 'token',
+    CONTACT_IDEMPOTENCY_TTL_SECONDS: '604800',
+    CONTACT_PROCESSING_LEASE_SECONDS: '105',
+  }), {
+    token: 'contact-token',
+    locationId: 'contact-loc',
+    testMode: false,
+    timeoutMs: 9000,
+  });
 });
 
 test('sync uses HIGHLEVEL location first and GHL location as fallback', async () => {

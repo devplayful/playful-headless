@@ -310,6 +310,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   name={bylineName}
                   href={authorHref}
                   updatedLabel={updatedByline}
+                  avatarPriority
                   avatarSrc={authorAvatar}
                   avatarAlt={
                     post.author && typeof post.author === 'object'

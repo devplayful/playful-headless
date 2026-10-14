@@ -1,7 +1,7 @@
 import type { ContactAttribution } from './contact/types.ts';
 import { emptyAttribution } from './contact/attribution.ts';
 import type { HighLevelCustomFieldValue, HighLevelGateway, UpsertContactInput } from './highlevel/client.ts';
-import { HighLevelConfigurationError } from './highlevel/config.ts';
+import { HighLevelConfigurationError, readHighLevelConfig } from './highlevel/config.ts';
 import {
   ESHOW_LISTA_DEFAULT_UTM,
   ESHOW_LISTA_FORM_ID,
@@ -142,6 +142,27 @@ export function readEshowListaLocationId(env: Record<string, string | undefined>
   return env.HIGHLEVEL_LOCATION_ID?.trim() || env.GHL_LOCATION_ID?.trim() || '';
 }
 
+/** Misma fuente de token/location que el formulario de contacto cuando HIGHLEVEL_ENABLED=true. */
+export function resolveEshowListaHighLevelAuth(
+  env: Record<string, string | undefined> = process.env,
+): { token: string; locationId: string; testMode: boolean; timeoutMs: number } {
+  const testMode = env.HIGHLEVEL_TEST_MODE === 'true';
+  let token = readEshowListaToken(env);
+  let locationId = readEshowListaLocationId(env);
+  let timeoutMs = Number(env.HIGHLEVEL_REQUEST_TIMEOUT_MS?.trim()) || 8000;
+
+  if (!token || !locationId) {
+    const contact = readHighLevelConfig(env);
+    if (contact.enabled) {
+      if (!token && contact.token.trim()) token = contact.token.trim();
+      if (!locationId && contact.locationId.trim()) locationId = contact.locationId.trim();
+      timeoutMs = contact.timeoutMs;
+    }
+  }
+
+  return { token, locationId, testMode, timeoutMs };
+}
+
 export function eshowListaMarketingConsent(): string {
   return `Sí — ${ESHOW_LISTA_PRIVACY_URL}`;
 }
@@ -279,15 +300,13 @@ export async function syncEshowListaToHighLevel(input: {
   const tag = assertEshowListaTag(readEshowListaTag(env));
   if (!tag) return { wrote: false, reason: 'tag-unset' };
 
-  const locationId = readEshowListaLocationId(env);
+  const { token, locationId, testMode, timeoutMs } = resolveEshowListaHighLevelAuth(env);
   if (!locationId) {
     throw new HighLevelConfigurationError(
       `${ESHOW_LISTA_TAG_ENV} está definida, pero falta HIGHLEVEL_LOCATION_ID o GHL_LOCATION_ID.`,
     );
   }
 
-  const testMode = env.HIGHLEVEL_TEST_MODE === 'true';
-  const token = readEshowListaToken(env);
   if (!testMode && !token && !input.gateway) {
     throw new HighLevelConfigurationError(
       `${ESHOW_LISTA_TAG_ENV} está definida, pero falta HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN o GHL_PRIVATE_INTEGRATION_TOKEN.`,
@@ -299,7 +318,7 @@ export async function syncEshowListaToHighLevel(input: {
     const { DryRunHighLevelGateway, HighLevelApiClient } = await import('./highlevel/client.ts');
     gateway = testMode
       ? new DryRunHighLevelGateway()
-      : new HighLevelApiClient(token, 8000);
+      : new HighLevelApiClient(token, timeoutMs);
   }
 
   const alwaysFields = buildEshowListaAlwaysFields({
