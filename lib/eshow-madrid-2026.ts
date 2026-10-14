@@ -143,14 +143,14 @@ export function renderEshowCoverageBlocks(
 }
 
 export const ESHOW_MADRID_2026_EXCERPT =
-  'El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital que forma parte de Tech Show Madrid. Si tienes una tienda online, en esos dos días puedes ver en un mismo recinto proveedores de plataformas, pagos, logística y herramientas para atraer clientes.';
+  'El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital de Tech Show Madrid, y si tienes una tienda online te permite ver en dos días plataformas, pagos, logística y herramientas de captación que normalmente tendrías que buscar por separado.';
 
 export function buildEshowMadrid2026BodyHtml(
   blocks: readonly EshowCoverageBlock[] = ESHOW_MADRID_2026_COVERAGE_BLOCKS,
 ): string {
   return `
-<p>El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital que forma parte de Tech Show Madrid. Si tienes una tienda online, en esos dos días puedes ver en un mismo recinto proveedores de plataformas, pagos, logística y herramientas para atraer clientes.</p>
-<p>Esta página reúne lo que ha publicado la organización sobre fechas, accesos, programa y registro, junto con las preguntas que llevamos a la feria. El 4 y el 5 de noviembre la actualizamos con bloques fechados en la <a href="#cobertura">cobertura del eShow</a>. Cuando termine la feria, la página queda como resumen de la edición.</p>
+<p>El eShow Madrid 2026 se celebra el miércoles 4 y el jueves 5 de noviembre en IFEMA Madrid, en los pabellones 3 a 5, de 10:00 a 19:00. Es la feria de ecommerce y marketing digital de Tech Show Madrid, y si tienes una tienda online te permite ver en dos días plataformas, pagos, logística y herramientas de captación que normalmente tendrías que buscar por separado.</p>
+<p>Hasta la feria, esta página recoge lo que publica la organización y las preguntas que vamos a llevar a IFEMA. El 4 y el 5 de noviembre se actualiza con bloques fechados en la <a href="#cobertura">cobertura del eShow</a>, y después queda como resumen de la edición, con un informe para quien se apunte a la lista.</p>
 <h2 id="fechas-horario-y-como-llegar-a-ifema">Fechas, horario y cómo llegar a IFEMA</h2>
 <figure>
   <img src="${ESHOW_MADRID_2026_CABECERA_SRC}" alt="${ESHOW_MADRID_2026_CABECERA_ALT}" width="${ESHOW_MADRID_2026_IMAGE_WIDTH}" height="${ESHOW_MADRID_2026_IMAGE_HEIGHT}" />
@@ -203,15 +203,16 @@ ${renderEshowCoverageBlocks(blocks)}
 <p>Si no puedes ir a IFEMA o quieres tener los dos días en un mismo sitio, apúntate a la lista «Sigue el eShow con Playful». Recibes un resumen al cerrar cada día de feria y, cuando esté listo, el informe del eShow.</p>
 ${ESHOW_LISTA_FORM_SLOT}
 <h2 id="como-registrarte">Cómo registrarte</h2>
-<p>La acreditación para entrar al eShow la emite la organización de Tech Show Madrid, y el registro se hace en su web oficial, en <a href="https://www.techshowmadrid.es/registro">techshowmadrid.es/registro</a>. Playful Agency no gestiona registros ni entradas. La lista «Sigue el eShow con Playful» de la sección anterior sirve para recibir nuestros resúmenes y no te da acceso a IFEMA.</p>
-<p>El formulario de la organización es el mismo para todas las ferias de Tech Show Madrid. En el campo «Feria de interés principal», elige E-SHOW.</p>
-<p>Antes de rellenarlo, ten en cuenta tres condiciones que la organización publica en el propio formulario.</p>
+<p>El registro para visitar el eShow se hace en la web oficial de Tech Show Madrid, en <a href="https://www.techshowmadrid.es/registro">techshowmadrid.es/registro</a>. La acreditación la gestiona la organización del evento. Playful Agency no gestiona registros ni acreditaciones, y la lista «Sigue el eShow con Playful» de la sección anterior no sirve para entrar a IFEMA.</p>
+<p>Lo que sigue es un resumen de la información que publica Tech Show Madrid en su formulario de registro. Si algo cambia, vale lo que diga la web oficial.</p>
+<p>El formulario es el mismo para todas las ferias de Tech Show Madrid. En el campo «Feria de interés principal», elige E-SHOW.</p>
+<p>La organización indica tres condiciones en ese formulario.</p>
 <ul>
 <li>Si eres expositor o trabajas en una empresa expositora, la credencial se pide en el portal del expositor.</li>
-<li>La organización no permite la entrada a estudiantes y se reserva el derecho a cancelar la credencial.</li>
+<li>No se permite la entrada a estudiantes, y la organización se reserva el derecho a cancelar la credencial.</li>
 <li>Cuando un expositor escanea tu acreditación en su stand, recibe tus datos de registro.</li>
 </ul>
-<p>Al registrarte, la organización crea además un perfil tuyo en la app del evento. Desde la app puedes consultar el programa y pedir citas de reunión antes, durante y después de la feria, así que conviene tenerla lista antes del 4 de noviembre.</p>
+<p>Según el mismo formulario, al registrarte se crea un perfil en la app del evento. Desde la app puedes consultar el programa y pedir citas de reunión antes, durante y después de la feria, así que conviene tenerla lista antes del 4 de noviembre.</p>
 <h2 id="como-preparar-la-visita-para-que-no-se-quede-en-paseo">Cómo preparar la visita para que no se quede en paseo</h2>
 <p>Dos días en tres pabellones dan para mucho, y es fácil volver con folletos y ninguna decisión.</p>
 <ol>
