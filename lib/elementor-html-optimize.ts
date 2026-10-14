@@ -92,8 +92,8 @@ export const ECOM_MOBILE_HERO_RESERVE_CSS = `@media (max-width:599px){
 .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{min-height:calc((100vw - 24px)*417/437)!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container{aspect-ratio:437/417!important;width:100%}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{width:100%;height:auto;aspect-ratio:437/417;object-fit:contain}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container{min-height:calc(34px*1.12*3)!important}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .elementor-widget-container{min-height:7.5rem!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container{min-height:calc(34px*1.12*5)!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .elementor-widget-container{min-height:9.5rem!important}
 }`;
 
 export function optimizeElementorLcpHero(html: string, slug: string): string {
