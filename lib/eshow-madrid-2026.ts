@@ -54,7 +54,8 @@ export const ESHOW_MADRID_2026_PROGRAMA_ALT =
   'Ilustración de un asistente del eShow con un ventilador portátil, sobre fondo lavanda';
 
 /** Autor visible en staging (post local; no viene de WP en este slug). */
-export const ESHOW_MADRID_2026_AUTHOR_NAME = 'Equipo editorial de Playful Agency';
+/** Visible byline / pill (post local; no autor WP en este slug). */
+export const ESHOW_MADRID_2026_AUTHOR_NAME = 'Equipo editorial';
 
 export const ESHOW_LISTA_FORM_SLOT = '<p data-eshow-lista-form="" hidden></p>';
 export const ESHOW_LISTA_FORM_MARKER = '<!--eshow-lista-form-->';

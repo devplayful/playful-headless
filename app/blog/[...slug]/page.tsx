@@ -216,7 +216,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       ? eshowMadrid2026DateModified()
       : editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
     authorName: isEshow
-      ? ESHOW_MADRID_2026_AUTHOR_NAME
+      ? 'Playful Agency'
       : jsonLdExtras.authorType === 'Organization'
         ? 'Playful Agency'
         : authorName,
