@@ -81,18 +81,61 @@ function shouldServeHeroViaNextImage(src: string): boolean {
   return true;
 }
 
+const ECOM_HERO_INTRINSIC = { width: 437, height: 417 } as const;
+
+function mergeStyleAttr(attrs: string, extra: string): string {
+  const match = /\sstyle=(["'])([^"']*)(["'])/i.exec(attrs);
+  if (match) {
+    const merged = `${match[2]};${extra}`.replace(/^;+/, '');
+    return attrs.replace(match[0], ` style=${match[1]}${merged}${match[3]}`);
+  }
+  return `${attrs} style="${extra}"`;
+}
+
+/**
+ * First hero on /agencia-e-commerce: keep the origin SVG URL but reserve intrinsic
+ * box (width/height + inline aspect-ratio) before paint to avoid CLS.
+ */
+export function enhanceAgenciaEcommerceHeroImage(html: string, slug: string): string {
+  if (slug !== 'agencia-e-commerce') return html;
+  let done = false;
+  return html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {
+    if (done) return full;
+    const src = /src=["']([^"']+)["']/i.exec(attrs)?.[1] || '';
+    if (!isHeroCandidate(attrs, src)) return full;
+    done = true;
+
+    const width = readNumericAttr(attrs, 'width') ?? ECOM_HERO_INTRINSIC.width;
+    const height = readNumericAttr(attrs, 'height') ?? ECOM_HERO_INTRINSIC.height;
+    const reserveStyle = `display:block;width:100%;max-width:100%;height:auto;aspect-ratio:${width}/${height};object-fit:contain`;
+    let next = attrs;
+    next = setOrReplaceAttr(next, 'width', String(width));
+    next = setOrReplaceAttr(next, 'height', String(height));
+    next = mergeStyleAttr(next, reserveStyle);
+    if (!/fetchpriority=/i.test(next)) next += ' fetchpriority="high"';
+    if (!/\bdecoding=/i.test(next)) next += ' decoding="async"';
+    return `<img${next}>`;
+  });
+}
+
 /**
  * First content hero on SEM / diseño / UX: optimized `/_next/image` URL,
  * intrinsic size, sizes, fetchpriority and matching srcset when present.
  */
 /** Critical mobile hero layout for /agencia-e-commerce (injected in document head). */
 export const ECOM_MOBILE_HERO_RESERVE_CSS = `@media (max-width:599px){
-.playful-wp-page[data-playful-page="85582"] .elementor-element-748229a>.elementor-container{align-items:flex-start!important}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-748229a .elementor-column>.elementor-widget-wrap{align-content:flex-start!important;justify-content:flex-start!important}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{min-height:calc(50vw*417/437)!important}
+@font-face{font-family:"Playful Paytone CLS";src:local("Arial Black");size-adjust:88%;ascent-override:92%;descent-override:22%;line-gap-override:0%}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-748229a>.elementor-container{align-items:flex-start!important;flex-wrap:nowrap!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b{flex:0 0 50%!important;width:50%!important;max-width:50%!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b>.elementor-widget-wrap{align-items:flex-start!important;align-content:flex-start!important;justify-content:flex-start!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p{font-family:"Paytone One","Playful Paytone CLS",sans-serif!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container{min-height:calc(34px*1.12*4)!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .elementor-widget-container{min-height:8.5rem!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{flex:0 0 50%!important;width:50%!important;max-width:50%!important;height:calc(50vw*417/437)!important;min-height:calc(50vw*417/437)!important;overflow:hidden!important;contain:layout!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
-.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack{aspect-ratio:437/417!important;width:100%;max-width:min(100%,100vw);min-height:calc(50vw*417/437)!important}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{width:100%;height:auto;aspect-ratio:437/417;object-fit:contain}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack{width:100%!important;height:100%!important;max-height:100%!important;aspect-ratio:437/417!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important}
 }`;
 
 export function optimizeElementorLcpHero(html: string, slug: string): string {

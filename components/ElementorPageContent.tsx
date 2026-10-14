@@ -10,6 +10,7 @@ import {
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
   ECOM_MOBILE_HERO_RESERVE_CSS,
+  enhanceAgenciaEcommerceHeroImage,
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
@@ -161,7 +162,7 @@ export default function ElementorPageContent({
   );
   const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
   const bodyHtml = optimizeElementorLcpHero(
-    applyElementorIntrinsicDimensions(preparedHtml),
+    enhanceAgenciaEcommerceHeroImage(applyElementorIntrinsicDimensions(preparedHtml), slug),
     slug,
   );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
