@@ -59,9 +59,10 @@ test('Zelle shopify CTA is not an sr-only data-playful-service-cta injection', (
 });
 
 test('post canonical stays on the blog post, not a service landing', () => {
-  assert.match(blogPage, /canonicalForPath\(/);
-  assert.match(blogPage, /blogPostPath\(post\)/);
-  assert.match(blogPage, /MIGRACION_SEO_PLAN_PATH/);
+  assert.match(
+    blogPage,
+    /canonicalForPath\(\s*postSlug === MIGRACION_SEO_ALT_BLOG_SLUG \? MIGRACION_SEO_PLAN_PATH : blogPostPath\(post\),?\s*\)/,
+  );
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.doesNotMatch(metadataFn, /agencia-sem/);
   assert.doesNotMatch(metadataFn, /agencia-shopify/);

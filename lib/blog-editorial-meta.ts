@@ -304,7 +304,8 @@ export function buildBlogBreadcrumbJsonLd(input: {
     };
   }
 
-  const categoryName = BLOG_CATEGORY_BREADCRUMB_NAMES[input.categorySlug] || input.categorySlug;
+  // Four-level URLs (/blog/{cat}/{slug}) must not emit a category crumb without `item`
+  // (/blog/{cat} is a 308). Visible breadcrumb may still show the category chip.
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -324,11 +325,6 @@ export function buildBlogBreadcrumbJsonLd(input: {
       {
         '@type': 'ListItem',
         position: 3,
-        name: categoryName,
-      },
-      {
-        '@type': 'ListItem',
-        position: 4,
         name: decodeHtmlEntities(input.headline),
         item: input.url,
       },

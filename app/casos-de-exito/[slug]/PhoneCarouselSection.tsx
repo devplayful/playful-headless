@@ -73,6 +73,14 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
             margin: 0 -12px;
             overflow: hidden;
           }
+          @media (max-width: 599px) {
+            .phone-carousel-wrapper .slick-list {
+              margin: 0 !important;
+            }
+            .phone-carousel-wrapper .slick-slide {
+              padding: 0 4px;
+            }
+          }
           .phone-carousel-wrapper .slick-track {
             display: flex;
             align-items: stretch;
