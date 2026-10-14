@@ -18,16 +18,19 @@ export interface HighLevelNativeAttribution {
 }
 
 export interface UpsertContactInput {
-  name: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string | null;
   email: string;
   phone?: string;
   companyName?: string;
   locationId: string;
-  assignedTo: string;
+  assignedTo?: string;
   source?: string;
+  tags?: string[];
   attributionSource?: HighLevelNativeAttribution;
   lastAttributionSource?: HighLevelNativeAttribution;
-  customFields: HighLevelCustomFieldValue[];
+  customFields?: HighLevelCustomFieldValue[];
   createNewIfDuplicateAllowed: false;
 }
 
@@ -39,6 +42,7 @@ export interface UpsertContactResult {
 export interface HighLevelOpportunity {
   id: string;
   status: string;
+  pipelineStageId?: string;
 }
 
 export interface HighLevelTask {
@@ -70,10 +74,16 @@ export interface HighLevelGateway {
   upsertContact(input: UpsertContactInput): Promise<UpsertContactResult>;
   getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
+  updateContactLastName?(contactId: string, lastName: string | null): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
+  addContactNote?(contactId: string, body: string): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
-  updateOpportunityCustomFields(opportunityId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
+  updateOpportunityCustomFields(
+    opportunityId: string,
+    customFields: HighLevelCustomFieldValue[],
+    options?: { pipelineStageId?: string },
+  ): Promise<void>;
   findTasks(contactId: string): Promise<HighLevelTask[]>;
   createTask(contactId: string, input: CreateTaskInput): Promise<{ id: string }>;
 }
@@ -171,10 +181,24 @@ export class HighLevelApiClient implements HighLevelGateway {
     });
   }
 
+  async updateContactLastName(contactId: string, lastName: string | null): Promise<void> {
+    await this.request('update contact last name', `/contacts/${encodeURIComponent(contactId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ lastName }),
+    });
+  }
+
   async addContactTags(contactId: string, tags: string[]): Promise<void> {
     await this.request('add contact tag', `/contacts/${encodeURIComponent(contactId)}/tags`, {
       method: 'POST',
       body: JSON.stringify({ tags }),
+    });
+  }
+
+  async addContactNote(contactId: string, body: string): Promise<void> {
+    await this.request('add contact note', `/contacts/${encodeURIComponent(contactId)}/notes`, {
+      method: 'POST',
+      body: JSON.stringify({ body }),
     });
   }
 
@@ -186,12 +210,18 @@ export class HighLevelApiClient implements HighLevelGateway {
       status: 'open',
       limit: '100',
     });
-    const result = await this.request<{ opportunities?: HighLevelOpportunity[] }>(
+    const result = await this.request<{
+      opportunities?: Array<{ id: string; status: string; pipelineStageId?: string }>;
+    }>(
       'search open opportunities',
       `/opportunities/search?${params}`,
       { method: 'GET' },
     );
-    return result.opportunities || [];
+    return (result.opportunities || []).map((item) => ({
+      id: item.id,
+      status: item.status,
+      ...(item.pipelineStageId ? { pipelineStageId: item.pipelineStageId } : {}),
+    }));
   }
 
   async createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }> {
@@ -208,10 +238,14 @@ export class HighLevelApiClient implements HighLevelGateway {
   async updateOpportunityCustomFields(
     opportunityId: string,
     customFields: HighLevelCustomFieldValue[],
+    options?: { pipelineStageId?: string },
   ): Promise<void> {
     await this.request('update opportunity qualification', `/opportunities/${encodeURIComponent(opportunityId)}`, {
       method: 'PUT',
-      body: JSON.stringify({ customFields }),
+      body: JSON.stringify({
+        customFields,
+        ...(options?.pipelineStageId ? { pipelineStageId: options.pipelineStageId } : {}),
+      }),
     });
   }
 
@@ -253,6 +287,8 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
     }
   }
   async addContactTags(): Promise<void> {}
+  async updateContactLastName(): Promise<void> {}
+  async addContactNote(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
   async createOpportunity(): Promise<{ id: string }> { return { id: 'preview-opportunity' }; }
   async updateOpportunityCustomFields(): Promise<void> {}

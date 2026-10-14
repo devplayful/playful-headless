@@ -187,10 +187,10 @@ test('retains marketplace-transition contacts without creating an opportunity or
     'upsert', 'get-fields', 'update-original', 'tag', 'search',
   ]);
   const upsert = gateway.calls[0].value as UpsertContactInput;
-  assert(upsert.customFields.some((item) => (
+  assert(upsert.customFields?.some((item) => (
     item.id === config.customFieldIds.sales_model && item.fieldValue === 'mercado_libre'
   )));
-  assert(upsert.customFields.some((item) => (
+  assert(upsert.customFields?.some((item) => (
     item.id === config.customFieldIds.qualification_level && item.fieldValue === 'transition'
   )));
 });
