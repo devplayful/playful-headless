@@ -9,7 +9,7 @@ import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
-  injectEcommerceMobileHeroReserve,
+  ECOM_MOBILE_HERO_RESERVE_CSS,
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
@@ -160,8 +160,8 @@ export default function ElementorPageContent({
     ),
   );
   const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
-  const bodyHtml = injectEcommerceMobileHeroReserve(
-    optimizeElementorLcpHero(applyElementorIntrinsicDimensions(preparedHtml), slug),
+  const bodyHtml = optimizeElementorLcpHero(
+    applyElementorIntrinsicDimensions(preparedHtml),
     slug,
   );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
@@ -174,6 +174,9 @@ export default function ElementorPageContent({
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="preconnect" href={WP_HOST} />
+      {slug === 'agencia-e-commerce' ? (
+        <style id="playful-ecom-hero-mobile">{ECOM_MOBILE_HERO_RESERVE_CSS}</style>
+      ) : null}
       {lcpSrc ? (
         <link rel="preload" as="image" href={lcpSrc} fetchPriority="high" />
       ) : null}
