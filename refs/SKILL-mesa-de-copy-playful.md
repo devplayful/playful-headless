@@ -17,6 +17,10 @@ This app is teammate chat (docs: messaging a colleague, like a text). Short bubb
 
 The piece is a **file**, not a stack of chat messages. Contenido’s chat to José is one line plus the file. Diseño already works this way with Magnific: the illustration does not happen inside the bubble.
 
+There is no Magnific-for-prose in the plugin catalog. Do not paste José into claude.ai unless he asks. If a file written here is still telegraphic, then we send the locked brief out (Claude or similar), same pattern as Magnific.
+
+An 1800-word blog lives in the file. It does not live as 40 chat texts.
+
 ## Roles
 
 - **José:** lock. Then redline spans in the file. Does not ask for a from-scratch rewrite. Does not produce a second full draft unless he writes the after himself once.
@@ -30,6 +34,10 @@ Hard cap: 1 lock, 1 spine, 1 draft, 1 redline, 1 apply. Then SHIP or PARK. No ro
 ### 0a. Control previo (antes de cualquier draft)
 
 SKILL.md aplicables copiados en `refs/` + `refs/REFS-LEIDAS.md` con fuente por entrada. La pieza anterior debe estar firmada. Ver sección «Control previo obligatorio».
+
+### 0. Dump (research, not copy)
+
+José can talk long. That is input. Contenido does not imitate the cadence.
 
 ### 1. Nugget
 
@@ -45,11 +53,15 @@ José: keep / cut / swap. Survivors are locked. No prose yet.
 
 ### 3. One draft (file)
 
-Only after the control previo is complete, Contenido writes **once** with Corey into a markdown file.
+Only after the control previo is complete, Contenido writes **once** with Corey (`social`+`copywriting` on LinkedIn, `emails` on email) into `/workspace/kit-contenido/mesa/YYYY-MM-DD-<slug>-before.md`, using locked sentence + locked bullets + the last **3–5** signed pairs of **this channel**. Preservation list: locked sentence and bullets. Then `@Revisión de voz Playful` kill list only.
+
+Chat to José: one sentence that the draft is attached. The prose is in the file.
 
 ### 4. Redline, not rewrite
 
-José marks **spans** in that file with a tag: *cliché / relleno / vago / sin prueba / ángulo roto*.
+José marks **spans** in that file with a tag: *cliché / relleno / vago / sin prueba / ángulo roto*. Optionally rewrites **one** sentence as gold. Locked bullets stay.
+
+If he hates the whole thing, he writes the piece himself **once**. That is the after.
 
 ### 5. Apply
 
@@ -58,6 +70,12 @@ Contenido does string replace X → Y only in the file. No new angle. No second 
 ### 6. SHIP or PARK
 
 José ships or parks (missing fact/offer). Never «una reescritura más».
+
+Save `before.md`, `after.md`, and a one-line `nota.md`. Keep the last **3–5** pairs of that channel.
+
+### 7. Kill list
+
+A pattern enters `@Revisión de voz Playful` only if it appears in **two** signed pairs.
 
 ## Control previo obligatorio (14 oct 2026)
 
@@ -70,9 +88,16 @@ José ships or parks (missing fact/offer). Never «una reescritura más».
 - Después, revisión de voz (`revisi-n-de-voz-playful`).
 - **Ritmo creativo:** no se escribe pieza nueva hasta que esté firmada la anterior.
 
+En la mesa: claims del spine y del draft solo desde `refs/` (vía REFS-LEIDAS.md). Sin REFS-LEIDAS.md completo, no hay before.md válido para redline.
+
 ## Hard stops
 
 - Do not parenthesize José’s idea.
 - Do not print «si facturas 100-250k» / «no es un pitch».
 - Do not deliver the article as chat staccato.
 - Do not move to Por firmar without complete `refs/REFS-LEIDAS.md`.
+- Diseño and channels see nothing until the after is signed.
+
+## First run
+
+Odwalla LinkedIn + email (unsigned). If a draft already exists in chat, paste it into `before.md` and José redlines the file. Contenido does not regenerate.

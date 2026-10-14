@@ -1,10 +1,10 @@
-# Avisos eShow — formulario (web)
+# Avisos eShow — formulario (web) · v2
 
 Canal: web. Página: playfulagency.com/avisos-eshow. No es landing de servicio. No se publica ni se toca código.
 
 ## Lock
 
-Quien ya vende online puede dejar su nombre, su correo y, si quiere, la URL de su tienda, para recibir avisos y notas de José Reyes sobre el E-SHOW de Tech Show Madrid (4 y 5 de noviembre de 2026, IFEMA), donde José asiste como visitante, sin charla y sin stand.
+Quien ya vende online puede dejar su nombre, su correo y, si quiere, la URL de su tienda, para recibir las notas de José Reyes sobre el E-SHOW de Tech Show Madrid (4 y 5 de noviembre de 2026, IFEMA), adonde José va para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas.
 
 ## Control previo
 
@@ -15,21 +15,29 @@ Quien ya vende online puede dejar su nombre, su correo y, si quiere, la URL de s
 
 ---
 
-## Texto publicable
+## Texto publicable · v2
 
 ### Opción 1 — título y entrada
 
-**Título:** Avisos de José desde el eShow (4 y 5 de noviembre en IFEMA)
+**Título:** José va al E-SHOW a ver qué cambia en el ecommerce (4 y 5 de noviembre)
 
-**Entrada:** José Reyes asiste al E-SHOW de Tech Show Madrid como visitante, sin charla y sin stand, y este formulario sirve para enviarte sus notas sobre la feria.
+**Entrada:** José Reyes va al E-SHOW de Madrid, en IFEMA, los días 4 y 5 de noviembre. Lo hace para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas. Quien deja el correo en este formulario recibe las notas de esos dos días.
 
 ### Opción 2 — título y entrada
 
-**Título:** Notas de José del E-SHOW (asiste como visitante)
+**Título:** Las notas de José del E-SHOW en tu correo (4 y 5 de noviembre)
 
-**Entrada:** José asiste al E-SHOW en IFEMA los días 4 y 5 de noviembre de 2026, sin charla y sin stand, y quien deje su correo aquí recibe solo sus avisos sobre la feria.
+**Entrada:** José Reyes pasa el 4 y el 5 de noviembre en el E-SHOW de Madrid, en IFEMA. Va para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas. Si dejas tu correo, te escribimos las notas de esos dos días.
+
+### Opción 3 — título y entrada
+
+**Título:** José habla con dueños de tiendas en el E-SHOW (4 y 5 de noviembre)
+
+**Entrada:** José Reyes va al E-SHOW de Madrid los días 4 y 5 de noviembre, en IFEMA. Allí habla con dueños de tiendas y ve de cerca qué está cambiando en el ecommerce. Quien se apunta aquí recibe esas notas en el correo.
 
 ### Campos
+
+Sin cambios respecto a la v1.
 
 | Campo | Etiqueta | Placeholder | Ayuda (bajo el campo) | Obligatorio |
 |---|---|---|---|---|
@@ -41,17 +49,19 @@ Sin teléfono, facturación ni cargo. Esos campos son del formulario de contacto
 
 ### Botón
 
-Quiero los avisos
+Quiero las notas de José
 
 ### Mensaje de gracias (tras enviar)
 
-**Título:** Ya estás en la lista
+**Título:** Te apuntamos a las notas de José
 
-**Texto:** Escribimos a este correo los avisos de José Reyes sobre el E-SHOW. Puedes darte de baja cuando quieras, con la misma facilidad con la que te apuntaste.
+**Texto:** Escribimos a este correo las notas de José Reyes sobre el E-SHOW. Puedes darte de baja cuando quieras, con la misma facilidad con la que te apuntaste.
 
-No reutilizar `/gracias` (esa página pide agendar sesión). No prometer cuándo llega el primer aviso. Doble opt-in: [DATO PENDIENTE]. Si más adelante hay correo de confirmación, este mensaje tiene que cambiar.
+No reutilizar `/gracias` (esa página pide agendar sesión). No promete cuándo llega el primer aviso. Doble opt-in: [DATO PENDIENTE]. Si más adelante hay correo de confirmación, este mensaje tiene que cambiar.
 
 ### Consentimiento (primera capa)
+
+Sin cambios respecto a la v1.
 
 Una sola versión. Casillas en blanco. La de avisos es el consentimiento por finalidad. La de «he leído» acredita el deber de información y no sustituye a la de avisos.
 
@@ -96,7 +106,8 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 | El evento se llama E-SHOW y se celebra en el marco de Tech Show Madrid | https://www.techshowmadrid.es/e-show | «Los próximos 4 y 5 de noviembre de 2026, E-SHOW y Technology for Marketing Madrid volverán a consolidarse… Celebradas en el marco de Tech Show Madrid» |
 | Fechas: 4 y 5 de noviembre de 2026 | https://www.techshowmadrid.es/e-show | «4 Y 5 DE NOVIEMBRE DE 2026» / «Los próximos 4 y 5 de noviembre de 2026» |
 | Lugar: IFEMA Madrid | https://www.techshowmadrid.es/e-show y https://www.techshowmadrid.es/ | «IFEMA MADRID Pabellones 3 - 5» |
-| José Reyes asiste como visitante, sin charla y sin stand | Encargo de este run · `refs/lote-14oct-card-14.md` | «José Reyes va al E-SHOW … como VISITANTE, sin charla ni stand.» |
+| José va para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas | Encargo de la v2 · `refs/rewrite-v2-14oct.md` | «para ver de cerca qué está cambiando en el ecommerce y para hablar con dueños de tiendas» |
+| Quien se apunta recibe las notas de José sobre el E-SHOW | Encargo · `refs/NEED-avisos-eshow.md` y `refs/rewrite-v2-14oct.md` | «recibir las notas de José Reyes sobre el E-SHOW» / «las notas de José Reyes sobre el E-SHOW» |
 | El formulario sirve para enviar avisos/notas de José sobre el eShow | Encargo · `refs/NEED-avisos-eshow.md` | «el formulario sirve para que quien quiera reciba avisos/notas de José sobre el eShow» |
 | Responsable: Playful Agency | Encargo + https://playfulagency.com/politica-de-privacidad | Encargo: «Responsable del tratamiento: Playful Agency». Política: «Playful Agency» / titular de la página |
 | Correo para derechos: hello@playfulagency.com | https://playfulagency.com/politica-de-privacidad | «Correo electrónico: hello@playfulagency.com» |
@@ -116,7 +127,7 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 | Nombre y correo son categorías ya previstas | https://playfulagency.com/politica-de-privacidad | «Datos identificativos (nombre y, en su caso, apellidos)»; «Dirección de correo electrónico y/o teléfono» |
 | Hay que decir qué dato es obligatorio y qué pasa si no se da | AEPD decálogo, punto 7 | «Debe informarse al interesado si… el interesado está obligado a facilitar sus datos personales… explicar las posibles consecuencias de no facilitar tales datos.» |
 | La URL de la tienda es opcional y no bloquea los avisos | Encargo de ampliación · `refs/ampliacion-campos-14oct.md` | «tienda/URL opcional» |
-| El botón no es de venta | Encargo original + Corey web | Encargo: «sin CTA de venta». Corey: verbo + qué obtiene. Quedó «Quiero los avisos». |
+| El botón no es de venta | Encargo original + Corey web + `refs/rewrite-v2-14oct.md` | Encargo: «sin CTA de venta». Corey: verbo + qué obtiene. Quedó «Quiero las notas de José». |
 | El gracias de /gracias no se reutiliza | https://playfulagency.com/gracias · `app/gracias/page.tsx` | «¡Recibimos tu caso!» / «Cumplo estas condiciones: agendar sesión» |
 | No se promete plazo del primer aviso | Sin fuente de frecuencia | [DATO PENDIENTE] |
 
@@ -126,50 +137,83 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 
 | Skill | Paso | Cómo |
 |---|---|---|
-| Cocina de copy Playful | Control previo | Skills copiadas a `refs/`. `REFS-LEIDAS.md` escrito antes de redactar. Nada inventado fuera de `refs/`. |
+| Cocina de copy Playful | Control previo | Skills de este run copiadas a `refs/`. `REFS-LEIDAS.md` escrito antes de redactar. Nada inventado fuera de `refs/`. |
 | Cocina de copy Playful | NEED + lock | `refs/NEED-avisos-eshow.md`. Una oración completa. Buyer en el brief, no en el texto. |
+| Cocina de copy Playful | Prosa | Oraciones completas, legibles en voz alta. Sin líneas de tres palabras. |
 | Cocina de copy Playful | No tocar la web | Solo markdown en `refs/` y `pieces/`. Sin `app/`, sin deploy. |
+| Cocina de copy Playful | Manda sobre otras guías | El motivo del viaje y el ritmo de la prosa salen de este skill + voz-web-blog, no de una plantilla. |
+| Mesa de copy Playful | Control previo | Misma regla de skills + fuente por entrada. |
 | Mesa de copy Playful | Nugget | Lock de una frase (quién + deseo + promesa + un ask). |
-| Mesa de copy Playful | Spine | Visitante; sin charla ni stand; 4–5 nov 2026; IFEMA; avisos/notas; sin venta. |
+| Mesa de copy Playful | Spine | 4–5 nov; IFEMA; ver de cerca el ecommerce; hablar con dueños de tiendas; notas al correo; sin venta. |
 | Mesa de copy Playful | Un draft en archivo | Esta pieza. Chat no es la entrega. |
 | Marketing Skills Corey | Canal web = copywriting | Claridad, una idea por bloque, específico, sin oferta inventada. |
-| Corey copywriting | Headline + subheadline + 2 opciones | Título = qué hay. Entrada = quién va y para qué es el formulario. |
-| Corey copywriting | CTA del formulario | Verbo + qué obtiene, sin venta: «Quiero los avisos». |
+| Corey copywriting | Headline + subheadline | Título = beneficio o motivo. Entrada = por qué va José y qué recibe quien se apunta. |
+| Corey copywriting | CTA del formulario | Verbo + qué obtiene, sin venta: «Quiero las notas de José». |
 | Corey copywriting | Gracias | Confirma el apunte. No agenda. No copia `/gracias`. |
-| Corey copywriting | Buyer fuera del cuerpo | «Dueños de e-commerce que ya venden» se queda en el NEED. |
+| Corey copywriting | Buyer fuera del cuerpo | «Dueños de e-commerce que ya venden» se queda en el NEED. «Dueños de tiendas» nombra a con quién habla José. |
 | Voz web/blog | Quién habla | «Nosotros» / tercera persona. José en tercera persona. No hay «yo» de fundador. |
-| Voz web/blog | Título | Beneficio concreto + gancho entre paréntesis. |
+| Voz web/blog | Título | Beneficio o motivo concreto + gancho entre paréntesis (las fechas). |
 | Voz web/blog | Prosa | Oraciones completas. Sin em dash. Sin dos puntos como pegamento. Cero futuro simple. |
-| Voz web/blog | Corey no elige el gancho | El paréntesis sale del brief (fechas / visitante), no de una plantilla Contrarian. |
+| Voz web/blog | Corey no elige el gancho | El paréntesis son las fechas del brief, no una plantilla Contrarian. |
+| Voz web/blog | Manda sobre otras guías | Ritmo pausado, artículos y conectores, literal. |
 | Revisión de voz Playful | Kill list | Ver bloque siguiente. Se corrige la frase, no el marco. |
-| SEO Playful | No aplica | No es landing de servicio. |
+| SEO Playful | No aplica al formulario | No es landing de servicio. El title del post va en `pieces/eshow-title-seo.md`. |
 
 ---
 
 ## Revisión de voz
 
-Canal: web. Kill list sobre el texto publicable.
+Canal: web. Kill list sobre el texto publicable de la v2.
 
 | Fallo buscado | ¿Estaba? | Corrección |
 |---|---|---|
 | Em dash | No | — |
-| Dos puntos como pegamento de oraciones | En legitimación («LSSI: el envío…») | Partí en dos oraciones. En la tabla los rótulos van en negrita, no como dos puntos de unión. |
-| Staccato de tres palabras | Un titular interno «Notas. Visitante. IFEMA.» | Tirado. Quedó oración completa. |
-| «No es un pitch» / «si facturas 100-250k» / «dueños que ya facturan» | El brief traía «dueños… que ya venden» | No se imprimió. |
-| José falso (yo de fundador) | Un borrador «voy al eShow» | Pasó a «José Reyes asiste» / «José va». |
-| Contraste binario | «No es una charla, es un recado» | Tirado. Quedó el hecho: «sin charla y sin stand». |
-| Entradilla de carraspeo | «Vamos al grano:…» | No está. |
+| Dos puntos como pegamento de oraciones | No en título, entrada, botón ni gracias | En la tabla legal los rótulos van en negrita, no como dos puntos de unión. |
+| Staccato de tres palabras | Un titular interno corto | Tirado. Los tres títulos son oración o beneficio completo. |
+| «No es un pitch» / «si facturas 100-250k» / «dueños que ya facturan» | El brief trae «dueños de e-commerce que ya venden» | No se imprimió. |
+| José falso (yo de fundador) | No | «José Reyes va», «José habla», «Apuntamos», «Escribimos». |
+| Contraste binario | No | Se dice el motivo en positivo. |
+| Entradilla de carraspeo | No | Cada entrada empieza por José o por la fecha. |
 | Falsa revelación / grandilocuencia / cierre profundo | No | — |
-| CTA de venta (diagnóstico, reunión, servicios) | Corey pedía CTA fuerte; `/gracias` pide agendar | Botón = «Quiero los avisos». Gracias sin reunión ni «hablemos». |
-| Placeholders de agencia | «Déjanos aquí tu nombre», «Y... el nombre de tu empresa» | Tirados. Quedó formato corto: «Tu nombre», «tunombre@correo.com», «https://www.tutienda.com». |
-| Gracias con plazo inventado | «En breve te escribimos» | Tirado. Presente: «Escribimos a este correo…». |
-| Cierre profundo en gracias | «Gracias por sumarte a esta conversación» | Tirado. Quedó baja + mismo grado de facilidad. |
-| Etiquetas en staccato | Aceptable en UI (rótulos, no prosa) | Nombre / Correo electrónico / Tienda o URL (opcional). La prosa está en la ayuda y en el gracias. |
-| Metáfora | «ojos en la feria», «radar» | Tiradas. Quedó «notas» / «avisos». |
+| CTA de venta | Corey pide CTA fuerte; `/gracias` pide agendar | Botón = «Quiero las notas de José». Gracias sin reunión. |
+| Placeholders de agencia | No se tocaron | Siguen «Tu nombre», «tunombre@correo.com», «https://www.tutienda.com». |
+| Gracias con plazo inventado | No | Presente: «Escribimos a este correo…». |
+| Cierre profundo en gracias | No | Quedó baja + mismo grado de facilidad. |
+| Metáfora | No | «Ver de cerca» y «notas» son literales. |
 | Usted | No | Tú, como la política publicada. |
-| Futuro simple | «José estará» / «te llegarán» | Presente: «asiste», «va», «sirve», «recibe». |
-| Rotar sinónimos del evento | Mezcla eShow / feria / congreso | Evento = E-SHOW. «Feria» solo como el sitio del que salen las notas. |
-| Cifras o casos sin fuente | 27.000 visitantes de 2025 | Fuera del texto publicable. |
+| Futuro simple | No | Presente: «va», «pasa», «habla», «ve», «recibe», «escribimos», «apuntamos». |
+| Rotar sinónimos del evento | Tentación eShow / feria / congreso | Evento = E-SHOW. Lo que se envía = notas (el legal ya dice «avisos y notas» y no se toca). |
+| Palabras vetadas (visitante, charla, stand) | Estaban en la v1 | Fuera del texto publicable de la v2. Quedan solo en el histórico. |
+| Cifras o casos sin fuente | No | — |
 | Amazon ajeno | No | — |
+| Género en el gracias | «Quedas apuntado» / «Apuntamos este correo a las notas» (se leía mal) | Tirado. Quedó «Te apuntamos a las notas de José». |
 
-Nada de esto tira el marco (título + una línea + campos + botón + gracias + tabla AEPD + dos casillas).
+Nada de esto tira el marco (tres títulos + entrada + campos + botón + gracias + tabla AEPD + dos casillas).
+
+---
+
+## Histórico — v1
+
+Texto publicable de la v1, debajo para comparar. Campos y legal de aquella versión son los mismos que arriba.
+
+### Opción 1 — título y entrada
+
+**Título:** Avisos de José desde el eShow (4 y 5 de noviembre en IFEMA)
+
+**Entrada:** José Reyes asiste al E-SHOW de Tech Show Madrid como visitante, sin charla y sin stand, y este formulario sirve para enviarte sus notas sobre la feria.
+
+### Opción 2 — título y entrada
+
+**Título:** Notas de José del E-SHOW (asiste como visitante)
+
+**Entrada:** José asiste al E-SHOW en IFEMA los días 4 y 5 de noviembre de 2026, sin charla y sin stand, y quien deje su correo aquí recibe solo sus avisos sobre la feria.
+
+### Botón
+
+Quiero los avisos
+
+### Mensaje de gracias (tras enviar)
+
+**Título:** Ya estás en la lista
+
+**Texto:** Escribimos a este correo los avisos de José Reyes sobre el E-SHOW. Puedes darte de baja cuando quieras, con la misma facilidad con la que te apuntaste.

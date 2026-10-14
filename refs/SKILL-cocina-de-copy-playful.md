@@ -42,6 +42,25 @@ Cloud Agent launches for this kitchen **must** pass `model: opus` (Claude Opus).
 - Después, revisión de voz (`revisi-n-de-voz-playful`).
 - **Ritmo creativo:** no se escribe pieza nueva hasta que esté firmada la anterior.
 
+### Plantilla NEED.md
+
+```markdown
+# NEED — <slug>
+- Canal:
+- Caso:
+- Frase completa (lock):
+- Pieza anterior firmada: [sí/no — enlace/ruta]
+
+## Control previo
+SKILL.md copiados en refs/: [lista]
+REFS-LEIDAS.md: [sí/no]
+Fuentes completas: [sí/no]
+→ Si alguna es «no», la pieza no pasa a Por firmar.
+
+## Refs
+- refs/... (fuente)
+```
+
 ## Prose
 
 Complete Spanish sentences. Readable aloud. Never telegraphic three-word lines or odd passives.
