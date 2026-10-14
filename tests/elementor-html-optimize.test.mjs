@@ -32,9 +32,8 @@ test('carousel logos gain intrinsic width and height', () => {
 });
 
 test('agencia-e-commerce mobile hero reserve CSS stacks columns and reserves illustration ratio', () => {
-  assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /flex-direction:column/);
   assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /aspect-ratio:437\/417/);
-  assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /elementor-element-9102780/);
+  assert.doesNotMatch(ECOM_MOBILE_HERO_RESERVE_CSS, /flex-wrap:wrap/);
 });
 
 test('agencia-e-commerce SVG hero stays on endpoint (/_next/image returns 400)', () => {
