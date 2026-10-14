@@ -17,6 +17,10 @@ test('SEM hero is rewritten to /_next/image with sizes and fetchpriority', () =>
   assert.match(out, /src="\/_next\/image\?url=/);
   assert.match(out, /fetchpriority="high"/i);
   assert.match(out, /sizes="/);
+  assert.match(out, /750px/);
+  assert.doesNotMatch(out, /[&?]w=437/);
+  assert.doesNotMatch(out, /[&?]w=300/);
+  assert.match(out, /750w/);
   assert.match(firstOptimizableHeroSrc(HERO, 'agencia-sem'), /\/_next\/image/);
 });
 
