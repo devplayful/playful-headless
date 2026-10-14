@@ -2,8 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const {
-  ECOM_MOBILE_HERO_RESERVE_CSS,
-  enhanceAgenciaEcommerceHeroImage,
   optimizeElementorLcpHero,
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
@@ -32,22 +30,13 @@ test('carousel logos gain intrinsic width and height', () => {
   assert.match(out, /height="200"/);
 });
 
-test('agencia-e-commerce mobile hero reserve CSS fixes columns and illustration slot', () => {
-  assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /elementor-element-0d098e7/);
-  assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /height:calc\(50vw\*417\/437\)/);
-  assert.match(ECOM_MOBILE_HERO_RESERVE_CSS, /Playful Paytone CLS/);
-});
-
-test('agencia-e-commerce SVG hero stays on endpoint with reserved intrinsic box', () => {
+test('agencia-e-commerce SVG hero matches main: /_next/image (SVG 400 avoids CLS vs origin paint)', () => {
   const svgHero =
     '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg" alt="e-commerce hero" />';
-  const reserved = enhanceAgenciaEcommerceHeroImage(svgHero, 'agencia-e-commerce');
-  assert.match(reserved, /aspect-ratio:437\/417/);
-  assert.match(reserved, /fetchpriority="high"/i);
-  const out = optimizeElementorLcpHero(reserved, 'agencia-e-commerce');
-  assert.match(out, /Payful-Agencia-de-Marketing-Internacional0\.svg/);
-  assert.doesNotMatch(out, /\/_next\/image/);
-  assert.equal(firstOptimizableHeroSrc(svgHero, 'agencia-e-commerce'), svgHero.match(/src="([^"]+)"/)[1]);
+  const out = optimizeElementorLcpHero(svgHero, 'agencia-e-commerce');
+  assert.match(out, /src="\/_next\/image\?url=/);
+  assert.doesNotMatch(out, /src="https:\/\/endpoint[^"]*Payful-Agencia-de-Marketing-Internacional0\.svg/);
+  assert.match(firstOptimizableHeroSrc(svgHero, 'agencia-e-commerce'), /\/_next\/image/);
 });
 
 test('agencia-e-commerce raster hero still uses /_next/image', () => {
