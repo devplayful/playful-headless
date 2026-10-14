@@ -206,6 +206,13 @@ assert.equal(shopifyResponse.status, 200, '/agencia-shopify should return 200');
 const shopifyHtml = await shopifyResponse.text();
 const shopifyCanonicals = [...shopifyHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
 assert.equal(shopifyCanonicals.length, 1, '/agencia-shopify should emit exactly one canonical');
+
+const semResponse = await request('/agencia-sem', { redirect: 'follow' });
+assert.equal(semResponse.status, 200, '/agencia-sem should return 200');
+const semHtml = await semResponse.text();
+const semCanonicals = [...semHtml.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
+assert.equal(semCanonicals.length, 1, '/agencia-sem should emit exactly one canonical');
+assert.equal(semCanonicals[0][1], 'https://playfulagency.com/agencia-sem');
 assert.equal(shopifyCanonicals[0][1], 'https://playfulagency.com/agencia-shopify');
 assert.match(
   shopifyHtml,
@@ -295,11 +302,17 @@ for (const pathname of blogQueryPaths) {
   assert.match(robots, /follow/i, `${pathname} must remain follow`);
   const canonicals = [...html.matchAll(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["'][^>]*>/gi)];
   assert.equal(canonicals.length, 1, `${pathname} should emit exactly one canonical`);
-  assert.equal(canonicals[0][1], 'https://playfulagency.com/blog');
+  const expectedCanonical = pathname.includes('category=seo')
+    ? 'https://playfulagency.com/blog?category=seo'
+    : 'https://playfulagency.com/blog';
+  assert.equal(canonicals[0][1], expectedCanonical, `${pathname} canonical`);
 }
 
 const invalidBlogPage = await request('/blog?page=-2&category=seo', { redirect: 'manual' });
 assert.equal(invalidBlogPage.status, 404, 'invalid/negative blog page stays 404');
+
+const invalidBlogPageZero = await request('/blog?page=0&category=seo', { redirect: 'manual' });
+assert.equal(invalidBlogPageZero.status, 404, 'page=0 blog listing stays 404');
 
 const gsc301 = [
   [
@@ -341,7 +354,12 @@ for (const [source, dest] of gsc301) {
   assert.equal(destResponse.status, 200, `${dest} should stay 200`);
 }
 
-for (const gonePath of ['/project/bottle-mockup', '/agencylog']) {
+for (const gonePath of [
+  '/project/bottle-mockup',
+  '/project/cosmetic-mockup',
+  '/blog/otros/marketing-de-guerrilla-te-atreves-a-intentarlo',
+  '/agencylog',
+]) {
   for (const pathname of [gonePath, `${gonePath}/`]) {
     const response = await request(pathname);
     assert.equal(response.status, 410, `${pathname} should return 410`);
