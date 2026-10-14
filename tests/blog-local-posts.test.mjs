@@ -246,7 +246,8 @@ test('wordpress and the post template wire the staging-only post without listing
   assert.match(blogPage, /h1: GOOGLE_MERCHANT_CENTER_H1/);
   assert.doesNotMatch(listingSource, /google-merchant-center/);
   assert.doesNotMatch(sitemapSource, /google-merchant-center/);
-  assert.doesNotMatch(expectedRoutes, /google-merchant-center/);
+  // Staging inventories the local Merchant Center post; production sitemap does not.
+  assert.match(expectedRoutes, /\/blog\/pautas-digitales\/google-merchant-center/);
   assert.doesNotMatch(relatedSource, /google-merchant-center/);
 });
 
