@@ -56,7 +56,10 @@ test('mapped service CTA and article HTML are not gated behind a client loader',
 });
 
 test('post canonical stays on the blog post, not a service landing', () => {
-  assert.match(blogPage, /canonicalForPath\(blogPostPath\(post\)\)/);
+  assert.match(
+    blogPage,
+    /canonicalForPath\(\s*postSlug === MIGRACION_SEO_ALT_BLOG_SLUG \? MIGRACION_SEO_PLAN_PATH : blogPostPath\(post\),?\s*\)/,
+  );
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.doesNotMatch(metadataFn, /agencia-sem/);
   assert.doesNotMatch(metadataFn, /agencia-shopify/);
