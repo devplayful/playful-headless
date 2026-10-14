@@ -31,3 +31,10 @@ Una línea por entrada. Sin fuente = la pieza no pasa a Por firmar.
 - Datos fiscales publicados (LLC / Miami) no usados; quedan [DATO PENDIENTE] por el encargo → `refs/fuente-politica-privacidad-playful.md`
 - 2.ª capa ya publicada → https://playfulagency.com/politica-de-privacidad
 - URL de destino 404 el 14 oct 2026 (no se publica ni se toca código) → https://playfulagency.com/avisos-eshow
+- Ampliación 14 oct 2026 (campos mínimos nombre, email, tienda/URL opcional; botón; gracias) → encargo de ampliación de este run, `refs/ampliacion-campos-14oct.md`
+- Nombre y correo como categorías ya previstas en la política → https://playfulagency.com/politica-de-privacidad («Datos identificativos (nombre y, en su caso, apellidos)»; «Dirección de correo electrónico»)
+- Marcar qué dato es obligatorio y la consecuencia de no darlo → https://www.aepd.es/guias/decalogo-politicas-de-privacidad-adaptacion-rgpd.pdf (punto 7)
+- Tienda/URL es opcional y no bloquea los avisos → encargo de ampliación, `refs/ampliacion-campos-14oct.md`
+- No copiar placeholders del formulario de contacto → `app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx` (solo lectura; tono comercial)
+- No reutilizar la página /gracias de leads → https://playfulagency.com/gracias y `app/gracias/page.tsx` (solo lectura; CTA de agendar sesión)
+- Frecuencia de avisos y si hay doble opt-in → [DATO PENDIENTE]; no se promete plazo de primer correo

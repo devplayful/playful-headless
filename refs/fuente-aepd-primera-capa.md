@@ -46,3 +46,9 @@ URL: https://www.aepd.es/preguntas-frecuentes/2-tus-obligaciones-como-responsabl
 > «Es recomendable que el consentimiento se desarrolle en un apartado específico, evitando el uso de casillas genéricas del estilo “He leído y acepto las condiciones de la política de privacidad”.»
 
 La casilla «he leído» puede acreditar el deber de información. No sustituye el consentimiento por finalidad.
+
+## 5. Datos obligatorios (decálogo, punto 7)
+
+URL: https://www.aepd.es/guias/decalogo-politicas-de-privacidad-adaptacion-rgpd.pdf
+
+> «Debe informarse al interesado si tiene una obligación legal o contractual de facilitar los datos personales, o si es un requisito necesario para suscribir un contrato, o si el interesado está obligado a facilitar sus datos personales. Asimismo, en tales casos, hay que explicar las posibles consecuencias de no facilitar tales datos.»

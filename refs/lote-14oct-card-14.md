@@ -2,7 +2,7 @@
 
 ## Encargo de este run (14 oct 2026)
 
-Textos del formulario «Avisos eShow» (página playfulagency.com/avisos-eshow): título, una línea de entrada y el texto del consentimiento.
+Textos del formulario «Avisos eShow» (página playfulagency.com/avisos-eshow): título, una línea de entrada, consentimiento, etiquetas y placeholders (nombre, email, tienda/URL opcional), botón y mensaje de gracias.
 
 Hechos del brief (no están en la web del organizador):
 

@@ -4,7 +4,7 @@ Canal: web. Página: playfulagency.com/avisos-eshow. No es landing de servicio. 
 
 ## Lock
 
-Quien ya vende online puede dejar su correo para recibir avisos y notas de José Reyes sobre el E-SHOW de Tech Show Madrid (4 y 5 de noviembre de 2026, IFEMA), donde José asiste como visitante, sin charla y sin stand.
+Quien ya vende online puede dejar su nombre, su correo y, si quiere, la URL de su tienda, para recibir avisos y notas de José Reyes sobre el E-SHOW de Tech Show Madrid (4 y 5 de noviembre de 2026, IFEMA), donde José asiste como visitante, sin charla y sin stand.
 
 ## Control previo
 
@@ -29,9 +29,27 @@ Quien ya vende online puede dejar su correo para recibir avisos y notas de José
 
 **Entrada:** José asiste al E-SHOW en IFEMA los días 4 y 5 de noviembre de 2026, sin charla y sin stand, y quien deje su correo aquí recibe solo sus avisos sobre la feria.
 
-### Botón del formulario
+### Campos
 
-Enviar
+| Campo | Etiqueta | Placeholder | Ayuda (bajo el campo) | Obligatorio |
+|---|---|---|---|---|
+| Nombre | Nombre | Tu nombre | Obligatorio para apuntarte. | Sí |
+| Email | Correo electrónico | tunombre@correo.com | Ahí te enviamos los avisos de José sobre el E-SHOW. | Sí |
+| Tienda / URL | Tienda o URL (opcional) | https://www.tutienda.com | No hace falta para recibir los avisos. | No |
+
+Sin teléfono, facturación ni cargo. Esos campos son del formulario de contacto y no aplican aquí.
+
+### Botón
+
+Quiero los avisos
+
+### Mensaje de gracias (tras enviar)
+
+**Título:** Ya estás en la lista
+
+**Texto:** Escribimos a este correo los avisos de José Reyes sobre el E-SHOW. Puedes darte de baja cuando quieras, con la misma facilidad con la que te apuntaste.
+
+No reutilizar `/gracias` (esa página pide agendar sesión). No prometer cuándo llega el primer aviso. Doble opt-in: [DATO PENDIENTE]. Si más adelante hay correo de confirmación, este mensaje tiene que cambiar.
 
 ### Consentimiento (primera capa)
 
@@ -65,6 +83,8 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 - Identificación fiscal y domicilio del responsable: [DATO PENDIENTE]
 - Proveedor de correo / encargado de envío: [DATO PENDIENTE]
 - Transferencias internacionales de este formulario: [DATO PENDIENTE]
+- Frecuencia de los avisos y fecha del primero: [DATO PENDIENTE]
+- Correo de confirmación / doble opt-in: [DATO PENDIENTE]
 - Pieza anterior firmada: [FALTA DATO]
 
 ---
@@ -92,6 +112,13 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 | Baja sencilla y gratuita, con dirección en cada correo | LSSI art. 21.2 in fine y art. 22, mismo PDF | «procedimiento sencillo y gratuito… inclusión de una dirección de correo electrónico u otra dirección electrónica válida» / «revocar en cualquier momento el consentimiento… con la simple notificación de su voluntad al remitente» |
 | 2.ª capa = política publicada | https://playfulagency.com/politica-de-privacidad | Página live «Política de Privacidad \| Playful Agency» |
 | No hay perfiles | Encargo + AEPD 1.ª capa (solo se informa si existen) | No hay fuente de que este formulario elabore perfiles. Se declara que no. |
+| Campos mínimos: nombre, email, tienda/URL opcional | Encargo de ampliación · `refs/ampliacion-campos-14oct.md` | «etiquetas y placeholders de los campos del formulario (mínimo: nombre, email, tienda/URL opcional)» |
+| Nombre y correo son categorías ya previstas | https://playfulagency.com/politica-de-privacidad | «Datos identificativos (nombre y, en su caso, apellidos)»; «Dirección de correo electrónico y/o teléfono» |
+| Hay que decir qué dato es obligatorio y qué pasa si no se da | AEPD decálogo, punto 7 | «Debe informarse al interesado si… el interesado está obligado a facilitar sus datos personales… explicar las posibles consecuencias de no facilitar tales datos.» |
+| La URL de la tienda es opcional y no bloquea los avisos | Encargo de ampliación · `refs/ampliacion-campos-14oct.md` | «tienda/URL opcional» |
+| El botón no es de venta | Encargo original + Corey web | Encargo: «sin CTA de venta». Corey: verbo + qué obtiene. Quedó «Quiero los avisos». |
+| El gracias de /gracias no se reutiliza | https://playfulagency.com/gracias · `app/gracias/page.tsx` | «¡Recibimos tu caso!» / «Cumplo estas condiciones: agendar sesión» |
+| No se promete plazo del primer aviso | Sin fuente de frecuencia | [DATO PENDIENTE] |
 
 ---
 
@@ -106,7 +133,9 @@ Aplica. El art. 21.1 de la Ley 34/2002 prohíbe el envío de comunicaciones publ
 | Mesa de copy Playful | Spine | Visitante; sin charla ni stand; 4–5 nov 2026; IFEMA; avisos/notas; sin venta. |
 | Mesa de copy Playful | Un draft en archivo | Esta pieza. Chat no es la entrega. |
 | Marketing Skills Corey | Canal web = copywriting | Claridad, una idea por bloque, específico, sin oferta inventada. |
-| Corey copywriting | Headline + subheadline + 2 opciones | Título = qué hay. Entrada = quién va y para qué es el formulario. Botón = «Enviar», no venta. |
+| Corey copywriting | Headline + subheadline + 2 opciones | Título = qué hay. Entrada = quién va y para qué es el formulario. |
+| Corey copywriting | CTA del formulario | Verbo + qué obtiene, sin venta: «Quiero los avisos». |
+| Corey copywriting | Gracias | Confirma el apunte. No agenda. No copia `/gracias`. |
 | Corey copywriting | Buyer fuera del cuerpo | «Dueños de e-commerce que ya venden» se queda en el NEED. |
 | Voz web/blog | Quién habla | «Nosotros» / tercera persona. José en tercera persona. No hay «yo» de fundador. |
 | Voz web/blog | Título | Beneficio concreto + gancho entre paréntesis. |
@@ -131,7 +160,11 @@ Canal: web. Kill list sobre el texto publicable.
 | Contraste binario | «No es una charla, es un recado» | Tirado. Quedó el hecho: «sin charla y sin stand». |
 | Entradilla de carraspeo | «Vamos al grano:…» | No está. |
 | Falsa revelación / grandilocuencia / cierre profundo | No | — |
-| CTA de venta (diagnóstico, reunión, servicios) | Corey pedía CTA fuerte | Botón = «Enviar». Sin «hablemos». |
+| CTA de venta (diagnóstico, reunión, servicios) | Corey pedía CTA fuerte; `/gracias` pide agendar | Botón = «Quiero los avisos». Gracias sin reunión ni «hablemos». |
+| Placeholders de agencia | «Déjanos aquí tu nombre», «Y... el nombre de tu empresa» | Tirados. Quedó formato corto: «Tu nombre», «tunombre@correo.com», «https://www.tutienda.com». |
+| Gracias con plazo inventado | «En breve te escribimos» | Tirado. Presente: «Escribimos a este correo…». |
+| Cierre profundo en gracias | «Gracias por sumarte a esta conversación» | Tirado. Quedó baja + mismo grado de facilidad. |
+| Etiquetas en staccato | Aceptable en UI (rótulos, no prosa) | Nombre / Correo electrónico / Tienda o URL (opcional). La prosa está en la ayuda y en el gracias. |
 | Metáfora | «ojos en la feria», «radar» | Tiradas. Quedó «notas» / «avisos». |
 | Usted | No | Tú, como la política publicada. |
 | Futuro simple | «José estará» / «te llegarán» | Presente: «asiste», «va», «sirve», «recibe». |
@@ -139,4 +172,4 @@ Canal: web. Kill list sobre el texto publicable.
 | Cifras o casos sin fuente | 27.000 visitantes de 2025 | Fuera del texto publicable. |
 | Amazon ajeno | No | — |
 
-Nada de esto tira el marco (título + una línea + tabla AEPD + dos casillas).
+Nada de esto tira el marco (título + una línea + campos + botón + gracias + tabla AEPD + dos casillas).
