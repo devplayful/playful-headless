@@ -154,8 +154,9 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
   assert.equal(governed.has('/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo'), true);
   assert.equal(governed.has(HUMANIZAR_BLOG_PATH), false);
   assert.equal(governed.has(STORYTELLING_BLOG_PATH), true);
-  // tanda #232 drops humanizar (102 en main); staging suma cashea + migración SEO.
-  assert.equal(governed.size, 104);
+  // tanda #232 drops humanizar (102 en main); staging suma cashea + migración
+  // SEO + eShow local + Merchant Center local.
+  assert.equal(governed.size, 106);
 });
 
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {
