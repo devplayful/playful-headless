@@ -89,8 +89,9 @@ function shouldServeHeroViaNextImage(src: string): boolean {
 export const ECOM_MOBILE_HERO_RESERVE_CSS = `@media (max-width:599px){
 .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a>.elementor-container{align-items:flex-start!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a .elementor-column>.elementor-widget-wrap{align-content:flex-start!important;justify-content:flex-start!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{min-height:calc(50vw*417/437)!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
-.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack{aspect-ratio:437/417!important;width:100%;max-width:min(100%,100vw)}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack{aspect-ratio:437/417!important;width:100%;max-width:min(100%,100vw);min-height:calc(50vw*417/437)!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{width:100%;height:auto;aspect-ratio:437/417;object-fit:contain}
 }`;
 
