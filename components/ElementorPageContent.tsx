@@ -9,6 +9,7 @@ import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
+  injectEcommerceMobileHeroReserve,
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
@@ -159,8 +160,8 @@ export default function ElementorPageContent({
     ),
   );
   const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
-  const bodyHtml = optimizeElementorLcpHero(
-    applyElementorIntrinsicDimensions(preparedHtml),
+  const bodyHtml = injectEcommerceMobileHeroReserve(
+    optimizeElementorLcpHero(applyElementorIntrinsicDimensions(preparedHtml), slug),
     slug,
   );
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));

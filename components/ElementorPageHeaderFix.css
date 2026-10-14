@@ -2103,26 +2103,37 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
   .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a > .elementor-container {
     overflow-x: clip !important;
     max-width: 100% !important;
-    flex-wrap: wrap !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
   }
   .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a > .elementor-container > .elementor-column {
+    width: 100% !important;
     max-width: 100% !important;
-    flex-basis: 100% !important;
+    flex: 0 0 auto !important;
   }
-  /* Reserve hero illustration box when columns stack (437×417 SVG) to cut CLS. */
+  /* Reserve hero illustration slot (437×417 SVG) so subheading (9102780) does not shift. */
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 {
+    min-height: calc((100vw - 24px) * 417 / 437) !important;
+  }
   .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
   .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack {
     aspect-ratio: 437 / 417 !important;
     width: 100% !important;
     max-width: min(100%, 100vw) !important;
+    height: auto !important;
     box-sizing: border-box !important;
   }
   .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
     max-width: 100% !important;
+    aspect-ratio: 437 / 417 !important;
     object-fit: contain !important;
     box-sizing: border-box !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container {
+    min-height: calc(34px * 1.12 * 3) !important;
   }
   body:has(.playful-wp-page[data-playful-page="85582"]) header.sticky {
     z-index: 200 !important;

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const {
+  injectEcommerceMobileHeroReserve,
   optimizeElementorLcpHero,
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
@@ -28,6 +29,15 @@ test('carousel logos gain intrinsic width and height', () => {
   const out = applyElementorIntrinsicDimensions(LOGO);
   assert.match(out, /width="300"/);
   assert.match(out, /height="200"/);
+});
+
+test('agencia-e-commerce injects inline mobile hero reserve before the hero section', () => {
+  const html = '<section><div data-id="748229a" class="elementor-element-748229a"></div></section>';
+  const out = injectEcommerceMobileHeroReserve(html, 'agencia-e-commerce');
+  assert.match(out, /id="playful-ecom-hero-mobile"/);
+  assert.match(out, /aspect-ratio:437\/417/);
+  assert.equal(injectEcommerceMobileHeroReserve(out, 'agencia-e-commerce'), out);
+  assert.equal(injectEcommerceMobileHeroReserve(html, 'agencia-sem'), html);
 });
 
 test('agencia-e-commerce SVG hero stays on endpoint (/_next/image returns 400)', () => {

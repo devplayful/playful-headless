@@ -85,6 +85,21 @@ function shouldServeHeroViaNextImage(src: string): boolean {
  * First content hero on SEM / diseño / UX: optimized `/_next/image` URL,
  * intrinsic size, sizes, fetchpriority and matching srcset when present.
  */
+/** Inline hero layout reserve so mobile stacked columns do not reflow after paint (CLS). */
+const ECOM_MOBILE_HERO_RESERVE_STYLE =
+  '<style id="playful-ecom-hero-mobile">@media (max-width:599px){.elementor-element-748229a>.elementor-container{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important}.elementor-element-748229a>.elementor-container>.elementor-column{width:100%!important;max-width:100%!important;flex:0 0 auto!important}.elementor-element-0d098e7{min-height:calc((100vw - 24px)*417/437)}.elementor-element-ab148e4 .elementor-widget-container{aspect-ratio:437/417;width:100%}.elementor-element-ab148e4 img{width:100%;height:auto;aspect-ratio:437/417;object-fit:contain}}</style>';
+
+export function injectEcommerceMobileHeroReserve(html: string, slug: string): string {
+  if (slug !== 'agencia-e-commerce') return html;
+  if (html.includes('id="playful-ecom-hero-mobile"')) return html;
+  const marker = 'data-id="748229a"';
+  const idx = html.indexOf(marker);
+  if (idx === -1) return html;
+  const insertAt = html.lastIndexOf('<', idx);
+  if (insertAt === -1) return html;
+  return `${html.slice(0, insertAt)}${ECOM_MOBILE_HERO_RESERVE_STYLE}${html.slice(insertAt)}`;
+}
+
 export function optimizeElementorLcpHero(html: string, slug: string): string {
   if (!ELEMENTOR_LCP_SLUGS.has(slug)) return html;
   let done = false;
