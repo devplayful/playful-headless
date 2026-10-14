@@ -125,8 +125,9 @@ test('local eShow post is gated and shaped like a WP otros article', () => {
     params.find((entry) => entry.slug[1] === ESHOW_MADRID_2026_SLUG),
     { slug: ['otros', 'eshow-madrid-2026'] },
   );
+  const stagingParams = listStagingLocalBlogStaticParams({ VERCEL_GIT_COMMIT_REF: 'staging' });
   assert.deepEqual(
-    params.find((entry) => entry.slug[1] === GOOGLE_MERCHANT_CENTER_SLUG),
+    stagingParams.find((entry) => entry.slug[1] === GOOGLE_MERCHANT_CENTER_SLUG),
     { slug: ['pautas-digitales', 'google-merchant-center'] },
   );
 });
@@ -277,7 +278,9 @@ test('local Merchant Center post is gated and shaped like a WP pautas-digitales 
     null,
   );
 
-  const post = getStagingLocalBlogPost(GOOGLE_MERCHANT_CENTER_SLUG, {});
+  const post = getStagingLocalBlogPost(GOOGLE_MERCHANT_CENTER_SLUG, {
+    VERCEL_GIT_COMMIT_REF: 'staging',
+  });
   assert.ok(post);
   assert.equal(post.slug, 'google-merchant-center');
   assert.equal(post.categories[0].slug, 'pautas-digitales');
