@@ -25,6 +25,7 @@ const {
   ESHOW_LISTA_FORM_MARKER,
   ESHOW_LISTA_FORM_SLOT,
   isStagingLocalBlogEnabled,
+  isEshowLocalBlogEnabled,
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
   listStagingSitemapBlogEntries,
@@ -90,10 +91,27 @@ test('staging local posts are off on production and on main', () => {
   );
   assert.equal(isStagingLocalBlogEnabled({ VERCEL_GIT_COMMIT_REF: 'staging' }), true);
   assert.equal(isStagingLocalBlogEnabled({}), true);
+  assert.equal(isEshowLocalBlogEnabled({ VERCEL_ENV: 'production' }), false);
+  assert.equal(isEshowLocalBlogEnabled({ VERCEL_GIT_COMMIT_REF: 'main' }), false);
+  assert.equal(
+    isEshowLocalBlogEnabled({ VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' }),
+    true,
+  );
+  assert.equal(
+    isEshowLocalBlogEnabled({ VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'staging' }),
+    true,
+  );
+  assert.equal(isEshowLocalBlogEnabled({}), true);
 });
 
 test('local eShow post is gated and shaped like a WP otros article', () => {
   assert.equal(getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, { VERCEL_ENV: 'production' }), null);
+  assert.ok(
+    getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, {
+      VERCEL_ENV: 'production',
+      VERCEL_GIT_COMMIT_REF: 'main',
+    }),
+  );
   assert.ok(
     getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, {
       VERCEL_ENV: 'production',
@@ -133,7 +151,6 @@ test('eShow body is the live copy: no H1, two design WebP figures, form marker a
   assert.match(html, /<h2 id="cobertura">Cobertura del eShow Madrid 2026<\/h2>/);
   assert.match(html, /<h2 id="sigue-el-eshow">Sigue el eShow con Playful<\/h2>/);
   assert.match(html, /<a href="\/avisos-eshow">\[COPY PENDIENTE\]<\/a>/);
-  assert.match(html, /<a href="\/avisos-eshow">\[COPY PENDIENTE\]<\/a>/);
   assert.match(html, /<h2 id="que-trae-el-eshow-2026-si-tienes-tienda-online">/);
   assert.ok(html.includes(ESHOW_LISTA_FORM_SLOT));
   const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);
@@ -154,6 +171,7 @@ test('eShow body is the live copy: no H1, two design WebP figures, form marker a
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_CABECERA_SRC)));
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_FEATURED_SRC)));
   assert.ok(existsSync(publicPath('/images/authors/stefanni-parabavidez.jpg')));
+  assert.ok(existsSync(publicPath('/images/avatar-playful.svg')));
 });
 
 test('coverage blocks are typed, newest first, and drive dateModified', () => {
@@ -232,9 +250,16 @@ test('wordpress and the post template wire the staging-only post without listing
   assert.doesNotMatch(relatedSource, /google-merchant-center/);
 });
 
-test('staging sitemap extras follow dateModified and stay off production', () => {
+test('eShow sitemap extras follow dateModified on staging and production main', () => {
   assert.deepEqual(listStagingSitemapBlogEntries({ VERCEL_ENV: 'production' }), []);
   assert.deepEqual(listStagingSitemapBlogEntries({ VERCEL_GIT_COMMIT_REF: 'main' }), []);
+  assert.deepEqual(
+    listStagingSitemapBlogEntries({ VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' }),
+    [{
+      loc: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
+      lastmod: '2026-10-07T00:00:00+02:00',
+    }],
+  );
   assert.deepEqual(listStagingSitemapBlogEntries({ VERCEL_GIT_COMMIT_REF: 'staging' }), [{
     loc: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
     lastmod: '2026-10-07T00:00:00+02:00',
@@ -245,7 +270,7 @@ test('staging sitemap extras follow dateModified and stay off production', () =>
   process.env.VERCEL_ENV = 'production';
   process.env.VERCEL_GIT_COMMIT_REF = 'main';
   try {
-    assert.doesNotMatch(buildSitemapXml(), /eshow-madrid-2026/);
+    assert.match(buildSitemapXml(), /eshow-madrid-2026/);
   } finally {
     if (previous === undefined) delete process.env.VERCEL_ENV;
     else process.env.VERCEL_ENV = previous;

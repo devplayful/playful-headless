@@ -94,6 +94,7 @@ test('GSC 301 aliases use absolute playfulagency.com destinations', () => {
 test('GSC junk paths are 410 and stay out of the CERRAR 31-path inventory', () => {
   assert.deepEqual([...GSC_GONE_PATHS], [
     '/project/bottle-mockup',
+    '/project/cosmetic-mockup',
     '/agencylog',
   ]);
   assert.equal(CLOSED_BLOG_PATHS.length, 31);

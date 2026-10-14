@@ -145,19 +145,15 @@ export function localBlogStaticParams(): Array<{ slug: string[] }> {
  * Staging and production read the same WP (`endpoint.playfulagency.com`),
  * so publishing there would leak to playfulagency.com.
  *
- * Gate: never on Vercel production or the `main` git ref.
- * Staging branch / preview / local tests serve these slugs.
+ * Gate: Merchant Center stays staging-only (staging branch, preview, local).
+ * eShow Madrid 2026 is live on staging (always) and on production
+ * (`main` + VERCEL_ENV=production) via `isEshowLocalBlogEnabled`.
  *
- * ## Al pasar eShow a producción (GO de Jose o Ale)
- * 1. Sustituir `ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL` por
- *    la hora real del deploy (ISO con offset Europe/Madrid).
- * 2. Añadir `/blog/otros/eshow-madrid-2026` a `SITEMAP_BLOG_PATHS`
- *    en `utils/apex-sitemap.ts`. El lastmod ya sale de
- *    `eshowMadrid2026DateModified()` vía `listStagingSitemapBlogEntries`.
- *    En producción hay que o bien añadir la ruta a `SITEMAP_BLOG_PATHS`
- *    (lastmod del sitemap estático) o servir el extra también en prod.
- * 3. Definir `GHL_TAG_ESHOW_LISTA` en Vercel producción (Ops/Email).
- * 4. No publicar el artículo en WordPress.
+ * ## eShow en producción (GO José 2026-10-14)
+ * - Post local vía `isEshowLocalBlogEnabled`; no publicar en WordPress.
+ * - Sitemap: `listStagingSitemapBlogEntries()` (lastmod = `eshowMadrid2026DateModified()`).
+ * - Definir `GHL_TAG_ESHOW_LISTA` en Vercel producción (Ops/Email).
+ * - Staging always serves the local post, even when VERCEL_ENV=production.
  *
  * ## Al pasar Merchant Center a producción (GO de Jose o Ale)
  * 1. Confirmar datePublished / dateModified con SEO
@@ -200,6 +196,18 @@ export function isStagingLocalBlogEnabled(
   const ref = (env.VERCEL_GIT_COMMIT_REF || env.VERCEL_BRANCH || '').trim();
   // Staging branch can deploy with VERCEL_ENV=production; local posts must still win.
   if (ref === 'staging') return true;
+  if (env.VERCEL_ENV === 'production') return false;
+  if (ref === 'main') return false;
+  return true;
+}
+
+/** eShow Madrid 2026: staging (always), production main, and local/preview. */
+export function isEshowLocalBlogEnabled(
+  env: StagingLocalBlogEnv = process.env,
+): boolean {
+  const ref = (env.VERCEL_GIT_COMMIT_REF || env.VERCEL_BRANCH || '').trim();
+  if (ref === 'staging') return true;
+  if (env.VERCEL_ENV === 'production' && ref === 'main') return true;
   if (env.VERCEL_ENV === 'production') return false;
   if (ref === 'main') return false;
   return true;
@@ -390,7 +398,6 @@ function buildEshowMadrid2026Post(): WPPost {
 }
 
 const STAGING_ONLY_BLOG_POSTS: Record<string, WPPost> = {
-  [ESHOW_MADRID_2026_SLUG]: buildEshowMadrid2026Post(),
   [GOOGLE_MERCHANT_CENTER_SLUG]: buildGoogleMerchantCenterPost(),
 };
 
@@ -398,15 +405,23 @@ export function getStagingLocalBlogPost(
   slug: string | undefined | null,
   env: StagingLocalBlogEnv = process.env,
 ): WPPost | null {
-  if (!slug || !isStagingLocalBlogEnabled(env)) return null;
+  if (!slug) return null;
+  if (slug === ESHOW_MADRID_2026_SLUG) {
+    return isEshowLocalBlogEnabled(env) ? buildEshowMadrid2026Post() : null;
+  }
+  if (!isStagingLocalBlogEnabled(env)) return null;
   return STAGING_ONLY_BLOG_POSTS[slug] || null;
 }
 
 export function listStagingLocalBlogStaticParams(
   env: StagingLocalBlogEnv = process.env,
 ): Array<{ slug: string[] }> {
-  if (!isStagingLocalBlogEnabled(env)) return [];
-  return Object.values(STAGING_ONLY_BLOG_POSTS).map((post) => ({
+  const posts: WPPost[] = [];
+  if (isEshowLocalBlogEnabled(env)) posts.push(buildEshowMadrid2026Post());
+  if (isStagingLocalBlogEnabled(env)) {
+    posts.push(...Object.values(STAGING_ONLY_BLOG_POSTS));
+  }
+  return posts.map((post) => ({
     slug: [post.categories?.[0]?.slug || 'sin-categoria', post.slug],
   }));
 }
@@ -414,7 +429,7 @@ export function listStagingLocalBlogStaticParams(
 export function listStagingSitemapBlogEntries(
   env: StagingLocalBlogEnv = process.env,
 ): Array<{ loc: string; lastmod: string }> {
-  if (!isStagingLocalBlogEnabled(env)) return [];
+  if (!isEshowLocalBlogEnabled(env)) return [];
   return [{
     loc: `https://playfulagency.com${ESHOW_MADRID_2026_PATH}`,
     lastmod: eshowMadrid2026DateModified(),

@@ -1,4 +1,8 @@
 import { buildNextImageUrl, isOptimizableWpUpload } from './next-image-url.ts';
+import {
+  ELEMENTOR_HERO_SRCSET_WIDTHS,
+  snapNextImageWidth,
+} from './next-image-widths.ts';
 
 /** Service landings whose hero PNG/SVG should be served via `/_next/image`. */
 export const ELEMENTOR_LCP_SLUGS = new Set([
@@ -9,7 +13,8 @@ export const ELEMENTOR_LCP_SLUGS = new Set([
   // agencia-ux-ui: hero /_next/image regressed mobile LCP vs f805e38 in LH batch (a7cbdfc, #265, #268).
 ]);
 
-export const ELEMENTOR_HERO_LCP_SIZES = '(max-width: 768px) 100vw, 437px';
+/** Desktop slot is 437px CSS; request 750w so srcset only uses allowed optimizer widths. */
+export const ELEMENTOR_HERO_LCP_SIZES = '(max-width: 768px) 100vw, 750px';
 
 const CAROUSEL_LOGO_SIZE = { width: 300, height: 200 } as const;
 
@@ -56,21 +61,9 @@ function setOrReplaceAttr(attrs: string, name: string, value: string): string {
   return `${attrs} ${name}="${value}"`;
 }
 
-function optimizeSrcset(srcset: string, targetWidth: number): string {
-  return srcset
-    .split(',')
-    .map((entry) => {
-      const trimmed = entry.trim();
-      if (!trimmed) return '';
-      const parts = trimmed.split(/\s+/);
-      const url = parts[0];
-      const descriptor = parts.slice(1).join(' ');
-      if (!isOptimizableWpUpload(url)) return trimmed;
-      const widthMatch = descriptor.match(/^(\d+)w$/);
-      const w = widthMatch ? Number(widthMatch[1]) : targetWidth;
-      return `${buildNextImageUrl(url, w)} ${descriptor}`.trim();
-    })
-    .filter(Boolean)
+function heroImageSrcset(fullSizeSrc: string): string {
+  return ELEMENTOR_HERO_SRCSET_WIDTHS
+    .map((w) => `${buildNextImageUrl(fullSizeSrc, w)} ${w}w`)
     .join(', ');
 }
 
@@ -96,20 +89,16 @@ export function optimizeElementorLcpHero(html: string, slug: string): string {
 
     const width = readNumericAttr(attrs, 'width') ?? 437;
     const height = readNumericAttr(attrs, 'height') ?? 417;
-    const optimizedSrc = buildNextImageUrl(src, Math.max(width, 828));
+    const optimizedSrc = buildNextImageUrl(src, snapNextImageWidth(Math.max(width, 750)));
 
     let next = attrs;
     next = setOrReplaceAttr(next, 'src', optimizedSrc);
     next = setOrReplaceAttr(next, 'width', String(width));
     next = setOrReplaceAttr(next, 'height', String(height));
     next = setOrReplaceAttr(next, 'sizes', ELEMENTOR_HERO_LCP_SIZES);
+    next = setOrReplaceAttr(next, 'srcset', heroImageSrcset(src));
     if (!/fetchpriority=/i.test(next)) next += ' fetchpriority="high"';
     if (!/\bdecoding=/i.test(next)) next += ' decoding="async"';
-
-    const srcsetMatch = /srcset=["']([^"']+)["']/i.exec(attrs);
-    if (srcsetMatch) {
-      next = setOrReplaceAttr(next, 'srcset', optimizeSrcset(srcsetMatch[1], width));
-    }
 
     return `<img${next}>`;
   });
@@ -123,7 +112,7 @@ export function firstOptimizableHeroSrc(html: string, slug: string): string | nu
     const src = match[1];
     if (isHeroCandidate(match[0], src) && isOptimizableWpUpload(src)) {
       const width = readNumericAttr(match[0], 'width') ?? 437;
-      return buildNextImageUrl(src, Math.max(width, 828));
+      return buildNextImageUrl(src, snapNextImageWidth(Math.max(width, 750)));
     }
   }
   return null;

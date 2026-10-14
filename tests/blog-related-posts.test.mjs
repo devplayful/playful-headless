@@ -402,6 +402,11 @@ test('shared related index is lite, long-lived and last-known-good', () => {
   assert.match(indexLoader, /_fields/);
   assert.match(indexLoader, /orderby/);
   assert.match(indexLoader, /status/);
+  assert.match(indexLoader, /uniquePositiveIds\(posts\.map\(\(post\) => post\.featured_media\)\)/);
+  assert.match(indexLoader, /loadBlogMediaByIds\(/);
+  assert.match(indexLoader, /offset \+= 100/);
+  assert.match(indexLoader, /mediaIds\.slice\(offset, offset \+ 100\)/);
+  assert.match(indexLoader, /catch \{/);
   const resolveStart = wordpress.indexOf('export async function getRelatedBlogPostsForPost');
   const resolveFn = wordpress.slice(resolveStart, resolveStart + 1200);
   assert.match(resolveFn, /selectRelatedFromIndex/);
@@ -571,6 +576,59 @@ test('same-category related cards give the 6 audit orphans an inbound sibling', 
     assert.ok(hosts.length > 0, `${href} needs a related-card inbound`);
     assert.equal(hosts[0].categorySlug, href.split('/')[2]);
   }
+});
+
+test('related index covers prefer local override, then WP source_url, then fallback', async () => {
+  const {
+    BLOG_COVER_FALLBACK,
+    BLOG_COVER_OVERRIDES,
+    resolveBlogCoverAlt,
+    resolveBlogCoverUrl,
+  } = await import('../lib/blog-cover-image.ts');
+  const { publicWebpIfPresent } = await import('../lib/public-webp-src.ts');
+  const { remapCanibalizacionHref } = await import('../utils/blog-canibalizacion-redirects.ts');
+
+  const tiktokSlug = 'tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo';
+  const overrideSlug = 'como-posicionar-tu-negocio-en-google-ads';
+  const wpUrl = 'https://endpoint.playfulagency.com/wp-content/uploads/2023/05/tiktok-live-studio.jpg';
+
+  assert.equal(Object.hasOwn(BLOG_COVER_OVERRIDES, tiktokSlug), false);
+  const tiktokUrl = publicWebpIfPresent(resolveBlogCoverUrl(tiktokSlug, wpUrl));
+  assert.match(tiktokUrl, /wp-content\/uploads/);
+  assert.doesNotMatch(tiktokUrl, /\/images\/og\/home\.jpg/);
+
+  const overrideUrl = publicWebpIfPresent(resolveBlogCoverUrl(overrideSlug, wpUrl));
+  assert.equal(overrideUrl, publicWebpIfPresent(BLOG_COVER_OVERRIDES[overrideSlug]));
+  assert.doesNotMatch(overrideUrl, /wp-content\/uploads/);
+  assert.equal(
+    publicWebpIfPresent(resolveBlogCoverUrl(tiktokSlug, '')),
+    publicWebpIfPresent(BLOG_COVER_FALLBACK),
+  );
+
+  const wordpress = readFileSync(
+    new URL('../services/wordpress.ts', import.meta.url),
+    'utf8',
+  );
+  const toIndex = wordpress.slice(
+    wordpress.indexOf('function toRelatedIndexPost'),
+    wordpress.indexOf('function relatedCardFromIndexPost'),
+  );
+  const toCard = wordpress.slice(
+    wordpress.indexOf('function relatedCardFromIndexPost'),
+    wordpress.indexOf('async function loadBlogRelatedIndexPage'),
+  );
+  assert.match(toIndex, /media\?\.source_url \|\| BLOG_COVER_FALLBACK/);
+  assert.match(toIndex, /resolveBlogCoverAlt\(post\.slug, media\?\.alt_text \|\| ''\)/);
+  assert.match(toIndex, /remapCanibalizacionHref\(`\/blog\/\$\{categorySlug\}\/\$\{post\.slug\}`\)/);
+  assert.match(toCard, /resolveBlogCoverAlt\(post\.slug, post\.featuredMediaAlt \|\| ''\)/);
+  assert.equal(
+    remapCanibalizacionHref('/blog/otros/por-que-debes-hacer-publicidad-digital-en-tu-negocio'),
+    '/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
+  );
+  assert.equal(
+    resolveBlogCoverAlt(tiktokSlug, 'WP alt'),
+    'Una chica baila mientras otra la graba para un directo en TikTok Live Studio',
+  );
 });
 
 test('last-known-good index ignores empty refreshes and empty related hides or throws', () => {

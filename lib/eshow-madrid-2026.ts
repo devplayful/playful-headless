@@ -1,5 +1,6 @@
 import { AVISOS_ESHOW_PATH } from './avisos-eshow.ts';
 
+
 /**
  * Artículo vivo eShow Madrid 2026.
  * Copy literal de playful-copy #157, SHA 93d1533
@@ -74,6 +75,7 @@ export const ESHOW_LISTA_DEFAULT_UTM = {
 export const ESHOW_AVISOS_ESHOW_LINK_ANCHOR = '[COPY PENDIENTE]';
 export const ESHOW_AVISOS_ESHOW_LINK_HTML =
   `<p><a href="${AVISOS_ESHOW_PATH}">${ESHOW_AVISOS_ESHOW_LINK_ANCHOR}</a></p>`;
+
 
 /** Añadir un bloque real = añadir una entrada. dateModified sigue al más reciente. */
 export type EshowCoverageBlock = {

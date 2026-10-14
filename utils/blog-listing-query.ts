@@ -49,9 +49,21 @@ export function isBareBlogListingPath(pathname: string, search = ''): boolean {
   return path === '/blog' && (search === '' || search === '?');
 }
 
+/** Category filters canonicalize to page 1 of that filter; page alone stays on /blog. */
+export function blogListingCanonicalUrl(
+  searchParams?: BlogListingSearchParams | null,
+): string {
+  const { category, invalidPage } = parseBlogListingSearchParams(searchParams);
+  const base = canonicalForPath('/blog');
+  if (invalidPage || !category) {
+    return base;
+  }
+  return `${base}?category=${encodeURIComponent(category)}`;
+}
+
 export function buildBlogListingMetadata(searchParams?: BlogListingSearchParams | null) {
   const noindexFollow = shouldNoindexBlogListing(searchParams);
-  const url = canonicalForPath('/blog');
+  const url = blogListingCanonicalUrl(searchParams);
   return {
     title: 'Blog - Playful Agency',
     description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',

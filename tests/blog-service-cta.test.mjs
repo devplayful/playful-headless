@@ -76,18 +76,27 @@ test('wraps the first unlinked agencia SEM mention', () => {
   assert.match(html, /<a href="\/agencia-sem">agencia SEM<\/a>/);
 });
 
+test('que-es-una-agencia-de-sem uses anchor text agencia SEM for agencia de SEM', () => {
+  const html = applyBlogServiceMentionLink(
+    '<p>Lo hace una agencia de SEM en campañas de pago.</p>',
+    'que-es-una-agencia-de-sem',
+  );
+  assert.match(html, /<a href="\/agencia-sem">agencia SEM<\/a>/);
+  assert.doesNotMatch(html, />agencia de SEM</);
+});
+
 test('wraps Agencia SEM and agencia de SEM casings', () => {
   const titled = applyBlogServiceMentionLink(
     '<p>Agencia SEM con resultados.</p>',
     'que-es-una-agencia-de-sem',
   );
-  assert.match(titled, /<a href="\/agencia-sem">Agencia SEM<\/a>/);
+  assert.match(titled, /<a href="\/agencia-sem">agencia SEM<\/a>/);
 
   const deForm = applyBlogServiceMentionLink(
     '<p>Contrata una agencia de SEM hoy.</p>',
     'que-es-una-agencia-de-sem',
   );
-  assert.match(deForm, /<a href="\/agencia-sem">agencia de SEM<\/a>/);
+  assert.match(deForm, /<a href="\/agencia-sem">agencia SEM<\/a>/);
 });
 
 test('does not wrap when a link to /agencia-sem already exists', () => {
