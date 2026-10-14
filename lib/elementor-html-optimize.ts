@@ -179,6 +179,38 @@ export function firstOptimizableHeroSrc(html: string, slug: string): string | nu
   return null;
 }
 
+/**
+ * Inlined before WP stylesheets on /agencia-e-commerce.
+ * LH/trace: 9102780 jumped when in-flow MAE `.master-shape` (761px)
+ * later became `position:absolute` (module CSS). Also pin 022b469
+ * flex-start/nowrap + 437/417. Do not min-height 9102780.
+ */
+export const ECOM_HERO_CRITICAL_CSS = `.playful-wp-page[data-playful-page="85582"] .master-shape,
+.playful-wp-page[data-playful-page="85582"] .master-decor,
+.playful-wp-page[data-playful-page="85582"] .image-width-auto.elementor-widget-mae-gallery-stack{
+position:absolute!important;pointer-events:none!important}
+@media (max-width:767px){
+.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469>.elementor-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-022b469.elementor-section-content-middle>.elementor-container{
+align-items:flex-start!important;flex-wrap:nowrap!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
+flex:0 0 50%!important;width:50%!important;max-width:50%!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
+align-self:flex-start!important;height:calc(50vw * 417 / 437)!important;min-height:calc(50vw * 417 / 437)!important;max-height:calc(50vw * 417 / 437)!important;overflow:hidden!important;contain:layout!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img{
+aspect-ratio:437/417!important;width:100%!important;height:auto!important;display:block!important;object-fit:contain!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
+.playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p{
+font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;max-height:14em!important;overflow:hidden!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .sub-heading{
+font-family:var(--font-dm-sans),"DM Sans",sans-serif!important;font-size:18px!important;line-height:28px!important;color:#F7F7F7!important}
+}`;
+
 /** Carousel logos, portfolio thumbs and tracking pixels missing width/height. */
 export function applyElementorIntrinsicDimensions(html: string): string {
   return html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {

@@ -2070,16 +2070,23 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elemen
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p,
 .playful-wp-page[data-playful-page="85582"] .elementor-85582 .elementor-element-702f19a p,
 body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
-  /* next/font first: WP/Google "Paytone One" swap was bypassing size-adjust
-     and reflowing 702f19a, which moved subtitle 9102780 (CLS ~0.23 in #280). */
+  /* next/font first. Do NOT set 72px/70px here — that line-height applied on
+     mobile before the 599px override and blew 702f19a to ~1680px, moving 9102780. */
   font-family: var(--font-paytone-one), "Paytone One", Montserrat, sans-serif !important;
-  font-size: 72px !important;
-  line-height: 70px !important;
   font-weight: 400 !important;
   color: #F7F7F7 !important;
   text-align: start !important;
 }
-@media (max-width: 1024px) {
+@media (min-width: 1025px) {
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p,
+  .playful-wp-page[data-playful-page="85582"] .elementor-85582 .elementor-element-702f19a p,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
+    font-size: 72px !important;
+    line-height: 70px !important;
+  }
+}
+@media (min-width: 600px) and (max-width: 1024px) {
   .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
   .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
     font-size: 42px !important;

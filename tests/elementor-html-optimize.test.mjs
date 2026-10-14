@@ -5,6 +5,7 @@ const {
   optimizeElementorLcpHero,
   applyElementorIntrinsicDimensions,
   firstOptimizableHeroSrc,
+  ECOM_HERO_CRITICAL_CSS,
 } = await import('../lib/elementor-html-optimize.ts');
 
 const HERO =
@@ -53,11 +54,18 @@ test('agencia-e-commerce SVG hero stays on origin with reserved 437/417 box', ()
 test('e-com hero CSS reserves 437/417 and does not min-height 9102780', async () => {
   const { readFile } = await import('node:fs/promises');
   const css = await readFile(new URL('../components/ElementorPageHeaderFix.css', import.meta.url), 'utf8');
+  const page = await readFile(new URL('../components/ElementorPageContent.tsx', import.meta.url), 'utf8');
   assert.match(css, /elementor-element-022b469[\s\S]*align-items:\s*flex-start/);
   assert.match(css, /elementor-element-0d098e7[\s\S]*50vw \* 417 \/ 437/);
   assert.match(css, /aspect-ratio:\s*437 \/ 417/);
   assert.match(css, /var\(--font-paytone-one\)/);
   assert.doesNotMatch(css, /elementor-element-9102780[^{]*\{[^}]*min-height/);
+  assert.match(ECOM_HERO_CRITICAL_CSS, /master-shape[\s\S]*position:absolute/);
+  assert.match(ECOM_HERO_CRITICAL_CSS, /022b469[\s\S]*flex-wrap:nowrap/);
+  assert.match(ECOM_HERO_CRITICAL_CSS, /9102780 \.sub-heading/);
+  assert.doesNotMatch(ECOM_HERO_CRITICAL_CSS, /9102780[^{]*\{[^}]*min-height/);
+  assert.match(page, /ECOM_HERO_CRITICAL_CSS/);
+  assert.match(page, /playful-ecom-hero-cls/);
 });
 
 test('agencia-e-commerce raster hero still uses /_next/image', () => {
