@@ -132,6 +132,8 @@ test('eShow body is the live copy: no H1, two design WebP figures, form marker a
   assert.match(html, /<h2 id="fechas-horario-y-como-llegar-a-ifema">Fechas, horario y cómo llegar a IFEMA<\/h2>/);
   assert.match(html, /<h2 id="cobertura">Cobertura del eShow Madrid 2026<\/h2>/);
   assert.match(html, /<h2 id="sigue-el-eshow">Sigue el eShow con Playful<\/h2>/);
+  assert.match(html, /<a href="\/avisos-eshow">\[COPY PENDIENTE\]<\/a>/);
+  assert.match(html, /<a href="\/avisos-eshow">\[COPY PENDIENTE\]<\/a>/);
   assert.match(html, /<h2 id="que-trae-el-eshow-2026-si-tienes-tienda-online">/);
   assert.ok(html.includes(ESHOW_LISTA_FORM_SLOT));
   const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);

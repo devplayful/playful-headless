@@ -1,3 +1,5 @@
+import { AVISOS_ESHOW_PATH } from './avisos-eshow.ts';
+
 /**
  * Artículo vivo eShow Madrid 2026.
  * Copy literal de playful-copy #157, SHA 93d1533
@@ -67,6 +69,11 @@ export const ESHOW_LISTA_DEFAULT_UTM = {
   utm_medium: 'form',
   utm_campaign: 'eshow-madrid-2026',
 } as const;
+
+/** Staging: enlace provisional a la landing de avisos (copy pendiente). */
+export const ESHOW_AVISOS_ESHOW_LINK_ANCHOR = '[COPY PENDIENTE]';
+export const ESHOW_AVISOS_ESHOW_LINK_HTML =
+  `<p><a href="${AVISOS_ESHOW_PATH}">${ESHOW_AVISOS_ESHOW_LINK_ANCHOR}</a></p>`;
 
 /** Añadir un bloque real = añadir una entrada. dateModified sigue al más reciente. */
 export type EshowCoverageBlock = {
@@ -213,6 +220,7 @@ export function buildEshowMadrid2026BodyHtml(
 ${renderEshowCoverageBlocks(blocks)}
 <h2 id="sigue-el-eshow">Sigue el eShow con Playful</h2>
 <p>Si no puedes ir a IFEMA o quieres tener los dos días en un mismo sitio, apúntate a la lista «Sigue el eShow con Playful». Recibes un resumen al cerrar cada día de feria y, cuando esté listo, el informe del eShow.</p>
+${ESHOW_AVISOS_ESHOW_LINK_HTML}
 ${ESHOW_LISTA_FORM_SLOT}
 <h2 id="como-registrarte">Cómo registrarte</h2>
 <p>El registro se hace en la <a href="https://www.techshowmadrid.es/registro">web oficial de Tech Show Madrid</a>. Es un formulario único para todo el evento, y en el primer campo eliges la feria de interés principal, que en tu caso es E-SHOW.</p>
