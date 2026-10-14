@@ -51,7 +51,7 @@ export const ESHOW_MADRID_2026_CABECERA_ALT =
 export const ESHOW_MADRID_2026_FIG1_ALT =
   'Ilustración de un asistente del eShow con barba cargando un paquete, sobre fondo lavanda';
 export const ESHOW_MADRID_2026_PROGRAMA_ALT =
-  'Ilustración de un asistente del eShow con un ventilador portátil, sobre fondo lavanda';
+  'Ilustración de un asistente del eShow con un ventilador portátil y un portátil, sobre fondo lavanda';
 
 /** Autor visible en staging (post local; no viene de WP en este slug). */
 /** Visible byline / pill (post local; no autor WP en este slug). */

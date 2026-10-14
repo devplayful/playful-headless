@@ -86,7 +86,7 @@ test('staging local posts are off on production and on main', () => {
   assert.equal(isStagingLocalBlogEnabled({ VERCEL_GIT_COMMIT_REF: 'main' }), false);
   assert.equal(
     isStagingLocalBlogEnabled({ VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'staging' }),
-    false,
+    true,
   );
   assert.equal(isStagingLocalBlogEnabled({ VERCEL_GIT_COMMIT_REF: 'staging' }), true);
   assert.equal(isStagingLocalBlogEnabled({}), true);
@@ -94,6 +94,12 @@ test('staging local posts are off on production and on main', () => {
 
 test('local eShow post is gated and shaped like a WP otros article', () => {
   assert.equal(getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, { VERCEL_ENV: 'production' }), null);
+  assert.ok(
+    getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, {
+      VERCEL_ENV: 'production',
+      VERCEL_GIT_COMMIT_REF: 'staging',
+    }),
+  );
   assert.deepEqual(listStagingLocalBlogStaticParams({ VERCEL_ENV: 'production' }), []);
 
   const post = getStagingLocalBlogPost(ESHOW_MADRID_2026_SLUG, {});

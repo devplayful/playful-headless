@@ -38,6 +38,7 @@ import {
   buildBlogBreadcrumbJsonLd,
   formatCombinedByline,
   formatUpdatedByline,
+  EDITORIAL_AVATAR_SRC,
   resolveBlogAuthorHref,
   resolveBlogEditorialUpdate,
   serializeJsonLd,
@@ -57,6 +58,7 @@ import EshowListaForm from '@/components/blog/EshowListaForm';
 import {
   ESHOW_LISTA_FORM_MARKER,
   ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
+  ESHOW_MADRID_2026_EXCERPT,
   ESHOW_MADRID_2026_H1,
   ESHOW_MADRID_2026_META,
   ESHOW_MADRID_2026_AUTHOR_NAME,
@@ -236,16 +238,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     url: postCanonical,
     slug: postSlug,
   });
-  const excerptText = formatBlogHeroExcerpt(post.excerpt?.rendered);
-  const bylineName =
-    post.author && typeof post.author === 'object'
+  const excerptText = isEshow
+    ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
+    : formatBlogHeroExcerpt(post.excerpt?.rendered);
+  const bylineName = isEshow
+    ? ESHOW_MADRID_2026_AUTHOR_NAME
+    : post.author && typeof post.author === 'object'
       ? editorial
         ? formatCombinedByline(post.author.name, editorial.updatedBy)
         : post.author.name
       : authorName;
-  const authorHref = resolveBlogAuthorHref(
-    post.author && typeof post.author === 'object' ? post.author.url : undefined,
-  );
+  const authorHref = isEshow
+    ? undefined
+    : resolveBlogAuthorHref(
+        post.author && typeof post.author === 'object' ? post.author.url : undefined,
+      );
   const updatedByline = isEshow
     ? formatEshowActualizadoLine()
     : formatUpdatedByline(
@@ -318,11 +325,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   href={authorHref}
                   updatedLabel={updatedByline}
                   avatarPriority
-                  avatarSrc={authorAvatar}
+                  avatarSrc={isEshow ? EDITORIAL_AVATAR_SRC : authorAvatar}
                   avatarAlt={
-                    post.author && typeof post.author === 'object'
-                      ? post.author.name
-                      : authorName
+                    isEshow
+                      ? ESHOW_MADRID_2026_AUTHOR_NAME
+                      : post.author && typeof post.author === 'object'
+                        ? post.author.name
+                        : authorName
                   }
                 />
               </div>
@@ -352,6 +361,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     className="max-h-[88%] max-w-full h-auto w-auto object-contain object-center"
                     sizes={BLOG_POST_FEATURED_SIZES}
                     priority
+                    unoptimized
                   />
                 ) : (
                   <Image
