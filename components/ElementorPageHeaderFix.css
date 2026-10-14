@@ -2070,7 +2070,9 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83849"] .elemen
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p,
 .playful-wp-page[data-playful-page="85582"] .elementor-85582 .elementor-element-702f19a p,
 body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
-  font-family: "Paytone One", Montserrat, sans-serif !important;
+  /* next/font first: WP/Google "Paytone One" swap was bypassing size-adjust
+     and reflowing 702f19a, which moved subtitle 9102780 (CLS ~0.23 in #280). */
+  font-family: var(--font-paytone-one), "Paytone One", Montserrat, sans-serif !important;
   font-size: 72px !important;
   line-height: 70px !important;
   font-weight: 400 !important;
@@ -2126,6 +2128,46 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img {
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+/*
+ * E-com hero CLS (page 85582). Trace of #280 (LH node 9102780):
+ * - 022b469 is `elementor-section-content-middle`; columns stay 50/50 on
+ *   mobile (frontend.min.css has no 767px width:100% for .elementor-col-50).
+ * - Origin SVG paint grew 0d098e7; content-middle recentered the text
+ *   column and 9102780 (mae-headings sub-heading under Paytone 702f19a) moved.
+ * - Stacking 50%→100% or min-height on 9102780 reflowed that subtitle more.
+ * Reserve the illustration slot (437/417) and flex-start the inner row.
+ * Do not defer WP CSS. Do not stack columns. Do not min-height 9102780.
+ */
+@media (max-width: 767px) {
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469.elementor-section-content-middle > .elementor-container,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container {
+    align-items: flex-start !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 {
+    align-self: flex-start !important;
+    height: calc(50vw * 417 / 437) !important;
+    min-height: calc(50vw * 417 / 437) !important;
+    max-height: calc(50vw * 417 / 437) !important;
+    overflow: hidden !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack {
+    aspect-ratio: 437 / 417 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 437 / 417 !important;
+    object-fit: contain !important;
+  }
 }
 
 /* 2) SERVICE CARDS 4bf2ec3 / 2a572c7
