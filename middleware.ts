@@ -192,6 +192,8 @@ export const config = {
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad/',
     '/project/bottle-mockup',
     '/project/bottle-mockup/',
+    '/project/cosmetic-mockup',
+    '/project/cosmetic-mockup/',
     '/agencylog',
     '/agencylog/',
     '/wp-login.php',

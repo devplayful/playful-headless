@@ -6,6 +6,8 @@ export type BlogServiceCta = {
   href: string;
   label: string;
   mentionRe: RegExp;
+  /** Visible anchor when the matched phrase differs (e.g. “agencia de SEM” → “agencia SEM”). */
+  mentionAnchorText?: string;
 };
 
 /**
@@ -24,6 +26,7 @@ export const BLOG_SERVICE_CTAS: Record<string, BlogServiceCta> = {
     href: '/agencia-sem',
     label: 'Conoce nuestro servicio de Agencia SEM',
     mentionRe: /agencia(?:\s+de)?\s+SEM/i,
+    mentionAnchorText: 'agencia SEM',
   },
 };
 
@@ -81,11 +84,12 @@ export function linkFirstUnlinkedServiceMention(
       if (!match || match.index == null) return;
 
       const mention = match[0];
+      const anchorText = cta.mentionAnchorText || mention;
       const before = text.slice(0, match.index);
       const after = text.slice(match.index + mention.length);
       const $tmp = $('<span></span>');
       if (before) $tmp.append(before);
-      $tmp.append($('<a></a>').attr('href', cta.href).text(mention));
+      $tmp.append($('<a></a>').attr('href', cta.href).text(anchorText));
       if (after) $tmp.append(after);
       $(node).replaceWith($tmp.contents());
       linked = true;

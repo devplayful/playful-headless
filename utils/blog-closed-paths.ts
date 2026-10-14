@@ -38,6 +38,7 @@ const CLOSED_BLOG_PATH_SET = new Set(CLOSED_BLOG_PATHS);
 /** GSC Not found junk — 410. Not part of the signed José Excel v2 CERRAR list. */
 export const GSC_GONE_PATHS: readonly string[] = Object.freeze([
   '/project/bottle-mockup',
+  '/project/cosmetic-mockup',
   '/agencylog',
 ]);
 

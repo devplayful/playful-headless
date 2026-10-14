@@ -55,7 +55,7 @@ test('listing generateMetadata noindexes any query and keeps /blog canonical', (
   assert.match(listingQuery, /shouldNoindexBlogListing/);
   assert.match(queryPage, /buildBlogListingMetadata\(await searchParams\)/);
   assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
-  assert.match(metadataFn, /canonicalForPath\('\/blog'\)/);
+  assert.match(metadataFn, /blogListingCanonicalUrl\(/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.doesNotMatch(metadataFn, /parsedPage\s*>=\s*2/);
   assert.match(listingPage, /buildBlogListingMetadata\(\)/);

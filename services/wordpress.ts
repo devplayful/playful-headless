@@ -23,6 +23,7 @@ import {
   resolveBlogCoverAlt,
   resolveBlogCoverUrl,
 } from '@/lib/blog-cover-image';
+import { repairBlogPostYoastCanonical } from '@/utils/blog-yoast-canonical';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import {
   BLOG_ARTICLE_POST_FIELDS,
@@ -745,7 +746,9 @@ async function hydrateListingPosts(
     loadBlogAuthorsByIds(authorIds, query).catch(() => new Map<number, ListingAuthor>()),
   ]);
   return posts.map((post) => {
-    const rewritten = rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post));
+    const rewritten = repairBlogPostYoastCanonical(
+      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
+    );
     const categoryIds = categoryIdsFromPost(rewritten);
     const categories = categoryIds
       .map((id) => terms.get(id))
@@ -1170,7 +1173,9 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
     resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
   );
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
-  return rewriteWpRenderedHtmlFields(post);
+  return repairBlogPostYoastCanonical(
+    rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
+  );
 });
 
 /**

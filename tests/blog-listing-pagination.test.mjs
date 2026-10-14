@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const { blogListingPath, BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/blog-url.ts');
+const { blogListingCanonicalUrl } = await import('../utils/blog-listing-query.ts');
 
 const listingPage = readFileSync(
   new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
@@ -30,6 +31,19 @@ const metadataFn = listingQuery.slice(
 );
 
 const CRAWLABLE_QUERY_HREF = /href=\{?[`'"][^`'"]*\?(?:page|category)=/i;
+
+test('blogListingCanonicalUrl drops page and keeps category filter', () => {
+  assert.equal(blogListingCanonicalUrl({}), 'https://playfulagency.com/blog');
+  assert.equal(
+    blogListingCanonicalUrl({ category: 'seo' }),
+    'https://playfulagency.com/blog?category=seo',
+  );
+  assert.equal(
+    blogListingCanonicalUrl({ page: '2', category: 'seo' }),
+    'https://playfulagency.com/blog?category=seo',
+  );
+  assert.equal(blogListingCanonicalUrl({ page: '-1' }), 'https://playfulagency.com/blog');
+});
 
 test('blogListingPath omits page=1 and empty category', () => {
   assert.equal(blogListingPath(), '/blog');
@@ -92,7 +106,7 @@ test('clean /blog generateMetadata title and robots stay unchanged', () => {
     /description:\s*'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog\.'/,
   );
   assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
-  assert.match(metadataFn, /canonicalForPath\('\/blog'\)/);
+  assert.match(metadataFn, /blogListingCanonicalUrl\(/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.match(listingIndex, /buildBlogListingMetadata\(\)/);
   assert.match(listingIndex, /export const revalidate = 600/);
