@@ -49,7 +49,7 @@ export const ESHOW_MADRID_2026_PROGRAMA_IMAGE_HEIGHT = ESHOW_MADRID_2026_FAN_IMA
 export const ESHOW_MADRID_2026_CABECERA_ALT =
   'Ilustración de un asistente del eShow con los brazos abiertos en gesto de presentación, sobre fondo lavanda';
 export const ESHOW_MADRID_2026_FIG1_ALT =
-  'Ilustración de un asistente del eShow saludando con la mano, sobre fondo lavanda';
+  'Ilustración de un asistente del eShow con barba cargando un paquete, sobre fondo lavanda';
 export const ESHOW_MADRID_2026_PROGRAMA_ALT =
   'Ilustración de un asistente del eShow con un ventilador portátil, sobre fondo lavanda';
 
