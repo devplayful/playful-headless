@@ -8,6 +8,7 @@ import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
   applyElementorIntrinsicDimensions,
+  ECOM_HERO_CRITICAL_CSS,
   firstOptimizableHeroSrc,
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
@@ -175,6 +176,9 @@ export default function ElementorPageContent({
       <link rel="preconnect" href={WP_HOST} />
       {lcpSrc ? (
         <link rel="preload" as="image" href={lcpSrc} fetchPriority="high" />
+      ) : null}
+      {slug === 'agencia-e-commerce' ? (
+        <style id="playful-ecom-hero-cls">{ECOM_HERO_CRITICAL_CSS}</style>
       ) : null}
       <link rel="stylesheet" href={FONTS} />
       {CORE_STYLESHEETS.map((href) => (
