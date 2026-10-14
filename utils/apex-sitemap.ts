@@ -1,4 +1,5 @@
 import { isHiddenFromBlogListings } from './blog-closed-paths.ts';
+import { listStagingSitemapBlogEntries } from '../lib/blog-local-posts.ts';
 import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
@@ -9,6 +10,10 @@ export const SITEMAP_STATIC_PATHS = [
   "/contactar-agencia-de-marketing-digital",
   "/agencia-e-commerce",
   "/agencia-shopify",
+  "/agencia-prestashop",
+  "/agencia-woocommerce",
+  "/pasarela-de-pagos-venezuela",
+  "/shopify-precios",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
@@ -144,6 +149,7 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/seo/web-app-y-app-nativa-cual-es-la-mejor-opcion",
   "/blog/tecnologia/actualizar-tu-e-commerce",
   "/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad",
+  "/blog/tecnologia/cashea-para-comercios",
   "/blog/tecnologia/chatbot-inteligencia-artificial-personalizada-para-tu-activo-digital",
   "/blog/tecnologia/cintillos-de-promocion",
   "/blog/tecnologia/como-crear-un-chatbot-para-tu-empresa-en-5-minutos",
@@ -174,7 +180,16 @@ export function getSitemapLocs(): string[] {
   ));
 }
 
+function sitemapUrlXml(loc: string, lastmod?: string): string {
+  return lastmod
+    ? `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`
+    : `  <url><loc>${loc}</loc></url>`;
+}
+
 export function buildSitemapXml(): string {
-  const urls = getSitemapLocs().map((loc) => `  <url><loc>${loc}</loc></url>`).join('\n');
+  const urls = [
+    ...getSitemapLocs().map((loc) => sitemapUrlXml(loc)),
+    ...listStagingSitemapBlogEntries().map((entry) => sitemapUrlXml(entry.loc, entry.lastmod)),
+  ].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
