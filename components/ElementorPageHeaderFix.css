@@ -2019,6 +2019,17 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="83848"] .conten
 }
 
 
+/* SEM mobile: chat launcher sits above hero CTA without changing GHL load timing. */
+@media (max-width: 599px) {
+  body:has(.playful-wp-page[data-playful-page="83848"]) #lc_chat-widget,
+  body:has(.playful-wp-page[data-playful-page="83848"]) #chat-widget-container,
+  body:has(.playful-wp-page[data-playful-page="83848"]) .lc_text-widget--bubble,
+  body:has(.playful-wp-page[data-playful-page="83848"]) [class*="chat-widget-launcher"],
+  body:has(.playful-wp-page[data-playful-page="83848"]) iframe#lc_widget_iframe {
+    bottom: 5.5rem !important;
+  }
+}
+
 /* SEM-9: José — pastilla Arquitectura SEO mismo fondo que las otras (#F7F7F7). */
 .playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-83d7ee0 .elementor-button-link,
@@ -2063,6 +2074,34 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
   .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
     font-size: 42px !important;
     line-height: 1.2em !important;
+  }
+}
+@media (max-width: 599px) {
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p {
+    font-size: 34px !important;
+    line-height: 1.12 !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a,
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-748229a > .elementor-container {
+    overflow-x: clip !important;
+    max-width: 100% !important;
+  }
+  body:has(.playful-wp-page[data-playful-page="85582"]) header.sticky {
+    z-index: 200 !important;
+  }
+  body:has(.playful-wp-page[data-playful-page="85582"]) .playful-wp-page {
+    overflow-x: clip !important;
+    max-width: 100% !important;
   }
 }
 /* Right-column illustration only. The generic 022b469 > column wrap was

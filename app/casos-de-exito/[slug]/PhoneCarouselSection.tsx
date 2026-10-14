@@ -63,14 +63,19 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
   } 
 
   return (
-    <section className="py-16 bg-[#FEF7FF]">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+    <section className="py-16 bg-[#FEF7FF] overflow-x-clip max-w-[100vw]">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 overflow-x-hidden">
         <style jsx global>{`
           .phone-carousel-wrapper .slick-slide {
             padding: 0 12px;
           }
           .phone-carousel-wrapper .slick-list {
             margin: 0 -12px;
+            overflow: hidden;
+          }
+          .phone-carousel-wrapper .slick-track {
+            display: flex;
+            align-items: stretch;
           }
           .phone-carousel-wrapper .slick-dots {
             bottom: -40px;
@@ -84,7 +89,7 @@ export default function PhoneCarouselSection({ phones }: PhoneCarouselProps) {
           }
         `}</style>
 
-        <div className="phone-carousel-wrapper">
+        <div className="phone-carousel-wrapper overflow-hidden max-w-full">
           <Slider {...settings}>
             {phoneArray.map((item, index) => {
               const src = typeof item.value === 'string' ? item.value : item.value.url
