@@ -192,11 +192,8 @@ export function isStagingLocalBlogEnabled(
   env: StagingLocalBlogEnv = process.env,
 ): boolean {
   const ref = (env.VERCEL_GIT_COMMIT_REF || env.VERCEL_BRANCH || '').trim();
-  // Staging branch can deploy with VERCEL_ENV=production; local posts must still win.
-  if (ref === 'staging') return true;
-  if (env.VERCEL_ENV === 'production') return false;
-  if (ref === 'main') return false;
-  return true;
+  // Merchant Center and similar: staging branch only (incl. VERCEL_ENV=production on staging).
+  return ref === 'staging';
 }
 
 /** eShow Madrid 2026: staging branch and production main (not WP). */

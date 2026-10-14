@@ -89,7 +89,7 @@ test('staging local posts are off on production and on main', () => {
     true,
   );
   assert.equal(isStagingLocalBlogEnabled({ VERCEL_GIT_COMMIT_REF: 'staging' }), true);
-  assert.equal(isStagingLocalBlogEnabled({}), true);
+  assert.equal(isStagingLocalBlogEnabled({}), false);
 });
 
 test('local eShow post is gated and shaped like a WP otros article', () => {
