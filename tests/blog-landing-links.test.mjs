@@ -21,38 +21,40 @@ const serviceCta = readFileSync(
 );
 
 const EXPECTED = [
-  ['actualizar-tu-e-commerce', '/agencia-e-commerce', 'agencia de e-commerce'],
-  ['wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo', '/agencia-ux-ui', 'agencia UX/UI'],
-  ['agencia-seo-internacional-en-el-2025-es-una-necesidad', '/agencia-seo', 'agencia SEO'],
-  ['necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti', '/agencia-seo', 'agencia SEO'],
-  ['programacion-web-que-es-como-puede-servirle-a-mi-marca', '/agencia-diseno-web', 'agencia de diseño web'],
-  ['descubre-todo-lo-que-el-posicionamiento-sem-tiene-para-ti', '/agencia-sem', 'agencia SEM'],
-  ['auditoria-seo-que-es-como-se-hace', '/agencia-seo', 'agencia SEO'],
-  ['que-es-data-studio-de-google-y-como-funciona', '/agencia-seo', 'agencia SEO'],
-  ['desarrollo-ui-ux', '/agencia-ux-ui', 'agencia UX/UI'],
-  ['la-nueva-gestion-de-google-ads', '/agencia-sem', 'agencia SEM'],
-  ['zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', '/agencia-shopify', 'agencia Shopify'],
-  ['diseno-web-de-paginas-web', '/agencia-diseno-web', 'agencia de diseño web'],
-  ['los-5-problemas-de-e-commerce', '/agencia-e-commerce', 'agencia de e-commerce'],
-  ['como-elegir-el-mejor-framework-para-tu-web', '/agencia-diseno-web', 'agencia de diseño web'],
-  ['como-posicionar-tu-negocio-en-google-ads', '/agencia-sem', 'agencia SEM'],
-  ['seo-y-sem-que-son-y-en-que-se-diferencian', '/agencia-sem', 'agencia SEM'],
-  ['ecommerce-mi-negocio-online', '/agencia-e-commerce', 'agencia de e-commerce'],
-  ['rediseno-web', '/agencia-diseno-web', 'agencia de diseño web'],
-  ['6-herramientas-para-crear-informes-seo', '/agencia-seo', 'agencia SEO'],
-  ['aprende-todo-sobre-el-seo', '/agencia-seo', 'agencia SEO'],
-  ['crear-un-e-commerce', '/agencia-e-commerce', 'agencia de e-commerce'],
-  ['tendencias-en-diseno-web-para-el-2022', '/agencia-diseno-web', 'agencia de diseño web'],
+  { slug: 'actualizar-tu-e-commerce', href: '/agencia-e-commerce', anchor: 'actualizar tu e-commerce' },
+  { slug: 'wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo', href: '/agencia-ux-ui', anchor: 'experiencia al usuario' },
+  { slug: 'agencia-seo-internacional-en-el-2025-es-una-necesidad', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'programacion-web-que-es-como-puede-servirle-a-mi-marca', href: '/agencia-diseno-web', anchor: 'desarrollo web' },
+  { slug: 'descubre-todo-lo-que-el-posicionamiento-sem-tiene-para-ti', href: '/agencia-sem', anchor: 'posicionamiento SEM' },
+  { slug: 'auditoria-seo-que-es-como-se-hace', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'que-es-data-studio-de-google-y-como-funciona', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'desarrollo-ui-ux', href: '/agencia-ux-ui', anchor: 'agencia UX/UI' },
+  { slug: 'la-nueva-gestion-de-google-ads', href: '/agencia-sem', anchor: 'agencia SEM' },
+  { slug: 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', href: '/agencia-shopify', anchor: 'agencia Shopify' },
+  { slug: 'diseno-web-de-paginas-web', href: '/agencia-diseno-web', anchor: 'diseño web efectivo' },
+  { slug: 'los-5-problemas-de-e-commerce', href: '/agencia-e-commerce', anchor: 'tienda online' },
+  { slug: 'como-elegir-el-mejor-framework-para-tu-web', href: '/agencia-diseno-web', anchor: 'desarrollo web' },
+  { slug: 'como-posicionar-tu-negocio-en-google-ads', href: '/agencia-sem', anchor: 'publicidad en motores de búsqueda' },
+  { slug: 'seo-y-sem-que-son-y-en-que-se-diferencian', href: '/agencia-sem', anchor: 'SEM', context: 'SEO y SEM' },
+  { slug: 'ecommerce-mi-negocio-online', href: '/agencia-e-commerce', anchor: 'agencia de e-commerce' },
+  { slug: 'rediseno-web', href: '/agencia-diseno-web', anchor: 'rediseño web', context: 'rediseño web es el proceso' },
+  { slug: '6-herramientas-para-crear-informes-seo', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'aprende-todo-sobre-el-seo', href: '/agencia-seo', anchor: 'agencia SEO' },
+  { slug: 'crear-un-e-commerce', href: '/agencia-e-commerce', anchor: 'tienda online' },
+  { slug: 'tendencias-en-diseno-web-para-el-2022', href: '/agencia-diseno-web', anchor: 'tendencias en diseño web' },
 ];
 
 test('map has the 22 closed slug→{href,anchor} entries', () => {
   assert.equal(Object.keys(BLOG_LANDING_LINKS).length, 22);
   assert.equal(EXPECTED.length, 22);
-  for (const [slug, href, anchor] of EXPECTED) {
-    const entry = getBlogLandingLink(slug);
-    assert.ok(entry, slug);
-    assert.equal(entry.href, href, slug);
-    assert.equal(entry.anchor, anchor, slug);
+  for (const item of EXPECTED) {
+    const entry = getBlogLandingLink(item.slug);
+    assert.ok(entry, item.slug);
+    assert.equal(entry.href, item.href, item.slug);
+    assert.equal(entry.anchor, item.anchor, item.slug);
+    assert.equal(entry.context, item.context, item.slug);
+    assert.equal(entry.occurrence, item.occurrence, item.slug);
   }
   assert.equal(getBlogLandingLink('que-es-una-agencia-de-sem'), null);
 });
@@ -103,7 +105,7 @@ test('missing exact first-third phrase is not invented', () => {
 });
 
 test('moves a lower landing href onto the first-third exact anchor', () => {
-  const intro = '<p>Trabaja con una agencia de e-commerce que conozca tu catálogo.</p>';
+  const intro = '<p>Conviene actualizar tu e-commerce que conozca tu catálogo.</p>';
   const tail = '<p>Más abajo: <a href="/agencia-e-commerce">nuestro equipo</a>.</p>'.repeat(8);
   const { html: out, result } = applyBlogLandingLinkHtml(
     intro + tail,
@@ -111,7 +113,7 @@ test('moves a lower landing href onto the first-third exact anchor', () => {
   );
   assert.equal(result.status, 'applied');
   assert.equal((out.match(/href="\/agencia-e-commerce"/g) || []).length, 1);
-  assert.match(out, /<a href="\/agencia-e-commerce">agencia de e-commerce<\/a>/);
+  assert.match(out, /<a href="\/agencia-e-commerce">actualizar tu e-commerce<\/a>/);
   assert.match(out, /Más abajo: nuestro equipo/);
   assert.doesNotMatch(out, /<a href="\/agencia-e-commerce">nuestro equipo<\/a>/);
 });
@@ -211,4 +213,144 @@ test('absolute apex hrefs count as the same landing', () => {
     'agencia-seo-internacional-en-el-2025-es-una-necesidad',
   );
   assert.equal(result.status, 'already-existed');
+});
+
+test('context wraps only the sub-word SEM inside the first SEO y SEM', () => {
+  const html =
+    '<p>Has oído hablar de SEO y SEM, pero ¿sabes qué significan?</p>' +
+    `<p>${'Relleno del artículo para empujar el resto fuera del primer tercio. '.repeat(20)}</p>` +
+    '<p>Más abajo otro SEO y SEM no se envuelve, ni un SEM suelto.</p>';
+  const { html: out, result } = applyBlogLandingLinkHtml(
+    html,
+    'seo-y-sem-que-son-y-en-que-se-diferencian',
+  );
+  assert.equal(result.status, 'applied');
+  assert.equal((out.match(/href="\/agencia-sem"/g) || []).length, 1);
+  assert.match(out, /SEO y <a href="\/agencia-sem">SEM<\/a>/);
+  assert.match(out, /otro SEO y SEM no se envuelve/);
+  assert.doesNotMatch(out, /<a href="\/agencia-sem">SEO y SEM<\/a>/);
+});
+
+test('context skips a lone SEM before the SEO y SEM phrase', () => {
+  const html =
+    '<p>El SEM suelto no cuenta; el enlace va en SEO y SEM del primer párrafo.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+  const { html: out, result } = applyBlogLandingLinkHtml(
+    html,
+    'seo-y-sem-que-son-y-en-que-se-diferencian',
+  );
+  assert.equal(result.status, 'applied');
+  assert.match(out, /El SEM suelto no cuenta/);
+  assert.match(out, /SEO y <a href="\/agencia-sem">SEM<\/a>/);
+});
+
+test('context wraps rediseño web in the defining sentence, not the first mention', () => {
+  const html =
+    '<p>El rediseño web se ha convertido en una herramienta. ' +
+    '¿Qué implica el rediseño web? El rediseño web es el proceso de revisar el sitio.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>` +
+    '<p>Otro rediseño web al final no se envuelve.</p>';
+  const { html: out, result } = applyBlogLandingLinkHtml(html, 'rediseno-web');
+  assert.equal(result.status, 'applied');
+  assert.equal((out.match(/href="\/agencia-diseno-web"/g) || []).length, 1);
+  assert.match(out, /El <a href="\/agencia-diseno-web">rediseño web<\/a> es el proceso/);
+  assert.match(out, /El rediseño web se ha convertido/);
+  assert.match(out, /Otro rediseño web al final/);
+});
+
+test('occurrence 2 wraps the second wrappable match in the first third', () => {
+  const html =
+    '<p>Primera tienda online y después la segunda tienda online del tercio.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>` +
+    '<p>Tercera tienda online fuera de alcance.</p>';
+  const { html: out, result } = applyBlogLandingLinkHtml(
+    html,
+    'los-5-problemas-de-e-commerce',
+    { href: '/agencia-e-commerce', anchor: 'tienda online', occurrence: 2 },
+  );
+  assert.equal(result.status, 'applied');
+  assert.equal((out.match(/href="\/agencia-e-commerce"/g) || []).length, 1);
+  assert.match(out, /Primera tienda online y después la segunda <a href="\/agencia-e-commerce">tienda online<\/a>/);
+  assert.match(out, /Tercera tienda online fuera/);
+});
+
+test('does not wrap an exact match that is already inside another <a>', () => {
+  const html =
+    '<p>Lee <a href="/blog/otro">tienda online</a> y luego una tienda online libre.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+  const { html: out, result } = applyBlogLandingLinkHtml(
+    html,
+    'los-5-problemas-de-e-commerce',
+  );
+  assert.equal(result.status, 'applied');
+  assert.match(out, /<a href="\/blog\/otro">tienda online<\/a>/);
+  assert.match(out, /luego una <a href="\/agencia-e-commerce">tienda online<\/a> libre/);
+});
+
+test('accent-sensitive match does not wrap the unaccented lookalike', () => {
+  const html =
+    '<p>El rediseno web sin tilde no cuenta; el rediseño web es el proceso sí.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+  const { html: out, result } = applyBlogLandingLinkHtml(html, 'rediseno-web');
+  assert.equal(result.status, 'applied');
+  assert.match(out, /El rediseno web sin tilde no cuenta/);
+  assert.match(out, /el <a href="\/agencia-diseno-web">rediseño web<\/a> es el proceso/);
+});
+
+test('natural first-third phrases wrap without rewriting surrounding copy', () => {
+  const cases = [
+    {
+      slug: 'actualizar-tu-e-commerce',
+      html: '<p>Conviene actualizar tu e-commerce antes de migrar el catálogo.</p>',
+      wrap: '<a href="/agencia-e-commerce">actualizar tu e-commerce</a>',
+    },
+    {
+      slug: 'wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo',
+      html: '<p>Buscamos una intuitiva experiencia al usuario en el prototipo.</p>',
+      wrap: '<a href="/agencia-ux-ui">experiencia al usuario</a>',
+    },
+    {
+      slug: 'programacion-web-que-es-como-puede-servirle-a-mi-marca',
+      html: '<p>Hay dos tipologías del desarrollo web que puedes aplicar.</p>',
+      wrap: '<a href="/agencia-diseno-web">desarrollo web</a>',
+    },
+    {
+      slug: 'descubre-todo-lo-que-el-posicionamiento-sem-tiene-para-ti',
+      html: '<p>Con el posicionamiento SEM podrás generar más tráfico.</p>',
+      wrap: '<a href="/agencia-sem">posicionamiento SEM</a>',
+    },
+    {
+      slug: 'diseno-web-de-paginas-web',
+      html: '<p>Más que páginas bonitas, el diseño web efectivo crea experiencias.</p>',
+      wrap: '<a href="/agencia-diseno-web">diseño web efectivo</a>',
+    },
+    {
+      slug: 'como-elegir-el-mejor-framework-para-tu-web',
+      html: '<p>Los frameworks en el desarrollo web son herramientas clave.</p>',
+      wrap: '<a href="/agencia-diseno-web">desarrollo web</a>',
+    },
+    {
+      slug: 'como-posicionar-tu-negocio-en-google-ads',
+      html: '<p>El uso de publicidad en motores de búsqueda como Google es necesario.</p>',
+      wrap: '<a href="/agencia-sem">publicidad en motores de búsqueda</a>',
+    },
+    {
+      slug: 'crear-un-e-commerce',
+      html: '<p>Hoy crear una tienda online es más accesible que nunca.</p>',
+      wrap: '<a href="/agencia-e-commerce">tienda online</a>',
+    },
+    {
+      slug: 'tendencias-en-diseno-web-para-el-2022',
+      html: '<p>Te presentamos las principales tendencias en diseño web de este año.</p>',
+      wrap: '<a href="/agencia-diseno-web">tendencias en diseño web</a>',
+    },
+  ];
+  for (const item of cases) {
+    const { html: out, result } = applyBlogLandingLinkHtml(
+      item.html.repeat(6),
+      item.slug,
+    );
+    assert.equal(result.status, 'applied', item.slug);
+    assert.equal(out.includes(item.wrap), true, item.slug);
+  }
 });
