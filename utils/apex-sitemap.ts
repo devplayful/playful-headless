@@ -4,6 +4,53 @@ import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
+/**
+ * Landings that 404 on production/main (not in generateStaticParams / not live).
+ * They stay in SITEMAP_STATIC_PATHS so staging, where they 200, still emits
+ * them. `getSitemapUnpublishedPaths` hides them outside staging. Drop a path
+ * from this list when the page ships a 200 on production.
+ */
+export const SITEMAP_UNPUBLISHED_PATHS = [
+  '/agencia-prestashop',
+  '/agencia-woocommerce',
+  '/pasarela-de-pagos-venezuela',
+  '/shopify-precios',
+] as const;
+
+type SitemapEnv = Record<string, string | undefined>;
+
+function sitemapGitRefs(env: SitemapEnv): string[] {
+  return [
+    env.VERCEL_GIT_COMMIT_REF,
+    env.VERCEL_BRANCH,
+    env.GITHUB_REF_NAME,
+    env.GITHUB_BASE_REF,
+  ].map((ref) => (ref || '').trim()).filter(Boolean);
+}
+
+function isStagingSitemapRef(env: SitemapEnv): boolean {
+  return sitemapGitRefs(env).includes('staging');
+}
+
+function isMainSitemapRef(env: SitemapEnv): boolean {
+  return sitemapGitRefs(env).includes('main');
+}
+
+/**
+ * Empty on staging (the four landings 200 there) and in unspecified local
+ * runs so staging tests keep seeing them. The catalog is hidden on main and
+ * on Vercel production that is not the staging branch.
+ */
+export function getSitemapUnpublishedPaths(
+  env: SitemapEnv = process.env,
+): readonly string[] {
+  if (isStagingSitemapRef(env)) return [];
+  if (isMainSitemapRef(env) || env.VERCEL_ENV === 'production') {
+    return SITEMAP_UNPUBLISHED_PATHS;
+  }
+  return [];
+}
+
 export const SITEMAP_STATIC_PATHS = [
   "/",
   "/nosotros",
@@ -165,17 +212,18 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce",
 ] as const;
 
-export function getSitemapPaths(): string[] {
+export function getSitemapPaths(env: SitemapEnv = process.env): string[] {
+  const unpublished = new Set<string>(getSitemapUnpublishedPaths(env));
   return [
     ...SITEMAP_STATIC_PATHS,
     ...SITEMAP_BLOG_PATHS.filter((path) => (
       !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
     )),
-  ];
+  ].filter((path) => !unpublished.has(path));
 }
 
-export function getSitemapLocs(): string[] {
-  return getSitemapPaths().map((path) => (
+export function getSitemapLocs(env: SitemapEnv = process.env): string[] {
+  return getSitemapPaths(env).map((path) => (
     path === '/' ? `${SITEMAP_ORIGIN}/` : `${SITEMAP_ORIGIN}${path}`
   ));
 }
@@ -186,10 +234,10 @@ function sitemapUrlXml(loc: string, lastmod?: string): string {
     : `  <url><loc>${loc}</loc></url>`;
 }
 
-export function buildSitemapXml(): string {
+export function buildSitemapXml(env: SitemapEnv = process.env): string {
   const urls = [
-    ...getSitemapLocs().map((loc) => sitemapUrlXml(loc)),
-    ...listStagingSitemapBlogEntries().map((entry) => sitemapUrlXml(entry.loc, entry.lastmod)),
+    ...getSitemapLocs(env).map((loc) => sitemapUrlXml(loc)),
+    ...listStagingSitemapBlogEntries(env).map((entry) => sitemapUrlXml(entry.loc, entry.lastmod)),
   ].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }

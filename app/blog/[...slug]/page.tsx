@@ -10,6 +10,7 @@ import {
   getBlogServiceCta,
   linkFirstUnlinkedServiceMention,
 } from '@/utils/blog-service-cta';
+import { applyBlogLandingLink } from '@/utils/blog-landing-links';
 import * as cheerio from 'cheerio';
 import TableOfContents from '@/components/blog/TableOfContents';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
@@ -176,6 +177,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       };
     })
     .get() as Array<{ text: string; slug: string }>;
+
+  applyBlogLandingLink($, postSlug);
 
   const serviceCta = getBlogServiceCta(postSlug);
   if (serviceCta) {
