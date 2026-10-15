@@ -4,11 +4,15 @@
  *
  * Rules:
  * - Wrap the exact anchor in the first third of visible body text.
+ * - Matching is accent- and case-sensitive; skip text already inside <a>.
  * - Never invent or rewrite phrases when the exact text is missing.
  * - Do not duplicate a landing href. If one already exists further down
  *   and the exact anchor is in the first third, move it (unwrap + wrap).
  * - Copy-locked slugs already link to the landing with a different
  *   anchor: leave that copy untouched.
+ * - `occurrence` (1-based) picks the Nth wrappable match. `context`
+ *   scopes the match to a surrounding phrase and wraps only `anchor`
+ *   inside it (sub-word / later-sentence cases).
  */
 import * as cheerio from 'cheerio';
 
@@ -17,6 +21,13 @@ type CheerioRoot = ReturnType<typeof cheerio.load>;
 export type BlogLandingLink = {
   href: string;
   anchor: string;
+  /** 1-based wrappable match in the first third. Default 1. */
+  occurrence?: number;
+  /**
+   * Surrounding phrase that must contain `anchor`. The wrap is only
+   * `anchor`, at the Nth (`occurrence`) match of `context`.
+   */
+  context?: string;
 };
 
 export type BlogLandingLinkStatus =
@@ -38,11 +49,11 @@ export type BlogLandingLinkResult = {
 export const BLOG_LANDING_LINKS: Record<string, BlogLandingLink> = {
   'actualizar-tu-e-commerce': {
     href: '/agencia-e-commerce',
-    anchor: 'agencia de e-commerce',
+    anchor: 'actualizar tu e-commerce',
   },
   'wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo': {
     href: '/agencia-ux-ui',
-    anchor: 'agencia UX/UI',
+    anchor: 'experiencia al usuario',
   },
   'agencia-seo-internacional-en-el-2025-es-una-necesidad': {
     href: '/agencia-seo',
@@ -54,11 +65,11 @@ export const BLOG_LANDING_LINKS: Record<string, BlogLandingLink> = {
   },
   'programacion-web-que-es-como-puede-servirle-a-mi-marca': {
     href: '/agencia-diseno-web',
-    anchor: 'agencia de diseño web',
+    anchor: 'desarrollo web',
   },
   'descubre-todo-lo-que-el-posicionamiento-sem-tiene-para-ti': {
     href: '/agencia-sem',
-    anchor: 'agencia SEM',
+    anchor: 'posicionamiento SEM',
   },
   'auditoria-seo-que-es-como-se-hace': {
     href: '/agencia-seo',
@@ -82,23 +93,24 @@ export const BLOG_LANDING_LINKS: Record<string, BlogLandingLink> = {
   },
   'diseno-web-de-paginas-web': {
     href: '/agencia-diseno-web',
-    anchor: 'agencia de diseño web',
+    anchor: 'diseño web efectivo',
   },
   'los-5-problemas-de-e-commerce': {
     href: '/agencia-e-commerce',
-    anchor: 'agencia de e-commerce',
+    anchor: 'tienda online',
   },
   'como-elegir-el-mejor-framework-para-tu-web': {
     href: '/agencia-diseno-web',
-    anchor: 'agencia de diseño web',
+    anchor: 'desarrollo web',
   },
   'como-posicionar-tu-negocio-en-google-ads': {
     href: '/agencia-sem',
-    anchor: 'agencia SEM',
+    anchor: 'publicidad en motores de búsqueda',
   },
   'seo-y-sem-que-son-y-en-que-se-diferencian': {
     href: '/agencia-sem',
-    anchor: 'agencia SEM',
+    anchor: 'SEM',
+    context: 'SEO y SEM',
   },
   'ecommerce-mi-negocio-online': {
     href: '/agencia-e-commerce',
@@ -106,7 +118,8 @@ export const BLOG_LANDING_LINKS: Record<string, BlogLandingLink> = {
   },
   'rediseno-web': {
     href: '/agencia-diseno-web',
-    anchor: 'agencia de diseño web',
+    anchor: 'rediseño web',
+    context: 'rediseño web es el proceso',
   },
   '6-herramientas-para-crear-informes-seo': {
     href: '/agencia-seo',
@@ -118,11 +131,11 @@ export const BLOG_LANDING_LINKS: Record<string, BlogLandingLink> = {
   },
   'crear-un-e-commerce': {
     href: '/agencia-e-commerce',
-    anchor: 'agencia de e-commerce',
+    anchor: 'tienda online',
   },
   'tendencias-en-diseno-web-para-el-2022': {
     href: '/agencia-diseno-web',
-    anchor: 'agencia de diseño web',
+    anchor: 'tendencias en diseño web',
   },
 };
 
@@ -250,22 +263,39 @@ function findFirstThirdExact(
   third: number,
 ): { kind: 'already-linked' | 'unlinked'; item: TextNodeHit; index: number; start: number } | null {
   const target = normalizeLandingHref(link.href);
+  const needle = link.context || link.anchor;
+  const anchorOffset = link.context ? link.context.indexOf(link.anchor) : 0;
+  if (!needle || anchorOffset < 0) return null;
+  const want = Math.max(1, link.occurrence ?? 1);
+  let seen = 0;
+
   for (const item of nodes) {
     if (item.start >= third) break;
-    const index = item.text.indexOf(link.anchor);
-    if (index < 0) continue;
-    if (item.start + index >= third) continue;
+    let from = 0;
+    while (from < item.text.length) {
+      const index = item.text.indexOf(needle, from);
+      if (index < 0) break;
+      from = index + 1;
+      const wrapIndex = index + anchorOffset;
+      const absStart = item.start + wrapIndex;
+      if (absStart >= third) continue;
 
-    const anchorEl = isInsideAnchor($, item.node);
-    if (anchorEl) {
-      const href = normalizeLandingHref($(anchorEl).attr('href') || '');
-      if (href === target) {
-        return { kind: 'already-linked', item, index, start: item.start + index };
+      const anchorEl = isInsideAnchor($, item.node);
+      if (anchorEl) {
+        const href = normalizeLandingHref($(anchorEl).attr('href') || '');
+        if (href !== target) continue;
+        seen += 1;
+        if (seen === want) {
+          return { kind: 'already-linked', item, index: wrapIndex, start: absStart };
+        }
+        continue;
       }
-      continue;
-    }
 
-    return { kind: 'unlinked', item, index, start: item.start + index };
+      seen += 1;
+      if (seen === want) {
+        return { kind: 'unlinked', item, index: wrapIndex, start: absStart };
+      }
+    }
   }
   return null;
 }
@@ -306,8 +336,9 @@ function resultFor(
 export function applyBlogLandingLink(
   $: CheerioRoot,
   postSlug: string,
+  linkOverride?: BlogLandingLink,
 ): BlogLandingLinkResult | null {
-  const link = getBlogLandingLink(postSlug);
+  const link = linkOverride ?? getBlogLandingLink(postSlug);
   if (!link) return null;
 
   const { nodes, total } = visibleNodes($);
@@ -371,14 +402,15 @@ export function applyBlogLandingLink(
   return resultFor(link, 'anchor-absent');
 }
 
-/** Test helper: apply the map to an HTML fragment. */
+/** Test helper: apply the map (or an explicit link) to an HTML fragment. */
 export function applyBlogLandingLinkHtml(
   html: string,
   postSlug: string,
+  linkOverride?: BlogLandingLink,
 ): { html: string; result: BlogLandingLinkResult | null } {
-  const link = getBlogLandingLink(postSlug);
+  const link = linkOverride ?? getBlogLandingLink(postSlug);
   if (!link) return { html, result: null };
   const $ = cheerio.load(html);
-  const result = applyBlogLandingLink($, postSlug);
+  const result = applyBlogLandingLink($, postSlug, link);
   return { html: $.html(), result };
 }
