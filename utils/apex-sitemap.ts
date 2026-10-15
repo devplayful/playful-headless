@@ -4,16 +4,25 @@ import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
+/**
+ * Landings that 404 in production (not in generateStaticParams / not live).
+ * Re-add each path to SITEMAP_STATIC_PATHS when the page ships a 200.
+ */
+export const SITEMAP_UNPUBLISHED_PATHS = [
+  '/agencia-prestashop',
+  '/agencia-woocommerce',
+  '/pasarela-de-pagos-venezuela',
+  '/shopify-precios',
+] as const;
+
+const SITEMAP_UNPUBLISHED_PATH_SET = new Set<string>(SITEMAP_UNPUBLISHED_PATHS);
+
 export const SITEMAP_STATIC_PATHS = [
   "/",
   "/nosotros",
   "/contactar-agencia-de-marketing-digital",
   "/agencia-e-commerce",
   "/agencia-shopify",
-  "/agencia-prestashop",
-  "/agencia-woocommerce",
-  "/pasarela-de-pagos-venezuela",
-  "/shopify-precios",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
@@ -171,7 +180,7 @@ export function getSitemapPaths(): string[] {
     ...SITEMAP_BLOG_PATHS.filter((path) => (
       !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
     )),
-  ];
+  ].filter((path) => !SITEMAP_UNPUBLISHED_PATH_SET.has(path));
 }
 
 export function getSitemapLocs(): string[] {
