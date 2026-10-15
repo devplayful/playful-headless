@@ -402,7 +402,8 @@ test('shared related index is lite, long-lived and last-known-good', () => {
   assert.match(indexLoader, /_fields/);
   assert.match(indexLoader, /orderby/);
   assert.match(indexLoader, /status/);
-  assert.match(indexLoader, /uniquePositiveIds\(posts\.map\(\(post\) => post\.featured_media\)\)/);
+  assert.match(indexLoader, /mergeProductionLocalBlogPosts\(posts\)/);
+  assert.match(indexLoader, /uniquePositiveIds\(combined\.map\(\(post\) => post\.featured_media\)\)/);
   assert.match(indexLoader, /loadBlogMediaByIds\(/);
   assert.match(indexLoader, /offset \+= 100/);
   assert.match(indexLoader, /mediaIds\.slice\(offset, offset \+ 100\)/);
@@ -617,8 +618,14 @@ test('related index covers prefer local override, then WP source_url, then fallb
     wordpress.indexOf('function relatedCardFromIndexPost'),
     wordpress.indexOf('async function loadBlogRelatedIndexPage'),
   );
-  assert.match(toIndex, /media\?\.source_url \|\| BLOG_COVER_FALLBACK/);
-  assert.match(toIndex, /resolveBlogCoverAlt\(post\.slug, media\?\.alt_text \|\| ''\)/);
+  assert.match(
+    toIndex,
+    /media\?\.source_url \|\| post\.featured_media_url \|\| BLOG_COVER_FALLBACK/,
+  );
+  assert.match(
+    toIndex,
+    /resolveBlogCoverAlt\(\s*post\.slug,\s*media\?\.alt_text \|\| post\.featured_media_alt \|\| '',\s*\)/,
+  );
   assert.match(toIndex, /remapCanibalizacionHref\(`\/blog\/\$\{categorySlug\}\/\$\{post\.slug\}`\)/);
   assert.match(toCard, /resolveBlogCoverAlt\(post\.slug, post\.featuredMediaAlt \|\| ''\)/);
   assert.equal(

@@ -26,8 +26,11 @@ const {
   ESHOW_LISTA_FORM_SLOT,
   isStagingLocalBlogEnabled,
   getStagingLocalBlogPost,
+  listProductionLocalBlogPosts,
   listStagingLocalBlogStaticParams,
   listStagingSitemapBlogEntries,
+  mergeProductionLocalBlogPosts,
+  paginateBlogPosts,
   blogArticleJsonLdExtras,
   blogFaqPageJsonLd,
   eshowMadrid2026DateModified,
@@ -220,6 +223,7 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
 test('wordpress and the post template wire the staging-only post without listing it in production sitemap source', () => {
   assert.match(wordpressSource, /getStagingLocalBlogPost\(slug\)/);
   assert.match(wordpressSource, /listStagingLocalBlogStaticParams\(\)/);
+  assert.match(wordpressSource, /mergeProductionLocalBlogPosts/);
   assert.match(blogPage, /blogArticleJsonLdExtras\(postSlug\)/);
   assert.match(blogPage, /\[ESHOW_MADRID_2026_SLUG\]/);
   assert.match(blogPage, /h1: ESHOW_MADRID_2026_H1/);
@@ -270,6 +274,38 @@ test('eShow sitemap extras follow dateModified on staging and production main', 
     stagingXml,
     /<loc>https:\/\/playfulagency\.com\/blog\/otros\/eshow-madrid-2026<\/loc><lastmod>2026-10-07T00:00:00\+02:00<\/lastmod>/,
   );
+});
+
+test('production local listings include eShow, skip Merchant Center, and prefer WordPress on slug', () => {
+  const productionEnv = { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' };
+  const listed = listProductionLocalBlogPosts(productionEnv);
+  assert.equal(listed.some((post) => post.slug === ESHOW_MADRID_2026_SLUG), true);
+  assert.equal(listed.some((post) => post.slug === GOOGLE_MERCHANT_CENTER_SLUG), false);
+  assert.equal(
+    listProductionLocalBlogPosts({ VERCEL_GIT_COMMIT_REF: 'staging' }).some(
+      (post) => post.slug === GOOGLE_MERCHANT_CENTER_SLUG,
+    ),
+    false,
+  );
+
+  const eshow = listed.find((post) => post.slug === ESHOW_MADRID_2026_SLUG);
+  assert.equal(eshow.featured_media_url, ESHOW_MADRID_2026_FEATURED_SRC);
+  assert.equal(eshow.categories[0].slug, 'otros');
+
+  const merged = mergeProductionLocalBlogPosts(
+    [{ slug: 'older-wp-post', date: '2020-01-01T00:00:00.000Z', modified: '2020-01-01T00:00:00.000Z' }],
+    { env: productionEnv },
+  );
+  assert.equal(merged[0].slug, ESHOW_MADRID_2026_SLUG);
+  const pageOne = paginateBlogPosts(merged, 1, 10);
+  assert.equal(pageOne.posts.some((post) => post.slug === ESHOW_MADRID_2026_SLUG), true);
+
+  const fromWp = mergeProductionLocalBlogPosts(
+    [{ slug: ESHOW_MADRID_2026_SLUG, date: '2026-10-07T00:00:00+02:00', featured_media_url: '/wp.jpg' }],
+    { env: productionEnv },
+  );
+  assert.equal(fromWp.filter((post) => post.slug === ESHOW_MADRID_2026_SLUG).length, 1);
+  assert.equal(fromWp[0].featured_media_url, '/wp.jpg');
 });
 
 test('local Merchant Center post is gated and shaped like a WP pautas-digitales article', () => {
