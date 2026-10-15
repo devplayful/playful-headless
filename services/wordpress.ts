@@ -29,6 +29,8 @@ import {
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
   localBlogPostBySlug,
+  mergeProductionLocalBlogPosts,
+  paginateBlogPosts,
 } from '@/lib/blog-local-posts';
 import {
   BLOG_ARTICLE_POST_FIELDS,
@@ -609,24 +611,42 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
-  url.searchParams.set('page', String(page));
-  url.searchParams.set('per_page', String(perPage));
+  url.searchParams.set('per_page', '100');
+  url.searchParams.set('orderby', 'date');
+  url.searchParams.set('order', 'desc');
   url.searchParams.set('_fields', BLOG_LISTING_POST_FIELDS);
   if (categorySlug) {
     const { items: categories } = await wordpressFetchCollection<any>(
       `${WORDPRESS_API_URL}/wp/v2/categories?slug=${encodeURIComponent(categorySlug)}&_fields=id,slug,name`,
       { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
     );
-    if (categories.length === 0) return { posts: [], totalPages: 0 };
+    if (categories.length === 0) {
+      return paginateBlogPosts(
+        filterOpenBlogPosts(mergeProductionLocalBlogPosts<WPPost>([], { categorySlug })),
+        page,
+        perPage,
+      );
+    }
     url.searchParams.set('categories', String(categories[0].id));
   }
-  const { items: posts, response } = await wordpressFetchCollection<WPPost>(
-    url.toString(),
-    { next: { revalidate: 600 }, headers: { 'Content-Type': 'application/json' } },
-  );
-  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+  const posts: WPPost[] = [];
+  let wpPage = 1;
+  let wpTotalPages = 1;
+  do {
+    url.searchParams.set('page', String(wpPage));
+    const { items, response } = await wordpressFetchCollection<WPPost>(
+      url.toString(),
+      { next: { revalidate: 600 }, headers: { 'Content-Type': 'application/json' } },
+    );
+    posts.push(...items);
+    wpTotalPages = Math.max(1, parseInt(response.headers.get('X-WP-TotalPages') || '1', 10));
+    wpPage += 1;
+  } while (wpPage <= wpTotalPages);
   const processedPosts = await hydrateListingPosts(posts);
-  return { posts: filterOpenBlogPosts(processedPosts), totalPages };
+  const merged = filterOpenBlogPosts(
+    mergeProductionLocalBlogPosts(processedPosts, { categorySlug }),
+  );
+  return paginateBlogPosts(merged, page, perPage);
 }
 
 export async function getLatestBlogPosts(
@@ -658,7 +678,11 @@ export async function getLatestBlogPosts(
     },
   );
   const hydrated = await hydrateListingPosts(posts, query);
-  return filterOpenBlogPosts(hydrated.map((post) => toRelatedBlogCard(post))).slice(0, perPage);
+  const merged = mergeProductionLocalBlogPosts(hydrated, {
+    categoryId: query.categoryId,
+    excludeId: query.excludeId,
+  });
+  return filterOpenBlogPosts(merged.map((post) => toRelatedBlogCard(post))).slice(0, perPage);
 }
 
 type ListingMedia = { id: number; source_url: string; alt_text?: string };
@@ -768,10 +792,16 @@ async function hydrateListingPosts(
       ...rewritten,
       categories,
       featured_media_url: publicWebpIfPresent(
-        resolveBlogCoverUrl(rewritten.slug, mediaItem?.source_url || ''),
+        resolveBlogCoverUrl(
+          rewritten.slug,
+          mediaItem?.source_url || rewritten.featured_media_url || '',
+        ),
       ),
-      featured_media_alt: resolveBlogCoverAlt(rewritten.slug, mediaItem?.alt_text || ''),
-      author_name: author?.name || 'Playful Agency',
+      featured_media_alt: resolveBlogCoverAlt(
+        rewritten.slug,
+        mediaItem?.alt_text || rewritten.featured_media_alt || '',
+      ),
+      author_name: author?.name || rewritten.author_name || 'Playful Agency',
       author: author
         ? { id: author.id, name: author.name, slug: author.slug || '', url: author.url }
         : rewritten.author,
@@ -859,7 +889,11 @@ export async function getRelatedBlogPostsByCategory(
     byId: terms,
     fallback: terms.get(categoryId),
   };
-  const cards = filterOpenBlogPosts(collection.items.map((post) => {
+  const mergedPosts = mergeProductionLocalBlogPosts(collection.items, {
+    categoryId,
+    excludeId: query.excludeId,
+  });
+  const cards = filterOpenBlogPosts(mergedPosts.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
     return toRelatedBlogCard(rewritten, lookup);
   }));
@@ -934,13 +968,35 @@ function categoryIdsFromPost(post: Pick<WPPost, 'categories'>): number[] {
   return Array.from(new Set(ids));
 }
 
+function objectCategoryFromPost(
+  post: Pick<WPPost, 'categories'>,
+): RelatedIndexTerm | undefined {
+  if (!Array.isArray(post.categories)) return undefined;
+  for (const item of post.categories) {
+    if (
+      item
+      && typeof item === 'object'
+      && typeof item.slug === 'string'
+      && item.slug
+    ) {
+      return {
+        id: typeof item.id === 'number' ? item.id : 0,
+        slug: item.slug,
+        name: item.name || item.slug,
+      };
+    }
+  }
+  return undefined;
+}
+
 function toRelatedIndexPost(
   post: WPPost,
   terms: Map<number, RelatedIndexTerm>,
   media?: ListingMedia,
 ): RelatedIndexPost {
   const categoryIds = categoryIdsFromPost(post);
-  const primary = categoryIds.map((id) => terms.get(id)).find(Boolean);
+  const primary = categoryIds.map((id) => terms.get(id)).find(Boolean)
+    || objectCategoryFromPost(post);
   const categorySlug = primary?.slug || 'sin-categoria';
   const categoryName = primary?.name || 'Sin categoría';
   const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
@@ -959,9 +1015,15 @@ function toRelatedIndexPost(
     modifiedGmt: post.modified_gmt,
     featuredMediaId,
     featuredMediaUrl: publicWebpIfPresent(
-      resolveBlogCoverUrl(post.slug, media?.source_url || BLOG_COVER_FALLBACK),
+      resolveBlogCoverUrl(
+        post.slug,
+        media?.source_url || post.featured_media_url || BLOG_COVER_FALLBACK,
+      ),
     ),
-    featuredMediaAlt: resolveBlogCoverAlt(post.slug, media?.alt_text || ''),
+    featuredMediaAlt: resolveBlogCoverAlt(
+      post.slug,
+      media?.alt_text || post.featured_media_alt || '',
+    ),
     categoryIds,
     categorySlug,
     categoryName,
@@ -1034,9 +1096,17 @@ async function loadBlogRelatedIndex(
     const next = await loadBlogRelatedIndexPage(page, query);
     posts.push(...next.items);
   }
-  if (posts.length === 0) return null;
+  const combined = mergeProductionLocalBlogPosts(posts);
+  if (combined.length === 0) return null;
 
-  const mediaIds = uniquePositiveIds(posts.map((post) => post.featured_media));
+  for (const post of combined) {
+    const localCategory = objectCategoryFromPost(post);
+    if (localCategory && localCategory.id > 0 && !terms.has(localCategory.id)) {
+      terms.set(localCategory.id, localCategory);
+    }
+  }
+
+  const mediaIds = uniquePositiveIds(combined.map((post) => post.featured_media));
   const media = new Map<number, ListingMedia>();
   for (let offset = 0; offset < mediaIds.length; offset += 100) {
     try {
@@ -1048,7 +1118,7 @@ async function loadBlogRelatedIndex(
   }
 
   const termList: RelatedIndexTerm[] = Array.from(terms.values());
-  const entries = posts.map((post) => {
+  const entries = combined.map((post) => {
     const rewritten = rewriteWpRenderedHtmlFields(post);
     const mediaItem = typeof rewritten.featured_media === 'number'
       ? media.get(rewritten.featured_media)

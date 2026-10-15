@@ -134,6 +134,139 @@ export function localBlogPostBySlug(slug: string | undefined | null): WPPost | n
   return LOCAL_BLOG_POSTS[slug] || null;
 }
 
+export type LocalBlogListingPost = {
+  slug?: string;
+  id?: number;
+  date?: string;
+  date_gmt?: string;
+  modified?: string;
+  modified_gmt?: string;
+  categories?: Array<{ id?: number; slug?: string; name?: string } | number>;
+};
+
+export type MergeProductionLocalBlogPostsOptions = {
+  categorySlug?: string;
+  categoryId?: number;
+  excludeSlug?: string;
+  excludeId?: number | string;
+  env?: StagingLocalBlogEnv;
+};
+
+function localPostCategorySlugs(post: LocalBlogListingPost): string[] {
+  if (!Array.isArray(post.categories)) return [];
+  return post.categories.flatMap((item) => (
+    item && typeof item === 'object' && typeof item.slug === 'string' && item.slug
+      ? [item.slug]
+      : []
+  ));
+}
+
+function localPostCategoryIds(post: LocalBlogListingPost): number[] {
+  if (!Array.isArray(post.categories)) return [];
+  const ids: number[] = [];
+  for (const item of post.categories) {
+    if (typeof item === 'number' && Number.isInteger(item) && item > 0) {
+      ids.push(item);
+      continue;
+    }
+    if (
+      item
+      && typeof item === 'object'
+      && typeof item.id === 'number'
+      && Number.isInteger(item.id)
+      && item.id > 0
+    ) {
+      ids.push(item.id);
+    }
+  }
+  return ids;
+}
+
+/** Last update, then publish. Same fallback the listing cards print. */
+export function localBlogListingDateMs(post: LocalBlogListingPost): number {
+  const raw = post.modified_gmt || post.modified || post.date_gmt || post.date || '';
+  const ms = Date.parse(raw);
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+/**
+ * Next-owned posts that are live in production listings.
+ * Staging-only rows (`getStagingLocalBlogPost` / Merchant Center) stay out.
+ * eShow follows `isEshowLocalBlogEnabled` (staging + production main).
+ */
+export function listProductionLocalBlogPosts(
+  env: StagingLocalBlogEnv = process.env,
+): WPPost[] {
+  const posts = Object.values(LOCAL_BLOG_POSTS);
+  if (isEshowLocalBlogEnabled(env)) {
+    posts.push(buildEshowMadrid2026Post());
+  }
+  return posts;
+}
+
+function matchesLocalListingFilters(
+  post: LocalBlogListingPost,
+  options: MergeProductionLocalBlogPostsOptions = {},
+): boolean {
+  if (options.excludeSlug && post.slug === options.excludeSlug) return false;
+  if (
+    options.excludeId != null
+    && options.excludeId !== ''
+    && String(post.id) === String(options.excludeId)
+  ) {
+    return false;
+  }
+  if (options.categorySlug && !localPostCategorySlugs(post).includes(options.categorySlug)) {
+    return false;
+  }
+  if (
+    options.categoryId
+    && !localPostCategoryIds(post).includes(options.categoryId)
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Fold production local posts into a WordPress listing.
+ * WordPress wins on slug so a later CMS publish does not duplicate the card.
+ * Sorted by last update, falling back to publish date.
+ */
+export function mergeProductionLocalBlogPosts<T extends LocalBlogListingPost>(
+  wpPosts: readonly T[] | null | undefined,
+  options: MergeProductionLocalBlogPostsOptions = {},
+): T[] {
+  const published = Array.isArray(wpPosts) ? [...wpPosts] : [];
+  const seen = new Set(
+    published
+      .map((post) => post.slug)
+      .filter((slug): slug is string => Boolean(slug)),
+  );
+  const extras = listProductionLocalBlogPosts(options.env).filter((post) => {
+    if (!post.slug || seen.has(post.slug)) return false;
+    return matchesLocalListingFilters(post, options);
+  }) as unknown as T[];
+  return [...published, ...extras].sort(
+    (left, right) => localBlogListingDateMs(right) - localBlogListingDateMs(left),
+  );
+}
+
+export function paginateBlogPosts<T>(
+  posts: readonly T[],
+  page: number,
+  perPage: number,
+): { posts: T[]; totalPages: number } {
+  const safePage = Math.max(1, page);
+  const safePerPage = Math.min(100, Math.max(1, perPage));
+  const totalPages = posts.length === 0 ? 0 : Math.ceil(posts.length / safePerPage);
+  const start = (safePage - 1) * safePerPage;
+  return {
+    posts: posts.slice(start, start + safePerPage),
+    totalPages,
+  };
+}
+
 export function localBlogStaticParams(): Array<{ slug: string[] }> {
   return Object.values(LOCAL_BLOG_POSTS).map((post) => ({
     slug: [post.categories?.[0]?.slug || 'tecnologia', post.slug],
@@ -150,6 +283,7 @@ export function localBlogStaticParams(): Array<{ slug: string[] }> {
  *
  * ## eShow en producción (GO José 2026-10-14)
  * - Post local vía `isEshowLocalBlogEnabled`; no publicar en WordPress.
+ * - Listados (/blog, latest, relacionados): `mergeProductionLocalBlogPosts`.
  * - Sitemap: `listEshowSitemapBlogEntries()` (lastmod = `eshowMadrid2026DateModified()`).
  * - Definir `GHL_TAG_ESHOW_LISTA` en Vercel producción (Ops/Email).
  *
