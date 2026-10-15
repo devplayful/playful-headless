@@ -5,7 +5,9 @@ import { readFileSync } from 'node:fs';
 const {
   BLOG_LANDING_LINKS,
   BLOG_LANDING_LINK_COPY_LOCKED_SLUGS,
+  BLOG_CONTEXT_INTERNAL_LINKS,
   getBlogLandingLink,
+  getBlogLandingLinks,
   applyBlogLandingLinkHtml,
   normalizeLandingHref,
 } = await import('../utils/blog-landing-links.ts');
@@ -45,8 +47,7 @@ const EXPECTED = [
   { slug: 'tendencias-en-diseno-web-para-el-2022', href: '/agencia-diseno-web', anchor: 'tendencias en diseño web' },
 ];
 
-test('map has the 22 closed slug→{href,anchor} entries', () => {
-  assert.equal(Object.keys(BLOG_LANDING_LINKS).length, 22);
+test('map keeps the 22 closed slug→{href,anchor} primaries', () => {
   assert.equal(EXPECTED.length, 22);
   for (const item of EXPECTED) {
     const entry = getBlogLandingLink(item.slug);
@@ -57,6 +58,7 @@ test('map has the 22 closed slug→{href,anchor} entries', () => {
     assert.equal(entry.occurrence, item.occurrence, item.slug);
   }
   assert.equal(getBlogLandingLink('que-es-una-agencia-de-sem'), null);
+  assert.equal(Object.keys(BLOG_LANDING_LINKS).length, 37);
 });
 
 test('copy-locked slugs are the six with a different live anchor', () => {
@@ -190,9 +192,9 @@ test('unmapped slugs are a no-op', () => {
 });
 
 test('blog post page applies the landing map in the same cheerio render as the CTA wrap', () => {
-  assert.match(blogPage, /applyBlogLandingLink\(\$, postSlug\)/);
+  assert.match(blogPage, /applyBlogLandingLinks\(\$, postSlug\)/);
   assert.match(blogPage, /linkFirstUnlinkedServiceMention\(\$, serviceCta\)/);
-  const landingIdx = blogPage.indexOf('applyBlogLandingLink($, postSlug)');
+  const landingIdx = blogPage.indexOf('applyBlogLandingLinks($, postSlug)');
   const ctaIdx = blogPage.indexOf('linkFirstUnlinkedServiceMention($, serviceCta)');
   assert.ok(landingIdx > 0 && ctaIdx > landingIdx);
 });
@@ -353,4 +355,108 @@ test('natural first-third phrases wrap without rewriting surrounding copy', () =
     assert.equal(result.status, 'applied', item.slug);
     assert.equal(out.includes(item.wrap), true, item.slug);
   }
+});
+
+const {
+  BLOG_BODY_OVERRIDES,
+} = await import('../lib/blog-body-overrides.ts');
+
+function escapeRe(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+test('the 29 contextual internal links are in the map with exact context', () => {
+  assert.equal(BLOG_CONTEXT_INTERNAL_LINKS.length, 29);
+  const destsBySlug = new Map();
+  for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
+    assert.ok(item.context.includes(item.anchor), `n=${item.n} context must contain anchor`);
+    const match = getBlogLandingLinks(item.slug).find(
+      (link) =>
+        link.href === item.href &&
+        link.anchor === item.anchor &&
+        link.context === item.context,
+    );
+    assert.ok(match, `n=${item.n} ${item.slug}`);
+    const dests = destsBySlug.get(item.slug) || new Set();
+    assert.equal(dests.has(item.href), false, `n=${item.n} duplicate dest`);
+    dests.add(item.href);
+    destsBySlug.set(item.slug, dests);
+    assert.equal(BLOG_BODY_OVERRIDES[item.slug], undefined, `n=${item.n} override`);
+  }
+});
+
+test('each of the 29 wraps only the anchor inside the exact context phrase', () => {
+  for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
+    const html =
+      `<p>${item.context}</p>` +
+      `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+    const { html: out, results } = applyBlogLandingLinkHtml(html, item.slug);
+    const hit = results.find(
+      (result) => result.href === item.href && result.wantedAnchor === item.anchor,
+    );
+    assert.ok(hit, `n=${item.n} missing result`);
+    assert.equal(hit.status, 'applied', `n=${item.n}`);
+    assert.equal(hit.applied, true, `n=${item.n}`);
+    const wrap = `<a href="${item.href}">${item.anchor}</a>`;
+    const decoded = out.replace(/&nbsp;/g, '\u00a0');
+    assert.equal(decoded.includes(wrap), true, `n=${item.n} wrap`);
+    assert.equal((out.match(new RegExp(`href="${escapeRe(item.href)}"`, 'g')) || []).length, 1, `n=${item.n} dest`);
+    assert.equal(decoded.includes(item.context), false, `n=${item.n} raw context stays unwrapped only at the anchor`);
+    const around = item.context.replace(item.anchor, wrap);
+    assert.equal(decoded.includes(around), true, `n=${item.n} surrounding copy`);
+  }
+});
+
+test('each of the 29 skips an already-linked anchor in that context phrase', () => {
+  for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
+    const linked = item.context.replace(
+      item.anchor,
+      `<a href="${item.href}">${item.anchor}</a>`,
+    );
+    const html =
+      `<p>${linked}</p>` +
+      `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+    const { html: out, results } = applyBlogLandingLinkHtml(html, item.slug);
+    const hit = results.find(
+      (result) => result.href === item.href && result.wantedAnchor === item.anchor,
+    );
+    assert.ok(hit, `n=${item.n}`);
+    assert.equal(hit.status, 'already-existed', `n=${item.n}`);
+    assert.equal((out.match(new RegExp(`href="${escapeRe(item.href)}"`, 'g')) || []).length, 1, `n=${item.n}`);
+  }
+});
+
+test('each of the 29 skips a missing context phrase without inventing copy', () => {
+  for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
+    const html = `<p>Texto sin la frase de contexto ni el ancla mapeada para este destino.</p>`.repeat(8);
+    const { html: out, results } = applyBlogLandingLinkHtml(html, item.slug);
+    const hit = results.find(
+      (result) => result.href === item.href && result.wantedAnchor === item.anchor,
+    );
+    assert.ok(hit, `n=${item.n}`);
+    assert.equal(hit.status, 'anchor-absent', `n=${item.n}`);
+    assert.equal(out.includes(`href="${item.href}"`), false, `n=${item.n}`);
+    assert.equal(out.includes(item.anchor), false, `n=${item.n}`);
+  }
+});
+
+test('context spanning strong/b tags still wraps only the anchor', () => {
+  const html =
+    '<p><strong>Optimización para Motores de Búsqueda (SEO):</strong> El diseño web también implica optimizar el sitio web para mejorar su visibilidad en los motores de búsqueda.</p>' +
+    `<p>${'Más texto de relleno sin repetir la clave. '.repeat(20)}</p>`;
+  const { html: out, results } = applyBlogLandingLinkHtml(html, 'diseno-web-de-paginas-web');
+  const hit = results.find((result) => result.href === '/agencia-seo');
+  assert.equal(hit.status, 'applied');
+  assert.match(out, /<strong>Optimización para <a href="\/agencia-seo">Motores de Búsqueda<\/a> \(SEO\):<\/strong>/);
+});
+
+test('a context phrase after the first third is still wrapped', () => {
+  const item = BLOG_CONTEXT_INTERNAL_LINKS.find((row) => row.n === 28);
+  const html =
+    `<p>${'Apertura sin la frase de contexto. '.repeat(40)}</p>` +
+    `<p>${item.context}</p>`;
+  const { html: out, results } = applyBlogLandingLinkHtml(html, item.slug);
+  const hit = results.find((result) => result.href === item.href && result.wantedAnchor === item.anchor);
+  assert.equal(hit.status, 'applied');
+  assert.match(out, /punto de vista de un <a href="\/agencia-e-commerce">e-commerce<\/a>/);
 });
