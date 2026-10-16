@@ -574,16 +574,12 @@ export function blogArticleJsonLdExtras(slug: string | undefined | null): {
   type?: 'Article';
   about?: { '@type': 'Thing'; name: string };
   inLanguage?: string;
-  authorType?: 'Organization';
-  authorUrl?: string;
 } {
   if (slug === ESHOW_MADRID_2026_SLUG) {
     return {
       type: 'Article',
       about: { '@type': 'Thing', name: ESHOW_MADRID_2026_ABOUT_NAME },
       inLanguage: 'es-ES',
-      authorType: 'Organization',
-      authorUrl: 'https://playfulagency.com',
     };
   }
   if (slug === GOOGLE_MERCHANT_CENTER_SLUG) return { type: 'Article' };

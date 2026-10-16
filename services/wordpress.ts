@@ -1266,7 +1266,12 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
       post.categories = terms[0] || [];
       post.tags = terms[1] || [];
     }
-    if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
+    if (post._embedded['author'] && post._embedded['author'][0]) {
+      post.author = post._embedded['author'][0];
+      if (post.author && typeof post.author === 'object' && post.author.name) {
+        post.author_name = post.author.name;
+      }
+    }
   }
   post.featured_media_url = publicWebpIfPresent(
     resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
