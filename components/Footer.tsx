@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from 'next/navigation';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const { footerColor } = useTheme();
+
+  if (pathname === '/links') {
+    return null;
+  }
 
   return (
     <footer data-cta-section="footer" className={`playful-site-footer px-5`}>

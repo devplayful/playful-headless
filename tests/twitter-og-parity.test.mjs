@@ -10,6 +10,7 @@ const files = {
   contact: new URL('../app/contactar-agencia-de-marketing-digital/page.tsx', import.meta.url),
   privacy: new URL('../app/politica-de-privacidad/page.tsx', import.meta.url),
   caseStudy: new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  links: new URL('../app/links/layout.tsx', import.meta.url),
 };
 
 async function readAll() {
@@ -36,7 +37,7 @@ test('twitterFromOpenGraph copies og title, description and optional image', () 
   );
 });
 
-test('post, caso, /blog, contactar y privacidad wire twitter from the same og values', async () => {
+test('post, caso, /blog, contactar, privacidad y /links wire twitter from the same og values', async () => {
   const src = await readAll();
   const blogMeta = src.blogPost.slice(src.blogPost.indexOf('export async function generateMetadata'));
   const listingMeta = src.blogListing.slice(
@@ -49,6 +50,8 @@ test('post, caso, /blog, contactar y privacidad wire twitter from the same og va
   assert.match(listingMeta, /twitterFromOpenGraph\(\s*'Blog - Playful Agency'/);
   assert.match(src.contact, /twitterFromOpenGraph\(CONTACT_TITLE, CONTACT_DESCRIPTION\)/);
   assert.match(src.privacy, /twitterFromOpenGraph\(PRIVACY_TITLE, PRIVACY_DESCRIPTION\)/);
+  assert.match(src.links, /pageSocialMetadata\(/);
+  assert.match(src.links, /index:\s*false/);
   assert.match(caseMeta, /pageSocialMetadata\(/);
   assert.match(caseMeta, /title: override\.title/);
   assert.match(caseMeta, /description: override\.description/);

@@ -129,6 +129,12 @@ body {
   background-color: #e9d7ff;
 }
 
+/* Instagram link-in-bio: no site chrome and no client names from the header. */
+body:has([data-instagram-bio]) header,
+body:has([data-instagram-bio]) .playful-site-footer {
+  display: none !important;
+}
+
 .contenedores-home {
   display: flex;
   justify-content: center;
