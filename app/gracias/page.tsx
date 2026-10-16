@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import BookAppointmentTracker from '@/components/BookAppointmentTracker';
 
 export const metadata: Metadata = {
   title: 'Gracias — siguiente paso | Playful Agency',
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 export default function ThankYouV2() {
   return (
     <div data-thanks-v2 className="min-h-screen relative overflow-hidden">
+      <BookAppointmentTracker />
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute top-10 left-10 w-3 h-3 bg-pink-400 rounded-full opacity-60" />
         <div className="absolute top-20 right-20 w-4 h-4 bg-yellow-400 rounded-full opacity-60" />
