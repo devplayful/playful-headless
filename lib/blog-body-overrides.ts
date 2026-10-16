@@ -215,7 +215,7 @@ export const MIGRACION_SEO_ALT_BLOG_BODY_HTML = `
 <li>¿Qué métodos de pago y qué seguimiento de envíos tiene la tienda el primer día, y qué acceso dan a terceros para integrar lo que falte?</li>
 </ul>
 <p>Con esas respuestas en la mano ya puedes armar el mapa de redirecciones, planificar el día del cambio y saber qué capa de pagos y envíos hay que rehacer.</p>
-<p>Si quieres revisar tu inventario de URLs o la capa de pagos antes de migrar, en Playful trabajamos <a href="https://playfulagency.com/agencia-e-commerce">proyectos de ecommerce completos</a> y podemos <a href="https://api.playfulagency.com/widget/bookings/reunion-playful">ver tu caso en una reunión de diagnóstico</a>.</p>
+<p>Si quieres revisar tu inventario de URLs o la capa de pagos antes de migrar, en Playful trabajamos <a href="https://playfulagency.com/agencia-e-commerce">proyectos de ecommerce completos</a> y podemos <a href="/reunion-playful">ver tu caso en una reunión de diagnóstico</a>.</p>
 `.trim();
 
 export const BLOG_BODY_OVERRIDES: Record<string, string> = {

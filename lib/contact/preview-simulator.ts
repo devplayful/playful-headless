@@ -38,7 +38,6 @@ export interface PreviewSimulationEvidence {
  */
 export function simulatePreviewContact(lead: WebsiteLead): PreviewSimulationEvidence {
   const fit = qualificationLevel(lead);
-  const priority = fit === 'priority';
 
   return {
     version: 'preview-contact-simulator-v1',
@@ -47,8 +46,8 @@ export function simulatePreviewContact(lead: WebsiteLead): PreviewSimulationEvid
     email: 'suppressed',
     highLevel: {
       contact: 'simulated-upsert',
-      opportunity: priority ? 'simulated-consulta' : 'not-created',
-      nextAction: priority ? 'simulated-sla-task' : 'not-created',
+      opportunity: fit === 'transition' ? 'not-created' : 'simulated-consulta',
+      nextAction: fit === 'priority' ? 'simulated-sla-task' : 'not-created',
     },
     qualificationLevel: fit,
     attribution: {

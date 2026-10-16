@@ -336,7 +336,9 @@ export async function syncWebsiteLeadToHighLevel(
     await control.checkpoint({ tagsCompleted: true });
   }
 
-  if (fit !== 'priority') {
+  // Marketplace-transition leads stay in the CRM without opening Consulta.
+  // Review uses the same pipeline and stage as priority when none is open.
+  if (fit === 'transition') {
     const existing = selectOrReject(await gateway.findOpenOpportunities(
       config.locationId,
       config.pipelineId,
@@ -438,7 +440,7 @@ export async function syncWebsiteLeadToHighLevel(
     );
   }
 
-  if (options.skipSlaTask) {
+  if (options.skipSlaTask || fit !== 'priority') {
     return { contactId, opportunityId, opportunityCreated };
   }
 

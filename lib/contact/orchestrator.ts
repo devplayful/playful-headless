@@ -271,7 +271,7 @@ export async function processContactPipeline(
       dependencies.dryRun,
     );
   } catch (error) {
-    logCrmFailureAfterDelivery(error);
+    logCrmFailureAfterDelivery(error, progress);
     try {
       await dependencies.store.releaseCrm(key, owner);
     } catch {
