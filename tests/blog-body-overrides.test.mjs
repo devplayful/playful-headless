@@ -83,6 +83,14 @@ test('Cashea rewrite keeps the signed opening, headings and in-site links', () =
   assert.equal(h2s.length, 8);
 });
 
+test('migración SEO override books via /reunion-playful, not the widget API', () => {
+  assert.match(MIGRACION_SEO_ALT_BLOG_BODY_HTML, /href="\/reunion-playful"/);
+  assert.doesNotMatch(
+    MIGRACION_SEO_ALT_BLOG_BODY_HTML,
+    /api\.playfulagency\.com\/widget\/bookings/,
+  );
+});
+
 test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.match(blogPage, /rewriteInSitePageHrefs\(/);
   assert.match(blogPage, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);

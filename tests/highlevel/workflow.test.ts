@@ -210,23 +210,44 @@ test('creates a Revisar opportunity without an SLA task for marketplace-transiti
   assert.equal(opportunity.pipelineStageId, 'stage-revisar-test');
 });
 
-test('updates an existing inbound opportunity and moves it to Revisar on review', async () => {
-  const gateway = new GatewayMock();
-  gateway.opportunities = [{
-    id: 'opportunity-existing',
-    status: 'open',
-    pipelineStageId: 'stage-consulta-test',
-  }];
-  const reviewLead = {
-    ...lead,
+function reviewLeadFrom(base = lead) {
+  return {
+    ...base,
     qualification: {
-      ...lead.qualification,
+      ...base.qualification,
       salesModel: 'd2c_b2b' as const,
       monthlyRevenue: '50k_100k' as const,
     },
   };
+}
 
-  const result = await syncWebsiteLeadToHighLevel(reviewLead, gateway, config);
+test('creates a Consulta opportunity for review fit when none is open, without an SLA task', async () => {
+  const gateway = new GatewayMock();
+  const result = await syncWebsiteLeadToHighLevel(reviewLeadFrom(), gateway, config);
+
+  assert.equal(result.opportunityCreated, true);
+  assert.equal(result.opportunityId, 'opportunity-1');
+  assert.equal(result.taskId, undefined);
+  assert.deepEqual(gateway.calls.map((call) => call.operation), [
+    'upsert', 'get-fields', 'update-original', 'tag', 'search',
+    'create-opportunity',
+  ]);
+  const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')?.value as CreateOpportunityInput;
+  assert.equal(opportunity.pipelineId, config.pipelineId);
+  assert.equal(opportunity.pipelineStageId, config.consultaStageId);
+  assert.equal(opportunity.status, 'open');
+  assert(opportunity.customFields.some((item) => (
+    item.id === config.opportunityCustomFieldIds.qualification_level
+      && item.fieldValue === 'Revisar'
+  )));
+  assert(!gateway.calls.some((call) => call.operation === 'create-task'));
+});
+
+test('updates an existing canonical opportunity when a later submission needs review', async () => {
+  const gateway = new GatewayMock();
+  gateway.opportunities = [{ id: 'opportunity-existing', status: 'open' }];
+
+  const result = await syncWebsiteLeadToHighLevel(reviewLeadFrom(), gateway, config);
 
   assert.deepEqual(result, {
     contactId: 'contact-1',
@@ -242,11 +263,33 @@ test('updates an existing inbound opportunity and moves it to Revisar on review'
     pipelineStageId?: string;
   };
   assert.equal(update.opportunityId, 'opportunity-existing');
-  assert.equal(update.pipelineStageId, 'stage-revisar-test');
+  assert.equal(update.pipelineStageId, config.consultaStageId);
   assert(update.customFields.some((item) => (
     item.id === config.opportunityCustomFieldIds.qualification_level
       && item.fieldValue === 'Revisar'
   )));
+  assert(!gateway.calls.some((call) => call.operation === 'create-task'));
+});
+
+test('applies fit/model tags and Consulta when the contact already existed from GHL chat', async () => {
+  const gateway = new GatewayMock();
+  gateway.contact = { id: 'contact-chat', isNew: false };
+
+  const result = await syncWebsiteLeadToHighLevel(reviewLeadFrom(), gateway, config);
+
+  assert.equal(result.contactId, 'contact-chat');
+  assert.equal(result.opportunityCreated, true);
+  assert.equal(result.opportunityId, 'opportunity-1');
+  const tag = gateway.calls.find((call) => call.operation === 'tag')?.value as {
+    contactId: string;
+    tags: string[];
+  };
+  assert.equal(tag.contactId, 'contact-chat');
+  assert.deepEqual(tag.tags, ['website-inbound', 'fit:review', 'model:d2c_b2b']);
+  const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')?.value as CreateOpportunityInput;
+  assert.equal(opportunity.contactId, 'contact-chat');
+  assert.equal(opportunity.pipelineId, config.pipelineId);
+  assert.equal(opportunity.pipelineStageId, config.consultaStageId);
 });
 
 test('does not rewind a later-stage open opportunity when the new fit is review', async () => {
@@ -316,7 +359,7 @@ test('persists free-text otros on contact and opportunity fields', async () => {
 
   const opportunity = gateway.calls.find((call) => call.operation === 'create-opportunity')
     ?.value as CreateOpportunityInput;
-  assert.equal(opportunity.pipelineStageId, 'stage-revisar-test');
+  assert.equal(opportunity.pipelineStageId, 'stage-consulta-test');
   assert(opportunity.customFields.some((item) => (
     item.id === config.opportunityCustomFieldIds.decision_role
       && item.fieldValue === 'Otro: Consultora externa'

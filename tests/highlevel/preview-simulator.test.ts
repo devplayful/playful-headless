@@ -43,7 +43,7 @@ test('Preview simulator returns deterministic, non-sensitive evidence for a prio
   }
 });
 
-test('Preview simulator creates Revisar without an SLA task for a non-priority lead', () => {
+test('Preview simulator opens Consulta for review without an SLA task', () => {
   const evidence = simulatePreviewContact({
     ...lead,
     qualification: { ...lead.qualification, monthlyRevenue: '50k_100k' },
@@ -51,6 +51,17 @@ test('Preview simulator creates Revisar without an SLA task for a non-priority l
 
   assert.equal(evidence.qualificationLevel, 'review');
   assert.equal(evidence.highLevel.contact, 'simulated-upsert');
+  assert.equal(evidence.highLevel.opportunity, 'simulated-consulta');
+  assert.equal(evidence.highLevel.nextAction, 'not-created');
+});
+
+test('Preview simulator creates Revisar without an SLA task for a marketplace-transition lead', () => {
+  const evidence = simulatePreviewContact({
+    ...lead,
+    qualification: { ...lead.qualification, salesModel: 'mercado_libre' },
+  });
+
+  assert.equal(evidence.qualificationLevel, 'transition');
   assert.equal(evidence.highLevel.opportunity, 'simulated-revisar');
   assert.equal(evidence.highLevel.nextAction, 'not-created');
 });

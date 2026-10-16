@@ -27,7 +27,7 @@ test('keeps the over_100k priority threshold and does not auto-discard', () => {
 
 test('maps inbound opportunity stages without using Lead cualificado', () => {
   assert.equal(inboundOpportunityStageId('priority', stages), 'stage-consulta-test');
-  assert.equal(inboundOpportunityStageId('review', stages), 'stage-revisar-test');
+  assert.equal(inboundOpportunityStageId('review', stages), 'stage-consulta-test');
   assert.equal(inboundOpportunityStageId('transition', stages), 'stage-revisar-test');
   assert.equal(canMoveInboundOpportunityStage(undefined, stages), true);
   assert.equal(canMoveInboundOpportunityStage('stage-consulta-test', stages), true);

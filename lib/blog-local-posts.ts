@@ -420,7 +420,7 @@ export const GOOGLE_MERCHANT_CENTER_BODY_HTML = `
 <p>Entras con tu cuenta de Google en la página de Merchant Center, das los datos de tu empresa, indicas dónde vendes y eliges cómo subir los productos. Si tu tienda está en Shopify o WooCommerce, también puedes crearla desde la app Google &amp; YouTube o desde la extensión Google for WooCommerce.</p>
 <h3 id="necesito-google-ads-para-salir-en-google-shopping">¿Necesito Google Ads para salir en Google Shopping?</h3>
 <p>No. Con las fichas gratuitas activadas, tus productos aprobados pueden aparecer sin pagar, aunque Google aclara que no asegura que se muestren. Google Ads solo hace falta para los anuncios de pago.</p>
-<p>Si quieres que revisemos el catálogo de tu tienda, la cuenta de Merchant Center y el paso a campañas antes de invertir en anuncios, <a href="https://api.playfulagency.com/widget/bookings/reunion-playful">reserva una reunión con nuestro equipo</a>.</p>
+<p>Si quieres que revisemos el catálogo de tu tienda, la cuenta de Merchant Center y el paso a campañas antes de invertir en anuncios, <a href="/reunion-playful">reserva una reunión con nuestro equipo</a>.</p>
 `.trim();
 
 export const GOOGLE_MERCHANT_CENTER_FAQS: Array<{ question: string; answer: string }> = [
