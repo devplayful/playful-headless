@@ -39,6 +39,17 @@ const {
 } = await import('../lib/blog-related-posts.ts');
 const { SITEMAP_BLOG_PATHS } = await import('../utils/apex-sitemap.ts');
 
+const packageJson = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+);
+
+test('test:canonical includes this file so CI runs it with the rest of the suite', () => {
+  assert.match(
+    packageJson.scripts['test:canonical'] || '',
+    /(?:^|\s)tests\/blog-related-posts\.test\.mjs(?:\s|$)/,
+  );
+});
+
 const blogPage = readFileSync(
   new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
