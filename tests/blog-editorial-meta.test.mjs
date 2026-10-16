@@ -196,7 +196,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
     jsonLd.image,
     'https://playfulagency.com/images/blog/12-zelle-venezuela-magnific-JN0rWQjOq4.png',
   );
-  assert.equal(jsonLd.datePublished, toIsoDateTime(ZELLE_PUBLISHED));
+  assert.equal(jsonLd.datePublished, '2020-06-15T14:22:00Z');
   assert.equal(jsonLd.dateModified, '2026-09-24T00:00:00.000Z');
   assert.deepEqual(jsonLd.author, {
     '@type': 'Person',
@@ -401,7 +401,7 @@ test('updated byline uses short Spanish month without a new design', () => {
 
 test('blog post page wires one combined chip under H1 and Article JSON-LD', () => {
   assert.match(blogPage, /resolveBlogEditorialUpdate\(postSlug/);
-  assert.match(blogPage, /modifiedTime: editorial\.updatedAt/);
+  assert.match(blogPage, /modifiedTime: articleDates\.dateModified/);
   assert.match(blogPage, /buildBlogArticleJsonLd/);
   assert.match(blogPage, /type="application\/ld\+json"/);
   assert.match(blogPage, /serializeJsonLd\(articleJsonLd\)/);
@@ -412,17 +412,17 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
-  assert.match(blogPage, /formatCombinedByline\(post\.author\.name, editorial\.updatedBy\)/);
+  assert.match(blogPage, /resolveBlogArticleAuthor\(post, editorial\)/);
   assert.match(blogPage, /formatDate\(post\.date\)/);
   assert.doesNotMatch(blogPage, /actualizado el \{editorial\.updatedAtLabel\}/);
   assert.match(blogPage, /formatUpdatedByline\(/);
-  assert.match(blogPage, /resolveBlogAuthorHref\(/);
   assert.match(blogPage, /href=\{authorHref\}/);
   assert.match(blogPage, /updatedLabel=\{updatedByline\}/);
+  assert.match(blogPage, /updatedDateTime=/);
   assert.doesNotMatch(blogPage, /visibleDateLabel/);
   assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
-  assert.match(blogPage, /avatarSrc=\{isEshow \? EDITORIAL_AVATAR_SRC : authorAvatar\}/);
+  assert.match(blogPage, /avatarSrc=\{articleAuthor\.avatarSrc\}/);
   assert.doesNotMatch(blogPage, /detail=/);
   assert.doesNotMatch(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
   assert.doesNotMatch(blogPage, /substring\(0, 200\) \+ '\.\.\.'/);
@@ -431,6 +431,7 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(chipSource, /h-6 w-6/);
   assert.match(chipSource, /href/);
   assert.match(chipSource, /updatedLabel/);
+  assert.match(chipSource, /updatedDateTime/);
   assert.doesNotMatch(chipSource, /detail/);
   assert.doesNotMatch(chipSource, /text-xs/);
   assert.match(overridesSource, /lib\/blog-editorial-meta\.ts/);
