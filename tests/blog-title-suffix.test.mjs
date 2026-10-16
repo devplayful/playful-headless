@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import { withPlayfulTitleSuffix } from '../lib/blog-title-suffix.ts';
+import { ESHOW_MADRID_2026_TITLE } from '../lib/eshow-madrid-2026.ts';
 
 test('withPlayfulTitleSuffix is idempotent for WordPress titles that already end in | Playful', () => {
   assert.equal(withPlayfulTitleSuffix('Guía de catálogo'), 'Guía de catálogo | Playful');
@@ -25,4 +27,21 @@ test('withPlayfulTitleSuffix is idempotent for WordPress titles that already end
     withPlayfulTitleSuffix('Guía | Playful Agency'),
     'Guía | Playful Agency | Playful',
   );
+});
+
+test('eShow Madrid 2026 SEO title is exactly one | Playful suffix', () => {
+  assert.equal(
+    withPlayfulTitleSuffix(ESHOW_MADRID_2026_TITLE),
+    'eShow Madrid 2026: fechas, IFEMA y qué ver | Playful',
+  );
+  assert.doesNotMatch(
+    withPlayfulTitleSuffix(ESHOW_MADRID_2026_TITLE),
+    /\| Playful \| Playful/,
+  );
+});
+
+test('root layout does not apply a title template that would double the brand suffix', () => {
+  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(layout, /template:\s*['"`][^'"`]*%s/);
+  assert.doesNotMatch(layout, /title:\s*\{[\s\S]*template/);
 });
