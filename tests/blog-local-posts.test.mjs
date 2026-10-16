@@ -201,7 +201,9 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
     description: ESHOW_MADRID_2026_META,
     datePublished: ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
     dateModified: eshowMadrid2026DateModified(),
-    authorName: 'Playful Agency',
+    authorName: 'Equipo editorial',
+    authorType: 'Organization',
+    authorUrl: 'https://playfulagency.com',
     url: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
     ...extras,
   });
@@ -212,7 +214,7 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
   assert.equal(jsonLd.inLanguage, 'es-ES');
   assert.deepEqual(jsonLd.author, {
     '@type': 'Organization',
-    name: 'Playful Agency',
+    name: 'Equipo editorial',
     url: 'https://playfulagency.com',
   });
   assert.doesNotMatch(JSON.stringify(jsonLd), /"Event"/);
