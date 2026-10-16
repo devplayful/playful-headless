@@ -4,6 +4,8 @@ type BlogBylineChipProps = {
   name: string;
   href?: string;
   updatedLabel?: string;
+  /** ISO 8601 with timezone for the visible last-updated copy. */
+  updatedDateTime?: string;
   avatarSrc?: string;
   avatarAlt?: string;
   /** Hero bylines should not lazy-load the 24px avatar. */
@@ -15,6 +17,7 @@ export function BlogBylineChip({
   name,
   href,
   updatedLabel,
+  updatedDateTime,
   avatarSrc,
   avatarAlt,
   avatarPriority = false,
@@ -58,7 +61,13 @@ export function BlogBylineChip({
           <span className="text-white/70" aria-hidden="true">
             ·
           </span>
-          <span className="min-w-0 text-sm font-medium">{updatedLabel}</span>
+          {updatedDateTime ? (
+            <time dateTime={updatedDateTime} className="min-w-0 text-sm font-medium">
+              {updatedLabel}
+            </time>
+          ) : (
+            <span className="min-w-0 text-sm font-medium">{updatedLabel}</span>
+          )}
         </>
       ) : null}
     </div>

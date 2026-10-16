@@ -37,11 +37,11 @@ import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
   buildBlogBreadcrumbJsonLd,
-  formatCombinedByline,
   formatUpdatedByline,
-  EDITORIAL_AVATAR_SRC,
-  resolveBlogAuthorHref,
+  resolveBlogArticleAuthor,
+  resolveBlogArticleTimestamps,
   resolveBlogEditorialUpdate,
+  resolveVisibleUpdatedDateTime,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
@@ -58,11 +58,9 @@ import { BlogBylineChip } from '@/components/blog/BlogBylineChip';
 import EshowListaForm from '@/components/blog/EshowListaForm';
 import {
   ESHOW_LISTA_FORM_MARKER,
-  ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
   ESHOW_MADRID_2026_EXCERPT,
   ESHOW_MADRID_2026_H1,
   ESHOW_MADRID_2026_META,
-  ESHOW_MADRID_2026_AUTHOR_NAME,
   ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT,
   ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
   ESHOW_MADRID_2026_SLUG,
@@ -73,7 +71,6 @@ import {
   GOOGLE_MERCHANT_CENTER_TITLE,
   blogArticleJsonLdExtras,
   blogFaqPageJsonLd,
-  eshowMadrid2026DateModified,
   formatEshowActualizadoLine,
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
@@ -188,20 +185,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Actualizar el contenido con los IDs agregados
   const contentWithIds = $.html();
   const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
-  const editorial = resolveBlogEditorialUpdate(postSlug, {
+  const editorialDates = {
     published: post.date,
     publishedGmt: post.date_gmt,
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
-  });
-  const authorName =
-    (post.author && typeof post.author === 'object' && post.author.name) ||
-    post.author_name ||
-    'Playful Agency';
-  const authorAvatar =
-    post.author && typeof post.author === 'object'
-      ? post.author.avatar_urls?.['48']
-      : undefined;
+  };
+  const editorial = resolveBlogEditorialUpdate(postSlug, editorialDates);
+  const articleDates = resolveBlogArticleTimestamps(editorialDates);
+  const articleAuthor = resolveBlogArticleAuthor(post, editorial);
   const postCanonical = canonicalForPath(
     postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
   );
@@ -214,21 +206,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     headline: pageH1,
     description: metaDescription,
     image: toAbsoluteSiteUrl(ogImagePath),
-    datePublished: isEshow
-      ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
-      : post.date_gmt || post.date,
-    dateModified: isEshow
-      ? eshowMadrid2026DateModified()
-      : editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
-    authorName: isEshow
-      ? 'Playful Agency'
-      : jsonLdExtras.authorType === 'Organization'
-        ? 'Playful Agency'
-        : authorName,
+    datePublished: articleDates.datePublished,
+    dateModified: articleDates.dateModified,
     url: postCanonical,
     publisherName: ORGANIZATION_SCHEMA.name,
     publisherLogo: ORGANIZATION_LOGO_URL,
     ...jsonLdExtras,
+    authorName: articleAuthor.entityName,
+    authorType: articleAuthor.schemaType,
+    authorUrl: articleAuthor.schemaUrl,
   });
   const faqJsonLd = blogFaqPageJsonLd(postSlug) || getBlogFaqJsonLd(postSlug);
   const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
@@ -244,23 +230,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const excerptText = isEshow
     ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
     : formatBlogHeroExcerpt(post.excerpt?.rendered);
-  const bylineName = isEshow
-    ? ESHOW_MADRID_2026_AUTHOR_NAME
-    : post.author && typeof post.author === 'object'
-      ? editorial
-        ? formatCombinedByline(post.author.name, editorial.updatedBy)
-        : post.author.name
-      : authorName;
-  const authorHref = isEshow
-    ? undefined
-    : resolveBlogAuthorHref(
-        post.author && typeof post.author === 'object' ? post.author.url : undefined,
-      );
+  const bylineName = articleAuthor.visibleByline;
+  const authorHref = articleAuthor.href;
   const updatedByline = isEshow
     ? formatEshowActualizadoLine()
     : formatUpdatedByline(
-        editorial?.updatedAt || post.modified_gmt || post.modified || post.date_gmt || post.date,
+        editorial?.updatedAt || articleDates.dateModified,
       );
+  const publishedDateLabel = isEshow
+    ? new Date(articleDates.datePublished).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        timeZone: 'Europe/Madrid',
+      })
+    : formatDate(post.date);
 
   return (
     <>
@@ -295,16 +279,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Columna izquierda: Título y resumen */}
             <div>
               <div className="flex flex-wrap items-center space-x-2 mb-4">
-                <span className="text-sm text-gray-500">
-                  {isEshow
-                    ? new Date(post.date).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        timeZone: 'Europe/Madrid',
-                      })
-                    : formatDate(post.date)}
-                </span>
+                <time dateTime={articleDates.datePublished} className="text-sm text-gray-500">
+                  {publishedDateLabel}
+                </time>
                 {post.categories && post.categories.length > 0 && (
                   <>
                     <span className="text-gray-300">•</span>
@@ -327,15 +304,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   name={bylineName}
                   href={authorHref}
                   updatedLabel={updatedByline}
+                  updatedDateTime={resolveVisibleUpdatedDateTime(
+                    editorial,
+                    articleDates,
+                  )}
                   avatarPriority
-                  avatarSrc={isEshow ? EDITORIAL_AVATAR_SRC : authorAvatar}
-                  avatarAlt={
-                    isEshow
-                      ? ESHOW_MADRID_2026_AUTHOR_NAME
-                      : post.author && typeof post.author === 'object'
-                        ? post.author.name
-                        : authorName
-                  }
+                  avatarSrc={articleAuthor.avatarSrc}
+                  avatarAlt={articleAuthor.entityName}
                 />
               </div>
               
@@ -640,13 +615,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };
   const imageAlt = resolveBlogCoverAlt(postSlug, post.featured_media_alt || post.title.rendered);
-  const editorial = resolveBlogEditorialUpdate(postSlug, {
+  const editorialDates = {
     published: post.date,
     publishedGmt: post.date_gmt,
     modified: post.modified,
     modifiedGmt: post.modified_gmt,
-  });
-  const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
+  };
+  const editorial = resolveBlogEditorialUpdate(postSlug, editorialDates);
+  const articleDates = resolveBlogArticleTimestamps(editorialDates);
+  const articleAuthor = resolveBlogArticleAuthor(post, editorial);
 
   return {
     title,
@@ -660,17 +637,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       type: 'article',
       url,
-      publishedTime: isEshow
-        ? ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL
-        : post.date,
-      ...(isEshow
-        ? { modifiedTime: eshowMadrid2026DateModified() }
-        : editorial
-          ? { modifiedTime: editorial.updatedAt }
-          : {}),
-      authors: [
-        isEshow ? ESHOW_MADRID_2026_AUTHOR_NAME : post.author_name || 'Playful Agency',
-      ],
+      publishedTime: articleDates.datePublished,
+      modifiedTime: articleDates.dateModified,
+      authors: [articleAuthor.entityName],
       images: [
         jpeg
           ? ogJpegMeta(imageUrl, imageAlt)
