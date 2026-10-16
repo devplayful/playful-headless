@@ -9,12 +9,20 @@ const related = readFileSync(
   'utf8',
 );
 const hub = readFileSync(new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
+const imageSizes = readFileSync(new URL('../lib/blog-image-sizes.ts', import.meta.url), 'utf8');
 const caseCta = readFileSync(new URL('../app/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
 const privacy = readFileSync(new URL('../app/politica-de-privacidad/page.tsx', import.meta.url), 'utf8');
 const contact = readFileSync(
   new URL('../app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
   'utf8',
 );
+
+test('case-study cards expose 2-col and carousel slot sizes plus q90', () => {
+  assert.match(imageSizes, /export const CASE_FEATURE_CARD_SIZES/);
+  assert.match(imageSizes, /560px/);
+  assert.match(imageSizes, /export const CASE_CAROUSEL_CARD_SIZES/);
+  assert.match(imageSizes, /export const CASE_CARD_IMAGE_QUALITY = 90/);
+});
 
 test('featured, listing, home cards and related set sizes to the real slot', () => {
   assert.match(post, /sizes=\{BLOG_POST_FEATURED_SIZES\}/);
@@ -27,6 +35,7 @@ test('featured, listing, home cards and related set sizes to the real slot', () 
 test('listing tapa and CTA PNGs go through next/image', () => {
   assert.match(hub, /from ["']next\/image["']/);
   assert.match(hub, /sizes=\{CASE_LISTING_CARD_SIZES\}/);
+  assert.match(hub, /quality=\{CASE_CARD_IMAGE_QUALITY\}/);
   assert.doesNotMatch(hub, /<img[\s\S]*caseStudy\.image/);
   assert.match(caseCta, /from ['"]next\/image['"]/);
   assert.match(caseCta, /sizes=\{CASE_CTA_ILLUSTRATION_SIZES\}/);

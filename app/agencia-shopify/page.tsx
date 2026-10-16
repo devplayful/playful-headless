@@ -7,6 +7,7 @@ import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { CaseStudyCard } from '@/components/CarouselResultados';
+import { CASE_FEATURE_CARD_SIZES } from '@/lib/blog-image-sizes';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
@@ -380,7 +381,11 @@ export default async function AgenciaShopifyPage() {
           <h2 className="playful-h2 text-center mb-10">{SOCIAL_PROOF.h2}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
             {shopifyCases.map((caseStudy) => (
-              <CaseStudyCard key={caseStudy.slug} caseStudy={caseStudy} />
+              <CaseStudyCard
+                key={caseStudy.slug}
+                caseStudy={caseStudy}
+                sizes={CASE_FEATURE_CARD_SIZES}
+              />
             ))}
           </div>
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-10">
