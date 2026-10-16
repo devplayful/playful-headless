@@ -22,7 +22,7 @@ export const ESHOW_MADRID_2026_CANONICAL =
 export const ESHOW_MADRID_2026_H1 =
   'eShow Madrid 2026 en IFEMA: guía y cobertura de la feria';
 export const ESHOW_MADRID_2026_TITLE =
-  'eShow Madrid 2026: fechas, IFEMA, qué ver y cobertura';
+  'eShow Madrid 2026: fechas, IFEMA y qué ver | Playful';
 export const ESHOW_MADRID_2026_META =
   'eShow Madrid 2026 en IFEMA el 4 y 5 de noviembre: fechas, qué trae la feria y cobertura de los dos días. Apúntate y recibe el informe.';
 export const ESHOW_MADRID_2026_ABOUT_NAME = 'E-SHOW Madrid 2026';
