@@ -18,8 +18,24 @@ export const BLOG_LISTING_CARD_SIZES =
 export const BLOG_MOST_VIEWED_SIZES =
   '(max-width: 767px) calc(100vw - 2rem), (max-width: 1023px) calc(50vw - 2rem), 280px';
 
+/** 3-up hub grid (~360px card at 1200px). */
 export const CASE_LISTING_CARD_SIZES =
   '(max-width: 767px) calc(100vw - 2rem), (max-width: 1023px) calc(50vw - 2rem), 360px';
+
+/** Home carousel: 3 slides on desktop, 2 on tablet, 1 on mobile. */
+export const CASE_CAROUSEL_CARD_SIZES =
+  '(min-width: 1024px) 360px, (min-width: 768px) 45vw, 90vw';
+
+/**
+ * 2-col social-proof cards (Shopify landing): ~544–560px at max-w-[1200px].
+ * The carousel 360px sizes were reused here and next/image served ~384–750w
+ * for a 560 CSS-px hole (1120px at DPR 2).
+ */
+export const CASE_FEATURE_CARD_SIZES =
+  '(max-width: 767px) calc(100vw - 3rem), (max-width: 1023px) calc(50vw - 2.5rem), 560px';
+
+/** Graphic tapas (logos/product art) look mushy at the default q=75. */
+export const CASE_CARD_IMAGE_QUALITY = 90;
 
 export const CTA_ILLUSTRATION_SIZES =
   '(min-width: 1024px) 560px, calc(100vw - 2rem)';

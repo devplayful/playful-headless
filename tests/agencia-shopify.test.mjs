@@ -80,6 +80,8 @@ test('landing keeps one H1, signed CTAs, shared closing sections and five illust
   assert.match(landing, /\/images\/agencia-shopify\/servicio-checkout-SyZ2uJkUb8@2x\.png/);
   assert.match(landing, /TestimonialsSection/);
   assert.match(landing, /CaseStudyCard/);
+  assert.match(landing, /CASE_FEATURE_CARD_SIZES/);
+  assert.match(landing, /sizes=\{CASE_FEATURE_CARD_SIZES\}/);
   assert.match(landing, /BlogRelatedPostsSection/);
   assert.match(landing, /ServiceFaqAccordion/);
   assert.match(landing, /function PurpleBand/);
