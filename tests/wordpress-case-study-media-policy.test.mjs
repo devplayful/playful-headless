@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   isAllowedCaseStudyMediaUrl,
+  largestAllowedCaseStudyMediaUrl,
   preserveFeaturedMediaUrl,
   selectCaseStudyCardMediaUrl,
 } from '../services/case-study-media-policy.mjs';
@@ -39,6 +40,29 @@ test('rejects media URLs outside the HTTPS WordPress uploads allowlist', () => {
       { slug: 'case' }
     );
   }
+});
+
+test('picks the largest allowlisted WP derivative, not thumbnail/medium', () => {
+  const full = 'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png';
+  const medium = 'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-300x300.png';
+  const thumb = 'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-150x150.png';
+  const media = {
+    source_url: full,
+    media_details: {
+      width: 500,
+      sizes: {
+        thumbnail: { source_url: thumb, width: 150 },
+        medium: { source_url: medium, width: 300 },
+        full: { source_url: full, width: 500 },
+      },
+    },
+  };
+
+  assert.equal(largestAllowedCaseStudyMediaUrl(media), full);
+  assert.equal(
+    preserveFeaturedMediaUrl({ _embedded: { 'wp:featuredmedia': [media] } }, { slug: 'jumex' }).featured_media_url,
+    full,
+  );
 });
 
 test('carousel selection ignores unsafe legacy media fallbacks', () => {

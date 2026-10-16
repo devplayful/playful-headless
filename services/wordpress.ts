@@ -1502,7 +1502,7 @@ const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
 
 async function loadAllCaseStudies(): Promise<any[]> {
   const { items: casos } = await wordpressFetchCollection<any>(
-    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status&_embed=wp:featuredmedia`,
+    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status,_links,_embedded&_embed=wp:featuredmedia`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
   const published = casos.map((caso: Record<string, unknown>) => {

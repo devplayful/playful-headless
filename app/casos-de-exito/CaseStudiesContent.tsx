@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import { SERVICE_BOOKING_HREF } from "@/utils/booking";
-import { CASE_LISTING_CARD_SIZES } from "@/lib/blog-image-sizes";
+import { CASE_CARD_IMAGE_QUALITY, CASE_LISTING_CARD_SIZES } from "@/lib/blog-image-sizes";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { applyPublicCaseStudyOverrides } from "@/utils/public-case-study-overrides";
 import { CASE_STUDIES_LISTING_EMBED_URL } from "@/lib/case-study-listing-image";
@@ -42,6 +42,7 @@ const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
               alt={caseStudy.title}
               fill
               sizes={CASE_LISTING_CARD_SIZES}
+              quality={CASE_CARD_IMAGE_QUALITY}
               className={`object-cover transition-opacity duration-300 ${
                 imageLoaded ? "opacity-100" : "opacity-0"
               }`}
