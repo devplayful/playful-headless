@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { describeCrmFailure } from '../../lib/contact/crm-alert.ts';
+import { describeCrmFailure, failedCrmStep } from '../../lib/contact/crm-alert.ts';
 import { HighLevelApiError } from '../../lib/highlevel/client.ts';
 import { AmbiguousOpportunityError } from '../../lib/highlevel/workflow.ts';
 
@@ -19,6 +19,26 @@ test('describes CRM failures without copying free-text or contact fields', () =>
     'múltiples oportunidades abiertas (2)',
   );
   assert.equal(describeCrmFailure(new TypeError('cannot read id')), 'TypeError');
+});
+
+test('names the CRM step from checkpoints without copying contact fields', () => {
+  assert.equal(failedCrmStep({}), 'upsert');
+  assert.equal(failedCrmStep({ contactId: 'contact-9' }), 'original-attribution');
+  assert.equal(failedCrmStep({
+    contactId: 'contact-9',
+    originalAttributionCompleted: true,
+  }), 'tags');
+  assert.equal(failedCrmStep({
+    contactId: 'contact-9',
+    originalAttributionCompleted: true,
+    tagsCompleted: true,
+  }), 'opportunity');
+  assert.equal(failedCrmStep({
+    contactId: 'contact-9',
+    originalAttributionCompleted: true,
+    tagsCompleted: true,
+    opportunityId: 'opportunity-1',
+  }), 'task');
 });
 
 test('the public contact API no longer asks the lead to retry a commercial registration', () => {

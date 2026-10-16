@@ -23,7 +23,7 @@ export function inboundOpportunityStageId(
   fit: QualificationLevel,
   config: { consultaStageId: string; revisarStageId: string },
 ): string {
-  return fit === 'priority' ? config.consultaStageId : config.revisarStageId;
+  return fit === 'transition' ? config.revisarStageId : config.consultaStageId;
 }
 
 /**

@@ -415,7 +415,7 @@ export async function syncWebsiteLeadToHighLevel(
     throw new Error('El flujo CRM terminó sin checkpoints de oportunidad.');
   }
 
-  if (fit !== 'priority' || options.skipSlaTask) {
+  if (options.skipSlaTask || fit !== 'priority') {
     return { contactId, opportunityId, opportunityCreated };
   }
 

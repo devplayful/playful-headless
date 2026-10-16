@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import BookAppointmentTracker from '@/components/BookAppointmentTracker';
 import LeadThankYou from './LeadThankYou';
 import ScheduleConfirmation from './ScheduleConfirmation';
 
@@ -24,7 +25,12 @@ export default async function ThankYouPage({
   const conv = firstQueryValue(params.conv);
 
   if (conv === 'Schedule') {
-    return <ScheduleConfirmation />;
+    return (
+      <>
+        <BookAppointmentTracker />
+        <ScheduleConfirmation />
+      </>
+    );
   }
 
   return <LeadThankYou fit={firstQueryValue(params.fit)} />;

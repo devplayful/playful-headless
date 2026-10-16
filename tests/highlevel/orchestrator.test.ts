@@ -199,7 +199,44 @@ test('a CRM rejection after WordPress delivery still confirms the user-facing re
     assert(errors.some((entry) => (
       Array.isArray(entry)
       && String(entry[0]).includes('el mensaje del formulario ya se entregó')
-      && String(entry[1]).includes('create opportunity')
+      && String(entry[1]).includes('contactId=unknown')
+      && String(entry[1]).includes('step=upsert')
+      && String(entry[2]).includes('create opportunity')
+    )));
+  } finally {
+    console.error = originalError;
+  }
+});
+
+test('CRM failure logs include the contact id and the step that failed', async () => {
+  const store = new TestStore();
+  const errors: unknown[] = [];
+  const originalError = console.error;
+  console.error = (...args: unknown[]) => { errors.push(args); };
+
+  try {
+    const result = await processContactPipeline(lead, {
+      store,
+      deliver: async () => {},
+      syncCrm: async (_submission, control) => {
+        await control.checkpoint({
+          contactId: 'contact-9',
+          originalAttributionCompleted: true,
+          tagsCompleted: true,
+        });
+        throw new HighLevelApiError(400, 'create opportunity');
+      },
+      dryRun: false,
+      ownerId: 'crm-step-log',
+    });
+
+    assert.equal(result.deliveryStatus, 'confirmed');
+    assert.equal(result.crmSynced, false);
+    assert(errors.some((entry) => (
+      Array.isArray(entry)
+      && String(entry[1]).includes('contactId=contact-9')
+      && String(entry[1]).includes('step=opportunity')
+      && String(entry[2]).includes('create opportunity')
     )));
   } finally {
     console.error = originalError;
