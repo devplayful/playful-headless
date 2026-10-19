@@ -9,7 +9,7 @@ export type LinksBioEntry = {
   path: string;
 };
 
-/** Square thumb fallback when the href is not a blog post or has no cover. */
+/** Square thumb fallback when WP featured / OG / portada is missing. */
 export const LINKS_BIO_FALLBACK_THUMB = '/images/logos/playful-logov.svg';
 
 /** Last segment of `/blog/{category}/{slug}` (and longer WP paths). */

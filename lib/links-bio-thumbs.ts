@@ -3,6 +3,7 @@ import {
   blogCoverForSlug,
   resolveBlogCoverAlt,
 } from './blog-cover-image.ts';
+import { ogJpegForPath } from './og-images.ts';
 import { publicWebpIfPresent } from './public-webp-src.ts';
 import {
   LINKS_BIO_FALLBACK_THUMB,
@@ -23,7 +24,8 @@ const FALLBACK_THUMB: LinksBioThumb = {
 };
 
 /**
- * Logo for non-articles; Magnific/local cover when the slug has one.
+ * Blog: Magnific/local cover when the slug has one.
+ * Service / static pages: production OG JPEG (portada).
  * Returns null when the href is a blog post that still needs WordPress
  * featured media.
  */
@@ -31,23 +33,28 @@ export function resolveLocalLinksBioThumbnail(
   entry: LinksBioEntry,
 ): LinksBioThumb | null {
   const slug = linksBioArticleSlug(entry.path);
-  if (!slug) return FALLBACK_THUMB;
-
-  const override = blogCoverForSlug(slug);
-  if (override) {
-    return {
-      src: publicWebpIfPresent(override),
-      alt: resolveBlogCoverAlt(slug, ''),
-      isFallback: false,
-    };
+  if (slug) {
+    const override = blogCoverForSlug(slug);
+    if (override) {
+      return {
+        src: publicWebpIfPresent(override),
+        alt: resolveBlogCoverAlt(slug, ''),
+        isFallback: false,
+      };
+    }
+    return null;
   }
 
-  return null;
+  const og = ogJpegForPath(entry.path);
+  if (og) {
+    return { src: og, alt: '', isFallback: false };
+  }
+  return FALLBACK_THUMB;
 }
 
 /**
- * Same cover the blog uses: Magnific override, then WordPress featured
- * media. Playful logo if the href is not an article or has no portada.
+ * Blog: Magnific override, then WordPress featured media.
+ * Service pages: OG / portada. Playful logo only if nothing else exists.
  */
 export async function resolveLinksBioThumbnail(
   entry: LinksBioEntry,
@@ -70,9 +77,13 @@ export async function resolveLinksBioThumbnail(
       };
     }
   } catch {
-    // WordPress down: logo, same as a missing cover.
+    // WordPress down: OG for the post path, then logo.
   }
 
+  const og = ogJpegForPath(entry.path);
+  if (og) {
+    return { src: og, alt: '', isFallback: false };
+  }
   return FALLBACK_THUMB;
 }
 
