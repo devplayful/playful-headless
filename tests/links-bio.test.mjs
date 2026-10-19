@@ -158,6 +158,7 @@ test('/links renders a featured cover card plus destination thumbs with real siz
   assert.match(page, /resolveLinksBioThumbnails/);
   assert.match(page, /bg-\[#E9D7FF\]/);
   assert.match(page, /background\.webp/);
+  assert.doesNotMatch(page, /<header/);
   assert.doesNotMatch(page, /playful-boton w-full/);
   assert.equal(
     LINKS_BIO_FEATURED_SIZES,

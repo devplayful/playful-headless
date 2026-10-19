@@ -89,7 +89,7 @@ export default async function LinksBioPage() {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center px-5 py-10 sm:py-14">
         <div className="flex w-full max-w-md flex-col items-center gap-8">
-          <header className="flex flex-col items-center gap-4 text-center">
+          <div className="flex flex-col items-center gap-4 text-center">
             <Link
               href="/"
               className={`flex h-[88px] w-[88px] items-center justify-center rounded-full bg-white ${CARD_SHADOW} transition duration-300 hover:scale-105`}
@@ -112,7 +112,7 @@ export default async function LinksBioPage() {
                 Agencia de e-commerce
               </p>
             </div>
-          </header>
+          </div>
 
           <nav className="flex w-full flex-col gap-4" aria-label="Enlaces de Instagram">
             <Link
