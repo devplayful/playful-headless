@@ -49,3 +49,12 @@ test('listing and params fetches use _fields and never a full _embed', () => {
   assert.match(article, /blogPostBySlugBuildCache/);
   assert.match(wordpress, /fetchWithRelatedPostsTtl\(caseStudiesCache/);
 });
+
+test('case-study listing _fields includes _links+_embedded so featured media actually embeds', () => {
+  const listing = functionSlice('loadAllCaseStudies');
+  assert.match(listing, /_embed=wp:featuredmedia/);
+  assert.match(
+    listing,
+    /_fields=id,slug,title,featured_media,acf,status,_links,_embedded/,
+  );
+});

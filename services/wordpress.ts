@@ -1266,7 +1266,12 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
       post.categories = terms[0] || [];
       post.tags = terms[1] || [];
     }
-    if (post._embedded['author'] && post._embedded['author'][0]) post.author = post._embedded['author'][0];
+    if (post._embedded['author'] && post._embedded['author'][0]) {
+      post.author = post._embedded['author'][0];
+      if (post.author && typeof post.author === 'object' && post.author.name) {
+        post.author_name = post.author.name;
+      }
+    }
   }
   post.featured_media_url = publicWebpIfPresent(
     resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
@@ -1497,7 +1502,7 @@ const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
 
 async function loadAllCaseStudies(): Promise<any[]> {
   const { items: casos } = await wordpressFetchCollection<any>(
-    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status&_embed=wp:featuredmedia`,
+    `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status,_links,_embedded&_embed=wp:featuredmedia`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }
   );
   const published = casos.map((caso: Record<string, unknown>) => {

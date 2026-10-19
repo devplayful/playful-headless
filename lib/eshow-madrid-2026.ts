@@ -19,7 +19,7 @@ export const ESHOW_MADRID_2026_CANONICAL =
 export const ESHOW_MADRID_2026_H1 =
   'eShow Madrid 2026 en IFEMA: guía y cobertura de la feria';
 export const ESHOW_MADRID_2026_TITLE =
-  'eShow Madrid 2026: fechas, IFEMA, qué ver y cobertura';
+  'eShow Madrid 2026: fechas, IFEMA y qué ver | Playful';
 export const ESHOW_MADRID_2026_META =
   'eShow Madrid 2026 en IFEMA el 4 y 5 de noviembre: fechas, qué trae la feria y cobertura de los dos días. Apúntate y recibe el informe.';
 export const ESHOW_MADRID_2026_ABOUT_NAME = 'E-SHOW Madrid 2026';
@@ -238,7 +238,7 @@ ${ESHOW_LISTA_FORM_SLOT}
 <p>Con las notas delante, conviene responder tres preguntas. La primera es si tu tienda necesita rehacerse o solo conectarse mejor con el stock, la facturación y los pagos. La segunda es qué plataforma encaja con tu catálogo, con tus programas y con tu forma de cobrar, que puede ser la que ya tienes. La tercera es cuánto tiempo puede dedicar tu equipo al proyecto y qué parte quieres que lleve un equipo externo.</p>
 <p>En Playful rehacemos y conectamos tiendas online en Shopify y WooCommerce. Conectamos la tienda con tu ERP o tu programa de facturación a través de su API (la vía por la que un programa intercambia datos con otro), y si no la tiene, construimos lo necesario. Si vienes de otra plataforma, cada dirección antigua redirige a su página nueva, así que Google y tus clientes llegan a la correcta.</p>
 <p>En <a href="https://playfulagency.com/agencia-e-commerce">agencia de ecommerce</a> está cómo trabajamos una tienda completa, y en <a href="https://playfulagency.com/agencia-shopify">agencia Shopify</a>, lo que hacemos en esa plataforma. Si partes de cero, <a href="https://playfulagency.com/blog/tecnologia/crear-un-e-commerce">cómo crear un ecommerce</a> repasa los pasos. Jumex y Odwalla venden directamente a sus clientes con tiendas en Shopify que montó Playful, y puedes verlas en <a href="https://playfulagency.com/casos-de-exito">casos de éxito</a>.</p>
-<p>Playful estará en el eShow los dos días. Si vas y quieres hablar, <a href="https://api.playfulagency.com/widget/bookings/reunion-playful">reserva una reunión</a>.</p>
+<p>Playful estará en el eShow los dos días. Si vas y quieres hablar, <a href="/reunion-playful">reserva una reunión</a>.</p>
 `.trim();
 }
 

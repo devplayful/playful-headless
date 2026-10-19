@@ -7,6 +7,10 @@ import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
 import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
 import { featuredTapaForSlug } from "@/lib/case-study-listing-image";
+import {
+  CASE_CARD_IMAGE_QUALITY,
+  CASE_CAROUSEL_CARD_SIZES,
+} from "@/lib/blog-image-sizes";
 
 // Importación dinámica del Slider para asegurar que solo se cargue en el cliente
 const Slider = dynamic(() => import("react-slick").then((mod) => mod.default), {
@@ -130,7 +134,13 @@ interface CarouselResultadosProps {
 }
 
 // Componente para la tarjeta de caso de estudio (mismo patrón que home)
-export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
+export const CaseStudyCard = ({
+  caseStudy,
+  sizes = CASE_CAROUSEL_CARD_SIZES,
+}: {
+  caseStudy: CaseStudy;
+  sizes?: string;
+}) => {
   const [imageError, setImageError] = useState(false);
   // Server HTML already has the src; starting at 0 hides tapas if onLoad already fired.
   const [imageLoaded, setImageLoaded] = useState(Boolean(caseStudy.image));
@@ -147,7 +157,8 @@ export const CaseStudyCard = ({ caseStudy }: { caseStudy: CaseStudy }) => {
                 src={caseStudy.image}
                 alt={caseStudy.title}
                 fill
-                sizes="(min-width: 1024px) 360px, (min-width: 768px) 45vw, 90vw"
+                sizes={sizes}
+                quality={CASE_CARD_IMAGE_QUALITY}
                 className={`object-cover transition-opacity duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}

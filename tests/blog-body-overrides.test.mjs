@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 const {
   ZELLE_VE_BLOG_SLUG,
   ZELLE_VE_BLOG_BODY_HTML,
+  MIGRACION_SEO_ALT_BLOG_BODY_HTML,
   blogBodyForSlug,
 } = await import('../lib/blog-body-overrides.ts');
 
@@ -52,6 +53,14 @@ test('Zelle rewrite headings have ids for TOC and preserve in-site links', () =>
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /trabajamos la integración de pagos para marcas/);
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pagos-online-ecommerce/);
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pasarela-de-pago-ecommerce/);
+});
+
+test('migración SEO override books via /reunion-playful, not the widget API', () => {
+  assert.match(MIGRACION_SEO_ALT_BLOG_BODY_HTML, /href="\/reunion-playful"/);
+  assert.doesNotMatch(
+    MIGRACION_SEO_ALT_BLOG_BODY_HTML,
+    /api\.playfulagency\.com\/widget\/bookings/,
+  );
 });
 
 test('blog post page prefers the body override before WP rendered HTML', () => {

@@ -44,6 +44,35 @@ test('hub still paints the existing H1; it does not add another', () => {
   assert.match(hubContent, /initialCaseStudies/);
   assert.match(hubContent, /hasServerCaseStudies/);
   assert.match(hubContent, /useState\(Boolean\(caseStudy\.image\)\)/);
+  assert.match(hubContent, /quality=\{CASE_CARD_IMAGE_QUALITY\}/);
+});
+
+test('listing image prefers the full WP source over medium/thumbnail', async () => {
+  const { resolveCaseStudyListingImage } = await import('../lib/case-study-listing-image.ts');
+  const full =
+    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png';
+  const medium =
+    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-300x300.png';
+
+  assert.equal(
+    resolveCaseStudyListingImage({
+      _embedded: {
+        'wp:featuredmedia': [
+          {
+            source_url: full,
+            media_details: {
+              width: 500,
+              sizes: {
+                medium: { source_url: medium, width: 300 },
+                full: { source_url: full, width: 500 },
+              },
+            },
+          },
+        ],
+      },
+    }),
+    full,
+  );
 });
 
 test('listing mapper keeps the same card fields the hub already showed', () => {

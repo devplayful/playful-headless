@@ -18,12 +18,51 @@ export function isAllowedCaseStudyMediaUrl(value) {
   }
 }
 
+function numericWidth(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : 0;
+}
+
+/** Prefer the largest allowlisted WP derivative (full > large > source_url). */
+export function largestAllowedCaseStudyMediaUrl(media) {
+  if (!media || typeof media !== 'object') return '';
+
+  const candidates = [];
+  const push = (url, width) => {
+    if (!isAllowedCaseStudyMediaUrl(url)) return;
+    candidates.push({ url, width: numericWidth(width) });
+  };
+
+  push(media.source_url, media.media_details?.width ?? media.width);
+  const sizes = media.media_details?.sizes;
+  if (sizes && typeof sizes === 'object') {
+    for (const variant of Object.values(sizes)) {
+      if (!variant || typeof variant !== 'object') continue;
+      push(variant.source_url, variant.width);
+    }
+  }
+
+  if (candidates.length === 0) return '';
+
+  let best = candidates[0];
+  for (const candidate of candidates.slice(1)) {
+    if (candidate.width > best.width) {
+      best = candidate;
+      continue;
+    }
+    // Same pixel width: keep the original (no -300x300 suffix), else source_url.
+    if (candidate.width === best.width && candidate.url === media.source_url) {
+      best = candidate;
+    }
+  }
+  return best.url;
+}
+
 export function preserveFeaturedMediaUrl(source, sanitized) {
   const featuredMedia = source?._embedded?.['wp:featuredmedia'];
   const firstMedia = Array.isArray(featuredMedia) ? featuredMedia[0] : undefined;
-  const sourceUrl = firstMedia?.source_url;
+  const sourceUrl = largestAllowedCaseStudyMediaUrl(firstMedia);
 
-  if (!isAllowedCaseStudyMediaUrl(sourceUrl)) return sanitized;
+  if (!sourceUrl) return sanitized;
 
   return {
     ...sanitized,

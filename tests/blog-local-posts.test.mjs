@@ -162,6 +162,8 @@ test('eShow body is the live copy: no H1, two design WebP figures, form marker a
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_CABECERA_SRC)));
   assert.ok(existsSync(publicPath(ESHOW_MADRID_2026_FEATURED_SRC)));
   assert.ok(existsSync(publicPath('/images/avatar-playful.svg')));
+  assert.match(html, /href="\/reunion-playful"/);
+  assert.doesNotMatch(html, /api\.playfulagency\.com\/widget\/bookings/);
 });
 
 test('coverage blocks are typed, newest first, and drive dateModified', () => {
@@ -201,7 +203,9 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
     description: ESHOW_MADRID_2026_META,
     datePublished: ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL,
     dateModified: eshowMadrid2026DateModified(),
-    authorName: 'Playful Agency',
+    authorName: 'Equipo editorial',
+    authorType: 'Organization',
+    authorUrl: 'https://playfulagency.com',
     url: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
     ...extras,
   });
@@ -212,7 +216,7 @@ test('eShow JSON-LD is Article with offset dates, about Thing and no Event', () 
   assert.equal(jsonLd.inLanguage, 'es-ES');
   assert.deepEqual(jsonLd.author, {
     '@type': 'Organization',
-    name: 'Playful Agency',
+    name: 'Equipo editorial',
     url: 'https://playfulagency.com',
   });
   assert.doesNotMatch(JSON.stringify(jsonLd), /"Event"/);
@@ -341,6 +345,8 @@ test('Merchant Center body is the signed copy: no H1 and no invented images', ()
     /<h2 id="que-es-google-merchant-center-y-en-que-se-diferencia-de-shopping-y-de-google-ads">/,
   );
   assert.match(html, /reserva una reunión con nuestro equipo/);
+  assert.match(html, /href="\/reunion-playful"/);
+  assert.doesNotMatch(html, /api\.playfulagency\.com\/widget\/bookings/);
   assert.equal(GOOGLE_MERCHANT_CENTER_FAQS.length, 5);
 });
 
