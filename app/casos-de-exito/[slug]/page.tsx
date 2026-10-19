@@ -17,7 +17,8 @@ import '@/styles/slick-font-swap.css';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
-import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { ogJpegForPath } from '@/lib/og-images';
+import { resolveCaseStudyOgImage } from '@/lib/case-study-listing-image';
 import {
   buildCaseStudyArticleJsonLd,
   buildCaseStudyBreadcrumbJsonLd,
@@ -47,8 +48,14 @@ export async function generateMetadata({
       notFound();
     }
   }
-  const jpeg = ogJpegForPath(`/casos-de-exito/${slug}`);
-  const images = jpeg ? [ogJpegMeta(jpeg, override?.title || 'Caso de éxito | Playful Agency')] : undefined;
+  const images = (() => {
+    const og = resolveCaseStudyOgImage(
+      slug,
+      ogJpegForPath(`/casos-de-exito/${slug}`),
+      override?.title || 'Caso de éxito | Playful Agency',
+    );
+    return og ? [og] : undefined;
+  })();
   if (override) {
     return {
       title: override.title,
@@ -121,7 +128,7 @@ export default async function SuccessStoryPage({
     const override = getPublicCaseStudySeoOverride(slug);
     const path = `/casos-de-exito/${slug}`;
     const headline = override?.title || 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
-    const jpeg = ogJpegForPath(path);
+    const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
     return (
       <>
         <script
@@ -132,7 +139,7 @@ export default async function SuccessStoryPage({
               headline,
               description: override?.description,
               path,
-              image: jpeg ? toAbsoluteSiteUrl(jpeg) : undefined,
+              image: og ? toAbsoluteSiteUrl(og.url) : undefined,
             })),
           }}
         />
@@ -169,7 +176,7 @@ export default async function SuccessStoryPage({
   const path = `/casos-de-exito/${slug}`;
   const override = getPublicCaseStudySeoOverride(slug);
   const headline = override?.title || story.title.rendered;
-  const jpeg = ogJpegForPath(path);
+  const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
 
   return (
     <div className="text-gray-800 overflow-x-clip max-w-[100vw]">
@@ -181,7 +188,7 @@ export default async function SuccessStoryPage({
             headline,
             description: override?.description,
             path,
-            image: jpeg ? toAbsoluteSiteUrl(jpeg) : undefined,
+            image: og ? toAbsoluteSiteUrl(og.url) : undefined,
           })),
         }}
       />
