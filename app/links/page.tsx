@@ -1,32 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { LINKS_BIO_ENTRIES, buildLinksBioHref } from '@/lib/links-bio';
+import { resolveLinksBioThumbnails } from '@/lib/links-bio-thumbs';
 import { LINKS_BIO_THUMB_SIZES } from '@/lib/blog-image-sizes';
-import {
-  LINKS_BIO_ENTRIES,
-  buildLinksBioHref,
-  linksBioBlogSlug,
-  resolveLinksBioThumb,
-} from '@/lib/links-bio';
-import { getBlogPostBySlug } from '@/services/wordpress';
-
-async function featuredMediaForPath(path: string): Promise<string> {
-  const slug = linksBioBlogSlug(path);
-  if (!slug) return '';
-  try {
-    const post = await getBlogPostBySlug(slug);
-    return post?.featured_media_url || '';
-  } catch {
-    return '';
-  }
-}
 
 export default async function LinksBioPage() {
-  const entries = await Promise.all(
-    LINKS_BIO_ENTRIES.map(async (entry) => ({
-      ...entry,
-      thumb: resolveLinksBioThumb(entry.path, await featuredMediaForPath(entry.path)),
-    })),
-  );
+  const thumbs = await resolveLinksBioThumbnails(LINKS_BIO_ENTRIES);
 
   return (
     <div
@@ -56,24 +35,32 @@ export default async function LinksBioPage() {
         </div>
 
         <nav className="w-full flex flex-col gap-3" aria-label="Enlaces de Instagram">
-          {entries.map((entry) => (
-            <Link
-              key={entry.path}
-              href={buildLinksBioHref(entry.path)}
-              className="playful-boton w-full !justify-start gap-3 !text-base sm:!text-lg !px-3 sm:!px-4 py-3 shadow-sm hover:shadow-md"
-            >
-              <span className="relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 overflow-hidden rounded-xl bg-white">
-                <Image
-                  src={entry.thumb.src}
-                  alt=""
-                  fill
-                  sizes={LINKS_BIO_THUMB_SIZES}
-                  className={entry.thumb.isFallback ? 'object-contain p-1.5' : 'object-cover'}
-                />
-              </span>
-              <span className="flex-1 text-center pr-1">{entry.label}</span>
-            </Link>
-          ))}
+          {LINKS_BIO_ENTRIES.map((entry, index) => {
+            const thumb = thumbs[index];
+            return (
+              <Link
+                key={entry.path}
+                href={buildLinksBioHref(entry.path)}
+                className="playful-boton w-full !justify-start gap-3 !text-base sm:!text-lg px-6 py-4 shadow-sm hover:shadow-md"
+              >
+                <span className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl bg-white">
+                  <Image
+                    src={thumb.src}
+                    alt=""
+                    fill
+                    sizes={LINKS_BIO_THUMB_SIZES}
+                    className={
+                      thumb.isFallback
+                        ? 'object-contain p-1.5'
+                        : 'object-cover object-center'
+                    }
+                    unoptimized={thumb.isFallback}
+                  />
+                </span>
+                <span className="flex-1 text-left">{entry.label}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </div>

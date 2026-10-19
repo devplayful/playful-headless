@@ -47,5 +47,5 @@ export const CONTACT_HERO_SIZES = '(max-width: 1023px) 90vw, 620px';
 
 export const PRIVACY_HERO_SIZES = '(max-width: 1023px) 90vw, 500px';
 
-/** Square thumbs on /links: 56px mobile (w-14), 64px from sm (w-16). */
+/** /links bio thumbs: 56px (h-14) on mobile, 64px (h-16) from sm up. */
 export const LINKS_BIO_THUMB_SIZES = '(max-width: 639px) 56px, 64px';
