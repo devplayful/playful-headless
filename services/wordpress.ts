@@ -17,6 +17,7 @@ import {
   isAllowedCaseStudyMediaUrl,
   preserveFeaturedMediaUrl,
 } from './case-study-media-policy.mjs';
+import { applyCaseStudyCoverOverride } from '@/lib/case-study-listing-image';
 import { wordpressFetch, wordpressFetchCollection } from './wordpress-request.mjs';
 import {
   BLOG_COVER_FALLBACK,
@@ -1483,7 +1484,7 @@ export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory 
     ...sanitizedStory.acf,
     ...preserveCaseStudyMediaFields(story.acf as Record<string, unknown>),
   };
-  return applyPublicCaseStudyOverrides(sanitizedStory);
+  return applyCaseStudyCoverOverride(applyPublicCaseStudyOverrides(sanitizedStory));
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
@@ -1507,7 +1508,9 @@ async function loadAllCaseStudies(): Promise<any[]> {
   );
   const published = casos.map((caso: Record<string, unknown>) => {
     const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
-    return applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized));
+    return applyCaseStudyCoverOverride(
+      applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized)),
+    );
   });
   return mergePublicCaseStudies(published);
 }
