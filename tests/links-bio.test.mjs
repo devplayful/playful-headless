@@ -21,6 +21,7 @@ import {
   BLOG_COVER_OVERRIDES,
   resolveBlogCoverAlt,
 } from '../lib/blog-cover-image.ts';
+import { ogJpegForPath } from '../lib/og-images.ts';
 import { publicWebpIfPresent } from '../lib/public-webp-src.ts';
 import { LINKS_BIO_THUMB_SIZES } from '../lib/blog-image-sizes.ts';
 
@@ -100,7 +101,7 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
   assert.equal(linksBioArticleSlug('/contactar-agencia-de-marketing-digital'), null);
 });
 
-test('article thumbs use the same blog cover; other links use the Playful logo', () => {
+test('article thumbs use the blog cover; services use OG; logo is last resort', () => {
   const zelle = LINKS_BIO_ENTRIES[0];
   const zelleSlug = 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const zelleThumb = resolveLocalLinksBioThumbnail(zelle);
@@ -115,10 +116,15 @@ test('article thumbs use the same blog cover; other links use the Playful logo',
   for (const entry of LINKS_BIO_ENTRIES.slice(1)) {
     const thumb = resolveLocalLinksBioThumbnail(entry);
     assert.ok(thumb);
-    assert.equal(thumb.src, LINKS_BIO_FALLBACK_THUMB);
-    assert.equal(thumb.isFallback, true);
+    assert.equal(thumb.isFallback, false);
+    assert.equal(thumb.src, ogJpegForPath(entry.path));
+    assert.match(thumb.src, /^\/images\/og\//);
   }
   assert.equal(LINKS_BIO_FALLBACK_THUMB, '/images/logos/playful-logov.svg');
+  assert.deepEqual(
+    resolveLocalLinksBioThumbnail({ label: 'Sin imagen', path: '/ruta-sin-og' }),
+    { src: LINKS_BIO_FALLBACK_THUMB, alt: '', isFallback: true },
+  );
   assert.equal(
     resolveLocalLinksBioThumbnail({
       label: 'Sin portada local',
@@ -138,5 +144,6 @@ test('/links buttons render a square next/image thumb with real sizes', () => {
   assert.equal(LINKS_BIO_THUMB_SIZES, '(max-width: 639px) 56px, 64px');
   assert.match(thumbsSource, /getBlogPostBySlug/);
   assert.match(thumbsSource, /featured_media_url/);
+  assert.match(thumbsSource, /ogJpegForPath/);
   assert.match(thumbsSource, /BLOG_COVER_FALLBACK/);
 });
