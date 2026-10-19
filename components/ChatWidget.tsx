@@ -17,6 +17,11 @@ export default function ChatWidget() {
   )
 
   useEffect(() => {
+    const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+    if (pathname === '/links') {
+      return undefined
+    }
+
     let chatEl: HTMLScriptElement | null = null
     let trackingEl: HTMLScriptElement | null = null
 

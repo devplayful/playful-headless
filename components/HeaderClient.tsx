@@ -57,6 +57,10 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
 
   const { headerColor } = useTheme();
 
+  if (pathname === '/links') {
+    return null
+  }
+
   // Función para verificar si una ruta está activa
   const isActive = (path: string) => {
     if (path === '/') {
