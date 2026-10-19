@@ -5,8 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useSliderSettings } from "../hooks/useSliderSettings";
-import { selectCaseStudyCardMediaUrl } from "../services/case-study-media-policy.mjs";
-import { featuredTapaForSlug } from "@/lib/case-study-listing-image";
+import { resolveCaseStudyListingImage } from "@/lib/case-study-listing-image";
 import {
   CASE_CARD_IMAGE_QUALITY,
   CASE_CAROUSEL_CARD_SIZES,
@@ -308,8 +307,7 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
             description = 'Descubre cómo este proyecto transformó los resultados de nuestro cliente con estrategias innovadoras y soluciones personalizadas.';
           }
 
-          // Extraer imagen destacada
-          const image = selectCaseStudyCardMediaUrl(item) || featuredTapaForSlug(item.slug || '');
+          const image = resolveCaseStudyListingImage(item);
 
           // Construir array de categorías
           const categories: string[] = [];
