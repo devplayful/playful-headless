@@ -32,10 +32,12 @@ test('featured, listing, home cards and related set sizes to the real slot', () 
   assert.match(related, /sizes=\{BLOG_CARD_SIZES\}/);
 });
 
-test('/links bio thumbs declare a 56–64px slot', () => {
+test('/links bio thumbs declare featured and row slots', () => {
   const linksPage = readFileSync(new URL('../app/links/page.tsx', import.meta.url), 'utf8');
+  assert.match(imageSizes, /export const LINKS_BIO_FEATURED_SIZES/);
   assert.match(imageSizes, /export const LINKS_BIO_THUMB_SIZES/);
-  assert.match(imageSizes, /\(max-width: 639px\) 56px, 64px/);
+  assert.match(imageSizes, /\(max-width: 639px\) 80px, 96px/);
+  assert.match(linksPage, /sizes=\{LINKS_BIO_FEATURED_SIZES\}/);
   assert.match(linksPage, /sizes=\{LINKS_BIO_THUMB_SIZES\}/);
 });
 

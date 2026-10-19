@@ -16,13 +16,20 @@ import {
   buildLinksBioHref,
   linksBioArticleSlug,
 } from '../lib/links-bio.ts';
-import { resolveLocalLinksBioThumbnail } from '../lib/links-bio-thumbs.ts';
+import {
+  LINKS_BIO_DESTINATION_COVERS,
+  resolveLocalLinksBioThumbnail,
+} from '../lib/links-bio-thumbs.ts';
+import { CASOS_DE_EXITO_FEATURED_TAPAS } from '../lib/case-study-listing-image.ts';
 import {
   BLOG_COVER_OVERRIDES,
   resolveBlogCoverAlt,
 } from '../lib/blog-cover-image.ts';
 import { publicWebpIfPresent } from '../lib/public-webp-src.ts';
-import { LINKS_BIO_THUMB_SIZES } from '../lib/blog-image-sizes.ts';
+import {
+  LINKS_BIO_FEATURED_SIZES,
+  LINKS_BIO_THUMB_SIZES,
+} from '../lib/blog-image-sizes.ts';
 
 const APEX = 'https://playfulagency.com';
 const page = readFileSync(new URL('../app/links/page.tsx', import.meta.url), 'utf8');
@@ -100,25 +107,37 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
   assert.equal(linksBioArticleSlug('/contactar-agencia-de-marketing-digital'), null);
 });
 
-test('article thumbs use the same blog cover; other links use the Playful logo', () => {
+test('article thumbs use the same blog cover; other links use destination covers', () => {
   const zelle = LINKS_BIO_ENTRIES[0];
   const zelleSlug = 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const zelleThumb = resolveLocalLinksBioThumbnail(zelle);
   assert.ok(zelleThumb);
   assert.equal(zelleThumb.isFallback, false);
+  assert.equal(zelleThumb.objectFit, 'cover');
   assert.equal(
     zelleThumb.src,
     publicWebpIfPresent(BLOG_COVER_OVERRIDES[zelleSlug]),
   );
   assert.equal(zelleThumb.alt, resolveBlogCoverAlt(zelleSlug, ''));
 
-  for (const entry of LINKS_BIO_ENTRIES.slice(1)) {
+  const casos = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[1]);
+  assert.ok(casos);
+  assert.equal(casos.isFallback, false);
+  assert.notEqual(casos.src, LINKS_BIO_FALLBACK_THUMB);
+  assert.deepEqual(casos.collage, Object.values(CASOS_DE_EXITO_FEATURED_TAPAS));
+  assert.equal(casos.collage?.length, 3);
+
+  for (const entry of LINKS_BIO_ENTRIES.slice(2)) {
     const thumb = resolveLocalLinksBioThumbnail(entry);
     assert.ok(thumb);
-    assert.equal(thumb.src, LINKS_BIO_FALLBACK_THUMB);
-    assert.equal(thumb.isFallback, true);
+    assert.equal(thumb.isFallback, false);
+    assert.notEqual(thumb.src, LINKS_BIO_FALLBACK_THUMB);
+    assert.equal(thumb.src, LINKS_BIO_DESTINATION_COVERS[entry.path].src);
   }
   assert.equal(LINKS_BIO_FALLBACK_THUMB, '/images/logos/playful-logov.svg');
+  assert.match(thumbsSource, /contacto-imagen\.png/);
+  assert.match(thumbsSource, /agencia-shopify\/hero-/);
+  assert.match(thumbsSource, /agencia-e-commerce\.jpg/);
   assert.equal(
     resolveLocalLinksBioThumbnail({
       label: 'Sin portada local',
@@ -128,14 +147,23 @@ test('article thumbs use the same blog cover; other links use the Playful logo',
   );
 });
 
-test('/links buttons render a square next/image thumb with real sizes', () => {
+test('/links renders a featured cover card plus destination thumbs with real sizes', () => {
   assert.match(page, /from ['"]next\/image['"]/);
+  assert.match(page, /sizes=\{LINKS_BIO_FEATURED_SIZES\}/);
   assert.match(page, /sizes=\{LINKS_BIO_THUMB_SIZES\}/);
-  assert.match(page, /h-14 w-14 sm:h-16 sm:w-16/);
-  assert.match(page, /rounded-xl/);
+  assert.match(page, /aspect-\[16\/10\]/);
+  assert.match(page, /h-20 w-20 shrink-0/);
+  assert.match(page, /rounded-2xl/);
   assert.match(page, /object-cover object-center/);
   assert.match(page, /resolveLinksBioThumbnails/);
-  assert.equal(LINKS_BIO_THUMB_SIZES, '(max-width: 639px) 56px, 64px');
+  assert.match(page, /bg-\[#E9D7FF\]/);
+  assert.match(page, /background\.webp/);
+  assert.doesNotMatch(page, /playful-boton w-full/);
+  assert.equal(
+    LINKS_BIO_FEATURED_SIZES,
+    '(max-width: 639px) calc(100vw - 2.5rem), 448px',
+  );
+  assert.equal(LINKS_BIO_THUMB_SIZES, '(max-width: 639px) 80px, 96px');
   assert.match(thumbsSource, /getBlogPostBySlug/);
   assert.match(thumbsSource, /featured_media_url/);
   assert.match(thumbsSource, /BLOG_COVER_FALLBACK/);

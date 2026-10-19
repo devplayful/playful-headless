@@ -1,8 +1,10 @@
+import { CONTACT_HREF } from '../utils/booking.ts';
 import {
   BLOG_COVER_FALLBACK,
   blogCoverForSlug,
   resolveBlogCoverAlt,
 } from './blog-cover-image.ts';
+import { CASOS_DE_EXITO_FEATURED_TAPAS } from './case-study-listing-image.ts';
 import { publicWebpIfPresent } from './public-webp-src.ts';
 import {
   LINKS_BIO_FALLBACK_THUMB,
@@ -14,22 +16,59 @@ export type LinksBioThumb = {
   src: string;
   alt: string;
   isFallback: boolean;
+  objectFit: 'contain' | 'cover';
+  collage?: readonly string[];
 };
 
 const FALLBACK_THUMB: LinksBioThumb = {
   src: LINKS_BIO_FALLBACK_THUMB,
   alt: '',
   isFallback: true,
+  objectFit: 'contain',
+};
+
+const CASOS_COLLAGE = Object.values(CASOS_DE_EXITO_FEATURED_TAPAS);
+
+/** Destination covers: listing tapas, approved landing art, contact illustration. */
+export const LINKS_BIO_DESTINATION_COVERS: Record<
+  string,
+  Omit<LinksBioThumb, 'isFallback'>
+> = {
+  '/casos-de-exito': {
+    src: CASOS_COLLAGE[0],
+    alt: '',
+    objectFit: 'cover',
+    collage: CASOS_COLLAGE,
+  },
+  '/agencia-e-commerce': {
+    src: '/images/og/agencia-e-commerce.jpg',
+    alt: '',
+    objectFit: 'cover',
+  },
+  '/agencia-shopify': {
+    src: publicWebpIfPresent('/images/agencia-shopify/hero-gORwV7MSXO@2x.png'),
+    alt: '',
+    objectFit: 'cover',
+  },
+  [CONTACT_HREF]: {
+    src: '/images/contacto-imagen.png',
+    alt: '',
+    objectFit: 'contain',
+  },
 };
 
 /**
- * Logo for non-articles; Magnific/local cover when the slug has one.
- * Returns null when the href is a blog post that still needs WordPress
- * featured media.
+ * Logo only when nothing else exists. Articles use Magnific/local cover.
+ * Destinations use the approved tapa/cover/illustration — never the logo.
  */
 export function resolveLocalLinksBioThumbnail(
   entry: LinksBioEntry,
 ): LinksBioThumb | null {
+  const destination = LINKS_BIO_DESTINATION_COVERS[entry.path];
+  if (destination) {
+    return { ...destination, isFallback: false };
+  }
+
   const slug = linksBioArticleSlug(entry.path);
   if (!slug) return FALLBACK_THUMB;
 
@@ -39,6 +78,7 @@ export function resolveLocalLinksBioThumbnail(
       src: publicWebpIfPresent(override),
       alt: resolveBlogCoverAlt(slug, ''),
       isFallback: false,
+      objectFit: 'cover',
     };
   }
 
@@ -47,7 +87,7 @@ export function resolveLocalLinksBioThumbnail(
 
 /**
  * Same cover the blog uses: Magnific override, then WordPress featured
- * media. Playful logo if the href is not an article or has no portada.
+ * media. Destination covers for non-articles. Logo only as last resort.
  */
 export async function resolveLinksBioThumbnail(
   entry: LinksBioEntry,
@@ -67,6 +107,7 @@ export async function resolveLinksBioThumbnail(
         src,
         alt: post.featured_media_alt || resolveBlogCoverAlt(slug, ''),
         isFallback: false,
+        objectFit: 'cover',
       };
     }
   } catch {

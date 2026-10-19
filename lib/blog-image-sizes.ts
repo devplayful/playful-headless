@@ -47,5 +47,12 @@ export const CONTACT_HERO_SIZES = '(max-width: 1023px) 90vw, 620px';
 
 export const PRIVACY_HERO_SIZES = '(max-width: 1023px) 90vw, 500px';
 
-/** /links bio thumbs: 56px (h-14) on mobile, 64px (h-16) from sm up. */
-export const LINKS_BIO_THUMB_SIZES = '(max-width: 639px) 56px, 64px';
+/** /links featured Zelle card: full column (~350px at 390, 448px at max-w-md). */
+export const LINKS_BIO_FEATURED_SIZES =
+  '(max-width: 639px) calc(100vw - 2.5rem), 448px';
+
+/** /links row thumbs: 80px (h-20) on mobile, 96px (h-24) from sm up. */
+export const LINKS_BIO_THUMB_SIZES = '(max-width: 639px) 80px, 96px';
+
+/** Three-up collage inside the row thumb. */
+export const LINKS_BIO_COLLAGE_SIZES = '(max-width: 639px) 27px, 32px';
