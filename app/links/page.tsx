@@ -36,11 +36,7 @@ export default async function LinksBioPage() {
 
         <nav className="w-full flex flex-col gap-3" aria-label="Enlaces de Instagram">
           {LINKS_BIO_ENTRIES.map((entry, index) => {
-            const thumb = thumbs[index] ?? {
-              src: '/images/logos/playful-logov.svg',
-              alt: '',
-              isFallback: true,
-            };
+            const thumb = thumbs[index];
             return (
               <Link
                 key={entry.path}
