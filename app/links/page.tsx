@@ -1,8 +1,33 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { LINKS_BIO_ENTRIES, buildLinksBioHref } from '@/lib/links-bio';
+import { LINKS_BIO_THUMB_SIZES } from '@/lib/blog-image-sizes';
+import {
+  LINKS_BIO_ENTRIES,
+  buildLinksBioHref,
+  linksBioBlogSlug,
+  resolveLinksBioThumb,
+} from '@/lib/links-bio';
+import { getBlogPostBySlug } from '@/services/wordpress';
 
-export default function LinksBioPage() {
+async function featuredMediaForPath(path: string): Promise<string> {
+  const slug = linksBioBlogSlug(path);
+  if (!slug) return '';
+  try {
+    const post = await getBlogPostBySlug(slug);
+    return post?.featured_media_url || '';
+  } catch {
+    return '';
+  }
+}
+
+export default async function LinksBioPage() {
+  const entries = await Promise.all(
+    LINKS_BIO_ENTRIES.map(async (entry) => ({
+      ...entry,
+      thumb: resolveLinksBioThumb(entry.path, await featuredMediaForPath(entry.path)),
+    })),
+  );
+
   return (
     <div
       data-instagram-bio
@@ -31,13 +56,22 @@ export default function LinksBioPage() {
         </div>
 
         <nav className="w-full flex flex-col gap-3" aria-label="Enlaces de Instagram">
-          {LINKS_BIO_ENTRIES.map((entry) => (
+          {entries.map((entry) => (
             <Link
               key={entry.path}
               href={buildLinksBioHref(entry.path)}
-              className="playful-boton w-full !text-base sm:!text-lg px-6 py-4 shadow-sm hover:shadow-md"
+              className="playful-boton w-full !justify-start gap-3 !text-base sm:!text-lg !px-3 sm:!px-4 py-3 shadow-sm hover:shadow-md"
             >
-              {entry.label}
+              <span className="relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 overflow-hidden rounded-xl bg-white">
+                <Image
+                  src={entry.thumb.src}
+                  alt=""
+                  fill
+                  sizes={LINKS_BIO_THUMB_SIZES}
+                  className={entry.thumb.isFallback ? 'object-contain p-1.5' : 'object-cover'}
+                />
+              </span>
+              <span className="flex-1 text-center pr-1">{entry.label}</span>
             </Link>
           ))}
         </nav>

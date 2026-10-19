@@ -9,10 +9,14 @@ import {
   getSitemapPaths,
   buildSitemapXml,
 } from '../utils/apex-sitemap.ts';
+import { ogJpegForPath } from '../lib/og-images.ts';
 import {
   LINKS_BIO_ENTRIES,
+  LINKS_BIO_FALLBACK_THUMB,
   LINKS_BIO_UTM,
   buildLinksBioHref,
+  linksBioBlogSlug,
+  resolveLinksBioThumb,
 } from '../lib/links-bio.ts';
 
 const APEX = 'https://playfulagency.com';
@@ -65,6 +69,50 @@ test('/links copy and chrome have no client names', () => {
     assert.doesNotMatch(entry.label, CLIENT_NAME);
     assert.doesNotMatch(entry.path, CLIENT_NAME);
   }
+});
+
+test('blog thumbs prefer WP featured media; services use OG; logo is last resort', () => {
+  const zelle = LINKS_BIO_ENTRIES[0];
+  assert.equal(linksBioBlogSlug(zelle.path), 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce');
+  assert.equal(linksBioBlogSlug('/casos-de-exito'), null);
+  assert.equal(linksBioBlogSlug('/agencia-e-commerce'), null);
+
+  const featured = 'https://endpoint.playfulagency.com/wp-content/uploads/2025/04/zelle.jpg';
+  assert.deepEqual(resolveLinksBioThumb(zelle.path, featured), {
+    src: featured,
+    isFallback: false,
+  });
+  assert.deepEqual(resolveLinksBioThumb(zelle.path, '  '), {
+    src: ogJpegForPath(zelle.path),
+    isFallback: false,
+  });
+
+  for (const entry of LINKS_BIO_ENTRIES.slice(1)) {
+    const thumb = resolveLinksBioThumb(entry.path);
+    assert.equal(thumb.isFallback, false);
+    assert.equal(thumb.src, ogJpegForPath(entry.path));
+    assert.match(thumb.src, /^\/images\/og\//);
+  }
+
+  assert.deepEqual(resolveLinksBioThumb('/ruta-sin-og'), {
+    src: LINKS_BIO_FALLBACK_THUMB,
+    isFallback: true,
+  });
+  assert.equal(LINKS_BIO_FALLBACK_THUMB, '/images/logos/playful-logov.svg');
+});
+
+test('/links buttons render a square next/image thumb with slot sizes', () => {
+  assert.match(page, /export default async function LinksBioPage/);
+  assert.match(page, /getBlogPostBySlug/);
+  assert.match(page, /featured_media_url/);
+  assert.match(page, /resolveLinksBioThumb/);
+  assert.match(page, /LINKS_BIO_THUMB_SIZES/);
+  assert.match(page, /sizes=\{LINKS_BIO_THUMB_SIZES\}/);
+  assert.match(page, /w-14 h-14 sm:w-16 sm:h-16/);
+  assert.match(page, /rounded-xl/);
+  assert.match(page, /object-cover/);
+  assert.match(page, /object-contain/);
+  assert.doesNotMatch(page, /<img\b/);
 });
 
 test('header, footer and chat stay off /links after hooks', () => {

@@ -24,6 +24,11 @@ test('case-study cards expose 2-col and carousel slot sizes plus q90', () => {
   assert.match(imageSizes, /export const CASE_CARD_IMAGE_QUALITY = 90/);
 });
 
+test('/links thumbs declare a 56–64px slot', () => {
+  assert.match(imageSizes, /export const LINKS_BIO_THUMB_SIZES/);
+  assert.match(imageSizes, /\(max-width: 639px\) 56px, 64px/);
+});
+
 test('featured, listing, home cards and related set sizes to the real slot', () => {
   assert.match(post, /sizes=\{BLOG_POST_FEATURED_SIZES\}/);
   assert.doesNotMatch(post, /sizes="100vw"/);
