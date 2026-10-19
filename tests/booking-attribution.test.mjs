@@ -31,6 +31,7 @@ const {
   handleBookingWidgetMessage,
   isAllowedBookingMessageOrigin,
   isBookingWidgetIframeSrc,
+  isHighLevelFormIframeSrc,
   mergeBookingIframeAttr,
   parseBookingWidgetMessage,
   resolveBookingIframeAttr,
@@ -350,6 +351,12 @@ test('iframe src merge only touches GHL booking widgets and keeps widget-only ke
   assert.equal(isBookingWidgetIframeSrc(`${BOOKING_WIDGET_HREF}?timezone=America/Managua`), true);
   assert.equal(isBookingWidgetIframeSrc('https://widgets.leadconnectorhq.com/chat-widget/loader.js'), false);
   assert.equal(isBookingWidgetIframeSrc('https://www.googletagmanager.com/ns.html?id=GTM-X'), false);
+  const formSrc = 'https://api.leadconnectorhq.com/widget/form/dFgOGgLMEaiJUHW8UrBF';
+  assert.equal(isBookingWidgetIframeSrc(formSrc), false);
+  assert.equal(isHighLevelFormIframeSrc(formSrc), true);
+  const formMerged = new URL(applyBookingIframeAttrToSrc(formSrc, values));
+  assert.equal(formMerged.searchParams.get('utm_source'), 'facebook');
+  assert.equal(formMerged.searchParams.get('utm_campaign'), 'set1');
 
   const merged = applyBookingIframeAttrToSrc(
     `${BOOKING_WIDGET_HREF}?timezone=America/Managua&utm_source=widget-default`,

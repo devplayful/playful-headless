@@ -3,6 +3,9 @@ import test from 'node:test';
 import {
   HIGHLEVEL_CHAT_WIDGET_ID,
   HIGHLEVEL_CHAT_WIDGET_LOADER,
+  HIGHLEVEL_FORM_EMBED_SCRIPT,
+  HIGHLEVEL_FORM_WIDGET_ORIGIN,
+  highLevelFormWidgetSrc,
   highLevelScriptPolicy,
 } from '../../lib/highlevel/external-tracking.ts';
 
@@ -20,4 +23,13 @@ test('allows page-view tracking only after an explicit global enablement', () =>
     externalTracking: true,
     chatWidget: true,
   });
+});
+
+test('GHL inline form embed uses the official widget origin and form_embed.js', () => {
+  assert.equal(HIGHLEVEL_FORM_WIDGET_ORIGIN, 'https://api.leadconnectorhq.com');
+  assert.equal(HIGHLEVEL_FORM_EMBED_SCRIPT, 'https://link.msgsndr.com/js/form_embed.js');
+  assert.equal(
+    highLevelFormWidgetSrc('dFgOGgLMEaiJUHW8UrBF'),
+    'https://api.leadconnectorhq.com/widget/form/dFgOGgLMEaiJUHW8UrBF',
+  );
 });

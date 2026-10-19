@@ -170,6 +170,7 @@ test('pageSocialMetadata inherits title and meta and sets og:type', () => {
 test('non-blog generateMetadata wires twitter from the same og values', async () => {
   const slugPage = await readFile(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
   const shopifyPage = await readFile(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+  const avisosEshowPage = await readFile(new URL('../app/avisos-eshow/page.tsx', import.meta.url), 'utf8');
   const casosPage = await readFile(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
   const caseStudyPage = await readFile(new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
   const nosotrosPage = await readFile(new URL('../app/nosotros/page.tsx', import.meta.url), 'utf8');
@@ -178,6 +179,8 @@ test('non-blog generateMetadata wires twitter from the same og values', async ()
   assert.match(slugPage, /type: 'website'/);
   assert.match(shopifyPage, /pageSocialMetadata\(/);
   assert.match(shopifyPage, /type: 'website'/);
+  assert.match(avisosEshowPage, /pageSocialMetadata\(/);
+  assert.match(avisosEshowPage, /type: 'website'/);
   assert.match(caseStudyPage, /pageSocialMetadata\(/);
   assert.match(caseStudyPage, /type: 'website'/);
   assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);

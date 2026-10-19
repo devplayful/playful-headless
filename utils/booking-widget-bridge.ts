@@ -190,20 +190,33 @@ function parseSrc(src: string): URL | null {
   }
 }
 
-/** Widget/calendar booking iframes only. Chat loader and GTM stay untouched. */
-export function isBookingWidgetIframeSrc(src: string): boolean {
+function isHighLevelWidgetIframeSrc(src: string, pathPattern: RegExp): boolean {
   const url = parseSrc(src);
   if (!url) return false;
   if (url.protocol !== 'https:') return false;
   if (!hostAllowed(url.hostname, BOOKING_IFRAME_HOSTS)) return false;
-  return /\/widget\/bookings?\//i.test(url.pathname);
+  return pathPattern.test(url.pathname);
+}
+
+/** Widget/calendar booking iframes only. Chat loader and GTM stay untouched. */
+export function isBookingWidgetIframeSrc(src: string): boolean {
+  return isHighLevelWidgetIframeSrc(src, /\/widget\/bookings?\//i);
+}
+
+/** GHL inline form iframes (`/widget/form/{id}`). Same hosts as the calendar. */
+export function isHighLevelFormIframeSrc(src: string): boolean {
+  return isHighLevelWidgetIframeSrc(src, /\/widget\/form\//i);
+}
+
+export function isHighLevelAttributionIframeSrc(src: string): boolean {
+  return isBookingWidgetIframeSrc(src) || isHighLevelFormIframeSrc(src);
 }
 
 export function applyBookingIframeAttrToSrc(
   src: string,
   values: BookingIframeAttrValues,
 ): string {
-  if (!isBookingWidgetIframeSrc(src)) return src;
+  if (!isHighLevelAttributionIframeSrc(src)) return src;
   const query = searchFromBookingIframeAttr(values);
   if (!query) return src;
   return mergeIncomingQueryOntoWidget(src, query).toString();

@@ -7,7 +7,7 @@ import {
   applyBookingIframeAttrToSrc,
   BOOKING_IFRAME_ATTR_STORAGE_KEY,
   handleBookingWidgetMessage,
-  isBookingWidgetIframeSrc,
+  isHighLevelAttributionIframeSrc,
   resolveBookingIframeAttr,
   serializeBookingIframeAttr,
   type BookingIframeAttrValues,
@@ -49,16 +49,16 @@ function bindBookingIframes(values: BookingIframeAttrValues): void {
   Array.from(document.querySelectorAll('iframe[src]')).forEach((node) => {
     const iframe = node as HTMLIFrameElement;
     const src = iframe.getAttribute('src') || '';
-    if (!isBookingWidgetIframeSrc(src)) return;
+    if (!isHighLevelAttributionIframeSrc(src)) return;
     const next = applyBookingIframeAttrToSrc(src, values);
     if (next && next !== src) iframe.setAttribute('src', next);
   });
 }
 
 /**
- * Persist visit utm, fbclid and gclid and, if a GHL booking iframe appears, put
- * them on its src and answer fetch-query-params. Confirm has no email/contactId
- * in GHL's msgsndr-booking-complete, so this component does not upsert.
+ * Persist visit utm, fbclid and gclid and, if a GHL booking or form iframe
+ * appears, put them on its src and answer fetch-query-params. Confirm has no
+ * email/contactId in GHL's msgsndr-booking-complete, so this component does not upsert.
  */
 export default function BookingWidgetAttribution() {
   const pathname = usePathname();
