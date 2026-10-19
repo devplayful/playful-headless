@@ -229,15 +229,21 @@ test('Shopify case cards reuse Casos de Éxito featured tapas', async () => {
   } = await import('../lib/case-study-listing-image.ts');
   assert.equal(
     CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'],
-    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png',
+    '/casos/Tapa-Caso-de-exito-JUMEX-US.png',
   );
   assert.equal(
     CASOS_DE_EXITO_FEATURED_TAPAS['odwalla-shopify-dtc-ecommerce'],
-    'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png',
+    '/casos/Tapa-Caso-de-exito-Odwalla.png',
   );
   assert.equal(
     resolveCaseStudyListingImage({
-      _embedded: { 'wp:featuredmedia': [{ source_url: CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'] }] },
+      slug: 'jumex-shopify-dtc-ecommerce',
+      _embedded: {
+        'wp:featuredmedia': [{
+          source_url:
+            'https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png',
+        }],
+      },
     }),
     CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'],
   );
