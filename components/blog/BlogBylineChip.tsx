@@ -1,4 +1,9 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+
+const FALLBACK_AVATAR_SRC = '/images/avatar-playful.svg';
 
 type BlogBylineChipProps = {
   name: string;
@@ -22,17 +27,30 @@ export function BlogBylineChip({
   avatarAlt,
   avatarPriority = false,
 }: BlogBylineChipProps) {
-  const avatar = avatarSrc ? (
+  const fallbackSrc = FALLBACK_AVATAR_SRC;
+  const initialSrc = avatarSrc || fallbackSrc;
+  const [src, setSrc] = useState(initialSrc);
+  const [hidden, setHidden] = useState(false);
+
+  const avatar = hidden ? null : (
     <Image
-      src={avatarSrc}
+      src={src}
       alt={avatarAlt || name}
       width={24}
       height={24}
       sizes="24px"
       priority={avatarPriority}
+      unoptimized={src.endsWith('.svg')}
+      onError={() => {
+        if (src !== fallbackSrc) {
+          setSrc(fallbackSrc);
+          return;
+        }
+        setHidden(true);
+      }}
       className="h-6 w-6 shrink-0 rounded-full object-cover"
     />
-  ) : null;
+  );
 
   const authorLabel = (
     <span className="min-w-0 text-sm font-medium">{name}</span>

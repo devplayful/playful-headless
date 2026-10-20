@@ -192,6 +192,24 @@ export function isEditorialTeamName(name: string | undefined | null): boolean {
   return trimmed === EDITORIAL_TEAM_NAME || trimmed === DEFAULT_EDITORIAL_BYLINE;
 }
 
+/** Gravatar mystery-man URLs 404 for Next/Image (host not allowed) and are not a real face. */
+export function isUsableBlogAvatarUrl(value: string | undefined | null): boolean {
+  const url = (value || '').trim();
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  if (lower.includes('gravatar.com') || lower.includes('0.gravatar.com')) return false;
+  return true;
+}
+
+export function resolveBlogAuthorAvatarSrc(
+  ...candidates: Array<string | undefined | null>
+): string {
+  for (const candidate of candidates) {
+    if (isUsableBlogAvatarUrl(candidate)) return (candidate as string).trim();
+  }
+  return EDITORIAL_AVATAR_SRC;
+}
+
 /** Positive WP user id from REST (`author: 21` or `_embedded.author[0].id`). */
 export function wordpressAuthorId(input: {
   author?: number | { id?: number | null } | null;
@@ -249,10 +267,14 @@ export function resolveBlogArticleAuthor(
   const personName = resolveBlogPostAuthorName(post);
   const fromWordPress = wordpressAuthorId(post) != null;
   const isLocalEditorial = !fromWordPress && isEditorialTeamName(personName);
+  const wpAvatar = post.author && typeof post.author === 'object'
+    ? post.author.avatar_urls?.['48'] || post.author.avatar_urls?.['96'] || post.author.avatar_urls?.['24']
+    : undefined;
+  const avatarSrc = resolveBlogAuthorAvatarSrc(options.avatarSrc, wpAvatar);
 
   const visibleByline = isLocalEditorial
     ? EDITORIAL_TEAM_NAME
-    : editorial
+    : editorial && !isEditorialTeamName(personName)
       ? formatCombinedByline(personName, editorial.updatedBy)
       : personName || 'Playful Agency';
 
@@ -262,13 +284,11 @@ export function resolveBlogArticleAuthor(
       entityName: EDITORIAL_TEAM_NAME,
       schemaType: 'Organization',
       schemaUrl: EDITORIAL_ORGANIZATION_URL,
-      avatarSrc: options.avatarSrc || EDITORIAL_AVATAR_SRC,
+      avatarSrc,
     };
   }
 
   const entityName = personName || 'Playful Agency';
-  const avatarSrc = options.avatarSrc
-    || (post.author && typeof post.author === 'object' ? post.author.avatar_urls?.['48'] : undefined);
   return {
     visibleByline,
     entityName,

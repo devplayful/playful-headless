@@ -7,6 +7,7 @@ const {
   BLOG_AUTHOR_URL,
   BLOG_EDITORIAL_OVERRIDES,
   DEFAULT_EDITORIAL_BYLINE,
+  EDITORIAL_AVATAR_SRC,
   EDITORIAL_ORGANIZATION_URL,
   EDITORIAL_TEAM_NAME,
   articleInstantsEqual,
@@ -166,6 +167,44 @@ test('1. local posts signed Playful Agency (id 0) stay Person, not Equipo editor
     assert.equal(jsonLd.author['@type'], 'Person');
     assert.notEqual(author.entityName, EDITORIAL_TEAM_NAME);
   }
+});
+
+test('WP Equipo editorial keeps the display name and falls back from Gravatar', () => {
+  const author = resolveBlogArticleAuthor(
+    {
+      author: {
+        id: 29,
+        name: 'Equipo editorial',
+        avatar_urls: {
+          '48': 'https://secure.gravatar.com/avatar/bc96669c47ecdb8f4c314f0389f04e5fc4992eecc7cfb?s=48&d=mm&r=g',
+        },
+      },
+    },
+    {
+      updatedAt: '2026-10-20T12:28:05Z',
+      updatedAtLabel: '20 de octubre de 2026',
+      updatedBy: DEFAULT_EDITORIAL_BYLINE,
+      source: 'wordpress',
+    },
+  );
+  assert.equal(author.visibleByline, 'Equipo editorial');
+  assert.equal(author.entityName, 'Equipo editorial');
+  assert.equal(author.avatarSrc, EDITORIAL_AVATAR_SRC);
+  assert.match(chipSource, /onError/);
+  assert.match(chipSource, /\/images\/avatar-playful\.svg/);
+  const hosted = resolveBlogArticleAuthor({
+    author: {
+      id: 21,
+      name: 'Stefanni Parabavidez',
+      avatar_urls: {
+        '48': 'https://endpoint.playfulagency.com/wp-content/uploads/avatar.jpg',
+      },
+    },
+  });
+  assert.equal(
+    hosted.avatarSrc,
+    'https://endpoint.playfulagency.com/wp-content/uploads/avatar.jpg',
+  );
 });
 
 test('1. schema reads the WP author name, not a hardcoded slug or id map', () => {

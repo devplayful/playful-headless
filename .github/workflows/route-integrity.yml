@@ -35,6 +35,8 @@ jobs:
         run: node --experimental-strip-types --test tests/blog-related-posts.test.mjs
       - name: Run blog article quote styles tests
         run: node --experimental-strip-types --test tests/blog-article-quotes.test.mjs
+      - name: Run blog excerpt and byline tests
+        run: node --experimental-strip-types --test tests/blog-editorial-meta.test.mjs tests/blog-article-author-dates.test.mjs
       - name: Unit-test CTA click classification
         run: npm run test:cta-click
       - name: Type-check

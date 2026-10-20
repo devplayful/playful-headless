@@ -332,6 +332,25 @@ test('hero excerpt omits empty text and only adds ellipsis when truncated', () =
   assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
 });
 
+test('hero excerpt keeps WP manual copy whole and otherwise cuts on a word', () => {
+  const cima =
+    'El caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela» se llevó el premio de su categoría en la cuarta edición del certamen, celebrada el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, Salón Plaza Real, a las 5:00 pm.';
+  const cimaBody =
+    '¿Qué son los Premios CIMA 2026? Los Premios CIMA 2026 son la cuarta edición de un certamen venezolano.';
+  assert.ok(cima.length > 200);
+  assert.equal(formatBlogHeroExcerpt(`<p>${cima}</p>`, 200, `<p>${cimaBody}</p>`), cima);
+  const autoCut = formatBlogHeroExcerpt(`<p>${cima}</p>`);
+  assert.match(autoCut, /en el Hotel…$/);
+  assert.doesNotMatch(autoCut, /Eurobui/);
+  assert.doesNotMatch(autoCut, /\.\.\./);
+  const earlyStop = `Hi. ${'palabra '.repeat(40)}`;
+  const truncated = formatBlogHeroExcerpt(`<p>${earlyStop}</p>`, 200);
+  assert.notEqual(truncated, 'Hi.');
+  assert.match(truncated, /…$/);
+  const nearSentence = `${'palabra '.repeat(22)}Fin de frase. y sobra texto extra para pasar el límite de caracteres.`;
+  assert.match(formatBlogHeroExcerpt(`<p>${nearSentence}</p>`, 200), /Fin de frase\.$/);
+});
+
 test('editorial avatar asset remains available but is not the byline face', () => {
   assert.equal(EDITORIAL_AVATAR_SRC, '/images/avatar-playful.svg');
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
@@ -415,7 +434,7 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(blogPage, /updatedLabel=\{updatedByline\}/);
   assert.match(blogPage, /updatedDateTime=/);
   assert.doesNotMatch(blogPage, /visibleDateLabel/);
-  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
+  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.match(blogPage, /avatarSrc=\{articleAuthor\.avatarSrc\}/);
   assert.doesNotMatch(blogPage, /detail=/);

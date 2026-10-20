@@ -239,7 +239,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
   const excerptText = isEshow
     ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
-    : formatBlogHeroExcerpt(post.excerpt?.rendered);
+    : formatBlogHeroExcerpt(post.excerpt?.rendered, undefined, post.content?.rendered);
   const bylineName = articleAuthor.visibleByline;
   const authorHref = articleAuthor.href;
   const updatedByline = isEshow
