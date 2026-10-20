@@ -63,6 +63,7 @@ import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
 import { HomePageContent } from "./HomePageContent";
+import CimaBreaker from "@/components/premios-cima/CimaBreaker";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
 import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
@@ -133,6 +134,8 @@ async function HomeContent() {
           style={{ animationDelay: "1.5s" }}
         ></div>
       </section>
+
+      <CimaBreaker variant="home" />
 
       {/* Material UI Services Section */}
       <MaterialServicesSection className={shell} />

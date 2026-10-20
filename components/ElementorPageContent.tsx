@@ -60,6 +60,18 @@ function preserveMediaLineSeparators(html: string): string {
   });
 }
 
+const CIMA_ECOM_ALT =
+  'Playful Agency, agencia reconocida en los Premios CIMA 2026, categoría Plataforma de E-commerce';
+/** Separador Premios CIMA 2026 en /agencia-e-commerce (HTML de WP: <picture>, no next/image). */
+const CIMA_ECOM_BREAKER_HTML =
+  '<a href="https://premioscima.com" target="_blank" rel="noopener" data-cima-breaker="ecommerce" '
+  + 'style="display:block;width:100%;max-width:none;margin:0 0 24px;overflow:visible;transform:none">'
+  + '<picture style="display:block;overflow:visible">'
+  + '<source media="(min-width: 768px)" srcset="/images/premios-cima/breaker-ecommerce-card-desktop.png" width="1110" height="576">'
+  + `<img class="cima-ecom-img" src="/images/premios-cima/breaker-ecommerce-card-mobile.png" width="321" height="708" loading="lazy" decoding="async" alt="${CIMA_ECOM_ALT}" style="display:block;margin:0 auto;height:auto;transform:none"></picture></a>`
+  + '<style>[data-cima-breaker=ecommerce] .cima-ecom-img{width:321px!important;max-width:none!important}'
+  + '@media (min-width:768px){[data-cima-breaker=ecommerce] .cima-ecom-img{width:100%!important;max-width:1110px!important}}</style>';
+
 function restoreOldBodyCopy(html: string): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
@@ -71,7 +83,8 @@ function restoreOldBodyCopy(html: string): string {
   out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
   out = out.replace(
     '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',
-    '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
+    CIMA_ECOM_BREAKER_HTML
+    + '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
     + '<h2 class="main-heading">No confíes solo en nuestra palabra, mira los resultados</h2>',
   );
 

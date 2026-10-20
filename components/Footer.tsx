@@ -146,6 +146,21 @@ export default function Footer() {
                   </Link>
                 </li>
               </ul>
+              <a
+                href="https://premioscima.com"
+                target="_blank"
+                rel="noopener"
+                className="block w-[160px] mt-6 mx-auto md:mx-0"
+              >
+                <Image
+                  src="/images/premios-cima/escudo-cima.svg"
+                  width={160}
+                  height={200}
+                  alt="Sello Premios CIMA 2026: Playful Agency, agencia reconocida"
+                  style={{ width: 160, height: 'auto' }}
+                  className="block"
+                />
+              </a>
             </div>
           </div>
         </div>
