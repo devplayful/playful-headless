@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { buildBlogSitemapLastmodMap } = require('../lib/blog-sitemap-lastmod.js');
 
 const {
   SITEMAP_BLOG_PATHS,
@@ -44,7 +48,7 @@ const crawlNav = readFileSync(
   'utf8',
 );
 
-test('1) sitemap blog posts use WordPress modified_gmt lastmod, not build timestamps', () => {
+test('1) sitemap blog posts use WordPress modified_gmt (else date_gmt) lastmod', () => {
   const openBlogPaths = SITEMAP_BLOG_PATHS.filter(
     (path) => !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path),
   );
