@@ -65,12 +65,6 @@ import {
   ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
-  PREMIOS_CIMA_2026_BAJADA,
-  PREMIOS_CIMA_2026_EXCERPT,
-  PREMIOS_CIMA_2026_H1,
-  PREMIOS_CIMA_2026_META,
-  PREMIOS_CIMA_2026_SLUG,
-  PREMIOS_CIMA_2026_TITLE,
   GOOGLE_MERCHANT_CENTER_H1,
   GOOGLE_MERCHANT_CENTER_META,
   GOOGLE_MERCHANT_CENTER_SLUG,
@@ -207,8 +201,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const ogImagePath =
     resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
   const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
-  const isCima = postSlug === PREMIOS_CIMA_2026_SLUG;
-  const VisibleTitleTag = isCima ? 'h1' : 'h2';
   const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
@@ -237,9 +229,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
   const excerptText = isEshow
     ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
-    : postSlug === PREMIOS_CIMA_2026_SLUG
-      ? formatBlogHeroExcerpt(`<p>${PREMIOS_CIMA_2026_EXCERPT}</p>`, 400)
-      : formatBlogHeroExcerpt(post.excerpt?.rendered);
+    : formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName = articleAuthor.visibleByline;
   const authorHref = articleAuthor.href;
   const updatedByline = isEshow
@@ -280,7 +270,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <a href={serviceCta.href}>{serviceCta.label}</a>
       </p>
     ) : null}
-    {isCima ? null : <h1 className="sr-only">{pageH1}</h1>}
+    <h1 className="sr-only">{pageH1}</h1>
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
@@ -305,15 +295,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
               </div>
               
-              <VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {pageH1}
-              </VisibleTitleTag>
-
-              {isCima ? (
-                <p className="text-xl text-[#2A0064] leading-relaxed mb-4">
-                  {PREMIOS_CIMA_2026_BAJADA}
-                </p>
-              ) : null}
+              </h2>
 
               <div className="mb-6">
                 <BlogBylineChip
@@ -552,17 +536,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 }
 
 function blogPostSeoCopy(
-  post: Pick<WPPost, 'title' | 'excerpt'>,
+  post: Pick<WPPost, 'title' | 'excerpt' | 'yoast_head_json'>,
   postSlug: string,
 ): { title: string; description: string } {
   const override = BLOG_SEO_OVERRIDES[postSlug];
+  const yoastTitle = post.yoast_head_json?.title;
+  const yoastDescription = post.yoast_head_json?.description;
   return {
     title: withPlayfulTitleSuffix(
-      override?.title ?? decodeHtmlEntities(post.title.rendered),
+      override?.title ?? yoastTitle ?? decodeHtmlEntities(post.title.rendered),
     ),
     description: override?.description
       ? wordpressSeoText(override.description)
-      : wordpressSeoText(post.excerpt?.rendered, { stripTags: true, maxLength: 160 }),
+      : wordpressSeoText(yoastDescription ?? post.excerpt?.rendered, {
+          stripTags: true,
+          maxLength: 160,
+        }),
   };
 }
 
@@ -596,11 +585,6 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     title: ESHOW_MADRID_2026_TITLE,
     description: ESHOW_MADRID_2026_META,
     h1: ESHOW_MADRID_2026_H1,
-  },
-  [PREMIOS_CIMA_2026_SLUG]: {
-    title: PREMIOS_CIMA_2026_TITLE,
-    description: PREMIOS_CIMA_2026_META,
-    h1: PREMIOS_CIMA_2026_H1,
   },
   [GOOGLE_MERCHANT_CENTER_SLUG]: {
     title: GOOGLE_MERCHANT_CENTER_TITLE,

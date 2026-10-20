@@ -106,6 +106,7 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/otros/mes-del-orgullo-gay-por-que-se-celebra",
   "/blog/otros/metaverso-que-es",
   "/blog/otros/por-que-debes-hacer-publicidad-digital-en-tu-negocio",
+  "/blog/otros/premios-cima-2026-soytechno-playful",
   "/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo",
   "/blog/otros/una-herramienta-para-ganar-autoridad",
   "/blog/otros/ya-sabes-cuando-se-celebra-el-dia-mundial-del-emoji",

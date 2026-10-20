@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs';
 
 import { withPlayfulTitleSuffix } from '../lib/blog-title-suffix.ts';
 import { ESHOW_MADRID_2026_TITLE } from '../lib/eshow-madrid-2026.ts';
-import { PREMIOS_CIMA_2026_TITLE } from '../lib/premios-cima-2026.ts';
 
 test('withPlayfulTitleSuffix is idempotent for WordPress titles that already end in | Playful', () => {
   assert.equal(withPlayfulTitleSuffix('Guía de catálogo'), 'Guía de catálogo | Playful');
@@ -41,13 +40,13 @@ test('eShow Madrid 2026 SEO title is exactly one | Playful suffix', () => {
   );
 });
 
-test('CIMA 2026 SEO title is exactly one | Playful suffix', () => {
+test('Yoast titles that already end in | Playful stay at one suffix', () => {
   assert.equal(
-    withPlayfulTitleSuffix(PREMIOS_CIMA_2026_TITLE),
+    withPlayfulTitleSuffix('Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful'),
     'Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful',
   );
   assert.doesNotMatch(
-    withPlayfulTitleSuffix(PREMIOS_CIMA_2026_TITLE),
+    withPlayfulTitleSuffix('Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful'),
     /\| Playful \| Playful/,
   );
 });

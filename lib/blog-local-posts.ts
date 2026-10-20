@@ -23,25 +23,6 @@ import {
   ESHOW_MADRID_2026_AUTHOR_NAME,
   eshowMadrid2026DateModified,
 } from './eshow-madrid-2026.ts';
-import {
-  PREMIOS_CIMA_2026_ABOUT_NAME,
-  PREMIOS_CIMA_2026_EVENT,
-  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
-  PREMIOS_CIMA_2026_AUTHOR_NAME,
-  PREMIOS_CIMA_2026_BODY_HTML,
-  PREMIOS_CIMA_2026_FAQS,
-  PREMIOS_CIMA_2026_CANONICAL,
-  PREMIOS_CIMA_2026_CATEGORY_ID,
-  PREMIOS_CIMA_2026_CATEGORY_SLUG,
-  PREMIOS_CIMA_2026_DATE_MODIFIED,
-  PREMIOS_CIMA_2026_DATE_PUBLISHED,
-  PREMIOS_CIMA_2026_EXCERPT,
-  PREMIOS_CIMA_2026_FEATURED_ALT,
-  PREMIOS_CIMA_2026_FEATURED_SRC,
-  PREMIOS_CIMA_2026_H1,
-  PREMIOS_CIMA_2026_PATH,
-  PREMIOS_CIMA_2026_SLUG,
-} from './premios-cima-2026.ts';
 import { EDITORIAL_AVATAR_SRC } from './blog-editorial-meta.ts';
 
 export {
@@ -75,45 +56,6 @@ export {
   eshowMadrid2026DateModified,
   formatEshowActualizadoLine,
 } from './eshow-madrid-2026.ts';
-
-export {
-  PREMIOS_CIMA_2026_ABOUT_NAME,
-  PREMIOS_CIMA_2026_EVENT,
-  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
-  PREMIOS_CIMA_2026_AUTHOR_NAME,
-  PREMIOS_CIMA_2026_BAJADA,
-  PREMIOS_CIMA_2026_BODY_HTML,
-  PREMIOS_CIMA_2026_FAQS,
-  PREMIOS_CIMA_2026_CANONICAL,
-  PREMIOS_CIMA_2026_CATEGORY_ID,
-  PREMIOS_CIMA_2026_CATEGORY_SLUG,
-  PREMIOS_CIMA_2026_DATE_MODIFIED,
-  PREMIOS_CIMA_2026_DATE_PUBLISHED,
-  PREMIOS_CIMA_2026_ENTREGA_ALT,
-  PREMIOS_CIMA_2026_ENTREGA_HEIGHT,
-  PREMIOS_CIMA_2026_ENTREGA_SRC,
-  PREMIOS_CIMA_2026_ENTREGA_WIDTH,
-  PREMIOS_CIMA_2026_EXCERPT,
-  PREMIOS_CIMA_2026_FEATURED_ALT,
-  PREMIOS_CIMA_2026_FEATURED_HEIGHT,
-  PREMIOS_CIMA_2026_FEATURED_SRC,
-  PREMIOS_CIMA_2026_FEATURED_WIDTH,
-  PREMIOS_CIMA_2026_H1,
-  PREMIOS_CIMA_2026_META,
-  PREMIOS_CIMA_2026_PATH,
-  PREMIOS_CIMA_2026_PORTADA_SRC,
-  PREMIOS_CIMA_2026_SALON_ALT,
-  PREMIOS_CIMA_2026_SALON_HEIGHT,
-  PREMIOS_CIMA_2026_SALON_SRC,
-  PREMIOS_CIMA_2026_SALON_WIDTH,
-  PREMIOS_CIMA_2026_SLUG,
-  PREMIOS_CIMA_2026_TITLE,
-  PREMIOS_CIMA_2026_TROFEO_ALT,
-  PREMIOS_CIMA_2026_TROFEO_CAPTION,
-  PREMIOS_CIMA_2026_TROFEO_HEIGHT,
-  PREMIOS_CIMA_2026_TROFEO_SRC,
-  PREMIOS_CIMA_2026_TROFEO_WIDTH,
-} from './premios-cima-2026.ts';
 
 /**
  * Next-owned blog posts that are not in WordPress. The post page still
@@ -258,7 +200,6 @@ export function listProductionLocalBlogPosts(
   const posts = Object.values(LOCAL_BLOG_POSTS);
   if (isEshowLocalBlogEnabled(env)) {
     posts.push(buildEshowMadrid2026Post());
-    posts.push(buildPremiosCima2026Post());
   }
   return posts;
 }
@@ -345,10 +286,6 @@ export function localBlogStaticParams(): Array<{ slug: string[] }> {
  * - Listados (/blog, latest, relacionados): `mergeProductionLocalBlogPosts`.
  * - Sitemap: `listEshowSitemapBlogEntries()` (lastmod = `eshowMadrid2026DateModified()`).
  * - Definir `GHL_TAG_ESHOW_LISTA` en Vercel producción (Ops/Email).
- *
- * ## Premios CIMA 2026 (GO José 2026-10-20, vía CEO)
- * - Mismo gate que eShow. No publicar en WordPress.
- * - Sitemap: `listStagingSitemapBlogEntries()` (lastmod = `PREMIOS_CIMA_2026_DATE_MODIFIED`).
  *
  * ## Al pasar Merchant Center a producción (GO de Jose o Ale)
  * 1. Confirmar datePublished / dateModified con SEO
@@ -548,47 +485,6 @@ function buildGoogleMerchantCenterPost(): WPPost {
   };
 }
 
-function buildPremiosCima2026Post(): WPPost {
-  const published = PREMIOS_CIMA_2026_DATE_PUBLISHED;
-  const modified = PREMIOS_CIMA_2026_DATE_MODIFIED;
-  return {
-    id: 90002612,
-    date: published,
-    date_gmt: published,
-    modified,
-    modified_gmt: modified,
-    slug: PREMIOS_CIMA_2026_SLUG,
-    link: PREMIOS_CIMA_2026_CANONICAL,
-    title: { rendered: PREMIOS_CIMA_2026_H1 },
-    content: { rendered: PREMIOS_CIMA_2026_BODY_HTML, protected: false },
-    excerpt: { rendered: `<p>${PREMIOS_CIMA_2026_EXCERPT}</p>`, protected: false },
-    featured_media_url: PREMIOS_CIMA_2026_FEATURED_SRC,
-    featured_media_alt: PREMIOS_CIMA_2026_FEATURED_ALT,
-    categories: [
-      {
-        id: PREMIOS_CIMA_2026_CATEGORY_ID,
-        name: 'Otros',
-        slug: PREMIOS_CIMA_2026_CATEGORY_SLUG,
-        taxonomy: 'category',
-      },
-    ],
-    tags: [],
-    author: {
-      id: 0,
-      name: PREMIOS_CIMA_2026_AUTHOR_NAME,
-      slug: 'equipo-editorial-playful-agency',
-      avatar_urls: {
-        '24': EDITORIAL_AVATAR_SRC,
-        '48': EDITORIAL_AVATAR_SRC,
-        '96': EDITORIAL_AVATAR_SRC,
-      },
-    },
-    author_name: PREMIOS_CIMA_2026_AUTHOR_NAME,
-    status: 'publish',
-    type: 'post',
-  };
-}
-
 function buildEshowMadrid2026Post(): WPPost {
   const published = ESHOW_MADRID_2026_DATE_PUBLISHED_PROVISIONAL;
   const modified = eshowMadrid2026DateModified();
@@ -642,9 +538,6 @@ export function getStagingLocalBlogPost(
   if (slug === ESHOW_MADRID_2026_SLUG) {
     return isEshowLocalBlogEnabled(env) ? buildEshowMadrid2026Post() : null;
   }
-  if (slug === PREMIOS_CIMA_2026_SLUG) {
-    return isEshowLocalBlogEnabled(env) ? buildPremiosCima2026Post() : null;
-  }
   if (!isStagingLocalBlogEnabled(env)) return null;
   return STAGING_ONLY_BLOG_POSTS[slug] || null;
 }
@@ -655,7 +548,6 @@ export function listStagingLocalBlogStaticParams(
   const posts: WPPost[] = [];
   if (isEshowLocalBlogEnabled(env)) {
     posts.push(buildEshowMadrid2026Post());
-    posts.push(buildPremiosCima2026Post());
   }
   if (isStagingLocalBlogEnabled(env)) {
     posts.push(...Object.values(STAGING_ONLY_BLOG_POSTS));
@@ -674,10 +566,6 @@ export function listStagingSitemapBlogEntries(
       loc: `https://playfulagency.com${ESHOW_MADRID_2026_PATH}`,
       lastmod: eshowMadrid2026DateModified(),
     },
-    {
-      loc: `https://playfulagency.com${PREMIOS_CIMA_2026_PATH}`,
-      lastmod: PREMIOS_CIMA_2026_DATE_MODIFIED,
-    },
   ];
 }
 
@@ -694,27 +582,12 @@ export function blogArticleJsonLdExtras(slug: string | undefined | null): {
       inLanguage: 'es-ES',
     };
   }
-  if (slug === PREMIOS_CIMA_2026_SLUG) {
-    const event = PREMIOS_CIMA_2026_EVENT as Record<string, unknown>;
-    const soyTechno = PREMIOS_CIMA_2026_SOYTECHNO_ORG as Record<string, unknown>;
-    return {
-      type: 'NewsArticle',
-      about: [event, soyTechno],
-      mentions: [soyTechno],
-      inLanguage: 'es',
-    };
-  }
   if (slug === GOOGLE_MERCHANT_CENTER_SLUG) return { type: 'Article' };
   return {};
 }
 
 export function blogFaqPageJsonLd(slug: string | undefined | null): Record<string, unknown> | null {
-  const faqs =
-    slug === GOOGLE_MERCHANT_CENTER_SLUG
-      ? GOOGLE_MERCHANT_CENTER_FAQS
-      : slug === PREMIOS_CIMA_2026_SLUG
-        ? PREMIOS_CIMA_2026_FAQS
-        : null;
+  const faqs = slug === GOOGLE_MERCHANT_CENTER_SLUG ? GOOGLE_MERCHANT_CENTER_FAQS : null;
   if (!faqs) return null;
   return {
     '@context': 'https://schema.org',

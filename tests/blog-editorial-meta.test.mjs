@@ -301,7 +301,8 @@ test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter a
   assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
   assert.match(blogPage, /function blogPostSeoCopy/);
   assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
-  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  assert.match(blogPage, /yoastTitle \?\? decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /yoastDescription \?\? post\.excerpt\?\.rendered/);
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
   assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);

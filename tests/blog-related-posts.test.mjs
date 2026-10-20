@@ -399,6 +399,7 @@ test('shared related index is lite, long-lived and last-known-good', () => {
   assert.equal(BLOG_STATIC_PARAMS_FIELDS, 'id,slug,categories');
   assert.match(BLOG_ARTICLE_POST_FIELDS, /content/);
   assert.match(BLOG_ARTICLE_POST_FIELDS, /acf/);
+  assert.match(BLOG_ARTICLE_POST_FIELDS, /yoast_head_json/);
   assert.equal(BLOG_LATEST_OVERSCAN, 8);
   assert.match(wordpress, /RELATED_BLOG_INDEX_REVALIDATE_SECONDS/);
   assert.match(wordpress, /RELATED_BLOG_INDEX_PER_PAGE/);
