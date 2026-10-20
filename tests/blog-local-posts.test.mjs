@@ -384,6 +384,17 @@ test('local CIMA post is gated and shaped like a WP otros press note', () => {
   );
 });
 
+test('CIMA title is a single visible H1 without a duplicate title H2', () => {
+  assert.match(blogPage, /const isCima = postSlug === PREMIOS_CIMA_2026_SLUG/);
+  assert.match(blogPage, /VisibleTitleTag = isCima \? 'h1' : 'h2'/);
+  assert.match(blogPage, /isCima \? null : <h1 className="sr-only">\{pageH1\}<\/h1>/);
+  assert.match(blogPage, /<VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl/);
+  assert.doesNotMatch(
+    blogPage,
+    /<h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-\[#2A0064\] leading-tight mb-6">\s*\{pageH1\}/,
+  );
+});
+
 test('CIMA body is the signed press note: dateline, three figures, quotes and no H1', () => {
   const html = PREMIOS_CIMA_2026_BODY_HTML;
   assert.doesNotMatch(html, /<h1[\s>]/);
