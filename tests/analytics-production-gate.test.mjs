@@ -65,6 +65,8 @@ test('layout and tag components stay server-gated so production HTML is unchange
 
   assert.match(ga, /googletagmanager\.com\/gtag\/js/);
   assert.match(ga, /strategy="afterInteractive"/);
+  assert.match(ga, /createElement\('script'\)/);
+  assert.doesNotMatch(ga, /<Script[\s\S]*?\ssrc=\{`https:\/\/www\.googletagmanager\.com\/gtag\/js/);
   assert.doesNotMatch(ga, /function gtag\(\)/);
   assert.match(ga, /qa=1/);
   assert.match(ga, /PlayfulQA/);
