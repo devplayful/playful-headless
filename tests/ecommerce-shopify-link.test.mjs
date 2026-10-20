@@ -91,7 +91,10 @@ test('getPageBySlug and Elementor compose the Shopify rewriter', () => {
   assert.match(body, /rewriteEcommerceShopifyLink\(/);
   assert.match(body, /rewriteElementorBodyHrefs\(/);
   assert.match(elementor, /rewriteElementorBodyHrefs\(/);
-  assert.match(elementor, /rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\)/);
+  assert.match(
+    elementor,
+    /rewriteEcommerceShopifyLink\(\s*rewriteAgenciaDisenoUxUiLink\(restoreOldBodyCopy\(html\), slug\),/,
+  );
   assert.match(slugPage, /'agencia-e-commerce'/);
 });
 

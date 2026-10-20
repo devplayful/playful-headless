@@ -10,6 +10,19 @@
 export const ZELLE_VE_BLOG_SLUG =
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
 
+/** GSC brief 20 oct 2026 — do not regenerate on deploy (fragment URLs in SERPs). */
+export const ZELLE_FROZEN_HEADING_IDS = [
+  'que-es-zelle',
+  'como-funciona-zelle',
+  'cual-es-la-gran-ventaja-de-aceptar-zelle-en-venezuela',
+  'es-posible-aceptar-zelle-en-venezuela',
+  'zelle-como-metodo-de-pago-en-venezuela-en-tiendas-en-linea-o-comercio-electronico',
+  'tiendas-online-en-venezuela-que-usan-zelle',
+  'puede-tu-e-commerce-tener-zelle-como-metodo-de-pago',
+  'quieres-que-tu-e-commerce-tenga-zelle-en-su-pasarela-de-pago',
+  'preguntas-frecuentes',
+] as const;
+
 export const CASHEA_COMERCIOS_BLOG_SLUG = 'cashea-para-comercios';
 
 export const MIGRACION_SEO_ALT_BLOG_SLUG =
