@@ -60,6 +60,15 @@ function preserveMediaLineSeparators(html: string): string {
   });
 }
 
+const CIMA_ECOM_ALT =
+  'Playful Agency, agencia reconocida en los Premios CIMA 2026, categoría Plataforma de E-commerce';
+/** Separador Premios CIMA 2026 en /agencia-e-commerce (HTML de WP: <picture>, no next/image). */
+const CIMA_ECOM_BREAKER_HTML =
+  '<a href="https://premioscima.com" target="_blank" rel="noopener" data-cima-breaker="ecommerce" '
+  + 'style="display:block;max-width:1440px;margin:0 auto 24px;background:#F7F7F7">'
+  + '<picture><source media="(min-width: 768px)" srcset="/images/premios-cima/breaker-ecommerce-desktop.png" width="1440" height="600">'
+  + `<img src="/images/premios-cima/breaker-ecommerce-mobile.png" width="390" height="700" loading="lazy" decoding="async" alt="${CIMA_ECOM_ALT}" style="display:block;width:100%;height:auto"></picture></a>`;
+
 function restoreOldBodyCopy(html: string): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
@@ -71,7 +80,8 @@ function restoreOldBodyCopy(html: string): string {
   out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
   out = out.replace(
     '<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>',
-    '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
+    CIMA_ECOM_BREAKER_HTML
+    + '<h2 class="main-heading playful-wp-hidden-heading">Marcas que han trabajado con nosotros</h2>'
     + '<h2 class="main-heading">No confíes solo en nuestra palabra, mira los resultados</h2>',
   );
 

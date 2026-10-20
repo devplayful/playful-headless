@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import CimaBreaker from '@/components/premios-cima/CimaBreaker'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import styles from './SoyTechnoCaseStudy.module.css'
@@ -110,6 +111,8 @@ export default function SoyTechnoCaseStudy() {
           </div>
         </section>
       </div>
+
+      <CimaBreaker variant="soytechno" />
 
       <section className={styles.introSection}>
         <h2>El desafío no era tecnológico, era de confianza</h2>
