@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  bootstrapGtagCollectIntercept,
   COLLECT_PAGE_PATH_TTL_MS,
   isUrlLikeGa4EventName,
   queueCollectPagePath,
@@ -123,6 +124,47 @@ test('sendGtagEvent no-ops when qa=1 or PlayfulQA/1.0 is present', () => {
     Object.defineProperty(globalThis, 'navigator', {
       configurable: true,
       value: originalNavigator,
+    });
+    resetGtagCollectPagePathForTests();
+  }
+});
+
+test('bootstrapGtagCollectIntercept rewrites URL-like collects without sendGtagEvent', async () => {
+  resetGtagCollectPagePathForTests();
+  const originalWindow = globalThis.window;
+  const badCollect =
+    'https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&en=https%3A%2F%2Fplayfulagency.com%2Freunion-playful';
+  const originalFetch = globalThis.fetch;
+  let seenUrl = '';
+  const fetchMock = (input: RequestInfo | URL) => {
+    seenUrl = typeof input === 'string' ? input : input.toString();
+    return Promise.resolve(new Response(null, { status: 204 }));
+  };
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: globalThis,
+  });
+  Object.defineProperty(globalThis, 'fetch', {
+    configurable: true,
+    value: fetchMock,
+  });
+  try {
+    bootstrapGtagCollectIntercept();
+    await globalThis.fetch(badCollect);
+    const parsed = new URL(seenUrl);
+    assert.equal(parsed.searchParams.get('en'), URL_LIKE_GA4_EVENT_FALLBACK);
+    assert.equal(
+      parsed.searchParams.get('ep.page_url'),
+      'https://playfulagency.com/reunion-playful',
+    );
+  } finally {
+    Object.defineProperty(globalThis, 'fetch', {
+      configurable: true,
+      value: originalFetch,
+    });
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
     });
     resetGtagCollectPagePathForTests();
   }

@@ -1,6 +1,9 @@
 'use client'
 
 import Script from 'next/script'
+import { bootstrapGtagCollectIntercept } from '@/lib/analytics/gtag-event'
+
+bootstrapGtagCollectIntercept()
 
 interface GoogleTagManagerProps {
   gtmId: string

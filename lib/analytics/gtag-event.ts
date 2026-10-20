@@ -106,6 +106,11 @@ export function queueCollectPagePath(
   installCollectPagePathPatch();
 }
 
+/** Installs fetch/XHR/beacon rewriting before the first sendGtagEvent (e.g. GTM on load). */
+export function bootstrapGtagCollectIntercept(): void {
+  installCollectPagePathPatch();
+}
+
 function installCollectPagePathPatch(): void {
   if (typeof window === 'undefined' || collectPatchInstalled) return;
   collectPatchInstalled = true;
