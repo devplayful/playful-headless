@@ -69,11 +69,12 @@ const FIRST_TOUCH = emptyAttribution({
   gclid: 'FIRST999',
 });
 
-test('booking query keys are only the Ads click ids and five utms', () => {
+test('booking query keys are the Ads click ids, fbclid and five utms', () => {
   assert.deepEqual([...BOOKING_QUERY_KEYS], [
     'gclid',
     'gbraid',
     'wbraid',
+    'fbclid',
     'utm_source',
     'utm_medium',
     'utm_campaign',
@@ -87,14 +88,15 @@ test('booking query keys are only the Ads click ids and five utms', () => {
 
 test('builder keeps URL values and drops empty keys', () => {
   const values = bookingQueryFromSearch(
-    '?gclid=TEST123&utm_source=google&utm_campaign=x&utm_medium=&utm_term=&fbclid=ignore',
+    '?gclid=TEST123&utm_source=google&utm_campaign=x&utm_medium=&utm_term=&fbclid=FB1',
   );
   assert.deepEqual(values, {
     gclid: 'TEST123',
+    fbclid: 'FB1',
     utm_source: 'google',
     utm_campaign: 'x',
   });
-  assert.equal(searchFromBookingValues(values), '?gclid=TEST123&utm_source=google&utm_campaign=x');
+  assert.equal(searchFromBookingValues(values), '?gclid=TEST123&fbclid=FB1&utm_source=google&utm_campaign=x');
   assert.equal(searchFromBookingValues({}), '');
   assert.equal(firstNonEmptyBookingValue('', '  ', 'kept'), 'kept');
 });

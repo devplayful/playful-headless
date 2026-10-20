@@ -13,6 +13,7 @@ export const BOOKING_QUERY_KEYS = [
   'gclid',
   'gbraid',
   'wbraid',
+  'fbclid',
   'utm_source',
   'utm_medium',
   'utm_campaign',
@@ -38,6 +39,7 @@ const BOOKING_HOSTS = new Set([
 
 const ATTRIBUTION_FIELD_KEYS = [
   'gclid',
+  'fbclid',
   'utm_source',
   'utm_medium',
   'utm_campaign',
