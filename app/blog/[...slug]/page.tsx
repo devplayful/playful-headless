@@ -65,6 +65,7 @@ import {
   ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
+  PREMIOS_CIMA_2026_BAJADA,
   PREMIOS_CIMA_2026_EXCERPT,
   PREMIOS_CIMA_2026_H1,
   PREMIOS_CIMA_2026_META,
@@ -307,6 +308,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {pageH1}
               </VisibleTitleTag>
+
+              {isCima ? (
+                <p className="text-xl text-[#2A0064] leading-relaxed mb-4">
+                  {PREMIOS_CIMA_2026_BAJADA}
+                </p>
+              ) : null}
 
               <div className="mb-6">
                 <BlogBylineChip

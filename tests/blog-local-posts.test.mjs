@@ -45,8 +45,10 @@ const {
   GOOGLE_MERCHANT_CENTER_FAQS,
   PREMIOS_CIMA_2026_SLUG,
   PREMIOS_CIMA_2026_H1,
+  PREMIOS_CIMA_2026_BAJADA,
   PREMIOS_CIMA_2026_TITLE,
   PREMIOS_CIMA_2026_META,
+  PREMIOS_CIMA_2026_FAQS,
   PREMIOS_CIMA_2026_ABOUT_NAME,
   PREMIOS_CIMA_2026_EVENT,
   PREMIOS_CIMA_2026_SOYTECHNO_ORG,
@@ -391,9 +393,18 @@ test('CIMA title is a single visible H1 without a duplicate title H2', () => {
   assert.match(blogPage, /VisibleTitleTag = isCima \? 'h1' : 'h2'/);
   assert.match(blogPage, /isCima \? null : <h1 className="sr-only">\{pageH1\}<\/h1>/);
   assert.match(blogPage, /<VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl/);
+  assert.match(blogPage, /\{PREMIOS_CIMA_2026_BAJADA\}/);
   assert.doesNotMatch(
     blogPage,
     /<h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-\[#2A0064\] leading-tight mb-6">\s*\{pageH1\}/,
+  );
+  assert.equal(
+    PREMIOS_CIMA_2026_H1,
+    'Premios CIMA 2026, ganadores SoyTechno en Plataforma de E-commerce',
+  );
+  assert.equal(
+    PREMIOS_CIMA_2026_BAJADA,
+    'SoyTechno y Playful Agency resultaron ganadores en la categoría Plataforma de E-commerce, del área de Mercadeo, de los Premios CIMA 2026',
   );
 });
 
@@ -403,7 +414,25 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.doesNotMatch(html, /\[TITULAR\]|\[SUBTÍTULO\]|\[ENTRADILLA\]|\[CUERPO\]|\[CITAS\]|\[BOILERPLATE\]|\[CONTACTO DE PRENSA\]/);
   assert.doesNotMatch(html, /Para publicación inmediata/);
   assert.doesNotMatch(html, /Caracas, 19 de octubre de 2026/);
-  assert.match(html, /^<p>SoyTechno y Playful Agency resultaron ganadores/);
+  assert.doesNotMatch(html, /Fuente:|Posición:|NO COMPROBADO/);
+  assert.doesNotMatch(html, /organizado por|razón social|palmarés de 2026|Ganadores de años anteriores/);
+  assert.match(html, /^<h2 id="que-son-los-premios-cima-y-quien-los-organiza">Qué son los Premios CIMA y quién los organiza<\/h2>/);
+  const h2s = [...html.matchAll(/<h2[^>]*>(.*?)<\/h2>/g)].map((match) => match[1]);
+  assert.deepEqual(h2s, [
+    'Qué son los Premios CIMA y quién los organiza',
+    'La gala de Premios CIMA 2026',
+    'La categoría y el caso ganador',
+    'Los resultados',
+    'Las declaraciones',
+  ]);
+  assert.match(html, /Los Premios CIMA premian casos de mercadeo y creatividad con firma venezolana/);
+  assert.match(html, /Tata López figura como fundadora en la junta consultiva/);
+  assert.match(html, /la ceremonia la produjeron OZ Producciones y LBM/);
+  assert.match(html, /La cuarta edición recibió 313 casos inscritos, según la nota de PRODU del 14 de octubre de 2026/);
+  assert.match(
+    html,
+    /<h2 id="la-gala-de-premios-cima-2026">La gala de Premios CIMA 2026<\/h2>\s*<p>SoyTechno y Playful Agency resultaron ganadores/,
+  );
   assert.match(
     html,
     /<a href="https:\/\/premioscima\.com" rel="noopener" target="_blank">Premios CIMA 2026<\/a>/,
@@ -419,6 +448,11 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.doesNotMatch(html, /José Reyes, socio y CMO de Playful Agency, dijo/);
   assert.match(html, /José Reyes, socio y CMO de Playful Agency/);
   assert.match(html, /hello@playfulagency\.com/);
+  assert.match(html, /<h3 id="que-son-los-premios-cima">¿Qué son los premios CIMA\?<\/h3>/);
+  assert.match(
+    html,
+    /Los Premios CIMA son un certamen venezolano de mercadeo y creatividad\. La cuarta edición se celebró el 19 de octubre de 2026 en Caracas\./,
+  );
   const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);
   assert.equal(images.length, 3);
   assert.doesNotMatch(html, new RegExp(PREMIOS_CIMA_2026_PORTADA_SRC));
@@ -475,8 +509,22 @@ test('CIMA JSON-LD is NewsArticle with Event, SoyTechno and Equipo editorial', (
   });
   assert.deepEqual(jsonLd.about, extras.about);
   assert.deepEqual(jsonLd.mentions, extras.mentions);
-  assert.ok(PREMIOS_CIMA_2026_META.length <= 155);
-  assert.equal(PREMIOS_CIMA_2026_TITLE, PREMIOS_CIMA_2026_H1);
+  assert.equal(
+    PREMIOS_CIMA_2026_META,
+    'SoyTechno y Playful Agency, ganadores de los Premios CIMA 2026 en la categoría Plataforma de E-commerce, en la 4.ª edición del certamen, celebrada en Caracas.',
+  );
+  assert.equal(PREMIOS_CIMA_2026_META.length, 158);
+  assert.equal(
+    PREMIOS_CIMA_2026_TITLE,
+    'Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful',
+  );
+  assert.notEqual(PREMIOS_CIMA_2026_TITLE, PREMIOS_CIMA_2026_H1);
+  const faq = blogFaqPageJsonLd(PREMIOS_CIMA_2026_SLUG);
+  assert.ok(faq);
+  assert.equal(faq['@type'], 'FAQPage');
+  assert.equal(faq.mainEntity.length, 1);
+  assert.equal(faq.mainEntity[0].name, PREMIOS_CIMA_2026_FAQS[0].question);
+  assert.equal(faq.mainEntity[0].acceptedAnswer.text, PREMIOS_CIMA_2026_FAQS[0].answer);
   assert.match(blogPage, /\[PREMIOS_CIMA_2026_SLUG\]/);
   assert.match(blogPage, /<time dateTime=\{articleDates\.datePublished\}/);
   assert.match(expectedRoutes, /premios-cima-2026-soytechno-playful/);
