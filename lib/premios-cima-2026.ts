@@ -111,11 +111,11 @@ export const PREMIOS_CIMA_2026_BODY_HTML = `
 </figure>
 <h2 id="las-declaraciones">Las declaraciones</h2>
 <style>
-.cima-editorial-quote{margin:1.75rem 0;padding:1.75rem 1.5rem 1.25rem 1.85rem;border-left:4px solid #440099;background:#f5f3ff;border-radius:0 1rem 1rem 0;position:relative;quotes:none}
-.cima-editorial-quote::before{content:"“";position:absolute;top:.15rem;left:.7rem;font-size:3.25rem;line-height:1;color:#2A0064;font-family:Georgia,"Times New Roman",serif;opacity:.28;pointer-events:none}
+.cima-editorial-quote{margin:1.75rem 0;padding:2.35rem 1.5rem 1.25rem 1.5rem;border-left:4px solid #440099;background:#f5f3ff;border-radius:0 1rem 1rem 0;position:relative;quotes:none}
+.cima-editorial-quote::before{content:"“";position:absolute;top:.2rem;left:.85rem;font-size:2.75rem;line-height:1;color:#2A0064;font-family:Georgia,"Times New Roman",serif;opacity:.35;pointer-events:none}
 .cima-editorial-quote>p{margin:0 0 .85rem;padding:0;font-size:1.35rem;line-height:1.55;font-style:italic;color:#2A0064;font-weight:500}
 .cima-editorial-quote>cite{display:block;font-size:.8125rem;line-height:1.4;font-style:normal;font-weight:600;color:#440099;letter-spacing:.01em}
-@media (max-width:480px){.cima-editorial-quote{padding:1.5rem 1.1rem 1rem 1.35rem}.cima-editorial-quote>p{font-size:1.125rem}}
+@media (max-width:480px){.cima-editorial-quote{padding:2.1rem 1.1rem 1rem 1.15rem}.cima-editorial-quote>p{font-size:1.125rem}}
 </style>
 <p>Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio.</p>
 <blockquote class="cima-editorial-quote not-prose">
