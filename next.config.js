@@ -10,6 +10,9 @@ const {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
+    // 404 global con layout de la web pública (app/global-not-found.tsx):
+    // necesario porque Payload añade un segundo layout raíz.
+    globalNotFound: true,
     // WordPress is a small shared origin. Keep static generation deliberately
     // tightly bounded so a release cannot create the burst of REST calls
     // that previously produced transient 500s and false 404 pages.
@@ -91,4 +94,8 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Payload v3 (CMS en /admin y /cms-api). withPayload solo añade alias y
+// paquetes externos de servidor; no cambia rutas ni cabeceras de la web.
+const { withPayload } = require('@payloadcms/next/withPayload');
+
+module.exports = withPayload(nextConfig, { devBundleServerPackages: false });

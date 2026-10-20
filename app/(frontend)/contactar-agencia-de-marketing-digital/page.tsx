@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { getAllCaseStudies } from '@/services/wordpress';
-import ContactPageClient from '@/app/contactar-agencia-de-marketing-digital/ContactPageClient';
+import ContactPageClient from '@/app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 
 

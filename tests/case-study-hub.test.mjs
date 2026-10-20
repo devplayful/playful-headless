@@ -16,10 +16,10 @@ import { buildSitemapXml } from '../utils/apex-sitemap.ts';
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
-const hubPage = readFileSync(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
-const hubContent = readFileSync(new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubContent = readFileSync(new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
 const soytechno = readFileSync(new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url), 'utf8');
-const notFound = readFileSync(new URL('../app/not-found.tsx', import.meta.url), 'utf8');
+const notFound = readFileSync(new URL('../app/(frontend)/not-found.tsx', import.meta.url), 'utf8');
 const theme = readFileSync(new URL('../contexts/ThemeContext.tsx', import.meta.url), 'utf8');
 
 test('hub apex path and WP metadata slug stay distinct', () => {

@@ -10,7 +10,7 @@ import {
   SHOPIFY_OPENING_PUBLISHED,
   ZELLE_NOTICE_PUBLISHED,
 } from '../lib/llms-txt.ts';
-import { FAQ_ITEMS, HERO } from '../app/agencia-shopify/copy.ts';
+import { FAQ_ITEMS, HERO } from '../app/(frontend)/agencia-shopify/copy.ts';
 import { SITEMAP_STATIC_PATHS, getSitemapLocs } from '../utils/apex-sitemap.ts';
 import {
   getBlogFaqJsonLd,
@@ -116,9 +116,9 @@ test('FAQPage exists for the five service landings and Zelle, not a second Shopi
   );
   assert.equal(getBlogFaqJsonLd('rediseno-web'), null);
 
-  const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-  const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
-  const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  const shopifyPage = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+  const slugPage = readFileSync(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
+  const blogPage = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.equal((shopifyPage.match(/id="playful-faq"/g) || []).length, 1);
   assert.match(slugPage, /id="playful-faq"/);
   assert.match(blogPage, /getBlogFaqJsonLd/);

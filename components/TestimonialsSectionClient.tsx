@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 
 const TestimonialsSection = dynamic(
-  () => import('../app/casos-de-exito/TestimonialsSection'),
+  () => import('../app/(frontend)/casos-de-exito/TestimonialsSection'),
   { ssr: false }
 );
 

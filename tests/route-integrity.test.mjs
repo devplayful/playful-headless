@@ -72,10 +72,10 @@ function validArtifact() {
 
 test('discovers baseline App Router sources including metadata routes', () => {
   const files = [
-    'app/page.tsx',
+    'app/(frontend)/page.tsx',
     'app/(marketing)/nosotros/page.tsx',
     'app/api/contact/route.ts',
-    'app/blog/[...slug]/page.tsx',
+    'app/(frontend)/blog/[...slug]/page.tsx',
     'app/robots.ts',
     'app/sitemap.xml/route.ts',
     'app/manifest.ts',
@@ -83,7 +83,7 @@ test('discovers baseline App Router sources including metadata routes', () => {
     'app/icon.png',
     'app/icon.svg',
     'app/apple-icon.png',
-    'app/layout.tsx',
+    'app/(frontend)/layout.tsx',
   ];
   assert.deepEqual(discoverSourceRoutes(files), [
     '/',

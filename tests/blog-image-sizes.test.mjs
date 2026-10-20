@@ -2,18 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const post = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
-const listing = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+const post = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const listing = readFileSync(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
 const related = readFileSync(
   new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
   'utf8',
 );
-const hub = readFileSync(new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
+const hub = readFileSync(new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
 const imageSizes = readFileSync(new URL('../lib/blog-image-sizes.ts', import.meta.url), 'utf8');
-const caseCta = readFileSync(new URL('../app/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
-const privacy = readFileSync(new URL('../app/politica-de-privacidad/page.tsx', import.meta.url), 'utf8');
+const caseCta = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
+const privacy = readFileSync(new URL('../app/(frontend)/politica-de-privacidad/page.tsx', import.meta.url), 'utf8');
 const contact = readFileSync(
-  new URL('../app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
+  new URL('../app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
   'utf8',
 );
 
@@ -33,7 +33,7 @@ test('featured, listing, home cards and related set sizes to the real slot', () 
 });
 
 test('/links bio thumbs declare featured and row slots', () => {
-  const linksPage = readFileSync(new URL('../app/links/page.tsx', import.meta.url), 'utf8');
+  const linksPage = readFileSync(new URL('../app/(frontend)/links/page.tsx', import.meta.url), 'utf8');
   assert.match(imageSizes, /export const LINKS_BIO_FEATURED_SIZES/);
   assert.match(imageSizes, /export const LINKS_BIO_THUMB_SIZES/);
   assert.match(imageSizes, /\(max-width: 639px\) 80px, 96px/);

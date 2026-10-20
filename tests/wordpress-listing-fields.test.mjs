@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const blogPage = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 
 function functionSlice(name) {
   const exported = wordpress.indexOf(`export async function ${name}`);

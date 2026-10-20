@@ -5,12 +5,12 @@ import { readFile } from 'node:fs/promises';
 import { twitterFromOpenGraph } from '../utils/page-seo-overrides.mjs';
 
 const files = {
-  blogPost: new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  blogPost: new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   blogListing: new URL('../utils/blog-listing-query.ts', import.meta.url),
-  contact: new URL('../app/contactar-agencia-de-marketing-digital/page.tsx', import.meta.url),
-  privacy: new URL('../app/politica-de-privacidad/page.tsx', import.meta.url),
-  caseStudy: new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
-  links: new URL('../app/links/layout.tsx', import.meta.url),
+  contact: new URL('../app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx', import.meta.url),
+  privacy: new URL('../app/(frontend)/politica-de-privacidad/page.tsx', import.meta.url),
+  caseStudy: new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  links: new URL('../app/(frontend)/links/layout.tsx', import.meta.url),
 };
 
 async function readAll() {

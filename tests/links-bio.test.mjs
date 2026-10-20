@@ -32,8 +32,8 @@ import {
 } from '../lib/blog-image-sizes.ts';
 
 const APEX = 'https://playfulagency.com';
-const page = readFileSync(new URL('../app/links/page.tsx', import.meta.url), 'utf8');
-const layout = readFileSync(new URL('../app/links/layout.tsx', import.meta.url), 'utf8');
+const page = readFileSync(new URL('../app/(frontend)/links/page.tsx', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/(frontend)/links/layout.tsx', import.meta.url), 'utf8');
 const chat = readFileSync(new URL('../components/ChatWidget.tsx', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');

@@ -25,11 +25,11 @@ const GSC_UNKNOWN_BLOG_PATHS = [
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 const hubContent = readFileSync(
-  new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
   'utf8',
 );
 const shopifyCases = readFileSync(
-  new URL('../app/agencia-shopify/shopify-cases.ts', import.meta.url),
+  new URL('../app/(frontend)/agencia-shopify/shopify-cases.ts', import.meta.url),
   'utf8',
 );
 

@@ -1,0 +1,56 @@
+{
+  "origen": "https://endpoint.playfulagency.com/wp-json",
+  "inicio": "2026-10-20T21:02:27.231Z",
+  "fin": "2026-10-20T21:02:42.756Z",
+  "peticiones": 7,
+  "colecciones": {
+    "categorias": {
+      "leidos": 7,
+      "creados": 0,
+      "actualizados": 7,
+      "fallidos": 0,
+      "errores": []
+    },
+    "posts": {
+      "leidos": 135,
+      "creados": 0,
+      "actualizados": 135,
+      "fallidos": 0,
+      "errores": []
+    },
+    "paginas": {
+      "leidos": 31,
+      "creados": 0,
+      "actualizados": 31,
+      "fallidos": 0,
+      "errores": []
+    },
+    "casos": {
+      "leidos": 2,
+      "creados": 0,
+      "actualizados": 2,
+      "fallidos": 0,
+      "errores": []
+    },
+    "medios": {
+      "leidos": 180,
+      "creados": 0,
+      "actualizados": 180,
+      "fallidos": 0,
+      "errores": []
+    },
+    "autores": {
+      "leidos": 10,
+      "creados": 0,
+      "actualizados": 10,
+      "fallidos": 0,
+      "errores": []
+    }
+  },
+  "relacionadosSinResolver": 0,
+  "camposNoMapeados": {
+    "posts": [
+      "tags"
+    ]
+  }
+}
