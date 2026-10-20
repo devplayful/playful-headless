@@ -82,7 +82,7 @@ export function blogSeoRedirectDecision(
       type: 'redirect',
       pathname: '/blog',
       search: searchFromParams(params),
-      status: 308,
+      status: 301,
     };
   }
 
@@ -97,6 +97,6 @@ export function blogSeoRedirectDecision(
     type: 'redirect',
     pathname: canonicalPath,
     search: searchFromParams(params),
-    status: pathChanged ? 308 : 301,
+    status: 301,
   };
 }
