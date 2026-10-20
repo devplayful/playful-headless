@@ -34,6 +34,7 @@ test('redirect inventory requests only the fields consumed by the build', async 
     requestedUrl = new URL(String(input));
     return new Response(JSON.stringify([{
       slug: 'sample-post',
+      modified_gmt: '2024-01-02T03:04:05',
       _links: {},
       _embedded: {
         'wp:term': [[
@@ -65,7 +66,9 @@ test('redirect inventory requests only the fields consumed by the build', async 
         ]],
       },
     }]), redirects);
+    process.env.NODE_TEST_CONTEXT = '1';
     assert.deepEqual(await nextConfig.redirects(), []);
+    delete process.env.NODE_TEST_CONTEXT;
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -286,10 +286,6 @@ test('eShow sitemap extras follow dateModified on staging and production main', 
   );
   assert.match(
     stagingXml,
-    /<loc>https:\/\/playfulagency\.com\/blog\/otros\/premios-cima-2026-soytechno-playful<\/loc><\/url>/,
-  );
-  assert.doesNotMatch(
-    stagingXml,
     /<loc>https:\/\/playfulagency\.com\/blog\/otros\/premios-cima-2026-soytechno-playful<\/loc><lastmod>/,
   );
 });

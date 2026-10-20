@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogCategories from './BlogCategories';
 import BlogListingPagination from './BlogListingPagination';
+import BlogListingCrawlNav from './BlogListingCrawlNav';
 import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
@@ -281,6 +282,11 @@ export default async function BlogListingView({
               </div>
 
               <BlogListingPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                category={category}
+              />
+              <BlogListingCrawlNav
                 currentPage={currentPage}
                 totalPages={totalPages}
                 category={category}

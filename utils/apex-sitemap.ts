@@ -1,6 +1,7 @@
 import { isHiddenFromBlogListings } from './blog-closed-paths.ts';
 import { listStagingSitemapBlogEntries } from '../lib/blog-local-posts.ts';
 import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
+import blogSitemapLastmodMap from '../config/blog-sitemap-lastmod.json' with { type: 'json' };
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
@@ -213,6 +214,22 @@ export function getSitemapLocs(): string[] {
   ));
 }
 
+const BLOG_SITEMAP_LASTMOD = blogSitemapLastmodMap as Record<string, string>;
+
+function blogSitemapPathFromLoc(loc: string): string | null {
+  if (!loc.startsWith(SITEMAP_ORIGIN)) return null;
+  if (loc === `${SITEMAP_ORIGIN}/`) return '/';
+  return loc.slice(SITEMAP_ORIGIN.length);
+}
+
+function lastmodForSitemapLoc(loc: string): string | undefined {
+  const path = blogSitemapPathFromLoc(loc);
+  if (!path || !path.startsWith('/blog/') || path.split('/').filter(Boolean).length !== 3) {
+    return undefined;
+  }
+  return BLOG_SITEMAP_LASTMOD[path];
+}
+
 function sitemapUrlXml(loc: string, lastmod?: string): string {
   return lastmod
     ? `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`
@@ -221,7 +238,7 @@ function sitemapUrlXml(loc: string, lastmod?: string): string {
 
 export function buildSitemapXml(): string {
   const urls = [
-    ...getSitemapLocs().map((loc) => sitemapUrlXml(loc)),
+    ...getSitemapLocs().map((loc) => sitemapUrlXml(loc, lastmodForSitemapLoc(loc))),
     ...listStagingSitemapBlogEntries().map((entry) => sitemapUrlXml(entry.loc, entry.lastmod)),
   ].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
