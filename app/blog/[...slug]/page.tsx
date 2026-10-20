@@ -206,6 +206,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const ogImagePath =
     resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
   const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
+  const isCima = postSlug === PREMIOS_CIMA_2026_SLUG;
+  const VisibleTitleTag = isCima ? 'h1' : 'h2';
   const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
     headline: pageH1,
@@ -277,7 +279,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <a href={serviceCta.href}>{serviceCta.label}</a>
       </p>
     ) : null}
-    <h1 className="sr-only">{pageH1}</h1>
+    {isCima ? null : <h1 className="sr-only">{pageH1}</h1>}
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
@@ -302,9 +304,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
               </div>
               
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
+              <VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {pageH1}
-              </h2>
+              </VisibleTitleTag>
 
               <div className="mb-6">
                 <BlogBylineChip
