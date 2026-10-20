@@ -247,15 +247,9 @@ test('cookie fbclid fills the hop when the incoming URL omitted it', () => {
   assert.equal(new URL(incomingWins.location).searchParams.get('fbclid'), 'TEST123');
 });
 
-test('middleware wires the resolver instead of a static /reunion-playful 301', () => {
-  assert.match(middleware, /resolveBookingWidgetRedirect/);
-  assert.match(middleware, /ATTRIBUTION_COOKIE_LAST/);
-  assert.match(middleware, /ATTRIBUTION_COOKIE_FIRST/);
-  assert.match(middleware, /Cache-Control': 'private, no-store'/);
-  assert.doesNotMatch(
-    middleware,
-    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
-  );
+test('middleware no longer 302s /reunion-playful; the Next page handles GA then redirect', () => {
+  assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
+  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
 });

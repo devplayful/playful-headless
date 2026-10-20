@@ -50,12 +50,10 @@ test('parseBlogListingSearchParams keeps page, category and search', () => {
   assert.equal(parseBlogListingSearchParams({ page: '0' }).invalidPage, true);
 });
 
-test('middleware rewrites /blog queries without touching /reunion-playful no-store', () => {
+test('middleware rewrites /blog queries without attributing the listing path', () => {
   assert.match(middleware, /path === '\/blog\/q'/);
   assert.match(middleware, /NextResponse\.rewrite\(target\)/);
   assert.match(middleware, /target\.pathname = '\/blog\/q'/);
-  assert.match(middleware, /Cache-Control': 'private, no-store'/);
-  assert.match(middleware, /path === '\/reunion-playful'/);
   assert.doesNotMatch(middleware, /shouldCaptureAttributionPath\('\/blog'\)/);
   assert.match(middleware, /attachAttributionCookies\(request, NextResponse\.rewrite/);
 });

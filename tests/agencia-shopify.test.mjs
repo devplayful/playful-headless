@@ -189,15 +189,10 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
   assert.match(CTA.cta, /Agendar|Reservar/i);
 });
 
-test('middleware 302s /reunion-playful to the GHL booking widget after filling query', () => {
-  assert.match(middleware, /resolveBookingWidgetRedirect/);
+test('/reunion-playful stays on the Next app for GA4 before the client redirect to GHL', () => {
+  assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
-  assert.doesNotMatch(
-    middleware,
-    /'\/reunion-playful':\s*'https:\/\/api\.playfulagency\.com\/widget\/bookings\/reunion-playful'/,
-  );
-  assert.match(middleware, /NextResponse\.redirect\(target, 301\)/);
 });
 
 test('landing includes exactly one contextual href to the Zelle blog post', () => {
