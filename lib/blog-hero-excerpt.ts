@@ -3,7 +3,7 @@ import { decodeHtmlEntities } from './wordpress-plain-text.ts';
 export const DEFAULT_EXCERPT_MAX = 200;
 /** Sentence terminator in the last 45% of the window counts as “near” the limit. */
 const SENTENCE_NEAR_RATIO = 0.55;
-const WP_AUTO_EXCERPT_TAIL = /\s*(?:\[\s*(?:…|&hellip;|\.{3}|&#8230;)\s*\]|[.…]+)$/u;
+const WP_AUTO_EXCERPT_TAIL = /\s*(?:\[\s*(?:…|&hellip;|\.{3}|&#8230;)\s*\]|[.…]+)$/;
 
 function stripExcerptHtml(html: string): string {
   return decodeHtmlEntities(html.replace(/<[^>]*>?/gm, ''))
@@ -31,7 +31,8 @@ function lastNearSentenceEnd(slice: string, maxLength: number): number {
   const minIndex = Math.floor(maxLength * SENTENCE_NEAR_RATIO);
   let last = -1;
   const pattern = /[.!?]["»”']?(?=\s|$)/g;
-  for (const match of slice.matchAll(pattern)) {
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(slice))) {
     const end = match.index + match[0].length - 1;
     if (end >= minIndex) last = end;
   }
@@ -50,7 +51,7 @@ export function truncateHeroExcerptAtSentence(text: string, maxLength: number): 
   if (lastSpace <= 0) return slice.trimEnd();
   const wordSafe = slice.slice(0, lastSpace).trimEnd();
   if (!wordSafe) return slice.trimEnd();
-  if (/[.!?…]$/u.test(wordSafe)) return wordSafe;
+  if (/[.!?…]$/.test(wordSafe)) return wordSafe;
   return `${wordSafe}…`;
 }
 
