@@ -441,10 +441,22 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.doesNotMatch(html, /Zelle|zelle/);
   assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los /);
   assert.match(html, /Esa tienda se adapta a cómo paga y confía Venezuela/);
-  assert.match(html, /Yulieth Carvajal, CEO de SoyTechno/);
+  assert.match(html, /Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio\./);
   assert.doesNotMatch(html, /Soy Tecnológico/);
   assert.match(html, /Y en SoyTechno no solo creemos/);
-  assert.match(html, /Alejandra Da Costa, CEO de Playful Agency/);
+  const quotes = [...html.matchAll(/<blockquote class="cima-editorial-quote not-prose">([\s\S]*?)<\/blockquote>/g)];
+  assert.equal(quotes.length, 2);
+  assert.match(
+    quotes[0][1],
+    /<p>«\[\.\.\.\] Desde hace muchísimo tiempo soñamos una plataforma web que tuviese el nivel internacional que necesitamos ahora mismo en Venezuela\. Gracias, Playful\. Y en SoyTechno no solo creemos en el futuro de la tecnología, creemos en el futuro de Venezuela\. \[\.\.\.\]»<\/p>/,
+  );
+  assert.match(quotes[0][1], /<cite>Yulieth Carvajal, CEO de SoyTechno<\/cite>/);
+  assert.match(
+    quotes[1][1],
+    /<p>«Este reconocimiento es muestra de lo que el país necesita, \[\.\.\.\] porque definitivamente Venezuela está preparada para esto y para seguir creciendo en la categoría\. Gracias\.»<\/p>/,
+  );
+  assert.match(quotes[1][1], /<cite>Alejandra Da Costa, CEO de Playful Agency<\/cite>/);
+  assert.match(html, /\.cima-editorial-quote\{/);
   assert.doesNotMatch(html, /José Reyes, socio y CMO de Playful Agency, dijo/);
   assert.match(html, /José Reyes, socio y CMO de Playful Agency/);
   assert.match(html, /hello@playfulagency\.com/);
