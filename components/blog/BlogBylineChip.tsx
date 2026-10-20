@@ -1,4 +1,9 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+
+const FALLBACK_AVATAR_SRC = '/images/avatar-playful.svg';
 
 type BlogBylineChipProps = {
   name: string;
@@ -12,7 +17,7 @@ type BlogBylineChipProps = {
   avatarPriority?: boolean;
 };
 
-/** Author pill: rounded-full purple chip, 24px avatar, one line of text-sm font-medium. */
+/** Author pill: purple chip, 24px avatar, name row then date row on small screens. */
 export function BlogBylineChip({
   name,
   href,
@@ -22,53 +27,60 @@ export function BlogBylineChip({
   avatarAlt,
   avatarPriority = false,
 }: BlogBylineChipProps) {
-  const avatar = avatarSrc ? (
+  const fallbackSrc = FALLBACK_AVATAR_SRC;
+  const initialSrc = avatarSrc || fallbackSrc;
+  const [src, setSrc] = useState(initialSrc);
+  const [hidden, setHidden] = useState(false);
+
+  const avatar = hidden ? null : (
     <Image
-      src={avatarSrc}
+      src={src}
       alt={avatarAlt || name}
       width={24}
       height={24}
       sizes="24px"
       priority={avatarPriority}
-      className="h-6 w-6 shrink-0 rounded-full object-cover"
+      unoptimized
+      onError={() => {
+        if (src !== fallbackSrc) {
+          setSrc(fallbackSrc);
+          return;
+        }
+        setHidden(true);
+      }}
+      className="h-6 w-6 shrink-0 rounded-full bg-white object-cover"
     />
-  ) : null;
-
-  const authorLabel = (
-    <span className="min-w-0 text-sm font-medium">{name}</span>
   );
 
   const author = href ? (
     <a
       href={href}
-      className="inline-flex min-w-0 items-center gap-2 text-white hover:underline"
+      className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-white hover:underline"
     >
       {avatar}
-      {authorLabel}
+      <span className="text-xs font-medium sm:text-sm">{name}</span>
     </a>
   ) : (
-    <>
+    <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap">
       {avatar}
-      {authorLabel}
-    </>
+      <span className="text-xs font-medium sm:text-sm">{name}</span>
+    </span>
   );
 
   return (
-    <div className="inline-flex max-w-full min-w-0 items-center gap-2 rounded-full bg-[#440099] px-4 py-2 text-white">
+    <div className="inline-flex max-w-full flex-col items-start gap-y-1 rounded-full bg-[#440099] px-3 py-2 text-white sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2 sm:px-4">
       {author}
       {updatedLabel ? (
-        <>
+        <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-xs font-medium sm:text-sm">
           <span className="text-white/70" aria-hidden="true">
             ·
           </span>
           {updatedDateTime ? (
-            <time dateTime={updatedDateTime} className="min-w-0 text-sm font-medium">
-              {updatedLabel}
-            </time>
+            <time dateTime={updatedDateTime}>{updatedLabel}</time>
           ) : (
-            <span className="min-w-0 text-sm font-medium">{updatedLabel}</span>
+            <span>{updatedLabel}</span>
           )}
-        </>
+        </span>
       ) : null}
     </div>
   );

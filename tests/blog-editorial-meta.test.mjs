@@ -26,7 +26,12 @@ const {
   wordpressSeoText,
   BLOG_AUTHOR_HREF,
 } = await import('../lib/blog-editorial-meta.ts');
-const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const {
+  BLOG_CARD_EXCERPT_MAX,
+  BLOG_LISTING_EXCERPT_MAX,
+  formatBlogExcerpt,
+  formatBlogHeroExcerpt,
+} = await import('../lib/blog-hero-excerpt.ts');
 const plainText = await import('../lib/wordpress-plain-text.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
@@ -301,7 +306,8 @@ test('blog post SEO fields reuse wordpressSeoText for title, meta, OG, Twitter a
   assert.match(blogPage, /from '@\/lib\/wordpress-plain-text'/);
   assert.match(blogPage, /function blogPostSeoCopy/);
   assert.match(blogPage, /decodeHtmlEntities\(post\.title\.rendered\)/);
-  assert.match(blogPage, /wordpressSeoText\(post\.excerpt\?\.rendered/);
+  assert.match(blogPage, /yoastTitle \?\? decodeHtmlEntities\(post\.title\.rendered\)/);
+  assert.match(blogPage, /yoastDescription \?\? post\.excerpt\?\.rendered/);
   const metadataFn = blogPage.slice(blogPage.indexOf('export async function generateMetadata'));
   assert.match(metadataFn, /blogPostSeoCopy\(post, postSlug\)/);
   assert.match(metadataFn, /openGraph:\s*\{[\s\S]*title,[\s\S]*description,/);
@@ -329,6 +335,64 @@ test('hero excerpt omits empty text and only adds ellipsis when truncated', () =
   const long = 'a'.repeat(201);
   assert.equal(formatBlogHeroExcerpt(`<p>${long}</p>`), 'a'.repeat(200));
   assert.doesNotMatch(formatBlogHeroExcerpt('<p>Hola</p>'), /\.\.\.$/);
+});
+
+test('hero excerpt keeps WP manual copy whole and otherwise cuts on a word', () => {
+  const cima =
+    'El caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela» se llevó el premio de su categoría en la cuarta edición del certamen, celebrada el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, Salón Plaza Real, a las 5:00 pm.';
+  const cimaBody =
+    '¿Qué son los Premios CIMA 2026? Los Premios CIMA 2026 son la cuarta edición de un certamen venezolano.';
+  assert.ok(cima.length > 200);
+  assert.equal(formatBlogHeroExcerpt(`<p>${cima}</p>`, 200, `<p>${cimaBody}</p>`), cima);
+  const autoCut = formatBlogHeroExcerpt(`<p>${cima}</p>`);
+  assert.match(autoCut, /en el Hotel…$/);
+  assert.doesNotMatch(autoCut, /Eurobui/);
+  assert.doesNotMatch(autoCut, /\.\.\./);
+  const earlyStop = `Hi. ${'palabra '.repeat(40)}`;
+  const truncated = formatBlogHeroExcerpt(`<p>${earlyStop}</p>`, 200);
+  assert.notEqual(truncated, 'Hi.');
+  assert.match(truncated, /…$/);
+  const nearSentence = `${'palabra '.repeat(22)}Fin de frase. y sobra texto extra para pasar el límite de caracteres.`;
+  assert.match(formatBlogHeroExcerpt(`<p>${nearSentence}</p>`, 200), /Fin de frase\.$/);
+});
+
+test('listing, home, related and más vistos share formatBlogExcerpt and cut on a word', () => {
+  const cima =
+    'El caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela» se llevó el premio de su categoría en la cuarta edición del certamen, celebrada el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, Salón Plaza Real, a las 5:00 pm.';
+  assert.equal(BLOG_LISTING_EXCERPT_MAX, 120);
+  assert.equal(BLOG_CARD_EXCERPT_MAX, 100);
+  const featured = formatBlogExcerpt(`<p>${cima}</p>`, BLOG_LISTING_EXCERPT_MAX);
+  assert.match(featured, /en la…$/);
+  assert.doesNotMatch(featured, /cua/);
+  assert.doesNotMatch(featured, /\.\.\./);
+  const card = formatBlogExcerpt(`<p>${cima}</p>`, BLOG_CARD_EXCERPT_MAX);
+  assert.match(card, /premio de…$/);
+  assert.doesNotMatch(card, /\.\.\./);
+  assert.doesNotMatch(
+    formatBlogExcerpt('<p>Texto corto que WordPress corta [...]</p>', 120),
+    /\.\.\.|\[\s*…\s*\]/,
+  );
+
+  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const relatedSection = readFileSync(
+    new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(listingPage, /formatBlogExcerpt\(posts\[0\]\.excerpt\.rendered, BLOG_LISTING_EXCERPT_MAX\)/);
+  assert.match(listingPage, /formatBlogExcerpt\(post\.excerpt\.rendered, BLOG_LISTING_EXCERPT_MAX\)/);
+  assert.doesNotMatch(listingPage, /substring\(0,\s*120\)/);
+  assert.doesNotMatch(listingPage, /\+ ['"]\.\.\.['"]/);
+  assert.match(mostViewed, /formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(wordpress, /function toRelatedBlogCard[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(wordpress, /function toRelatedIndexPost[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(home, /getLatestBlogPosts\(6\)/);
+  assert.match(relatedSection, /\{post\.excerpt\}/);
 });
 
 test('editorial avatar asset remains available but is not the byline face', () => {
@@ -414,20 +478,24 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(blogPage, /updatedLabel=\{updatedByline\}/);
   assert.match(blogPage, /updatedDateTime=/);
   assert.doesNotMatch(blogPage, /visibleDateLabel/);
-  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered\)/);
+  assert.match(blogPage, /formatBlogHeroExcerpt\(post\.excerpt\?\.rendered/);
   assert.equal((blogPage.match(/<BlogBylineChip/g) || []).length, 1);
   assert.match(blogPage, /avatarSrc=\{articleAuthor\.avatarSrc\}/);
+  assert.match(blogPage, /p-5 md:p-\[60px\]/);
   assert.doesNotMatch(blogPage, /detail=/);
   assert.doesNotMatch(blogPage, /Actualizado el \$\{editorial\.updatedAtLabel\}/);
   assert.doesNotMatch(blogPage, /substring\(0, 200\) \+ '\.\.\.'/);
   assert.match(chipSource, /rounded-full bg-\[#440099\]/);
-  assert.match(chipSource, /text-sm font-medium/);
+  assert.match(chipSource, /text-xs font-medium sm:text-sm/);
   assert.match(chipSource, /h-6 w-6/);
+  assert.match(chipSource, /flex-col/);
+  assert.match(chipSource, /sm:flex-row/);
+  assert.match(chipSource, /whitespace-nowrap/);
+  assert.match(chipSource, /unoptimized/);
   assert.match(chipSource, /href/);
   assert.match(chipSource, /updatedLabel/);
   assert.match(chipSource, /updatedDateTime/);
   assert.doesNotMatch(chipSource, /detail/);
-  assert.doesNotMatch(chipSource, /text-xs/);
   assert.match(overridesSource, /lib\/blog-editorial-meta\.ts/);
   const titleIdx = blogPage.indexOf('text-4xl md:text-5xl lg:text-6xl');
   const chipIdx = blogPage.indexOf('<BlogBylineChip');

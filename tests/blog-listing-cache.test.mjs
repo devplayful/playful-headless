@@ -76,6 +76,11 @@ test('related-posts fetch cache and booking hop stay on their own files', () => 
     related,
     /export async function getBlogPosts[\s\S]*revalidate: 600/,
   );
+  assert.match(
+    related,
+    /async function loadBlogAuthorsByIds[\s\S]*revalidate: 600/,
+  );
+  assert.doesNotMatch(related, /revalidatePath|revalidateTag/);
   assert.match(booking, /reunion-playful/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/blog/q'));
 });

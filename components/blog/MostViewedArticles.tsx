@@ -7,6 +7,7 @@ import { WPPost } from '@/services/wordpress';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_MOST_VIEWED_SIZES } from '@/lib/blog-image-sizes';
+import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 
 interface MostViewedArticlesProps {
   posts: WPPost[];
@@ -96,6 +97,10 @@ export default function MostViewedArticles({ posts }: MostViewedArticlesProps) {
                   </h3>
                 </Link>
                 
+                <p className="text-sm text-gray-700 mb-3 line-clamp-3 leading-relaxed">
+                  {formatBlogExcerpt(post.excerpt?.rendered, BLOG_CARD_EXCERPT_MAX)}
+                </p>
+
                 <p className="text-xs text-gray-500 mb-4">
                   {formatBlogListingDate(post.slug, {
                     published: post.date,

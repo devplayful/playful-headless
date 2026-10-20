@@ -35,7 +35,7 @@ export const BLOG_STATIC_PARAMS_FIELDS = 'id,slug,categories';
  * `_embed=wp:featuredmedia,wp:term,author` to materialize `_embedded`.
  */
 export const BLOG_ARTICLE_POST_FIELDS =
-  'id,date,date_gmt,modified,modified_gmt,slug,title,content,excerpt,featured_media,categories,author,acf,meta,_links,_embedded';
+  'id,date,date_gmt,modified,modified_gmt,slug,title,content,excerpt,featured_media,categories,author,acf,meta,yoast_head_json,_links,_embedded';
 /** Media lookup used by listings instead of embedding every image size. */
 export const BLOG_MEDIA_FIELDS = 'id,source_url,alt_text';
 /** Author lookup used by listings instead of embedding avatar maps. */

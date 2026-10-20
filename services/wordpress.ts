@@ -25,6 +25,7 @@ import {
   resolveBlogCoverUrl,
 } from '@/lib/blog-cover-image';
 import { repairBlogPostYoastCanonical } from '@/utils/blog-yoast-canonical';
+import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import {
   getStagingLocalBlogPost,
@@ -515,6 +516,14 @@ export interface WPPost {
   meta?: { [key: string]: any };
   /** ACF REST object when a field group is assigned; WP currently returns `[]` on posts. */
   acf?: Record<string, unknown> | unknown[];
+  yoast_head_json?: {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: Array<{ url: string; width?: number; height?: number }>;
+  };
 }
 
 export type RelatedBlogCard = {
@@ -594,11 +603,10 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
     },
     'slash',
   );
-  const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
   return {
     id: post.id,
     title: post.title.rendered.replace(/&[a-z]+;/g, ''),
-    excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt,
+    excerpt: formatBlogExcerpt(post.excerpt?.rendered, BLOG_CARD_EXCERPT_MAX),
     category,
     date: formattedDate,
     imageUrl,
@@ -740,10 +748,12 @@ async function loadBlogAuthorsByIds(
   url.searchParams.append('include', unique.join(','));
   url.searchParams.append('per_page', String(Math.min(100, unique.length)));
   url.searchParams.append('_fields', BLOG_AUTHOR_FIELDS);
+  // Match getBlogPosts (600s). Article pages embed the author at 60s; there is
+  // no WP webhook, so /blog cannot pick up an author change until this TTL.
   const { items } = await wordpressFetchCollection<ListingAuthor>(
     url.toString(),
     {
-      next: { revalidate: 3600 },
+      next: { revalidate: 600 },
       headers: { 'Content-Type': 'application/json' },
       signal: query.signal,
     },
@@ -1000,7 +1010,6 @@ function toRelatedIndexPost(
     || objectCategoryFromPost(post);
   const categorySlug = primary?.slug || 'sin-categoria';
   const categoryName = primary?.name || 'Sin categoría';
-  const excerpt = (post.excerpt?.rendered ?? '').replace(/<[^>]*>?/gm, '').replace(/&[a-z]+;/g, '').trim();
   const title = (post.title?.rendered ?? '').replace(/&[a-z]+;/g, '');
   const featuredMediaId = typeof post.featured_media === 'number' && post.featured_media > 0
     ? post.featured_media
@@ -1009,7 +1018,7 @@ function toRelatedIndexPost(
     id: post.id,
     slug: post.slug,
     title,
-    excerpt: excerpt.length > 100 ? excerpt.substring(0, 100) + '...' : excerpt,
+    excerpt: formatBlogExcerpt(post.excerpt?.rendered, BLOG_CARD_EXCERPT_MAX),
     date: post.date,
     dateGmt: post.date_gmt,
     modified: post.modified,
