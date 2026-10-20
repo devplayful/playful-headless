@@ -6,7 +6,6 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import Image from "next/image";
-import CimaAwardSeal from "@/components/CimaAwardSeal";
 
 const testimonials = [
   {
@@ -201,7 +200,6 @@ export default function TestimonialsSection({
 
         {/* Logos */}
         <div className="py-16">
-          <CimaAwardSeal variant="agency" className="mb-10" />
           <h3 className="text-center text-2xl md:text-3xl font-normal mb-12" style={textStyle}>
             Nuestros aliados estratégicos
           </h3>

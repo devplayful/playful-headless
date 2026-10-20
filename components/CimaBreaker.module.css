@@ -1,0 +1,426 @@
+/* Scoped CIMA breakers — not global */
+
+.celebration {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.celebrationHome {
+  background: #ebdbff;
+}
+
+.celebrationEcommerce {
+  background: #f7f7f7;
+}
+
+.celebrationLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.celebrationInner {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 170px 16px 40px;
+  box-sizing: border-box;
+}
+
+.celebrationEcommerce .celebrationInner {
+  max-width: 1140px;
+}
+
+.celebrationCard {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 170px;
+  bottom: 40px;
+  background: #ffefd1;
+  border-radius: 32px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.celebrationRays {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  left: 10%;
+  top: 20%;
+  background: conic-gradient(
+    from 0deg,
+    #ffe2a6 0deg,
+    transparent 12deg,
+    #ffd67a 24deg,
+    transparent 36deg,
+    #ffe2a6 48deg,
+    transparent 60deg,
+    #ffd67a 72deg,
+    transparent 84deg,
+    #ffe2a6 96deg,
+    transparent 108deg,
+    #ffd67a 120deg,
+    transparent 132deg,
+    #ffe2a6 144deg,
+    transparent 156deg,
+    #ffd67a 168deg,
+    transparent 180deg,
+    #ffe2a6 192deg,
+    transparent 204deg,
+    #ffd67a 216deg,
+    transparent 228deg,
+    #ffe2a6 240deg,
+    transparent 252deg,
+    #ffd67a 264deg,
+    transparent 276deg,
+    #ffe2a6 288deg,
+    transparent 300deg,
+    #ffd67a 312deg,
+    transparent 324deg,
+    #ffe2a6 336deg,
+    transparent 348deg
+  );
+  opacity: 0.55;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.celebrationConfetti {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, #39ddcb 3px, transparent 3px),
+    radial-gradient(circle, #fdc305 2px, transparent 2px),
+    radial-gradient(circle, #fe6e63 2.5px, transparent 2.5px),
+    radial-gradient(circle, #5b3fbf 2px, transparent 2px);
+  background-size: 120px 80px, 90px 70px, 110px 90px, 100px 85px;
+  background-position: 10% 20%, 70% 30%, 40% 60%, 85% 75%;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.celebrationGrid {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.shieldWrap,
+.ribbonShield {
+  flex-shrink: 0;
+  margin-top: -120px;
+}
+
+.shieldImg {
+  width: 192px;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.celebrationCopy {
+  text-align: center;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  color: #4a4453;
+}
+
+.pill {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: #440099;
+  padding: 8px 20px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.celebrationTitle {
+  font-family: var(--font-paytone-one), 'Paytone One', sans-serif;
+  font-size: 32px;
+  line-height: 1.15;
+  color: #440099;
+  margin: 0 0 12px;
+  font-weight: 400;
+}
+
+.celebrationCategory {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+
+.celebrationCta {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 16px;
+  color: #440099;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  background: #ffefd1;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .celebrationCard {
+    left: 0;
+    right: 0;
+    border-radius: 48px;
+  }
+
+  .celebrationGrid {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+  }
+
+  .shieldWrap {
+    margin-top: -160px;
+  }
+
+  .shieldImg {
+    width: 256px;
+  }
+
+  .celebrationCopy {
+    text-align: left;
+    max-width: 520px;
+  }
+
+  .celebrationTitle {
+    font-size: 60px;
+  }
+
+  .celebrationEcommerce .celebrationTitle {
+    font-size: 57px;
+  }
+
+  .celebrationCategory {
+    font-size: 22px;
+  }
+
+  .celebrationCta {
+    font-size: 20px;
+  }
+}
+
+/* SoyTechno ribbon (C) */
+
+.ribbonSection {
+  width: 100%;
+  margin: 0;
+  padding: 48px 0 40px;
+  background: #fef7ff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ribbonMint,
+.ribbonPurple {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.ribbonMint {
+  top: 72px;
+  height: 64px;
+  background: #39ddcb;
+  transform: rotate(4deg);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-paytone-one), 'Paytone One', sans-serif;
+  font-size: 30px;
+  color: #2a0064;
+}
+
+.ribbonPurple {
+  top: 120px;
+  height: 88px;
+  background: #440099;
+  transform: rotate(-5deg);
+  display: flex;
+  align-items: center;
+  font-family: var(--font-paytone-one), 'Paytone One', sans-serif;
+  font-size: 42px;
+  color: #ffefd1;
+}
+
+.ribbonTrack,
+.ribbonTrackReverse {
+  display: inline-flex;
+  animation: cimaRibbonScroll 28s linear infinite;
+}
+
+.ribbonTrackReverse {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ribbonTrack,
+  .ribbonTrackReverse {
+    animation: none;
+  }
+}
+
+@keyframes cimaRibbonScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ribbonLink {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  padding: 120px 16px 0;
+}
+
+.medallion {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  pointer-events: none;
+}
+
+.medallionRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #ffefd1;
+  border: 6px dotted #fdc305;
+}
+
+.medallionConfetti {
+  position: absolute;
+  inset: -20px;
+  background-image:
+    radial-gradient(circle, #39ddcb 3px, transparent 3px),
+    radial-gradient(circle, #fdc305 2px, transparent 2px),
+    radial-gradient(circle, #fe6e63 2.5px, transparent 2.5px);
+  background-size: 80px 60px, 60px 50px, 70px 55px;
+  opacity: 0.4;
+}
+
+.ribbonShield {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+}
+
+.ribbonTitle {
+  font-family: var(--font-paytone-one), 'Paytone One', sans-serif;
+  font-size: 30px;
+  line-height: 1.2;
+  color: #440099;
+  text-align: center;
+  margin: 24px 0 8px;
+  font-weight: 400;
+  max-width: 900px;
+}
+
+.ribbonTitleDesktop {
+  display: none;
+}
+
+.ribbonTitleMobile {
+  display: inline;
+}
+
+.ribbonCategoryMobile {
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #4a4453;
+  margin: 0 0 12px;
+}
+
+.ribbonCta {
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #440099;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+@media (min-width: 768px) {
+  .ribbonMint {
+    height: 64px;
+    font-size: 30px;
+  }
+
+  .ribbonPurple {
+    height: 88px;
+    font-size: 42px;
+  }
+
+  .medallion {
+    width: 400px;
+    height: 400px;
+    top: 60px;
+  }
+
+  .ribbonTitle {
+    font-size: 46px;
+    margin-top: 32px;
+  }
+
+  .ribbonTitleDesktop {
+    display: inline;
+  }
+
+  .ribbonTitleMobile {
+    display: none;
+  }
+
+  .ribbonCategoryMobile {
+    display: none;
+  }
+
+  .ribbonCta {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ribbonMint {
+    height: 42px;
+    font-size: 22px;
+    top: 56px;
+  }
+
+  .ribbonPurple {
+    height: 56px;
+    font-size: 28px;
+    top: 96px;
+  }
+
+  .medallion {
+    width: 220px;
+    height: 220px;
+    top: 80px;
+  }
+}

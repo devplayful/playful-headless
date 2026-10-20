@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import CimaAwardSeal from '@/components/CimaAwardSeal'
+import { CimaSoytechnoRibbonBreaker } from '@/components/CimaBreaker'
 import type { ReactNode } from 'react'
 import styles from './SoyTechnoCaseStudy.module.css'
 import { resolveImageAlt } from '@/lib/image-alt-overrides'
@@ -111,6 +111,8 @@ export default function SoyTechnoCaseStudy() {
           </div>
         </section>
       </div>
+
+      <CimaSoytechnoRibbonBreaker />
 
       <section className={styles.introSection}>
         <h2>El desafío no era tecnológico, era de confianza</h2>
@@ -288,7 +290,6 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.resultsIntro}>
-        <CimaAwardSeal variant="soytechno" className="mb-8" />
         <h2>Resultados que cambiaron la categoría</h2>
         <p>{caseCopy.resultsIntro[0]}</p>
         <p>{caseCopy.resultsIntro[1]}</p>

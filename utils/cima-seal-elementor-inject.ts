@@ -1,16 +1,17 @@
-import { buildCimaSealPictureHtml } from '@/lib/cima-award-seal';
+import { buildCimaCelebrationBreakerHtml } from '@/lib/cima-breaker';
 
-/** Client-logo carousel on /agencia-e-commerce (Elementor widget id). */
-const ECOM_CLIENT_CAROUSEL_MARKER = 'data-id="d0fefa4"';
+/** Results / social-proof section on /agencia-e-commerce (after Beneficios mint block). */
+const ECOM_RESULTS_SECTION_MARKER =
+  'elementor-element-b43f202 elementor-section-stretched';
 
 export function injectCimaSealAgenciaEcommerce(html: string, slug: string): string {
   if (slug !== 'agencia-e-commerce') return html;
-  if (!html.includes(ECOM_CLIENT_CAROUSEL_MARKER)) return html;
-  if (html.includes('playful-cima-award-seal')) return html;
+  if (!html.includes(ECOM_RESULTS_SECTION_MARKER)) return html;
+  if (html.includes('cima-breaker--celebration')) return html;
 
-  const seal = buildCimaSealPictureHtml('agency');
+  const breaker = buildCimaCelebrationBreakerHtml('ecommerce');
   return html.replace(
-    `<div class="elementor-element elementor-element-d0fefa4`,
-    `${seal}<div class="elementor-element elementor-element-d0fefa4`,
+    `<section class="elementor-section elementor-top-section elementor-element elementor-element-b43f202`,
+    `${breaker}<section class="elementor-section elementor-top-section elementor-element elementor-element-b43f202`,
   );
 }

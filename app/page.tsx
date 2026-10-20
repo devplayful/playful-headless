@@ -62,6 +62,7 @@ import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
+import { CimaCelebrationBreaker } from "@/components/CimaBreaker";
 import { HomePageContent } from "./HomePageContent";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
@@ -133,6 +134,8 @@ async function HomeContent() {
           style={{ animationDelay: "1.5s" }}
         ></div>
       </section>
+
+      <CimaCelebrationBreaker variant="home" />
 
       {/* Material UI Services Section */}
       <MaterialServicesSection className={shell} />
