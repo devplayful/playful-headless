@@ -64,7 +64,7 @@ const CIMA_ECOM_ALT =
   'Playful Agency, agencia reconocida en los Premios CIMA 2026, categoría Plataforma de E-commerce';
 /** Separador Premios CIMA 2026 en /agencia-e-commerce (HTML de WP: <picture>, no next/image). */
 const CIMA_ECOM_BREAKER_HTML =
-  '<a href="https://premioscima.com" target="_blank" rel="noopener" data-cima-breaker="ecommerce" '
+  '<a href="/casos-de-exito/soytechno-ecommerce-venezuela" data-cima-breaker="ecommerce" '
   + 'style="display:block;width:100%;max-width:none;margin:0 0 24px;overflow:visible;transform:none">'
   + '<picture style="display:block;overflow:visible">'
   + '<source media="(min-width: 768px)" srcset="/images/premios-cima/breaker-ecommerce-card-desktop.png" width="1110" height="576">'
