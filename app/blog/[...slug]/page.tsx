@@ -44,7 +44,7 @@ import {
   resolveVisibleUpdatedDateTime,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
-import { SERVICE_BOOKING_HREF } from '@/utils/booking';
+import { CONTACT_HREF } from '@/utils/booking';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
@@ -544,7 +544,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
-        <TwoColumnCtaSection buttonLink={SERVICE_BOOKING_HREF} />
+        <TwoColumnCtaSection buttonLink={CONTACT_HREF} />
       </section>
     </div>
     </>
