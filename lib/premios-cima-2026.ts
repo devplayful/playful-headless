@@ -72,7 +72,7 @@ export const PREMIOS_CIMA_2026_BODY_HTML = `
 <figure>
   <img src="${PREMIOS_CIMA_2026_SALON_SRC}" alt="${PREMIOS_CIMA_2026_SALON_ALT}" width="${PREMIOS_CIMA_2026_SALON_WIDTH}" height="${PREMIOS_CIMA_2026_SALON_HEIGHT}" />
 </figure>
-<p>Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio. «[...] Desde hace muchísimo tiempo soñamos una plataforma web que tuviese el nivel internacional que necesitamos ahora mismo en Venezuela. Gracias, Playful. Y en Soy Tecnológico no solo creemos en el futuro de la tecnología, creemos en el futuro de Venezuela. [...]»</p>
+<p>Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio. «[...] Desde hace muchísimo tiempo soñamos una plataforma web que tuviese el nivel internacional que necesitamos ahora mismo en Venezuela. Gracias, Playful. Y en SoyTechno no solo creemos en el futuro de la tecnología, creemos en el futuro de Venezuela. [...]»</p>
 <p>Alejandra Da Costa, CEO de Playful Agency. «Este reconocimiento es muestra de lo que el país necesita, [...] porque definitivamente Venezuela está preparada para esto y para seguir creciendo en la categoría. Gracias.»</p>
 <p>En Playful Agency convertimos requisitos de negocio en experiencias digitales funcionales. Nuestro equipo de diseño y desarrollo trabaja sobre arquitectura, flujos, interfaz e integraciones para resolver necesidades concretas de ecommerce.</p>
 <p>José Reyes, socio y CMO de Playful Agency, <a href="mailto:hello@playfulagency.com">hello@playfulagency.com</a></p>
