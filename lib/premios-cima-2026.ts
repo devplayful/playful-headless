@@ -110,8 +110,22 @@ export const PREMIOS_CIMA_2026_BODY_HTML = `
   <img src="${PREMIOS_CIMA_2026_SALON_SRC}" alt="${PREMIOS_CIMA_2026_SALON_ALT}" width="${PREMIOS_CIMA_2026_SALON_WIDTH}" height="${PREMIOS_CIMA_2026_SALON_HEIGHT}" />
 </figure>
 <h2 id="las-declaraciones">Las declaraciones</h2>
-<p>Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio. «[...] Desde hace muchísimo tiempo soñamos una plataforma web que tuviese el nivel internacional que necesitamos ahora mismo en Venezuela. Gracias, Playful. Y en SoyTechno no solo creemos en el futuro de la tecnología, creemos en el futuro de Venezuela. [...]»</p>
-<p>Alejandra Da Costa, CEO de Playful Agency. «Este reconocimiento es muestra de lo que el país necesita, [...] porque definitivamente Venezuela está preparada para esto y para seguir creciendo en la categoría. Gracias.»</p>
+<style>
+.cima-editorial-quote{margin:1.75rem 0;padding:1.75rem 1.5rem 1.25rem 1.85rem;border-left:4px solid #440099;background:#f5f3ff;border-radius:0 1rem 1rem 0;position:relative;quotes:none}
+.cima-editorial-quote::before{content:"“";position:absolute;top:.15rem;left:.7rem;font-size:3.25rem;line-height:1;color:#2A0064;font-family:Georgia,"Times New Roman",serif;opacity:.28;pointer-events:none}
+.cima-editorial-quote>p{margin:0 0 .85rem;padding:0;font-size:1.35rem;line-height:1.55;font-style:italic;color:#2A0064;font-weight:500}
+.cima-editorial-quote>cite{display:block;font-size:.8125rem;line-height:1.4;font-style:normal;font-weight:600;color:#440099;letter-spacing:.01em}
+@media (max-width:480px){.cima-editorial-quote{padding:1.5rem 1.1rem 1rem 1.35rem}.cima-editorial-quote>p{font-size:1.125rem}}
+</style>
+<p>Yulieth Carvajal, CEO de SoyTechno, dijo estas palabras en el discurso al recibir el premio.</p>
+<blockquote class="cima-editorial-quote not-prose">
+<p>«[...] Desde hace muchísimo tiempo soñamos una plataforma web que tuviese el nivel internacional que necesitamos ahora mismo en Venezuela. Gracias, Playful. Y en SoyTechno no solo creemos en el futuro de la tecnología, creemos en el futuro de Venezuela. [...]»</p>
+<cite>Yulieth Carvajal, CEO de SoyTechno</cite>
+</blockquote>
+<blockquote class="cima-editorial-quote not-prose">
+<p>«Este reconocimiento es muestra de lo que el país necesita, [...] porque definitivamente Venezuela está preparada para esto y para seguir creciendo en la categoría. Gracias.»</p>
+<cite>Alejandra Da Costa, CEO de Playful Agency</cite>
+</blockquote>
 <p>En Playful Agency convertimos requisitos de negocio en experiencias digitales funcionales. Nuestro equipo de diseño y desarrollo trabaja sobre arquitectura, flujos, interfaz e integraciones para resolver necesidades concretas de ecommerce.</p>
 <p>José Reyes, socio y CMO de Playful Agency, <a href="mailto:hello@playfulagency.com">hello@playfulagency.com</a></p>
 <h3 id="que-son-los-premios-cima">¿Qué son los premios CIMA?</h3>
