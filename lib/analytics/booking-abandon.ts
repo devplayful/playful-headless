@@ -10,6 +10,17 @@ export const BOOKING_INTENT_MAX_AGE_SECONDS = 1800;
 /** Skip the outbound /reunion-playful 302 so we do not fire on the way to GHL. */
 export const BOOKING_ABANDON_MIN_AGE_MS = 20_000;
 export const BOOKING_INTENT_COOKIE_DOMAIN = 'playfulagency.com';
+/** Live GA4 stream. send_to may repeat this ID only — never AW-/conversion. */
+export const GA4_MEASUREMENT_ID = 'G-WH76RQWSCT';
+export const BOOKING_ABANDON_GA_RETRY_MS = 50;
+export const BOOKING_ABANDON_GA_WAIT_MS = 10_000;
+
+declare global {
+  interface Window {
+    google_tag_data?: Record<string, unknown>;
+    google_tag_manager?: Record<string, unknown>;
+  }
+}
 
 export type BookingIntent = {
   ts: number;
@@ -206,10 +217,66 @@ export function markBookingIntent(
   return true;
 }
 
-function canSendBookingAbandon(): boolean {
-  if (typeof window === 'undefined') return false;
-  if (typeof window.gtag === 'function') return true;
-  return Boolean(window.dataLayer && typeof window.dataLayer.push === 'function');
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object';
+}
+
+function ga4MeasurementId(): string {
+  const fromEnv = typeof process === 'undefined'
+    ? ''
+    : (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '').trim();
+  return fromEnv || GA4_MEASUREMENT_ID;
+}
+
+function dataLayerHasGtagConfig(dataLayer: unknown, measurementId: string): boolean {
+  if (!Array.isArray(dataLayer)) return false;
+  return dataLayer.some((entry) => {
+    if (!entry) return false;
+    const cmd = (entry as { [key: number]: unknown })[0];
+    const id = (entry as { [key: number]: unknown })[1];
+    if (cmd !== 'config' || typeof id !== 'string') return false;
+    if (id === measurementId) return true;
+    return id.startsWith('G-');
+  });
+}
+
+function hasGa4TidrDestination(googleTagData: unknown, measurementId: string): boolean {
+  if (!isPlainObject(googleTagData)) return false;
+  const tidr = googleTagData.tidr;
+  if (!isPlainObject(tidr)) return false;
+  const destination = tidr.destination;
+  if (!isPlainObject(destination)) return false;
+  if (measurementId in destination) return true;
+  return Object.keys(destination).some((key) => key.startsWith('G-'));
+}
+
+/**
+ * True only after gtag.js/GTM has loaded and GA4 config exists.
+ * The layout stub (`function gtag(){dataLayer.push(arguments)}`) is not enough:
+ * an event queued before `gtag('config', 'G-…')` never produces a collect hit.
+ */
+export function isGa4CollectReady(input?: {
+  gtag?: unknown;
+  dataLayer?: unknown;
+  googleTagData?: unknown;
+  googleTagManager?: unknown;
+  measurementId?: string;
+}): boolean {
+  const gtagFn = input?.gtag ?? (typeof window === 'undefined' ? undefined : window.gtag);
+  if (typeof gtagFn !== 'function') return false;
+
+  const googleTagData = input?.googleTagData
+    ?? (typeof window === 'undefined' ? undefined : window.google_tag_data);
+  const googleTagManager = input?.googleTagManager
+    ?? (typeof window === 'undefined' ? undefined : window.google_tag_manager);
+  if (!isPlainObject(googleTagData) && !isPlainObject(googleTagManager)) return false;
+
+  const measurementId = (input?.measurementId || ga4MeasurementId()).trim() || GA4_MEASUREMENT_ID;
+  if (hasGa4TidrDestination(googleTagData, measurementId)) return true;
+
+  const dataLayer = input?.dataLayer
+    ?? (typeof window === 'undefined' ? undefined : window.dataLayer);
+  return dataLayerHasGtagConfig(dataLayer, measurementId);
 }
 
 export type BookingAbandonFireResult =
@@ -219,7 +286,7 @@ export type BookingAbandonFireResult =
   | 'gracias'
   | 'too_soon'
   | 'already_sent'
-  | 'no_transport';
+  | 'waiting_ga';
 
 /**
  * On a later apex page view: if intent exists, the visitor is not on /gracias,
@@ -262,7 +329,7 @@ export function maybeFireBookingAbandon(input?: {
 
   if (now - intent.ts < BOOKING_ABANDON_MIN_AGE_MS) return 'too_soon';
 
-  if (!canSendBookingAbandon()) return 'no_transport';
+  if (!isGa4CollectReady()) return 'waiting_ga';
 
   sendGtagEvent(
     BOOKING_ABANDON_EVENT,
@@ -272,11 +339,45 @@ export function maybeFireBookingAbandon(input?: {
       cta_section: intent.cta_section,
       seconds_since_click: Math.max(0, Math.round((now - intent.ts) / 1000)),
       transport_type: 'beacon',
+      send_to: ga4MeasurementId(),
     },
   );
   writeSentFlag(dedupeKey, storage);
   clearBookingIntent({ cookieIo, storage, hostname });
   return 'sent';
+}
+
+export function scheduleBookingAbandonUntilGaReady(input?: {
+  now?: number;
+  retryMs?: number;
+  maxWaitMs?: number;
+  setTimeoutFn?: (handler: () => void, ms: number) => number;
+  clearTimeoutFn?: (id: number) => void;
+}): () => void {
+  const retryMs = input?.retryMs ?? BOOKING_ABANDON_GA_RETRY_MS;
+  const maxWaitMs = input?.maxWaitMs ?? BOOKING_ABANDON_GA_WAIT_MS;
+  const started = input?.now ?? Date.now();
+  const setTimer = input?.setTimeoutFn
+    ?? ((handler: () => void, ms: number) => window.setTimeout(handler, ms));
+  const clearTimer = input?.clearTimeoutFn
+    ?? ((id: number) => window.clearTimeout(id));
+
+  let cancelled = false;
+  let timer: number | undefined;
+
+  const tick = () => {
+    if (cancelled) return;
+    const result = maybeFireBookingAbandon({ now: Date.now() });
+    if (result !== 'waiting_ga') return;
+    if (Date.now() - started >= maxWaitMs) return;
+    timer = setTimer(tick, retryMs);
+  };
+
+  tick();
+  return () => {
+    cancelled = true;
+    if (timer !== undefined) clearTimer(timer);
+  };
 }
 
 export function resetBookingAbandonForTests(): void {

@@ -9,9 +9,11 @@ import {
   BOOKING_INTENT_COOKIE_DOMAIN,
   BOOKING_INTENT_MAX_AGE_SECONDS,
   BOOKING_INTENT_STORAGE_KEY,
+  GA4_MEASUREMENT_ID,
   bookingIntentCookieDomain,
   bookingIntentCookieLine,
   clearBookingIntent,
+  isGa4CollectReady,
   markBookingIntent,
   maybeFireBookingAbandon,
   parseBookingIntent,
@@ -128,7 +130,41 @@ test('round-trips intent JSON from cookie and sessionStorage', () => {
   assert.equal(storage.records.has(BOOKING_INTENT_STORAGE_KEY), false);
 });
 
-test('maybeFireBookingAbandon sends once with origin params then clears', () => {
+function gaReadyWindow(calls: unknown[][]) {
+  return {
+    location: { pathname: '/', search: '' },
+    gtag: (...args: unknown[]) => {
+      calls.push(args);
+    },
+    dataLayer: [['config', GA4_MEASUREMENT_ID, { page_path: '/' }]],
+    google_tag_data: { tidr: { destination: { [GA4_MEASUREMENT_ID]: {} } } },
+    navigator: { userAgent: 'Mozilla/5.0' },
+  };
+}
+
+test('isGa4CollectReady is false for the layout stub and true after config', () => {
+  assert.equal(isGa4CollectReady({
+    gtag: () => {},
+    dataLayer: [],
+  }), false);
+  assert.equal(isGa4CollectReady({
+    gtag: () => {},
+    dataLayer: [],
+    googleTagData: {},
+  }), false);
+  assert.equal(isGa4CollectReady({
+    gtag: () => {},
+    dataLayer: [['config', GA4_MEASUREMENT_ID, {}]],
+    googleTagData: { tidr: { destination: { [GA4_MEASUREMENT_ID]: {} } } },
+  }), true);
+  assert.equal(isGa4CollectReady({
+    gtag: () => {},
+    dataLayer: [['config', GA4_MEASUREMENT_ID, {}]],
+    googleTagManager: { GTM: {} },
+  }), true);
+});
+
+test('maybeFireBookingAbandon waits for GA config, then sends once', () => {
   resetBookingAbandonForTests();
   const cookies = memoryCookies();
   const storage = memoryStorage();
@@ -154,6 +190,20 @@ test('maybeFireBookingAbandon sends once with origin params then clears', () => 
     assert.equal(calls.length, 0);
     assert.ok(readBookingIntent({ cookieIo: cookies, storage }));
 
+    const waiting = maybeFireBookingAbandon({
+      pathname: '/',
+      search: '',
+      now: SAMPLE.ts + 45_000,
+      cookieIo: cookies,
+      storage,
+      hostname: 'localhost',
+    });
+    assert.equal(waiting, 'waiting_ga');
+    assert.equal(calls.length, 0);
+    assert.ok(readBookingIntent({ cookieIo: cookies, storage }));
+  });
+
+  withWindow(gaReadyWindow(calls), () => {
     const sent = maybeFireBookingAbandon({
       pathname: '/',
       search: '',
@@ -173,7 +223,8 @@ test('maybeFireBookingAbandon sends once with origin params then clears', () => 
     assert.equal(payload.cta_section, SAMPLE.cta_section);
     assert.equal(payload.seconds_since_click, 45);
     assert.equal(payload.transport_type, 'beacon');
-    assert.equal(payload.send_to, undefined);
+    assert.equal(payload.send_to, GA4_MEASUREMENT_ID);
+    assert.doesNotMatch(String(payload.send_to), /^AW-/);
     assert.equal('conversion' in payload, false);
     assert.equal(readBookingIntent({ cookieIo: cookies, storage }), null);
     assert.equal(storage.records.get(`${BOOKING_ABANDON_STORAGE_PREFIX}${SAMPLE.ts}`), '1');
@@ -296,7 +347,7 @@ test('hooks live in existing trackers; layout GTM Ads and Meta are untouched', (
   const header = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');
   const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 
-  assert.match(tracker, /maybeFireBookingAbandon/);
+  assert.match(tracker, /scheduleBookingAbandonUntilGaReady/);
   assert.match(tracker, /pageshow/);
   assert.match(clicks, /markBookingIntent/);
   assert.match(clicks, /CTA_REUNION_EVENT/);
