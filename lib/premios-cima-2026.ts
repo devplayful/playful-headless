@@ -26,10 +26,16 @@ export const PREMIOS_CIMA_2026_DATE_PUBLISHED = '2026-10-19T17:00:00-04:00';
 export const PREMIOS_CIMA_2026_DATE_MODIFIED = PREMIOS_CIMA_2026_DATE_PUBLISHED;
 
 export const PREMIOS_CIMA_2026_TROFEO_SRC = '/images/blog/premios-cima-2026-trofeo.webp';
-export const PREMIOS_CIMA_2026_FEATURED_SRC = PREMIOS_CIMA_2026_TROFEO_SRC;
+export const PREMIOS_CIMA_2026_PORTADA_SRC = '/images/blog/premios-cima-2026-portada.webp';
+/** Destacada + OG: ilustración (GO José 20 oct 2026, vía Diseño). */
+export const PREMIOS_CIMA_2026_FEATURED_SRC = PREMIOS_CIMA_2026_PORTADA_SRC;
 export const PREMIOS_CIMA_2026_ENTREGA_SRC = '/images/blog/premios-cima-2026-entrega.webp';
 export const PREMIOS_CIMA_2026_SALON_SRC = '/images/blog/premios-cima-2026-salon.webp';
 
+export const PREMIOS_CIMA_2026_PORTADA_WIDTH = 1600;
+export const PREMIOS_CIMA_2026_PORTADA_HEIGHT = 1600;
+export const PREMIOS_CIMA_2026_FEATURED_WIDTH = PREMIOS_CIMA_2026_PORTADA_WIDTH;
+export const PREMIOS_CIMA_2026_FEATURED_HEIGHT = PREMIOS_CIMA_2026_PORTADA_HEIGHT;
 export const PREMIOS_CIMA_2026_TROFEO_WIDTH = 1152;
 export const PREMIOS_CIMA_2026_TROFEO_HEIGHT = 2048;
 export const PREMIOS_CIMA_2026_ENTREGA_WIDTH = 608;
@@ -39,7 +45,8 @@ export const PREMIOS_CIMA_2026_SALON_HEIGHT = 1280;
 
 export const PREMIOS_CIMA_2026_TROFEO_ALT =
   'El trofeo de los Premios CIMA 2026 en la categoría Plataforma de E-commerce, con los nombres de SoyTechno y Playful Agency en la placa.';
-export const PREMIOS_CIMA_2026_FEATURED_ALT = PREMIOS_CIMA_2026_TROFEO_ALT;
+export const PREMIOS_CIMA_2026_FEATURED_ALT =
+  'Ilustración de un trofeo: una bota negra sobre un podio amarillo, con una placa rosa de los Premios CIMA 2026 en la categoría Plataforma de E-commerce para Playful Agency.';
 export const PREMIOS_CIMA_2026_ENTREGA_ALT =
   'Yulieth Carvajal, CEO de SoyTechno, y Alejandra Da Costa, CEO de Playful Agency, recogen el premio en la categoría Plataforma de E-commerce de los Premios CIMA 2026.';
 export const PREMIOS_CIMA_2026_SALON_ALT =
