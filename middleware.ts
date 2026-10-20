@@ -95,8 +95,15 @@ type ResolvedRedirect = {
  */
 function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
   let pathname = startPath;
-  let search = startParams.toString() ? `?${startParams.toString()}` : '';
+  // WP-era links like `?amp/` carry the slash inside the query key.
+  const cleanParams = new URLSearchParams();
   let changed = false;
+  startParams.forEach((value, key) => {
+    const cleanKey = key.replace(/\/+$/, '');
+    if (cleanKey !== key) changed = true;
+    if (cleanKey) cleanParams.append(cleanKey, value);
+  });
+  let search = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
   for (let i = 0; i < 8; i += 1) {
     const dest = PERMANENT_301[pathname];
     if (dest) {
