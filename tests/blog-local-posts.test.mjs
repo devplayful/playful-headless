@@ -48,6 +48,8 @@ const {
   PREMIOS_CIMA_2026_TITLE,
   PREMIOS_CIMA_2026_META,
   PREMIOS_CIMA_2026_ABOUT_NAME,
+  PREMIOS_CIMA_2026_EVENT,
+  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
   PREMIOS_CIMA_2026_DATE_PUBLISHED,
   PREMIOS_CIMA_2026_DATE_MODIFIED,
   PREMIOS_CIMA_2026_BODY_HTML,
@@ -402,7 +404,13 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.doesNotMatch(html, /Para publicación inmediata/);
   assert.doesNotMatch(html, /Caracas, 19 de octubre de 2026/);
   assert.match(html, /^<p>SoyTechno y Playful Agency resultaron ganadores/);
-  assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los Premios CIMA 2026/);
+  assert.match(
+    html,
+    /<a href="https:\/\/premioscima\.com" rel="noopener" target="_blank">Premios CIMA 2026<\/a>/,
+  );
+  assert.match(html, /<a href="\/agencia-e-commerce">Plataforma de E-commerce<\/a>/);
+  assert.doesNotMatch(html, /Zelle|zelle/);
+  assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los /);
   assert.match(html, /Esa tienda se adapta a cómo paga y confía Venezuela/);
   assert.match(html, /Yulieth Carvajal, CEO de SoyTechno/);
   assert.doesNotMatch(html, /Soy Tecnológico/);
@@ -430,10 +438,21 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.ok(existsSync(publicPath(PREMIOS_CIMA_2026_FEATURED_SRC)));
 });
 
-test('CIMA JSON-LD is Article with Caracas offset, about Thing and Equipo editorial', () => {
+test('CIMA JSON-LD is NewsArticle with Event, SoyTechno and Equipo editorial', () => {
   const extras = blogArticleJsonLdExtras(PREMIOS_CIMA_2026_SLUG);
-  assert.equal(extras.type, 'Article');
-  assert.deepEqual(extras.about, { '@type': 'Thing', name: PREMIOS_CIMA_2026_ABOUT_NAME });
+  assert.equal(extras.type, 'NewsArticle');
+  assert.deepEqual(extras.about, [PREMIOS_CIMA_2026_EVENT, PREMIOS_CIMA_2026_SOYTECHNO_ORG]);
+  assert.deepEqual(extras.mentions, [PREMIOS_CIMA_2026_SOYTECHNO_ORG]);
+  assert.equal(PREMIOS_CIMA_2026_EVENT['@type'], 'Event');
+  assert.equal(PREMIOS_CIMA_2026_EVENT.name, PREMIOS_CIMA_2026_ABOUT_NAME);
+  assert.deepEqual(PREMIOS_CIMA_2026_EVENT.organizer, {
+    '@type': 'Organization',
+    name: 'Premios CIMA',
+  });
+  assert.equal(PREMIOS_CIMA_2026_EVENT.startDate, '2026-10-19');
+  assert.equal(PREMIOS_CIMA_2026_EVENT.location.name, 'Hotel Eurobuilding');
+  assert.equal(PREMIOS_CIMA_2026_EVENT.location.address.addressLocality, 'Caracas');
+  assert.equal(PREMIOS_CIMA_2026_EVENT.location.address.addressCountry, 'VE');
   const jsonLd = buildBlogArticleJsonLd({
     headline: PREMIOS_CIMA_2026_H1,
     description: PREMIOS_CIMA_2026_META,
@@ -445,7 +464,7 @@ test('CIMA JSON-LD is Article with Caracas offset, about Thing and Equipo editor
     url: 'https://playfulagency.com/blog/otros/premios-cima-2026-soytechno-playful',
     ...extras,
   });
-  assert.equal(jsonLd['@type'], 'Article');
+  assert.equal(jsonLd['@type'], 'NewsArticle');
   assert.equal(jsonLd.datePublished, '2026-10-19T17:00:00-04:00');
   assert.equal(jsonLd.dateModified, '2026-10-19T17:00:00-04:00');
   assert.equal(jsonLd.inLanguage, 'es');
@@ -454,10 +473,25 @@ test('CIMA JSON-LD is Article with Caracas offset, about Thing and Equipo editor
     name: 'Equipo editorial',
     url: 'https://playfulagency.com',
   });
+  assert.deepEqual(jsonLd.about, extras.about);
+  assert.deepEqual(jsonLd.mentions, extras.mentions);
   assert.ok(PREMIOS_CIMA_2026_META.length <= 155);
   assert.equal(PREMIOS_CIMA_2026_TITLE, PREMIOS_CIMA_2026_H1);
   assert.match(blogPage, /\[PREMIOS_CIMA_2026_SLUG\]/);
+  assert.match(blogPage, /<time dateTime=\{articleDates\.datePublished\}/);
   assert.match(expectedRoutes, /premios-cima-2026-soytechno-playful/);
+});
+
+test('CIMA is a Next local post, not a WordPress wp-json entry', () => {
+  const post = getStagingLocalBlogPost(PREMIOS_CIMA_2026_SLUG, {
+    VERCEL_ENV: 'production',
+    VERCEL_GIT_COMMIT_REF: 'main',
+  });
+  assert.ok(post);
+  assert.equal(post.id, 90002612);
+  assert.match(wordpressSource, /const stagingLocal = getStagingLocalBlogPost\(slug\)/);
+  assert.match(wordpressSource, /if \(stagingLocal\) return stagingLocal/);
+  assert.doesNotMatch(wordpressSource, /premios-cima-2026-soytechno-playful/);
 });
 
 test('local Merchant Center post is gated and shaped like a WP pautas-digitales article', () => {

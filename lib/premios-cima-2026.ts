@@ -20,6 +20,25 @@ export const PREMIOS_CIMA_2026_EXCERPT =
 export const PREMIOS_CIMA_2026_META =
   'El caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela» se llevó el premio de su categoría en la cuarta edición del certamen.';
 export const PREMIOS_CIMA_2026_ABOUT_NAME = 'Premios CIMA 2026';
+export const PREMIOS_CIMA_2026_EVENT = {
+  '@type': 'Event',
+  name: 'Premios CIMA 2026',
+  organizer: { '@type': 'Organization', name: 'Premios CIMA' },
+  startDate: '2026-10-19',
+  location: {
+    '@type': 'Place',
+    name: 'Hotel Eurobuilding',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Caracas',
+      addressCountry: 'VE',
+    },
+  },
+} as const;
+export const PREMIOS_CIMA_2026_SOYTECHNO_ORG = {
+  '@type': 'Organization',
+  name: 'SoyTechno',
+} as const;
 
 /** Dateline de la nota (Caracas, 19 oct 2026, 17:00 VET). */
 export const PREMIOS_CIMA_2026_DATE_PUBLISHED = '2026-10-19T17:00:00-04:00';
@@ -58,7 +77,7 @@ export const PREMIOS_CIMA_2026_ENTREGA_CAPTION = PREMIOS_CIMA_2026_ENTREGA_ALT;
 export const PREMIOS_CIMA_2026_AUTHOR_NAME = 'Equipo editorial';
 
 export const PREMIOS_CIMA_2026_BODY_HTML = `
-<p>SoyTechno y Playful Agency resultaron ganadores de los Premios CIMA 2026 en la categoría Plataforma de E-commerce, del área de Mercadeo. La ceremonia de la cuarta edición se celebró el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, en el Salón Plaza Real, a las 5:00 pm.</p>
+<p>SoyTechno y Playful Agency resultaron ganadores de los <a href="https://premioscima.com" rel="noopener" target="_blank">Premios CIMA 2026</a> en la categoría <a href="/agencia-e-commerce">Plataforma de E-commerce</a>, del área de Mercadeo. La ceremonia de la cuarta edición se celebró el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, en el Salón Plaza Real, a las 5:00 pm.</p>
 <figure>
   <img src="${PREMIOS_CIMA_2026_TROFEO_SRC}" alt="${PREMIOS_CIMA_2026_TROFEO_ALT}" width="${PREMIOS_CIMA_2026_TROFEO_WIDTH}" height="${PREMIOS_CIMA_2026_TROFEO_HEIGHT}" />
   <figcaption>${PREMIOS_CIMA_2026_TROFEO_CAPTION}</figcaption>

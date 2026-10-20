@@ -25,6 +25,8 @@ import {
 } from './eshow-madrid-2026.ts';
 import {
   PREMIOS_CIMA_2026_ABOUT_NAME,
+  PREMIOS_CIMA_2026_EVENT,
+  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
   PREMIOS_CIMA_2026_AUTHOR_NAME,
   PREMIOS_CIMA_2026_BODY_HTML,
   PREMIOS_CIMA_2026_CANONICAL,
@@ -75,6 +77,8 @@ export {
 
 export {
   PREMIOS_CIMA_2026_ABOUT_NAME,
+  PREMIOS_CIMA_2026_EVENT,
+  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
   PREMIOS_CIMA_2026_AUTHOR_NAME,
   PREMIOS_CIMA_2026_BODY_HTML,
   PREMIOS_CIMA_2026_CANONICAL,
@@ -675,8 +679,9 @@ export function listStagingSitemapBlogEntries(
 }
 
 export function blogArticleJsonLdExtras(slug: string | undefined | null): {
-  type?: 'Article';
-  about?: { '@type': 'Thing'; name: string };
+  type?: 'Article' | 'NewsArticle';
+  about?: Record<string, unknown> | Array<Record<string, unknown>>;
+  mentions?: Array<Record<string, unknown>>;
   inLanguage?: string;
 } {
   if (slug === ESHOW_MADRID_2026_SLUG) {
@@ -687,9 +692,12 @@ export function blogArticleJsonLdExtras(slug: string | undefined | null): {
     };
   }
   if (slug === PREMIOS_CIMA_2026_SLUG) {
+    const event = PREMIOS_CIMA_2026_EVENT as Record<string, unknown>;
+    const soyTechno = PREMIOS_CIMA_2026_SOYTECHNO_ORG as Record<string, unknown>;
     return {
-      type: 'Article',
-      about: { '@type': 'Thing', name: PREMIOS_CIMA_2026_ABOUT_NAME },
+      type: 'NewsArticle',
+      about: [event, soyTechno],
+      mentions: [soyTechno],
       inLanguage: 'es',
     };
   }
