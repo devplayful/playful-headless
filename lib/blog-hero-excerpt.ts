@@ -1,9 +1,13 @@
 import { decodeHtmlEntities } from './wordpress-plain-text.ts';
 
 export const DEFAULT_EXCERPT_MAX = 200;
+/** Featured / grid cards on `/blog`. */
+export const BLOG_LISTING_EXCERPT_MAX = 120;
+/** Home, related posts, and compact listing cards. */
+export const BLOG_CARD_EXCERPT_MAX = 100;
 /** Sentence terminator in the last 45% of the window counts as “near” the limit. */
 const SENTENCE_NEAR_RATIO = 0.55;
-const WP_AUTO_EXCERPT_TAIL = /\s*(?:\[\s*(?:…|&hellip;|\.{3}|&#8230;)\s*\]|[.…]+)$/;
+const WP_AUTO_EXCERPT_TAIL = /\s*(?:\[\s*(?:…|&hellip;|\.{3}|&#8230;)\s*\]|\.{3}|…)$/;
 
 function stripExcerptHtml(html: string): string {
   return decodeHtmlEntities(html.replace(/<[^>]*>?/gm, ''))
@@ -56,10 +60,12 @@ export function truncateHeroExcerptAtSentence(text: string, maxLength: number): 
 }
 
 /**
- * Hero excerpt under the blog H1: strip tags, keep a WP manual excerpt whole,
- * otherwise truncate at a nearby sentence or the last whole word.
+ * Shared excerpt for the article H1, `/blog` cards, home, related posts
+ * and Más Vistos: strip tags, keep a WP manual excerpt whole when the
+ * body is available, otherwise truncate at a nearby sentence or the last
+ * whole word. Never appends `...`.
  */
-export function formatBlogHeroExcerpt(
+export function formatBlogExcerpt(
   html: string | undefined | null,
   maxLength = DEFAULT_EXCERPT_MAX,
   contentHtml?: string | null,
@@ -68,5 +74,9 @@ export function formatBlogHeroExcerpt(
   const stripped = stripExcerptHtml(html);
   if (!stripped) return '';
   if (isWordPressManualExcerpt(html, contentHtml)) return stripped;
-  return truncateHeroExcerptAtSentence(stripped, maxLength);
+  const withoutAutoTail = stripped.replace(WP_AUTO_EXCERPT_TAIL, '').trim();
+  if (!withoutAutoTail) return '';
+  return truncateHeroExcerptAtSentence(withoutAutoTail, maxLength);
 }
+
+export const formatBlogHeroExcerpt = formatBlogExcerpt;

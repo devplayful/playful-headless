@@ -17,7 +17,7 @@ type BlogBylineChipProps = {
   avatarPriority?: boolean;
 };
 
-/** Author pill: rounded-full purple chip, 24px avatar, one line of text-sm font-medium. */
+/** Author pill: purple chip, 24px avatar, name and date each stay on one phrase. */
 export function BlogBylineChip({
   name,
   href,
@@ -48,45 +48,39 @@ export function BlogBylineChip({
         }
         setHidden(true);
       }}
-      className="h-6 w-6 shrink-0 rounded-full object-cover"
+      className="h-6 w-6 shrink-0 rounded-full bg-white object-cover"
     />
-  );
-
-  const authorLabel = (
-    <span className="min-w-0 text-sm font-medium">{name}</span>
   );
 
   const author = href ? (
     <a
       href={href}
-      className="inline-flex min-w-0 items-center gap-2 text-white hover:underline"
+      className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-white hover:underline"
     >
       {avatar}
-      {authorLabel}
+      <span className="text-sm font-medium">{name}</span>
     </a>
   ) : (
-    <>
+    <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap">
       {avatar}
-      {authorLabel}
-    </>
+      <span className="text-sm font-medium">{name}</span>
+    </span>
   );
 
   return (
-    <div className="inline-flex max-w-full min-w-0 items-center gap-2 rounded-full bg-[#440099] px-4 py-2 text-white">
+    <div className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full bg-[#440099] px-4 py-2 text-white">
       {author}
       {updatedLabel ? (
-        <>
+        <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-medium">
           <span className="text-white/70" aria-hidden="true">
             ·
           </span>
           {updatedDateTime ? (
-            <time dateTime={updatedDateTime} className="min-w-0 text-sm font-medium">
-              {updatedLabel}
-            </time>
+            <time dateTime={updatedDateTime}>{updatedLabel}</time>
           ) : (
-            <span className="min-w-0 text-sm font-medium">{updatedLabel}</span>
+            <span>{updatedLabel}</span>
           )}
-        </>
+        </span>
       ) : null}
     </div>
   );

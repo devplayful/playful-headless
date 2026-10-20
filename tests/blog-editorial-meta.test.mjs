@@ -26,7 +26,12 @@ const {
   wordpressSeoText,
   BLOG_AUTHOR_HREF,
 } = await import('../lib/blog-editorial-meta.ts');
-const { formatBlogHeroExcerpt } = await import('../lib/blog-hero-excerpt.ts');
+const {
+  BLOG_CARD_EXCERPT_MAX,
+  BLOG_LISTING_EXCERPT_MAX,
+  formatBlogExcerpt,
+  formatBlogHeroExcerpt,
+} = await import('../lib/blog-hero-excerpt.ts');
 const plainText = await import('../lib/wordpress-plain-text.ts');
 const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
@@ -351,6 +356,45 @@ test('hero excerpt keeps WP manual copy whole and otherwise cuts on a word', () 
   assert.match(formatBlogHeroExcerpt(`<p>${nearSentence}</p>`, 200), /Fin de frase\.$/);
 });
 
+test('listing, home, related and más vistos share formatBlogExcerpt and cut on a word', () => {
+  const cima =
+    'El caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela» se llevó el premio de su categoría en la cuarta edición del certamen, celebrada el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, Salón Plaza Real, a las 5:00 pm.';
+  assert.equal(BLOG_LISTING_EXCERPT_MAX, 120);
+  assert.equal(BLOG_CARD_EXCERPT_MAX, 100);
+  const featured = formatBlogExcerpt(`<p>${cima}</p>`, BLOG_LISTING_EXCERPT_MAX);
+  assert.match(featured, /en la…$/);
+  assert.doesNotMatch(featured, /cua/);
+  assert.doesNotMatch(featured, /\.\.\./);
+  const card = formatBlogExcerpt(`<p>${cima}</p>`, BLOG_CARD_EXCERPT_MAX);
+  assert.match(card, /premio de…$/);
+  assert.doesNotMatch(card, /\.\.\./);
+  assert.doesNotMatch(
+    formatBlogExcerpt('<p>Texto corto que WordPress corta [...]</p>', 120),
+    /\.\.\.|\[\s*…\s*\]/,
+  );
+
+  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const mostViewed = readFileSync(
+    new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
+    'utf8',
+  );
+  const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const relatedSection = readFileSync(
+    new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(listingPage, /formatBlogExcerpt\(posts\[0\]\.excerpt\.rendered, BLOG_LISTING_EXCERPT_MAX\)/);
+  assert.match(listingPage, /formatBlogExcerpt\(post\.excerpt\.rendered, BLOG_LISTING_EXCERPT_MAX\)/);
+  assert.doesNotMatch(listingPage, /substring\(0,\s*120\)/);
+  assert.doesNotMatch(listingPage, /\+ ['"]\.\.\.['"]/);
+  assert.match(mostViewed, /formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(wordpress, /function toRelatedBlogCard[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(wordpress, /function toRelatedIndexPost[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
+  assert.match(home, /getLatestBlogPosts\(6\)/);
+  assert.match(relatedSection, /\{post\.excerpt\}/);
+});
+
 test('editorial avatar asset remains available but is not the byline face', () => {
   assert.equal(EDITORIAL_AVATAR_SRC, '/images/avatar-playful.svg');
   assert.ok(existsSync(join(root, 'public', EDITORIAL_AVATAR_SRC.replace(/^\//, ''))));
@@ -443,6 +487,8 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(chipSource, /rounded-full bg-\[#440099\]/);
   assert.match(chipSource, /text-sm font-medium/);
   assert.match(chipSource, /h-6 w-6/);
+  assert.match(chipSource, /flex-wrap/);
+  assert.match(chipSource, /whitespace-nowrap/);
   assert.match(chipSource, /href/);
   assert.match(chipSource, /updatedLabel/);
   assert.match(chipSource, /updatedDateTime/);

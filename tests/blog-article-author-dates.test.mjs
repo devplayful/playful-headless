@@ -192,6 +192,8 @@ test('WP Equipo editorial keeps the display name and falls back from Gravatar', 
   assert.equal(author.avatarSrc, EDITORIAL_AVATAR_SRC);
   assert.match(chipSource, /onError/);
   assert.match(chipSource, /\/images\/avatar-playful\.svg/);
+  assert.match(chipSource, /whitespace-nowrap/);
+  assert.match(chipSource, /flex-wrap/);
   const hosted = resolveBlogArticleAuthor({
     author: {
       id: 21,

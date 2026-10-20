@@ -197,8 +197,16 @@ export function isUsableBlogAvatarUrl(value: string | undefined | null): boolean
   const url = (value || '').trim();
   if (!url) return false;
   const lower = url.toLowerCase();
-  if (lower.includes('gravatar.com') || lower.includes('0.gravatar.com')) return false;
-  return true;
+  if (
+    lower.includes('gravatar.com')
+    || lower.includes('i0.wp.com')
+    || lower.includes('i1.wp.com')
+    || lower.includes('i2.wp.com')
+  ) {
+    return false;
+  }
+  if (url.startsWith('/images/')) return true;
+  return lower.includes('/wp-content/uploads/');
 }
 
 export function resolveBlogAuthorAvatarSrc(
