@@ -43,29 +43,6 @@ const {
   GOOGLE_MERCHANT_CENTER_DATE_MODIFIED_PROVISIONAL,
   GOOGLE_MERCHANT_CENTER_BODY_HTML,
   GOOGLE_MERCHANT_CENTER_FAQS,
-  PREMIOS_CIMA_2026_SLUG,
-  PREMIOS_CIMA_2026_H1,
-  PREMIOS_CIMA_2026_BAJADA,
-  PREMIOS_CIMA_2026_TITLE,
-  PREMIOS_CIMA_2026_META,
-  PREMIOS_CIMA_2026_FAQS,
-  PREMIOS_CIMA_2026_ABOUT_NAME,
-  PREMIOS_CIMA_2026_EVENT,
-  PREMIOS_CIMA_2026_SOYTECHNO_ORG,
-  PREMIOS_CIMA_2026_DATE_PUBLISHED,
-  PREMIOS_CIMA_2026_DATE_MODIFIED,
-  PREMIOS_CIMA_2026_BODY_HTML,
-  PREMIOS_CIMA_2026_FEATURED_SRC,
-  PREMIOS_CIMA_2026_FEATURED_ALT,
-  PREMIOS_CIMA_2026_PORTADA_SRC,
-  PREMIOS_CIMA_2026_TROFEO_SRC,
-  PREMIOS_CIMA_2026_ENTREGA_SRC,
-  PREMIOS_CIMA_2026_SALON_SRC,
-  PREMIOS_CIMA_2026_TROFEO_ALT,
-  PREMIOS_CIMA_2026_ENTREGA_ALT,
-  PREMIOS_CIMA_2026_SALON_ALT,
-  PREMIOS_CIMA_2026_TROFEO_CAPTION,
-  PREMIOS_CIMA_2026_AUTHOR_NAME,
 } = await import('../lib/blog-local-posts.ts');
 
 const {
@@ -260,7 +237,7 @@ test('wordpress and the post template wire the staging-only post without listing
   assert.doesNotMatch(listingSource, /eshow-madrid-2026/);
   assert.doesNotMatch(listingSource, /premios-cima-2026-soytechno-playful/);
   assert.doesNotMatch(sitemapSource, /SITEMAP_BLOG_PATHS = \[[^\]]*eshow-madrid-2026/s);
-  assert.doesNotMatch(sitemapSource, /SITEMAP_BLOG_PATHS = \[[^\]]*premios-cima-2026-soytechno-playful/s);
+  assert.match(sitemapSource, /\/blog\/otros\/premios-cima-2026-soytechno-playful/);
   assert.match(blogPage, /blogFaqPageJsonLd\(postSlug\)/);
   assert.match(blogPage, /\[GOOGLE_MERCHANT_CENTER_SLUG\]/);
   assert.match(blogPage, /h1: GOOGLE_MERCHANT_CENTER_H1/);
@@ -277,10 +254,6 @@ test('eShow sitemap extras follow dateModified on staging and production main', 
     {
       loc: 'https://playfulagency.com/blog/otros/eshow-madrid-2026',
       lastmod: '2026-10-07T00:00:00+02:00',
-    },
-    {
-      loc: 'https://playfulagency.com/blog/otros/premios-cima-2026-soytechno-playful',
-      lastmod: PREMIOS_CIMA_2026_DATE_MODIFIED,
     },
   ];
   assert.deepEqual(
@@ -313,7 +286,11 @@ test('eShow sitemap extras follow dateModified on staging and production main', 
   );
   assert.match(
     stagingXml,
-    /<loc>https:\/\/playfulagency\.com\/blog\/otros\/premios-cima-2026-soytechno-playful<\/loc><lastmod>2026-10-19T17:00:00-04:00<\/lastmod>/,
+    /<loc>https:\/\/playfulagency\.com\/blog\/otros\/premios-cima-2026-soytechno-playful<\/loc><\/url>/,
+  );
+  assert.doesNotMatch(
+    stagingXml,
+    /<loc>https:\/\/playfulagency\.com\/blog\/otros\/premios-cima-2026-soytechno-playful<\/loc><lastmod>/,
   );
 });
 
@@ -321,7 +298,7 @@ test('production local listings include eShow, skip Merchant Center, and prefer 
   const productionEnv = { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' };
   const listed = listProductionLocalBlogPosts(productionEnv);
   assert.equal(listed.some((post) => post.slug === ESHOW_MADRID_2026_SLUG), true);
-  assert.equal(listed.some((post) => post.slug === PREMIOS_CIMA_2026_SLUG), true);
+  assert.equal(listed.some((post) => post.slug === 'premios-cima-2026-soytechno-playful'), false);
   assert.equal(listed.some((post) => post.slug === GOOGLE_MERCHANT_CENTER_SLUG), false);
   assert.equal(
     listProductionLocalBlogPosts({ VERCEL_GIT_COMMIT_REF: 'staging' }).some(
@@ -338,10 +315,10 @@ test('production local listings include eShow, skip Merchant Center, and prefer 
     [{ slug: 'older-wp-post', date: '2020-01-01T00:00:00.000Z', modified: '2020-01-01T00:00:00.000Z' }],
     { env: productionEnv },
   );
-  assert.equal(merged[0].slug, PREMIOS_CIMA_2026_SLUG);
+  assert.equal(merged[0].slug, ESHOW_MADRID_2026_SLUG);
   const pageOne = paginateBlogPosts(merged, 1, 10);
   assert.equal(pageOne.posts.some((post) => post.slug === ESHOW_MADRID_2026_SLUG), true);
-  assert.equal(pageOne.posts.some((post) => post.slug === PREMIOS_CIMA_2026_SLUG), true);
+  assert.equal(pageOne.posts.some((post) => post.slug === 'premios-cima-2026-soytechno-playful'), false);
 
   const fromWp = mergeProductionLocalBlogPosts(
     [{ slug: ESHOW_MADRID_2026_SLUG, date: '2026-10-07T00:00:00+02:00', featured_media_url: '/wp.jpg' }],
@@ -354,189 +331,29 @@ test('production local listings include eShow, skip Merchant Center, and prefer 
   );
 });
 
-test('local CIMA post is gated and shaped like a WP otros press note', () => {
-  assert.equal(getStagingLocalBlogPost(PREMIOS_CIMA_2026_SLUG, { VERCEL_ENV: 'production' }), null);
-  assert.ok(
-    getStagingLocalBlogPost(PREMIOS_CIMA_2026_SLUG, {
+test('CIMA 2026 is a WordPress post, not a Next local entry', () => {
+  const slug = 'premios-cima-2026-soytechno-playful';
+  assert.equal(getStagingLocalBlogPost(slug, {}), null);
+  assert.equal(
+    getStagingLocalBlogPost(slug, {
       VERCEL_ENV: 'production',
       VERCEL_GIT_COMMIT_REF: 'main',
     }),
-  );
-  const post = getStagingLocalBlogPost(PREMIOS_CIMA_2026_SLUG, {});
-  assert.ok(post);
-  assert.equal(post.slug, 'premios-cima-2026-soytechno-playful');
-  assert.equal(post.categories[0].slug, 'otros');
-  assert.equal(post.categories[0].name, 'Otros');
-  assert.equal(post.author.name, PREMIOS_CIMA_2026_AUTHOR_NAME);
-  assert.equal(post.author.name, 'Equipo editorial');
-  assert.doesNotMatch(post.author.name, /de Playful Agency/);
-  assert.equal(post.featured_media_url, PREMIOS_CIMA_2026_FEATURED_SRC);
-  assert.equal(PREMIOS_CIMA_2026_FEATURED_SRC, PREMIOS_CIMA_2026_PORTADA_SRC);
-  assert.notEqual(PREMIOS_CIMA_2026_FEATURED_SRC, PREMIOS_CIMA_2026_TROFEO_SRC);
-  assert.equal(
-    post.featured_media_alt,
-    PREMIOS_CIMA_2026_FEATURED_ALT,
-  );
-  assert.match(PREMIOS_CIMA_2026_FEATURED_ALT, /Ilustración de un trofeo/);
-  assert.equal(post.date, PREMIOS_CIMA_2026_DATE_PUBLISHED);
-  assert.equal(post.modified, PREMIOS_CIMA_2026_DATE_MODIFIED);
-  assert.equal(post.title.rendered, PREMIOS_CIMA_2026_H1);
-  const params = listStagingLocalBlogStaticParams({});
-  assert.deepEqual(
-    params.find((entry) => entry.slug[1] === PREMIOS_CIMA_2026_SLUG),
-    { slug: ['otros', 'premios-cima-2026-soytechno-playful'] },
-  );
-});
-
-test('CIMA title is a single visible H1 without a duplicate title H2', () => {
-  assert.match(blogPage, /const isCima = postSlug === PREMIOS_CIMA_2026_SLUG/);
-  assert.match(blogPage, /VisibleTitleTag = isCima \? 'h1' : 'h2'/);
-  assert.match(blogPage, /isCima \? null : <h1 className="sr-only">\{pageH1\}<\/h1>/);
-  assert.match(blogPage, /<VisibleTitleTag className="text-4xl md:text-5xl lg:text-6xl/);
-  assert.match(blogPage, /\{PREMIOS_CIMA_2026_BAJADA\}/);
-  assert.doesNotMatch(
-    blogPage,
-    /<h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-\[#2A0064\] leading-tight mb-6">\s*\{pageH1\}/,
+    null,
   );
   assert.equal(
-    PREMIOS_CIMA_2026_H1,
-    'Premios CIMA 2026, ganadores SoyTechno en Plataforma de E-commerce',
+    listStagingLocalBlogStaticParams({
+      VERCEL_ENV: 'production',
+      VERCEL_GIT_COMMIT_REF: 'main',
+    }).some((entry) => entry.slug[1] === slug),
+    false,
   );
-  assert.equal(
-    PREMIOS_CIMA_2026_BAJADA,
-    'SoyTechno y Playful Agency resultaron ganadores en la categoría Plataforma de E-commerce, del área de Mercadeo, de los Premios CIMA 2026',
-  );
-});
-
-test('CIMA body is the signed post: three figures, quotes and no H1 or dateline', () => {
-  const html = PREMIOS_CIMA_2026_BODY_HTML;
-  assert.doesNotMatch(html, /<h1[\s>]/);
-  assert.doesNotMatch(html, /\[TITULAR\]|\[SUBTÍTULO\]|\[ENTRADILLA\]|\[CUERPO\]|\[CITAS\]|\[BOILERPLATE\]|\[CONTACTO DE PRENSA\]/);
-  assert.doesNotMatch(html, /Para publicación inmediata/);
-  assert.doesNotMatch(html, /Caracas, 19 de octubre de 2026/);
-  assert.doesNotMatch(html, /Fuente:|Posición:|NO COMPROBADO/);
-  assert.doesNotMatch(html, /organizado por|razón social|palmarés de 2026|Ganadores de años anteriores/);
-  assert.match(html, /^<h2 id="que-son-los-premios-cima-y-quien-los-organiza">Qué son los Premios CIMA y quién los organiza<\/h2>/);
-  const h2s = [...html.matchAll(/<h2[^>]*>(.*?)<\/h2>/g)].map((match) => match[1]);
-  assert.deepEqual(h2s, [
-    'Qué son los Premios CIMA y quién los organiza',
-    'La gala de Premios CIMA 2026',
-    'La categoría y el caso ganador',
-    'Los resultados',
-    'Las declaraciones',
-  ]);
-  assert.match(html, /Los Premios CIMA premian casos de mercadeo y creatividad con firma venezolana/);
-  assert.match(html, /Tata López figura como fundadora en la junta consultiva/);
-  assert.match(html, /la ceremonia la produjeron OZ Producciones y LBM/);
-  assert.match(html, /La cuarta edición recibió 313 casos inscritos, según la nota de PRODU del 14 de octubre de 2026/);
-  assert.match(
-    html,
-    /<h2 id="la-gala-de-premios-cima-2026">La gala de Premios CIMA 2026<\/h2>\s*<p>SoyTechno y Playful Agency resultaron ganadores/,
-  );
-  assert.match(
-    html,
-    /<a href="https:\/\/premioscima\.com" rel="noopener" target="_blank">Premios CIMA 2026<\/a>/,
-  );
-  assert.match(html, /<a href="\/agencia-e-commerce">Plataforma de E-commerce<\/a>/);
-  assert.doesNotMatch(html, /Zelle|zelle/);
-  assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los /);
-  assert.match(html, /Esa tienda se adapta a cómo paga y confía Venezuela/);
-  assert.match(html, /Yulieth Carvajal, CEO de SoyTechno/);
-  assert.doesNotMatch(html, /Soy Tecnológico/);
-  assert.match(html, /Y en SoyTechno no solo creemos/);
-  assert.match(html, /Alejandra Da Costa, CEO de Playful Agency/);
-  assert.doesNotMatch(html, /José Reyes, socio y CMO de Playful Agency, dijo/);
-  assert.match(html, /José Reyes, socio y CMO de Playful Agency/);
-  assert.match(html, /hello@playfulagency\.com/);
-  assert.match(html, /<h3 id="que-son-los-premios-cima">¿Qué son los premios CIMA\?<\/h3>/);
-  assert.match(
-    html,
-    /Los Premios CIMA son un certamen venezolano de mercadeo y creatividad\. La cuarta edición se celebró el 19 de octubre de 2026 en Caracas\./,
-  );
-  const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);
-  assert.equal(images.length, 3);
-  assert.doesNotMatch(html, new RegExp(PREMIOS_CIMA_2026_PORTADA_SRC));
-  assert.match(images[0], new RegExp(`src="${PREMIOS_CIMA_2026_TROFEO_SRC}"`));
-  assert.match(images[0], new RegExp(`alt="${PREMIOS_CIMA_2026_TROFEO_ALT}"`));
-  assert.match(images[1], new RegExp(`src="${PREMIOS_CIMA_2026_ENTREGA_SRC}"`));
-  assert.match(images[1], new RegExp(`alt="${PREMIOS_CIMA_2026_ENTREGA_ALT}"`));
-  assert.match(images[2], new RegExp(`src="${PREMIOS_CIMA_2026_SALON_SRC}"`));
-  assert.match(images[2], new RegExp(`alt="${PREMIOS_CIMA_2026_SALON_ALT}"`));
-  assert.match(html, new RegExp(`<figcaption>${PREMIOS_CIMA_2026_TROFEO_CAPTION}</figcaption>`));
-  assert.match(html, new RegExp(`<figcaption>${PREMIOS_CIMA_2026_ENTREGA_ALT}</figcaption>`));
-  const salonBlock = html.slice(html.indexOf(PREMIOS_CIMA_2026_SALON_SRC));
-  assert.doesNotMatch(salonBlock.slice(0, 400), /<figcaption>/);
-  assert.ok(existsSync(publicPath(PREMIOS_CIMA_2026_TROFEO_SRC)));
-  assert.ok(existsSync(publicPath(PREMIOS_CIMA_2026_ENTREGA_SRC)));
-  assert.ok(existsSync(publicPath(PREMIOS_CIMA_2026_SALON_SRC)));
-  assert.ok(existsSync(publicPath(PREMIOS_CIMA_2026_FEATURED_SRC)));
-});
-
-test('CIMA JSON-LD is NewsArticle with Event, SoyTechno and Equipo editorial', () => {
-  const extras = blogArticleJsonLdExtras(PREMIOS_CIMA_2026_SLUG);
-  assert.equal(extras.type, 'NewsArticle');
-  assert.deepEqual(extras.about, [PREMIOS_CIMA_2026_EVENT, PREMIOS_CIMA_2026_SOYTECHNO_ORG]);
-  assert.deepEqual(extras.mentions, [PREMIOS_CIMA_2026_SOYTECHNO_ORG]);
-  assert.equal(PREMIOS_CIMA_2026_EVENT['@type'], 'Event');
-  assert.equal(PREMIOS_CIMA_2026_EVENT.name, PREMIOS_CIMA_2026_ABOUT_NAME);
-  assert.deepEqual(PREMIOS_CIMA_2026_EVENT.organizer, {
-    '@type': 'Organization',
-    name: 'Premios CIMA',
-  });
-  assert.equal(PREMIOS_CIMA_2026_EVENT.startDate, '2026-10-19');
-  assert.equal(PREMIOS_CIMA_2026_EVENT.location.name, 'Hotel Eurobuilding');
-  assert.equal(PREMIOS_CIMA_2026_EVENT.location.address.addressLocality, 'Caracas');
-  assert.equal(PREMIOS_CIMA_2026_EVENT.location.address.addressCountry, 'VE');
-  const jsonLd = buildBlogArticleJsonLd({
-    headline: PREMIOS_CIMA_2026_H1,
-    description: PREMIOS_CIMA_2026_META,
-    datePublished: PREMIOS_CIMA_2026_DATE_PUBLISHED,
-    dateModified: PREMIOS_CIMA_2026_DATE_MODIFIED,
-    authorName: PREMIOS_CIMA_2026_AUTHOR_NAME,
-    authorType: 'Organization',
-    authorUrl: 'https://playfulagency.com',
-    url: 'https://playfulagency.com/blog/otros/premios-cima-2026-soytechno-playful',
-    ...extras,
-  });
-  assert.equal(jsonLd['@type'], 'NewsArticle');
-  assert.equal(jsonLd.datePublished, '2026-10-19T17:00:00-04:00');
-  assert.equal(jsonLd.dateModified, '2026-10-19T17:00:00-04:00');
-  assert.equal(jsonLd.inLanguage, 'es');
-  assert.deepEqual(jsonLd.author, {
-    '@type': 'Organization',
-    name: 'Equipo editorial',
-    url: 'https://playfulagency.com',
-  });
-  assert.deepEqual(jsonLd.about, extras.about);
-  assert.deepEqual(jsonLd.mentions, extras.mentions);
-  assert.equal(
-    PREMIOS_CIMA_2026_META,
-    'SoyTechno y Playful Agency, ganadores de los Premios CIMA 2026 en la categoría Plataforma de E-commerce, en la 4.ª edición del certamen, celebrada en Caracas.',
-  );
-  assert.equal(PREMIOS_CIMA_2026_META.length, 158);
-  assert.equal(
-    PREMIOS_CIMA_2026_TITLE,
-    'Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful',
-  );
-  assert.notEqual(PREMIOS_CIMA_2026_TITLE, PREMIOS_CIMA_2026_H1);
-  const faq = blogFaqPageJsonLd(PREMIOS_CIMA_2026_SLUG);
-  assert.ok(faq);
-  assert.equal(faq['@type'], 'FAQPage');
-  assert.equal(faq.mainEntity.length, 1);
-  assert.equal(faq.mainEntity[0].name, PREMIOS_CIMA_2026_FAQS[0].question);
-  assert.equal(faq.mainEntity[0].acceptedAnswer.text, PREMIOS_CIMA_2026_FAQS[0].answer);
-  assert.match(blogPage, /\[PREMIOS_CIMA_2026_SLUG\]/);
-  assert.match(blogPage, /<time dateTime=\{articleDates\.datePublished\}/);
-  assert.match(expectedRoutes, /premios-cima-2026-soytechno-playful/);
-});
-
-test('CIMA is a Next local post, not a WordPress wp-json entry', () => {
-  const post = getStagingLocalBlogPost(PREMIOS_CIMA_2026_SLUG, {
-    VERCEL_ENV: 'production',
-    VERCEL_GIT_COMMIT_REF: 'main',
-  });
-  assert.ok(post);
-  assert.equal(post.id, 90002612);
+  assert.equal(blogArticleJsonLdExtras(slug).type, undefined);
+  assert.equal(blogFaqPageJsonLd(slug), null);
+  assert.doesNotMatch(blogPage, /isCima|PREMIOS_CIMA_2026_/);
+  assert.match(blogPage, /yoast_head_json/);
+  assert.match(expectedRoutes, /\/blog\/otros\/premios-cima-2026-soytechno-playful/);
+  assert.match(sitemapSource, /\/blog\/otros\/premios-cima-2026-soytechno-playful/);
   assert.match(wordpressSource, /const stagingLocal = getStagingLocalBlogPost\(slug\)/);
   assert.match(wordpressSource, /if \(stagingLocal\) return stagingLocal/);
   assert.doesNotMatch(wordpressSource, /premios-cima-2026-soytechno-playful/);

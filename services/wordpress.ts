@@ -515,6 +515,14 @@ export interface WPPost {
   meta?: { [key: string]: any };
   /** ACF REST object when a field group is assigned; WP currently returns `[]` on posts. */
   acf?: Record<string, unknown> | unknown[];
+  yoast_head_json?: {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: Array<{ url: string; width?: number; height?: number }>;
+  };
 }
 
 export type RelatedBlogCard = {

@@ -80,10 +80,6 @@ test('eShow production local post is merged into /blog listings', async () => {
     ESHOW_MADRID_2026_FEATURED_SRC,
     ESHOW_MADRID_2026_PATH,
     ESHOW_MADRID_2026_SLUG,
-    PREMIOS_CIMA_2026_SLUG,
-    PREMIOS_CIMA_2026_FEATURED_SRC,
-    PREMIOS_CIMA_2026_PORTADA_SRC,
-    PREMIOS_CIMA_2026_TROFEO_SRC,
     GOOGLE_MERCHANT_CENTER_SLUG,
     listProductionLocalBlogPosts,
     mergeProductionLocalBlogPosts,
@@ -101,12 +97,11 @@ test('eShow production local post is merged into /blog listings', async () => {
   const eshow = production.find((post) => post.slug === ESHOW_MADRID_2026_SLUG);
   assert.ok(eshow, 'eShow must be a production local listing post');
   assert.equal(eshow.featured_media_url, ESHOW_MADRID_2026_FEATURED_SRC);
-  const cima = production.find((post) => post.slug === PREMIOS_CIMA_2026_SLUG);
-  assert.ok(cima, 'CIMA must be a production local listing post');
-  assert.equal(cima.featured_media_url, PREMIOS_CIMA_2026_FEATURED_SRC);
-  assert.equal(cima.featured_media_url, PREMIOS_CIMA_2026_PORTADA_SRC);
-  assert.notEqual(cima.featured_media_url, PREMIOS_CIMA_2026_TROFEO_SRC);
-  assert.match(cima.excerpt.rendered, /SoyTechno: El eCommerce/);
+  assert.equal(
+    production.some((post) => post.slug === 'premios-cima-2026-soytechno-playful'),
+    false,
+    'CIMA is a WordPress post, not a production local listing post',
+  );
   assert.match(eshow.excerpt.rendered, new RegExp(ESHOW_MADRID_2026_EXCERPT.slice(0, 40)));
   assert.equal(
     production.some((post) => post.slug === GOOGLE_MERCHANT_CENTER_SLUG),
@@ -118,7 +113,7 @@ test('eShow production local post is merged into /blog listings', async () => {
     [{ slug: 'older-wp-post', date: '2020-01-01T00:00:00.000Z' }],
     { env: { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' } },
   );
-  assert.equal(merged[0].slug, PREMIOS_CIMA_2026_SLUG);
+  assert.equal(merged[0].slug, ESHOW_MADRID_2026_SLUG);
   const listing = paginateBlogPosts(merged, 1, 10);
   assert.equal(
     listing.posts.some((post) => post.slug === ESHOW_MADRID_2026_SLUG),
@@ -126,9 +121,9 @@ test('eShow production local post is merged into /blog listings', async () => {
     'eShow must appear on /blog page 1',
   );
   assert.equal(
-    listing.posts.some((post) => post.slug === PREMIOS_CIMA_2026_SLUG),
-    true,
-    'CIMA must appear on /blog page 1 when it is the newest post',
+    listing.posts.some((post) => post.slug === 'premios-cima-2026-soytechno-playful'),
+    false,
+    'CIMA must come from WordPress listings, not local merge',
   );
 
   const duplicate = mergeProductionLocalBlogPosts(
