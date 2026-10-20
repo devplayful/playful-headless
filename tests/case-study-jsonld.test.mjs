@@ -72,7 +72,8 @@ test('existing body CTAs point at /reunion-playful without touching header Cont√
   assert.match(casoCta, /SERVICE_BOOKING_HREF/);
   assert.doesNotMatch(casoCta, /href="\/contactar-agencia-de-marketing-digital"/);
   assert.match(home, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
-  assert.match(blogPost, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
+  assert.match(blogPost, /buttonLink=\{CONTACT_HREF\}/);
+  assert.doesNotMatch(blogPost, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(blogListing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(nosotros, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.match(nosotros, /id="playful-breadcrumb"/);
