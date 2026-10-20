@@ -1,0 +1,55 @@
+/* Editorial quotes for WP-rendered blog article bodies only.
+   Kill Tailwind prose curly quotes around copy that already uses «»;
+   keep the purple bar / italic quote / cite-with-em-dash look from PR #311. */
+.body :global(blockquote) {
+  margin: 1.75rem 0;
+  padding: 1.5rem 1.25rem 1.15rem 1.25rem;
+  border-left: 4px solid #440099;
+  background: #f5f3ff;
+  border-radius: 0 1rem 1rem 0;
+  quotes: none;
+}
+
+@media (min-width: 768px) {
+  .body :global(blockquote) {
+    padding: 2.35rem 1.5rem 1.25rem 1.5rem;
+  }
+}
+
+.body :global(blockquote::before),
+.body :global(blockquote::after),
+.body :global(blockquote p::before),
+.body :global(blockquote p::after) {
+  content: none;
+}
+
+.body :global(blockquote > p) {
+  font-size: clamp(1.125rem, 2.4vw, 1.35rem);
+  font-style: italic;
+  font-weight: 500;
+  color: #2a0064;
+  line-height: 1.45;
+}
+
+.body :global(blockquote p:has(cite)) {
+  margin-top: 0.85rem;
+  margin-bottom: 0;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+.body :global(blockquote cite) {
+  display: block;
+  font-size: 0.8125rem;
+  font-style: normal;
+  font-weight: 600;
+  color: #440099;
+  line-height: 1.4;
+}
+
+.body :global(blockquote cite::before) {
+  content: "— ";
+}

@@ -12,11 +12,7 @@ import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_LISTING_CARD_SIZES, BLOG_LISTING_HERO_SIZES } from '@/lib/blog-image-sizes';
 import { resolveBlogCoverAlt } from '@/lib/blog-cover-image';
-
-// Función para extraer el texto del excerpt (eliminar etiquetas HTML)
-const getExcerpt = (excerpt: string) => {
-  return excerpt.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...';
-};
+import { BLOG_LISTING_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 
 export default async function BlogListingView({
   currentPage,
@@ -172,7 +168,7 @@ export default async function BlogListingView({
                   </Link>
                   
                   <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                    {posts[0].excerpt?.rendered ? getExcerpt(posts[0].excerpt.rendered) : ''}
+                    {posts[0].excerpt?.rendered ? formatBlogExcerpt(posts[0].excerpt.rendered, BLOG_LISTING_EXCERPT_MAX) : ''}
                   </p>
                   
                   <Link 
@@ -259,7 +255,7 @@ export default async function BlogListingView({
                       
                       {/* Párrafo */}
                       <p className="text-sm text-gray-700 mb-4 flex-grow line-clamp-3 leading-relaxed">
-                        {post.excerpt?.rendered ? getExcerpt(post.excerpt.rendered) : ''}
+                        {post.excerpt?.rendered ? formatBlogExcerpt(post.excerpt.rendered, BLOG_LISTING_EXCERPT_MAX) : ''}
                       </p>
                       
                       {/* Fecha y botón */}

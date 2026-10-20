@@ -75,7 +75,17 @@ import {
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
+import articleBodyStyles from '../article-body.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
+
+const BLOG_ARTICLE_PROSE_CLASS = [
+  'prose prose-lg prose-quoteless max-w-none',
+  'prose-headings:text-[#2A0064] prose-headings:font-bold',
+  'prose-p:text-gray-700 prose-p:leading-relaxed',
+  'prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline',
+  'prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700',
+  articleBodyStyles.body,
+].join(' ');
 
 export const dynamicParams = false;
 export const revalidate = 600;
@@ -229,7 +239,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
   const excerptText = isEshow
     ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
-    : formatBlogHeroExcerpt(post.excerpt?.rendered);
+    : formatBlogHeroExcerpt(post.excerpt?.rendered, undefined, post.content?.rendered);
   const bylineName = articleAuthor.visibleByline;
   const authorHref = articleAuthor.href;
   const updatedByline = isEshow
@@ -274,7 +284,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="min-h-screen">
       {/* Header con título e imagen */}
       <header className="pt-4 pb-12">
-        <div className="mx-auto max-w-[1200px] px-4 md:px-6 bg-white rounded-[18px] p-[60px]">
+        <div className="mx-auto max-w-[1200px] px-4 md:px-6 bg-white rounded-[18px] p-5 md:p-[60px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Columna izquierda: Título y resumen */}
             <div>
@@ -464,19 +474,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
           
           {eshowBodyAfter == null ? (
-          <div 
-            className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
-            dangerouslySetInnerHTML={{ __html: contentWithIds }} 
+          <div
+            className={BLOG_ARTICLE_PROSE_CLASS}
+            dangerouslySetInnerHTML={{ __html: contentWithIds }}
           />
           ) : (
             <>
               <div
-                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                className={BLOG_ARTICLE_PROSE_CLASS}
                 dangerouslySetInnerHTML={{ __html: eshowBodyBefore }}
               />
               <EshowListaForm />
               <div
-                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                className={BLOG_ARTICLE_PROSE_CLASS}
                 dangerouslySetInnerHTML={{ __html: eshowBodyAfter }}
               />
             </>
