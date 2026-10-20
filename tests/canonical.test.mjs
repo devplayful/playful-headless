@@ -81,6 +81,9 @@ test('eShow production local post is merged into /blog listings', async () => {
     ESHOW_MADRID_2026_PATH,
     ESHOW_MADRID_2026_SLUG,
     PREMIOS_CIMA_2026_SLUG,
+    PREMIOS_CIMA_2026_FEATURED_SRC,
+    PREMIOS_CIMA_2026_PORTADA_SRC,
+    PREMIOS_CIMA_2026_TROFEO_SRC,
     GOOGLE_MERCHANT_CENTER_SLUG,
     listProductionLocalBlogPosts,
     mergeProductionLocalBlogPosts,
@@ -100,6 +103,9 @@ test('eShow production local post is merged into /blog listings', async () => {
   assert.equal(eshow.featured_media_url, ESHOW_MADRID_2026_FEATURED_SRC);
   const cima = production.find((post) => post.slug === PREMIOS_CIMA_2026_SLUG);
   assert.ok(cima, 'CIMA must be a production local listing post');
+  assert.equal(cima.featured_media_url, PREMIOS_CIMA_2026_FEATURED_SRC);
+  assert.equal(cima.featured_media_url, PREMIOS_CIMA_2026_PORTADA_SRC);
+  assert.notEqual(cima.featured_media_url, PREMIOS_CIMA_2026_TROFEO_SRC);
   assert.match(cima.excerpt.rendered, /SoyTechno: El eCommerce/);
   assert.match(eshow.excerpt.rendered, new RegExp(ESHOW_MADRID_2026_EXCERPT.slice(0, 40)));
   assert.equal(

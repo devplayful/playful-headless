@@ -52,6 +52,8 @@ const {
   PREMIOS_CIMA_2026_DATE_MODIFIED,
   PREMIOS_CIMA_2026_BODY_HTML,
   PREMIOS_CIMA_2026_FEATURED_SRC,
+  PREMIOS_CIMA_2026_FEATURED_ALT,
+  PREMIOS_CIMA_2026_PORTADA_SRC,
   PREMIOS_CIMA_2026_TROFEO_SRC,
   PREMIOS_CIMA_2026_ENTREGA_SRC,
   PREMIOS_CIMA_2026_SALON_SRC,
@@ -365,6 +367,13 @@ test('local CIMA post is gated and shaped like a WP otros press note', () => {
   assert.equal(post.author.name, 'Equipo editorial');
   assert.doesNotMatch(post.author.name, /de Playful Agency/);
   assert.equal(post.featured_media_url, PREMIOS_CIMA_2026_FEATURED_SRC);
+  assert.equal(PREMIOS_CIMA_2026_FEATURED_SRC, PREMIOS_CIMA_2026_PORTADA_SRC);
+  assert.notEqual(PREMIOS_CIMA_2026_FEATURED_SRC, PREMIOS_CIMA_2026_TROFEO_SRC);
+  assert.equal(
+    post.featured_media_alt,
+    PREMIOS_CIMA_2026_FEATURED_ALT,
+  );
+  assert.match(PREMIOS_CIMA_2026_FEATURED_ALT, /Ilustración de un trofeo/);
   assert.equal(post.date, PREMIOS_CIMA_2026_DATE_PUBLISHED);
   assert.equal(post.modified, PREMIOS_CIMA_2026_DATE_MODIFIED);
   assert.equal(post.title.rendered, PREMIOS_CIMA_2026_H1);
@@ -390,6 +399,7 @@ test('CIMA body is the signed press note: dateline, three figures, quotes and no
   assert.match(html, /hello@playfulagency\.com/);
   const images = [...html.matchAll(/<img ([^>]+)\/>/g)].map((match) => match[1]);
   assert.equal(images.length, 3);
+  assert.doesNotMatch(html, new RegExp(PREMIOS_CIMA_2026_PORTADA_SRC));
   assert.match(images[0], new RegExp(`src="${PREMIOS_CIMA_2026_TROFEO_SRC}"`));
   assert.match(images[0], new RegExp(`alt="${PREMIOS_CIMA_2026_TROFEO_ALT}"`));
   assert.match(images[1], new RegExp(`src="${PREMIOS_CIMA_2026_ENTREGA_SRC}"`));
