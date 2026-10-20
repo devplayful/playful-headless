@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const {
   FAQ_ITEMS,
@@ -187,6 +187,15 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
   assert.doesNotMatch(CTA.cta, /contactar|llena el formulario|¿Hablamos\?/i);
   assert.match(HERO.cta, /Agendar|Reservar/i);
   assert.match(CTA.cta, /Agendar|Reservar/i);
+});
+
+test('does not ship ShopifyDeferredCss (cached CSS must not stay on media=print)', () => {
+  const layoutPath = new URL('../app/agencia-shopify/layout.tsx', import.meta.url);
+  assert.equal(existsSync(layoutPath), false, 'route layout must not defer data-precedence=next stylesheets');
+  assert.equal(
+    existsSync(new URL('../components/ShopifyDeferredCss.tsx', import.meta.url)),
+    false,
+  );
 });
 
 test('/reunion-playful stays on the Next app for GA4 before the client redirect to GHL', () => {
