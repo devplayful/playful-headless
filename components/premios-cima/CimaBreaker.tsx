@@ -6,11 +6,10 @@ export const CIMA_ALT_PLAYFUL =
 export const CIMA_ALT_SOYTECHNO =
   'SoyTechno, cliente reconocido en los Premios CIMA 2026, categoría E-commerce';
 
-type Variant = 'home' | 'ecommerce' | 'shopify' | 'soytechno';
+type Variant = 'home' | 'shopify' | 'soytechno';
 
 const SIZES: Record<Variant, { d: [number, number]; m: [number, number]; alt: string }> = {
   home: { d: [1440, 600], m: [390, 700], alt: CIMA_ALT_PLAYFUL },
-  ecommerce: { d: [1440, 600], m: [390, 700], alt: CIMA_ALT_PLAYFUL },
   shopify: { d: [1440, 600], m: [390, 700], alt: CIMA_ALT_PLAYFUL },
   soytechno: { d: [1440, 620], m: [390, 640], alt: CIMA_ALT_SOYTECHNO },
 };
@@ -20,7 +19,7 @@ export default function CimaBreaker({ variant }: { variant: Variant }) {
   const s = SIZES[variant];
   const base = `/images/premios-cima/breaker-${variant}`;
   return (
-    <section aria-label="Premios CIMA 2026" data-cima-breaker={variant} className="w-full">
+    <section aria-label="Premios CIMA 2026" data-cima-breaker={variant} className={variant === 'soytechno' ? 'w-full overflow-hidden' : 'w-full'}>
       <a href={CIMA_URL} target="_blank" rel="noopener" className="block mx-auto max-w-[1440px]">
         <Image
           src={`${base}-desktop.png`}
@@ -36,7 +35,7 @@ export default function CimaBreaker({ variant }: { variant: Variant }) {
           height={s.m[1]}
           alt={s.alt}
           sizes="100vw"
-          className="block md:hidden w-full h-auto"
+          className={variant === 'soytechno' ? 'block md:hidden w-[390px] max-w-none h-auto mx-auto' : 'block md:hidden w-full h-auto'}
         />
       </a>
     </section>

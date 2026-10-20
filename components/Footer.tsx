@@ -157,7 +157,8 @@ export default function Footer() {
                   width={120}
                   height={150}
                   alt="Sello Premios CIMA 2026: Playful Agency, agencia reconocida"
-                  className="block w-[120px] h-[150px]"
+                  style={{ width: 120, height: 'auto' }}
+                  className="block"
                 />
               </a>
             </div>

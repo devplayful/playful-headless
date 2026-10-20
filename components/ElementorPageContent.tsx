@@ -65,9 +65,12 @@ const CIMA_ECOM_ALT =
 /** Separador Premios CIMA 2026 en /agencia-e-commerce (HTML de WP: <picture>, no next/image). */
 const CIMA_ECOM_BREAKER_HTML =
   '<a href="https://premioscima.com" target="_blank" rel="noopener" data-cima-breaker="ecommerce" '
-  + 'style="display:block;max-width:1440px;margin:0 auto 24px;background:#F7F7F7">'
-  + '<picture><source media="(min-width: 768px)" srcset="/images/premios-cima/breaker-ecommerce-desktop.png" width="1440" height="600">'
-  + `<img src="/images/premios-cima/breaker-ecommerce-mobile.png" width="390" height="700" loading="lazy" decoding="async" alt="${CIMA_ECOM_ALT}" style="display:block;width:100%;height:auto"></picture></a>`;
+  + 'style="display:block;width:100%;max-width:none;margin:0 0 24px;overflow:visible;transform:none">'
+  + '<picture style="display:block;overflow:visible">'
+  + '<source media="(min-width: 768px)" srcset="/images/premios-cima/breaker-ecommerce-card-desktop.png" width="1110" height="576">'
+  + `<img class="cima-ecom-img" src="/images/premios-cima/breaker-ecommerce-card-mobile.png" width="321" height="708" loading="lazy" decoding="async" alt="${CIMA_ECOM_ALT}" style="display:block;margin:0 auto;height:auto;transform:none"></picture></a>`
+  + '<style>[data-cima-breaker=ecommerce] .cima-ecom-img{width:321px!important;max-width:none!important}'
+  + '@media (min-width:768px){[data-cima-breaker=ecommerce] .cima-ecom-img{width:100%!important;max-width:1110px!important}}</style>';
 
 function restoreOldBodyCopy(html: string): string {
   let out = preserveMediaLineSeparators(html);
