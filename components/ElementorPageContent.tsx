@@ -13,6 +13,7 @@ import {
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
+import { injectCimaSealAgenciaEcommerce } from '@/utils/cima-seal-elementor-inject';
 
 const WP_HOST = 'https://endpoint.playfulagency.com';
 
@@ -58,7 +59,7 @@ function preserveMediaLineSeparators(html: string): string {
   });
 }
 
-function restoreOldBodyCopy(html: string): string {
+function restoreOldBodyCopy(html: string, slug = ''): string {
   let out = preserveMediaLineSeparators(html);
   out = out.replace(/\u2028|\u2029/g, '');
   // File on disk still has U+2028 in the name; clean URL 404s.
@@ -101,7 +102,7 @@ function restoreOldBodyCopy(html: string): string {
     '<h1 class="elementor-heading-title elementor-size-default">Agencia SEM: Potencia tu presencia con publicidad</h1>',
   );
 
-  return applyElementorAeoRewrites(out);
+  return injectCimaSealAgenciaEcommerce(applyElementorAeoRewrites(out), slug);
 }
 
 function firstHeroImageSrc(html: string, slug: string): string | null {
@@ -152,7 +153,7 @@ export default function ElementorPageContent({
     applyImageAltOverrides(
       rewriteElementorBodyHrefs(
         rewriteEcommerceZelleCover(
-          rewriteEcommerceShopifyLink(restoreOldBodyCopy(html), slug),
+          rewriteEcommerceShopifyLink(restoreOldBodyCopy(html, slug), slug),
           slug,
         ),
         slug,

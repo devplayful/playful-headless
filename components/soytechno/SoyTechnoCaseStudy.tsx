@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import CimaAwardSeal from '@/components/CimaAwardSeal'
 import type { ReactNode } from 'react'
 import styles from './SoyTechnoCaseStudy.module.css'
 import { resolveImageAlt } from '@/lib/image-alt-overrides'
@@ -287,6 +288,7 @@ export default function SoyTechnoCaseStudy() {
       </section>
 
       <section className={styles.resultsIntro}>
+        <CimaAwardSeal variant="soytechno" className="mb-8" />
         <h2>Resultados que cambiaron la categoría</h2>
         <p>{caseCopy.resultsIntro[0]}</p>
         <p>{caseCopy.resultsIntro[1]}</p>
