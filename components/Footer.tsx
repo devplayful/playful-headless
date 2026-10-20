@@ -7,12 +7,12 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Footer() {
   const pathname = usePathname();
+  const currentYear = new Date().getFullYear();
+  const { footerColor } = useTheme();
+
   if (pathname === '/links') {
     return null;
   }
-
-  const currentYear = new Date().getFullYear();
-  const { footerColor } = useTheme();
 
   return (
     <footer data-cta-section="footer" className={`playful-site-footer px-5`}>

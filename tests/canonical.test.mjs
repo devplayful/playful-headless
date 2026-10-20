@@ -85,6 +85,7 @@ test('eShow production local post is merged into /blog listings', async () => {
     ESHOW_MADRID_2026_FEATURED_SRC,
     ESHOW_MADRID_2026_PATH,
     ESHOW_MADRID_2026_SLUG,
+    PREMIOS_CIMA_2026_SLUG,
     GOOGLE_MERCHANT_CENTER_SLUG,
     listProductionLocalBlogPosts,
     mergeProductionLocalBlogPosts,
@@ -102,6 +103,9 @@ test('eShow production local post is merged into /blog listings', async () => {
   const eshow = production.find((post) => post.slug === ESHOW_MADRID_2026_SLUG);
   assert.ok(eshow, 'eShow must be a production local listing post');
   assert.equal(eshow.featured_media_url, ESHOW_MADRID_2026_FEATURED_SRC);
+  const cima = production.find((post) => post.slug === PREMIOS_CIMA_2026_SLUG);
+  assert.ok(cima, 'CIMA must be a production local listing post');
+  assert.match(cima.excerpt.rendered, /SoyTechno: El eCommerce/);
   assert.match(eshow.excerpt.rendered, new RegExp(ESHOW_MADRID_2026_EXCERPT.slice(0, 40)));
   assert.equal(
     production.some((post) => post.slug === GOOGLE_MERCHANT_CENTER_SLUG),
@@ -113,12 +117,17 @@ test('eShow production local post is merged into /blog listings', async () => {
     [{ slug: 'older-wp-post', date: '2020-01-01T00:00:00.000Z' }],
     { env: { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' } },
   );
-  assert.equal(merged[0].slug, ESHOW_MADRID_2026_SLUG);
+  assert.equal(merged[0].slug, PREMIOS_CIMA_2026_SLUG);
   const listing = paginateBlogPosts(merged, 1, 10);
   assert.equal(
     listing.posts.some((post) => post.slug === ESHOW_MADRID_2026_SLUG),
     true,
-    'eShow must appear on /blog page 1 when it is the newest post',
+    'eShow must appear on /blog page 1',
+  );
+  assert.equal(
+    listing.posts.some((post) => post.slug === PREMIOS_CIMA_2026_SLUG),
+    true,
+    'CIMA must appear on /blog page 1 when it is the newest post',
   );
 
   const duplicate = mergeProductionLocalBlogPosts(
@@ -130,7 +139,10 @@ test('eShow production local post is merged into /blog listings', async () => {
     { env: { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' } },
   );
   assert.equal(duplicate.filter((post) => post.slug === ESHOW_MADRID_2026_SLUG).length, 1);
-  assert.equal(duplicate[0].featured_media_url, '/from-wordpress.jpg');
+  assert.equal(
+    duplicate.find((post) => post.slug === ESHOW_MADRID_2026_SLUG).featured_media_url,
+    '/from-wordpress.jpg',
+  );
 
   const otros = mergeProductionLocalBlogPosts(
     [{ slug: 'otro-wp', date: '2020-01-01T00:00:00.000Z', categories: [{ slug: 'otros', id: 21 }] }],
@@ -187,5 +199,10 @@ test('/blog HTML lists the eShow Madrid 2026 article', async (t) => {
     html,
     /\/blog\/otros\/eshow-madrid-2026/,
     'eShow must appear in the /blog listing HTML',
+  );
+  assert.match(
+    html,
+    /\/blog\/otros\/premios-cima-2026-soytechno-playful/,
+    'CIMA must appear in the /blog listing HTML',
   );
 });

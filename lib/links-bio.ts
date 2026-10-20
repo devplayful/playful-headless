@@ -1,59 +1,52 @@
+import { CONTACT_HREF } from '../utils/booking.ts';
+
 /**
- * Instagram @somosplayful link-in-bio (/links). Edit `href` on the first entry
- * when rotating the weekly hero link (e.g. Cashea post from 21 Oct).
+ * Instagram link-in-bio (/links). Keep a single ordered array so Cashea
+ * can be inserted as the first item later without reshuffling the rest.
  */
 export type LinksBioEntry = {
-  /** Visible button text — must match the destination page title. */
   label: string;
-  /** Site path; may include an existing query string (preserved when adding UTMs). */
-  href: string;
+  path: string;
 };
 
+/** Square thumb fallback when the href is not a blog post or has no cover. */
+export const LINKS_BIO_FALLBACK_THUMB = '/images/logos/playful-logov.svg';
+
+/** Last segment of `/blog/{category}/{slug}` (and longer WP paths). */
+export function linksBioArticleSlug(path: string): string | null {
+  const pathname = (path.split('?')[0] || '').replace(/\/+$/, '');
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts.length < 3 || parts[0] !== 'blog') return null;
+  return parts[parts.length - 1] || null;
+}
+
+export const LINKS_BIO_UTM =
+  '?utm_source=instagram&utm_medium=social&utm_campaign=bio';
+
 export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
+  // Cashea: add first when that campaign is ready.
   {
-    label: 'Zelle en Venezuela: cobra en tu tienda online | Playful',
-    href: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    label: 'Cómo integrar Zelle en tu tienda',
+    path: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   },
   {
-    label: 'Llamada diagnóstica',
-    href: '/reunion-playful',
+    label: 'Casos de éxito',
+    path: '/casos-de-exito',
   },
   {
-    label: 'Agencia Shopify para marcas que ya venden | Playful Agency',
-    href: '/agencia-shopify',
+    label: 'Agencia e-commerce',
+    path: '/agencia-e-commerce',
   },
   {
-    label: 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela',
-    href: '/casos-de-exito/soytechno-ecommerce-venezuela',
+    label: 'Agencia Shopify',
+    path: '/agencia-shopify',
   },
   {
-    label: 'Playful Agency | Hacemos tu Tienda Online o E-commerce',
-    href: '/',
+    label: 'Contacto',
+    path: CONTACT_HREF,
   },
 ];
 
-const UTM_SOURCE = 'instagram';
-const UTM_MEDIUM = 'social';
-const UTM_CONTENT = 'bio';
-
-/** Last path segment for campaign; home uses `home`. */
-export function utmCampaignForHref(href: string): string {
-  const pathOnly = href.split('?')[0]?.replace(/\/$/, '') ?? '';
-  if (!pathOnly || pathOnly === '/') return 'home';
-  const segments = pathOnly.split('/').filter(Boolean);
-  return segments[segments.length - 1] ?? 'home';
-}
-
-/** Append Instagram bio UTMs without dropping an existing query on `href`. */
-export function buildLinksBioHref(href: string): string {
-  const question = href.indexOf('?');
-  const path = question === -1 ? href : href.slice(0, question);
-  const existing = question === -1 ? '' : href.slice(question + 1);
-  const params = new URLSearchParams(existing);
-  params.set('utm_source', UTM_SOURCE);
-  params.set('utm_medium', UTM_MEDIUM);
-  params.set('utm_campaign', utmCampaignForHref(path));
-  params.set('utm_content', UTM_CONTENT);
-  const query = params.toString();
-  return query ? `${path}?${query}` : path;
+export function buildLinksBioHref(path: string): string {
+  return `${path}${LINKS_BIO_UTM}`;
 }

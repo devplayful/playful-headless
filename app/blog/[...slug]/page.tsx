@@ -65,6 +65,11 @@ import {
   ESHOW_MADRID_2026_FAN_IMAGE_WIDTH,
   ESHOW_MADRID_2026_SLUG,
   ESHOW_MADRID_2026_TITLE,
+  PREMIOS_CIMA_2026_EXCERPT,
+  PREMIOS_CIMA_2026_H1,
+  PREMIOS_CIMA_2026_META,
+  PREMIOS_CIMA_2026_SLUG,
+  PREMIOS_CIMA_2026_TITLE,
   GOOGLE_MERCHANT_CENTER_H1,
   GOOGLE_MERCHANT_CENTER_META,
   GOOGLE_MERCHANT_CENTER_SLUG,
@@ -229,7 +234,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
   const excerptText = isEshow
     ? formatBlogHeroExcerpt(`<p>${ESHOW_MADRID_2026_EXCERPT}</p>`)
-    : formatBlogHeroExcerpt(post.excerpt?.rendered);
+    : postSlug === PREMIOS_CIMA_2026_SLUG
+      ? formatBlogHeroExcerpt(`<p>${PREMIOS_CIMA_2026_EXCERPT}</p>`, 400)
+      : formatBlogHeroExcerpt(post.excerpt?.rendered);
   const bylineName = articleAuthor.visibleByline;
   const authorHref = articleAuthor.href;
   const updatedByline = isEshow
@@ -581,6 +588,11 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     title: ESHOW_MADRID_2026_TITLE,
     description: ESHOW_MADRID_2026_META,
     h1: ESHOW_MADRID_2026_H1,
+  },
+  [PREMIOS_CIMA_2026_SLUG]: {
+    title: PREMIOS_CIMA_2026_TITLE,
+    description: PREMIOS_CIMA_2026_META,
+    h1: PREMIOS_CIMA_2026_H1,
   },
   [GOOGLE_MERCHANT_CENTER_SLUG]: {
     title: GOOGLE_MERCHANT_CENTER_TITLE,
