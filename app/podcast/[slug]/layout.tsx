@@ -11,6 +11,8 @@ export async function generateMetadata({
   return {
     alternates: { canonical: url },
     openGraph: { url },
+    // Hub layout is noindex; published episodes are live WP content and must be indexable.
+    robots: { index: true, follow: true },
   };
 }
 

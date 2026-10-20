@@ -37,6 +37,31 @@ export const SITEMAP_STATIC_PATHS = [
   "/llms-full.txt",
 ] as const;
 
+/**
+ * Published WP `podcast` CPT episodes that already 200 on apex.
+ * Hub `/podcast` stays out: it is noindex,follow (listing, not a dest).
+ */
+export const SITEMAP_PODCAST_PATHS = [
+  "/podcast/comenzando-de-cero-es-necesaria-una-pagina-web",
+  "/podcast/costumer-relationship-managenment-que-es-por-que-lo-necesito",
+  "/podcast/el-meollo-del-asunto-que-es-el-seo",
+  "/podcast/el-punto-clave-las-keywords",
+  "/podcast/episodio-1-trafico-organico-vs-trafico-pago",
+  "/podcast/episodio-2-el-metaverso-que-es-cuales-son-sus-caracteristicas",
+  "/podcast/episodio-4-accesibilidad-web-haces-un-sitio-web-para-todos",
+  "/podcast/episodio-5-inteligencia-artificial-y-seo-optimizamos-a-otro-nivel",
+  "/podcast/episodio-6-plan-de-contenidos-que-es-por-que-te-hace-vender-mas",
+  "/podcast/episodio-7-transformacion-digital-aplicala-a-tu-empresa",
+  "/podcast/episodio-8-seo-para-e-commerce",
+  "/podcast/es-hora-de-revisar-es-momento-de-una-auditoria",
+  "/podcast/la-respuesta-a-la-famosa-pregunta-que-funciona",
+  "/podcast/llegamos-al-final-nos-toca-medir",
+  "/podcast/lo-que-hacemos-impacta-diseno-ux-en-el-seo",
+  "/podcast/lo-que-ven-tus-usuarios-tu-pagina-es-linda-o-funcional",
+  "/podcast/sin-miedo-a-nada-nos-toca-optimizar-la-pagina-web",
+  "/podcast/tocando-fibras-paginas-web-vs-redes-sociales",
+] as const;
+
 export const SITEMAP_BLOG_PATHS = [
   "/blog/email-marketing/5-plataformas-para-email-marketing-efectivo",
   "/blog/email-marketing/aprende-como-hacer-un-estrategia-digital-de-email-marketing",
@@ -177,6 +202,7 @@ export const SITEMAP_BLOG_PATHS = [
 export function getSitemapPaths(): string[] {
   return [
     ...SITEMAP_STATIC_PATHS,
+    ...SITEMAP_PODCAST_PATHS,
     ...SITEMAP_BLOG_PATHS.filter((path) => (
       !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
     )),
