@@ -6,6 +6,7 @@ import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
 import seoServiceRedirects from './utils/seo-service-redirect-map.json';
+import unpublishedLandingRedirects from './utils/unpublished-landing-redirect-map.json';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -68,6 +69,7 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
   '/blog/mas-vistos/como-elegir-un-buen-framework':
     '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
   ...seoServiceRedirects,
+  ...unpublishedLandingRedirects,
   ...canibalizacionOrigins,
 }, categoryRedirects);
 
