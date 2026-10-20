@@ -75,7 +75,17 @@ import {
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
+import articleBodyStyles from '../article-body.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
+
+const BLOG_ARTICLE_PROSE_CLASS = [
+  'prose prose-lg prose-quoteless max-w-none',
+  'prose-headings:text-[#2A0064] prose-headings:font-bold',
+  'prose-p:text-gray-700 prose-p:leading-relaxed',
+  'prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline',
+  'prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700',
+  articleBodyStyles.body,
+].join(' ');
 
 export const dynamicParams = false;
 export const revalidate = 600;
@@ -464,19 +474,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
           
           {eshowBodyAfter == null ? (
-          <div 
-            className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
-            dangerouslySetInnerHTML={{ __html: contentWithIds }} 
+          <div
+            className={BLOG_ARTICLE_PROSE_CLASS}
+            dangerouslySetInnerHTML={{ __html: contentWithIds }}
           />
           ) : (
             <>
               <div
-                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                className={BLOG_ARTICLE_PROSE_CLASS}
                 dangerouslySetInnerHTML={{ __html: eshowBodyBefore }}
               />
               <EshowListaForm />
               <div
-                className="prose prose-lg max-w-none prose-headings:text-[#2A0064] prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
+                className={BLOG_ARTICLE_PROSE_CLASS}
                 dangerouslySetInnerHTML={{ __html: eshowBodyAfter }}
               />
             </>
