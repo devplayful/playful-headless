@@ -5,7 +5,9 @@ import { mergePublicCaseStudies } from '@/lib/public-case-studies';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
 import { remapCanibalizacionHref } from '@/utils/blog-canibalizacion-redirects';
+import { rewriteAgenciaDisenoUxUiLink } from '@/utils/agencia-diseno-ux-ui-link';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
+import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import {
@@ -410,7 +412,16 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const html = applyImageAltOverrides(
     rewriteElementorBodyHrefs(
       rewriteEcommerceZelleCover(
-        rewriteEcommerceShopifyLink(rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`), slug),
+        rewriteEcommerceSoytechnoCaseLink(
+          rewriteEcommerceShopifyLink(
+            rewriteAgenciaDisenoUxUiLink(
+              rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+              slug,
+            ),
+            slug,
+          ),
+          slug,
+        ),
         slug,
       ),
       slug,

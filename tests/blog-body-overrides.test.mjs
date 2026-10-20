@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 const {
   ZELLE_VE_BLOG_SLUG,
   ZELLE_VE_BLOG_BODY_HTML,
+  ZELLE_FROZEN_HEADING_IDS,
   MIGRACION_SEO_ALT_BLOG_BODY_HTML,
   blogBodyForSlug,
 } = await import('../lib/blog-body-overrides.ts');
@@ -33,6 +34,13 @@ test('Zelle rewrite keeps the signed opening and aviso, drops the live WP lead',
   assert.match(html, /Si ya recibes pagos por Zelle/);
   assert.match(html, /<blockquote>[\s\S]*<strong>Aviso importante:<\/strong>/);
   assert.doesNotMatch(html, /Para nadie es un secreto que Zelle/);
+});
+
+test('Zelle heading ids stay frozen for GSC fragment URLs', () => {
+  const ids = [
+    ...ZELLE_VE_BLOG_BODY_HTML.matchAll(/<h[23] id="([^"]+)">/g),
+  ].map((match) => match[1]);
+  assert.deepEqual(ids, [...ZELLE_FROZEN_HEADING_IDS]);
 });
 
 test('Zelle rewrite headings have ids for TOC and preserve in-site links', () => {

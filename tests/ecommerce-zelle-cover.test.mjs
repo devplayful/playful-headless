@@ -86,8 +86,6 @@ test('getPageBySlug and Elementor compose the Zelle cover rewriter', () => {
   assert.match(wordpress, /rewriteEcommerceZelleCover\(/);
   assert.match(wordpress, /rewriteEcommerceShopifyLink\(/);
   assert.match(elementor, /rewriteEcommerceZelleCover\(/);
-  assert.match(
-    elementor,
-    /rewriteEcommerceZelleCover\(\s*rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\),\s*slug,?\s*\)/,
-  );
+  assert.match(elementor, /rewriteEcommerceSoytechnoCaseLink\(/);
+  assert.match(elementor, /rewriteAgenciaDisenoUxUiLink\(/);
 });

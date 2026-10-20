@@ -164,7 +164,10 @@ test('getPageBySlug and ElementorPageContent use the composed body rewriter', ()
   assert.match(body, /rewriteElementorBodyHrefs\(/);
   assert.match(body, /rewriteEcommerceShopifyLink\(/);
   assert.match(elementor, /rewriteElementorBodyHrefs\(/);
-  assert.match(elementor, /rewriteEcommerceShopifyLink\(restoreOldBodyCopy\(html\), slug\)/);
+  assert.match(
+    elementor,
+    /rewriteEcommerceShopifyLink\(\s*rewriteAgenciaDisenoUxUiLink\(restoreOldBodyCopy\(html\), slug\),/,
+  );
   assert.match(slugPage, /slug=\{slug\}/);
   assert.match(booking, /export function rewriteAboutHrefs/);
   assert.match(booking, /export function rewriteElementorBodyHrefs/);

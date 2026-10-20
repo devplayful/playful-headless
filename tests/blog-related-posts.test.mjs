@@ -583,7 +583,7 @@ test('same-category related cards give the 6 audit orphans an inbound sibling', 
     });
   });
   const index = { fetchedAt: 1, terms, posts };
-  assert.equal(BLOG_INBOUND_COVERAGE_PATHS.length, 6);
+  assert.equal(BLOG_INBOUND_COVERAGE_PATHS.length, 10);
   for (const href of BLOG_INBOUND_COVERAGE_PATHS) {
     const hosts = relatedInboundSources(index, href);
     assert.ok(hosts.length > 0, `${href} needs a related-card inbound`);

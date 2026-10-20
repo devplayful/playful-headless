@@ -64,10 +64,10 @@ test('llms routes return text/plain without noindex', () => {
   assert.match(fullRoute, /LLMS_PLAIN_HEADERS/);
   assert.doesNotMatch(shortRoute, /noindex|X-Robots-Tag/);
   assert.doesNotMatch(fullRoute, /noindex|X-Robots-Tag/);
-  assert.ok(SITEMAP_STATIC_PATHS.includes('/llms.txt'));
-  assert.ok(SITEMAP_STATIC_PATHS.includes('/llms-full.txt'));
-  assert.ok(getSitemapLocs().includes('https://playfulagency.com/llms.txt'));
-  assert.ok(getSitemapLocs().includes('https://playfulagency.com/llms-full.txt'));
+  assert.equal(SITEMAP_STATIC_PATHS.includes('/llms.txt'), false);
+  assert.equal(SITEMAP_STATIC_PATHS.includes('/llms-full.txt'), false);
+  assert.equal(getSitemapLocs().includes('https://playfulagency.com/llms.txt'), false);
+  assert.equal(getSitemapLocs().includes('https://playfulagency.com/llms-full.txt'), false);
 });
 
 test('robots.txt allows the six AI crawlers and adds no new Disallow', () => {

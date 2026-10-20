@@ -494,10 +494,14 @@ function belongsToCategorySlug(
  * Same-category related cards on sibling articles are the inbound source.
  */
 export const BLOG_INBOUND_COVERAGE_PATHS = [
+  '/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias',
+  '/blog/pautas-digitales/conoce-como-impulsar-tu-marca-online',
   '/blog/pautas-digitales/conoce-los-tipos-de-marketing',
+  '/blog/pautas-digitales/el-sms-marketing',
   '/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti',
   '/blog/pautas-digitales/tiktok-ads-ahora-puedes-hacer-publicidad-en-tiktok',
   '/blog/pautas-digitales/tipos-de-publicidad-online-conceptos-y-datos-curiosos',
+  '/blog/seo/aprende-todo-sobre-el-seo',
   '/blog/seo/blog-corporativo-aumenta-el-trafico-de-tu-sitio-web',
   '/blog/seo/posicionamiento-organico-vs-pago',
 ] as const;
