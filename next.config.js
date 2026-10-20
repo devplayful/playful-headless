@@ -2,6 +2,10 @@ const {
   getBlogCategoryRedirects,
   persistBlogCategoryRedirectMap,
 } = require('./lib/blog-category-redirects');
+const {
+  getBlogSitemapLastmodMap,
+  persistBlogSitemapLastmodMap,
+} = require('./lib/blog-sitemap-lastmod');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -81,6 +85,7 @@ const nextConfig = {
     const rules = await getBlogCategoryRedirects();
     if (!process.env.NODE_TEST_CONTEXT) {
       persistBlogCategoryRedirectMap(rules);
+      persistBlogSitemapLastmodMap(await getBlogSitemapLastmodMap());
     }
     return [];
   },

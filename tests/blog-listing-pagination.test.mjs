@@ -9,6 +9,10 @@ const listingPage = readFileSync(
   new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
   'utf8',
 );
+const crawlNav = readFileSync(
+  new URL('../app/blog/BlogListingCrawlNav.tsx', import.meta.url),
+  'utf8',
+);
 const listingIndex = readFileSync(
   new URL('../app/blog/page.tsx', import.meta.url),
   'utf8',
@@ -65,12 +69,19 @@ test('blogListingPath keeps page>1 and category only for client navigation', () 
   assert.equal(blogListingPath({ page: 1, category: 'seo' }), '/blog?category=seo');
 });
 
-test('/blog listing does not emit crawlable hrefs with page= or category=', () => {
+test('/blog listing keeps visible UI free of crawlable page= or category= hrefs', () => {
   assert.match(listingPage, /<BlogListingPagination/);
+  assert.match(listingPage, /<BlogListingCrawlNav/);
   assert.doesNotMatch(listingPage, CRAWLABLE_QUERY_HREF);
   assert.doesNotMatch(listingPage, /href=\{`\/blog\?page=/);
   assert.doesNotMatch(listingPage, /href=\{`\/blog\?category=/);
   assert.doesNotMatch(listingPage, /href=["'`]\/blog\?page=/);
+});
+
+test('sr-only crawl nav exposes pagination anchors for crawlers', () => {
+  assert.match(crawlNav, /className="sr-only"/);
+  assert.match(crawlNav, /blogListingPath\(\{ page,/);
+  assert.match(crawlNav, /from ['"]next\/link['"]/);
 });
 
 test('pagination component navigates with buttons, not indexable hrefs', () => {
