@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   COLLECT_PAGE_PATH_TTL_MS,
+  isUrlLikeGa4EventName,
   queueCollectPagePath,
   resetGtagCollectPagePathForTests,
   rewriteCollectUrlForPagePath,
   sendGtagEvent,
+  URL_LIKE_GA4_EVENT_FALLBACK,
 } from '../lib/analytics/gtag-event.ts';
 import { PLAYFUL_QA_UA } from '../lib/analytics/qa-traffic.ts';
 
@@ -13,6 +15,21 @@ const COLLECT_CHAT =
   'https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&dp=%2F&en=chat_open&_ee=1';
 const COLLECT_PAGE_VIEW =
   'https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&dp=%2F&en=page_view';
+
+test('rewrites URL-like GA4 event names to page_view with ep.page_url', () => {
+  resetGtagCollectPagePathForTests();
+  const bad =
+    'https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&en=https%3A%2F%2Fplayfulagency.com%2Fagencia-shopify';
+  const rewritten = rewriteCollectUrlForPagePath(bad);
+  const parsed = new URL(rewritten);
+  assert.equal(parsed.searchParams.get('en'), URL_LIKE_GA4_EVENT_FALLBACK);
+  assert.equal(
+    parsed.searchParams.get('ep.page_url'),
+    'https://playfulagency.com/agencia-shopify',
+  );
+  assert.equal(isUrlLikeGa4EventName('https://playful-headless-abc.vercel.app/agencia-seo'), true);
+  assert.equal(isUrlLikeGa4EventName('cta_reunion_click'), false);
+});
 
 test('rewrites the matching collect hit with ep.page_path', () => {
   resetGtagCollectPagePathForTests();

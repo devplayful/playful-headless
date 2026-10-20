@@ -66,14 +66,10 @@ await expectRedirect(
 
 {
   const reunion = await request('/reunion-playful?utm_source=seo-smoke');
-  assert.equal(reunion.status, 302, '/reunion-playful should return 302');
-  const location = reunion.headers.get('location');
-  assert.ok(location, '/reunion-playful should include a Location header');
-  const target = new URL(location);
-  assert.equal(target.origin, 'https://api.playfulagency.com');
-  assert.equal(target.pathname, '/widget/bookings/reunion-playful');
-  assert.equal(target.searchParams.get('utm_source'), 'seo-smoke');
-  assert.equal(target.searchParams.get('qa'), '1');
+  assert.equal(reunion.status, 200, '/reunion-playful should return 200 HTML for GA4');
+  const reunionHtml = await reunion.text();
+  assert.match(reunionHtml, /ReunionPlayfulRedirect|Redirigiendo al calendario/);
+  assert.doesNotMatch(reunionHtml, /widget\/bookings\/reunion-playful/);
 }
 await expectRedirect(
   '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke&utm_medium=organic&utm_campaign=canonical-alias&utm_content=one&utm_content=two',

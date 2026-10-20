@@ -6,6 +6,7 @@ import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
 import seoServiceRedirects from './utils/seo-service-redirect-map.json';
+import unpublishedLandingRedirects from './utils/unpublished-landing-redirect-map.json';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -15,7 +16,6 @@ import {
   serializeAttributionCookie,
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
-import { resolveBookingWidgetRedirect } from './utils/booking-attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
@@ -68,6 +68,7 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
   '/blog/mas-vistos/como-elegir-un-buen-framework':
     '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
   ...seoServiceRedirects,
+  ...unpublishedLandingRedirects,
   ...canibalizacionOrigins,
 }, categoryRedirects);
 
@@ -89,18 +90,6 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, new NextResponse('Gone', {
       status: 410,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    }));
-  }
-
-  if (path === '/reunion-playful') {
-    const { location, status } = resolveBookingWidgetRedirect({
-      search: request.nextUrl.search,
-      lastCookie: request.cookies.get(ATTRIBUTION_COOKIE_LAST)?.value,
-      firstCookie: request.cookies.get(ATTRIBUTION_COOKIE_FIRST)?.value,
-    });
-    return attachAttributionCookies(request, NextResponse.redirect(location, {
-      status,
-      headers: { 'Cache-Control': 'private, no-store' },
     }));
   }
 

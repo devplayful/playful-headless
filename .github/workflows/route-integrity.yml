@@ -30,7 +30,7 @@ jobs:
       - name: Run blog cannibalization redirect tests
         run: node --experimental-strip-types --test tests/blog-canibalizacion-redirects.test.mjs
       - name: Run closed SEO service 301 and href tests
-        run: node --experimental-strip-types --test tests/seo-service-redirects.test.mjs tests/seo-closed-hrefs.test.mjs
+        run: node --experimental-strip-types --test tests/seo-service-redirects.test.mjs tests/unpublished-landing-redirects.test.mjs tests/seo-closed-hrefs.test.mjs
       - name: Run blog related-posts tests
         run: node --experimental-strip-types --test tests/blog-related-posts.test.mjs
       - name: Run blog article quote styles tests

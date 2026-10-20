@@ -21,6 +21,10 @@ export const GTAG_EP_PAGE_PATH_KEY = '_&ep.page_path';
 // gtag often holds the hit 3–8s (`_et`, batching). 2.5s expired before collect.
 export const COLLECT_PAGE_PATH_TTL_MS = 20_000;
 
+/** GA4 event name when a tag (often GTM) mistakenly sends a full URL as `en`. */
+export const URL_LIKE_GA4_EVENT_FALLBACK = 'page_view';
+export const URL_LIKE_GA4_EVENT_PARAM = 'page_url';
+
 type PendingPagePath = {
   eventName: string;
   pagePath: string;
@@ -51,6 +55,23 @@ function prunePending(now = Date.now()): PendingPagePath[] {
   return pendingPagePaths;
 }
 
+export function isUrlLikeGa4EventName(eventName: string): boolean {
+  const en = (eventName || '').trim();
+  if (!en) return false;
+  if (/^https?:\/\//i.test(en)) return true;
+  if (en.includes('playfulagency.com') || en.includes('vercel.app')) return true;
+  return false;
+}
+
+export function rewriteUrlLikeGa4EventName(parsed: URL): void {
+  const en = parsed.searchParams.get('en') || '';
+  if (!isUrlLikeGa4EventName(en)) return;
+  if (!parsed.searchParams.has(`ep.${URL_LIKE_GA4_EVENT_PARAM}`)) {
+    parsed.searchParams.set(`ep.${URL_LIKE_GA4_EVENT_PARAM}`, en);
+  }
+  parsed.searchParams.set('en', URL_LIKE_GA4_EVENT_FALLBACK);
+}
+
 export function rewriteCollectUrlForPagePath(url: string, now = Date.now()): string {
   if (!url || !url.includes('/g/collect')) return url;
   let parsed: URL;
@@ -59,10 +80,13 @@ export function rewriteCollectUrlForPagePath(url: string, now = Date.now()): str
   } catch {
     return url;
   }
-  if (parsed.searchParams.has('ep.page_path')) return url;
+  rewriteUrlLikeGa4EventName(parsed);
+  if (parsed.searchParams.has('ep.page_path')) {
+    return parsed.href;
+  }
   const en = parsed.searchParams.get('en') || '';
   const match = prunePending(now).find((item) => item.eventName === en);
-  if (!match) return url;
+  if (!match) return parsed.href;
   parsed.searchParams.set('ep.page_path', match.pagePath);
   return parsed.href;
 }
