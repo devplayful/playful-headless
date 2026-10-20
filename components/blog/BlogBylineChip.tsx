@@ -17,7 +17,7 @@ type BlogBylineChipProps = {
   avatarPriority?: boolean;
 };
 
-/** Author pill: purple chip, 24px avatar, name and date each stay on one phrase. */
+/** Author pill: purple chip, 24px avatar, name row then date row on small screens. */
 export function BlogBylineChip({
   name,
   href,
@@ -40,7 +40,7 @@ export function BlogBylineChip({
       height={24}
       sizes="24px"
       priority={avatarPriority}
-      unoptimized={src.endsWith('.svg')}
+      unoptimized
       onError={() => {
         if (src !== fallbackSrc) {
           setSrc(fallbackSrc);
@@ -58,20 +58,20 @@ export function BlogBylineChip({
       className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-white hover:underline"
     >
       {avatar}
-      <span className="text-sm font-medium">{name}</span>
+      <span className="text-xs font-medium sm:text-sm">{name}</span>
     </a>
   ) : (
     <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap">
       {avatar}
-      <span className="text-sm font-medium">{name}</span>
+      <span className="text-xs font-medium sm:text-sm">{name}</span>
     </span>
   );
 
   return (
-    <div className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full bg-[#440099] px-4 py-2 text-white">
+    <div className="inline-flex max-w-full flex-col items-start gap-y-1 rounded-full bg-[#440099] px-3 py-2 text-white sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2 sm:px-4">
       {author}
       {updatedLabel ? (
-        <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-medium">
+        <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-xs font-medium sm:text-sm">
           <span className="text-white/70" aria-hidden="true">
             ·
           </span>
