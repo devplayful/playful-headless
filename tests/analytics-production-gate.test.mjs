@@ -66,8 +66,12 @@ test('layout and tag components stay server-gated so production HTML is unchange
   assert.match(ga, /googletagmanager\.com\/gtag\/js/);
   assert.match(ga, /strategy="afterInteractive"/);
   assert.doesNotMatch(ga, /function gtag\(\)/);
+  assert.match(ga, /qa=1/);
+  assert.match(ga, /PlayfulQA/);
   assert.match(gtm, /googletagmanager\.com\/gtm\.js/);
   assert.match(gtm, /strategy="afterInteractive"/);
+  assert.match(gtm, /qa=1/);
+  assert.match(gtm, /PlayfulQA/);
   assert.doesNotMatch(gtm, /lazyOnload/);
   assert.match(meta, /strategy="afterInteractive"/);
   assert.doesNotMatch(meta, /lazyOnload/);

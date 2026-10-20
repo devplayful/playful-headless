@@ -5,6 +5,14 @@ import {
   analyzeBlogPostHtml,
   analyzeCaseStudyHtml,
 } from './blog-post-ssr-html.mjs';
+import {
+  PLAYFUL_QA_UA,
+  liveFetch,
+  paceLiveQa,
+  stripQaHref,
+  stripQaSearch,
+  withQaPathname,
+} from '../lib/qa/live-fetch.mjs';
 
 const baseUrl = process.env.SEO_BASE_URL;
 
@@ -15,9 +23,15 @@ if (!baseUrl) {
 const origin = new URL(baseUrl).origin;
 
 async function request(pathname, options = {}) {
-  return fetch(new URL(pathname, origin), {
+  await paceLiveQa();
+  const { headers: extraHeaders, ...rest } = options;
+  return fetch(new URL(withQaPathname(pathname), origin), {
     redirect: 'manual',
-    ...options,
+    ...rest,
+    headers: {
+      'user-agent': PLAYFUL_QA_UA,
+      ...(extraHeaders || {}),
+    },
   });
 }
 
@@ -29,7 +43,12 @@ async function expectRedirect(pathname, expectedPathname, status, { preserveQuer
   const target = new URL(location, origin);
   assert.equal(target.pathname, expectedPathname);
   if (preserveQuery) {
-    assert.equal(target.search, new URL(pathname, origin).search, 'redirect must preserve query parameters');
+    assert.equal(
+      stripQaSearch(target.search),
+      stripQaSearch(new URL(pathname, origin).search),
+      'redirect must preserve query parameters',
+    );
+    assert.equal(target.searchParams.get('qa'), '1');
   }
   return target;
 }
@@ -53,7 +72,8 @@ await expectRedirect(
   const target = new URL(location);
   assert.equal(target.origin, 'https://api.playfulagency.com');
   assert.equal(target.pathname, '/widget/bookings/reunion-playful');
-  assert.equal(target.search, '?utm_source=seo-smoke');
+  assert.equal(target.searchParams.get('utm_source'), 'seo-smoke');
+  assert.equal(target.searchParams.get('qa'), '1');
 }
 await expectRedirect(
   '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke&utm_medium=organic&utm_campaign=canonical-alias&utm_content=one&utm_content=two',
@@ -67,7 +87,8 @@ await expectRedirect(
     308,
     { preserveQuery: false },
   );
-  assert.equal(oneHop.search, '');
+  assert.equal(stripQaSearch(oneHop.search), '');
+  assert.equal(oneHop.searchParams.get('qa'), '1');
 }
 {
   const oneHop = await expectRedirect(
@@ -78,6 +99,7 @@ await expectRedirect(
   );
   assert.equal(oneHop.searchParams.get('utm_source'), 'seo-smoke');
   assert.equal(oneHop.searchParams.has('noamp'), false);
+  assert.equal(oneHop.searchParams.get('qa'), '1');
 }
 
 const closedPath = '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical';
@@ -95,19 +117,22 @@ const canonicalPath = '/blog/mas-vistos/ecosistema-digital-de-tu-marca';
   const stripped = await expectRedirect(`${canonicalPath}?amp=1`, canonicalPath, 301, {
     preserveQuery: false,
   });
-  assert.equal(stripped.search, '');
+  assert.equal(stripQaSearch(stripped.search), '');
+  assert.equal(stripped.searchParams.get('qa'), '1');
 }
 {
   const stripped = await expectRedirect('/blog?noamp=mobile', '/blog', 301, {
     preserveQuery: false,
   });
-  assert.equal(stripped.search, '');
+  assert.equal(stripQaSearch(stripped.search), '');
+  assert.equal(stripped.searchParams.get('qa'), '1');
 }
 {
   const stripped = await expectRedirect(`${canonicalPath}?noamp=mobile`, canonicalPath, 301, {
     preserveQuery: false,
   });
-  assert.equal(stripped.search, '');
+  assert.equal(stripQaSearch(stripped.search), '');
+  assert.equal(stripped.searchParams.get('qa'), '1');
 }
 {
   const stripped = await expectRedirect(
@@ -118,6 +143,7 @@ const canonicalPath = '/blog/mas-vistos/ecosistema-digital-de-tu-marca';
   );
   assert.equal(stripped.searchParams.get('utm_source'), 'x');
   assert.equal(stripped.searchParams.has('noamp'), false);
+  assert.equal(stripped.searchParams.get('qa'), '1');
 }
 const canonicalResponse = await request(`${canonicalPath}?amp=1`, { redirect: 'follow' });
 assert.equal(canonicalResponse.status, 200);
@@ -348,9 +374,13 @@ for (const [source, dest] of gsc301) {
   for (const pathname of [source, `${source}/`]) {
     const response = await request(pathname);
     assert.equal(response.status, 301, `${pathname} should return 301`);
-    assert.equal(response.headers.get('location'), dest, `${pathname} Location`);
+    assert.equal(
+      stripQaHref(response.headers.get('location'), origin),
+      dest,
+      `${pathname} Location`,
+    );
   }
-  const destResponse = await fetch(dest, { redirect: 'manual' });
+  const destResponse = await liveFetch(dest, { redirect: 'manual' });
   assert.equal(destResponse.status, 200, `${dest} should stay 200`);
 }
 
@@ -380,7 +410,8 @@ for (const [source, search] of [
   assert.ok(location, `${source} should include Location`);
   const target = new URL(location, origin);
   assert.equal(target.pathname, '/blog', `${source} pathname`);
-  assert.equal(target.search, search, `${source} search`);
+  assert.equal(stripQaSearch(target.search), search, `${source} search`);
+  assert.equal(target.searchParams.get('qa'), '1');
   const destResponse = await request(`${target.pathname}${target.search}`, { redirect: 'follow' });
   assert.equal(destResponse.status, 200, `${source} destination should be 200`);
 }

@@ -9,6 +9,7 @@ import {
   SERVICE_BOOKING_HREF,
   rewriteServiceBookingCtas,
 } from '../utils/booking.ts';
+import { liveFetch } from '../lib/qa/live-fetch.mjs';
 
 const SLUGS = [
   'agencia-e-commerce',
@@ -38,7 +39,7 @@ function listCtas(html, hrefNeedle) {
 
 for (const slug of SLUGS) {
   const url = `https://endpoint.playfulagency.com/wp-json/wp/v2/pages?slug=${slug}&_fields=id,slug,content`;
-  const response = await fetch(url);
+  const response = await liveFetch(url);
   if (!response.ok) {
     throw new Error(`${url} → ${response.status}`);
   }

@@ -1,6 +1,9 @@
+import { isQaTraffic } from './qa-traffic.ts';
+
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    __playfulQa?: 1;
   }
 }
 
@@ -141,6 +144,11 @@ export function sendGtagEvent(
   };
 
   if (typeof window === 'undefined') {
+    finish();
+    return;
+  }
+
+  if (isQaTraffic()) {
     finish();
     return;
   }

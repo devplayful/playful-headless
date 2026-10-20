@@ -21,10 +21,14 @@ export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            gtag('js', new Date());
-            gtag('config', '${gaId}', {
-              page_path: window.location.pathname,
-            });
+            (function(){
+              var qa=/(?:^|[?&])qa=1(?:&|$)/.test(location.search)||/PlayfulQA\\/1\\.0/.test(navigator.userAgent);
+              if(qa){window.__playfulQa=1;return;}
+              gtag('js', new Date());
+              gtag('config', '${gaId}', {
+                page_path: window.location.pathname,
+              });
+            })();
           `,
         }}
       />

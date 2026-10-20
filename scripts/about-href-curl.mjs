@@ -11,6 +11,7 @@ import {
   rewriteElementorBodyHrefs,
 } from '../utils/booking.ts';
 import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
+import { liveFetch } from '../lib/qa/live-fetch.mjs';
 
 const SLUGS = [
   'agencia-seo',
@@ -41,7 +42,7 @@ function leftoverAboutHrefs(html) {
 
 for (const slug of SLUGS) {
   const url = `https://endpoint.playfulagency.com/wp-json/wp/v2/pages?slug=${slug}&_fields=id,slug,content`;
-  const response = await fetch(url);
+  const response = await liveFetch(url);
   if (!response.ok) {
     throw new Error(`${url} → ${response.status}`);
   }
