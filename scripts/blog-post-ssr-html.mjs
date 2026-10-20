@@ -12,6 +12,7 @@
  */
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
+import { PLAYFUL_QA_UA, paceLiveQa, withQaPathname } from '../lib/qa/live-fetch.mjs';
 
 export const REQUIRED_BLOG_PATHS = [
   '/blog/tecnologia/actualizar-tu-e-commerce',
@@ -312,9 +313,10 @@ export function summarizeCheck(path, analysis) {
 }
 
 async function fetchText(origin, pathname, headers = {}) {
-  const response = await fetch(new URL(pathname, origin), {
+  await paceLiveQa();
+  const response = await fetch(new URL(withQaPathname(pathname), origin), {
     redirect: 'follow',
-    headers,
+    headers: { 'user-agent': PLAYFUL_QA_UA, ...headers },
   });
   const html = await response.text();
   return { status: response.status, html, url: response.url };

@@ -6,10 +6,15 @@
 import { SITEMAP_BLOG_PATHS } from '../utils/apex-sitemap.ts';
 import { isClosedBlogPath } from '../utils/blog-closed-paths.ts';
 import { isCanibalizacionOriginPath } from '../utils/blog-canibalizacion-redirects.ts';
+import {
+  PLAYFUL_QA_UA,
+  withQaPathname,
+  withQaUrl,
+} from '../lib/qa/live-fetch.mjs';
 
 const BASE = (process.argv[2] || 'https://playfulagency.com').replace(/\/+$/, '');
 const SHARE_TOKEN = process.env.VERCEL_SHARE || '';
-const UA = 'Mozilla/5.0 (X11; Linux x86_64) PlayfulAgency/1.0';
+const UA = PLAYFUL_QA_UA;
 const REQUEST_GAP_MS = 1000;
 
 function sleep(ms) {
@@ -19,7 +24,7 @@ let shareCookie = '';
 
 async function bootstrapShareCookie() {
   if (!SHARE_TOKEN) return;
-  const response = await fetch(`${BASE}/?_vercel_share=${SHARE_TOKEN}`, {
+  const response = await fetch(withQaUrl(`${BASE}/?_vercel_share=${SHARE_TOKEN}`), {
     headers: { 'user-agent': UA, accept: 'text/html' },
     redirect: 'manual',
   });
@@ -99,7 +104,7 @@ function probeUrl(href) {
 }
 
 async function fetchText(path) {
-  const response = await fetch(`${BASE}${path}`, {
+  const response = await fetch(`${BASE}${withQaPathname(path)}`, {
     headers: requestHeaders(),
     redirect: 'follow',
   });
@@ -111,7 +116,7 @@ async function probe(href) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 12_000);
   try {
-    const response = await fetch(target, {
+    const response = await fetch(withQaUrl(target), {
       method: 'GET',
       headers: requestHeaders(),
       redirect: 'manual',

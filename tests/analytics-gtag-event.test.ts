@@ -7,6 +7,7 @@ import {
   rewriteCollectUrlForPagePath,
   sendGtagEvent,
 } from '../lib/analytics/gtag-event.ts';
+import { PLAYFUL_QA_UA } from '../lib/analytics/qa-traffic.ts';
 
 const COLLECT_CHAT =
   'https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&dp=%2F&en=chat_open&_ee=1';
@@ -50,6 +51,64 @@ test('does not overwrite an existing ep.page_path and ignores expired queues', (
     ),
     'https://analytics.google.com/g/collect?en=chat_lead',
   );
+});
+
+test('sendGtagEvent no-ops when qa=1 or PlayfulQA/1.0 is present', () => {
+  resetGtagCollectPagePathForTests();
+  const originalWindow = globalThis.window;
+  const originalNavigator = globalThis.navigator;
+  const calls: unknown[] = [];
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: {
+      location: { search: '?qa=1', pathname: '/agencia-e-commerce' },
+      gtag: (...args: unknown[]) => { calls.push(args); },
+    },
+  });
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true,
+    value: { userAgent: 'Chrome' },
+  });
+  try {
+    sendGtagEvent('cta_reunion_click', { page_path: '/agencia-e-commerce' });
+    assert.equal(calls.length, 0);
+  } finally {
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
+    });
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: originalNavigator,
+    });
+    resetGtagCollectPagePathForTests();
+  }
+
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: {
+      location: { search: '', pathname: '/' },
+      gtag: (...args: unknown[]) => { calls.push(args); },
+    },
+  });
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true,
+    value: { userAgent: PLAYFUL_QA_UA },
+  });
+  try {
+    sendGtagEvent('cta_reunion_click', { page_path: '/' });
+    assert.equal(calls.length, 0);
+  } finally {
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
+    });
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: originalNavigator,
+    });
+    resetGtagCollectPagePathForTests();
+  }
 });
 
 test('sendGtagEvent queues the collect rewrite before calling gtag', () => {

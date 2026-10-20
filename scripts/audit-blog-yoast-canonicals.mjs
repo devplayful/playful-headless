@@ -8,12 +8,13 @@ import {
   isSiteRootCanonical,
   extractCanonicalFromYoastHead,
 } from '../utils/blog-yoast-canonical.ts';
+import { liveFetch } from '../lib/qa/live-fetch.mjs';
 
 const base = 'https://endpoint.playfulagency.com/wp-json/wp/v2/posts';
 const issues = [];
 
 for (let page = 1; page <= 20; page += 1) {
-  const response = await fetch(
+  const response = await liveFetch(
     `${base}?per_page=100&page=${page}&_fields=slug,categories,yoast_head,yoast_head_json`,
   );
   if (!response.ok) break;

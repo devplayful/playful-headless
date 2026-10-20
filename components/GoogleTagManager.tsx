@@ -17,7 +17,7 @@ export default function GoogleTagManager({ gtmId }: GoogleTagManagerProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            (function(w,d,s,l,i){if((/(?:^|[?&])qa=1(?:&|$)/.test(w.location.search))||/PlayfulQA\\/1\\.0/.test(w.navigator.userAgent))return;w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);

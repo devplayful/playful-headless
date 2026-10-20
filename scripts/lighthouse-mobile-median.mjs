@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { withQaUrl } from '../lib/qa/live-fetch.mjs';
 
 const PASSES = 3;
 
@@ -18,7 +19,7 @@ function median(nums) {
 function runLh(url, outDir) {
   const jsonBase = join(outDir, 'report');
   const args = [
-    url,
+    withQaUrl(url),
     '--quiet',
     '--chrome-flags=--headless --no-sandbox --disable-gpu',
     '--only-categories=performance,seo',
