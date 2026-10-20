@@ -58,8 +58,6 @@ export const PREMIOS_CIMA_2026_ENTREGA_CAPTION = PREMIOS_CIMA_2026_ENTREGA_ALT;
 export const PREMIOS_CIMA_2026_AUTHOR_NAME = 'Equipo editorial';
 
 export const PREMIOS_CIMA_2026_BODY_HTML = `
-<p>Para publicación inmediata</p>
-<p>Caracas, 19 de octubre de 2026</p>
 <p>SoyTechno y Playful Agency resultaron ganadores de los Premios CIMA 2026 en la categoría Plataforma de E-commerce, del área de Mercadeo. La ceremonia de la cuarta edición se celebró el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, en el Salón Plaza Real, a las 5:00 pm.</p>
 <figure>
   <img src="${PREMIOS_CIMA_2026_TROFEO_SRC}" alt="${PREMIOS_CIMA_2026_TROFEO_ALT}" width="${PREMIOS_CIMA_2026_TROFEO_WIDTH}" height="${PREMIOS_CIMA_2026_TROFEO_HEIGHT}" />

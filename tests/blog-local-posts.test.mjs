@@ -395,12 +395,13 @@ test('CIMA title is a single visible H1 without a duplicate title H2', () => {
   );
 });
 
-test('CIMA body is the signed press note: dateline, three figures, quotes and no H1', () => {
+test('CIMA body is the signed post: three figures, quotes and no H1 or dateline', () => {
   const html = PREMIOS_CIMA_2026_BODY_HTML;
   assert.doesNotMatch(html, /<h1[\s>]/);
   assert.doesNotMatch(html, /\[TITULAR\]|\[SUBTÍTULO\]|\[ENTRADILLA\]|\[CUERPO\]|\[CITAS\]|\[BOILERPLATE\]|\[CONTACTO DE PRENSA\]/);
-  assert.match(html, /<p>Para publicación inmediata<\/p>/);
-  assert.match(html, /<p>Caracas, 19 de octubre de 2026<\/p>/);
+  assert.doesNotMatch(html, /Para publicación inmediata/);
+  assert.doesNotMatch(html, /Caracas, 19 de octubre de 2026/);
+  assert.match(html, /^<p>SoyTechno y Playful Agency resultaron ganadores/);
   assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los Premios CIMA 2026/);
   assert.match(html, /Esa tienda se adapta a cómo paga y confía Venezuela/);
   assert.match(html, /Yulieth Carvajal, CEO de SoyTechno/);
