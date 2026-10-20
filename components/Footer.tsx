@@ -147,9 +147,7 @@ export default function Footer() {
                 </li>
               </ul>
               <a
-                href="https://premioscima.com"
-                target="_blank"
-                rel="noopener"
+                href="/casos-de-exito/soytechno-ecommerce-venezuela"
                 className="block w-[160px] mt-6 mx-auto md:mx-0"
               >
                 <Image

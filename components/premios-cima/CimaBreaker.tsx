@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
-export const CIMA_URL = 'https://premioscima.com';
+export const CIMA_INTERNAL_URL = '/casos-de-exito/soytechno-ecommerce-venezuela';
+export const SOYTECHNO_URL = 'https://soytechno.com/';
 export const CIMA_ALT_PLAYFUL =
   'Playful Agency, agencia reconocida en los Premios CIMA 2026, categoría Plataforma de E-commerce';
 export const CIMA_ALT_SOYTECHNO =
@@ -14,13 +15,16 @@ const SIZES: Record<Variant, { d: [number, number]; m: [number, number]; alt: st
   soytechno: { d: [1440, 620], m: [390, 640], alt: CIMA_ALT_SOYTECHNO },
 };
 
-/** Separador Premios CIMA 2026 (imagen responsive, enlaza a premioscima.com). */
+/** Separador Premios CIMA 2026 (imagen responsive, «Agencia reconocida» enlaza al caso SoyTechno; «Cliente reconocido» a soytechno.com). */
 export default function CimaBreaker({ variant }: { variant: Variant }) {
   const s = SIZES[variant];
   const base = `/images/premios-cima/breaker-${variant}`;
   return (
     <section aria-label="Premios CIMA 2026" data-cima-breaker={variant} className={variant === 'soytechno' ? 'w-full overflow-hidden' : 'w-full'}>
-      <a href={CIMA_URL} target="_blank" rel="noopener" className="block mx-auto max-w-[1440px]">
+      <a
+        href={variant === 'soytechno' ? SOYTECHNO_URL : CIMA_INTERNAL_URL}
+        {...(variant === 'soytechno' ? { target: '_blank', rel: 'noopener' } : {})}
+        className="block mx-auto max-w-[1440px]">
         <Image
           src={`${base}-desktop.png`}
           width={s.d[0]}
