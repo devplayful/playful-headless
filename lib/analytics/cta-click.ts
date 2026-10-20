@@ -1,4 +1,5 @@
 import { isBookingHref } from '../../utils/booking-attribution.ts';
+import { markBookingIntent } from './booking-abandon.ts';
 import { GTAG_EVENT_TIMEOUT_MS, sendGtagEvent } from './gtag-event.ts';
 
 export const CTA_REUNION_EVENT = 'cta_reunion_click';
@@ -259,6 +260,15 @@ export function handleCtaDocumentClick(event: MouseEvent): void {
     ...ctaSectionHintsFromElement(anchor),
   });
   if (!collected) return;
+
+  if (collected.event === CTA_REUNION_EVENT) {
+    markBookingIntent({
+      ts: Date.now(),
+      page_path: collected.params.page_path,
+      link_url: collected.params.link_url,
+      cta_section: collected.params.cta_section,
+    });
+  }
 
   const modifiedOrNewTab = isModifiedOrNewTabClick({
     button: event.button,
