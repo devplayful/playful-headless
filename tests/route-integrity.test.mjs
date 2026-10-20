@@ -193,7 +193,7 @@ test('accepts the exact governed template and concrete inventory', () => {
     manifest,
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(validArtifact().concreteRoutes.length, 113);
+  assert.equal(validArtifact().concreteRoutes.length, 114);
 });
 
 test('blog category indexes stay out of the governed inventory (middleware 308, not next.config)', () => {
