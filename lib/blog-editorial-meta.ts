@@ -534,8 +534,9 @@ export function buildBlogArticleJsonLd(input: {
   url: string;
   publisherName?: string;
   publisherLogo?: string;
-  type?: 'Article' | 'BlogPosting';
-  about?: { '@type': 'Thing'; name: string };
+  type?: 'Article' | 'BlogPosting' | 'NewsArticle';
+  about?: Record<string, unknown> | Array<Record<string, unknown>>;
+  mentions?: Record<string, unknown> | Array<Record<string, unknown>>;
   inLanguage?: string;
   authorType?: 'Person' | 'Organization';
   authorUrl?: string;
@@ -572,6 +573,7 @@ export function buildBlogArticleJsonLd(input: {
     mainEntityOfPage: canonical,
     url: canonical,
     ...(input.about ? { about: input.about } : {}),
+    ...(input.mentions ? { mentions: input.mentions } : {}),
     ...(input.inLanguage ? { inLanguage: input.inLanguage } : {}),
   };
 }
