@@ -405,6 +405,8 @@ test('CIMA body is the signed post: three figures, quotes and no H1 or dateline'
   assert.match(html, /SoyTechno y Playful Agency resultaron ganadores de los Premios CIMA 2026/);
   assert.match(html, /Esa tienda se adapta a cómo paga y confía Venezuela/);
   assert.match(html, /Yulieth Carvajal, CEO de SoyTechno/);
+  assert.doesNotMatch(html, /Soy Tecnológico/);
+  assert.match(html, /Y en SoyTechno no solo creemos/);
   assert.match(html, /Alejandra Da Costa, CEO de Playful Agency/);
   assert.doesNotMatch(html, /José Reyes, socio y CMO de Playful Agency, dijo/);
   assert.match(html, /José Reyes, socio y CMO de Playful Agency/);
