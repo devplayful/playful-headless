@@ -29,6 +29,7 @@ import {
   PREMIOS_CIMA_2026_SOYTECHNO_ORG,
   PREMIOS_CIMA_2026_AUTHOR_NAME,
   PREMIOS_CIMA_2026_BODY_HTML,
+  PREMIOS_CIMA_2026_FAQS,
   PREMIOS_CIMA_2026_CANONICAL,
   PREMIOS_CIMA_2026_CATEGORY_ID,
   PREMIOS_CIMA_2026_CATEGORY_SLUG,
@@ -80,7 +81,9 @@ export {
   PREMIOS_CIMA_2026_EVENT,
   PREMIOS_CIMA_2026_SOYTECHNO_ORG,
   PREMIOS_CIMA_2026_AUTHOR_NAME,
+  PREMIOS_CIMA_2026_BAJADA,
   PREMIOS_CIMA_2026_BODY_HTML,
+  PREMIOS_CIMA_2026_FAQS,
   PREMIOS_CIMA_2026_CANONICAL,
   PREMIOS_CIMA_2026_CATEGORY_ID,
   PREMIOS_CIMA_2026_CATEGORY_SLUG,
@@ -706,11 +709,17 @@ export function blogArticleJsonLdExtras(slug: string | undefined | null): {
 }
 
 export function blogFaqPageJsonLd(slug: string | undefined | null): Record<string, unknown> | null {
-  if (slug !== GOOGLE_MERCHANT_CENTER_SLUG) return null;
+  const faqs =
+    slug === GOOGLE_MERCHANT_CENTER_SLUG
+      ? GOOGLE_MERCHANT_CENTER_FAQS
+      : slug === PREMIOS_CIMA_2026_SLUG
+        ? PREMIOS_CIMA_2026_FAQS
+        : null;
+  if (!faqs) return null;
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: GOOGLE_MERCHANT_CENTER_FAQS.map((item) => ({
+    mainEntity: faqs.map((item) => ({
       '@type': 'Question',
       name: item.question,
       acceptedAnswer: {

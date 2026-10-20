@@ -41,10 +41,10 @@ test('eShow Madrid 2026 SEO title is exactly one | Playful suffix', () => {
   );
 });
 
-test('CIMA 2026 SEO title is the titular plus one | Playful suffix', () => {
+test('CIMA 2026 SEO title is exactly one | Playful suffix', () => {
   assert.equal(
     withPlayfulTitleSuffix(PREMIOS_CIMA_2026_TITLE),
-    `${PREMIOS_CIMA_2026_TITLE} | Playful`,
+    'Premios CIMA 2026: SoyTechno, ganadores E-commerce | Playful',
   );
   assert.doesNotMatch(
     withPlayfulTitleSuffix(PREMIOS_CIMA_2026_TITLE),
