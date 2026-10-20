@@ -7,6 +7,7 @@ import {
   isQaTraffic,
   PLAYFUL_QA_UA,
 } from '../lib/analytics/qa-traffic.ts';
+import { sendSpaPageView } from '../lib/analytics/spa-page-view.ts';
 
 test('qa=1 and PlayfulQA/1.0 are QA traffic; qa=10 is not', () => {
   assert.equal(isQaSearch('?qa=1'), true);
@@ -27,4 +28,42 @@ test('tag snippets skip gtag config and GTM when qa=1 or PlayfulQA/1.0', () => {
   assert.match(ga, /PlayfulQA/);
   assert.match(gtm, /qa=1/);
   assert.match(gtm, /PlayfulQA/);
+  assert.match(ga, /createElement\('script'\)/);
+  assert.match(ga, /document\.head\.appendChild\(s\)/);
+  assert.doesNotMatch(ga, /<Script[\s\S]*?\ssrc=\{`https:\/\/www\.googletagmanager\.com\/gtag\/js/);
+  assert.match(gtm, /w\.__playfulQa=1;return;/);
+});
+
+test('sendSpaPageView does not push when qa=1', () => {
+  const calls: unknown[][] = [];
+  const originalWindow = globalThis.window;
+  const originalNav = globalThis.navigator;
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: {
+      location: { search: '?qa=1' },
+      gtag: (...args: unknown[]) => {
+        calls.push(args);
+      },
+      dataLayer: [],
+    },
+  });
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true,
+    value: { userAgent: 'Mozilla/5.0' },
+  });
+  try {
+    sendSpaPageView('/agencia-e-commerce?qa=1');
+    assert.deepEqual(calls, []);
+    assert.deepEqual(window.dataLayer, []);
+  } finally {
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
+    });
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: originalNav,
+    });
+  }
 });

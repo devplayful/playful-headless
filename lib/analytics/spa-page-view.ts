@@ -1,5 +1,7 @@
 'use client';
 
+import { isQaTraffic } from './qa-traffic.ts';
+
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
@@ -17,6 +19,7 @@ export function spaPagePath(pathname: string, search: string): string {
  */
 export function sendSpaPageView(path: string): void {
   if (typeof window === 'undefined') return;
+  if (isQaTraffic()) return;
 
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   if (typeof window.gtag === 'function') {

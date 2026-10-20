@@ -7,6 +7,40 @@ test('spa page path includes search when present', () => {
   assert.equal(spaPagePath('/blog', 'page=2'), '/blog?page=2');
 });
 
+test('sendSpaPageView no-ops when qa=1 is in the search', () => {
+  const calls: unknown[][] = [];
+  const originalWindow = globalThis.window;
+  const originalNav = globalThis.navigator;
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: {
+      location: { search: '?qa=1' },
+      gtag: (...args: unknown[]) => {
+        calls.push(args);
+      },
+      dataLayer: [],
+    },
+  });
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true,
+    value: { userAgent: 'Mozilla/5.0' },
+  });
+  try {
+    sendSpaPageView('/agencia-e-commerce?qa=1');
+    assert.deepEqual(calls, []);
+    assert.deepEqual(window.dataLayer, []);
+  } finally {
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: originalWindow,
+    });
+    Object.defineProperty(globalThis, 'navigator', {
+      configurable: true,
+      value: originalNav,
+    });
+  }
+});
+
 test('prefers gtag config and does not duplicate via dataLayer', () => {
   const calls: unknown[][] = [];
   const originalWindow = globalThis.window;
