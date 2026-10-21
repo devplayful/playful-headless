@@ -1,6 +1,6 @@
 'use client';
 
-import { isQaTraffic } from './qa-traffic.ts';
+import { withQaTrafficType } from './qa-traffic.ts';
 
 declare global {
   interface Window {
@@ -19,21 +19,20 @@ export function spaPagePath(pathname: string, search: string): string {
  */
 export function sendSpaPageView(path: string): void {
   if (typeof window === 'undefined') return;
-  if (isQaTraffic()) return;
 
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   if (typeof window.gtag === 'function') {
     if (gaId) {
-      window.gtag('config', gaId, { page_path: path });
+      window.gtag('config', gaId, withQaTrafficType({ page_path: path }));
       return;
     }
-    window.gtag('event', 'page_view', { page_path: path });
+    window.gtag('event', 'page_view', withQaTrafficType({ page_path: path }));
     return;
   }
 
   if (!window.dataLayer || typeof window.dataLayer.push !== 'function') return;
-  window.dataLayer.push({
+  window.dataLayer.push(withQaTrafficType({
     event: 'page_view',
     page_path: path,
-  });
+  }));
 }

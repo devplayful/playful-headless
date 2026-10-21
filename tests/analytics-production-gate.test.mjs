@@ -87,3 +87,17 @@ test('layout and tag components stay server-gated so production HTML is unchange
   assert.doesNotMatch(gtm, /isProductionAnalyticsHostname|useState/);
   assert.doesNotMatch(apollo, /isProductionAnalyticsHostname/);
 });
+
+test('*.vercel.app previews never render G-WH76RQWSCT (VERCEL_ENV gate)', () => {
+  for (const env of [
+    { VERCEL_ENV: 'preview', VERCEL_URL: 'playful-headless-git-x-playfuls-projects.vercel.app', ...IDS },
+    { VERCEL_ENV: 'development', VERCEL_URL: 'localhost:3000', ...IDS },
+    { VERCEL_URL: 'playful-headless-abc.vercel.app', ...IDS },
+  ]) {
+    const ids = productionAnalyticsIds(env);
+    assert.equal(ids.gaId, '');
+    assert.equal(ids.gtmId, '');
+    assert.doesNotMatch(JSON.stringify(ids), /G-WH76RQWSCT/);
+  }
+  assert.equal(productionAnalyticsIds({ VERCEL_ENV: 'production', ...IDS }).gaId, 'G-WH76RQWSCT');
+});

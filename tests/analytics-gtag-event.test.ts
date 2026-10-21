@@ -70,7 +70,7 @@ test('does not overwrite an existing ep.page_path and ignores expired queues', (
   );
 });
 
-test('sendGtagEvent no-ops when qa=1 or PlayfulQA/1.0 is present', () => {
+test('sendGtagEvent sends QA hits with traffic_type=internal (qa=1 or PlayfulQA/1.0)', () => {
   resetGtagCollectPagePathForTests();
   const originalWindow = globalThis.window;
   const originalNavigator = globalThis.navigator;
@@ -88,7 +88,8 @@ test('sendGtagEvent no-ops when qa=1 or PlayfulQA/1.0 is present', () => {
   });
   try {
     sendGtagEvent('cta_reunion_click', { page_path: '/agencia-e-commerce' });
-    assert.equal(calls.length, 0);
+    assert.equal(calls.length, 1);
+    assert.equal(((calls[0] as unknown[])[2] as Record<string, unknown>).traffic_type, 'internal');
   } finally {
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
@@ -114,7 +115,8 @@ test('sendGtagEvent no-ops when qa=1 or PlayfulQA/1.0 is present', () => {
   });
   try {
     sendGtagEvent('cta_reunion_click', { page_path: '/' });
-    assert.equal(calls.length, 0);
+    assert.equal(calls.length, 2);
+    assert.equal(((calls[1] as unknown[])[2] as Record<string, unknown>).traffic_type, 'internal');
   } finally {
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
@@ -149,5 +151,23 @@ test('sendGtagEvent queues the collect rewrite before calling gtag', () => {
       configurable: true,
       value: originalWindow,
     });
+  }
+});
+
+test('sendGtagEvent does not add traffic_type for normal visitors', () => {
+  resetGtagCollectPagePathForTests();
+  const originalWindow = globalThis.window;
+  const originalNavigator = globalThis.navigator;
+  const calls: unknown[][] = [];
+  Object.defineProperty(globalThis, 'window', { configurable: true, value: { location: { search: '', pathname: '/' }, gtag: (...a: unknown[]) => { calls.push(a); } } });
+  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { userAgent: 'Chrome' } });
+  try {
+    sendGtagEvent('cta_reunion_click', { page_path: '/' });
+    assert.equal(calls.length, 1);
+    assert.equal('traffic_type' in (calls[0][2] as Record<string, unknown>), false);
+  } finally {
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: originalWindow });
+    Object.defineProperty(globalThis, 'navigator', { configurable: true, value: originalNavigator });
+    resetGtagCollectPagePathForTests();
   }
 });
