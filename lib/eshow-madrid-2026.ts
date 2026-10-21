@@ -225,14 +225,16 @@ ${renderEshowCoverageBlocks(blocks)}
 ${ESHOW_AVISOS_ESHOW_LINK_HTML}
 ${ESHOW_LISTA_FORM_SLOT}
 <h2 id="como-registrarte">Cómo registrarte</h2>
-<p>El registro se hace en la <a href="https://www.techshowmadrid.es/registro">web oficial de Tech Show Madrid</a>. Es un formulario único para todo el evento, y en el primer campo eliges la feria de interés principal, que en tu caso es E-SHOW.</p>
-<p>Antes de rellenarlo, ten en cuenta tres condiciones publicadas.</p>
+<p>El registro para visitar el eShow se hace en la web oficial de Tech Show Madrid, en <a href="https://www.techshowmadrid.es/registro">techshowmadrid.es/registro</a>. La acreditación la gestiona la organización del evento. Playful Agency no gestiona registros ni acreditaciones, y la lista «Sigue el eShow con Playful» de la sección anterior no sirve para entrar a IFEMA.</p>
+<p>Lo que sigue es un resumen de la información que publica Tech Show Madrid en su formulario de registro. Si algo cambia, vale lo que diga la web oficial.</p>
+<p>El formulario es el mismo para todas las ferias de Tech Show Madrid. En el campo «Feria de interés principal», elige E-SHOW.</p>
+<p>La organización indica tres condiciones en ese formulario.</p>
 <ul>
-<li>Si eres expositor o trabajas en una empresa expositora, el registro va por el portal del expositor.</li>
-<li>La organización no permite la entrada a estudiantes y se reserva el derecho a cancelar la credencial.</li>
+<li>Si eres expositor o trabajas en una empresa expositora, la credencial se pide en el portal del expositor.</li>
+<li>No se permite la entrada a estudiantes, y la organización se reserva el derecho a cancelar la credencial.</li>
 <li>Cuando un expositor escanea tu acreditación en su stand, recibe tus datos de registro.</li>
 </ul>
-<p>Al registrarte se crea además un perfil en la app del evento. Desde la app puedes consultar el programa y pedir citas de reunión antes, durante y después de la feria, así que conviene tenerla lista antes del 4 de noviembre.</p>
+<p>Según el mismo formulario, al registrarte se crea un perfil en la app del evento. Desde la app puedes consultar el programa y pedir citas de reunión antes, durante y después de la feria, así que conviene tenerla lista antes del 4 de noviembre.</p>
 <h2 id="como-preparar-la-visita-para-que-no-se-quede-en-paseo">Cómo preparar la visita para que no se quede en paseo</h2>
 <p>Dos días en tres pabellones dan para mucho, y es fácil volver con folletos y ninguna decisión.</p>
 <ol>
@@ -244,8 +246,8 @@ ${ESHOW_LISTA_FORM_SLOT}
 </ol>
 <h2 id="despues-del-eshow-resumen-informe-y-que-decidir">Después del eShow: resumen, informe y qué decidir</h2>
 <p>Cuando cierre la feria, la cobertura se queda en esta página como resumen de los dos días, y quien esté en la lista recibe el informe del eShow.</p>
-<p>La semana siguiente es cuando se ve si la visita sirvió. Si tu equipo ha intentado lanzar o rehacer la tienda dos o tres veces y el proyecto nunca ha llegado a concretarse, la feria te da opciones, pero la decisión sigue pendiente hasta que alguien la pone en un calendario.</p>
-<p>Con las notas delante, conviene responder tres preguntas. La primera es si tu tienda necesita rehacerse o solo conectarse mejor con el stock, la facturación y los pagos. La segunda es qué plataforma encaja con tu catálogo, con tus programas y con tu forma de cobrar, que puede ser la que ya tienes. La tercera es cuánto tiempo puede dedicar tu equipo al proyecto y qué parte quieres que lleve un equipo externo.</p>
+<p>La semana después de la feria es el momento de revisar las notas y decidir. Si tu equipo ya ha intentado lanzar o rehacer la tienda dos o tres veces sin llegar a terminarla, la feria te muestra opciones, pero la decisión la toma tu equipo. Para que el proyecto avance, una persona del equipo tiene que hacerse cargo de esa decisión y ponerle fecha.</p>
+<p>Con las notas delante, conviene responder tres preguntas. La primera es si tu tienda necesita rehacerse o si basta con conectarla mejor con el stock, la facturación y los pagos. La segunda es qué plataforma encaja con tu catálogo, con los programas que ya usas y con tu forma de cobrar. Puede ser la plataforma que ya tienes. La tercera es cuánto tiempo puede dedicar tu equipo al proyecto y qué parte prefieres que haga un equipo externo.</p>
 <p>En Playful rehacemos y conectamos tiendas online en Shopify y WooCommerce. Conectamos la tienda con tu ERP o tu programa de facturación a través de su API (la vía por la que un programa intercambia datos con otro), y si no la tiene, construimos lo necesario. Si vienes de otra plataforma, cada dirección antigua redirige a su página nueva, así que Google y tus clientes llegan a la correcta.</p>
 <p>En <a href="https://playfulagency.com/agencia-e-commerce">agencia de ecommerce</a> está cómo trabajamos una tienda completa, y en <a href="https://playfulagency.com/agencia-shopify">agencia Shopify</a>, lo que hacemos en esa plataforma. Si partes de cero, <a href="https://playfulagency.com/blog/tecnologia/crear-un-e-commerce">cómo crear un ecommerce</a> repasa los pasos. Jumex y Odwalla venden directamente a sus clientes con tiendas en Shopify que montó Playful, y puedes verlas en <a href="https://playfulagency.com/casos-de-exito">casos de éxito</a>.</p>
 <p>Playful estará en el eShow los dos días. Si vas y quieres hablar, <a href="/reunion-playful">reserva una reunión</a>.</p>
