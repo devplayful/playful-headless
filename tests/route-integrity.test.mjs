@@ -118,7 +118,7 @@ test('rejects App Router interceptors explicitly instead of hiding them', () => 
 
 test('governs generated Next redirects and rewrites and detects critical shadowing', () => {
   const artifact = validArtifact();
-  artifact.nextRouting.redirects[0].destination = '/changed';
+  artifact.nextRouting.redirects.push({ destination: '/changed', regex: '^/drift$', source: '/drift', statusCode: 308 });
   let result = verifyRouteInventory({ sourceRoutes: manifest.sourceRoutes, artifact, manifest });
   assert.equal(result.ok, false);
   assert.equal(result.nextRoutingMismatch, true);
@@ -213,13 +213,8 @@ test('blog category indexes stay out of the governed inventory (middleware 308, 
       `/blog/${slug} must not become a next.config redirect`,
     );
   }
-  assert.deepEqual(manifest.nextRouting.redirects, [{
-    destination: '/:path+',
-    internal: true,
-    regex: '^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$',
-    source: '/:path+/',
-    statusCode: 308,
-  }]);
+  // skipTrailingSlashRedirect (#331): middleware owns slash variants in one 301 hop.
+  assert.deepEqual(manifest.nextRouting.redirects, []);
 });
 
 test('requires each of the four dynamic source templates in the artifact', async (t) => {

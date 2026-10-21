@@ -109,7 +109,7 @@ test('middleware wires the helper and matches /blog plus /blog/:path*', () => {
   assert.match(middlewareSource, /blogClosedDecision/);
   assert.match(middlewareSource, /blogSeoRedirectDecision/);
   assert.match(middlewareSource, /blog-category-redirect-map\.json/);
-  assert.match(middlewareSource, /NextResponse\.redirect\(target, blogSeo\.status\)/);
+  assert.match(middlewareSource, /resolveSingleHopRedirect\(path, request\.nextUrl\.searchParams\)/);
   assert.match(middlewareSource, /'\/blog'/);
   assert.match(middlewareSource, /'\/blog\/'/);
   assert.match(middlewareSource, /'\/blog\/:path\*'/);

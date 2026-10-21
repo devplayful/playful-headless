@@ -181,12 +181,12 @@ test('middleware 301s the merged map in one hop and does not chain through an or
   assert.match(middlewareSource, /mergeCanibalizacionIntoPermanent301/);
   assert.match(middlewareSource, /blog-canibalizacion-redirect-map\.json/);
   assert.match(middlewareSource, /NextResponse\.redirect\(target, 301\)/);
-  const destLookup = middlewareSource.slice(
-    middlewareSource.indexOf('const dest = PERMANENT_301[path]'),
-    middlewareSource.indexOf('const blogSeo'),
+  const resolver = middlewareSource.slice(
+    middlewareSource.indexOf('function resolveSingleHopRedirect'),
+    middlewareSource.indexOf('export function middleware'),
   );
-  assert.match(destLookup, /NextResponse\.redirect\(target, 301\)/);
-  assert.doesNotMatch(destLookup, /blogSeoRedirectDecision/);
+  assert.match(resolver, /PERMANENT_301\[pathname\]/);
+  assert.match(resolver, /continue;/);
 });
 
 test('sitemap drops the 15 origins and keeps their destinations', () => {

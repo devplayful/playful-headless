@@ -13,7 +13,7 @@ function listingRedirect(params: URLSearchParams): BlogSeoDecision {
     type: 'redirect',
     pathname: '/blog',
     search: searchFromParams(params),
-    status: 308,
+    status: 301,
   };
 }
 
