@@ -89,13 +89,11 @@ test('robots.txt allows the six AI crawlers and adds no new Disallow', () => {
   assert.equal(manifest.sitemap, 'https://playfulagency.com/sitemap.xml');
 });
 
-test('sameAs lists only the five HTTP 200 profiles from LISTA-WEB', () => {
+test('sameAs lists only the official profiles verified live on 21 oct 2026', () => {
   assert.deepEqual(ORGANIZATION_SAME_AS, [
-    'https://www.linkedin.com/company/playful-agency',
-    'https://www.instagram.com/playfulagency',
-    'https://x.com/playfulagency',
-    'https://www.facebook.com/playfulagency',
-    'https://www.youtube.com/@playfulagency',
+    'https://www.facebook.com/somosplayful',
+    'https://www.instagram.com/somosplayful',
+    'https://www.youtube.com/channel/UCT_NSpYZCqu7oW0nANwfnEw',
   ]);
 });
 

@@ -1,12 +1,12 @@
 export const ORGANIZATION_LOGO_URL =
   'https://playfulagency.com/images/logos/playful-logo-schema.png';
 
+// Solo perfiles oficiales comprobados en vivo (curl PlayfulQA/1.0, 21 oct 2026).
+// LinkedIn fuera: responde 999 a bots, no verificable. X/@playfulagency es otra marca.
 export const ORGANIZATION_SAME_AS = Object.freeze([
-  'https://www.linkedin.com/company/playful-agency',
-  'https://www.instagram.com/playfulagency',
-  'https://x.com/playfulagency',
-  'https://www.facebook.com/playfulagency',
-  'https://www.youtube.com/@playfulagency',
+  'https://www.facebook.com/somosplayful',
+  'https://www.instagram.com/somosplayful',
+  'https://www.youtube.com/channel/UCT_NSpYZCqu7oW0nANwfnEw',
 ]);
 
 export const ORGANIZATION_SCHEMA = Object.freeze({
