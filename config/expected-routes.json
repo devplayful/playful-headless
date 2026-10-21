@@ -54,15 +54,7 @@
     "/test-blog"
   ],
   "nextRouting": {
-    "redirects": [
-      {
-        "destination": "/:path+",
-        "internal": true,
-        "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$",
-        "source": "/:path+/",
-        "statusCode": 308
-      }
-    ],
+    "redirects": [],
     "rewrites": {
       "beforeFiles": [],
       "afterFiles": [],
