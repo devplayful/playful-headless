@@ -2407,3 +2407,12 @@ body.playful-elementor-plain {
   --e-global-color-text: #54595F;
   --e-global-color-pollock_text: #54595F;
 }
+
+/* /agencia-e-commerce (85582): a decorative .master-shape in the hero gallery stack
+   overflows to ~1559px at 1440 and creates horizontal scroll. Clip only the X axis of
+   this hero section (more specific than the first-section overflow:visible rule);
+   Y stays visible so the teal blob still bleeds under the header. No visible change. */
+.playful-wp-page[data-playful-page="85582"] > .playful-wp-elementor > .elementor > .elementor-top-section.elementor-element-748229a {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
