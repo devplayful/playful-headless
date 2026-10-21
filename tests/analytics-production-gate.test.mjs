@@ -101,3 +101,40 @@ test('*.vercel.app previews never render G-WH76RQWSCT (VERCEL_ENV gate)', () => 
   }
   assert.equal(productionAnalyticsIds({ VERCEL_ENV: 'production', ...IDS }).gaId, 'G-WH76RQWSCT');
 });
+
+test('Meta Pixel: never on previews/dev, and skipped on QA (?qa=1 / PlayfulQA/1.0)', async () => {
+  for (const env of [
+    { VERCEL_ENV: 'preview', NEXT_PUBLIC_META_PIXEL_ID: '853899051744740' },
+    { VERCEL_ENV: 'development', NEXT_PUBLIC_META_PIXEL_ID: '853899051744740' },
+    { NEXT_PUBLIC_META_PIXEL_ID: '853899051744740' },
+  ]) {
+    assert.equal(productionAnalyticsIds(env).metaPixelId, '');
+  }
+  const meta = readFileSync(new URL('../components/MetaPixel.tsx', import.meta.url), 'utf8');
+  const m = meta.match(/__html: `([\s\S]*?)`/);
+  assert.ok(m);
+  const js = m[1].replaceAll('${pixelId}', '853899051744740');
+  const { runInNewContext } = await import('node:vm');
+  const run = (search, ua) => {
+    const calls = [];
+    const inserted = [];
+    const el = { parentNode: { insertBefore: (n) => inserted.push(n.src) } };
+    const ctx = {
+      location: { search }, navigator: { userAgent: ua },
+      document: { createElement: () => ({}), getElementsByTagName: () => [el] },
+    };
+    ctx.window = ctx;
+    runInNewContext(js, ctx);
+    if (ctx.fbq) for (const q of ctx.fbq.queue) calls.push(Array.from(q));
+    return { calls, inserted, qa: ctx.__playfulQa };
+  };
+  const normal = run('', 'Mozilla/5.0');
+  assert.deepEqual(normal.inserted, ['https://connect.facebook.net/en_US/fbevents.js']);
+  assert.deepEqual(normal.calls, [['init', '853899051744740'], ['track', 'PageView']]);
+  for (const [search, ua] of [['?qa=1', 'Mozilla/5.0'], ['?utm_source=x&qa=1', 'Mozilla/5.0'], ['', 'PlayfulQA/1.0']]) {
+    const qa = run(search, ua);
+    assert.deepEqual(qa.inserted, []);
+    assert.deepEqual(qa.calls, []);
+    assert.equal(qa.qa, 1);
+  }
+});

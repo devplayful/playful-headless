@@ -16,6 +16,7 @@ export default function MetaPixel({ pixelId }: MetaPixelProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
+            if(/(?:^|[?&])qa=1(?:&|$)/.test(location.search)||/PlayfulQA\/1\.0/.test(navigator.userAgent)){window.__playfulQa=1;}else
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -24,8 +25,8 @@ export default function MetaPixel({ pixelId }: MetaPixelProps) {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${pixelId}');
-            fbq('track', 'PageView');
+            if(!window.__playfulQa){fbq('init', '${pixelId}');
+            fbq('track', 'PageView');}
           `,
         }}
       />
