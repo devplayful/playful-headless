@@ -9,6 +9,9 @@ const {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Trailing-slash variants are 301'd by middleware in the same single hop as
+  // the legacy redirects (Next's built-in 308 made slash → 308 → 301 chains).
+  skipTrailingSlashRedirect: true,
   experimental: {
     // WordPress is a small shared origin. Keep static generation deliberately
     // tightly bounded so a release cannot create the burst of REST calls

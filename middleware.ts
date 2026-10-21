@@ -47,6 +47,8 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
+  // E-book PDF (404 since the WP migration; not in WP media): send to the SEO landing.
+  '/e-books/Seo-Local/Playful_Agengy_Ebook_seo_local.pdf': '/agencia-seo',
   '/blog/email-marketing/tipos-de-publicidad-online':
     'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
   '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
@@ -76,6 +78,72 @@ function normalizePath(pathname: string): string {
   return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
 }
 
+const APEX_HOSTS = new Set(['playfulagency.com', 'www.playfulagency.com']);
+
+type ResolvedRedirect = {
+  changed: boolean;
+  pathname: string;
+  search: string;
+  /** Set only when the final hop leaves playfulagency.com. */
+  absolute?: string;
+};
+
+/**
+ * Follows every legacy rule (PERMANENT_301, WP listing paths, category moves,
+ * AMP junk params) internally so the client always gets ONE 301 to the
+ * final canonical URL: no slash → 308 → 301 chains.
+ */
+function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
+  let pathname = startPath;
+  // WP-era links like `?amp/` carry the slash inside the query key.
+  const cleanParams = new URLSearchParams();
+  let changed = false;
+  startParams.forEach((value, key) => {
+    const cleanKey = key.replace(/\/+$/, '');
+    if (cleanKey !== key) changed = true;
+    if (cleanKey) cleanParams.append(cleanKey, value);
+  });
+  let search = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
+  for (let i = 0; i < 8; i += 1) {
+    const dest = PERMANENT_301[pathname];
+    if (dest) {
+      changed = true;
+      if (/^https?:\/\//i.test(dest)) {
+        const url = new URL(dest);
+        if (!APEX_HOSTS.has(url.hostname)) {
+          return { changed, pathname, search, absolute: url.origin + url.pathname };
+        }
+        pathname = normalizePath(url.pathname);
+      } else {
+        pathname = normalizePath(dest);
+      }
+      continue;
+    }
+    const legacy = blogLegacyListingRedirectDecision(pathname);
+    if (legacy.type === 'redirect') {
+      changed = true;
+      pathname = normalizePath(legacy.pathname);
+      search = legacy.search;
+      continue;
+    }
+    const params = new URLSearchParams(search);
+    const seo = blogSeoRedirectDecision(pathname, params, categoryRedirects);
+    if (seo.type === 'redirect' && (seo.pathname !== pathname || seo.search !== search)) {
+      changed = true;
+      pathname = normalizePath(seo.pathname);
+      search = seo.search;
+      continue;
+    }
+    if (pathname === '/blog/q') {
+      changed = true;
+      pathname = '/blog';
+      continue;
+    }
+    break;
+  }
+  return { changed, pathname, search };
+}
+
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
 
@@ -102,46 +170,22 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const dest = PERMANENT_301[path];
-  if (dest) {
-    if (/^https?:\/\//i.test(dest)) {
-      const target = new URL(dest);
-      target.search = request.nextUrl.search;
+  const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
+  const hadTrailingSlash = request.nextUrl.pathname !== path;
+  if (resolved.changed || hadTrailingSlash) {
+    if (resolved.absolute) {
+      const target = new URL(resolved.absolute);
+      target.search = resolved.search;
       return attachAttributionCookies(request, NextResponse.redirect(target, 301));
     }
-
-    const target = request.nextUrl.clone();
-    target.pathname = dest;
+    // Plain URL, not nextUrl.clone(): NextURL re-adds the incoming trailing
+    // slash when skipTrailingSlashRedirect is on, which would loop.
+    const target = new URL(`${resolved.pathname}${resolved.search}`, request.url);
     return attachAttributionCookies(request, NextResponse.redirect(target, 301));
-  }
-
-  const legacyListing = blogLegacyListingRedirectDecision(path);
-  if (legacyListing.type === 'redirect') {
-    const target = request.nextUrl.clone();
-    target.pathname = legacyListing.pathname;
-    target.search = legacyListing.search;
-    return attachAttributionCookies(request, NextResponse.redirect(target, legacyListing.status));
-  }
-
-  const blogSeo = blogSeoRedirectDecision(
-    request.nextUrl.pathname,
-    request.nextUrl.searchParams,
-    categoryRedirects,
-  );
-  if (blogSeo.type === 'redirect') {
-    const target = request.nextUrl.clone();
-    target.pathname = blogSeo.pathname;
-    target.search = blogSeo.search;
-    return attachAttributionCookies(request, NextResponse.redirect(target, blogSeo.status));
   }
 
   // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
   // so pagination, category and search keep working without dynamizing /blog.
-  if (path === '/blog/q') {
-    const target = request.nextUrl.clone();
-    target.pathname = '/blog';
-    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
-  }
   if (path === '/blog' && request.nextUrl.search && request.nextUrl.search !== '?') {
     const target = request.nextUrl.clone();
     target.pathname = '/blog/q';
@@ -195,6 +239,7 @@ export const config = {
     '/blog',
     '/blog/',
     '/blog/:path*',
+    '/e-books/:path*',
     '/((?!_next/static|_next/image|favicon.ico|api/|.*\\..*).*)',
   ],
 };
