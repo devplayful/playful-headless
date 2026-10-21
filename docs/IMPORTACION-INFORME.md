@@ -106,3 +106,14 @@ público de `endpoint.playfulagency.com`, en serie, 1 petición/s, user agent
 5. Usuarios del admin: crear el primero en `/admin` cuando haya base real.
 6. Congelar WordPress al empezar la importación definitiva (lo avisa el CEO)
    y relanzar `cms:import`, que es idempotente.
+
+## url_video (ACF nº 68) · 21 oct 2026
+
+- Campo opcional `url_video` (texto con validación http/https) en la colección Casos.
+- Origen: grupo ACF «Video» (group_6355d51c9403a), con «Show in REST API» = No.
+  El REST público no lo expone (ni en `acf` ni en `meta`) y no hay ruta de solo
+  lectura sin tocar la configuración de WP. El import lo lee si algún día llega
+  en `acf.url_video` o `meta.url_video`; si no, queda `null` y se anota en
+  `camposNoMapeados.casos`.
+- Pasada 21 oct 08:48:34–08:48:52 (Madrid): los 2 casos (86237 Jumex, 86235
+  Odwalla) quedan con `url_video = null`.

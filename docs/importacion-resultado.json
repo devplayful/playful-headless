@@ -1,7 +1,7 @@
 {
   "origen": "https://endpoint.playfulagency.com/wp-json",
-  "inicio": "2026-10-20T21:02:27.231Z",
-  "fin": "2026-10-20T21:02:42.756Z",
+  "inicio": "2026-10-21T06:48:37.620Z",
+  "fin": "2026-10-21T06:48:52.068Z",
   "peticiones": 7,
   "colecciones": {
     "categorias": {
@@ -51,6 +51,9 @@
   "camposNoMapeados": {
     "posts": [
       "tags"
+    ],
+    "casos": [
+      "url_video (grupo ACF «Video» sin Show in REST; queda null)"
     ]
   }
 }

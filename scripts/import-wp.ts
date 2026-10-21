@@ -244,7 +244,20 @@ async function main() {
       acf[f] = typeof v === 'number' && v > 0 ? media(v) : null;
       if (typeof v === 'number' && v > 0 && !acf[f]) noteUnmapped('casos', `acf.${f} (medio ${v} no encontrado)`);
     }
+    // url_video (ACF «Video», group_6355d51c9403a): el grupo no se expone en REST.
+    // Solo lectura: se toma si viene en acf o meta; si no, null y se anota.
+    const rawVideo = c.acf?.url_video ?? c.meta?.url_video ?? (Array.isArray(c.meta?.url_video) ? c.meta.url_video[0] : undefined);
+    let url_video: string | null = null;
+    if (typeof rawVideo === 'string' && rawVideo.trim()) {
+      try {
+        const u = new URL(rawVideo.trim());
+        if (u.protocol === 'http:' || u.protocol === 'https:') url_video = u.toString();
+      } catch {}
+    }
+    delete acf.url_video;
+    if (!url_video) noteUnmapped('casos', 'url_video (grupo ACF «Video» sin Show in REST; queda null)');
     await upsert(payload, 'casos', c.id, {
+      url_video,
       titulo: text(c.title?.rendered) || c.slug,
       slug: c.slug,
       estado: c.status,
