@@ -7,6 +7,7 @@ export const ORGANIZATION_SAME_AS = Object.freeze([
   'https://www.facebook.com/somosplayful',
   'https://www.instagram.com/somosplayful',
   'https://www.youtube.com/channel/UCT_NSpYZCqu7oW0nANwfnEw',
+  'https://www.linkedin.com/company/playful-agency/',
 ]);
 
 export const ORGANIZATION_SCHEMA = Object.freeze({

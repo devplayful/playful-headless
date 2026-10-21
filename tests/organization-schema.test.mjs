@@ -25,7 +25,7 @@ test('organization includes verified sameAs, contactPoint and areaServed', () =>
   assert.equal(ORGANIZATION_SCHEMA['@type'], 'Organization');
   assert.equal(ORGANIZATION_SCHEMA.name, 'Playful Agency');
   assert.deepEqual(ORGANIZATION_SCHEMA.sameAs, ORGANIZATION_SAME_AS);
-  assert.equal(ORGANIZATION_SAME_AS.length, 3);
+  assert.equal(ORGANIZATION_SAME_AS.length, 4);
   assert.deepEqual(ORGANIZATION_SCHEMA.logo, {
     '@type': 'ImageObject',
     url: ORGANIZATION_LOGO_URL,

@@ -94,6 +94,7 @@ test('sameAs lists only the official profiles verified live on 21 oct 2026', () 
     'https://www.facebook.com/somosplayful',
     'https://www.instagram.com/somosplayful',
     'https://www.youtube.com/channel/UCT_NSpYZCqu7oW0nANwfnEw',
+    'https://www.linkedin.com/company/playful-agency/',
   ]);
 });
 
