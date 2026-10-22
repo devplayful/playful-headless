@@ -10,6 +10,14 @@ declare global {
 export const GTAG_EVENT_TIMEOUT_MS = 300;
 
 /**
+ * GA4 + Ads destinations for every sendGtagEvent hit. G-WH76RQWSCT is loaded
+ * twice (layout gtag config + Google tag in GTM-MXHKJ4NW); once GTM's copy is
+ * initialised, a bare gtag('event') without send_to was dropped (no GA4 or Ads
+ * hit for cta_reunion_click in real Chrome, 22 oct). Explicit send_to fixes it.
+ */
+export const GTAG_EVENT_SEND_TO: readonly string[] = ['G-WH76RQWSCT', 'AW-427600160'];
+
+/**
  * gtag maps reserved `page_path` to collect `dp` and drops it as `ep.page_path`.
  * The `_&` raw-MP escape only allowlists gtag internals (`_&rcb`, `_&ae`, …);
  * `_&ep.page_path` is stripped before the collect URL is built. The «CTA página»
@@ -37,6 +45,7 @@ export function encodeGtagEventParams(
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {
     ...params,
+    send_to: params.send_to ?? [...GTAG_EVENT_SEND_TO],
     event_callback: onDone,
     event_timeout: timeoutMs ?? GTAG_EVENT_TIMEOUT_MS,
   };
