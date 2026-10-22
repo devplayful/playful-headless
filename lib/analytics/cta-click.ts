@@ -182,11 +182,19 @@ export function canUseBeaconTransport(
   return typeof nav?.sendBeacon === 'function';
 }
 
+/**
+ * Same-tab booking clicks always wait for gtag's event_callback (max
+ * CTA_EVENT_TIMEOUT_MS): gtag batches hits for seconds, so a beacon queued
+ * right before the /reunion-playful 302 was lost. Contact CTAs only wait when
+ * sendBeacon is missing.
+ */
 export function shouldHoldCtaNavigation(input: {
   modifiedOrNewTab: boolean;
   canBeacon: boolean;
+  event?: CtaEventName;
 }): boolean {
   if (input.modifiedOrNewTab) return false;
+  if (input.event === CTA_REUNION_EVENT) return true;
   return !input.canBeacon;
 }
 
@@ -282,6 +290,7 @@ export function handleCtaDocumentClick(event: MouseEvent): void {
   const hold = shouldHoldCtaNavigation({
     modifiedOrNewTab,
     canBeacon: canUseBeaconTransport(),
+    event: collected.event,
   });
 
   if (!hold) {
