@@ -27,6 +27,7 @@ const NEW_301 = [
   ['/seo', '/agencia-seo'],
   ['/servicios/seo', '/agencia-seo'],
   ['/servicios/desarrollo-web', '/agencia-diseno-web'],
+  ['/servicios/analitica-avanzada', '/agencia-seo'],
 ];
 
 const STAY_404 = [
@@ -46,7 +47,7 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
 }, categoryRedirects);
 
 test('closed SEO service 301s are one hop to an absolute apex 200', () => {
-  assert.equal(Object.keys(seoServiceRedirects).length, 4);
+  assert.equal(Object.keys(seoServiceRedirects).length, 5);
 
   for (const [origin, destPath] of NEW_301) {
     const dest = `${APEX}${destPath}`;
