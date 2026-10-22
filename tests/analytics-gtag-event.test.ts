@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   COLLECT_PAGE_PATH_TTL_MS,
+  encodeGtagEventParams,
+  GTAG_EVENT_SEND_TO,
   queueCollectPagePath,
   resetGtagCollectPagePathForTests,
   rewriteCollectUrlForPagePath,
@@ -142,4 +144,13 @@ test('sendGtagEvent queues the collect rewrite before calling gtag', () => {
       value: originalWindow,
     });
   }
+});
+
+test('encodeGtagEventParams routes every event to GA4 + Ads via send_to', () => {
+  assert.deepEqual([...GTAG_EVENT_SEND_TO], ['G-WH76RQWSCT', 'AW-427600160']);
+  const payload = encodeGtagEventParams({ link_url: '/reunion-playful' });
+  assert.deepEqual(payload.send_to, ['G-WH76RQWSCT', 'AW-427600160']);
+  assert.equal(payload.link_url, '/reunion-playful');
+  const explicit = encodeGtagEventParams({ send_to: 'G-WH76RQWSCT' });
+  assert.equal(explicit.send_to, 'G-WH76RQWSCT');
 });
