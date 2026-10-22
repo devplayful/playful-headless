@@ -7,7 +7,7 @@ test('spa page path includes search when present', () => {
   assert.equal(spaPagePath('/blog', 'page=2'), '/blog?page=2');
 });
 
-test('sendSpaPageView no-ops when qa=1 is in the search', () => {
+test('sendSpaPageView sends QA page_view with traffic_type=internal', () => {
   const calls: unknown[][] = [];
   const originalWindow = globalThis.window;
   const originalNav = globalThis.navigator;
@@ -27,7 +27,8 @@ test('sendSpaPageView no-ops when qa=1 is in the search', () => {
   });
   try {
     sendSpaPageView('/agencia-e-commerce?qa=1');
-    assert.deepEqual(calls, []);
+    assert.equal(calls.length, 1);
+    assert.equal((calls[0][2] as Record<string, unknown>).traffic_type, 'internal');
     assert.deepEqual(window.dataLayer, []);
   } finally {
     Object.defineProperty(globalThis, 'window', {

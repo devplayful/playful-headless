@@ -1,4 +1,3 @@
-import { isQaTraffic } from './qa-traffic.ts';
 import { sendGtagEvent } from './gtag-event.ts';
 
 export const BOOKING_ABANDON_EVENT = 'booking_abandon';
@@ -206,9 +205,6 @@ export function markBookingIntent(
     userAgent?: string;
   },
 ): boolean {
-  if (isQaTraffic({ search: input?.search, userAgent: input?.userAgent })) {
-    return false;
-  }
   const cookieIo = input?.cookieIo === undefined ? defaultCookieIo() : input.cookieIo;
   const storage = input?.storage === undefined ? defaultStorage() : input.storage;
   const hostname = input?.hostname === undefined ? defaultHostname() : input.hostname;
@@ -291,7 +287,7 @@ export type BookingAbandonFireResult =
 /**
  * On a later apex page view: if intent exists, the visitor is not on /gracias,
  * and the click is older than 20s, fire booking_abandon once and clear.
- * QA traffic is a no-op (cookie stays). Not a conversion.
+ * QA traffic fires too; sendGtagEvent adds traffic_type=internal. Not a conversion.
  */
 export function maybeFireBookingAbandon(input?: {
   pathname?: string;
@@ -313,8 +309,6 @@ export function maybeFireBookingAbandon(input?: {
 
   const intent = readBookingIntent({ cookieIo, storage });
   if (!intent) return 'missing';
-
-  if (isQaTraffic({ search, userAgent: input?.userAgent })) return 'qa';
 
   if (isGraciasPath(pathname)) {
     clearBookingIntent({ cookieIo, storage, hostname });

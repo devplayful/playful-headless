@@ -1,4 +1,4 @@
-import { isQaTraffic } from './qa-traffic.ts';
+import { withQaTrafficType } from './qa-traffic.ts';
 
 declare global {
   interface Window {
@@ -172,10 +172,7 @@ export function sendGtagEvent(
     return;
   }
 
-  if (isQaTraffic()) {
-    finish();
-    return;
-  }
+  params = withQaTrafficType(params);
 
   if (typeof params.page_path === 'string' && params.page_path) {
     queueCollectPagePath(eventName, params.page_path);

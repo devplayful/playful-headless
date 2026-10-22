@@ -271,68 +271,37 @@ test('gracias clears intent without firing, including conv=Schedule', () => {
   });
 });
 
-test('qa=1 and PlayfulQA/1.0 do not write or fire booking_abandon', () => {
-  resetBookingAbandonForTests();
-  const cookies = memoryCookies();
-  const storage = memoryStorage();
-  const calls: unknown[][] = [];
-  assert.equal(
-    markBookingIntent(SAMPLE, {
-      cookieIo: cookies,
-      storage,
-      hostname: 'localhost',
-      search: '?qa=1',
-    }),
-    false,
-  );
-  assert.equal(readBookingIntent({ cookieIo: cookies, storage }), null);
-
-  markBookingIntent(SAMPLE, { cookieIo: cookies, storage, hostname: 'localhost' });
-  withWindow({
-    location: { pathname: '/', search: '?qa=1' },
-    gtag: (...args: unknown[]) => {
-      calls.push(args);
-    },
-    dataLayer: [],
-    navigator: { userAgent: 'Mozilla/5.0' },
-  }, () => {
+test('qa=1 and PlayfulQA/1.0 write intent and fire booking_abandon with traffic_type=internal', () => {
+  for (const variant of [
+    { search: '?qa=1', userAgent: 'Mozilla/5.0' },
+    { search: '', userAgent: PLAYFUL_QA_UA },
+  ]) {
+    resetBookingAbandonForTests();
+    const cookies = memoryCookies();
+    const storage = memoryStorage();
+    const calls: unknown[][] = [];
     assert.equal(
-      maybeFireBookingAbandon({
-        pathname: '/',
-        search: '?qa=1',
-        now: SAMPLE.ts + 60_000,
-        cookieIo: cookies,
-        storage,
-        hostname: 'localhost',
+      markBookingIntent(SAMPLE, {
+        cookieIo: cookies, storage, hostname: 'localhost', search: variant.search, userAgent: variant.userAgent,
       }),
-      'qa',
+      true,
     );
-    assert.equal(calls.length, 0);
     assert.ok(readBookingIntent({ cookieIo: cookies, storage }));
-  });
-
-  withWindow({
-    location: { pathname: '/', search: '' },
-    gtag: (...args: unknown[]) => {
-      calls.push(args);
-    },
-    dataLayer: [],
-    navigator: { userAgent: PLAYFUL_QA_UA },
-  }, () => {
-    assert.equal(
-      maybeFireBookingAbandon({
-        pathname: '/',
-        search: '',
-        userAgent: PLAYFUL_QA_UA,
-        now: SAMPLE.ts + 60_000,
-        cookieIo: cookies,
-        storage,
-        hostname: 'localhost',
-      }),
-      'qa',
-    );
-    assert.equal(calls.length, 0);
-  });
+    const win = { ...gaReadyWindow(calls), location: { pathname: '/', search: variant.search }, navigator: { userAgent: variant.userAgent } };
+    withWindow(win, () => {
+      assert.equal(
+        maybeFireBookingAbandon({
+          pathname: '/', search: variant.search, userAgent: variant.userAgent,
+          now: SAMPLE.ts + 60_000, cookieIo: cookies, storage, hostname: 'localhost',
+        }),
+        'sent',
+      );
+    });
+    const call = calls.find((c) => c[0] === 'event' && c[1] === 'booking_abandon');
+    assert.ok(call);
+    assert.equal((call![2] as Record<string, unknown>).traffic_type, 'internal');
+    assert.equal(readBookingIntent({ cookieIo: cookies, storage }), null);
+  }
 });
 
 test('hooks live in existing trackers; layout GTM Ads and Meta are untouched', () => {

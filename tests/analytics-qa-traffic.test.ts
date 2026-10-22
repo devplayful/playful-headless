@@ -21,7 +21,7 @@ test('qa=1 and PlayfulQA/1.0 are QA traffic; qa=10 is not', () => {
   assert.equal(isQaTraffic({ search: '', userAgent: 'Chrome' }), false);
 });
 
-test('tag snippets skip gtag config and GTM when qa=1 or PlayfulQA/1.0', () => {
+test('QA: gtag config marks traffic_type=internal; GTM (Ads/Meta) still skipped', () => {
   const ga = readFileSync(new URL('../components/GoogleAnalytics.tsx', import.meta.url), 'utf8');
   const gtm = readFileSync(new URL('../components/GoogleTagManager.tsx', import.meta.url), 'utf8');
   assert.match(ga, /qa=1/);
@@ -32,9 +32,13 @@ test('tag snippets skip gtag config and GTM when qa=1 or PlayfulQA/1.0', () => {
   assert.match(ga, /document\.head\.appendChild\(s\)/);
   assert.doesNotMatch(ga, /<Script[\s\S]*?\ssrc=\{`https:\/\/www\.googletagmanager\.com\/gtag\/js/);
   assert.match(gtm, /w\.__playfulQa=1;return;/);
+  assert.match(ga, /if\(qa\)\{window\.__playfulQa=1;\}/);
+  assert.doesNotMatch(ga, /__playfulQa=1;return;/);
+  assert.match(ga, /if\(qa\)\{cfg\.traffic_type='internal';\}/);
+  assert.match(ga, /gtag\('config', '\$\{gaId\}', cfg\)/);
 });
 
-test('sendSpaPageView does not push when qa=1', () => {
+test('sendSpaPageView sends QA page_view with traffic_type=internal', () => {
   const calls: unknown[][] = [];
   const originalWindow = globalThis.window;
   const originalNav = globalThis.navigator;
@@ -54,7 +58,8 @@ test('sendSpaPageView does not push when qa=1', () => {
   });
   try {
     sendSpaPageView('/agencia-e-commerce?qa=1');
-    assert.deepEqual(calls, []);
+    assert.equal(calls.length, 1);
+    assert.equal((calls[0][2] as Record<string, unknown>).traffic_type, 'internal');
     assert.deepEqual(window.dataLayer, []);
   } finally {
     Object.defineProperty(globalThis, 'window', {
