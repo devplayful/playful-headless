@@ -201,6 +201,8 @@ export const config = {
     '/servicios/',
     '/servicios/seo',
     '/servicios/seo/',
+    '/servicios/analitica-avanzada',
+    '/servicios/analitica-avanzada/',
     '/servicios/desarrollo-web',
     '/servicios/desarrollo-web/',
     '/services',
