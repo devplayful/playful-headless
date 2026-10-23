@@ -189,7 +189,7 @@ export default async function BlogListingView({
       )}
 
       {/* Artículos Más Vistos */}
-      <MostViewedArticles posts={posts} />
+      {!(category && !searchQuery && posts.length === 0) && <MostViewedArticles posts={posts} />}
 
       {/* Barra de categorías */}
       <div className="w-full pb-8">
