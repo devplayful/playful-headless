@@ -269,3 +269,39 @@ test('chat_open fires on the documented isActive rising edge, not on close', () 
     });
   }
 });
+
+test('re-registers when HighLevel replaces the chatWidget API (new widget instance)', () => {
+  const registered: BeforeSubmit[] = [];
+  const makeApi = () => ({
+    registerBeforeSubmit: (fn: BeforeSubmit) => {
+      registered.push(fn);
+    },
+    isActive: () => false,
+  });
+  const win = fakeWindow({ leadConnector: { chatWidget: makeApi() }, gtag: () => {} }) as any;
+
+  withWindow(win, () => {
+    attachChatWidgetAnalytics();
+    assert.equal(registered.length, 1);
+    // enablePublicAPIs() on a new mount swaps in a fresh object with beforeSubmit: null.
+    win.leadConnector.chatWidget = makeApi();
+    window.dispatchEvent(new Event('LC_chatWidgetLoaded'));
+    assert.equal(registered.length, 2);
+    window.dispatchEvent(new Event('LC_chatWidgetLoaded'));
+    assert.equal(registered.length, 2);
+  });
+});
+
+test('chat_lead is sent by beacon to GA4 + Ads without PII', () => {
+  const calls: GtagCall[] = [];
+  withWindow(fakeWindow({ gtag: (...args: unknown[]) => calls.push(args) }), () => {
+    handleChatBeforeSubmit({ name: 'x' });
+  });
+  const lead = calls.find((c) => c[1] === CHAT_LEAD_EVENT);
+  assert.ok(lead);
+  const params = lead![2] as Record<string, unknown>;
+  assert.equal(params.transport_type, 'beacon');
+  assert.deepEqual(params.send_to, ['G-WH76RQWSCT', 'AW-427600160']);
+  assert.equal(params.page_path, '/agencia-shopify?utm_source=li');
+  assert.equal(params.name, undefined);
+});
