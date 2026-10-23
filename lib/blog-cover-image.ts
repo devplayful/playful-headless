@@ -103,7 +103,7 @@ export const BLOG_COVER_ALTS: Record<string, string> = {
   'optimizacion-multimedia':
     'Dos manos sostienen un móvil del que salen tarjetas de colores con contenido',
   'seo-y-sem-que-son-y-en-que-se-diferencian':
-    'Una mujer sonriente sentada entre dos puertas en arco, una rosa y otra violeta',
+    'Ilustración de una mujer entre dos puertas, una rosa y otra morada, que representan el SEO y el SEM',
   'diseno-web-de-paginas-web':
     'Dos manos colocan piezas de papel de colores sobre una mesa para componer un diseño',
   'publicidad-digital-en-tu-negocio':
@@ -135,7 +135,7 @@ export const BLOG_COVER_ALTS: Record<string, string> = {
   'analitica-web-que-es-como-puede-ayudar-a-mi-marca':
     'Una mujer enciende la luz y descubre un montón de billetes en una habitación oscura',
   'aprende-todo-sobre-el-seo':
-    'Una mujer sonriente sostiene un gran círculo con tres estrellas doradas de valoración',
+    'Ilustración de una mujer que examina con una lupa tres estrellas doradas, como una buena valoración en Google',
   'auditoria-seo-que-es-como-se-hace':
     'Un hombre se mira en un espejo que le devuelve el reflejo de su esqueleto',
   'blog-corporativo-aumenta-el-trafico-de-tu-sitio-web':
@@ -145,7 +145,7 @@ export const BLOG_COVER_ALTS: Record<string, string> = {
   'como-elegir-tus-palabras-claves':
     'Una mujer deja caer monedas con cuidado dentro de un embudo verde',
   'como-usar-el-remarketing-para-tener-mas-clientes':
-    'Una mujer con bolsas recorre un pasillo de pantallas donde aparece siempre el mismo vendedor',
+    'Ilustración de una compradora con bolsas en un pasillo de puertas donde vendedores le ofrecen productos otra vez',
   'conoce-los-tipos-de-marketing':
     'Tres personas sostienen un megáfono, un corazón y un paquete sobre fondo violeta',
   'contenido-duplicado':
