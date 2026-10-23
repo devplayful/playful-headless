@@ -1539,3 +1539,54 @@ async function loadAllCaseStudies(): Promise<any[]> {
 export async function getAllCaseStudies(): Promise<any[]> {
   return fetchWithRelatedPostsTtl(caseStudiesCache, loadAllCaseStudies, Date.now, 3600 * 1000);
 }
+
+export interface BlogCategoryNavItem {
+  id: number;
+  name: string;
+  slug: string;
+  /** Posts that render (200) after filterOpenBlogPosts. */
+  openCount: number;
+}
+
+/** Display-only label fixes; slugs never change. */
+const BLOG_CATEGORY_LABEL_OVERRIDES: Record<string, string> = {
+  seo: 'SEO',
+  tecnologia: 'Tecnología',
+};
+
+function decodeCategoryName(name: string): string {
+  return name
+    .replace(/&amp;/g, '&')
+    .replace(/&#0?39;|&#8217;/g, '’')
+    .replace(/&quot;/g, '"');
+}
+
+/**
+ * Category chips for /blog: WP categories with posts (`hide_empty=true`),
+ * kept only when at least one post survives filterOpenBlogPosts (i.e. answers 200).
+ */
+export async function getBlogCategoryNav(): Promise<BlogCategoryNavItem[]> {
+  try {
+    const { items } = await wordpressFetchCollection<{ id: number; name: string; slug: string }>(
+      `${WORDPRESS_API_URL}/wp/v2/categories?hide_empty=true&per_page=100&orderby=name&order=asc&_fields=id,slug,name`,
+      { next: { revalidate: 600 }, headers: { 'Content-Type': 'application/json' } },
+    );
+    const terms = items.filter((t) => t && typeof t.id === 'number' && t.slug && t.slug !== 'sin-categoria' && t.slug !== 'uncategorized');
+    const result: BlogCategoryNavItem[] = [];
+    for (const term of terms) {
+      const { totalPages } = await getBlogPosts(1, 1, term.slug);
+      if (totalPages > 0) {
+        result.push({
+          id: term.id,
+          slug: term.slug,
+          name: BLOG_CATEGORY_LABEL_OVERRIDES[term.slug] ?? decodeCategoryName(term.name || term.slug),
+          openCount: totalPages,
+        });
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error('getBlogCategoryNav failed', error);
+    return [];
+  }
+}
