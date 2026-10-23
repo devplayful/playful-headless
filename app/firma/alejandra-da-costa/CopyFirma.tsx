@@ -41,7 +41,15 @@ export default function CopyFirma({ html }: { html: string }) {
 
   return (
     <div>
-      <div style={{ background: '#fff', border: '1px solid #E9D7FF', padding: 12, overflowX: 'auto' }}>
+      <style>{`
+        .firma-preview, .firma-preview * { box-sizing: content-box !important; }
+        .firma-preview img { max-width: none !important; min-width: 0 !important; height: auto; }
+        .firma-preview img[width='88'] { width: 88px !important; height: 88px !important; }
+        .firma-preview img[width='140'] { width: 140px !important; height: 33px !important; }
+        .firma-preview img[width='80'] { width: 80px !important; height: 100px !important; }
+        .firma-preview table { border-collapse: separate; }
+      `}</style>
+      <div className="firma-preview" style={{ background: '#fff', border: '1px solid #E9D7FF', padding: 12, overflowX: 'auto' }}>
         <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />
       </div>
       <button
