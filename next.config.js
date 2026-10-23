@@ -48,7 +48,10 @@ const nextConfig = {
       key: 'Cache-Control',
       value: 'public, s-maxage=3600, stale-while-revalidate=86400',
     };
+    const noIndex = { key: 'X-Robots-Tag', value: 'noindex, nofollow' };
     return [
+      { source: '/firma/:path*', headers: [noIndex] },
+      { source: '/images/firmas/:path*', headers: [noIndex] },
       {
         source:
           '/:slug(agencia-e-commerce|agencia-seo|agencia-sem|agencia-diseno-web|agencia-ux-ui|marketing-internacional|seo-expertos|seo-vigo)',
