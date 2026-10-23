@@ -189,7 +189,7 @@ function extractOgTitle(html) {
 
 const expectedTitles = {
   '/agencia-e-commerce':
-    'Agencia ecommerce para venta directa | Playful Agency',
+    'Agencia de ecommerce para marcas D2C | Playful',
   '/agencia-shopify':
     'Agencia Shopify para marcas que ya venden | Playful Agency',
   '/pagos-online-ecommerce':

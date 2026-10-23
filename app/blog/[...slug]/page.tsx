@@ -574,10 +574,46 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
     description: 'Los cintillos de promoción en ecommerce anuncian ofertas y retienen la mirada en la tienda. Cómo diseñarlos con criterio, no como un truco de checkout.',
   },
   'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce': {
-    title: 'Zelle en Venezuela: cobra en tu tienda online | Playful',
+    title: 'Zelle en Venezuela: cómo cobrar en tu tienda | Playful',
     description:
-      'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.',
+      'Zelle en Venezuela: cómo funciona, qué bancos lo admiten y cómo integrarlo en el checkout de tu tienda online para validar pagos sin hacerlo a mano.',
     h1: 'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea',
+  },
+  // SEO tanda CTR 23 oct 2026 (CSV A, GO José 10:47)
+  'diseno-web-de-paginas-web': {
+    title: 'Diseño de páginas web: qué es y por qué importa | Playful',
+    description:
+      'Diseño de páginas web explicado: qué es, por qué importa para tu marca y qué principios seguir para que tu sitio sea claro, usable y fácil de encontrar.',
+  },
+  'seo-y-sem-que-son-y-en-que-se-diferencian': {
+    title: 'SEO y SEM: qué son y en qué se diferencian | Playful',
+    description:
+      'SEO y SEM: qué es cada uno, en qué se diferencian el posicionamiento orgánico y el de pago, y cuándo conviene usar cada estrategia en tu marca.',
+  },
+  'publicidad-digital-en-tu-negocio': {
+    title: 'Publicidad en internet: formas de atraer tráfico | Playful',
+    description:
+      'Publicidad en internet para tu negocio: las distintas formas de atraer tráfico a tu página web y cómo elegir la que encaja con tus objetivos.',
+  },
+  'wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo': {
+    title: 'Wireframe web: ejemplos, tipos y herramientas | Playful',
+    description:
+      'Qué es un wireframe web, qué tipos existen, ejemplos y herramientas para hacerlo, y cómo te ayuda a comunicarte con el diseñador de tu página.',
+  },
+  'conoce-todo-sobre-la-publicidad-en-redes-sociales': {
+    title: 'Publicidad en redes sociales: cómo empezar | Playful',
+    description:
+      'Publicidad en redes sociales: qué es, cómo funciona y cómo empezar a promocionar tu marca para ganar visibilidad con tus primeros anuncios.',
+  },
+  'conoce-todo-sobre-instagram-ads': {
+    title: 'Instagram Ads: tipos de anuncios y cómo empezar | Playful',
+    description:
+      'Instagram Ads explicado: qué tipos de anuncios existen, cómo funcionan y cómo usarlos para impulsar tu negocio con tus primeras campañas.',
+  },
+  'programacion-web-que-es-como-puede-servirle-a-mi-marca': {
+    title: 'Programación web: qué es y cómo ayuda a tu marca | Playful',
+    description:
+      'Programación web: qué es, para qué sirve y cómo puede ayudar a tu marca a tener un sitio web funcional y atractivo para tus clientes.',
   },
   'cashea-para-comercios': {
     title: 'Cashea para comercios: cuotas en tu tienda online',

@@ -18,9 +18,9 @@ const blogPage = readFileSync(
 const ZELLE_TITLE =
   'Zelle en Venezuela: Un método de pago que puedes integrar en tu tienda en línea';
 const ZELLE_DOCUMENT_TITLE =
-  'Zelle en Venezuela: cobra en tu tienda online | Playful';
+  'Zelle en Venezuela: cómo cobrar en tu tienda | Playful';
 const ZELLE_META =
-  'Integra Zelle como método de pago en tu tienda online en Venezuela y automatiza la validación. Playful conecta tu checkout; no abrimos ni creamos cuentas Zelle.';
+  'Zelle en Venezuela: cómo funciona, qué bancos lo admiten y cómo integrarlo en el checkout de tu tienda online para validar pagos sin hacerlo a mano.';
 
 test('closed list overrides only the signed Zelle VE slug', () => {
   assert.equal(ZELLE_VE_BLOG_SLUG, 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce');
@@ -58,7 +58,10 @@ test('Zelle rewrite headings have ids for TOC and preserve in-site links', () =>
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /https:\/\/playfulagency\.com\/agencia-shopify/);
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /https:\/\/playfulagency\.com\/reunion-playful/);
   assert.match(ZELLE_VE_BLOG_BODY_HTML, /uno de los métodos de pago más utilizados/);
-  assert.match(ZELLE_VE_BLOG_BODY_HTML, /trabajamos la integración de pagos para marcas/);
+  assert.match(
+    ZELLE_VE_BLOG_BODY_HTML,
+    /trabajamos <a href="\/agencia-shopify">la integración de pagos para marcas que venden desde Venezuela<\/a>, y Zelle/,
+  );
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pagos-online-ecommerce/);
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pasarela-de-pago-ecommerce/);
 });
