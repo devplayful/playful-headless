@@ -28,7 +28,7 @@ export default async function BlogListingView({
 
   // Obtener los posts del blog (filtrados por categoría si existe)
   const [{ posts: allPosts, totalPages }, categoryNav] = await Promise.all([
-    getBlogPosts(currentPage, perPage, category),
+    getBlogPosts(currentPage, perPage, category, { applyPins: !category && !searchQuery }),
     getBlogCategoryNav(),
   ]);
   

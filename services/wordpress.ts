@@ -1,3 +1,4 @@
+import { applyBlogListingPins } from '@/config/blog-listing-pins';
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
@@ -627,7 +628,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
   };
 }
 
-export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
+export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = '', options: { applyPins?: boolean } = {}): Promise<{ posts: WPPost[], totalPages: number }> {
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
@@ -666,7 +667,8 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   const merged = filterOpenBlogPosts(
     mergeProductionLocalBlogPosts(processedPosts, { categorySlug }),
   );
-  return paginateBlogPosts(merged, page, perPage);
+  const ordered = options.applyPins && !categorySlug ? applyBlogListingPins(merged) : merged;
+  return paginateBlogPosts(ordered, page, perPage);
 }
 
 export async function getLatestBlogPosts(

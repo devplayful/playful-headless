@@ -184,7 +184,8 @@ function localPostCategoryIds(post: LocalBlogListingPost): number[] {
 
 /** Last update, then publish. Same fallback the listing cards print. */
 export function localBlogListingDateMs(post: LocalBlogListingPost): number {
-  const raw = post.modified_gmt || post.modified || post.date_gmt || post.date || '';
+  // Listings sort by publish date; `modified` changes on every WP edit (alts, links) and must not reorder /blog.
+  const raw = post.date_gmt || post.date || post.modified_gmt || post.modified || '';
   const ms = Date.parse(raw);
   return Number.isFinite(ms) ? ms : 0;
 }
