@@ -96,18 +96,16 @@ test('pagination component navigates with buttons, not indexable hrefs', () => {
   assert.doesNotMatch(pagination, /<Link/);
 });
 
-test('listing chips and the category-index 308 share the same slugs', () => {
-  for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
-    assert.match(categories, new RegExp(`slug: '${slug}'`));
-  }
+test('listing chips come from WP categories with open posts, not a fixed list', () => {
+  assert.doesNotMatch(categories, /predefinedCategories/);
+  assert.match(categories, /categories: BlogCategoryNavItem\[\]/);
 });
 
-test('category UI has no crawlable ?category= hrefs', () => {
+test('category chips are crawlable <Link> to /blog?category=<slug> (SEO 23 oct)', () => {
   assert.match(categories, /blogListingPath\(\{\s*category:/);
-  assert.match(categories, /href="\/blog"/);
-  assert.doesNotMatch(categories, CRAWLABLE_QUERY_HREF);
-  assert.doesNotMatch(categories, /href=\{`\/blog\$\{cat\.slug \? `\?category=/);
-  assert.doesNotMatch(categories, /href=["'`]\/blog\?category=/);
+  assert.match(categories, /'\/blog'/);
+  assert.doesNotMatch(categories, /router\.push/);
+  assert.doesNotMatch(categories, /<button/);
 });
 
 test('clean /blog generateMetadata title and robots stay unchanged', () => {

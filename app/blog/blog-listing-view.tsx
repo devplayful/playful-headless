@@ -1,4 +1,5 @@
-import { getBlogPosts } from '@/services/wordpress';
+import { getBlogPosts, getBlogCategoryNav } from '@/services/wordpress';
+import { blogListingPath, blogPostPath } from '@/utils/blog-url';
 import { BLOG_LISTING_PER_PAGE } from '@/utils/blog-listing-query';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,7 +10,6 @@ import MostViewedArticles from '@/components/blog/MostViewedArticles';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { filterOpenBlogPosts } from '@/utils/blog-closed-paths';
-import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_LISTING_CARD_SIZES, BLOG_LISTING_HERO_SIZES } from '@/lib/blog-image-sizes';
 import { resolveBlogCoverAlt } from '@/lib/blog-cover-image';
@@ -27,7 +27,10 @@ export default async function BlogListingView({
   const perPage = BLOG_LISTING_PER_PAGE; // 1 destacado + 9 en el grid (3x3)
 
   // Obtener los posts del blog (filtrados por categoría si existe)
-  const { posts: allPosts, totalPages } = await getBlogPosts(currentPage, perPage, category);
+  const [{ posts: allPosts, totalPages }, categoryNav] = await Promise.all([
+    getBlogPosts(currentPage, perPage, category, { applyPins: !category && !searchQuery }),
+    getBlogCategoryNav(),
+  ]);
   
   // Filtrar posts por búsqueda si existe query
   let posts = filterOpenBlogPosts(allPosts);
@@ -186,19 +189,39 @@ export default async function BlogListingView({
       )}
 
       {/* Artículos Más Vistos */}
-      <MostViewedArticles posts={posts} />
+      {!(category && !searchQuery && posts.length === 0) && <MostViewedArticles posts={posts} />}
 
       {/* Barra de categorías */}
       <div className="w-full pb-8">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
-          <BlogCategories currentCategory={category} />
+          <BlogCategories currentCategory={category} categories={categoryNav} />
         </div>
       </div>
 
       {/* Grid de Posts */}
       <div className="w-full pt-0 pb-0 md:pb-6">
         <div className="max-w-[1200px] mx-auto px-4 md:px-6">
-          {posts.length <= 1 ? (
+          {category && !searchQuery && posts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-lg text-gray-700 mb-6">Todavía no hay artículos en esta categoría.</p>
+              <ul className="flex flex-wrap gap-3 justify-center">
+                <li>
+                  <Link href="/blog" className="inline-block bg-[#440099] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#5500BB] transition-all">
+                    Ver todos los artículos
+                  </Link>
+                </li>
+                {categoryNav
+                  .filter((cat) => cat.slug !== category)
+                  .map((cat) => (
+                    <li key={cat.id}>
+                      <Link href={blogListingPath({ category: cat.slug })} className="inline-block bg-[#F0E6FF] text-[#440099] px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#72E3D8] transition-all">
+                        {cat.name}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ) : posts.length <= 1 ? (
             <div className="text-center py-12">
               <p className="text-lg text-gray-700">No se encontraron más artículos en esta categoría.</p>
             </div>

@@ -1,3 +1,4 @@
+import { applyBlogListingPins } from '@/config/blog-listing-pins';
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { applyPublicCaseStudyOverrides } from '@/utils/public-case-study-overrides';
@@ -627,7 +628,7 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
   };
 }
 
-export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
+export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = '', options: { applyPins?: boolean } = {}): Promise<{ posts: WPPost[], totalPages: number }> {
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
@@ -666,7 +667,8 @@ export async function getBlogPosts(page: number = 1, perPage: number = 6, catego
   const merged = filterOpenBlogPosts(
     mergeProductionLocalBlogPosts(processedPosts, { categorySlug }),
   );
-  return paginateBlogPosts(merged, page, perPage);
+  const ordered = options.applyPins && !categorySlug ? applyBlogListingPins(merged) : merged;
+  return paginateBlogPosts(ordered, page, perPage);
 }
 
 export async function getLatestBlogPosts(
@@ -1538,4 +1540,55 @@ async function loadAllCaseStudies(): Promise<any[]> {
 /** Header, home and service pages share one in-flight listing (3600s). */
 export async function getAllCaseStudies(): Promise<any[]> {
   return fetchWithRelatedPostsTtl(caseStudiesCache, loadAllCaseStudies, Date.now, 3600 * 1000);
+}
+
+export interface BlogCategoryNavItem {
+  id: number;
+  name: string;
+  slug: string;
+  /** Posts that render (200) after filterOpenBlogPosts. */
+  openCount: number;
+}
+
+/** Display-only label fixes; slugs never change. */
+const BLOG_CATEGORY_LABEL_OVERRIDES: Record<string, string> = {
+  seo: 'SEO',
+  tecnologia: 'Tecnología',
+};
+
+function decodeCategoryName(name: string): string {
+  return name
+    .replace(/&amp;/g, '&')
+    .replace(/&#0?39;|&#8217;/g, '’')
+    .replace(/&quot;/g, '"');
+}
+
+/**
+ * Category chips for /blog: WP categories with posts (`hide_empty=true`),
+ * kept only when at least one post survives filterOpenBlogPosts (i.e. answers 200).
+ */
+export async function getBlogCategoryNav(): Promise<BlogCategoryNavItem[]> {
+  try {
+    const { items } = await wordpressFetchCollection<{ id: number; name: string; slug: string }>(
+      `${WORDPRESS_API_URL}/wp/v2/categories?hide_empty=true&per_page=100&orderby=name&order=asc&_fields=id,slug,name`,
+      { next: { revalidate: 600 }, headers: { 'Content-Type': 'application/json' } },
+    );
+    const terms = items.filter((t) => t && typeof t.id === 'number' && t.slug && t.slug !== 'sin-categoria' && t.slug !== 'uncategorized');
+    const result: BlogCategoryNavItem[] = [];
+    for (const term of terms) {
+      const { totalPages } = await getBlogPosts(1, 1, term.slug);
+      if (totalPages > 0) {
+        result.push({
+          id: term.id,
+          slug: term.slug,
+          name: BLOG_CATEGORY_LABEL_OVERRIDES[term.slug] ?? decodeCategoryName(term.name || term.slug),
+          openCount: totalPages,
+        });
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error('getBlogCategoryNav failed', error);
+    return [];
+  }
 }
