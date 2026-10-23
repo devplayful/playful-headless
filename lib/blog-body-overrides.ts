@@ -88,7 +88,7 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 <p>La ventaja de automatización real está en WooCommerce. Si tu operación ya recibe volumen de pagos por Zelle y quieres dejar de validar a mano, esa es la plataforma donde el flujo se puede llevar al nivel más eficiente.</p>
 <h2 id="quieres-que-tu-e-commerce-tenga-zelle-en-su-pasarela-de-pago">¿Quieres que tu E-Commerce tenga Zelle en su pasarela de pago?</h2>
 <p>Si tu ecommerce ya recibe pagos por Zelle y quieres que ese método aparezca de forma profesional en tu checkout y esté automatizado, podemos ayudarte.</p>
-<p>En Playful Agency trabajamos la integración de pagos para marcas que venden desde Venezuela, y Zelle es uno de los que más configuramos porque es el que más piden los compradores.</p>
+<p>En Playful Agency trabajamos <a href="/agencia-shopify">la integración de pagos para marcas que venden desde Venezuela</a>, y Zelle es uno de los que más configuramos porque es el que más piden los compradores.</p>
 <p><a href="https://playfulagency.com/reunion-playful">Agenda una reunión con nuestro equipo</a> y revisamos juntos cómo integrar Zelle en la pasarela de tu tienda, qué plataforma estás usando y qué nivel de automatización puedes alcanzar en la validación.</p>
 <h2 id="preguntas-frecuentes">Preguntas frecuentes</h2>
 <p><strong>¿Playful abre o crea cuentas Zelle en Venezuela?</strong></p>
