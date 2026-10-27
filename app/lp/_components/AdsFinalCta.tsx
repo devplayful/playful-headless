@@ -49,6 +49,7 @@ export default function AdsFinalCta({ title, body, button }: AdsFinalCtaProps) {
             <p className="mb-8 text-center text-lg text-[#453A53]">{body}</p>
             <a
               href={SERVICE_BOOKING_HREF}
+              data-cta="lp-meta-final"
               className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#440099] px-8 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#5B21B6] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099] md:text-base"
             >
               {button}
