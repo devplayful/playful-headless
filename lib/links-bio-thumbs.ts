@@ -1,4 +1,3 @@
-import { CONTACT_HREF } from '../utils/booking.ts';
 import {
   BLOG_COVER_FALLBACK,
   blogCoverForSlug,
@@ -29,7 +28,7 @@ const FALLBACK_THUMB: LinksBioThumb = {
 
 const CASOS_COLLAGE = Object.values(CASOS_DE_EXITO_FEATURED_TAPAS);
 
-/** Destination covers: listing tapas, approved landing art, contact illustration. */
+/** Destination covers: listing tapas, approved landing art, home OG for the call. */
 export const LINKS_BIO_DESTINATION_COVERS: Record<
   string,
   Omit<LinksBioThumb, 'isFallback'>
@@ -45,15 +44,10 @@ export const LINKS_BIO_DESTINATION_COVERS: Record<
     alt: '',
     objectFit: 'cover',
   },
-  '/agencia-shopify': {
-    src: publicWebpIfPresent('/images/agencia-shopify/hero-gORwV7MSXO@2x.png'),
+  '/reunion-playful': {
+    src: '/images/og/home.jpg',
     alt: '',
     objectFit: 'cover',
-  },
-  [CONTACT_HREF]: {
-    src: '/images/contacto-imagen.png',
-    alt: '',
-    objectFit: 'contain',
   },
 };
 
