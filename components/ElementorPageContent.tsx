@@ -6,6 +6,7 @@ import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
+import { rewriteEcommerceOnpage2710 } from '@/utils/ecommerce-onpage-2710';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
@@ -166,10 +167,13 @@ export default function ElementorPageContent({
   const preparedHtml = markFirstHeroImagePriority(
     applyImageAltOverrides(
       rewriteElementorBodyHrefs(
-        rewriteEcommerceZelleCover(
-          rewriteEcommerceSoytechnoCaseLink(
-            rewriteEcommerceShopifyLink(
-              rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+        rewriteEcommerceOnpage2710(
+          rewriteEcommerceZelleCover(
+            rewriteEcommerceSoytechnoCaseLink(
+              rewriteEcommerceShopifyLink(
+                rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+                slug,
+              ),
               slug,
             ),
             slug,

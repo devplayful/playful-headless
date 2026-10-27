@@ -64,6 +64,15 @@ test('Zelle rewrite headings have ids for TOC and preserve in-site links', () =>
   );
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pagos-online-ecommerce/);
   assert.doesNotMatch(ZELLE_VE_BLOG_BODY_HTML, /pasarela-de-pago-ecommerce/);
+  assert.match(
+    ZELLE_VE_BLOG_BODY_HTML,
+    /data-playful-zelle-cierre="2710"/,
+  );
+  assert.match(
+    ZELLE_VE_BLOG_BODY_HTML,
+    /<a href="\/agencia-shopify">integrar Zelle y pagos locales en tu tienda Shopify<\/a>/,
+  );
+  assert.match(ZELLE_VE_BLOG_BODY_HTML, /COPY SIN FIRMAR — Contenido:/);
 });
 
 test('migración SEO override books via /reunion-playful, not the widget API', () => {

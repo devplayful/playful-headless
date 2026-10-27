@@ -113,6 +113,10 @@ test('FAQPage exists for the five service landings and Zelle, not a second Shopi
     getBlogFaqJsonLd('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce').mainEntity.length,
     3,
   );
+  assert.equal(
+    getBlogFaqJsonLd('premios-cima-2026-soytechno-playful').mainEntity.length,
+    4,
+  );
   assert.equal(getBlogFaqJsonLd('rediseno-web'), null);
 
   const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');

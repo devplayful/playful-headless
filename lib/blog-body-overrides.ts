@@ -106,6 +106,11 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 <p><strong>¿Cómo está el Zelle en Venezuela?</strong></p>
 <p>Zelle sigue siendo uno de los métodos de pago más populares en Venezuela para transacciones en dólares, sobre todo en comercio electrónico. No ha cambiado la mecánica del sistema, que funciona entre cuentas bancarias en Estados Unidos.</p>
 <p>Lo que sí ha crecido es la cantidad de negocios venezolanos que lo integran en sus tiendas en línea como método de pago formal dentro del checkout, en lugar de manejarlo por canales informales como WhatsApp o mensajes directos.</p>
+<div data-playful-zelle-cierre="2710">
+<p>[COPY SIN FIRMAR — Contenido: cierre de servicio del post Zelle. El bloque debe pedir el servicio de integración, no la cuenta de Zelle.]</p>
+<p><a href="/agencia-shopify">integrar Zelle y pagos locales en tu tienda Shopify</a></p>
+<p><a href="/reunion-playful">[COPY SIN FIRMAR — Contenido: texto del botón de cierre a /reunion-playful]</a></p>
+</div>
 `.trim();
 
 export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `

@@ -9,6 +9,7 @@ import { rewriteAgenciaDisenoUxUiLink } from '@/utils/agencia-diseno-ux-ui-link'
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
+import { rewriteEcommerceOnpage2710 } from '@/utils/ecommerce-onpage-2710';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
 import {
   rewriteInSitePageHrefs,
@@ -411,11 +412,14 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const rawHtml: string = page.content?.rendered || '';
   const html = applyImageAltOverrides(
     rewriteElementorBodyHrefs(
-      rewriteEcommerceZelleCover(
-        rewriteEcommerceSoytechnoCaseLink(
-          rewriteEcommerceShopifyLink(
-            rewriteAgenciaDisenoUxUiLink(
-              rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+      rewriteEcommerceOnpage2710(
+        rewriteEcommerceZelleCover(
+          rewriteEcommerceSoytechnoCaseLink(
+            rewriteEcommerceShopifyLink(
+              rewriteAgenciaDisenoUxUiLink(
+                rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+                slug,
+              ),
               slug,
             ),
             slug,
