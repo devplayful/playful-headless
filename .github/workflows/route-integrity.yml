@@ -39,6 +39,8 @@ jobs:
         run: node --experimental-strip-types --test tests/blog-editorial-meta.test.mjs tests/blog-article-author-dates.test.mjs
       - name: Unit-test CTA click classification
         run: npm run test:cta-click
+      - name: Unit-test /gracias Schedule vs Lead
+        run: node --experimental-strip-types --test tests/thank-you-page.test.mjs
       - name: Type-check
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact
