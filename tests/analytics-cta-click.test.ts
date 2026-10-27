@@ -110,6 +110,9 @@ test('does not hold cmd/ctrl-click or new-tab targets; holds only without beacon
   assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: true, canBeacon: false }), false);
   assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: false, canBeacon: true }), false);
   assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: false, canBeacon: false }), true);
+  assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: false, canBeacon: true, event: 'cta_reunion_click' }), true);
+  assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: true, canBeacon: true, event: 'cta_reunion_click' }), false);
+  assert.equal(shouldHoldCtaNavigation({ modifiedOrNewTab: false, canBeacon: true, event: 'cta_contact_click' }), false);
 });
 
 test('sendCtaEvent uses gtag with beacon transport', () => {
@@ -149,4 +152,73 @@ test('sendCtaEvent uses gtag with beacon transport', () => {
       value: originalWindow,
     });
   }
+});
+
+function fakeWindow(withGtag: boolean) {
+  const calls: unknown[][] = [];
+  const assigned: string[] = [];
+  const timers: Array<() => void> = [];
+  const anchor = {
+    href: 'https://playfulagency.com/reunion-playful',
+    textContent: 'Reservar',
+    getAttribute: (n: string) => (n === 'href' ? '/reunion-playful' : null),
+    hasAttribute: () => false,
+    closest: (sel: string) => (sel === 'a' ? anchor : null),
+  };
+  const g = globalThis as Record<string, unknown>;
+  const set = (k: string, v: unknown) =>
+    Object.defineProperty(g, k, { value: v, configurable: true, writable: true });
+  const saved: Record<string, PropertyDescriptor | undefined> = {
+    window: Object.getOwnPropertyDescriptor(g, 'window'),
+    Element: Object.getOwnPropertyDescriptor(g, 'Element'),
+    document: Object.getOwnPropertyDescriptor(g, 'document'),
+  };
+  class FakeElement {}
+  Object.setPrototypeOf(anchor, FakeElement.prototype);
+  set('Element', FakeElement);
+  set('document', { cookie: '' });
+  set('window', {
+    location: { pathname: '/', search: '', hostname: 'playfulagency.com', assign: (u: string) => assigned.push(u) },
+    setTimeout: (fn: () => void) => { timers.push(fn); return timers.length; },
+    clearTimeout: () => {},
+    sessionStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+    gtag: withGtag ? (...a: unknown[]) => calls.push(a) : undefined,
+  });
+  let prevented = false;
+  const event = { target: anchor, button: 0, preventDefault: () => { prevented = true; }, stopPropagation: () => {} };
+  const restore = () => {
+    for (const [k, d] of Object.entries(saved)) {
+      if (d) Object.defineProperty(g, k, d);
+      else delete g[k];
+    }
+  };
+  return { calls, assigned, timers, event, restore, prevented: () => prevented };
+}
+
+test('cta_reunion_click: gtag gets transport_type beacon + callback, navigation after callback', async () => {
+  const { handleCtaDocumentClick } = await import('../lib/analytics/cta-click.ts');
+  const f = fakeWindow(true);
+  try {
+    handleCtaDocumentClick(f.event as unknown as MouseEvent);
+    assert.equal(f.prevented(), true);
+    const call = f.calls.find((c) => c[1] === 'cta_reunion_click');
+    assert.ok(call, 'gtag event called');
+    const params = call![2] as Record<string, unknown>;
+    assert.equal(params.transport_type, 'beacon');
+    assert.equal(params.event_timeout, 300);
+    assert.equal(f.assigned.length, 0);
+    (params.event_callback as () => void)();
+    f.timers.forEach((t) => t());
+    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion-playful']);
+  } finally { f.restore(); }
+});
+
+test('cta_reunion_click: without gtag navigation still happens (once)', async () => {
+  const { handleCtaDocumentClick } = await import('../lib/analytics/cta-click.ts');
+  const f = fakeWindow(false);
+  try {
+    handleCtaDocumentClick(f.event as unknown as MouseEvent);
+    f.timers.forEach((t) => t());
+    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion-playful']);
+  } finally { f.restore(); }
 });

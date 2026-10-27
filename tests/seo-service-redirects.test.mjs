@@ -27,6 +27,7 @@ const NEW_301 = [
   ['/seo', '/agencia-seo'],
   ['/servicios/seo', '/agencia-seo'],
   ['/servicios/desarrollo-web', '/agencia-diseno-web'],
+  ['/servicios/analitica-avanzada', '/agencia-seo'],
 ];
 
 const STAY_404 = [
@@ -46,7 +47,7 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
 }, categoryRedirects);
 
 test('closed SEO service 301s are one hop to an absolute apex 200', () => {
-  assert.equal(Object.keys(seoServiceRedirects).length, 4);
+  assert.equal(Object.keys(seoServiceRedirects).length, 5);
 
   for (const [origin, destPath] of NEW_301) {
     const dest = `${APEX}${destPath}`;
@@ -78,10 +79,11 @@ test('middleware 301s the new origins in one hop with an absolute Location', () 
   assert.match(middlewareSource, /seo-service-redirect-map\.json/);
   assert.match(middlewareSource, /\.\.\.seoServiceRedirects/);
   assert.match(middlewareSource, /NextResponse\.redirect\(target, 301\)/);
-  const destLookup = middlewareSource.slice(
-    middlewareSource.indexOf('const dest = PERMANENT_301[path]'),
-    middlewareSource.indexOf('const blogSeo'),
+  const resolver = middlewareSource.slice(
+    middlewareSource.indexOf('function resolveSingleHopRedirect'),
+    middlewareSource.indexOf('export function middleware'),
   );
-  assert.match(destLookup, /NextResponse\.redirect\(target, 301\)/);
-  assert.match(destLookup, /new URL\(dest\)/);
+  assert.match(resolver, /PERMANENT_301\[pathname\]/);
+  assert.match(resolver, /continue;/);
+  assert.match(resolver, /new URL\(dest\)/);
 });

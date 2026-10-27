@@ -161,7 +161,7 @@ test('route-integrity inventory no longer governs the 31 closed posts', () => {
 test('middleware returns 410 before category/AMP redirects; listings filter closed posts', () => {
   const body = middlewareSource.slice(middlewareSource.indexOf('export function middleware'));
   const closedIdx = body.indexOf('blogClosedDecision');
-  const redirectIdx = body.indexOf('blogSeoRedirectDecision');
+  const redirectIdx = body.indexOf('resolveSingleHopRedirect(');
   assert.ok(closedIdx !== -1 && redirectIdx !== -1 && closedIdx < redirectIdx);
   assert.match(middlewareSource, /status: 410/);
   assert.match(listingSource, /filterOpenBlogPosts/);
