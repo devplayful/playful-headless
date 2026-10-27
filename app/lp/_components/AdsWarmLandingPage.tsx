@@ -77,7 +77,7 @@ export default async function AdsWarmLandingPage({ copy }: { copy: AdsWarmLandin
                 <PlaceholderBlock block={copy.hero.subtitle} />
                 <div className="space-y-4">
                   <ScrollCta block={copy.hero.ctaSecondary} />
-                  <p className="text-sm text-[#6B6570] italic" data-content-note>
+                  <p className="text-sm text-[#453A53] italic" data-content-note>
                     Nota para Contenido: {copy.hero.ctaSecondary.note}
                   </p>
                 </div>
@@ -153,13 +153,13 @@ export default async function AdsWarmLandingPage({ copy }: { copy: AdsWarmLandin
               button={placeholderLabel(copy.finalCta.button.tag)}
             />
             <div className="mt-4 space-y-2 max-w-2xl mx-auto text-center">
-              <p className="text-sm text-[#6B6570] italic" data-content-note>
+              <p className="text-sm text-[#453A53] italic" data-content-note>
                 Nota para Contenido (titular CTA): {copy.finalCta.h2.note}
               </p>
-              <p className="text-sm text-[#6B6570] italic" data-content-note>
+              <p className="text-sm text-[#453A53] italic" data-content-note>
                 Nota para Contenido (cuerpo CTA): {copy.finalCta.body.note}
               </p>
-              <p className="text-sm text-[#6B6570] italic" data-content-note>
+              <p className="text-sm text-[#453A53] italic" data-content-note>
                 Nota para Contenido (botón): {copy.finalCta.button.note}
               </p>
             </div>

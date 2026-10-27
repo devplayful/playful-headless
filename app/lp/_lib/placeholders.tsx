@@ -25,7 +25,7 @@ export function PlaceholderBlock({
   return (
     <div className="space-y-2">
       <Tag className={className}>{label}</Tag>
-      <p className="text-sm text-[#6B6570] italic border-l-2 border-[#E9D7FF] pl-3" data-content-note>
+      <p className="text-sm text-[#453A53] italic border-l-2 border-[#E9D7FF] pl-3" data-content-note>
         Nota para Contenido: {block.note}
       </p>
     </div>
@@ -36,7 +36,7 @@ export function PlaceholderFaqAnswer({ block }: { block: ContentPlaceholder }) {
   return (
     <div className="space-y-2">
       <p className="playful-contenido-p mb-0">{placeholderLabel(block.tag)}</p>
-      <p className="text-sm text-[#6B6570] italic" data-content-note>
+      <p className="text-sm text-[#453A53] italic" data-content-note>
         Nota para Contenido: {block.note}
       </p>
     </div>
