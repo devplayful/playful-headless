@@ -105,6 +105,7 @@ function parseArgs(argv) {
     axeOnly: false,
     lighthouseOnly: false,
     skipExisting: true,
+    shareToken: process.env.VERCEL_SHARE || '',
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -113,8 +114,15 @@ function parseArgs(argv) {
     else if (arg === '--axe-only') out.axeOnly = true;
     else if (arg === '--lighthouse-only') out.lighthouseOnly = true;
     else if (arg === '--no-resume') out.skipExisting = false;
+    else if (arg === '--share-token') out.shareToken = argv[++i];
   }
   return out;
+}
+
+function withAuditUrl(href, shareToken = '') {
+  const url = new URL(withQaUrl(href));
+  if (shareToken) url.searchParams.set('_vercel_share', shareToken);
+  return url.toString();
 }
 
 function uniquePaths(paths) {
@@ -155,8 +163,10 @@ function pathFromLoc(loc) {
   }
 }
 
-async function fetchProductionSitemapPaths(origin) {
-  const res = await liveFetch(`${origin}/sitemap.xml`);
+async function fetchProductionSitemapPaths(origin, shareToken = '') {
+  const res = shareToken
+    ? (await paceLiveQa(), fetch(withAuditUrl(`${origin}/sitemap.xml`, shareToken), { headers: { 'user-agent': PLAYFUL_QA_UA } }))
+    : await liveFetch(`${origin}/sitemap.xml`);
   const xml = await res.text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => pathFromLoc(m[1]));
   return { status: res.status, paths: uniquePaths(locs) };
@@ -183,10 +193,10 @@ function score100(value) {
   return Math.round(value * 100);
 }
 
-function runLighthouse(url, formFactor, reportPath) {
+function runLighthouse(url, formFactor, reportPath, shareToken = '') {
   const mobile = formFactor === 'mobile';
   const args = [
-    withQaUrl(url),
+    withAuditUrl(url, shareToken),
     '--quiet',
     `--chrome-flags=--headless=new --no-sandbox --disable-gpu --user-data-dir=/tmp/lh-chrome-${formFactor}`,
     '--only-categories=performance,accessibility,best-practices,seo',
@@ -221,7 +231,7 @@ function runLighthouse(url, formFactor, reportPath) {
   };
 }
 
-async function runAxe(url, axeSource) {
+async function runAxe(url, axeSource, shareToken = '') {
   const puppeteerPath = resolveTool('puppeteer-core', ['/tmp/playful-qa-tools/node_modules']);
   if (!puppeteerPath) throw new Error('puppeteer-core is not installed in /tmp/playful-qa-tools');
   const puppeteer = require(puppeteerPath);
@@ -235,7 +245,7 @@ async function runAxe(url, axeSource) {
     const page = await browser.newPage();
     await page.setUserAgent(PLAYFUL_QA_UA);
     page.setDefaultNavigationTimeout(90_000);
-    await page.goto(withQaUrl(url), { waitUntil: 'networkidle2' });
+    await page.goto(withAuditUrl(url, shareToken), { waitUntil: 'networkidle2' });
     await page.addScriptTag({ content: axeSource });
     const results = await page.evaluate(async () => {
       // eslint-disable-next-line no-undef
@@ -266,7 +276,10 @@ async function runAxe(url, axeSource) {
 }
 
 function summarize(rows) {
-  const withLh = rows.filter((r) => r.lighthouse?.mobile && r.lighthouse?.desktop);
+  const withLh = rows.filter((r) => (
+    typeof r.lighthouse?.mobile?.performance === 'number'
+    && typeof r.lighthouse?.desktop?.performance === 'number'
+  ));
   const avg = (pick) => {
     if (!withLh.length) return null;
     return Math.round(withLh.reduce((sum, row) => sum + pick(row), 0) / withLh.length);
@@ -307,7 +320,7 @@ async function main() {
   const inventory = inventoryPaths();
   let sitemap = { status: null, paths: [] };
   try {
-    sitemap = await fetchProductionSitemapPaths(opts.origin);
+    sitemap = await fetchProductionSitemapPaths(opts.origin, opts.shareToken);
   } catch (error) {
     sitemap = { status: 'error', error: String(error), paths: [] };
   }
@@ -335,7 +348,7 @@ async function main() {
 
     if (needAxe) {
       try {
-        row.axe = await runAxe(url, axeSource);
+        row.axe = await runAxe(url, axeSource, opts.shareToken);
         row.axeError = null;
       } catch (error) {
         row.axeError = String(error);
@@ -351,7 +364,7 @@ async function main() {
         await paceLiveQa();
         const reportPath = join(opts.outDir, `lh-${path.replace(/\W+/g, '_') || 'home'}-${form}.json`);
         try {
-          row.lighthouse[form] = runLighthouse(url, form, reportPath);
+          row.lighthouse[form] = runLighthouse(url, form, reportPath, opts.shareToken);
         } catch (error) {
           row.lighthouse[form] = { error: String(error) };
           console.error(`lighthouse ${form} failed ${path}: ${error}`);

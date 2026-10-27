@@ -53,6 +53,12 @@ function loadScript(src: string): Promise<void> {
 
 type MaeWindow = typeof window & { jQuery?: any };
 
+function stripInvalidButtonAriaSelectedLive(root: ParentNode = document) {
+  root.querySelectorAll('[role="button"][aria-selected]').forEach((el) => {
+    el.removeAttribute('aria-selected');
+  });
+}
+
 function hideDuplicateMasterLinkArrows() {
   document.querySelectorAll('.playful-wp-page a.master-link').forEach((a) => {
     const text = (a.textContent || '').replace(/\s+/g, ' ');
@@ -359,8 +365,15 @@ export default function ElementorPageScripts({
     hideDuplicateMasterLinkArrows();
     hideBrokenPostMetaImages();
     injectQa2Style();
+    stripInvalidButtonAriaSelectedLive();
+    const wpRoot = document.querySelector('.playful-wp-page');
+    const ariaObserver = wpRoot
+      ? new MutationObserver(() => stripInvalidButtonAriaSelectedLive(wpRoot))
+      : null;
+    ariaObserver?.observe(wpRoot as Node, { attributes: true, subtree: true, attributeFilter: ['aria-selected', 'role'] });
     const runQa2 = () => {
       requestAnimationFrame(() => {
+        stripInvalidButtonAriaSelectedLive();
         applyQa2Fixes();
         applySemPillsClipFix();
         fixSemLogoCarousel(pageId);
@@ -468,6 +481,7 @@ export default function ElementorPageScripts({
 
     return () => {
       cancelled = true;
+      ariaObserver?.disconnect();
       window.removeEventListener('load', runDeferredHeavyScripts);
       window.removeEventListener('load', onLoad);
       window.clearTimeout(t500);

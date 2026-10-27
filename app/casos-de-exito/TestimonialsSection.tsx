@@ -186,7 +186,7 @@ export default function TestimonialsSection({
                       {testimonial.name}
                     </h3>
 
-                    <div className="flex justify-center mb-4" aria-label="5 de 5 estrellas">
+                    <div className="flex justify-center mb-4" role="img" aria-label="5 de 5 estrellas">
                       <div className="text-yellow-400 text-xl" aria-hidden="true">
                         {[...Array(5)].map((_, i) => (
                           <span key={i}>★</span>

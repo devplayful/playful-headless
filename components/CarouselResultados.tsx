@@ -279,6 +279,8 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
     const syncHiddenSlides = () => {
       root.querySelectorAll<HTMLElement>('.slick-slide').forEach((slide) => {
         const hidden = slide.getAttribute('aria-hidden') === 'true';
+        if (hidden) slide.setAttribute('inert', '');
+        else slide.removeAttribute('inert');
         slide.querySelectorAll<HTMLElement>('a, button, input, select, textarea').forEach((el) => {
           if (hidden) {
             if (!el.hasAttribute('data-playful-tabindex')) {
