@@ -17,9 +17,25 @@ const sitemap = readFileSync(new URL('../utils/apex-sitemap.ts', import.meta.url
 const headerNav = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 
 test('ads warm landings use /reunion-playful and shared attribution propagator', () => {
-  assert.match(sharedPage, /SERVICE_BOOKING_HREF/);
-  assert.match(sharedPage, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
+  const finalCta = readFileSync(new URL('../app/lp/_components/AdsFinalCta.tsx', import.meta.url), 'utf8');
+  assert.match(finalCta, /SERVICE_BOOKING_HREF/);
+  assert.match(finalCta, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(sharedPage, /widget\/bookings\/reunion-playful/);
+  assert.doesNotMatch(finalCta, /widget\/bookings\/reunion-playful/);
+});
+
+test('ads warm landings use LP-owned cards, FAQ and CTA (no nested button / double h2)', () => {
+  assert.match(sharedPage, /AdsCaseCard/);
+  assert.match(sharedPage, /AdsFaq/);
+  assert.match(sharedPage, /AdsFinalCta/);
+  assert.match(sharedPage, /AdsHeroArt/);
+  assert.doesNotMatch(sharedPage, /CaseStudyCard/);
+  assert.doesNotMatch(sharedPage, /TwoColumnCtaSection/);
+  assert.doesNotMatch(sharedPage, /ServiceFaqAccordion/);
+  const caseCard = readFileSync(new URL('../app/lp/_components/AdsCaseCard.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(caseCard, /<button/);
+  const finalCta = readFileSync(new URL('../app/lp/_components/AdsFinalCta.tsx', import.meta.url), 'utf8');
+  assert.equal([...finalCta.matchAll(/<h2/g)].length, 1);
 });
 
 test('ads warm landings are noindex in layout and next headers', () => {
