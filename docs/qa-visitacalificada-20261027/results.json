@@ -1,0 +1,103 @@
+{
+  "sha": "381578148a23d07a61ceb299331d5ab98086cf8e",
+  "base": "http://127.0.0.1:3000",
+  "command": "npx next start -p 3000 && SEO_BASE_URL=http://127.0.0.1:3000 node scripts/visita-calificada-qa-playwright.mjs",
+  "uaOfficial": "PlayfulQA/1.0",
+  "ok": true,
+  "officialScript": {
+    "startedAtUtc": "2026-10-27T20:44:51.579Z",
+    "finishedAtUtc": "2026-10-27T20:45:11.158Z",
+    "exitCode": 0,
+    "stdoutFile": "playwright-ab-stdout.json"
+  },
+  "cases": {
+    "a": {
+      "case": "a",
+      "startedAtUtc": "2026-10-27T20:44:51.579Z",
+      "eventAtUtc": "2026-10-27T20:45:07.201Z",
+      "screenshotAtUtc": "2026-10-27T20:45:29.358Z",
+      "finishedAtUtc": "2026-10-27T20:45:29.358Z",
+      "status": 200,
+      "scrollDepth": 0.757,
+      "events": [
+        {
+          "event": "visita_calificada",
+          "event_id": "vc-1793133907201-0h48cj1b",
+          "trigger": "scroll_time",
+          "lp_slug": "calentamiento",
+          "qa": true
+        }
+      ],
+      "ok": true,
+      "screenshot": "a-scroll-time.png"
+    },
+    "b": {
+      "case": "b",
+      "officialAtUtc": "2026-10-27T20:45:11.129Z",
+      "startedAtUtc": "2026-10-27T20:46:09.820Z",
+      "finishedAtUtc": "2026-10-27T20:46:10.807Z",
+      "landingScreenshotAtUtc": "2026-10-27T20:46:59.359Z",
+      "status": 200,
+      "events": [
+        {
+          "event": "visita_calificada",
+          "event_id": "vc-1793133911129-jbx2je3d",
+          "trigger": "cta_click",
+          "lp_slug": "calentamiento",
+          "qa": true
+        }
+      ],
+      "recapture": {
+        "event_id": "vc-1793133970805-3ru4kjpi",
+        "trigger": "cta_click",
+        "qa": true
+      },
+      "ok": true,
+      "screenshots": ["b-cta-landing.png", "b-cta-click.png"]
+    },
+    "c": {
+      "case": "c",
+      "startedAtUtc": "2026-10-27T20:46:12.012Z",
+      "finishedAtUtc": "2026-10-27T20:46:12.984Z",
+      "screenshotAtUtc": "2026-10-27T20:46:13.051Z",
+      "status": 200,
+      "search": "",
+      "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+      "events": [
+        {
+          "event": "visita_calificada",
+          "event_id": "vc-1793133972983-f0zo7zuz",
+          "trigger": "cta_click",
+          "lp_slug": "calentamiento"
+        }
+      ],
+      "fbqCalls": [
+        [
+          "trackCustom",
+          "VisitaCalificada",
+          {
+            "content_name": "lp-calentamiento",
+            "trigger": "cta_click",
+            "lp_slug": "calentamiento"
+          },
+          {
+            "eventID": "vc-1793133972983-f0zo7zuz"
+          }
+        ]
+      ],
+      "ok": true,
+      "screenshot": "c-fbq-trackcustom.png"
+    },
+    "d": {
+      "case": "d",
+      "startedAtUtc": "2026-10-27T20:46:14.160Z",
+      "finishedAtUtc": "2026-10-27T20:46:31.044Z",
+      "screenshotAtUtc": "2026-10-27T20:46:31.099Z",
+      "status": 200,
+      "path": "/",
+      "events": [],
+      "ok": true,
+      "screenshot": "d-home-no-push.png"
+    }
+  }
+}
