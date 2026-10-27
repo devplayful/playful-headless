@@ -294,6 +294,11 @@ test('gracias wires cookies and the conversion without touching layout, header, 
   assert.match(tracker, /scheduleAdsBookingConversion/);
   assert.match(middleware, /appendPaBookingCookies/);
   assert.match(middleware, /paBookingCookieLine/);
+  const attach = middleware.slice(
+    middleware.indexOf('function attachAttributionCookies'),
+    middleware.indexOf('const PUBLIC_CASE_STUDY_SLUGS'),
+  );
+  assert.ok(attach.lastIndexOf('appendPaBookingCookies') > attach.lastIndexOf('response.cookies.set'));
   assert.match(page, /BookAppointmentTracker/);
   assert.doesNotMatch(page, /gtag\(/);
   assert.doesNotMatch(layout, /ads-booking-conversion|pa_booking_id|pa_booking_ec/);
