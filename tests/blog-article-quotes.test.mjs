@@ -3,15 +3,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const pageSource = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const quoteCss = readFileSync(
-  new URL('../app/blog/article-body.module.css', import.meta.url),
+  new URL('../app/(frontend)/blog/article-body.module.css', import.meta.url),
   'utf8',
 );
-const globalsCss = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
-const layoutSource = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+const globalsCss = readFileSync(new URL('../app/(frontend)/globals.css', import.meta.url), 'utf8');
+const layoutSource = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
 const headerSource = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');
 const footerSource = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 const packageJson = JSON.parse(

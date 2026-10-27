@@ -17,7 +17,7 @@ const elementor = readFileSync(
 );
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 const casePage = readFileSync(
-  new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const soyB = readFileSync(

@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const hubPage = readFileSync(new URL('../app/podcast/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/podcast/page.tsx', import.meta.url), 'utf8');
 const hubContent = readFileSync(
-  new URL('../app/podcast/PodcastHubContent.tsx', import.meta.url),
+  new URL('../app/(frontend)/podcast/PodcastHubContent.tsx', import.meta.url),
   'utf8',
 );
 const episodePage = readFileSync(
-  new URL('../app/podcast/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/podcast/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 

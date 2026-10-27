@@ -43,10 +43,10 @@ const {
 const { rewriteBookingWidgetHrefs, rewriteElementorBodyHrefs, BOOKING_HREF } = await import('../utils/booking.ts');
 
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-const gracias = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
-const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
+const shopifyPage = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+const gracias = readFileSync(new URL('../app/(frontend)/gracias/page.tsx', import.meta.url), 'utf8');
+const blogPage = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 
 const LAST_TOUCH = emptyAttribution({
   captured: true,

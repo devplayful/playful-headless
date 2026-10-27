@@ -1,0 +1,380 @@
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { canonicalForPath } from '@/utils/canonical';
+import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { resolveImageAlt } from '@/lib/image-alt-overrides';
+import { publicWebpIfPresent } from '@/lib/public-webp-src';
+import { CaseStudyCard } from '@/components/CarouselResultados';
+import { CASE_FEATURE_CARD_SIZES } from '@/lib/blog-image-sizes';
+import TestimonialsSection from '@/components/TestimonialsSectionClient';
+import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
+import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress-cms';
+import ServiceFaqAccordion from './ServiceFaqAccordion';
+import CimaBreaker from '@/components/premios-cima/CimaBreaker';
+import { toShopifyCaseCards } from './shopify-cases';
+import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
+import {
+  CONTACT_HREF,
+  SERVICE_BOOKING_HREF,
+  CTA,
+  FAQ,
+  HERO,
+  MIGRATION,
+  SERVICE_BAND_ITEMS,
+  SERVICE_GRID_ITEMS,
+  SERVICES,
+  SHOPIFY_META,
+  SOCIAL_PROOF,
+  WHY_US,
+  PLAYFUL_URL_RE,
+  buildFaqPageJsonLd,
+} from './copy';
+import {
+  buildServiceLandingJsonLd,
+  serializeServiceLandingJsonLd,
+} from '@/utils/service-landing-jsonld';
+
+const PAGE_URL = canonicalForPath(SHOPIFY_META.path);
+const PORTFOLIO_URL = 'https://playfulagency.com/agencia-e-commerce';
+const SERVICE_CARD_COLORS = [
+  'bg-[#E9D7FF]',
+  'bg-[#FFEFD1]',
+  'bg-[#E4FFF9]',
+  'bg-[#FFDBDB]',
+] as const;
+
+export const metadata: Metadata = {
+  title: SHOPIFY_META.title,
+  description: SHOPIFY_META.description,
+  alternates: { canonical: PAGE_URL },
+  ...pageSocialMetadata({
+    title: SHOPIFY_META.title,
+    description: SHOPIFY_META.description,
+    url: PAGE_URL,
+    images: ogJpegForPath(SHOPIFY_META.path)
+      ? [ogJpegMeta(ogJpegForPath(SHOPIFY_META.path), SHOPIFY_META.title)]
+      : undefined,
+    type: 'website',
+  }),
+};
+
+const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
+const HERO_ART_2X = '/images/agencia-shopify/hero-gORwV7MSXO@2x.png';
+const DISENO_ART_1X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@1x.png';
+const DISENO_ART_2X = '/images/agencia-shopify/servicio-diseno-ovqmfMO829@2x.png';
+const DESARROLLO_ART_1X = '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@1x.png';
+const DESARROLLO_ART_2X = '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@2x.png';
+const CATALOGO_ART_1X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@1x.png';
+const CATALOGO_ART_2X = '/images/agencia-shopify/servicio-catalogo-yiYYfxIPW9@2x.png';
+const CHECKOUT_ART_1X = '/images/agencia-shopify/servicio-checkout-SyZ2uJkUb8@1x.png';
+const CHECKOUT_ART_2X = '/images/agencia-shopify/servicio-checkout-SyZ2uJkUb8@2x.png';
+
+function IllustrationSlot({ id, size = 'card' }: { id: string; size?: 'hero' | 'card' }) {
+  if (size === 'hero') {
+    return (
+      <div
+        data-illustration-slot={id}
+        className="relative w-full min-h-[280px] md:min-h-[360px] overflow-hidden rounded-[32px]"
+      >
+        <Image
+          src={publicWebpIfPresent(HERO_ART_1X)}
+          alt={resolveImageAlt(HERO_ART_1X)}
+          width={552}
+          height={360}
+          priority
+          fetchPriority="high"
+          sizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (
+    id === 'servicio-diseno' ||
+    id === 'servicio-desarrollo' ||
+    id === 'servicio-catalogo' ||
+    id === 'servicio-checkout'
+  ) {
+    const src1x =
+      id === 'servicio-diseno'
+        ? DISENO_ART_1X
+        : id === 'servicio-desarrollo'
+          ? DESARROLLO_ART_1X
+          : id === 'servicio-catalogo'
+            ? CATALOGO_ART_1X
+            : CHECKOUT_ART_1X;
+    return (
+      <div
+        data-illustration-slot={id}
+        className="relative w-full max-w-[200px] h-[180px] mx-auto overflow-hidden rounded-2xl"
+      >
+        <Image
+          src={publicWebpIfPresent(src1x)}
+          alt={resolveImageAlt(src1x)}
+          width={200}
+          height={180}
+          sizes="200px"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      data-illustration-slot={id}
+      aria-hidden="true"
+      className="w-full max-w-[200px] h-[180px] mx-auto rounded-2xl border border-dashed border-[#C4B5D4] bg-white/50"
+    />
+  );
+}
+
+function LinkedCopy({ text }: { text: string }) {
+  const parts = text.split(PLAYFUL_URL_RE);
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (!part.startsWith('https://playfulagency.com/')) {
+          return <span key={`${part}-${index}`}>{part}</span>;
+        }
+        const href = part.replace('https://playfulagency.com', '') || '/';
+        return (
+          <Link
+            key={part}
+            href={href}
+            className="text-[#440099] font-semibold underline underline-offset-2 break-all"
+          >
+            {part}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+function TalkCta({ href = SERVICE_BOOKING_HREF }: { href?: string }) {
+  return (
+    <a href={href} className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal">
+      {HERO.cta}
+    </a>
+  );
+}
+
+function PurpleBand({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-[32px] bg-[#440099] p-8 md:p-[60px]">
+      <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat opacity-40" />
+      <div className="relative z-10 max-w-4xl">
+        <h2 className="mb-6 [font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-[36px] leading-[1.1] md:text-[45px] font-normal !text-white">
+          {title}
+        </h2>
+        <p className="[font-family:var(--font-dm-sans),sans-serif] text-base leading-normal font-normal !text-[#E9D7FF]">
+          {body}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default async function AgenciaShopifyPage() {
+  const faqJsonLd = buildFaqPageJsonLd();
+  const shopifyJsonLd = buildServiceLandingJsonLd('agencia-shopify', SHOPIFY_META.description);
+  const [casosDeExito, blogPosts] = await Promise.all([
+    getAllCaseStudies().catch(() => []),
+    getLatestBlogPosts(6).catch(() => []),
+  ]);
+  const shopifyCases = toShopifyCaseCards(casosDeExito);
+
+  return (
+    <>
+      <link
+        rel="preload"
+        as="image"
+        href={publicWebpIfPresent(HERO_ART_1X)}
+        imageSrcSet={`${publicWebpIfPresent(HERO_ART_1X)} 552w, ${publicWebpIfPresent(HERO_ART_2X)} 1104w`}
+        imageSizes="(min-width: 1024px) 552px, calc(100vw - 2rem)"
+      />
+      <script
+        id="playful-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(faqJsonLd) }}
+      />
+      {shopifyJsonLd ? (
+        <>
+          <script
+            id="playful-service"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.service) }}
+          />
+          <script
+            id="playful-breadcrumb"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeServiceLandingJsonLd(shopifyJsonLd.breadcrumb) }}
+          />
+        </>
+      ) : null}
+
+      <article className="w-full pb-20">
+        <section data-cta-section="hero" className="relative overflow-hidden">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8">
+                <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
+                  {HERO.h1}
+                </h1>
+                <p className="playful-contenido-p">{HERO.body}</p>
+                <div className="space-y-3">
+                  <TalkCta />
+                  <p className="playful-contenido-p">{HERO.subline}</p>
+                  <p className="playful-contenido-p">
+                    <Link
+                      href={CONTACT_HREF}
+                      className="text-[#440099] font-semibold underline underline-offset-2"
+                    >
+                      O escríbenos por el formulario
+                    </Link>
+                  </p>
+                </div>
+              </div>
+              <IllustrationSlot id="hero" size="hero" />
+            </div>
+          </div>
+        </section>
+
+        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="playful-contenedor playful-contenedor-FFEFD1 rounded-[32px] md:rounded-[48px]">
+            <h2 className="playful-h2 text-center">{SERVICES.h2}</h2>
+            <p className="playful-contenido-p max-w-3xl mx-auto text-center">{SERVICES.intro}</p>
+            <p className="playful-contenido-p max-w-3xl mx-auto text-center">
+              Si tu checkout también cobra en Venezuela, te contamos cómo integrar{' '}
+              <Link
+                href={ZELLE_BLOG_POST_HREF}
+                className="text-[#440099] font-semibold underline underline-offset-2"
+              >
+                Zelle como método de pago en tu ecommerce
+              </Link>
+              .
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-4">
+              {SERVICE_GRID_ITEMS.map((item, index) => (
+                <article
+                  key={item.title}
+                  className={`${SERVICE_CARD_COLORS[index]} rounded-[32px] shadow-lg p-8 md:p-10 flex flex-col`}
+                >
+                  <div className="mb-6">
+                    <IllustrationSlot id={item.slot} />
+                  </div>
+                  <h3 className="playful-h3 mb-4">{item.title}</h3>
+                  <p className="playful-contenido-p flex-1">{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="space-y-6 md:space-y-8">
+            {SERVICE_BAND_ITEMS.map((item) => (
+              <PurpleBand key={item.title} title={item.title} body={item.body} />
+            ))}
+            <PurpleBand title={MIGRATION.h2} body={MIGRATION.body} />
+          </div>
+        </section>
+
+        <CimaBreaker variant="shopify" />
+
+        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
+          <h2 className="playful-h2 text-center mb-10">{SOCIAL_PROOF.h2}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
+            {shopifyCases.map((caseStudy) => (
+              <CaseStudyCard
+                key={caseStudy.slug}
+                caseStudy={caseStudy}
+                sizes={CASE_FEATURE_CARD_SIZES}
+              />
+            ))}
+          </div>
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden w-full flex flex-col justify-center items-center text-center p-6 md:p-10">
+            <div className="w-20 h-20 relative mb-4">
+              <Image
+                src="/images/avatar-playful.svg"
+                alt={resolveImageAlt('/images/avatar-playful.svg', 'Avatar Playful')}
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h4 className="font-semibold text-lg mb-2 text-[#4A4453]">{SOCIAL_PROOF.attribution}</h4>
+            <div className="flex justify-center mb-4">
+              <div className="text-yellow-400 text-xl">
+                {Array.from({ length: 5 }).map((_, star) => (
+                  <span key={star}>★</span>
+                ))}
+              </div>
+            </div>
+            <p className="text-sm md:text-base px-2 text-[#4A4453]">«{SOCIAL_PROOF.quote}»</p>
+          </div>
+        </section>
+
+        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="playful-contenedor playful-contenedor-B3FFF3 rounded-[32px] md:rounded-[48px] !mt-0">
+            <h2 className="playful-h2 text-center">{WHY_US.h2}</h2>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {WHY_US.items.map((item) => (
+                <p key={item.lead} className="playful-contenido-p">
+                  <strong className="font-bold">{item.lead}</strong>{' '}
+                  {item.body.includes(PORTFOLIO_URL) ? (
+                    <LinkedCopy text={item.body} />
+                  ) : (
+                    item.body
+                  )}
+                </p>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
+          <h2 className="playful-h2 text-center mb-10">{FAQ.h2}</h2>
+          <div className="max-w-4xl mx-auto">
+            <ServiceFaqAccordion
+              items={FAQ.items.map((item) => ({
+                question: item.question,
+                answer: <LinkedCopy text={item.answer} />,
+              }))}
+            />
+          </div>
+        </section>
+
+        <section className="py-12">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+            <TestimonialsSection />
+          </div>
+        </section>
+
+        <section className="py-12">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+            <BlogRelatedPostsSection posts={blogPosts} />
+          </div>
+        </section>
+
+        <section className="py-12">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+            <TwoColumnCtaSection
+              contentBgColor="#B3FFF3"
+              imageUrl="/images/imagen-nueva-cta-home.png"
+              title={CTA.h2}
+              subtitle={CTA.body}
+              ctaTitle={CTA.question}
+              buttonText={CTA.cta}
+              buttonLink={SERVICE_BOOKING_HREF}
+            />
+          </div>
+        </section>
+      </article>
+    </>
+  );
+}

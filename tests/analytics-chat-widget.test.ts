@@ -54,7 +54,7 @@ function fakeWindow(overrides: Record<string, unknown> = {}) {
 }
 
 test('root layout dns-prefetches GHL but does not preload loader.js', () => {
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   assert.match(layout, /dns-prefetch.*widgets\.leadconnectorhq\.com/);
   assert.doesNotMatch(layout, /preload.*loader\.js/);
   assert.doesNotMatch(layout, /HIGHLEVEL_CHAT_WIDGET_LOADER/);

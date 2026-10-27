@@ -1,0 +1,332 @@
+[
+  {
+    "id": 29,
+    "name": "Equipo editorial",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/equipo-editorial/",
+    "slug": "equipo-editorial",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/bc96669c47ecdb8f4c314f0389f04e5fc4992eecc7cfb78f0f194b3802043040?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/bc96669c47ecdb8f4c314f0389f04e5fc4992eecc7cfb78f0f194b3802043040?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/bc96669c47ecdb8f4c314f0389f04e5fc4992eecc7cfb78f0f194b3802043040?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/29",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "name": "Stefanni Parabavidez",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/stefanniparabavidez/",
+    "slug": "stefanniparabavidez",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/0f4c6477fcdde767d8b99e553bf16a6c658373005f85299e5eb6e1a576571645?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/0f4c6477fcdde767d8b99e553bf16a6c658373005f85299e5eb6e1a576571645?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/0f4c6477fcdde767d8b99e553bf16a6c658373005f85299e5eb6e1a576571645?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/21",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "name": "Lisa Santamaría",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/lsantamaria/",
+    "slug": "lsantamaria",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/16e234d88e90c544684315aa800e22739710d4a77dfbfc1b6c7009b53cd19403?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/16e234d88e90c544684315aa800e22739710d4a77dfbfc1b6c7009b53cd19403?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/16e234d88e90c544684315aa800e22739710d4a77dfbfc1b6c7009b53cd19403?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/6",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "name": "Felix Pinto",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/fpinto/",
+    "slug": "fpinto",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/39947f954bfa723792b3f697c6ed42285541821a011caf02194ab3db8ffb8a8a?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/39947f954bfa723792b3f697c6ed42285541821a011caf02194ab3db8ffb8a8a?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/39947f954bfa723792b3f697c6ed42285541821a011caf02194ab3db8ffb8a8a?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/18",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Arling Rosillo",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/arosillo/",
+    "slug": "arosillo",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/b6f73676735d8dc1d218fad194a824eeeed08bb3d33e5d0eda85d8f482b0d1cb?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/b6f73676735d8dc1d218fad194a824eeeed08bb3d33e5d0eda85d8f482b0d1cb?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/b6f73676735d8dc1d218fad194a824eeeed08bb3d33e5d0eda85d8f482b0d1cb?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/5",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "name": "Alejandra Da Costa",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/ale/",
+    "slug": "ale",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/1f7f9255d98c08b85d856ed54e981cc46782d5c2fd9cdacdd973bb48bc5bc447?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/1f7f9255d98c08b85d856ed54e981cc46782d5c2fd9cdacdd973bb48bc5bc447?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/1f7f9255d98c08b85d856ed54e981cc46782d5c2fd9cdacdd973bb48bc5bc447?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/26",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "name": "Maria Fernanda Varillas",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/mafer/",
+    "slug": "mafer",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/354b5ead2b31e2cfe3b5e3f6c51099d17325757636a077fdc14557ac1556b464?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/354b5ead2b31e2cfe3b5e3f6c51099d17325757636a077fdc14557ac1556b464?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/354b5ead2b31e2cfe3b5e3f6c51099d17325757636a077fdc14557ac1556b464?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/19",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "name": "Dikcibell Playful",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/dikcibell-playful/",
+    "slug": "dikcibell-playful",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/774459d06ecc9754abeae0f3f062e62e0574bbb36279a06bb9584c4283d47e75?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/774459d06ecc9754abeae0f3f062e62e0574bbb36279a06bb9584c4283d47e75?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/774459d06ecc9754abeae0f3f062e62e0574bbb36279a06bb9584c4283d47e75?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/17",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "name": "Adriana Olivero",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/aolivero/",
+    "slug": "aolivero",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/ae0b04f4a9d65175f9cd224a8a7dcc28fbc643970f22a0bfe479f046f6e012af?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/ae0b04f4a9d65175f9cd224a8a7dcc28fbc643970f22a0bfe479f046f6e012af?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/ae0b04f4a9d65175f9cd224a8a7dcc28fbc643970f22a0bfe479f046f6e012af?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/13",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "name": "Willkeiver Achique",
+    "url": "",
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/author/wachique/",
+    "slug": "wachique",
+    "avatar_urls": {
+      "24": "https://secure.gravatar.com/avatar/d2623e2527548d7550a2aba8ea099cb10647502f17491b57ee889f99e867f771?s=24&d=mm&r=g",
+      "48": "https://secure.gravatar.com/avatar/d2623e2527548d7550a2aba8ea099cb10647502f17491b57ee889f99e867f771?s=48&d=mm&r=g",
+      "96": "https://secure.gravatar.com/avatar/d2623e2527548d7550a2aba8ea099cb10647502f17491b57ee889f99e867f771?s=96&d=mm&r=g"
+    },
+    "yoast_head": null,
+    "yoast_head_json": null,
+    "acf": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/12",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users"
+        }
+      ]
+    }
+  }
+]

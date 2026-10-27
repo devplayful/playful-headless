@@ -10,13 +10,13 @@ import {
 import { serializeServiceLandingJsonLd } from '../utils/service-landing-jsonld.ts';
 import { ORGANIZATION_SCHEMA } from '../utils/organization-schema.mjs';
 
-const casePage = readFileSync(new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
-const hubPage = readFileSync(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
-const casoCta = readFileSync(new URL('../app/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
-const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
-const blogPost = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
-const blogListing = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
-const nosotros = readFileSync(new URL('../app/nosotros/page.tsx', import.meta.url), 'utf8');
+const casePage = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const casoCta = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
+const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
+const blogPost = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const blogListing = readFileSync(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+const nosotros = readFileSync(new URL('../app/(frontend)/nosotros/page.tsx', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 
 test('case studies emit Article + BreadcrumbList without inventing CaseStudy', () => {

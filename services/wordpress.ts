@@ -782,6 +782,13 @@ async function loadBlogAuthorsByIds(
   return byId;
 }
 
+export async function hydrateBlogListingPosts(
+  posts: WPPost[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<WPPost[]> {
+  return hydrateListingPosts(posts, query);
+}
+
 async function hydrateListingPosts(
   posts: WPPost[],
   query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},

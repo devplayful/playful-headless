@@ -168,8 +168,8 @@ test('listing, carousel, case page and WP pipelines consume the cover override',
   const wordpress = await readFile(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   const carousel = await readFile(new URL('../components/CarouselResultados.tsx', import.meta.url), 'utf8');
   const listing = await readFile(new URL('../lib/case-study-listing-card.ts', import.meta.url), 'utf8');
-  const shopify = await readFile(new URL('../app/agencia-shopify/shopify-cases.ts', import.meta.url), 'utf8');
-  const casePage = await readFile(new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
+  const shopify = await readFile(new URL('../app/(frontend)/agencia-shopify/shopify-cases.ts', import.meta.url), 'utf8');
+  const casePage = await readFile(new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
 
   assert.match(wordpress, /applyCaseStudyCoverOverride/);
   assert.match(wordpress, /getSuccessStoryBySlug[\s\S]*applyCaseStudyCoverOverride/);

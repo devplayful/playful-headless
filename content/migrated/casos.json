@@ -1,0 +1,1208 @@
+[
+  {
+    "id": 86237,
+    "date": "2025-11-04T12:27:56",
+    "date_gmt": "2025-11-04T16:27:56",
+    "guid": {
+      "rendered": "https://endpoint.playfulagency.com/?post_type=casos-de-exito&#038;p=86237"
+    },
+    "modified": "2025-12-30T15:25:41",
+    "modified_gmt": "2025-12-30T19:25:41",
+    "slug": "jumex-shopify-dtc-ecommerce",
+    "status": "publish",
+    "type": "casos-de-exito",
+    "link": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/",
+    "title": {
+      "rendered": "JUMEX y Shopify:  La Creación del Canal Directo (DTC) para un Portafolio Global"
+    },
+    "content": {
+      "rendered": "<p>Jumex es un referente en la industria de bebidas a nivel mundial, conocido por llevar la frescura del campo a la mesa de millones de familias. El desafío de Jumex no era su producto, sino cómo llevar su enorme portafolio de jugos, néctares y bebidas a un canal de venta directa escalable y eficiente, capaz de manejar la complejidad de su distribución masiva.</p>\n<div class='watch-action'><div class='watch-position align-left'><div class='action-like'><a class='lbg-style1 like-86237 jlk' href='javascript:void(0)' data-task='like' data-post_id='86237' data-nonce='bdcaf0d4e8' rel='nofollow'><img class='wti-pixel' src='https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif' title='Like' /><span class='lc-86237 lc'>0</span></a></div><div class='action-unlike'><a class='unlbg-style1 unlike-86237 jlk' href='javascript:void(0)' data-task='unlike' data-post_id='86237' data-nonce='bdcaf0d4e8' rel='nofollow'><img class='wti-pixel' src='https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif' title='Unlike' /><span class='unlc-86237 unlc'>0</span></a></div> </div> <div class='status-86237 status align-left'></div></div><div class='wti-clear'></div>\n    <div class=\"xs_social_share_widget xs_share_url after_content \t\tmain_content  wslu-style-1 wslu-share-box-shaped wslu-fill-colored wslu-none wslu-share-horizontal wslu-theme-font-no wslu-main_content\">\n\n\t\t\n        <ul>\n\t\t\t        </ul>\n    </div> \n",
+      "protected": false
+    },
+    "featured_media": 86463,
+    "template": "",
+    "class_list": [
+      "post-86237",
+      "casos-de-exito",
+      "type-casos-de-exito",
+      "status-publish",
+      "has-post-thumbnail",
+      "hentry"
+    ],
+    "acf": {
+      "categoria1": "",
+      "categoria2": "",
+      "categoria3": "UIUX Desing",
+      "categoria4": "",
+      "categoria5": "E-commerce",
+      "h1": "JUMEX y Shopify: La Creación del Canal Directo (DTC) para un Portafolio Global",
+      "primerap": "Playful Agency, junto a Magnolia, transformó la estrategia digital de Jumex implementando un eCommerce en Shopify capaz de escalar su enorme portafolio al modelo DTC, centralizando operaciones complejas y soportando ventas de alta intensidad",
+      "imagenbanner": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+      "primerh2": "El desafío de Jumex: Pasar del Marketplace al DTC Propio",
+      "segundap": "Previamente, la venta online de Jumex se limitaba a marketplaces como Amazon. Esto significaba que la marca estaba perdiendo el control directo de la relación con el cliente y los valiosos datos de compra. Jumex necesitaba crear su canal DTC desde cero, con una plataforma que pudiera exhibir su catálogo variado de manera intuitiva.",
+      "imagenminuta1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-i-1-1.png",
+      "imagenminuta2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-1.png",
+      "imagenminuta3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-f-1.png",
+      "segundoh2": "Falta de canal DTC propio",
+      "tercerap": "La marca dependía de terceros, sin capturar datos ni controlar la experiencia del usuario",
+      "cuartap": "Complejidad del portafolio",
+      "quintap": "Manejar y mostrar sus productos, variantes, sabores y categorías (marca paraguas) de Jumex requería una estructura de E-commerce sofisticada",
+      "sextap": "Experiencia de usuario (UX)",
+      "septimap": "Se necesitaba un sitio que, a pesar del catálogo complejo, hiciera la navegación y la compra sencilla para el consumidor final",
+      "octavap": "",
+      "novenap": "",
+      "desafioimagen1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/logo.png",
+      "desafioimagen2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Iphone-Odwalla-2.png",
+      "desafioimagen3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Jumex.com-Pagina-web-anterior-completo.gif",
+      "desafioimagen4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Producto-Odwalla-2.png",
+      "tercerh2": "La Solución Playful: Desarrollo en Shopify Centrado en el Catálogo",
+      "decima": "Playful Agency, de la mano de la empresa consultora Magnolia de Federico Vera, creó el E-commerce de Jumex desde cero, utilizando la potencia de Shopify para redefinir su venta directa",
+      "otroh2st": "Desarrollo Nativo en Shopify: ",
+      "otropst": " Creamos una plataforma de E-commerce robusta y estable en Shopify que proporciona la capacidad de procesamiento de pedidos necesaria para la marca",
+      "imagendesarrollo": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/JumexUX-Pagina-web.gif",
+      "imagenminuta4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/JumexUS-Card-Product.gif",
+      "imagenminuta5": false,
+      "imagenminuta6": false,
+      "primerah3desarrollo": "Diseño UX para el Consumidor Final",
+      "primerapdesarrollo": "Optimizamos la experiencia de usuario (UX) para que la compra de cualquier producto Jumex fuera clara y rápida, mejorando la confianza y reduciendo el abandono de productos en el carrito de compra",
+      "segundah3desarrollo": "Arquitectura de Producto Inteligente",
+      "segundapdesarrollo": "Estructuramos el catálogo para manejar eficientemente la complejidad de Jumex. Optimizamos las galerías de imágenes y las variantes de producto para que el cliente siempre encuentre lo que busca, de forma clara y visual",
+      "tercerh3desarrollo": "",
+      "tercerapdesarrollo": "",
+      "grilla1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Azul.png",
+      "grilla2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Miniatura.png",
+      "grilla3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Juice-collection.png",
+      "grilla4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/logo-2.png",
+      "grilla5": {
+        "ID": 86295,
+        "id": 86295,
+        "title": "naranja",
+        "filename": "naranja.png",
+        "filesize": 36837,
+        "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+        "link": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/naranja/",
+        "alt": "naranja",
+        "author": "1",
+        "description": "",
+        "caption": "",
+        "name": "naranja",
+        "status": "inherit",
+        "uploaded_to": 86235,
+        "date": "2025-11-17 19:17:38",
+        "modified": "2025-11-17 19:17:50",
+        "menu_order": 0,
+        "mime_type": "image/png",
+        "type": "image",
+        "subtype": "png",
+        "icon": "https://endpoint.playfulagency.com/wp-includes/images/media/default.png",
+        "width": 350,
+        "height": 303,
+        "sizes": {
+          "thumbnail": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-150x150.png",
+          "thumbnail-width": 150,
+          "thumbnail-height": 150,
+          "medium": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-300x260.png",
+          "medium-width": 300,
+          "medium-height": 260,
+          "medium_large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "medium_large-width": 350,
+          "medium_large-height": 303,
+          "large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "large-width": 350,
+          "large-height": 303,
+          "1536x1536": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "1536x1536-width": 350,
+          "1536x1536-height": 303,
+          "2048x2048": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "2048x2048-width": 350,
+          "2048x2048-height": 303,
+          "mae-news-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-350x300.png",
+          "mae-news-1-width": 350,
+          "mae-news-1-height": 300,
+          "mae-project-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "mae-project-1-width": 350,
+          "mae-project-1-height": 303,
+          "mae-news-thumb": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-100x100.png",
+          "mae-news-thumb-width": 100,
+          "mae-news-thumb-height": 100,
+          "pollock-post-standard": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja.png",
+          "pollock-post-standard-width": 350,
+          "pollock-post-standard-height": 303,
+          "pollock-post-related": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-230x200.png",
+          "pollock-post-related-width": 230,
+          "pollock-post-related-height": 200
+        }
+      },
+      "grilla6": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/SLIDER-CARD-PRODUCT.png",
+      "grilla7": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/verde.png",
+      "grilla8": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Juice-collection-1.png",
+      "resultadotitulo": "Los Resultados que Demuestran la Escalabilidad de Jumex con Shopify",
+      "resultadodescripcion": "La sinergia entre Jumex, la consultora Magnolia liderada por Federico Vera y el equipo de Playful Agency dio lugar a una plataforma de venta directa preparada para el futuro, que consolida la eficiencia operativa y responde a las necesidades de una marca de gran escala",
+      "resultado1": "Creación de un Nuevo Canal de Ingresos",
+      "resultadop1": "Jumex logró establecer su canal DTC, abriendo una fuente de ingresos controlada y rentable, libre de las comisiones de marketplaces",
+      "resultado2": "Control Total sobre Datos y Clientes",
+      "resultadop2": "La marca Jumex ahora es dueña de la información de sus clientes, permitiendo estrategias de marketing y fidelización mucho más efectivas",
+      "resultado3": "Plataforma Sólida para el Crecimiento",
+      "resultadop3": "Jumex ahora cuenta con una base tecnológica en Shopify que puede soportar el lanzamiento de nuevas líneas de productos y la expansión a nuevos mercados internacionales sin reestructuraciones costosas",
+      "telefono1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com_.png",
+      "telefono2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-21.png",
+      "telefono3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-7.png",
+      "telefono4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-2.png",
+      "telefonos": {
+        "ID": 86539,
+        "id": 86539,
+        "title": "iPhone-14-Plus-jumexus.com (15)",
+        "filename": "iPhone-14-Plus-jumexus.com-15.png",
+        "filesize": 254747,
+        "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15.png",
+        "link": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/iphone-14-plus-jumexus-com-15/",
+        "alt": "Envíos - jumex",
+        "author": "21",
+        "description": "",
+        "caption": "",
+        "name": "iphone-14-plus-jumexus-com-15",
+        "status": "inherit",
+        "uploaded_to": 86237,
+        "date": "2025-12-22 19:13:30",
+        "modified": "2025-12-22 19:21:46",
+        "menu_order": 0,
+        "mime_type": "image/png",
+        "type": "image",
+        "subtype": "png",
+        "icon": "https://endpoint.playfulagency.com/wp-includes/images/media/default.png",
+        "width": 736,
+        "height": 1490,
+        "sizes": {
+          "thumbnail": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-150x150.png",
+          "thumbnail-width": 150,
+          "thumbnail-height": 150,
+          "medium": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-148x300.png",
+          "medium-width": 148,
+          "medium-height": 300,
+          "medium_large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15.png",
+          "medium_large-width": 736,
+          "medium_large-height": 1490,
+          "large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-506x1024.png",
+          "large-width": 506,
+          "large-height": 1024,
+          "1536x1536": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15.png",
+          "1536x1536-width": 736,
+          "1536x1536-height": 1490,
+          "2048x2048": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15.png",
+          "2048x2048-width": 736,
+          "2048x2048-height": 1490,
+          "mae-news-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-370x300.png",
+          "mae-news-1-width": 370,
+          "mae-news-1-height": 300,
+          "mae-project-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-370x370.png",
+          "mae-project-1-width": 370,
+          "mae-project-1-height": 370,
+          "mae-news-thumb": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-100x100.png",
+          "mae-news-thumb-width": 100,
+          "mae-news-thumb-height": 100,
+          "pollock-post-standard": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-736x660.png",
+          "pollock-post-standard-width": 736,
+          "pollock-post-standard-height": 660,
+          "pollock-post-related": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-jumexus.com-15-230x200.png",
+          "pollock-post-related-width": 230,
+          "pollock-post-related-height": 200
+        }
+      },
+      "testimonialnombre": " Federico Vera",
+      "testimonialcargo": "Consultora Magnolia",
+      "testimonio": "Gracias a este proyecto, hemos empezado conversaciones con otros clientes para ofrecer una línea de servicios que antes no manejábamos. Ha sido una evolución natural y valiosa para nuestro portafolio.",
+      "testimonial_foto": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Ellipse-12.png",
+      "soytechno": {
+        "seccion_a": {
+          "titulo_de_esta_seccion_a": "Aquí va “A. Arquitectura de Producto y Filtros Inteligentes”",
+          "imagen_izquierda": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo",
+          "titulo_4": "Coloca el titulo Aqui",
+          "parrafo4": "Coloca aqui el Parrafo"
+        },
+        "seccion_b": {
+          "titulo_de_la_seccion_b": "Aquí va “B. Coherencia Visual y Diseño...”",
+          "imagenes_collage": {
+            "imagen_1": false,
+            "imagen_2": false,
+            "imagen_3": false,
+            "imagen_4": false,
+            "imagen_del_telefono": false,
+            "imagen_del_logo": false
+          },
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_c": {
+          "titulo_de_la_seccion_c": "Aquí va “C. Pantallas Vacías y Notificaciones de Sistema”",
+          "imagen_izquierda": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_d": {
+          "titulo_de_la_seccion_d": "Aquí va “1. Integración Cashea: ”",
+          "imagen_derecha": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_e": {
+          "titulo_de_la_seccion_e": "Aquí va “2. Arquitectura Wizard (Multistep) y Lógica de Facturación”",
+          "imagen_izquierda": false,
+          "parrafo": "Coloca aqui el Parrafo",
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_f": {
+          "titulo_de_la_seccion_f": "Aquí va “3. Sistema Logístico Predictivo: Cero Errores en la Entrega ”",
+          "imagen_derecha": false,
+          "parrafo": "Coloca aqui el Parrafo",
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": ""
+        }
+      },
+      "template": "default",
+      "mostrar_cta_final": {
+        "mostrar_cta": true,
+        "titulo_del_cta": "¿Es tu plataforma actual un obstáculo para iniciar o escalar tu canal DTC?",
+        "descripcion": "Si tu marca necesita una plataforma que simplifique la complejidad de un catálogo masivo y te permita vender directamente, como lo hicimos con Jumex en Shopify, es hora de invertir en una solución profesional.",
+        "titulo2": "No esperes a que tu dependencia de marketplaces frene tu crecimiento.",
+        "parrafo2": "¡Contáctanos y descubramos cómo podemos crear o migrar tu negocio a Shopify!"
+      }
+    },
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Caso Jumex: Estrategia de E-commerce DTC con Shopify y Playful</title>\n<meta name=\"description\" content=\"Descubre cómo Jumex migró del marketplace a su propio canal de venta directa (DTC) con Shopify.\" />\n<meta name=\"robots\" content=\"noindex, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Caso Jumex: Estrategia de E-commerce DTC con Shopify y Playful\" />\n<meta property=\"og:description\" content=\"Descubre cómo Jumex migró del marketplace a su propio canal de venta directa (DTC) con Shopify.\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta property=\"article:modified_time\" content=\"2025-12-30T19:25:41+00:00\" />\n<meta property=\"og:image\" content=\"https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png\" />\n\t<meta property=\"og:image:width\" content=\"500\" />\n\t<meta property=\"og:image:height\" content=\"500\" />\n\t<meta property=\"og:image:type\" content=\"image/png\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Caso Jumex: Estrategia de E-commerce DTC con Shopify y Playful",
+      "description": "Descubre cómo Jumex migró del marketplace a su propio canal de venta directa (DTC) con Shopify.",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow",
+        "max-snippet": "max-snippet:-1",
+        "max-image-preview": "max-image-preview:large",
+        "max-video-preview": "max-video-preview:-1"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Caso Jumex: Estrategia de E-commerce DTC con Shopify y Playful",
+      "og_description": "Descubre cómo Jumex migró del marketplace a su propio canal de venta directa (DTC) con Shopify.",
+      "og_url": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/",
+      "og_site_name": "Playful Agency",
+      "article_modified_time": "2025-12-30T19:25:41+00:00",
+      "og_image": [
+        {
+          "width": 500,
+          "height": 500,
+          "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+          "type": "image/png"
+        }
+      ],
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/",
+            "url": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/",
+            "name": "Caso Jumex: Estrategia de E-commerce DTC con Shopify y Playful",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "primaryImageOfPage": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/#primaryimage"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/#primaryimage"
+            },
+            "thumbnailUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+            "datePublished": "2025-11-04T16:27:56+00:00",
+            "dateModified": "2025-12-30T19:25:41+00:00",
+            "description": "Descubre cómo Jumex migró del marketplace a su propio canal de venta directa (DTC) con Shopify.",
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/#breadcrumb"
+            },
+            "inLanguage": "es",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "inLanguage": "es",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/#primaryimage",
+            "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+            "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+            "width": 500,
+            "height": 500
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "JUMEX y Shopify: La Creación del Canal Directo (DTC) para un Portafolio Global"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito/86237",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/types/casos-de-exito"
+        }
+      ],
+      "wp:featuredmedia": [
+        {
+          "embeddable": true,
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media/86463"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media?parent=86237"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "wp:featuredmedia": [
+        {
+          "id": 86463,
+          "date": "2025-12-16T21:44:38",
+          "slug": "tapa-caso-de-exito-jumex-us",
+          "type": "attachment",
+          "link": "https://endpoint.playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce/tapa-caso-de-exito-jumex-us/",
+          "title": {
+            "rendered": "Tapa Caso de exito JUMEX US"
+          },
+          "author": 28,
+          "featured_media": 0,
+          "acf": [],
+          "caption": {
+            "rendered": "<p>00</p>\n"
+          },
+          "alt_text": "",
+          "media_type": "image",
+          "mime_type": "image/png",
+          "media_details": {
+            "width": 500,
+            "height": 500,
+            "file": "2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+            "filesize": 307402,
+            "sizes": {
+              "medium": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-300x300.png",
+                "width": 300,
+                "height": 300,
+                "filesize": 43867,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-300x300.png"
+              },
+              "thumbnail": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-150x150.png",
+                "width": 150,
+                "height": 150,
+                "filesize": 14048,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-150x150.png"
+              },
+              "mae-news-1": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-370x300.png",
+                "width": 370,
+                "height": 300,
+                "filesize": 50372,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-370x300.png"
+              },
+              "mae-project-1": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-370x370.png",
+                "width": 370,
+                "height": 370,
+                "filesize": 61087,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-370x370.png"
+              },
+              "mae-news-thumb": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-100x100.png",
+                "width": 100,
+                "height": 100,
+                "filesize": 7513,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-100x100.png"
+              },
+              "pollock-post-related": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US-230x200.png",
+                "width": 230,
+                "height": 200,
+                "filesize": 25125,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US-230x200.png"
+              },
+              "full": {
+                "file": "Tapa-Caso-de-exito-JUMEX-US.png",
+                "width": 500,
+                "height": 500,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png"
+              }
+            },
+            "image_meta": {
+              "aperture": "0",
+              "credit": "",
+              "camera": "",
+              "caption": "",
+              "created_timestamp": "0",
+              "copyright": "",
+              "focal_length": "0",
+              "iso": "0",
+              "shutter_speed": "0",
+              "title": "",
+              "orientation": "0",
+              "keywords": []
+            }
+          },
+          "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-JUMEX-US.png",
+          "_links": {
+            "self": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media/86463",
+                "targetHints": {
+                  "allow": [
+                    "GET"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media"
+              }
+            ],
+            "about": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/types/attachment"
+              }
+            ],
+            "author": [
+              {
+                "embeddable": true,
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/28"
+              }
+            ],
+            "replies": [
+              {
+                "embeddable": true,
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/comments?post=86463"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": 86235,
+    "date": "2025-11-04T12:25:55",
+    "date_gmt": "2025-11-04T16:25:55",
+    "guid": {
+      "rendered": "https://endpoint.playfulagency.com/?post_type=casos-de-exito&#038;p=86235"
+    },
+    "modified": "2025-12-30T15:12:51",
+    "modified_gmt": "2025-12-30T19:12:51",
+    "slug": "odwalla-shopify-dtc-ecommerce",
+    "status": "publish",
+    "type": "casos-de-exito",
+    "link": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/",
+    "title": {
+      "rendered": "ODWALLA: De Marca Pionera a un gran jugador en el Direct To Consumer"
+    },
+    "content": {
+      "rendered": "<p>Odwalla, la icónica marca de jugos y smoothies, necesitaba pasar de ser un sitio principalmente informativo a convertirse en un fuerte competidor en el canal Direct-To-Consumer (DTC). Solían depender de marketplaces como Amazon, perdiendo la valiosa relación directa con el cliente.</p>\n<div class='watch-action'><div class='watch-position align-left'><div class='action-like'><a class='lbg-style1 like-86235 jlk' href='javascript:void(0)' data-task='like' data-post_id='86235' data-nonce='bdcaf0d4e8' rel='nofollow'><img class='wti-pixel' src='https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif' title='Like' /><span class='lc-86235 lc'>0</span></a></div><div class='action-unlike'><a class='unlbg-style1 unlike-86235 jlk' href='javascript:void(0)' data-task='unlike' data-post_id='86235' data-nonce='bdcaf0d4e8' rel='nofollow'><img class='wti-pixel' src='https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif' title='Unlike' /><span class='unlc-86235 unlc'>0</span></a></div> </div> <div class='status-86235 status align-left'></div></div><div class='wti-clear'></div>\n    <div class=\"xs_social_share_widget xs_share_url after_content \t\tmain_content  wslu-style-1 wslu-share-box-shaped wslu-fill-colored wslu-none wslu-share-horizontal wslu-theme-font-no wslu-main_content\">\n\n\t\t\n        <ul>\n\t\t\t        </ul>\n    </div> \n",
+      "protected": false
+    },
+    "featured_media": 86465,
+    "template": "",
+    "class_list": [
+      "post-86235",
+      "casos-de-exito",
+      "type-casos-de-exito",
+      "status-publish",
+      "has-post-thumbnail",
+      "hentry"
+    ],
+    "acf": {
+      "categoria1": "",
+      "categoria2": "",
+      "categoria3": "UIUX Desing",
+      "categoria4": "",
+      "categoria5": "E-commerce",
+      "h1": "ODWALLA: De Marca Pionera a un gran jugador en el Direct To Consumer",
+      "primerap": "Odwalla, la icónica marca de jugos y smoothies, necesitaba pasar de ser un sitio principalmente informativo a convertirse en un fuerte competidor en el canal Direct-To-Consumer (DTC). Solían depender de marketplaces como Amazon, perdiendo la valiosa relación directa con el cliente",
+      "imagenbanner": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+      "primerh2": "ODWALLA: De Marca Pionera a un gran jugador en el Direct To Consumer",
+      "segundap": "Odwalla, la icónica marca de jugos y smoothies, necesitaba pasar de ser un sitio principalmente informativo a convertirse en un fuerte competidor en el canal Direct-To-Consumer (DTC). Solían depender de marketplaces como Amazon, perdiendo la valiosa relación directa con el cliente. Este proyecto nació gracias a la confianza de Magnolia, representada por Federico Vera, quien nos incorporó como equipo para desarrollar la nueva tienda de Odwalla. Desde el inicio, trabajamos alineados a sus estándares y plazos, asumiendo el rol de un socio comprometido con el resultado. Shopify fue la plataforma elegida por su capacidad para cumplir con los objetivos de calidad, velocidad y escalabilidad que el proyecto requería",
+      "imagenminuta1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-i-1.png",
+      "imagenminuta2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-1.png",
+      "imagenminuta3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Imagenes-de-estilo-de-vida-f.png",
+      "segundoh2": "El desafío de Odwalla:  Llevar el Catálogo a la Conversión",
+      "tercerap": "El principal reto de Odwalla era monetizar el tráfico de personas ya cautivas que llegaban a su web. El antiguo sitio web no tenía carrito de compras, lo que hacía que la marca perdiera las oportunidades que ofrece el sector DTC de controlar la experiencia y los datos del cliente",
+      "cuartap": "Pérdida de tráfico cautivo",
+      "quintap": "El sitio anterior era informativo, pero no permitía vender, dejando que el valioso tráfico se diluyera",
+      "sextap": "Diseño desactualizado (UX/UI)",
+      "septimap": "Una navegación simple que no destacaba la transparencia de los ingredientes ni la atractiva gráfica de la marca Odwalla",
+      "octavap": "Dependencia que limitaba el crecimiento",
+      "novenap": "Al no tener un carrito directo, la marca dependía de terceros, obstaculizando la fidelización",
+      "desafioimagen1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/logo-1-1.png",
+      "desafioimagen2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Iphone-Odwalla-1.png",
+      "desafioimagen3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Rectangle-147.gif",
+      "desafioimagen4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Producto-Odwalla-1.png",
+      "tercerh2": "Diseño de E-commerce  y arquitectura Shopify para tomar el control del canal digital",
+      "decima": "Nuestra intervención se centró en el diseño de un eCommerce completo, priorizando la experiencia del producto y asegurando que el equipo de Odwalla pudiera operar la tienda con autonomía. Shopify fue la plataforma elegida no por su flexibilidad, sino por su estabilidad técnica y facilidad de mantenimiento: ideal para un equipo de marketing que necesitaba resultados sin fricciones. Nos convertimos en la Agencia de Shopify que este proyecto necesitaba, trabajando de la mano con Federico Vera y su consultora Magnolia para cumplir con los objetivos del cliente Odwalla",
+      "otroh2st": "Desarrollo de PDP (Página de Producto) de Alto Impacto",
+      "otropst": "Nos enfocamos en hacer que la PDP fuera el centro de la experiencia. Creamos descripciones y tablas nutricionales más visuales, que comunican la pureza del producto Odwalla de forma inmediata",
+      "imagendesarrollo": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Drink-Odwalla-pagina-web.gif",
+      "imagenminuta4": false,
+      "imagenminuta5": false,
+      "imagenminuta6": false,
+      "primerah3desarrollo": "Estructura de Shopify Optimizada (Colecciones y Variantes)",
+      "primerapdesarrollo": "Potenciamos Shopify para manejar la personalización y la complejidad de los productos Odwalla. Implementamos variantes de producto y una clara creación de colecciones que permiten una navegación intuitiva y una mejor experiencia de compra",
+      "segundah3desarrollo": "Estructura de Shopify Optimizada (Colecciones y Variantes)",
+      "segundapdesarrollo": "Potenciamos Shopify para manejar la personalización y la complejidad de los productos Odwalla. Implementamos variantes de producto y una clara creación de colecciones que permiten una navegación intuitiva y una mejor experiencia de compra",
+      "tercerh3desarrollo": "Optimización de Velocidad y SEO Técnico",
+      "tercerapdesarrollo": "Reconstruimos la arquitectura para priorizar la velocidad de carga, esencial para la conversión. Además, ajustamos la estructura para potenciar el Posicionamiento SEO, enfocándonos en palabras clave de cola larga",
+      "grilla1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Azul-1.png",
+      "grilla2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Miniatura-1.png",
+      "grilla3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Juice-collection-2.png",
+      "grilla4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/logo-3.png",
+      "grilla5": {
+        "ID": 86323,
+        "id": 86323,
+        "title": "naranja (1)",
+        "filename": "naranja-1.png",
+        "filesize": 14298,
+        "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+        "link": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/naranja-1/",
+        "alt": "naranja (1)",
+        "author": "1",
+        "description": "",
+        "caption": "",
+        "name": "naranja-1",
+        "status": "inherit",
+        "uploaded_to": 86235,
+        "date": "2025-11-18 14:46:33",
+        "modified": "2025-11-18 14:47:56",
+        "menu_order": 0,
+        "mime_type": "image/png",
+        "type": "image",
+        "subtype": "png",
+        "icon": "https://endpoint.playfulagency.com/wp-includes/images/media/default.png",
+        "width": 350,
+        "height": 303,
+        "sizes": {
+          "thumbnail": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1-150x150.png",
+          "thumbnail-width": 150,
+          "thumbnail-height": 150,
+          "medium": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1-300x260.png",
+          "medium-width": 300,
+          "medium-height": 260,
+          "medium_large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "medium_large-width": 350,
+          "medium_large-height": 303,
+          "large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "large-width": 350,
+          "large-height": 303,
+          "1536x1536": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "1536x1536-width": 350,
+          "1536x1536-height": 303,
+          "2048x2048": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "2048x2048-width": 350,
+          "2048x2048-height": 303,
+          "mae-news-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1-350x300.png",
+          "mae-news-1-width": 350,
+          "mae-news-1-height": 300,
+          "mae-project-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "mae-project-1-width": 350,
+          "mae-project-1-height": 303,
+          "mae-news-thumb": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1-100x100.png",
+          "mae-news-thumb-width": 100,
+          "mae-news-thumb-height": 100,
+          "pollock-post-standard": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1.png",
+          "pollock-post-standard-width": 350,
+          "pollock-post-standard-height": 303,
+          "pollock-post-related": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/naranja-1-230x200.png",
+          "pollock-post-related-width": 230,
+          "pollock-post-related-height": 200
+        }
+      },
+      "grilla6": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/SLIDER-CARD-PRODUCT-1.png",
+      "grilla7": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/verde-1.png",
+      "grilla8": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Juice-collection-3.png",
+      "resultadotitulo": "¿Qué Logramos con Odwalla?",
+      "resultadodescripcion": "El diseño de eCommerce realizado junto a la consultora Magnolia de Federico Vera permitió a Odwalla establecer un canal DTC sólido, con resultados medibles desde el primer mes",
+      "resultado1": "Aumento en la Tasa de Conversión (TC)",
+      "resultadop1": "El checkout funcional y la velocidad se tradujeron directamente en un incremento en los pedidos completados de Odwalla. Posicionamiento SEO Consolidado: Logramos que el sitio web de Odwalla se posicione consistentemente en el tercer puesto de búsquedas clave, atrayendo tráfico de alta calidad",
+      "resultado2": "Posicionamiento SEO Consolidado",
+      "resultadop2": "Logramos que el sitio web de Odwalla se posicione consistentemente en el tercer puesto de búsquedas clave, atrayendo tráfico de alta calidad",
+      "resultado3": "Capacidad de Venta Directa",
+      "resultadop3": " La marca Odwalla dejó de depender exclusivamente de marketplaces y ahora controla su relación con el cliente y los márgenes de venta",
+      "telefono1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.1.png",
+      "telefono2": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-4.png",
+      "telefono3": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-9.png",
+      "telefono4": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-11.png",
+      "telefonos": {
+        "ID": 86510,
+        "id": 86510,
+        "title": "iPhone-14-Plus-odwalladrinks.com (1.2)",
+        "filename": "iPhone-14-Plus-odwalladrinks.com-1.2.png",
+        "filesize": 476700,
+        "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2.png",
+        "link": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/iphone-14-plus-odwalladrinks-com-1-2/",
+        "alt": "Tarjeta de producto - Odawalla",
+        "author": "21",
+        "description": "",
+        "caption": "",
+        "name": "iphone-14-plus-odwalladrinks-com-1-2",
+        "status": "inherit",
+        "uploaded_to": 86235,
+        "date": "2025-12-22 19:02:14",
+        "modified": "2025-12-22 19:06:32",
+        "menu_order": 0,
+        "mime_type": "image/png",
+        "type": "image",
+        "subtype": "png",
+        "icon": "https://endpoint.playfulagency.com/wp-includes/images/media/default.png",
+        "width": 736,
+        "height": 1490,
+        "sizes": {
+          "thumbnail": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-150x150.png",
+          "thumbnail-width": 150,
+          "thumbnail-height": 150,
+          "medium": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-148x300.png",
+          "medium-width": 148,
+          "medium-height": 300,
+          "medium_large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2.png",
+          "medium_large-width": 736,
+          "medium_large-height": 1490,
+          "large": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-506x1024.png",
+          "large-width": 506,
+          "large-height": 1024,
+          "1536x1536": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2.png",
+          "1536x1536-width": 736,
+          "1536x1536-height": 1490,
+          "2048x2048": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2.png",
+          "2048x2048-width": 736,
+          "2048x2048-height": 1490,
+          "mae-news-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-370x300.png",
+          "mae-news-1-width": 370,
+          "mae-news-1-height": 300,
+          "mae-project-1": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-370x370.png",
+          "mae-project-1-width": 370,
+          "mae-project-1-height": 370,
+          "mae-news-thumb": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-100x100.png",
+          "mae-news-thumb-width": 100,
+          "mae-news-thumb-height": 100,
+          "pollock-post-standard": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-736x660.png",
+          "pollock-post-standard-width": 736,
+          "pollock-post-standard-height": 660,
+          "pollock-post-related": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/iPhone-14-Plus-odwalladrinks.com-1.2-230x200.png",
+          "pollock-post-related-width": 230,
+          "pollock-post-related-height": 200
+        }
+      },
+      "testimonialnombre": " Federico Vera",
+      "testimonialcargo": "Consultora Magnolia",
+      "testimonio": "Uno de los grandes logros fue que cumplimos con los plazos establecidos para las páginas web, algo clave para nuestro cliente final. Esto no solo generó buenos resultados, sino que también nos abrió la puerta para avanzar con nuevos proyectos. Estamos muy contentos.",
+      "testimonial_foto": "https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Ellipse-12.png",
+      "soytechno": {
+        "seccion_a": {
+          "titulo_de_esta_seccion_a": "Aquí va “A. Arquitectura de Producto y Filtros Inteligentes”",
+          "imagen_izquierda": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo",
+          "titulo_4": "Coloca el titulo Aqui",
+          "parrafo4": "Coloca aqui el Parrafo"
+        },
+        "seccion_b": {
+          "titulo_de_la_seccion_b": "Aquí va “B. Coherencia Visual y Diseño...”",
+          "imagenes_collage": {
+            "imagen_1": false,
+            "imagen_2": false,
+            "imagen_3": false,
+            "imagen_4": false,
+            "imagen_del_telefono": false,
+            "imagen_del_logo": false
+          },
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_c": {
+          "titulo_de_la_seccion_c": "Aquí va “C. Pantallas Vacías y Notificaciones de Sistema”",
+          "imagen_izquierda": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_d": {
+          "titulo_de_la_seccion_d": "Aquí va “1. Integración Cashea: ”",
+          "imagen_derecha": false,
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_e": {
+          "titulo_de_la_seccion_e": "Aquí va “2. Arquitectura Wizard (Multistep) y Lógica de Facturación”",
+          "imagen_izquierda": false,
+          "parrafo": "Coloca aqui el Parrafo",
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": "Coloca aqui el Parrafo",
+          "titulo_3": "Coloca el titulo Aqui",
+          "parrafo3": "Coloca aqui el Parrafo"
+        },
+        "seccion_f": {
+          "titulo_de_la_seccion_f": "Aquí va “3. Sistema Logístico Predictivo: Cero Errores en la Entrega ”",
+          "imagen_derecha": false,
+          "parrafo": "Coloca aqui el Parrafo",
+          "titulo_1": "Coloca el titulo Aqui",
+          "parrafo1": "Coloca aqui el Parrafo",
+          "titulo_2": "Coloca el titulo Aqui",
+          "parrafo2": ""
+        }
+      },
+      "template": "default",
+      "mostrar_cta_final": {
+        "mostrar_cta": true,
+        "titulo_del_cta": "¿Estás perdiendo dinero al no vender directamente?",
+        "descripcion": "Si tu plataforma anterior no te permitía capturar el valor de tu tráfico, es hora de un diseño de E-commerce que te convierta en un líder DTC como Odwalla.",
+        "titulo2": "No esperes más para empezar a ganar.",
+        "parrafo2": "¡Contáctanos y descubre cómo podemos aplicar esta misma experiencia en tu negocio!"
+      }
+    },
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Caso Odwalla: De Sitio Informativo a Líder en Ventas DTC</title>\n<meta name=\"description\" content=\"Descubre cómo transformamos la web de Odwalla en un E-commerce de alto impacto con Shopify. Logramos un canal DTC sólido, mayor conversión y mejores márgenes de venta.\" />\n<meta name=\"robots\" content=\"noindex, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Caso Odwalla: De Sitio Informativo a Líder en Ventas DTC\" />\n<meta property=\"og:description\" content=\"Descubre cómo transformamos la web de Odwalla en un E-commerce de alto impacto con Shopify. Logramos un canal DTC sólido, mayor conversión y mejores márgenes de venta.\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta property=\"article:modified_time\" content=\"2025-12-30T19:12:51+00:00\" />\n<meta property=\"og:image\" content=\"https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png\" />\n\t<meta property=\"og:image:width\" content=\"500\" />\n\t<meta property=\"og:image:height\" content=\"500\" />\n\t<meta property=\"og:image:type\" content=\"image/png\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Caso Odwalla: De Sitio Informativo a Líder en Ventas DTC",
+      "description": "Descubre cómo transformamos la web de Odwalla en un E-commerce de alto impacto con Shopify. Logramos un canal DTC sólido, mayor conversión y mejores márgenes de venta.",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow",
+        "max-snippet": "max-snippet:-1",
+        "max-image-preview": "max-image-preview:large",
+        "max-video-preview": "max-video-preview:-1"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Caso Odwalla: De Sitio Informativo a Líder en Ventas DTC",
+      "og_description": "Descubre cómo transformamos la web de Odwalla en un E-commerce de alto impacto con Shopify. Logramos un canal DTC sólido, mayor conversión y mejores márgenes de venta.",
+      "og_url": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/",
+      "og_site_name": "Playful Agency",
+      "article_modified_time": "2025-12-30T19:12:51+00:00",
+      "og_image": [
+        {
+          "width": 500,
+          "height": 500,
+          "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+          "type": "image/png"
+        }
+      ],
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/",
+            "url": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/",
+            "name": "Caso Odwalla: De Sitio Informativo a Líder en Ventas DTC",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "primaryImageOfPage": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/#primaryimage"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/#primaryimage"
+            },
+            "thumbnailUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+            "datePublished": "2025-11-04T16:25:55+00:00",
+            "dateModified": "2025-12-30T19:12:51+00:00",
+            "description": "Descubre cómo transformamos la web de Odwalla en un E-commerce de alto impacto con Shopify. Logramos un canal DTC sólido, mayor conversión y mejores márgenes de venta.",
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/#breadcrumb"
+            },
+            "inLanguage": "es",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "inLanguage": "es",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/#primaryimage",
+            "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+            "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+            "width": 500,
+            "height": 500
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "ODWALLA: De Marca Pionera a un gran jugador en el Direct To Consumer"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito/86235",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/types/casos-de-exito"
+        }
+      ],
+      "wp:featuredmedia": [
+        {
+          "embeddable": true,
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media/86465"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media?parent=86235"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "wp:featuredmedia": [
+        {
+          "id": 86465,
+          "date": "2025-12-16T21:44:43",
+          "slug": "tapa-caso-de-exito-odwalla",
+          "type": "attachment",
+          "link": "https://endpoint.playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce/tapa-caso-de-exito-odwalla/",
+          "title": {
+            "rendered": "Tapa Caso de exito Odwalla"
+          },
+          "author": 28,
+          "featured_media": 0,
+          "acf": [],
+          "caption": {
+            "rendered": "<p>00</p>\n"
+          },
+          "alt_text": "",
+          "media_type": "image",
+          "mime_type": "image/png",
+          "media_details": {
+            "width": 500,
+            "height": 500,
+            "file": "2025/12/Tapa-Caso-de-exito-Odwalla.png",
+            "filesize": 320542,
+            "sizes": {
+              "medium": {
+                "file": "Tapa-Caso-de-exito-Odwalla-300x300.png",
+                "width": 300,
+                "height": 300,
+                "filesize": 37203,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-300x300.png"
+              },
+              "thumbnail": {
+                "file": "Tapa-Caso-de-exito-Odwalla-150x150.png",
+                "width": 150,
+                "height": 150,
+                "filesize": 11416,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-150x150.png"
+              },
+              "mae-news-1": {
+                "file": "Tapa-Caso-de-exito-Odwalla-370x300.png",
+                "width": 370,
+                "height": 300,
+                "filesize": 50553,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-370x300.png"
+              },
+              "mae-project-1": {
+                "file": "Tapa-Caso-de-exito-Odwalla-370x370.png",
+                "width": 370,
+                "height": 370,
+                "filesize": 52873,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-370x370.png"
+              },
+              "mae-news-thumb": {
+                "file": "Tapa-Caso-de-exito-Odwalla-100x100.png",
+                "width": 100,
+                "height": 100,
+                "filesize": 6236,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-100x100.png"
+              },
+              "pollock-post-related": {
+                "file": "Tapa-Caso-de-exito-Odwalla-230x200.png",
+                "width": 230,
+                "height": 200,
+                "filesize": 22546,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla-230x200.png"
+              },
+              "full": {
+                "file": "Tapa-Caso-de-exito-Odwalla.png",
+                "width": 500,
+                "height": 500,
+                "mime_type": "image/png",
+                "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png"
+              }
+            },
+            "image_meta": {
+              "aperture": "0",
+              "credit": "",
+              "camera": "",
+              "caption": "",
+              "created_timestamp": "0",
+              "copyright": "",
+              "focal_length": "0",
+              "iso": "0",
+              "shutter_speed": "0",
+              "title": "",
+              "orientation": "0",
+              "keywords": []
+            }
+          },
+          "source_url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/12/Tapa-Caso-de-exito-Odwalla.png",
+          "_links": {
+            "self": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media/86465",
+                "targetHints": {
+                  "allow": [
+                    "GET"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/media"
+              }
+            ],
+            "about": [
+              {
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/types/attachment"
+              }
+            ],
+            "author": [
+              {
+                "embeddable": true,
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/users/28"
+              }
+            ],
+            "replies": [
+              {
+                "embeddable": true,
+                "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/comments?post=86465"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+]
