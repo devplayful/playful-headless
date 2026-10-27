@@ -52,6 +52,7 @@ const nextConfig = {
     return [
       { source: '/firma/:path*', headers: [noIndex] },
       { source: '/images/firmas/:path*', headers: [noIndex] },
+      { source: '/lp/:path*', headers: [noIndex] },
       {
         source:
           '/:slug(agencia-e-commerce|agencia-seo|agencia-sem|agencia-diseno-web|agencia-ux-ui|marketing-internacional|seo-expertos|seo-vigo)',
