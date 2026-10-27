@@ -13,7 +13,8 @@ import { PLAYFUL_QA_UA, paceLiveQa, withQaUrl } from '../lib/qa/live-fetch.mjs';
 const require = createRequire(import.meta.url);
 const puppeteer = require('/tmp/playful-qa-tools/node_modules/puppeteer-core');
 const { PNG } = require('/tmp/playful-qa-tools/node_modules/pngjs');
-const pixelmatch = require('/tmp/playful-qa-tools/node_modules/pixelmatch');
+const pixelmatchMod = require('/tmp/playful-qa-tools/node_modules/pixelmatch');
+const pixelmatch = pixelmatchMod.default || pixelmatchMod;
 
 const CHROME = process.env.CHROME || '/usr/bin/google-chrome';
 const AFTER = process.env.AFTER_ORIGIN || 'http://127.0.0.1:3100';
