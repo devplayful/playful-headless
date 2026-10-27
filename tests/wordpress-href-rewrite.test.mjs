@@ -465,3 +465,17 @@ test('strips the #252 UX/UI filler and keeps the Banner-CTA image-only', () => {
   assert.doesNotMatch(rewritten, /rel="noopener/);
   assert.doesNotMatch(rewritten, />UX\/UI<\/a>/);
 });
+
+test('hijacked short links lose the href and keep the anchor text', () => {
+  const html = [
+    '<a href="https://bit.ly/3cMK03N">nota del metaverso</a>',
+    '<a href="https://bit.ly/3cPMfUb">nota de la auditoría</a>',
+    '<a href="https://bit.ly/36zn4gN">otra nota</a>',
+  ].join(' ');
+  const rewritten = rewriteInSitePageHrefs(html, '/blog/seo/auditoria-seo-que-es-como-se-hace');
+  assert.match(rewritten, /nota del metaverso/);
+  assert.match(rewritten, /nota de la auditoría/);
+  assert.doesNotMatch(rewritten, /bit\.ly\/3cMK03N/i);
+  assert.doesNotMatch(rewritten, /bit\.ly\/3cPMfUb/i);
+  assert.match(rewritten, /href="https:\/\/bit\.ly\/36zn4gN"/);
+});
