@@ -45,7 +45,9 @@ const { rewriteBookingWidgetHrefs, rewriteElementorBodyHrefs, BOOKING_HREF } = a
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
 const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-const gracias = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
+const gracias = readFileSync(new URL('../app/gracias/LeadThankYou.tsx', import.meta.url), 'utf8');
+const graciasPage = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
+const graciasSchedule = readFileSync(new URL('../app/gracias/ScheduleConfirmation.tsx', import.meta.url), 'utf8');
 const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 
 const LAST_TOUCH = emptyAttribution({
@@ -293,6 +295,8 @@ test('Shopify, gracias and blog CTAs go through /reunion-playful; layout propaga
   assert.doesNotMatch(shopifyPage, /buttonLink=\{BOOKING_HREF\}/);
   assert.match(gracias, /href="\/reunion-playful"/);
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
+  assert.doesNotMatch(graciasPage, /api\.playfulagency\.com\/widget\/bookings/);
+  assert.doesNotMatch(graciasSchedule, /reunion-playful|widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);
   assert.match(layout, /BookingWidgetAttribution/);

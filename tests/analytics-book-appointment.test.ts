@@ -98,10 +98,11 @@ test('does not call gtag and does not fire for Lead', () => {
 
 test('thank-you page mounts the tracker without changing gtag loading', () => {
   const page = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
+  const lead = readFileSync(new URL('../app/gracias/LeadThankYou.tsx', import.meta.url), 'utf8');
   const ga = readFileSync(new URL('../components/GoogleAnalytics.tsx', import.meta.url), 'utf8');
   const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   assert.match(page, /BookAppointmentTracker/);
-  assert.match(page, /href="\/reunion-playful"/);
+  assert.match(lead, /href="\/reunion-playful"/);
   assert.doesNotMatch(page, /gtag\(/);
   assert.match(ga, /strategy="afterInteractive"/);
   assert.match(ga, /gtag\/js\?id=/);
