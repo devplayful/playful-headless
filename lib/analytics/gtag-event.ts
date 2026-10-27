@@ -1,4 +1,8 @@
 import { isQaTraffic } from './qa-traffic.ts';
+import {
+  resolveTrafficFlags,
+  shouldSuppressConversion,
+} from './traffic-type.ts';
 
 declare global {
   interface Window {
@@ -164,19 +168,31 @@ export function sendGtagEvent(
     return;
   }
 
-  if (typeof params.page_path === 'string' && params.page_path) {
-    queueCollectPagePath(eventName, params.page_path);
+  if (shouldSuppressConversion(eventName)) {
+    finish();
+    return;
+  }
+
+  const flags = resolveTrafficFlags();
+  const tagged: Record<string, unknown> = {
+    ...params,
+    traffic_type: params.traffic_type ?? flags.traffic_type,
+    bot_suspect: params.bot_suspect ?? flags.bot_suspect,
+  };
+
+  if (typeof tagged.page_path === 'string' && tagged.page_path) {
+    queueCollectPagePath(eventName, tagged.page_path);
   }
 
   if (typeof window.gtag === 'function') {
-    window.gtag('event', eventName, encodeGtagEventParams(params, finish, options?.timeoutMs));
+    window.gtag('event', eventName, encodeGtagEventParams(tagged, finish, options?.timeoutMs));
     return;
   }
 
   if (window.dataLayer && typeof window.dataLayer.push === 'function') {
     window.dataLayer.push({
       event: eventName,
-      ...encodeGtagEventParams(params, finish, options?.timeoutMs),
+      ...encodeGtagEventParams(tagged, finish, options?.timeoutMs),
     });
     return;
   }

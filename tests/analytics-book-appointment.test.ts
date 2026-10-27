@@ -9,6 +9,7 @@ import {
   resetBookAppointmentForTests,
   shouldTrackBookAppointment,
 } from '../lib/analytics/book-appointment.ts';
+import { resetTrafficTypeForTests } from '../lib/analytics/traffic-type.ts';
 
 function withWindow(value: unknown, run: () => void) {
   const originalWindow = globalThis.window;
@@ -44,22 +45,26 @@ test('only Schedule conversions are booking events', () => {
 
 test('dedupes by pa_booking_id when present, otherwise once per session', () => {
   assert.equal(bookAppointmentDedupeKey('?conv=Schedule&pa_booking_id=abc-1'), 'abc-1');
+  assert.equal(bookAppointmentDedupeKey('?conv=Schedule', 'pa_booking_id=from-cookie'), 'from-cookie');
   assert.equal(bookAppointmentDedupeKey('?conv=Schedule'), 'gracias:conv=Schedule');
 });
 
 test('pushes book_appointment through dataLayer once per booking', () => {
   resetBookAppointmentForTests();
+  resetTrafficTypeForTests();
   const storage = memoryStorage();
   withWindow({ dataLayer: [] }, () => {
     assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), true);
     assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), false);
-    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
+    assert.equal(window.dataLayer?.[0]?.event, BOOK_APPOINTMENT_EVENT);
+    assert.equal(window.dataLayer?.length, 1);
     assert.equal(storage.records.get(`${BOOK_APPOINTMENT_STORAGE_PREFIX}gracias:conv=Schedule`), '1');
   });
 });
 
 test('treats a new pa_booking_id as a distinct reservation', () => {
   resetBookAppointmentForTests();
+  resetTrafficTypeForTests();
   const storage = memoryStorage();
   withWindow({ dataLayer: [] }, () => {
     assert.equal(pushBookAppointmentOnce({
@@ -74,15 +79,16 @@ test('treats a new pa_booking_id as a distinct reservation', () => {
       search: '?conv=Schedule&pa_booking_id=second',
       storage,
     }), true);
-    assert.deepEqual(window.dataLayer, [
-      { event: BOOK_APPOINTMENT_EVENT },
-      { event: BOOK_APPOINTMENT_EVENT },
-    ]);
+    assert.equal(window.dataLayer?.length, 2);
+    assert.equal(window.dataLayer?.[0]?.event, BOOK_APPOINTMENT_EVENT);
+    assert.equal(window.dataLayer?.[0]?.booking_id, 'first');
+    assert.equal(window.dataLayer?.[1]?.booking_id, 'second');
   });
 });
 
 test('does not call gtag and does not fire for Lead', () => {
   resetBookAppointmentForTests();
+  resetTrafficTypeForTests();
   const storage = memoryStorage();
   const gtagCalls: unknown[] = [];
   withWindow({
@@ -92,7 +98,9 @@ test('does not call gtag and does not fire for Lead', () => {
     assert.equal(pushBookAppointmentOnce({ search: '?conv=Lead', storage }), false);
     assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), true);
     assert.equal(gtagCalls.length, 0);
-    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
+    assert.equal(window.dataLayer?.length, 1);
+    assert.equal(window.dataLayer?.[0]?.event, BOOK_APPOINTMENT_EVENT);
+    assert.ok(!window.dataLayer?.some((row) => row.event === 'generate_lead'));
   });
 });
 

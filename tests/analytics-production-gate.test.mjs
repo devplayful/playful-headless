@@ -74,6 +74,9 @@ test('layout and tag components stay server-gated so production HTML is unchange
   assert.match(gtm, /strategy="afterInteractive"/);
   assert.match(gtm, /qa=1/);
   assert.match(gtm, /PlayfulQA/);
+  assert.match(gtm, /__playfulQa=1/);
+  assert.match(ga, /traffic_type/);
+  assert.match(gtm, /traffic_type/);
   assert.doesNotMatch(gtm, /lazyOnload/);
   assert.match(meta, /strategy="afterInteractive"/);
   assert.doesNotMatch(meta, /lazyOnload/);

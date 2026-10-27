@@ -4,6 +4,7 @@ import {
   GENERATE_LEAD_FLUSH_TIMEOUT_MS,
   pushGenerateLead,
 } from '../../lib/contact/analytics.ts';
+import { markRealInteraction, resetTrafficTypeForTests } from '../../lib/analytics/traffic-type.ts';
 
 function withWindow(value: unknown, run: () => Promise<void> | void) {
   const originalWindow = globalThis.window;
@@ -22,6 +23,8 @@ function withWindow(value: unknown, run: () => Promise<void> | void) {
 }
 
 test('generate_lead contains no contact PII or CRM identifiers', async () => {
+  resetTrafficTypeForTests();
+  markRealInteraction();
   await withWindow({ dataLayer: [] }, async () => {
     const pending = pushGenerateLead('website-contact');
     const event = window.dataLayer?.[0] as Record<string, unknown>;
@@ -43,6 +46,8 @@ test('generate_lead contains no contact PII or CRM identifiers', async () => {
 });
 
 test('resolves when GTM eventCallback fires', async () => {
+  resetTrafficTypeForTests();
+  markRealInteraction();
   await withWindow({ dataLayer: [] }, async () => {
     let resolved = false;
     const pending = pushGenerateLead('website-contact', 200).then(() => {
@@ -57,6 +62,8 @@ test('resolves when GTM eventCallback fires', async () => {
 });
 
 test('resolves by hard timeout when GTM never calls back', async () => {
+  resetTrafficTypeForTests();
+  markRealInteraction();
   await withWindow({ dataLayer: [] }, async () => {
     const started = Date.now();
     await pushGenerateLead('website-contact', 25);

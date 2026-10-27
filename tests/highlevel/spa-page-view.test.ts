@@ -57,7 +57,11 @@ test('prefers gtag config and does not duplicate via dataLayer', () => {
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-WH76RQWSCT';
   try {
     sendSpaPageView('/agencia-seo');
-    assert.deepEqual(calls, [['config', 'G-WH76RQWSCT', { page_path: '/agencia-seo' }]]);
+    assert.deepEqual(calls, [['config', 'G-WH76RQWSCT', {
+      page_path: '/agencia-seo',
+      traffic_type: 'user',
+      bot_suspect: false,
+    }]]);
     assert.deepEqual(window.dataLayer, []);
   } finally {
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = previousGa;

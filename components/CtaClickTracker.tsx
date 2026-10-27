@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { scheduleBookingAbandonUntilGaReady } from '@/lib/analytics/booking-abandon';
 import { handleCtaDocumentClick } from '@/lib/analytics/cta-click';
+import { publishTrafficType } from '@/lib/analytics/traffic-type';
 
 /**
  * Single delegated listener for booking and contact CTAs.
@@ -11,6 +12,7 @@ import { handleCtaDocumentClick } from '@/lib/analytics/cta-click';
  */
 export default function CtaClickTracker() {
   useEffect(() => {
+    publishTrafficType();
     const onClick = (event: MouseEvent) => {
       handleCtaDocumentClick(event);
     };

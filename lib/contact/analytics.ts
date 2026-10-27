@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  resolveTrafficFlags,
+  shouldSuppressConversion,
+  type TrafficInput,
+} from '../analytics/traffic-type.ts';
+
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
@@ -28,7 +34,12 @@ function getDataLayer(): DataLayerLike | undefined {
 export function pushGenerateLead(
   formId: string,
   timeoutMs = GENERATE_LEAD_FLUSH_TIMEOUT_MS,
+  traffic?: TrafficInput,
 ): Promise<void> {
+  if (shouldSuppressConversion('generate_lead', traffic)) {
+    return Promise.resolve();
+  }
+
   const dataLayer = getDataLayer();
   if (!dataLayer) return Promise.resolve();
 
@@ -42,10 +53,13 @@ export function pushGenerateLead(
 
     const timer = setTimeout(finish, Math.max(0, timeoutMs));
 
+    const flags = resolveTrafficFlags(traffic);
     // Intentionally exclude email, phone, name, message, CRM IDs and raw UTMs.
     dataLayer.push({
       event: 'generate_lead',
       form_id: formId,
+      traffic_type: flags.traffic_type,
+      bot_suspect: flags.bot_suspect,
       eventCallback: () => {
         clearTimeout(timer);
         finish();
