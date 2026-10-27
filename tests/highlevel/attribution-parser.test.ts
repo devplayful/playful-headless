@@ -154,6 +154,22 @@ test('stores gbraid and wbraid in first/last cookies and does not overwrite firs
   assert.equal(ATTRIBUTION_TTL_SECONDS, 90 * 24 * 60 * 60);
 });
 
+test('deserializes cookies after Next.js double-encodes serializeAttributionCookie', () => {
+  const touch = parseVisitAttribution({
+    pathname: '/',
+    search: '?gbraid=TEST_G&wbraid=TEST_W',
+    host: 'playfulagency.com',
+  });
+  const once = serializeAttributionCookie(touch);
+  const twice = encodeURIComponent(once);
+  const fromOnce = deserializeAttributionCookie(once);
+  const fromTwice = deserializeAttributionCookie(twice);
+  assert.equal(fromOnce?.gbraid, 'TEST_G');
+  assert.equal(fromOnce?.wbraid, 'TEST_W');
+  assert.equal(fromTwice?.gbraid, 'TEST_G');
+  assert.equal(fromTwice?.wbraid, 'TEST_W');
+});
+
 test('builds first and last touch from request cookies', () => {
   const first = parseVisitAttribution({
     pathname: '/',

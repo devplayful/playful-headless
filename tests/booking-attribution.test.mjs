@@ -523,6 +523,18 @@ test('widget URL receives GHL hidden-field names from URL or first/last cookies'
   assert.equal(fromUrl.searchParams.get('lt_wbraid'), 'URL_WB');
   assert.equal(fromUrl.searchParams.get('fbclid'), null);
   assert.equal(fromUrl.searchParams.get('qa'), null);
+
+  const doubleEncoded = encodeURIComponent(lastCookie);
+  const fromDouble = new URL(buildBookingWidgetUrl({
+    search: '?qa=1',
+    lastCookie: doubleEncoded,
+    firstCookie: encodeURIComponent(firstCookie),
+  }));
+  assert.equal(fromDouble.searchParams.get('gbraid'), 'GBRAID-LT');
+  assert.equal(fromDouble.searchParams.get('wbraid'), 'WBRAID-FT');
+  assert.equal(fromDouble.searchParams.get('ft_gclid'), 'FIRST999');
+  assert.equal(fromDouble.searchParams.get('lt_gbraid'), 'GBRAID-LT');
+  assert.equal(fromDouble.searchParams.get('qa'), '1');
 });
 
 test('no booking upsert route: GHL confirm does not send email or contactId', () => {

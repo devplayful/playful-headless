@@ -187,15 +187,26 @@ export function serializeAttributionCookie(touch: ContactAttribution): string {
   }));
 }
 
+function unwrapCookiePayload(value: string): string {
+  let raw = value.trim();
+  for (let i = 0; i < 3; i += 1) {
+    if (raw.startsWith('{') || raw.startsWith('[')) return raw;
+    if (!raw.includes('%')) break;
+    try {
+      const next = decodeURIComponent(raw);
+      if (next === raw) break;
+      raw = next;
+    } catch {
+      break;
+    }
+  }
+  return raw;
+}
+
 export function deserializeAttributionCookie(value: string | undefined | null): ContactAttribution | null {
   if (!value) return null;
   try {
-    let parsed: Partial<ContactAttribution>;
-    try {
-      parsed = JSON.parse(decodeURIComponent(value)) as Partial<ContactAttribution>;
-    } catch {
-      parsed = JSON.parse(value) as Partial<ContactAttribution>;
-    }
+    const parsed = JSON.parse(unwrapCookiePayload(value)) as Partial<ContactAttribution>;
     if (!parsed || typeof parsed !== 'object') return null;
     const touch = emptyAttribution({
       captured: parsed.captured === true,
