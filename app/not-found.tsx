@@ -93,7 +93,7 @@ export default function NotFound() {
               </Link>
 
               <Link 
-                href="/posicionamiento-seo"
+                href="/agencia-seo"
                 className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-[#2A0064] transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
                 style={{ backgroundColor: '#72E3D8' }}
                 aria-label="Conocer servicios de posicionamiento SEO"
@@ -102,7 +102,7 @@ export default function NotFound() {
               </Link>
 
               <Link 
-                href="/publicidad-para-vender"
+                href="/agencia-sem"
                 className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-[#2A0064] transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
                 style={{ backgroundColor: '#FFB4A2' }}
                 aria-label="Ver servicios de publicidad para vender"
@@ -114,7 +114,7 @@ export default function NotFound() {
             {/* Segunda fila: 2 botones centrados */}
             <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               <Link 
-                href="/diseno-e-commerce"
+                href="/agencia-diseno-web"
                 className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-[#2A0064] transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
                 style={{ backgroundColor: '#C9B4FF' }}
                 aria-label="Ver servicios de diseño E-commerce"

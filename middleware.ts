@@ -44,6 +44,7 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
   '/servicios': '/agencia-e-commerce',
   '/services': '/agencia-e-commerce',
   '/contacto': '/contactar-agencia-de-marketing-digital',
+  '/contactar': '/contactar-agencia-de-marketing-digital',
   '/contactanos': '/contactar-agencia-de-marketing-digital',
   '/casos': '/casos-de-exito',
   '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
@@ -168,6 +169,14 @@ export function middleware(request: NextRequest) {
       target.pathname = '/_not-found';
       return attachAttributionCookies(request, NextResponse.rewrite(target));
     }
+  }
+
+  // The short path is the canonical published in schema. The generated page
+  // lives on the longer slug, so this stays an internal rewrite, not a 301.
+  if (path === '/blog/seo/migracion-seo-cambiar-de-plataforma') {
+    const target = request.nextUrl.clone();
+    target.pathname = '/blog/seo/migracion-seo-cambiar-de-plataforma-alternativa';
+    return attachAttributionCookies(request, NextResponse.rewrite(target));
   }
 
   const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
