@@ -68,6 +68,12 @@ test('propuesta copy forbids invented pricing in FAQ note', () => {
   assert.match(copy, /cifras/i);
 });
 
+test('content notes use #453A53 so they pass contrast on #E9D7FF cards', () => {
+  const placeholders = readFileSync(new URL('../app/lp/_lib/placeholders.tsx', import.meta.url), 'utf8');
+  assert.match(placeholders, /text-\[#453A53\]/);
+  assert.doesNotMatch(placeholders, /text-\[#6B6570\]/);
+});
+
 test('case proof includes Jumex, Odwalla and SoyTechno slugs', () => {
   const cases = readFileSync(new URL('../app/lp/_lib/ads-landing-cases.ts', import.meta.url), 'utf8');
   assert.match(cases, /jumex-shopify-dtc-ecommerce/);
