@@ -44,7 +44,7 @@ test('persists first-touch UTMs across a later page without query', () => {
   };
   const location = {
     pathname: '/',
-    search: '?utm_source=qa&utm_medium=test&gclid=QA-GCLID-TEST&fbclid=QA-FBCLID-TEST',
+    search: '?utm_source=qa&utm_medium=test&gclid=QA-GCLID-TEST&gbraid=QA-GBRAID&wbraid=QA-WBRAID&fbclid=QA-FBCLID-TEST',
     hostname: 'playfulagency.com',
   };
   const windowMock = {
@@ -62,12 +62,17 @@ test('persists first-touch UTMs across a later page without query', () => {
     const first = getSubmissionAttribution();
     assert.equal(first.originalAttribution.utm_source, 'qa');
     assert.equal(first.originalAttribution.gclid, 'QA-GCLID-TEST');
+    assert.equal(first.originalAttribution.gbraid, 'QA-GBRAID');
+    assert.equal(first.originalAttribution.wbraid, 'QA-WBRAID');
     assert.ok(values.get(ATTRIBUTION_STORAGE_FIRST));
     location.pathname = '/contactar-agencia-de-marketing-digital';
     location.search = '';
     const later = getSubmissionAttribution();
     assert.equal(later.originalAttribution.utm_source, 'qa');
+    assert.equal(later.originalAttribution.gbraid, 'QA-GBRAID');
+    assert.equal(later.originalAttribution.wbraid, 'QA-WBRAID');
     assert.equal(later.recentAttribution.utm_source, 'qa');
+    assert.equal(later.recentAttribution.gbraid, 'QA-GBRAID');
     assert.ok(values.get(ATTRIBUTION_STORAGE_LAST));
   } finally {
     Object.defineProperty(globalThis, 'window', { configurable: true, value: originalWindow });

@@ -14,7 +14,7 @@ const OWN_HOST_SUFFIXES = [
   'vercel.app',
 ] as const;
 
-export const CLICK_FIELDS = ['gclid', 'fbclid'] as const;
+export const CLICK_FIELDS = ['gclid', 'gbraid', 'wbraid', 'fbclid'] as const;
 export const UTM_FIELDS = [
   'utm_source',
   'utm_medium',
@@ -55,6 +55,8 @@ export function emptyAttribution(overrides: Partial<ContactAttribution> = {}): C
     utm_term: '',
     utm_content: '',
     gclid: '',
+    gbraid: '',
+    wbraid: '',
     fbclid: '',
     referrer: '',
     ...overrides,
@@ -92,7 +94,7 @@ function queryValue(params: URLSearchParams, key: string, maxLength: number): st
   return (params.get(key) || '').trim().slice(0, maxLength);
 }
 
-export function hasCampaignSignals(touch: Pick<ContactAttribution, 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'utm_content' | 'gclid' | 'fbclid'>): boolean {
+export function hasCampaignSignals(touch: Pick<ContactAttribution, 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'utm_content' | 'gclid' | 'gbraid' | 'wbraid' | 'fbclid'>): boolean {
   return Boolean(
     touch.utm_source
     || touch.utm_medium
@@ -100,14 +102,16 @@ export function hasCampaignSignals(touch: Pick<ContactAttribution, 'utm_source' 
     || touch.utm_term
     || touch.utm_content
     || touch.gclid
+    || touch.gbraid
+    || touch.wbraid
     || touch.fbclid,
   );
 }
 
-export function resolveAttributionSource(touch: Pick<ContactAttribution, 'utm_source' | 'gclid' | 'fbclid' | 'referrer' | 'captured'>): string {
+export function resolveAttributionSource(touch: Pick<ContactAttribution, 'utm_source' | 'gclid' | 'gbraid' | 'wbraid' | 'fbclid' | 'referrer' | 'captured'>): string {
   const utm = touch.utm_source.trim().toLowerCase();
   if (utm) return slugSource(utm);
-  if (touch.gclid.trim()) return 'google';
+  if (touch.gclid.trim() || touch.gbraid.trim() || touch.wbraid.trim()) return 'google';
   if (touch.fbclid.trim()) return 'facebook';
   if (touch.referrer.trim()) {
     try {
@@ -139,6 +143,8 @@ export function parseVisitAttribution(input: VisitInput): ContactAttribution {
     utm_term: queryValue(params, 'utm_term', 160),
     utm_content: queryValue(params, 'utm_content', 160),
     gclid: queryValue(params, 'gclid', 200),
+    gbraid: queryValue(params, 'gbraid', 200),
+    wbraid: queryValue(params, 'wbraid', 200),
     fbclid: queryValue(params, 'fbclid', 200),
   });
   touch.source = resolveAttributionSource(touch);
@@ -174,6 +180,8 @@ export function serializeAttributionCookie(touch: ContactAttribution): string {
     utm_term: touch.utm_term,
     utm_content: touch.utm_content,
     gclid: touch.gclid,
+    gbraid: touch.gbraid,
+    wbraid: touch.wbraid,
     fbclid: touch.fbclid,
     referrer: touch.referrer,
   }));
@@ -198,6 +206,8 @@ export function deserializeAttributionCookie(value: string | undefined | null): 
       utm_term: textField(parsed.utm_term, 160),
       utm_content: textField(parsed.utm_content, 160),
       gclid: textField(parsed.gclid, 200),
+      gbraid: textField(parsed.gbraid, 200),
+      wbraid: textField(parsed.wbraid, 200),
       fbclid: textField(parsed.fbclid, 200),
       referrer: textField(parsed.referrer, 500),
     });

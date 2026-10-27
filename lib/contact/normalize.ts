@@ -183,6 +183,8 @@ export function normalizeAttribution(value: unknown): ContactAttribution {
     utm_term: '',
     utm_content: '',
     gclid: text(input.gclid, 200),
+    gbraid: text(input.gbraid, 200),
+    wbraid: text(input.wbraid, 200),
     fbclid: text(input.fbclid, 200),
     referrer: text(input.referrer, 500),
   };
