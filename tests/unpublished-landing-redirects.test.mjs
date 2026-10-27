@@ -25,6 +25,8 @@ const LANDING_301 = [
   ['/agencia-woocommerce', '/agencia-e-commerce'],
   ['/agencia-prestashop', '/agencia-e-commerce'],
   ['/shopify-precios', '/agencia-shopify'],
+  ['/pasarela-de-pagos-venezuela', '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
+  ['/lp/integraciones-pasarela-erp', '/agencia-shopify'],
 ];
 
 const permanent301 = mergeCanibalizacionIntoPermanent301({
@@ -34,7 +36,8 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
 }, categoryRedirects);
 
 test('unpublished landing 404s 301 in one hop to live ecommerce/shopify pages', () => {
-  assert.equal(Object.keys(unpublishedLandingRedirects).length, 3);
+  assert.equal(Object.keys(unpublishedLandingRedirects).length, 5);
+  assert.equal(unpublishedLandingRedirects['/lp/calentamiento'], undefined);
 
   for (const [origin, destPath] of LANDING_301) {
     const dest = `${APEX}${destPath}`;
@@ -43,7 +46,11 @@ test('unpublished landing 404s 301 in one hop to live ecommerce/shopify pages', 
     assert.equal(isCanibalizacionOriginPath(origin), false, origin);
     assert.equal(blogClosedDecision(origin).type, 'next', origin);
     assert.equal(blogClosedDecision(destPath).type, 'next', destPath);
-    assert.equal(SITEMAP_STATIC_PATHS.includes(destPath), true, destPath);
+    assert.equal(
+      SITEMAP_STATIC_PATHS.includes(destPath) || destPath.startsWith('/blog/'),
+      true,
+      destPath,
+    );
     assert.equal(getSitemapLocs().includes(dest), true, dest);
     assert.equal(permanent301[destPath], undefined, `dest is also an origin: ${destPath}`);
     assert.equal(SITEMAP_UNPUBLISHED_PATHS.includes(origin), true, origin);

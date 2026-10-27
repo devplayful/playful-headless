@@ -9,13 +9,17 @@ import {
   AGENCIA_SEO_HREF,
   AGENCIA_SEM_HREF,
   AGENCIA_UX_UI_HREF,
+  AGENCIA_SHOPIFY_HREF,
   BLOG_HREF,
   CASOS_HREF,
   CONTACT_HREF,
   GUIA_MARKETING_HREF,
   INSTAGRAM_ADS_HREF,
+  LP_INTEGRACIONES_PASARELA_ERP_HREF,
+  PASARELA_VE_HREF,
   PUBLICIDAD_DIGITAL_HREF,
   SKIP_BROKEN_HREF_PATHS,
+  ZELLE_VE_HREF,
   SKIP_REWRITE_SOURCE_SLUGS,
   decideBrokenInternalHref,
 } from '../utils/broken-internal-hrefs.ts';
@@ -209,6 +213,28 @@ test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', 
     '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
   );
   assert.equal(rewritten, '<h2>agencia de SEO</h2>');
+});
+
+test('Cashea-only rewrite sends pasarela hrefs to the Zelle post', () => {
+  assert.equal(
+    decideBrokenInternalHref(PASARELA_VE_HREF, '/blog/tecnologia/cashea-para-comercios').href,
+    ZELLE_VE_HREF,
+  );
+  assert.equal(
+    decideBrokenInternalHref(
+      `https://playfulagency.com${PASARELA_VE_HREF}`,
+      '/blog/tecnologia/cashea-para-comercios',
+    ).href,
+    ZELLE_VE_HREF,
+  );
+  assert.equal(
+    decideBrokenInternalHref(PASARELA_VE_HREF, '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce').href,
+    PASARELA_VE_HREF,
+  );
+  assert.equal(
+    decideBrokenInternalHref(LP_INTEGRACIONES_PASARELA_ERP_HREF, '/blog/tecnologia/cashea-para-comercios').href,
+    AGENCIA_SHOPIFY_HREF,
+  );
 });
 
 test('does not invent dests outside the closed list', () => {

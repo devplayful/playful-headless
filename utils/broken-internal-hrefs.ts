@@ -14,11 +14,16 @@ export const AGENCIA_SEM_HREF = '/agencia-sem';
 export const AGENCIA_DISENO_HREF = '/agencia-diseno-web';
 export const AGENCIA_ECOMMERCE_HREF = '/agencia-e-commerce';
 export const AGENCIA_UX_UI_HREF = '/agencia-ux-ui';
+export const AGENCIA_SHOPIFY_HREF = '/agencia-shopify';
 export const BLOG_HREF = '/blog';
 export const CASOS_HREF = '/casos-de-exito';
 export const PUBLICIDAD_DIGITAL_HREF = '/blog/pautas-digitales/publicidad-digital-en-tu-negocio';
 export const GUIA_MARKETING_HREF = '/blog/pautas-digitales/guia-para-hacer-marketing-digital';
 export const INSTAGRAM_ADS_HREF = '/blog/otros/conoce-todo-sobre-instagram-ads';
+export const ZELLE_VE_HREF = '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+export const PASARELA_VE_HREF = '/pasarela-de-pagos-venezuela';
+export const LP_INTEGRACIONES_PASARELA_ERP_HREF = '/lp/integraciones-pasarela-erp';
+export const CASHEA_COMERCIOS_SOURCE_SLUG = 'cashea-para-comercios';
 
 export const UNWRAP = null;
 
@@ -121,6 +126,7 @@ export const BROKEN_HREF_DEFAULTS: Readonly<Record<string, string | null>> = Obj
   '/google-grants-descubre-que-es-y-como-funciona': UNWRAP,
   '/blog/pautas-digitales/porque-tener-un-perfil-empresarial-en-linkedin': UNWRAP,
   '/seo-internacional': UNWRAP,
+  [LP_INTEGRACIONES_PASARELA_ERP_HREF]: AGENCIA_SHOPIFY_HREF,
 });
 
 type SourceDest = string | null;
@@ -184,6 +190,10 @@ export const BROKEN_HREF_BY_SOURCE: Readonly<Record<string, Readonly<Record<stri
   },
   'ecosistema-digital-de-tu-marca': {
     '/blog/email-marketing': '/blog/email-marketing/estrategia-de-email-marketing',
+  },
+  /** GO 27 oct 2026: Cashea body still named the unpublished pasarela landing. */
+  [CASHEA_COMERCIOS_SOURCE_SLUG]: {
+    [PASARELA_VE_HREF]: ZELLE_VE_HREF,
   },
 });
 
@@ -348,7 +358,6 @@ export function decideBrokenInternalHref(
 
   const parsed = parseHref(href);
   if (!parsed) return { href, unwrap: false };
-  if (SKIP_PATH_SET.has(parsed.pathname)) return { href, unwrap: false };
   if (isWpAsset(parsed.pathname)) return { href, unwrap: false };
 
   if (parsed.formDest) {
@@ -372,6 +381,8 @@ export function decideBrokenInternalHref(
       if (typeof override === 'string') return { href: joinDest(override, parsed), unwrap: false };
     }
   }
+
+  if (SKIP_PATH_SET.has(parsed.pathname)) return { href, unwrap: false };
 
   if (isLandingCarouselSource(sourcePath)) {
     const landing = landingCarouselDest(parsed.pathname);

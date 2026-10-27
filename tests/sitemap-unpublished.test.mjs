@@ -17,7 +17,9 @@ test('unpublished landings stay out of the production sitemap until they 200', (
     '/agencia-woocommerce',
     '/pasarela-de-pagos-venezuela',
     '/shopify-precios',
+    '/lp/integraciones-pasarela-erp',
   ]);
+  assert.equal(SITEMAP_UNPUBLISHED_PATHS.includes('/lp/calentamiento'), false);
 
   const locs = getSitemapLocs();
   const paths = getSitemapPaths();

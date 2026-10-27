@@ -160,7 +160,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = optimizeBlogInlineMedia(
     rewriteBookingWidgetHrefs(
-      rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+      rewriteInSitePageHrefs(
+        blogBodyForSlug(postSlug) || post.content?.rendered || '',
+        `/blog/${category}/${postSlug}`,
+      ),
     ),
     postSlug,
   );
