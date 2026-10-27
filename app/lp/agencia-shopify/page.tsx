@@ -10,5 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function LpAgenciaShopifyPage() {
-  return <Landing />;
+  return (
+    <>
+      <style>{`[data-lp-meta-shopify] h1{font-family:system-ui,-apple-system,"Segoe UI",sans-serif!important}`}</style>
+      <Landing />
+    </>
+  );
 }

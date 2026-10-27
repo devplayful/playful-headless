@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import CimaBreaker from '@/components/premios-cima/CimaBreaker';
 import { getAllCaseStudies } from '@/services/wordpress';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
@@ -68,6 +67,11 @@ export default async function Landing() {
   return (
     <>
       <link rel="preload" as="image" href={HERO_LCP_1X} fetchPriority="high" />
+      <style>{`
+        [data-lp-meta-shopify] h1.playful-h1 {
+          font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+      `}</style>
       <article
         className="w-full pb-28"
         data-ads-warm-landing
@@ -84,7 +88,8 @@ export default async function Landing() {
                     <UnsignedBlock
                       block={LP_META_HERO_TITLES[ang]}
                       as="h1"
-                      className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]"
+                      className="text-[36px] leading-[42px] font-semibold text-[#440099] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]"
+                      style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif' }}
                     />
                   </div>
                 ))}
@@ -364,9 +369,13 @@ export default async function Landing() {
           </div>
         </section>
       </article>
-      <Suspense fallback={null}>
-        <VariantBoot />
-      </Suspense>
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            'document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("[data-lp-meta-booking]");if(!a||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();var q=location.search;location.assign(q?"/reunion-playful"+q:"/reunion-playful");},true);',
+        }}
+      />
+      <VariantBoot />
     </>
   );
 }

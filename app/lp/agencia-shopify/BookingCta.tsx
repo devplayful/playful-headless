@@ -1,7 +1,5 @@
-'use client';
-
-import type { MouseEvent, ReactNode } from 'react';
-import { lpMetaBookingAnchorHref, lpMetaBookingHrefFromSearch } from '../_lib/meta-booking-href';
+import type { ReactNode } from 'react';
+import { lpMetaBookingAnchorHref } from '../_lib/meta-booking-href';
 
 type BookingCtaProps = {
   dataCta: string;
@@ -10,21 +8,11 @@ type BookingCtaProps = {
   search?: string;
 };
 
-/** Route-local CTA. Visible href keeps the full query; hop path is not isBookingHref. */
+/** Server CTA. Visible hop href; click handled by the route-local script in Landing. */
 export default function BookingCta({ dataCta, className, children, search = '' }: BookingCtaProps) {
   const q = search ? (search.startsWith('?') ? search : `?${search}`) : '';
-  const href = lpMetaBookingAnchorHref(q);
-
-  const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-      return;
-    }
-    event.preventDefault();
-    window.location.assign(lpMetaBookingHrefFromSearch(window.location.search || q));
-  };
-
   return (
-    <a href={href} data-cta={dataCta} data-lp-meta-booking="1" className={className} onClick={onClick}>
+    <a href={lpMetaBookingAnchorHref(q)} data-cta={dataCta} data-lp-meta-booking="1" className={className}>
       {children}
     </a>
   );
