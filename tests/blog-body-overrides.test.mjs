@@ -7,6 +7,7 @@ const {
   ZELLE_VE_BLOG_BODY_HTML,
   ZELLE_FROZEN_HEADING_IDS,
   MIGRACION_SEO_ALT_BLOG_BODY_HTML,
+  CASHEA_COMERCIOS_BLOG_BODY_HTML,
   blogBodyForSlug,
 } = await import('../lib/blog-body-overrides.ts');
 
@@ -72,6 +73,14 @@ test('migración SEO override books via /reunion-playful, not the widget API', (
     MIGRACION_SEO_ALT_BLOG_BODY_HTML,
     /api\.playfulagency\.com\/widget\/bookings/,
   );
+});
+
+test('signed overrides drop internal hrefs that 404 (SEO sprint 27 oct)', () => {
+  assert.doesNotMatch(
+    CASHEA_COMERCIOS_BLOG_BODY_HTML,
+    /href="[^"]*(migracion-seo-cambiar-de-plataforma"|pasarela-de-pagos-venezuela)/,
+  );
+  assert.doesNotMatch(MIGRACION_SEO_ALT_BLOG_BODY_HTML, /pagos-online-ecommerce/);
 });
 
 test('blog post page prefers the body override before WP rendered HTML', () => {
