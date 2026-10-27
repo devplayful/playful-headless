@@ -1,0 +1,31 @@
+{
+  "url": "http://127.0.0.1:3000/lp/calentamiento?qa=1",
+  "ua": "PlayfulQA/1.0",
+  "load": {
+    "status": 200,
+    "ok": true
+  },
+  "scrollTime": {
+    "count": 1,
+    "event": {
+      "event": "visita_calificada",
+      "event_id": "vc-1793133907201-0h48cj1b",
+      "trigger": "scroll_time",
+      "lp_slug": "calentamiento",
+      "qa": true
+    },
+    "ok": true
+  },
+  "ctaClick": {
+    "loadStatus": 200,
+    "count": 1,
+    "event": {
+      "event": "visita_calificada",
+      "event_id": "vc-1793133911129-jbx2je3d",
+      "trigger": "cta_click",
+      "lp_slug": "calentamiento",
+      "qa": true
+    },
+    "ok": true
+  }
+}

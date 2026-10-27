@@ -45,6 +45,15 @@ test('ads warm landings are noindex in layout and next headers', () => {
   assert.match(nextConfig, /source: '\/lp\/:path\*'/);
 });
 
+test('ads warm landings mount VisitaCalificada only in /lp layout', () => {
+  const layout = readFileSync(new URL('../app/lp/layout.tsx', import.meta.url), 'utf8');
+  const root = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const finalCta = readFileSync(new URL('../app/lp/_components/AdsFinalCta.tsx', import.meta.url), 'utf8');
+  assert.match(layout, /VisitaCalificadaTracker/);
+  assert.doesNotMatch(root, /VisitaCalificadaTracker/);
+  assert.match(finalCta, /data-cta="lp-meta-final"/);
+});
+
 test('ads warm routes are registered and excluded from sitemap and header nav', () => {
   for (const path of LP_PATHS) {
     assert.ok(expectedRoutes.sourceRoutes.includes(path), `${path} in expected-routes`);
