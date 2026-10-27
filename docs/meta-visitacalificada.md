@@ -36,6 +36,7 @@ Evento personalizado de Meta montado **en el sitio**, no en GTM. Vive solo en la
 2. Consola: hacer scroll hasta media página, esperar 15 s. Debe aparecer `visita_calificada` en `dataLayer` con `trigger: 'scroll_time'` y el `console.debug`. Recargar y pulsar el CTA de `/reunion-playful`: `trigger: 'cta_click'`. En ambos casos, una sola vez.
 3. Pixel Helper (tráfico **no** QA, producción o preview con GTM/píxel reales): evento `VisitaCalificada` con `eventID` `vc-…`. En QA el Helper no verá `fbq` a propósito.
 4. Fuera de `/lp/*` (p. ej. `/` o `/agencia-shopify`) no se monta el tracker: no hay push.
+5. Script headless (misma comprobación, máx. 1 req/s): `SEO_BASE_URL=https://<preview> node scripts/visita-calificada-qa-playwright.mjs`. Si la preview tiene Deployment Protection, hace falta cookie/share o correrlo contra `next start` del mismo SHA.
 
 ## Alternativa GTM del brief
 
