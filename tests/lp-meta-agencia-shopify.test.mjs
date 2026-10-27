@@ -43,7 +43,6 @@ test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y resuelve mkt/ang 
   assert.match(page, /follow:\s*false/);
   assert.match(page, /canonical:\s*LP_META_SHOPIFY_META\.path/);
   assert.match(page, /searchParams/);
-  assert.match(page, /force-dynamic/);
   assert.match(page, /parseLpMetaAngle/);
   assert.match(page, /parseLpMetaMarket/);
   assert.match(layout, /index:\s*false/);

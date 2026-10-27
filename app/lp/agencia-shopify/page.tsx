@@ -8,8 +8,6 @@ import {
   searchStringFromParams,
 } from './variants';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: LP_META_SHOPIFY_META.title,
   description: LP_META_SHOPIFY_META.description,

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import CimaBreaker from '@/components/premios-cima/CimaBreaker';
 import { getAllCaseStudies } from '@/services/wordpress';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
@@ -53,7 +54,7 @@ const SECONDARY_CTA_CLASS =
 
 const HERO_H1_STYLE = { fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif' } as const;
 
-export default async function Landing({
+export default function Landing({
   mkt,
   ang,
   search,
@@ -62,13 +63,6 @@ export default async function Landing({
   ang: LpMetaAngle;
   search: string;
 }) {
-  const casosDeExito = await getAllCaseStudies().catch(() => []);
-  const caseCards = toAdsLandingCaseCards(casosDeExito);
-  const caseOrder = caseOrderForMarket(mkt);
-  const orderedCards = [...caseCards].sort(
-    (left, right) => caseOrder.indexOf(left.slug) - caseOrder.indexOf(right.slug),
-  );
-  const featuredHref = `/casos-de-exito/${featuredCaseSlugForMarket(mkt)}`;
   const pains = painsForMarket(mkt);
   const painOrder = LP_META_PAIN_ORDER[ang];
   const faqItems = faqItemsForMarket(mkt).map((item) => ({
@@ -214,38 +208,9 @@ export default async function Landing({
         >
           <UnsignedBlock block={LP_META_PROOF_HEAD} as="h2" className="playful-h2 mb-4 text-center" />
           <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[ang]} />
-          <div className="mt-10 flex flex-col gap-6 md:flex-row">
-            {orderedCards.map((caseStudy, index) => (
-              <div
-                key={caseStudy.slug}
-                data-lp-case={caseStudy.slug}
-                className="flex-1"
-                style={{ order: index }}
-              >
-                <AdsCaseCard caseStudy={caseStudy} />
-                <div className="mt-3">
-                  <UnsignedBlock
-                    block={
-                      LP_META_PROOF_FOOT[caseStudy.slug as keyof typeof LP_META_PROOF_FOOT] || {
-                        tag: `pie caso ${caseStudy.slug}`,
-                        note: 'Marcador: falta pie de caso.',
-                      }
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <QueryLink
-              href={featuredHref}
-              dataCta="lp-meta-proof-sec"
-              className={SECONDARY_CTA_CLASS}
-              search={search}
-            >
-              {unsignedLabel(LP_META_CTA_SECONDARY.tag)}
-            </QueryLink>
-          </div>
+          <Suspense fallback={<div className="mt-10 min-h-[16rem]" />}>
+            <CaseCards mkt={mkt} search={search} />
+          </Suspense>
         </section>
 
         <section
@@ -339,6 +304,53 @@ export default async function Landing({
         }}
       />
       <StickyCta search={search} />
+    </>
+  );
+}
+
+async function CaseCards({ mkt, search }: { mkt: LpMetaMarket; search: string }) {
+  const casosDeExito = await getAllCaseStudies().catch(() => []);
+  const caseCards = toAdsLandingCaseCards(casosDeExito);
+  const caseOrder = caseOrderForMarket(mkt);
+  const orderedCards = [...caseCards].sort(
+    (left, right) => caseOrder.indexOf(left.slug) - caseOrder.indexOf(right.slug),
+  );
+  const featuredHref = `/casos-de-exito/${featuredCaseSlugForMarket(mkt)}`;
+
+  return (
+    <>
+      <div className="mt-10 flex flex-col gap-6 md:flex-row">
+        {orderedCards.map((caseStudy, index) => (
+          <div
+            key={caseStudy.slug}
+            data-lp-case={caseStudy.slug}
+            className="flex-1"
+            style={{ order: index }}
+          >
+            <AdsCaseCard caseStudy={caseStudy} />
+            <div className="mt-3">
+              <UnsignedBlock
+                block={
+                  LP_META_PROOF_FOOT[caseStudy.slug as keyof typeof LP_META_PROOF_FOOT] || {
+                    tag: `pie caso ${caseStudy.slug}`,
+                    note: 'Marcador: falta pie de caso.',
+                  }
+                }
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-8 text-center">
+        <QueryLink
+          href={featuredHref}
+          dataCta="lp-meta-proof-sec"
+          className={SECONDARY_CTA_CLASS}
+          search={search}
+        >
+          {unsignedLabel(LP_META_CTA_SECONDARY.tag)}
+        </QueryLink>
+      </div>
     </>
   );
 }
