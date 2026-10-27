@@ -154,9 +154,9 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
 test('hero LCP es img local con priority y sin lazy', () => {
   assert.match(hero, /fetchPriority="high"/);
   assert.match(hero, /hero-gORwV7MSXO@1x\.webp/);
+  assert.match(hero, /HERO_LCP_DATA_URI/);
   assert.match(hero, /decoding="sync"/);
   assert.doesNotMatch(hero, /loading=["']lazy["']/);
   assert.doesNotMatch(hero, /from ['"]next\/image['"]/);
-  assert.match(landing, /rel="preload"/);
   assert.match(landing, /HeroLcp/);
 });

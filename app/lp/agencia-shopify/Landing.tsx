@@ -33,7 +33,7 @@ import {
   painsForMarket,
 } from './copy';
 import BookingCta from './BookingCta';
-import HeroLcp, { HERO_LCP_1X } from './HeroLcp';
+import HeroLcp from './HeroLcp';
 import QueryLink from './QueryLink';
 import StickyCta from './StickyCta';
 import { QUERY_BOOT_SCRIPT } from './query-boot';
@@ -74,7 +74,6 @@ export default function Landing() {
 
   return (
     <>
-      <link rel="preload" as="image" href={HERO_LCP_1X} fetchPriority="high" />
       <article
         className="w-full pb-28"
         data-ads-warm-landing
