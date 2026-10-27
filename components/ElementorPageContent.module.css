@@ -2,6 +2,8 @@
   /* Transparent so the first section can bleed under the sticky header */
   background: transparent;
   font-family: var(--font-dm-sans), "DM Sans", sans-serif;
+  /* Swiper slides sit outside the viewport and widen the document. */
+  overflow-x: clip;
 }
 
 .page :global(.elementor-section-stretched) {
