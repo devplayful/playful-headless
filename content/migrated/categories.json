@@ -1,0 +1,58 @@
+[
+  {
+    "id": 110,
+    "count": 0,
+    "description": "",
+    "name": "e-commerce",
+    "slug": "e-commerce",
+    "parent": 0
+  },
+  {
+    "id": 7,
+    "count": 13,
+    "description": "",
+    "name": "Email Marketing",
+    "slug": "email-marketing",
+    "parent": 0
+  },
+  {
+    "id": 51,
+    "count": 15,
+    "description": "",
+    "name": "Más vistos",
+    "slug": "mas-vistos",
+    "parent": 0
+  },
+  {
+    "id": 21,
+    "count": 27,
+    "description": "",
+    "name": "Otros",
+    "slug": "otros",
+    "parent": 0
+  },
+  {
+    "id": 25,
+    "count": 45,
+    "description": "",
+    "name": "Pautas Digitales",
+    "slug": "pautas-digitales",
+    "parent": 0
+  },
+  {
+    "id": 6,
+    "count": 32,
+    "description": "",
+    "name": "SEO",
+    "slug": "seo",
+    "parent": 0
+  },
+  {
+    "id": 24,
+    "count": 20,
+    "description": "",
+    "name": "Tecnología",
+    "slug": "tecnologia",
+    "parent": 0
+  }
+]

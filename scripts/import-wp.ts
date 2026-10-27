@@ -169,6 +169,7 @@ async function main() {
   const autores = new Map<number, Json>();
   for (const p of posts) for (const a of p._embedded?.author || []) if (a?.id) autores.set(a.id, a);
   stat('autores').leidos = autores.size;
+  // /wp/v2/users responde 401 sin auth; los autores vienen de _embed en posts.
   for (const p of posts) if (p.author && !autores.has(p.author)) {
     stat('autores').fallidos++;
     stat('autores').errores.push(`wp ${p.author}: autor del post ${p.id} no embebido`);
