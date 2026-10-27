@@ -16,6 +16,24 @@ export function isLpMetaMarket(value: string): value is LpMetaMarket {
 }
 
 /** `mkt=es|latam|ve`. Default ES. No geo-IP. */
+export function firstSearchParam(
+  value: string | string[] | undefined | null,
+): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value ?? undefined;
+}
+
+export function searchStringFromParams(
+  params: Record<string, string | string[] | undefined> | undefined,
+): string {
+  const kept = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, raw]) => {
+    const value = (firstSearchParam(raw) || '').trim();
+    if (value) kept.set(key, value);
+  });
+  return kept.toString();
+}
+
 export function parseLpMetaMarket(raw: string | null | undefined): LpMetaMarket {
   const value = (raw || '').trim().toLowerCase();
   return isLpMetaMarket(value) ? value : DEFAULT_LP_META_MARKET;

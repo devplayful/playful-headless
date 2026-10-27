@@ -37,11 +37,15 @@ const expectedRoutes = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );
 
-test('ruta /lp/agencia-shopify es estática, noindex y fuera del sitemap', () => {
+test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y resuelve mkt/ang en servidor', () => {
   assert.equal(LP_META_SHOPIFY_META.path, '/lp/agencia-shopify');
   assert.match(page, /index:\s*false/);
   assert.match(page, /follow:\s*false/);
   assert.match(page, /canonical:\s*LP_META_SHOPIFY_META\.path/);
+  assert.match(page, /searchParams/);
+  assert.match(page, /force-dynamic/);
+  assert.match(page, /parseLpMetaAngle/);
+  assert.match(page, /parseLpMetaMarket/);
   assert.match(layout, /index:\s*false/);
   assert.match(layout, /follow:\s*false/);
   assert.match(nextConfig, /source: '\/lp\/:path\*'/);
@@ -137,6 +141,9 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(landing, /data-lp-block="2"/);
   assert.match(landing, /data-lp-block="8"/);
   assert.match(landing, /id="problema"/);
+  assert.doesNotMatch(landing, /data-lp-when-ang/);
+  assert.doesNotMatch(landing, /hidden=\{ang !== 'generic'\}/);
+  assert.match(landing, /LP_META_HERO_TITLES\[ang\]/);
 });
 
 test('hero LCP es img local con priority y sin lazy', () => {

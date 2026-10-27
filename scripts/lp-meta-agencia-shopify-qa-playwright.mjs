@@ -75,20 +75,12 @@ try {
     const status = response?.status() ?? 0;
     const robots =
       (await page.locator('meta[name="robots"]').getAttribute('content').catch(() => '')) || '';
-    await page.waitForSelector('[data-lp-meta-shopify]', { timeout: 20_000 });
-    await page.waitForFunction(
-      () => {
-        const root = document.querySelector('[data-lp-meta-shopify]');
-        return Boolean(root && root.getAttribute('data-lp-ang') && root.getAttribute('data-lp-mkt'));
-      },
-      null,
-      { timeout: 15_000 },
-    );
+    await page.waitForSelector('[data-lp-meta-shopify][data-lp-ang][data-lp-mkt]', {
+      timeout: 20_000,
+    });
     const mkt = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-mkt');
     const ang = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-ang');
-    const h1 =
-      (await page.locator('[data-lp-when-ang]:not([hidden]) h1').first().innerText().catch(() => '')) ||
-      '';
+    const h1 = (await page.locator('h1').first().innerText().catch(() => '')) || '';
 
     await page.locator('#problema').scrollIntoViewIfNeeded();
     await page.waitForSelector('[data-lp-meta-sticky] a[data-cta="lp-meta-sticky"]', {

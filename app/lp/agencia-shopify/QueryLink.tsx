@@ -9,7 +9,7 @@ type QueryLinkProps = {
   search?: string;
 };
 
-/** Server-safe secondary link. VariantBoot stamps the live query onto data-lp-keep-search. */
+/** Server secondary link. The query comes from the page searchParams. */
 export default function QueryLink({ href, dataCta, className, children, search = '' }: QueryLinkProps) {
   const q = search ? (search.startsWith('?') ? search : `?${search}`) : '';
   return (
