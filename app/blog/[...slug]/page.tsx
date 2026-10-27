@@ -76,6 +76,7 @@ import {
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
 import articleBodyStyles from '../article-body.module.css';
+import articleMediaStyles from '@/components/article-media.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
 
 const BLOG_ARTICLE_PROSE_CLASS = [
@@ -85,6 +86,7 @@ const BLOG_ARTICLE_PROSE_CLASS = [
   'prose-a:text-[#440099] prose-a:no-underline hover:prose-a:underline',
   'prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700',
   articleBodyStyles.body,
+  articleMediaStyles.fit,
 ].join(' ');
 
 export const dynamicParams = false;

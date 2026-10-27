@@ -1,0 +1,18 @@
+/* WordPress captions and embeds ship a fixed px width. On a 390px
+   viewport that makes the document scroll sideways. Scoped to the
+   article that imports this module — not the site header or layout. */
+.fit :global(img),
+.fit :global(iframe),
+.fit :global(video),
+.fit :global(figure) {
+  max-width: 100%;
+}
+
+.fit :global(figure.wp-caption) {
+  width: auto !important;
+}
+
+.fit :global(img),
+.fit :global(figure.wp-caption img) {
+  height: auto;
+}

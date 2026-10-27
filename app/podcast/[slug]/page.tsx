@@ -10,6 +10,7 @@ import { useParams } from 'next/navigation';
 import { getPodcastEpisodeBySlug, PodcastEpisode } from '@/services/wordpress';
 import { WordPressUnavailableError } from '@/services/wordpress-request.mjs';
 import Head from 'next/head';
+import articleMediaStyles from '@/components/article-media.module.css';
 
 // Componente de loading
 function LoadingSpinner() {
@@ -24,7 +25,7 @@ function LoadingSpinner() {
 function EpisodeContent({ content }: { content: string }) {
   return (
     <div 
-      className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900"
+      className={`prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900 ${articleMediaStyles.fit}`}
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
