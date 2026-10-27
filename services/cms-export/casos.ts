@@ -40,5 +40,5 @@ export async function getAllCaseStudiesFromExport(): Promise<any[]> {
 export async function getSuccessStoryBySlugFromExport(slug: string): Promise<SuccessStory | null> {
   const raw = loadCmsExportBundle().casos.find((c) => c.slug === slug);
   if (!raw?.acf) return null;
-  return normalizeCaso(raw) as SuccessStory;
+  return normalizeCaso(raw) as unknown as SuccessStory;
 }

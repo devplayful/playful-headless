@@ -1,4 +1,4 @@
-import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress';
+import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress-cms';
 import { mapCaseStudyToListingCard } from '@/lib/case-study-listing-card';
 import { canonicalForPath } from '@/utils/canonical';
 import {

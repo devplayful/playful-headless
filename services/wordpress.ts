@@ -67,7 +67,6 @@ import {
   type RelatedPostsCacheState,
 } from '@/lib/blog-related-posts';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
-import { useNewCmsSource } from '@/lib/cms-source';
 
 export {
   rewriteInSitePageHrefs,
@@ -629,12 +628,6 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
 }
 
 export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
-  if (useNewCmsSource()) {
-    const { getBlogPostsFromExport } = await import('./cms-export/blog');
-    const fromExport = await getBlogPostsFromExport(page, perPage, categorySlug);
-    const processedPosts = await hydrateListingPosts(fromExport.posts);
-    return { posts: processedPosts, totalPages: fromExport.totalPages };
-  }
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
@@ -787,6 +780,13 @@ async function loadBlogAuthorsByIds(
     }
   }
   return byId;
+}
+
+export async function hydrateBlogListingPosts(
+  posts: WPPost[],
+  query: Pick<LatestBlogPostsQuery, 'signal' | 'timeoutMs' | 'maxAttempts'> = {},
+): Promise<WPPost[]> {
+  return hydrateListingPosts(posts, query);
 }
 
 async function hydrateListingPosts(
@@ -1230,11 +1230,6 @@ export async function getRelatedBlogPostsForPost(
 }
 
 export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> {
-  if (useNewCmsSource()) {
-    const { getBlogStaticParamsFromExport } = await import('./cms-export/blog');
-    const fromExport = await getBlogStaticParamsFromExport();
-    return [...fromExport, ...listStagingLocalBlogStaticParams()];
-  }
   const terms = await getBlogCategoryTerms().catch(() => new Map<number, RelatedCategoryTerm>());
   const first = await loadBlogStaticParamsPage(1);
   const posts = [...first.items];
@@ -1281,30 +1276,6 @@ const blogPostBySlugBuildCache = new Map<string, Promise<WPPost | null>>();
 const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> => {
   const local = localBlogPostBySlug(slug);
   if (local) return local;
-
-  if (useNewCmsSource()) {
-    const { getBlogPostBySlugFromExport } = await import('./cms-export/blog');
-    const post = await getBlogPostBySlugFromExport(slug);
-    if (!post) return null;
-    if (post._embedded) {
-      if (post._embedded['wp:featuredmedia']?.[0]) {
-        const media = post._embedded['wp:featuredmedia'][0];
-        post.featured_media_url = media.source_url;
-        post.featured_media_alt = media.alt_text || '';
-      }
-      if (post._embedded.author?.[0]) {
-        post.author = post._embedded.author[0];
-        post.author_name = post.author.name;
-      }
-    }
-    post.featured_media_url = publicWebpIfPresent(
-      resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
-    );
-    post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
-    return repairBlogPostYoastCanonical(
-      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
-    );
-  }
 
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard&_fields=${BLOG_ARTICLE_POST_FIELDS}`,
@@ -1524,10 +1495,6 @@ export interface SuccessStory extends WPPost {
 }
 
 export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory | null> {
-  if (useNewCmsSource()) {
-    const { getSuccessStoryBySlugFromExport } = await import('./cms-export/casos');
-    return getSuccessStoryBySlugFromExport(slug);
-  }
   const { items: stories } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?slug=${encodeURIComponent(slug)}&_embed&acf_format=standard`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } }
@@ -1562,10 +1529,6 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
 const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
 
 async function loadAllCaseStudies(): Promise<any[]> {
-  if (useNewCmsSource()) {
-    const { getAllCaseStudiesFromExport } = await import('./cms-export/casos');
-    return getAllCaseStudiesFromExport();
-  }
   const { items: casos } = await wordpressFetchCollection<any>(
     `${WORDPRESS_API_URL}/wp/v2/casos-de-exito?status=publish&per_page=50&_fields=id,slug,title,featured_media,acf,status,_links,_embedded&_embed=wp:featuredmedia`,
     { next: { revalidate: 3600 }, headers: { 'Content-Type': 'application/json' } }

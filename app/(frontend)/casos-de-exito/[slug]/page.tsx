@@ -1,5 +1,5 @@
 import Image from '@/components/casos/CaseStudyMedia';
-import { getSuccessStoryBySlug } from '@/services/wordpress';
+import { getSuccessStoryBySlug } from '@/services/wordpress-cms';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';

@@ -1,4 +1,4 @@
-import { getAllCaseStudies } from '@/services/wordpress';
+import { getAllCaseStudies } from '@/services/wordpress-cms';
 import HeaderClient from './HeaderClient';
 
 export default async function Header() {

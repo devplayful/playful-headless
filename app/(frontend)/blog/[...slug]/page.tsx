@@ -1,4 +1,4 @@
-import { getBlogPostBySlug, getBlogStaticParams, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
+import { getBlogPostBySlug, getBlogStaticParams, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress-cms';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

@@ -1,4 +1,4 @@
-import { getBlogPosts } from '@/services/wordpress';
+import { getBlogPosts } from '@/services/wordpress-cms';
 import { BLOG_LISTING_PER_PAGE } from '@/utils/blog-listing-query';
 import Link from 'next/link';
 import Image from 'next/image';

@@ -11,7 +11,7 @@ import { CASE_FEATURE_CARD_SIZES } from '@/lib/blog-image-sizes';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
-import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
+import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress-cms';
 import ServiceFaqAccordion from './ServiceFaqAccordion';
 import CimaBreaker from '@/components/premios-cima/CimaBreaker';
 import { toShopifyCaseCards } from './shopify-cases';

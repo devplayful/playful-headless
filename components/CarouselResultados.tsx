@@ -257,8 +257,9 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         
         // Solo hacer fetch si no se pasaron datos
         if (data.length === 0 && cases.length === 0) {
-          const { getAllCaseStudies } = await import('@/services/wordpress');
-          data = await getAllCaseStudies();
+          const res = await fetch('/api/case-studies-carousel');
+          if (!res.ok) throw new Error('No se pudieron cargar los casos');
+          data = await res.json();
         } else if (cases.length > 0) {
           // Si se pasaron casos ya transformados, usarlos directamente
           setCaseStudies(cases);

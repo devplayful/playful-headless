@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: { url: TEST_BLOG_URL },
 };
 
-import { getBlogPostBySlug } from '@/services/wordpress';
+import { getBlogPostBySlug } from '@/services/wordpress-cms';
 import { notFound } from 'next/navigation';
 
 export default async function TestBlogPage() {

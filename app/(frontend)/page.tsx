@@ -66,7 +66,7 @@ import { HomePageContent } from "./HomePageContent";
 import CimaBreaker from "@/components/premios-cima/CimaBreaker";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
-import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
+import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress-cms';
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
