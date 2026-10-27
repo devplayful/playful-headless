@@ -78,7 +78,6 @@ test('5) ONG closed post is not in sitemap and has no in-repo internal hrefs', (
     hits.sort(),
     [
       'config/blog-closed-posts.json',
-      'config/blog-sitemap-lastmod.json',
       'tests/blog-closed-posts.test.mjs',
       'utils/blog-closed-paths.ts',
     ].sort(),

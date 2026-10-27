@@ -1,7 +1,7 @@
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, A11y } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
@@ -43,7 +43,7 @@ export default function PortfolioCarousel() {
         </h2>
         
         <Swiper
-          modules={[Navigation, Autoplay, A11y]}
+          modules={[Navigation, Autoplay]}
           spaceBetween={30}
           slidesPerView={'auto'}
           centeredSlides={true}
@@ -53,12 +53,6 @@ export default function PortfolioCarousel() {
             disableOnInteraction: false,
           }}
           navigation={true}
-          a11y={{
-            enabled: true,
-            prevSlideMessage: 'Caso anterior',
-            nextSlideMessage: 'Caso siguiente',
-            paginationBulletMessage: 'Ir a la diapositiva {{index}}',
-          }}
           breakpoints={{
             320: {
               slidesPerView: 1,

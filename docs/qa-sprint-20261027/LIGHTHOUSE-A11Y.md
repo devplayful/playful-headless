@@ -86,33 +86,33 @@ Leyenda LH: `P/A/B/S`. After Chrome = `next start` mismo SHA.
 
 `/reunion-playful` es redirect: Lighthouse a veces no puntúa Best Practices / a11y de forma estable. No se interactuó con el booking.
 
-## Arreglos (fuera de cascarón)
+## Decisión 27 oct (CEO): este PR solo páginas
+
+`#367` queda con arreglos de página + docs + runner. Los componentes compartidos van a `cursor/a11y-compartidos-2710`. Elementor queda aparcado en `docs/qa-sprint-20261027/aparcado-elementor.patch` (sin PR). `app/firma/alejandra-da-costa/firma-html.ts` volvió a main.
+
+### Arreglos que quedan en #367
 
 | Archivo | Qué |
 | --- | --- |
-| `lib/elementor-a11y-html.ts` | Alt ausente, `aria-label` en enlaces vacíos, quita `aria-selected` de tabs `role=button` |
-| `components/ElementorPageContent.tsx` | Aplica el pase a11y al HTML de Elementor |
-| `components/ElementorPageScripts.tsx` | Observer cliente: vuelve a quitar `aria-selected` que reinyecta Elementor |
-| `services/wordpress.ts` | Mismo pase en `getPageBySlug` |
-| `app/blog/[...slug]/page.tsx` | Pase a11y al cuerpo del post (`link-name`) |
-| `app/casos-de-exito/[slug]/page.tsx` | Pase a11y ACF; contraste naranja `#B45309` |
-| `components/ContactLeadForm.tsx` | Label de marketplaces; contraste legal; grupo reCAPTCHA |
-| `app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx` | Igual + H1 de página |
-| `components/blog/TableOfContents.tsx` | PDF: texto `#2A0064` sobre `#39DDCB` |
-| `components/CarouselResultados.tsx` | Flechas `aria-label`; `inert` + `tabindex=-1` en slides `aria-hidden`; CTA `span`; spinner `status` |
-| `components/ui/PortfolioCarousel.tsx` | Módulo A11y de Swiper |
+| `app/casos-de-exito/[slug]/page.tsx` | Contraste naranja `#B45309` |
 | `app/casos-de-exito/TestimonialsSection.tsx` | A11y Swiper, `h3`, estrellas `role="img"`, avatar decorativo |
 | `app/casos-de-exito/CaseStudiesContent.tsx` | Hero `next/image` + sizes; filtros `aria-pressed`; vacío AA |
+| `app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx` | H1; label marketplaces; contraste legal; grupo reCAPTCHA |
+| `components/blog/TableOfContents.tsx` | PDF: texto `#2A0064` sobre `#39DDCB` |
 | `components/soytechno/SoyTechnoCaseStudy.module.css` | Azul h3/card `#1256B5` |
 | `app/nosotros/page.tsx` | H1 real; alt y sizes del hero |
 | `app/politica-de-privacidad/page.tsx` | H1 real; fecha sin opacity |
 | `app/page.tsx` / `app/links/page.tsx` | Decoraciones `aria-hidden` |
-| `components/AnimatedButton.tsx` | Lottie `aria-hidden` |
 | `app/podcast/PodcastHubContent.tsx` | Contraste CTAs; spinner |
 | `app/podcast/[slug]/page.tsx` | Contraste CTA Buzzsprout |
-| `app/firma/alejandra-da-costa/firma-html.ts` | Teal `#14665C` |
-| `scripts/qa-lighthouse-a11y.mjs` | Runner (serie, resume, share token opcional) |
-| `tests/elementor-a11y-html.test.mjs` | Cobertura del pase |
+| `scripts/qa-lighthouse-a11y.mjs` | Runner |
+| `tests/live-qa-fetch.test.mjs` | El runner entra en la allowlist de `qa=1` |
+
+### Aparcado (sin PR)
+
+`components/ElementorPageContent.tsx`, `components/ElementorPageScripts.tsx`, `lib/elementor-a11y-html.ts`, `tests/elementor-a11y-html.test.mjs` → `docs/qa-sprint-20261027/aparcado-elementor.patch`.
+
+`services/wordpress.ts` solo envolvía `applyElementorA11y`; queda idéntico a main (el wrap está en el patch).
 
 Copy visible aprobado: no se reescribió.
 

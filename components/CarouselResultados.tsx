@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,28 +23,6 @@ import "slick-carousel/slick/slick-theme.css";
 import "@/styles/slick-font-swap.css";
 
 // Estilos CSS para line-clamp
-function SliderArrow({
-  className,
-  style,
-  onClick,
-  label,
-}: {
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      className={className}
-      style={style}
-      onClick={onClick}
-      aria-label={label}
-    />
-  );
-}
-
 const cardStyles = `
   .line-clamp-2 {
     display: -webkit-box;
@@ -234,13 +212,13 @@ export const CaseStudyCard = ({
               </p>
             </div>
 
-            {/* CTA visual (el card entero es el enlace) */}
+            {/* Botón alineado a la derecha */}
             <div className="flex justify-end mt-auto">
-              <span
+              <button
                 className={`${caseStudy.buttonColor} text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0`}
               >
                 {caseStudy.buttonText}
-              </span>
+              </button>
             </div>
           </div>
         </Link>
@@ -271,36 +249,6 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const responsiveSettings = useSliderSettings();
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const root = carouselRef.current;
-    if (!root) return undefined;
-    const syncHiddenSlides = () => {
-      root.querySelectorAll<HTMLElement>('.slick-slide').forEach((slide) => {
-        const hidden = slide.getAttribute('aria-hidden') === 'true';
-        if (hidden) slide.setAttribute('inert', '');
-        else slide.removeAttribute('inert');
-        slide.querySelectorAll<HTMLElement>('a, button, input, select, textarea').forEach((el) => {
-          if (hidden) {
-            if (!el.hasAttribute('data-playful-tabindex')) {
-              el.setAttribute('data-playful-tabindex', el.getAttribute('tabindex') ?? '');
-            }
-            el.setAttribute('tabindex', '-1');
-          } else if (el.hasAttribute('data-playful-tabindex')) {
-            const previous = el.getAttribute('data-playful-tabindex');
-            if (previous) el.setAttribute('tabindex', previous);
-            else el.removeAttribute('tabindex');
-            el.removeAttribute('data-playful-tabindex');
-          }
-        });
-      });
-    };
-    syncHiddenSlides();
-    const observer = new MutationObserver(syncHiddenSlides);
-    observer.observe(root, { attributes: true, subtree: true, attributeFilter: ['aria-hidden', 'class'] });
-    return () => observer.disconnect();
-  }, [caseStudies, loading]);
 
   useEffect(() => {
     const fetchCaseStudies = async () => {
@@ -427,10 +375,10 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
         )}
 
         {/* Contenedor del carousel */}
-        <div ref={carouselRef} className="carousel-container overflow-hidden">
+        <div className="carousel-container overflow-hidden">
           {loading ? (
-            <div className="text-center py-12" role="status" aria-live="polite">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto" aria-hidden="true"></div>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
               <p className="mt-4" style={{ color: textColor }}>Cargando casos de éxito...</p>
             </div>
           ) : error ? (
@@ -451,8 +399,6 @@ const CarouselResultados: React.FC<CarouselResultadosProps> = ({
                 autoplay: true,
                 arrows: true,
                 dots: false,
-                prevArrow: <SliderArrow label="Caso de éxito anterior" />,
-                nextArrow: <SliderArrow label="Caso de éxito siguiente" />,
               }}
               className="conversion-cards-wrapper"
             >

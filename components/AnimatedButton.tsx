@@ -247,7 +247,7 @@ export default function AnimatedButton({
   const buttonContent = (
     <>
       <span>{children}</span>
-      <div className="w-6 h-6 flex items-center justify-center" aria-hidden="true">
+      <div className="w-6 h-6 flex items-center justify-center">
         <Lottie
           lottieRef={lottieRef}
           animationData={animation.animationData}

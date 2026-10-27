@@ -30,8 +30,6 @@ import {
   resolveImageAlt,
   resolveMediaAlt,
 } from '@/lib/image-alt-overrides';
-import { applyElementorA11y } from '@/lib/elementor-a11y-html';
-
 /** ISR + CDN cache for case studies (TTFB). */
 export const revalidate = 3600;
 
@@ -108,7 +106,7 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 function acfHtml(value: string | undefined): string {
-  return applyElementorA11y(applyImageAltOverrides(value || ''));
+  return applyImageAltOverrides(value || '');
 }
 
 export default async function SuccessStoryPage({

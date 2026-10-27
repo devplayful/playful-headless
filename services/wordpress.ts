@@ -10,7 +10,6 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
-import { applyElementorA11y } from '@/lib/elementor-a11y-html';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -410,7 +409,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = applyElementorA11y(applyImageAltOverrides(
+  const html = applyImageAltOverrides(
     rewriteElementorBodyHrefs(
       rewriteEcommerceZelleCover(
         rewriteEcommerceSoytechnoCaseLink(
@@ -427,7 +426,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
       ),
       slug,
     ),
-  ));
+  );
   const title = stripHtml(page.title?.rendered || slug);
   const stylesheetIds = collectStylesheetIds(html, page.id);
   return { id: page.id, slug: page.slug, title, html, stylesheetIds };
