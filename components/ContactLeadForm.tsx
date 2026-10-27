@@ -436,6 +436,7 @@ export default function ContactLeadForm({
             <input
               type="text"
               name="secondaryMarketplaces"
+              aria-label="¿En qué otros marketplaces vendes? (opcional)"
               value={formData.secondaryMarketplaces}
               onChange={handleChange}
               disabled={isPendingConfirmation || isSubmitting}
@@ -580,7 +581,7 @@ export default function ContactLeadForm({
             An empty sitekey crashes react-google-recaptcha; the API already
             fails closed if the token is missing. */}
         {!previewSimulation && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-          <div className="flex justify-center">
+          <div className="flex justify-center" role="group" aria-label="Verificación reCAPTCHA">
             <ReCAPTCHA
               ref={recaptchaRef}
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
