@@ -14,7 +14,7 @@ export default function HeroLcp() {
         alt={resolveImageAlt(HERO_LCP_PNG)}
         fetchPriority="high"
         decoding="sync"
-        className="h-auto w-full"
+        className="h-[22rem] w-full object-cover lg:h-auto"
       />
     </div>
   );

@@ -22,6 +22,7 @@ const page = readFileSync(new URL('../app/lp/agencia-shopify/page.tsx', import.m
 const unsigned = readFileSync(new URL('../app/lp/_lib/unsigned-copy.tsx', import.meta.url), 'utf8');
 const copy = readFileSync(new URL('../app/lp/agencia-shopify/copy.ts', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../app/lp/agencia-shopify/Landing.tsx', import.meta.url), 'utf8');
+const queryBoot = readFileSync(new URL('../app/lp/agencia-shopify/query-boot.ts', import.meta.url), 'utf8');
 const bookingCta = readFileSync(new URL('../app/lp/agencia-shopify/BookingCta.tsx', import.meta.url), 'utf8');
 const sticky = readFileSync(new URL('../app/lp/agencia-shopify/StickyCta.tsx', import.meta.url), 'utf8');
 const hero = readFileSync(new URL('../app/lp/agencia-shopify/HeroLcp.tsx', import.meta.url), 'utf8');
@@ -37,14 +38,14 @@ const expectedRoutes = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );
 
-test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y resuelve mkt/ang en servidor', () => {
+test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee searchParams', () => {
   assert.equal(LP_META_SHOPIFY_META.path, '/lp/agencia-shopify');
   assert.match(page, /index:\s*false/);
   assert.match(page, /follow:\s*false/);
   assert.match(page, /canonical:\s*LP_META_SHOPIFY_META\.path/);
-  assert.match(page, /searchParams/);
-  assert.match(page, /parseLpMetaAngle/);
-  assert.match(page, /parseLpMetaMarket/);
+  assert.match(page, /force-static/);
+  assert.doesNotMatch(page, /searchParams/);
+  assert.doesNotMatch(page, /useSearchParams/);
   assert.match(layout, /index:\s*false/);
   assert.match(layout, /follow:\s*false/);
   assert.match(nextConfig, /source: '\/lp\/:path\*'/);
@@ -113,7 +114,11 @@ test('CTA local conserva la query completa y el propagador global no se toca', (
   assert.doesNotMatch(propagator, /agencia-shopify/);
   assert.match(landing, /dataCta="lp-meta-hero"/);
   assert.match(landing, /dataCta="lp-meta-hero-sec"/);
+  assert.match(landing, /QUERY_BOOT_SCRIPT/);
+  assert.match(queryBoot, /location\.search/);
+  assert.doesNotMatch(queryBoot, /<h1|querySelector\(["']h1/);
   assert.match(sticky, /data-cta="lp-meta-sticky"|dataCta="lp-meta-sticky"/);
+  assert.match(sticky, /location\.search/);
   assert.match(bookingCta, /data-cta=\{dataCta\}/);
   assert.match(bookingCta, /data-lp-meta-booking/);
 });
@@ -140,9 +145,10 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(landing, /data-lp-block="2"/);
   assert.match(landing, /data-lp-block="8"/);
   assert.match(landing, /id="problema"/);
-  assert.doesNotMatch(landing, /data-lp-when-ang/);
+  assert.doesNotMatch(landing, /useSearchParams/);
   assert.doesNotMatch(landing, /hidden=\{ang !== 'generic'\}/);
-  assert.match(landing, /LP_META_HERO_TITLES\[ang\]/);
+  assert.match(landing, /LP_META_HERO_TITLES\.generic/);
+  assert.match(landing, /as="h1"/);
 });
 
 test('hero LCP es img local con priority y sin lazy', () => {

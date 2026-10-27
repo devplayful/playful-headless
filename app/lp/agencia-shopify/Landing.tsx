@@ -36,7 +36,8 @@ import BookingCta from './BookingCta';
 import HeroLcp, { HERO_LCP_1X } from './HeroLcp';
 import QueryLink from './QueryLink';
 import StickyCta from './StickyCta';
-import { caseOrderForMarket, featuredCaseSlugForMarket, type LpMetaAngle, type LpMetaMarket } from './variants';
+import { QUERY_BOOT_SCRIPT } from './query-boot';
+import { LP_META_ANGLES, LP_META_MARKETS, type LpMetaMarket } from './variants';
 
 const STEP_CARD_COLORS = ['bg-[#E9D7FF]', 'bg-[#FFEFD1]', 'bg-[#E4FFF9]', 'bg-[#FFDBDB]'] as const;
 const JOSE_PHOTO = '/images/firmas/foto-jose-reyes-176.png';
@@ -54,21 +55,22 @@ const SECONDARY_CTA_CLASS =
 
 const HERO_H1_STYLE = { fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif' } as const;
 
-export default function Landing({
+function MarketSlot({
   mkt,
-  ang,
-  search,
+  children,
 }: {
   mkt: LpMetaMarket;
-  ang: LpMetaAngle;
-  search: string;
+  children: React.ReactNode;
 }) {
-  const pains = painsForMarket(mkt);
-  const painOrder = LP_META_PAIN_ORDER[ang];
-  const faqItems = faqItemsForMarket(mkt).map((item) => ({
-    question: unsignedLabel(item.question.tag),
-    answer: <UnsignedFaqAnswer block={item.answer} />,
-  }));
+  return (
+    <div data-lp-when-mkt={mkt} className={mkt === 'es' ? undefined : 'hidden'}>
+      {children}
+    </div>
+  );
+}
+
+export default function Landing() {
+  const defaultPainOrder = LP_META_PAIN_ORDER.generic;
 
   return (
     <>
@@ -77,30 +79,32 @@ export default function Landing({
         className="w-full pb-28"
         data-ads-warm-landing
         data-lp-meta-shopify
-        data-lp-mkt={mkt}
-        data-lp-ang={ang}
+        data-lp-mkt="es"
+        data-lp-ang="generic"
       >
         <section data-cta-section="hero" data-lp-block="1" className="relative overflow-hidden">
           <div className="mx-auto max-w-[1200px] px-4 pb-16 pt-4 md:px-6 md:pb-20">
             <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-              <div className="space-y-8">
+              <div className="order-1 lg:order-2">
+                <HeroLcp />
+              </div>
+              <div className="order-2 space-y-8 lg:order-1">
                 <UnsignedBlock
-                  block={LP_META_HERO_TITLES[ang]}
+                  block={LP_META_HERO_TITLES.generic}
                   as="h1"
                   className="text-[36px] leading-[42px] font-semibold text-[#440099] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]"
                   style={HERO_H1_STYLE}
                 />
-                <UnsignedBlock block={LP_META_HERO_SUBTITLES[mkt]} />
+                {LP_META_MARKETS.map((mkt) => (
+                  <MarketSlot key={mkt} mkt={mkt}>
+                    <UnsignedBlock block={LP_META_HERO_SUBTITLES[mkt]} />
+                  </MarketSlot>
+                ))}
                 <div className="flex flex-col items-start gap-4">
-                  <BookingCta dataCta="lp-meta-hero" className={PRIMARY_CTA_CLASS} search={search}>
+                  <BookingCta dataCta="lp-meta-hero" className={PRIMARY_CTA_CLASS}>
                     {unsignedLabel(LP_META_CTA_PRIMARY.tag)}
                   </BookingCta>
-                  <QueryLink
-                    href="#prueba"
-                    dataCta="lp-meta-hero-sec"
-                    className={SECONDARY_CTA_CLASS}
-                    search={search}
-                  >
+                  <QueryLink href="#prueba" dataCta="lp-meta-hero-sec" className={SECONDARY_CTA_CLASS}>
                     {unsignedLabel(LP_META_CTA_SECONDARY.tag)}
                   </QueryLink>
                   <p className="text-sm italic text-[#453A53]" data-content-note>
@@ -114,7 +118,6 @@ export default function Landing({
                         href={item.href}
                         dataCta="lp-meta-hero-sec"
                         className="block overflow-hidden rounded-xl bg-white shadow-md focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]"
-                        search={search}
                       >
                         <img
                           src={item.image}
@@ -130,7 +133,6 @@ export default function Landing({
                   ))}
                 </ul>
               </div>
-              <HeroLcp />
             </div>
           </div>
         </section>
@@ -142,19 +144,28 @@ export default function Landing({
         >
           <div className="playful-contenedor playful-contenedor-FFEFD1 space-y-6 rounded-[32px] md:rounded-[48px]">
             <UnsignedBlock block={LP_META_PROBLEM_HEAD} as="h2" className="playful-h2 text-center" />
-            <ol className="flex flex-col gap-6 md:flex-row">
-              {painOrder.map((index, position) => (
-                <li
-                  key={index}
-                  data-lp-pain-index={index}
-                  data-lp-pain-position={position}
-                  className="flex-1 rounded-[32px] bg-white p-6 shadow-md"
-                  style={{ order: position }}
+            {(['es', 'latam', 've'] as const).map((mkt) => {
+              const pains = painsForMarket(mkt === 've' ? 'latam' : mkt);
+              return (
+                <ol
+                  key={mkt}
+                  data-lp-when-mkt={mkt}
+                  className={`flex flex-col gap-6 md:flex-row${mkt === 'es' ? '' : ' hidden'}`}
                 >
-                  <UnsignedBlock block={pains[index]} as="h3" className="playful-h3 mb-0" />
-                </li>
-              ))}
-            </ol>
+                  {defaultPainOrder.map((index, position) => (
+                    <li
+                      key={`${mkt}-${index}`}
+                      data-lp-pain-index={index}
+                      data-lp-pain-position={position}
+                      className="flex-1 rounded-[32px] bg-white p-6 shadow-md"
+                      style={{ order: position }}
+                    >
+                      <UnsignedBlock block={pains[index]} as="h3" className="playful-h3 mb-0" />
+                    </li>
+                  ))}
+                </ol>
+              );
+            })}
           </div>
         </section>
 
@@ -188,12 +199,7 @@ export default function Landing({
             ))}
           </div>
           <div className="mt-8 text-center">
-            <QueryLink
-              href="#prueba"
-              dataCta="lp-meta-stores-sec"
-              className={SECONDARY_CTA_CLASS}
-              search={search}
-            >
+            <QueryLink href="#prueba" dataCta="lp-meta-stores-sec" className={SECONDARY_CTA_CLASS}>
               {unsignedLabel(LP_META_CTA_SECONDARY.tag)}
             </QueryLink>
           </div>
@@ -207,9 +213,17 @@ export default function Landing({
           className="mx-auto max-w-[1200px] scroll-mt-8 px-4 py-8 md:px-6 md:py-12"
         >
           <UnsignedBlock block={LP_META_PROOF_HEAD} as="h2" className="playful-h2 mb-4 text-center" />
-          <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[ang]} />
+          <MarketSlot mkt="es">
+            <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE.generic} />
+          </MarketSlot>
+          {LP_META_ANGLES.map((ang) => (
+            <div key={ang} data-lp-when-ang={ang} className="hidden" data-copy-angle={ang}>
+              <UnsignedBlock block={LP_META_HERO_TITLES[ang]} />
+              <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[ang]} />
+            </div>
+          ))}
           <Suspense fallback={<div className="mt-10 min-h-[16rem]" />}>
-            <CaseCards mkt={mkt} search={search} />
+            <CaseCards />
           </Suspense>
         </section>
 
@@ -254,18 +268,17 @@ export default function Landing({
           </div>
         </section>
 
-        {mkt === 've' ? (
-          <section
-            id="cobro-local-ve"
-            data-lp-block="ve"
-            data-lp-ve-local-pay
-            className="mx-auto max-w-[1200px] px-4 py-8 md:px-6 md:py-12"
-          >
-            <div className="playful-contenedor playful-contenedor-FFEFD1 space-y-4 rounded-[32px] md:rounded-[48px]">
-              <UnsignedBlock block={LP_META_VE_LOCAL_PAY} as="h2" className="playful-h2 text-center" />
-            </div>
-          </section>
-        ) : null}
+        <section
+          id="cobro-local-ve"
+          data-lp-block="ve"
+          data-lp-ve-local-pay
+          data-lp-when-mkt="ve"
+          className="mx-auto hidden max-w-[1200px] px-4 py-8 md:px-6 md:py-12"
+        >
+          <div className="playful-contenedor playful-contenedor-FFEFD1 space-y-4 rounded-[32px] md:rounded-[48px]">
+            <UnsignedBlock block={LP_META_VE_LOCAL_PAY} as="h2" className="playful-h2 text-center" />
+          </div>
+        </section>
 
         <section
           id="faq"
@@ -274,7 +287,16 @@ export default function Landing({
         >
           <UnsignedBlock block={LP_META_FAQ_HEAD} as="h2" className="playful-h2 mb-10 text-center" />
           <div className="mx-auto max-w-4xl space-y-3">
-            <AdsFaq items={faqItems} />
+            {LP_META_MARKETS.map((mkt) => (
+              <MarketSlot key={mkt} mkt={mkt}>
+                <AdsFaq
+                  items={faqItemsForMarket(mkt).map((item) => ({
+                    question: unsignedLabel(item.question.tag),
+                    answer: <UnsignedFaqAnswer block={item.answer} />,
+                  }))}
+                />
+              </MarketSlot>
+            ))}
           </div>
         </section>
 
@@ -284,8 +306,12 @@ export default function Landing({
               <h2 className="mb-6 text-3xl font-normal leading-tight text-[#453A53] md:text-4xl">
                 {unsignedLabel(LP_META_FINAL_HEAD.tag)}
               </h2>
-              <p className="mb-8 text-lg text-[#453A53]">{unsignedLabel(LP_META_FINAL_BODY[mkt].tag)}</p>
-              <BookingCta dataCta="lp-meta-final" className={PRIMARY_CTA_CLASS} search={search}>
+              {LP_META_MARKETS.map((mkt) => (
+                <MarketSlot key={mkt} mkt={mkt}>
+                  <p className="mb-8 text-lg text-[#453A53]">{unsignedLabel(LP_META_FINAL_BODY[mkt].tag)}</p>
+                </MarketSlot>
+              ))}
+              <BookingCta dataCta="lp-meta-final" className={PRIMARY_CTA_CLASS}>
                 {unsignedLabel(LP_META_FINAL_BUTTON.tag)}
               </BookingCta>
             </div>
@@ -297,25 +323,23 @@ export default function Landing({
           </div>
         </section>
       </article>
-      <script
-        dangerouslySetInnerHTML={{
-          __html:
-            'document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("[data-lp-meta-booking]");if(!a||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();var q=location.search;location.assign(q?"/reunion-playful"+q:"/reunion-playful");},true);',
-        }}
-      />
-      <StickyCta search={search} />
+      <script dangerouslySetInnerHTML={{ __html: QUERY_BOOT_SCRIPT }} />
+      <StickyCta />
     </>
   );
 }
 
-async function CaseCards({ mkt, search }: { mkt: LpMetaMarket; search: string }) {
+async function CaseCards() {
   const casosDeExito = await getAllCaseStudies().catch(() => []);
   const caseCards = toAdsLandingCaseCards(casosDeExito);
-  const caseOrder = caseOrderForMarket(mkt);
-  const orderedCards = [...caseCards].sort(
-    (left, right) => caseOrder.indexOf(left.slug) - caseOrder.indexOf(right.slug),
-  );
-  const featuredHref = `/casos-de-exito/${featuredCaseSlugForMarket(mkt)}`;
+  const orderedCards = [...caseCards].sort((left, right) => {
+    const order = [
+      'odwalla-shopify-dtc-ecommerce',
+      'jumex-shopify-dtc-ecommerce',
+      'soytechno-ecommerce-venezuela',
+    ];
+    return order.indexOf(left.slug) - order.indexOf(right.slug);
+  });
 
   return (
     <>
@@ -343,10 +367,10 @@ async function CaseCards({ mkt, search }: { mkt: LpMetaMarket; search: string })
       </div>
       <div className="mt-8 text-center">
         <QueryLink
-          href={featuredHref}
+          href="/casos-de-exito/odwalla-shopify-dtc-ecommerce"
           dataCta="lp-meta-proof-sec"
           className={SECONDARY_CTA_CLASS}
-          search={search}
+          featured
         >
           {unsignedLabel(LP_META_CTA_SECONDARY.tag)}
         </QueryLink>

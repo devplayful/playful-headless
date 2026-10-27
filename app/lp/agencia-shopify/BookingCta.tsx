@@ -5,14 +5,12 @@ type BookingCtaProps = {
   dataCta: string;
   className: string;
   children: ReactNode;
-  search?: string;
 };
 
-/** Server CTA. Visible hop href; click handled by the route-local script in Landing. */
-export default function BookingCta({ dataCta, className, children, search = '' }: BookingCtaProps) {
-  const q = search ? (search.startsWith('?') ? search : `?${search}`) : '';
+/** Server CTA. Live query is written by the route-local script; click also uses location.search. */
+export default function BookingCta({ dataCta, className, children }: BookingCtaProps) {
   return (
-    <a href={lpMetaBookingAnchorHref(q)} data-cta={dataCta} data-lp-meta-booking="1" className={className}>
+    <a href={lpMetaBookingAnchorHref('')} data-cta={dataCta} data-lp-meta-booking="1" className={className}>
       {children}
     </a>
   );

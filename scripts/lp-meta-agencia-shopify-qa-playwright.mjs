@@ -33,7 +33,8 @@ const CASES = [
     path: '/lp/agencia-shopify?ang=c3&mkt=latam&utm_source=facebook&fbclid=test&qa=1',
     expectAng: 'c3',
     expectMkt: 'latam',
-    expectTitle: 'titular C3',
+    expectTitle: 'titular genérico',
+    expectAngleCopy: 'titular C3',
     expectQuery: ['ang=c3', 'mkt=latam', 'utm_source=facebook', 'fbclid=test', 'qa=1'],
     shot: true,
   },
@@ -78,9 +79,17 @@ try {
     await page.waitForSelector('[data-lp-meta-shopify][data-lp-ang][data-lp-mkt]', {
       timeout: 20_000,
     });
+    await page.waitForFunction(
+      (expected) => document.querySelector('[data-lp-meta-shopify]')?.getAttribute('data-lp-ang') === expected,
+      item.expectAng,
+      { timeout: 10_000 },
+    );
     const mkt = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-mkt');
     const ang = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-ang');
     const h1 = (await page.locator('h1').first().innerText().catch(() => '')) || '';
+    const angleCopyOk =
+      !item.expectAngleCopy ||
+      (await page.locator(`[data-copy-unsigned="${item.expectAngleCopy}"]`).count()) > 0;
 
     await page.locator('#problema').scrollIntoViewIfNeeded();
     await page.waitForSelector('[data-lp-meta-sticky] a[data-cta="lp-meta-sticky"]', {
@@ -121,6 +130,7 @@ try {
         mkt === item.expectMkt &&
         ang === item.expectAng &&
         h1.includes(item.expectTitle) &&
+        angleCopyOk &&
         hopOk &&
         queryOk,
     });

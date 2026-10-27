@@ -1,22 +1,21 @@
 import type { ReactNode } from 'react';
-import { lpMetaHrefWithSearch } from '../_lib/meta-booking-href';
 
 type QueryLinkProps = {
   href: string;
   dataCta: string;
   className?: string;
   children: ReactNode;
-  search?: string;
+  featured?: boolean;
 };
 
-/** Server secondary link. The query comes from the page searchParams. */
-export default function QueryLink({ href, dataCta, className, children, search = '' }: QueryLinkProps) {
-  const q = search ? (search.startsWith('?') ? search : `?${search}`) : '';
+/** Server secondary link. The route-local script appends location.search after paint. */
+export default function QueryLink({ href, dataCta, className, children, featured }: QueryLinkProps) {
   return (
     <a
-      href={lpMetaHrefWithSearch(href, q)}
+      href={href}
       data-cta={dataCta}
       data-lp-keep-search={href}
+      data-lp-featured={featured ? '1' : undefined}
       className={className}
     >
       {children}
