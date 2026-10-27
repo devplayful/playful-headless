@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { bookingHrefFromPageSearch, isBookingHref } from '@/utils/booking-attribution';
-import { isLpMetaShopifyPath, lpMetaBookingHrefFromSearch } from '@/utils/lp-meta-booking';
 
 /** Rewrites booking anchors to /reunion-playful plus the current page query. */
 export default function BookingQueryPropagator() {
@@ -11,9 +10,7 @@ export default function BookingQueryPropagator() {
 
   useEffect(() => {
     const search = typeof window !== 'undefined' ? window.location.search : '';
-    const nextHref = isLpMetaShopifyPath(pathname)
-      ? lpMetaBookingHrefFromSearch(search || '')
-      : bookingHrefFromPageSearch(search || '');
+    const nextHref = bookingHrefFromPageSearch(search || '');
 
     const applyHref = (anchor: HTMLAnchorElement) => {
       const href = anchor.getAttribute('href') || '';

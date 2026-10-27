@@ -13,14 +13,18 @@ const {
 const { LP_META_SHOPIFY_META } = await import('../app/lp/agencia-shopify/copy.ts');
 const {
   isLpMetaShopifyPath,
+  lpMetaBookingAnchorHref,
   lpMetaBookingHrefFromSearch,
   lpMetaHrefWithSearch,
-} = await import('../utils/lp-meta-booking.ts');
+} = await import('../app/lp/_lib/meta-booking-href.ts');
+const { isBookingHref } = await import('../utils/booking-attribution.ts');
 const page = readFileSync(new URL('../app/lp/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 const unsigned = readFileSync(new URL('../app/lp/_lib/unsigned-copy.tsx', import.meta.url), 'utf8');
 const copy = readFileSync(new URL('../app/lp/agencia-shopify/copy.ts', import.meta.url), 'utf8');
-const client = readFileSync(new URL('../app/lp/_components/AdsMetaShopifyClient.tsx', import.meta.url), 'utf8');
-const landing = readFileSync(new URL('../app/lp/_components/AdsMetaShopifyLanding.tsx', import.meta.url), 'utf8');
+const landing = readFileSync(new URL('../app/lp/agencia-shopify/Landing.tsx', import.meta.url), 'utf8');
+const bookingCta = readFileSync(new URL('../app/lp/agencia-shopify/BookingCta.tsx', import.meta.url), 'utf8');
+const sticky = readFileSync(new URL('../app/lp/agencia-shopify/StickyCta.tsx', import.meta.url), 'utf8');
+const hero = readFileSync(new URL('../app/lp/agencia-shopify/HeroLcp.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/lp/layout.tsx', import.meta.url), 'utf8');
 const root = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
@@ -69,7 +73,7 @@ test('mkt y ang: default ES y titular genérico si faltan o no valen', () => {
   assert.deepEqual(caseOrderForMarket('latam')[0], 'jumex-shopify-dtc-ecommerce');
 });
 
-test('CTA a /reunion-playful conserva toda la query string', () => {
+test('CTA local conserva la query completa y el propagador global no se toca', () => {
   const search =
     '?ang=c3&mkt=latam&utm_source=facebook&fbclid=test&gclid=G1&qa=1&utm_id=99';
   const href = lpMetaBookingHrefFromSearch(search);
@@ -82,6 +86,16 @@ test('CTA a /reunion-playful conserva toda la query string', () => {
   assert.equal(url.searchParams.get('gclid'), 'G1');
   assert.equal(url.searchParams.get('qa'), '1');
   assert.equal(url.searchParams.get('utm_id'), '99');
+
+  const hop = lpMetaBookingAnchorHref(search);
+  const hopUrl = new URL(hop, 'https://playfulagency.com');
+  assert.equal(hopUrl.pathname, '/reunion-playful/ir');
+  assert.equal(hopUrl.searchParams.get('ang'), 'c3');
+  assert.equal(hopUrl.searchParams.get('mkt'), 'latam');
+  assert.equal(hopUrl.searchParams.get('qa'), '1');
+  assert.equal(isBookingHref(hop), false);
+  assert.equal(isBookingHref(href), true);
+
   assert.equal(
     lpMetaHrefWithSearch('/casos-de-exito/jumex-shopify-dtc-ecommerce', search),
     '/casos-de-exito/jumex-shopify-dtc-ecommerce?ang=c3&mkt=latam&utm_source=facebook&fbclid=test&gclid=G1&qa=1&utm_id=99',
@@ -89,19 +103,21 @@ test('CTA a /reunion-playful conserva toda la query string', () => {
   assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify'), true);
   assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify/'), true);
   assert.equal(isLpMetaShopifyPath('/lp/calentamiento'), false);
-  assert.match(propagator, /lpMetaBookingHrefFromSearch/);
-  assert.match(propagator, /isLpMetaShopifyPath/);
-  assert.match(client, /dataCta="lp-meta-hero"/);
-  assert.match(client, /dataCta="lp-meta-hero-sec"/);
-  assert.match(client, /AdsStickyCta/);
-  assert.match(client, /AdsFinalCta/);
-  const bookingLink = readFileSync(new URL('../app/lp/_components/AdsMetaBookingLink.tsx', import.meta.url), 'utf8');
-  assert.match(bookingLink, /data-cta=\{dataCta\}/);
+
+  assert.doesNotMatch(propagator, /lpMetaBookingHrefFromSearch/);
+  assert.doesNotMatch(propagator, /isLpMetaShopifyPath/);
+  assert.doesNotMatch(propagator, /lp-meta/);
+  assert.doesNotMatch(propagator, /agencia-shopify/);
+  assert.match(landing, /dataCta="lp-meta-hero"/);
+  assert.match(landing, /dataCta="lp-meta-hero-sec"/);
+  assert.match(sticky, /dataCta="lp-meta-sticky"/);
+  assert.match(bookingCta, /data-cta=\{dataCta\}/);
+  assert.match(bookingCta, /data-lp-meta-booking/);
 });
 
 test('VisitaCalificada se hereda del layout /lp; no se toca layout raíz ni CSS global', () => {
   assert.match(layout, /VisitaCalificadaTracker/);
-  assert.match(landing, /AdsMetaShopifyClient/);
+  assert.match(page, /Landing/);
   assert.doesNotMatch(root, /AdsMetaShopify/);
   assert.doesNotMatch(root, /lp-meta-agencia/);
   assert.doesNotMatch(header, /VisitaCalificada|lp-meta-shopify/);
@@ -112,13 +128,22 @@ test('VisitaCalificada se hereda del layout /lp; no se toca layout raíz ni CSS 
 test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(unsigned, /COPY SIN FIRMAR — \$\{tag\}/);
   assert.match(copy, /COPY SIN FIRMAR|titular genérico|titular C3/);
-  assert.match(client, /unsignedLabel|UnsignedBlock/);
+  assert.match(landing, /unsignedLabel|UnsignedBlock/);
   assert.doesNotMatch(copy, /\[COPY PENDIENTE/);
   assert.match(copy, /PERMISO JOSÉ PENDIENTE/);
   assert.match(copy, /SIN VERIFICAR/);
   assert.match(copy, /Sin cifras inventadas|sin cifras inventadas|PROHIBIDO inventar/);
-  assert.match(client, /data-lp-block="1"/);
-  assert.match(client, /data-lp-block="2"/);
-  assert.match(client, /data-lp-block="8"/);
-  assert.match(client, /id="problema"/);
+  assert.match(landing, /data-lp-block="1"/);
+  assert.match(landing, /data-lp-block="2"/);
+  assert.match(landing, /data-lp-block="8"/);
+  assert.match(landing, /id="problema"/);
+});
+
+test('hero LCP es img local con priority y sin lazy', () => {
+  assert.match(hero, /fetchPriority="high"/);
+  assert.match(hero, /hero-gORwV7MSXO@1x\.webp/);
+  assert.doesNotMatch(hero, /loading=["']lazy["']/);
+  assert.doesNotMatch(hero, /from ['"]next\/image['"]/);
+  assert.match(landing, /rel="preload"/);
+  assert.match(landing, /HeroLcp/);
 });

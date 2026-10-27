@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * QA: /lp/agencia-shopify — 200, noindex, mkt/ang, query on CTA, screenshots.
+ * QA: /lp/agencia-shopify — 200, noindex, mkt/ang, query on sticky CTA, screenshots.
+ * Also checks BookingQueryPropagator on / and /reunion-playful.
  * Serial, max 1 req/s. UA PlayfulQA/1.0 + ?qa=1.
  *
  * Usage:
  *   SEO_BASE_URL=http://127.0.0.1:3010 node scripts/lp-meta-agencia-shopify-qa-playwright.mjs
  */
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
@@ -24,6 +25,7 @@ const CASES = [
     expectAng: 'generic',
     expectMkt: 'es',
     expectTitle: 'titular genérico',
+    expectQuery: ['qa=1'],
     shot: true,
   },
   {
@@ -41,6 +43,18 @@ const CASES = [
     expectAng: 'generic',
     expectMkt: 'es',
     expectTitle: 'titular genérico',
+    expectQuery: ['ang=nope', 'mkt=xx', 'qa=1'],
+  },
+];
+
+const PROPAGATOR_CASES = [
+  {
+    id: 'home-propagator',
+    path: '/?utm_source=facebook&fbclid=test&mkt=latam&ang=c3&qa=1',
+  },
+  {
+    id: 'reunion-propagator',
+    path: '/reunion-playful?utm_source=facebook&fbclid=test&mkt=latam&ang=c3&qa=1',
   },
 ];
 
@@ -62,14 +76,29 @@ try {
     const robots =
       (await page.locator('meta[name="robots"]').getAttribute('content').catch(() => '')) || '';
     await page.waitForSelector('[data-lp-meta-shopify]', { timeout: 20_000 });
-    await page.waitForTimeout(800);
+    await page.waitForFunction(
+      () => {
+        const root = document.querySelector('[data-lp-meta-shopify]');
+        return Boolean(root && root.getAttribute('data-lp-ang') && root.getAttribute('data-lp-mkt'));
+      },
+      null,
+      { timeout: 15_000 },
+    );
     const mkt = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-mkt');
     const ang = await page.locator('[data-lp-meta-shopify]').getAttribute('data-lp-ang');
-    const h1 = (await page.locator('h1').first().innerText()) || '';
-    const booking = page.locator('a[href*="/reunion-playful"]').first();
-    await booking.waitFor({ state: 'attached', timeout: 15_000 });
-    const href = (await booking.getAttribute('href')) || '';
+    const h1 =
+      (await page.locator('[data-lp-when-ang]:not([hidden]) h1').first().innerText().catch(() => '')) ||
+      '';
+
+    await page.locator('#problema').scrollIntoViewIfNeeded();
+    await page.waitForSelector('[data-lp-meta-sticky] a[data-cta="lp-meta-sticky"]', {
+      timeout: 15_000,
+    });
+    const href =
+      (await page.locator('[data-lp-meta-sticky] a[data-cta="lp-meta-sticky"]').getAttribute('href')) ||
+      '';
     const queryOk = (item.expectQuery || []).every((part) => href.includes(part));
+    const hopOk = href.startsWith('/reunion-playful/ir');
 
     if (item.shot) {
       await page.setViewportSize({ width: 390, height: 844 });
@@ -100,8 +129,59 @@ try {
         mkt === item.expectMkt &&
         ang === item.expectAng &&
         h1.includes(item.expectTitle) &&
-        href.includes('/reunion-playful') &&
-        (item.expectQuery ? queryOk : true),
+        hopOk &&
+        queryOk,
+    });
+    await context.close();
+  }
+
+  for (const item of PROPAGATOR_CASES) {
+    await sleep(1100);
+    const context = await browser.newContext({ userAgent: QA_UA });
+    const page = await context.newPage();
+    await page.addInitScript(() => {
+      const inject = () => {
+        if (!document.body || document.getElementById('qa-prop-probe')) return;
+        const a = document.createElement('a');
+        a.id = 'qa-prop-probe';
+        a.setAttribute('href', '/reunion-playful');
+        a.textContent = 'probe';
+        document.body.appendChild(a);
+      };
+      if (document.body) inject();
+      else document.addEventListener('DOMContentLoaded', inject);
+    });
+    const url = `${base}${item.path}`;
+    const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    const status = response?.status() ?? 0;
+    await page.waitForFunction(
+      () => {
+        const probe = document.getElementById('qa-prop-probe');
+        const href = probe?.getAttribute('href') || '';
+        return href.includes('utm_source=facebook') && href.includes('fbclid=test');
+      },
+      null,
+      { timeout: 8_000 },
+    ).catch(() => null);
+    const sample =
+      (await page.locator('#qa-prop-probe').getAttribute('href').catch(() => '')) || '';
+    let stripped = false;
+    if (sample) {
+      const parsed = new URL(sample, 'https://playfulagency.com');
+      stripped =
+        parsed.pathname.replace(/\/+$/, '') === '/reunion-playful' &&
+        parsed.searchParams.get('utm_source') === 'facebook' &&
+        parsed.searchParams.get('fbclid') === 'test' &&
+        !parsed.searchParams.has('mkt') &&
+        !parsed.searchParams.has('ang') &&
+        !parsed.searchParams.has('qa');
+    }
+    results.push({
+      id: item.id,
+      url,
+      status,
+      bookingHref: sample,
+      ok: status === 200 && stripped,
     });
     await context.close();
   }
@@ -109,5 +189,6 @@ try {
   await browser.close();
 }
 
+await writeFile(path.join(artifactDir, 'qa-results.json'), JSON.stringify({ results }, null, 2));
 console.log(JSON.stringify(results, null, 2));
 if (results.some((item) => !item.ok)) process.exit(1);

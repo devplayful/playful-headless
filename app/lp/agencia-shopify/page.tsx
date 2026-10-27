@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import AdsMetaShopifyLanding from '../_components/AdsMetaShopifyLanding';
 import { LP_META_SHOPIFY_META } from './copy';
+import Landing from './Landing';
 
 export const metadata: Metadata = {
   title: LP_META_SHOPIFY_META.title,
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function LpAgenciaShopifyPage() {
-  return <AdsMetaShopifyLanding />;
+  return <Landing />;
 }
