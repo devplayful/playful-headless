@@ -118,7 +118,7 @@ test('CTA local conserva la query completa y el propagador global no se toca', (
   assert.match(queryBoot, /location\.search/);
   assert.doesNotMatch(queryBoot, /<h1|querySelector\(["']h1/);
   assert.match(sticky, /data-cta="lp-meta-sticky"|dataCta="lp-meta-sticky"/);
-  assert.match(sticky, /location\.search/);
+  assert.doesNotMatch(sticky, /use client/);
   assert.match(bookingCta, /data-cta=\{dataCta\}/);
   assert.match(bookingCta, /data-lp-meta-booking/);
 });
