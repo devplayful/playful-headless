@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import Image from "next/image";
@@ -145,9 +145,13 @@ export default function TestimonialsSection({
         <div className="w-full overflow-hidden pb-12">
           <div className="max-w-[1200px] mx-auto px-4">
             <Swiper
-              modules={[Pagination, Autoplay]}
+              modules={[Pagination, Autoplay, A11y]}
               slidesPerView={1}
               spaceBetween={20}
+              a11y={{
+                enabled: true,
+                paginationBulletMessage: 'Ir al testimonio {{index}}',
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
@@ -170,18 +174,20 @@ export default function TestimonialsSection({
                     <div className="w-20 h-20 relative mb-4">
                       <Image
                         src="/images/avatar-playful.svg"
-                        alt="Avatar Playful"
+                        alt=""
                         fill
+                        sizes="80px"
                         className="object-contain"
+                        aria-hidden
                       />
                     </div>
 
-                    <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                    <h3 className="font-semibold text-lg mb-2" style={textStyle}>
                       {testimonial.name}
-                    </h4>
+                    </h3>
 
-                    <div className="flex justify-center mb-4">
-                      <div className="text-yellow-400 text-xl">
+                    <div className="flex justify-center mb-4" aria-label="5 de 5 estrellas">
+                      <div className="text-yellow-400 text-xl" aria-hidden="true">
                         {[...Array(5)].map((_, i) => (
                           <span key={i}>★</span>
                         ))}
@@ -206,9 +212,13 @@ export default function TestimonialsSection({
 
           <div className="w-full max-w-[1200px] mx-auto px-4 pb-12">
             <Swiper
-              modules={[Pagination, Autoplay]}
+              modules={[Pagination, Autoplay, A11y]}
               slidesPerView={1}
               spaceBetween={20}
+              a11y={{
+                enabled: true,
+                paginationBulletMessage: 'Ir al logo {{index}}',
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,

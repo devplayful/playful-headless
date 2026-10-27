@@ -120,18 +120,21 @@ async function HomeContent() {
         </div>
 
         {/* Floating decorative elements */}
-        <div className="absolute top-20 left-10 w-4 h-4 bg-purple-300 rounded-full opacity-60 animate-bounce"></div>
+        <div className="absolute top-20 left-10 w-4 h-4 bg-purple-300 rounded-full opacity-60 animate-bounce" aria-hidden="true"></div>
         <div
           className="absolute top-40 right-20 w-6 h-6 bg-pink-300 rounded-full opacity-60 animate-bounce"
           style={{ animationDelay: "0.5s" }}
+          aria-hidden="true"
         ></div>
         <div
           className="absolute bottom-40 left-20 w-3 h-3 bg-teal-300 rounded-full opacity-60 animate-bounce"
           style={{ animationDelay: "1s" }}
+          aria-hidden="true"
         ></div>
         <div
           className="absolute bottom-20 right-40 w-5 h-5 bg-yellow-300 rounded-full opacity-60 animate-bounce"
           style={{ animationDelay: "1.5s" }}
+          aria-hidden="true"
         ></div>
       </section>
 

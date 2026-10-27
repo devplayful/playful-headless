@@ -306,7 +306,7 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
       {/* Botón de descarga PDF */}
       <button 
         onClick={handleDownloadPDF}
-        className="mt-8 w-full bg-[#39DDCB] hover:bg-[#2CC4B3] text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm uppercase"
+        className="mt-8 w-full bg-[#39DDCB] hover:bg-[#2CC4B3] text-[#2A0064] font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm uppercase"
       >
         <span>DESCARGA ESTE ARTÍCULO EN PDF</span>
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

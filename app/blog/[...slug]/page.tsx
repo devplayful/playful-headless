@@ -25,6 +25,7 @@ import {
   resolveBlogOgUrl,
 } from '@/lib/blog-cover-image';
 import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
+import { applyElementorA11y } from '@/lib/elementor-a11y-html';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import {
   blogBodyForSlug,
@@ -193,7 +194,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Actualizar el contenido con los IDs agregados
-  const contentWithIds = $.html();
+  const contentWithIds = applyElementorA11y($.html());
   const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
   const editorialDates = {
     published: post.date,

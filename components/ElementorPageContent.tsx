@@ -7,6 +7,7 @@ import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-c
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
+import { applyElementorA11y } from '@/lib/elementor-a11y-html';
 import { applyElementorAeoRewrites } from '@/utils/elementor-aeo-rewrites';
 import {
   applyElementorIntrinsicDimensions,
@@ -164,19 +165,21 @@ export default function ElementorPageContent({
   slug = '',
 }: ElementorPageContentProps) {
   const preparedHtml = markFirstHeroImagePriority(
-    applyImageAltOverrides(
-      rewriteElementorBodyHrefs(
-        rewriteEcommerceZelleCover(
-          rewriteEcommerceSoytechnoCaseLink(
-            rewriteEcommerceShopifyLink(
-              rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+    applyElementorA11y(
+      applyImageAltOverrides(
+        rewriteElementorBodyHrefs(
+          rewriteEcommerceZelleCover(
+            rewriteEcommerceSoytechnoCaseLink(
+              rewriteEcommerceShopifyLink(
+                rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+                slug,
+              ),
               slug,
             ),
             slug,
           ),
           slug,
         ),
-        slug,
       ),
     ),
   );

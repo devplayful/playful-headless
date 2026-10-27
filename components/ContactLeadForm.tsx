@@ -433,16 +433,22 @@ export default function ContactLeadForm({
             </div>
           )}
           {MARKETPLACE_MODELS.has(formData.salesModel) && (
-            <input
-              type="text"
-              name="secondaryMarketplaces"
-              value={formData.secondaryMarketplaces}
-              onChange={handleChange}
-              disabled={isPendingConfirmation || isSubmitting}
-              placeholder="¿En qué otros marketplaces vendes? (opcional)"
-              className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              maxLength={250}
-            />
+            <div className="mt-3">
+              <label htmlFor="secondaryMarketplaces" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                ¿En qué otros marketplaces vendes? (opcional)
+              </label>
+              <input
+                type="text"
+                id="secondaryMarketplaces"
+                name="secondaryMarketplaces"
+                value={formData.secondaryMarketplaces}
+                onChange={handleChange}
+                disabled={isPendingConfirmation || isSubmitting}
+                placeholder="Amazon, Mercado Libre, otros"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                maxLength={250}
+              />
+            </div>
           )}
         </div>
 
@@ -559,7 +565,7 @@ export default function ContactLeadForm({
             />
             <span>
               Acepto el tratamiento de mis datos según la
-              <a href="/politica-de-privacidad" className="text-purple-700 font-semibold hover:underline ml-1">Política de Privacidad</a>
+              <a href="/politica-de-privacidad" className="text-[#440099] font-semibold hover:underline ml-1">Política de Privacidad</a>
             </span>
           </label>
           <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
@@ -580,7 +586,7 @@ export default function ContactLeadForm({
             An empty sitekey crashes react-google-recaptcha; the API already
             fails closed if the token is missing. */}
         {!previewSimulation && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-          <div className="flex justify-center">
+          <div className="flex justify-center" role="group" aria-label="Verificación reCAPTCHA">
             <ReCAPTCHA
               ref={recaptchaRef}
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
@@ -619,7 +625,7 @@ export default function ContactLeadForm({
           </div>
         )}
         
-        <p className="text-sm text-[#4A4453]">
+        <p className="text-sm text-[#2A0064]">
           {previewSimulation
             ? 'La simulación no guarda ni envía los datos introducidos.'
             : 'Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.'}

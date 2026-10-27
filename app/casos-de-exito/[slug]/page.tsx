@@ -30,6 +30,7 @@ import {
   resolveImageAlt,
   resolveMediaAlt,
 } from '@/lib/image-alt-overrides';
+import { applyElementorA11y } from '@/lib/elementor-a11y-html';
 
 /** ISR + CDN cache for case studies (TTFB). */
 export const revalidate = 3600;
@@ -107,7 +108,7 @@ const CheckmarkIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 function acfHtml(value: string | undefined): string {
-  return applyImageAltOverrides(value || '');
+  return applyElementorA11y(applyImageAltOverrides(value || ''));
 }
 
 export default async function SuccessStoryPage({
@@ -371,7 +372,7 @@ export default async function SuccessStoryPage({
                       {
                         content: story.acf?.sextap,
                         className:
-                          'text-[#F78D2B] font-payton font-bold text-[18px] md:text-[20px] leading-relaxed mt-4',
+                          'text-[#B45309] font-payton font-bold text-[18px] md:text-[20px] leading-relaxed mt-4',
                       },
                       {
                         content: story.acf?.septimap,

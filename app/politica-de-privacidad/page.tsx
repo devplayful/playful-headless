@@ -38,12 +38,12 @@ export default function PoliticaDePrivacidad() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Columna izquierda: textos */}
             <div className="flex flex-col justify-center items-start text-left">
-            <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
-            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Protegemos tu Identidad: Seguridad y Confianza para Tus Datos</h2>
+            <p className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</p>
+            <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Protegemos tu Identidad: Seguridad y Confianza para Tus Datos</h1>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px] mb-4">
                 Tu privacidad y la seguridad de tus datos son una prioridad para nosotros. En esta sección, te ofrecemos información clara y detallada sobre nuestras prácticas de manejo de datos, seguridad y tus derechos como usuario. <strong className="font-bold">Nuestro compromiso es generar confianza</strong> en cada interacción.
               </p>
-            <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[14px] text-[#4A4453] opacity-80">
+            <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[14px] text-[#2A0064]">
               Última actualización: 17 de octubre de 2024
             </p>
           </div>
