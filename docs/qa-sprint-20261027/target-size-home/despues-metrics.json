@@ -1,0 +1,294 @@
+{
+  "title": "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+  "bullets": [
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active swiper-pagination-bullet-active-main",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next-next",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active swiper-pagination-bullet-active-main",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next-next",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": "button",
+      "tab": "0",
+      "w": 24,
+      "h": 24,
+      "bg": "rgba(0, 0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    }
+  ],
+  "hiddenFocus": [
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    }
+  ]
+}

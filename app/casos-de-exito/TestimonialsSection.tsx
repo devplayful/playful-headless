@@ -263,6 +263,50 @@ export default function TestimonialsSection({
           </div>
         </div>
       </div>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+.testimonials-swiper .swiper-pagination-bullet,
+.logos-swiper .swiper-pagination-bullet {
+  box-sizing: border-box;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative;
+}
+.testimonials-swiper .swiper-pagination-bullet::before,
+.logos-swiper .swiper-pagination-bullet::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--swiper-pagination-bullet-inactive-color, #000);
+  opacity: var(--swiper-pagination-bullet-inactive-opacity, 0.2);
+  transform: translate(-50%, -50%) scale(0.33);
+}
+.testimonials-swiper .swiper-pagination-bullet-active-next::before,
+.testimonials-swiper .swiper-pagination-bullet-active-prev::before,
+.logos-swiper .swiper-pagination-bullet-active-next::before,
+.logos-swiper .swiper-pagination-bullet-active-prev::before {
+  transform: translate(-50%, -50%) scale(0.66);
+}
+.testimonials-swiper .swiper-pagination-bullet-active::before,
+.testimonials-swiper .swiper-pagination-bullet-active-main::before,
+.logos-swiper .swiper-pagination-bullet-active::before,
+.logos-swiper .swiper-pagination-bullet-active-main::before {
+  background: var(--swiper-pagination-color, var(--swiper-theme-color, #007aff));
+  opacity: var(--swiper-pagination-bullet-opacity, 1);
+  transform: translate(-50%, -50%) scale(1);
+}
+`,
+        }}
+      />
     </section>
   );
 }

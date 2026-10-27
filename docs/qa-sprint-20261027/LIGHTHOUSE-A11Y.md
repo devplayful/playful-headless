@@ -95,7 +95,7 @@ Leyenda LH: `P/A/B/S`. After Chrome = `next start` mismo SHA.
 | Archivo | Qué |
 | --- | --- |
 | `app/casos-de-exito/[slug]/page.tsx` | Contraste naranja `#B45309` |
-| `app/casos-de-exito/TestimonialsSection.tsx` | A11y Swiper, `h3`, estrellas `role="img"`, avatar decorativo |
+| `app/casos-de-exito/TestimonialsSection.tsx` | A11y Swiper, `h3`, estrellas `role="img"`, avatar decorativo; hit-area 24×24 en bullets (caja transparente + `::before` del punto) |
 | `app/casos-de-exito/CaseStudiesContent.tsx` | Hero `next/image` + sizes; filtros `aria-pressed`; vacío AA |
 | `app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx` | H1; label marketplaces; contraste legal; grupo reCAPTCHA |
 | `components/blog/TableOfContents.tsx` | PDF: texto `#2A0064` sobre `#39DDCB` |
@@ -115,6 +115,16 @@ Leyenda LH: `P/A/B/S`. After Chrome = `next start` mismo SHA.
 `services/wordpress.ts` solo envolvía `applyElementorA11y`; queda idéntico a main (el wrap está en el patch).
 
 Copy visible aprobado: no se reescribió.
+
+## Follow-up home target-size (27 oct 22:45)
+
+En preview `bfa2f6e` Lighthouse 12.6.0 móvil midió 12 nodos `target-size` en `/` frente a 5 en prod. Los 7 nuevos eran `swiper-pagination-bullet` de `.testimonials-swiper` y `.logos-swiper` (`tabindex=0` `role=button` por el módulo A11y, caja &lt;24px por `transform: scale` de `dynamicBullets`).
+
+Arreglo solo en `TestimonialsSection.tsx` (página; no CSS global ni compartido): la caja del bullet queda 24×24 transparente y sin scale; el punto visible se pinta en `::before` a 8px / 0.66 / 0.33 para no cambiar tamaño ni color. Capturas 390: `docs/qa-sprint-20261027/target-size-home/`.
+
+Axe local post-fix en `/` (390): `target-size` vuelve a 5 nodos (`button[aria-label="Ir a página N"]` de slick / `CarouselResultados`). Cero bullets Swiper.
+
+`aria-hidden-focus` en home: 4 nodos (`div[data-index]` slick). Igual en prod. **Ya estaba**; no lo introduce #367. El arreglo iría en `CarouselResultados` (PR de compartidos, no aquí).
 
 ## Fuera de alcance: cascarón
 
