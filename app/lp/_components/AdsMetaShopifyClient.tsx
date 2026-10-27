@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Image from 'next/image';
 import CimaBreaker from '@/components/premios-cima/CimaBreaker';
 import type { CaseStudy } from '@/components/CarouselResultados';
@@ -41,7 +42,6 @@ import {
 import AdsCaseCard from './AdsCaseCard';
 import AdsFaq from './AdsFaq';
 import AdsFinalCta from './AdsFinalCta';
-import AdsHeroArt from './AdsHeroArt';
 import AdsMetaBookingLink from './AdsMetaBookingLink';
 import { AdsMetaParamsProvider, useAdsMetaParams } from './AdsMetaParams';
 import AdsMetaQueryLink from './AdsMetaQueryLink';
@@ -66,9 +66,10 @@ export type AdsMetaShopifyViewProps = {
   ang: LpMetaAngle;
   search?: string;
   caseCards: CaseStudy[];
+  hero: ReactNode;
 };
 
-export function AdsMetaShopifyView({ mkt, ang, search = '', caseCards }: AdsMetaShopifyViewProps) {
+export function AdsMetaShopifyView({ mkt, ang, search = '', caseCards, hero }: AdsMetaShopifyViewProps) {
   const pains = painsForMarket(mkt);
   const painOrder = LP_META_PAIN_ORDER[ang];
   const faqItems = faqItemsForMarket(mkt);
@@ -129,7 +130,7 @@ export function AdsMetaShopifyView({ mkt, ang, search = '', caseCards }: AdsMeta
                 ))}
               </ul>
             </div>
-            <AdsHeroArt />
+            {hero}
           </div>
         </div>
       </section>
@@ -324,20 +325,26 @@ export function AdsMetaShopifyView({ mkt, ang, search = '', caseCards }: AdsMeta
   );
 }
 
-function AdsMetaShopifyConnected({ caseCards }: { caseCards: CaseStudy[] }) {
+function AdsMetaShopifyConnected({ caseCards, hero }: { caseCards: CaseStudy[]; hero: ReactNode }) {
   const { mkt, ang, search } = useAdsMetaParams();
   return (
     <>
-      <AdsMetaShopifyView mkt={mkt} ang={ang} search={search} caseCards={caseCards} />
+      <AdsMetaShopifyView mkt={mkt} ang={ang} search={search} caseCards={caseCards} hero={hero} />
       <AdsStickyCta />
     </>
   );
 }
 
-export default function AdsMetaShopifyClient({ caseCards }: { caseCards: CaseStudy[] }) {
+export default function AdsMetaShopifyClient({
+  caseCards,
+  hero,
+}: {
+  caseCards: CaseStudy[];
+  hero: ReactNode;
+}) {
   return (
     <AdsMetaParamsProvider>
-      <AdsMetaShopifyConnected caseCards={caseCards} />
+      <AdsMetaShopifyConnected caseCards={caseCards} hero={hero} />
     </AdsMetaParamsProvider>
   );
 }

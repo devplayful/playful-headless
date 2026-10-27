@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:3010/lp/agencia-shopify?qa=1",
+  "ua": "PlayfulQA/1.0",
+  "formFactor": "mobile",
+  "tool": "lighthouse@12.6.0",
+  "note": "Medido en next start local del SHA de esta rama, throttling simulado. SEO 69 esperado: is-crawlable falla por noindex deliberado. LCP 3.1 s en local (las /lp de #354 midieron ~2.0–2.3 s en preview Vercel).",
+  "categories": {
+    "performance": 94,
+    "accessibility": 98,
+    "best-practices": 100,
+    "seo": 69
+  },
+  "audits": {
+    "largest-contentful-paint": { "display": "3.1 s", "numericMs": 3100, "score": 0.72 },
+    "cumulative-layout-shift": { "display": "0", "numeric": 0, "score": 1 },
+    "first-contentful-paint": { "display": "1.1 s", "numericMs": 1100, "score": 0.99 },
+    "is-crawlable": { "score": 0 }
+  }
+}

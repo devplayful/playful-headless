@@ -4,7 +4,7 @@ import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { toAdsLandingCaseCards } from '../_lib/ads-landing-cases';
 import { DEFAULT_LP_META_ANGLE, DEFAULT_LP_META_MARKET } from '../agencia-shopify/variants';
 import AdsMetaShopifyClient, { AdsMetaShopifyView } from './AdsMetaShopifyClient';
-import { ADS_HERO_ART_1X, ADS_HERO_ART_2X } from './AdsHeroArt';
+import AdsHeroArt, { ADS_HERO_ART_1X, ADS_HERO_ART_2X } from './AdsHeroArt';
 
 export default async function AdsMetaShopifyLanding() {
   const casosDeExito = await getAllCaseStudies().catch(() => []);
@@ -27,10 +27,11 @@ export default async function AdsMetaShopifyLanding() {
             mkt={DEFAULT_LP_META_MARKET}
             ang={DEFAULT_LP_META_ANGLE}
             caseCards={caseCards}
+            hero={<AdsHeroArt />}
           />
         }
       >
-        <AdsMetaShopifyClient caseCards={caseCards} />
+        <AdsMetaShopifyClient caseCards={caseCards} hero={<AdsHeroArt />} />
       </Suspense>
     </>
   );
