@@ -1,4 +1,5 @@
 import { ZELLE_VE_BLOG_SLUG } from '../lib/blog-body-overrides.ts';
+import { CIMA_BLOG_SLUG } from './blog-onpage-2710.ts';
 
 type FaqItem = {
   name: string;
@@ -144,6 +145,27 @@ export function getServiceFaqJsonLd(slug: string): Record<string, unknown> | nul
     : null;
 }
 
+export const CIMA_FAQ_PAGE = faqPage([
+  {
+    name: '¿Qué son los premios CIMA?',
+    text: 'Los Premios CIMA son un certamen venezolano de mercadeo y creatividad. La cuarta edición se celebró el 19 de octubre de 2026 en Caracas.',
+  },
+  {
+    name: '¿Cuándo y dónde fue la gala de los Premios CIMA 2026?',
+    text: 'La gala de la cuarta edición fue el 19 de octubre de 2026 en el Hotel Eurobuilding de Caracas, en el Salón Plaza Real, a las 5:00 pm. PRODU informó de 313 casos inscritos.',
+  },
+  {
+    name: '¿Quién ganó los Premios CIMA 2026 en Plataforma de E-commerce?',
+    text: 'Ganaron SoyTechno y Playful Agency, con el caso «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela», en el área de Mercadeo.',
+  },
+  {
+    name: '¿Qué consiguió SoyTechno en 2025?',
+    text: 'En 2025 SoyTechno cerró el año con 12.722 ventas, un 65% más que en 2024.',
+  },
+]);
+
 export function getBlogFaqJsonLd(slug: string): Record<string, unknown> | null {
-  return slug === ZELLE_VE_BLOG_SLUG ? ZELLE_FAQ_PAGE : null;
+  if (slug === ZELLE_VE_BLOG_SLUG) return ZELLE_FAQ_PAGE;
+  if (slug === CIMA_BLOG_SLUG) return CIMA_FAQ_PAGE;
+  return null;
 }

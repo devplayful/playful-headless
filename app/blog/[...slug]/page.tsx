@@ -44,7 +44,12 @@ import {
   resolveVisibleUpdatedDateTime,
   serializeJsonLd,
 } from '@/lib/blog-editorial-meta';
-import { CONTACT_HREF } from '@/utils/booking';
+import {
+  blogFinalCtaButtonText,
+  blogFinalCtaHref,
+  blogHeroTitleIsH2Duplicate,
+  demoteCimaFaqHeadings,
+} from '@/utils/blog-onpage-2710';
 import { decodeHtmlEntities, wordpressSeoText } from '@/lib/wordpress-plain-text';
 import { withPlayfulTitleSuffix } from '@/lib/blog-title-suffix';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
@@ -160,7 +165,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = optimizeBlogInlineMedia(
     rewriteBookingWidgetHrefs(
-      rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+      rewriteInSitePageHrefs(
+        demoteCimaFaqHeadings(
+          blogBodyForSlug(postSlug) || post.content?.rendered || '',
+          postSlug,
+        ),
+      ),
     ),
     postSlug,
   );
@@ -305,9 +315,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
               </div>
               
+              {blogHeroTitleIsH2Duplicate(postSlug) ? (
+              <p className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
+                {pageH1}
+              </p>
+              ) : (
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#2A0064] leading-tight mb-6">
                 {pageH1}
               </h2>
+              )}
 
               <div className="mb-6">
                 <BlogBylineChip
@@ -538,7 +554,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       
       {/* Sección CTA */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-20">
-        <TwoColumnCtaSection buttonLink={CONTACT_HREF} />
+        <TwoColumnCtaSection
+          buttonLink={blogFinalCtaHref(postSlug)}
+          buttonText={blogFinalCtaButtonText(postSlug)}
+        />
       </section>
     </div>
     </>
