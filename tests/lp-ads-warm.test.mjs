@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const LP_PATHS = [
+  '/lp/agencia-shopify',
   '/lp/calentamiento',
   '/lp/integraciones-pasarela-erp',
   '/lp/propuesta-ecommerce',

@@ -4,14 +4,23 @@ import type { CaseStudy } from '@/components/CarouselResultados';
 import { CASE_CARD_IMAGE_QUALITY, CASE_FEATURE_CARD_SIZES } from '@/lib/blog-image-sizes';
 
 /** LP-owned case card: one link, no nested button (axe target-size / nested-interactive). */
-export default function AdsCaseCard({ caseStudy }: { caseStudy: CaseStudy }) {
-  const href = `/casos-de-exito/${caseStudy.slug}`;
+export default function AdsCaseCard({
+  caseStudy,
+  href: hrefOverride,
+  dataCta,
+}: {
+  caseStudy: CaseStudy;
+  href?: string;
+  dataCta?: string;
+}) {
+  const href = hrefOverride || `/casos-de-exito/${caseStudy.slug}`;
   const alt = caseStudy.title?.trim() || caseStudy.slug;
 
   return (
     <article className="h-full">
       <Link
         href={href}
+        {...(dataCta ? { 'data-cta': dataCta } : {})}
         className="flex h-full min-h-[48px] flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-shadow hover:shadow-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]"
       >
         <div className="relative h-48 flex-shrink-0 overflow-hidden bg-gray-100">
