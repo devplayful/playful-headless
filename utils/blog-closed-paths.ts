@@ -40,6 +40,8 @@ export const GSC_GONE_PATHS: readonly string[] = Object.freeze([
   '/project/bottle-mockup',
   '/project/cosmetic-mockup',
   '/agencylog',
+  /** GSC 27 oct 2026 — was 301→410; respond 410 on the legacy /otros/ URL. */
+  '/blog/otros/marketing-deportivo-qatar-2022',
 ]);
 
 const GSC_GONE_PATH_SET = new Set(GSC_GONE_PATHS);
