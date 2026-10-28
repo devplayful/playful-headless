@@ -1,6 +1,7 @@
 'use client';
 
 import { isQaTraffic } from './qa-traffic.ts';
+import { resolveTrafficFlags } from './traffic-type.ts';
 
 declare global {
   interface Window {
@@ -21,13 +22,22 @@ export function sendSpaPageView(path: string): void {
   if (typeof window === 'undefined') return;
   if (isQaTraffic()) return;
 
+  const flags = resolveTrafficFlags();
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   if (typeof window.gtag === 'function') {
     if (gaId) {
-      window.gtag('config', gaId, { page_path: path });
+      window.gtag('config', gaId, {
+        page_path: path,
+        traffic_type: flags.traffic_type,
+        bot_suspect: flags.bot_suspect,
+      });
       return;
     }
-    window.gtag('event', 'page_view', { page_path: path });
+    window.gtag('event', 'page_view', {
+      page_path: path,
+      traffic_type: flags.traffic_type,
+      bot_suspect: flags.bot_suspect,
+    });
     return;
   }
 
@@ -35,5 +45,7 @@ export function sendSpaPageView(path: string): void {
   window.dataLayer.push({
     event: 'page_view',
     page_path: path,
+    traffic_type: flags.traffic_type,
+    bot_suspect: flags.bot_suspect,
   });
 }

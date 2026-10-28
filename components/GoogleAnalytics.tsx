@@ -20,7 +20,10 @@ export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
         __html: `
             (function(){
               var qa=/(?:^|[?&])qa=1(?:&|$)/.test(location.search)||/PlayfulQA\\/1\\.0/.test(navigator.userAgent);
-              if(qa){window.__playfulQa=1;return;}
+              window.dataLayer=window.dataLayer||[];
+              if(qa){window.__playfulQa=1;window.dataLayer.push({traffic_type:'qa',bot_suspect:false});return;}
+              var bot=!!navigator.webdriver||/HeadlessChrome|PhantomJS|Puppeteer|Playwright|Headless|Googlebot|bingbot|crawler|spider/i.test(navigator.userAgent||'');
+              window.dataLayer.push({traffic_type:bot?'bot':'user',bot_suspect:bot});
               var s=document.createElement('script');
               s.async=true;
               s.src='https://www.googletagmanager.com/gtag/js?id=${gaId}';
@@ -28,6 +31,8 @@ export default function GoogleAnalytics({ gaId }: GoogleAnalyticsProps) {
               gtag('js', new Date());
               gtag('config', '${gaId}', {
                 page_path: window.location.pathname,
+                traffic_type: bot?'bot':'user',
+                bot_suspect: bot
               });
             })();
           `,

@@ -31,7 +31,11 @@ test('tag snippets skip gtag config and GTM when qa=1 or PlayfulQA/1.0', () => {
   assert.match(ga, /createElement\('script'\)/);
   assert.match(ga, /document\.head\.appendChild\(s\)/);
   assert.doesNotMatch(ga, /<Script[\s\S]*?\ssrc=\{`https:\/\/www\.googletagmanager\.com\/gtag\/js/);
-  assert.match(gtm, /w\.__playfulQa=1;return;/);
+  assert.match(gtm, /w\.__playfulQa=1/);
+  assert.match(gtm, /traffic_type:'qa'/);
+  assert.match(ga, /traffic_type:'qa'/);
+  assert.match(ga, /navigator\.webdriver/);
+  assert.match(gtm, /navigator\.webdriver/);
 });
 
 test('sendSpaPageView does not push when qa=1', () => {

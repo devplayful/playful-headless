@@ -13,7 +13,10 @@ export default function BookAppointmentTracker() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     clearBookingIntent();
-    pushBookAppointmentOnce({ search: window.location.search });
+    pushBookAppointmentOnce({
+      search: window.location.search,
+      cookie: typeof document === 'undefined' ? '' : document.cookie,
+    });
   }, []);
 
   return null;

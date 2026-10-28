@@ -1,6 +1,7 @@
 import { isBookingHref } from '../../utils/booking-attribution.ts';
 import { markBookingIntent } from './booking-abandon.ts';
 import { GTAG_EVENT_TIMEOUT_MS, sendGtagEvent } from './gtag-event.ts';
+import { markRealInteraction } from './traffic-type.ts';
 
 export const CTA_REUNION_EVENT = 'cta_reunion_click';
 export const CTA_CONTACT_EVENT = 'cta_contact_click';
@@ -203,6 +204,7 @@ export function sendCtaEvent(
   params: CtaClickParams,
   options?: { onDone?: () => void },
 ): void {
+  markRealInteraction();
   sendGtagEvent(
     eventName,
     {
@@ -254,6 +256,7 @@ export function findCtaAnchor(target: EventTarget | null): HTMLAnchorElement | n
 
 export function handleCtaDocumentClick(event: MouseEvent): void {
   if (typeof window === 'undefined') return;
+  markRealInteraction();
   const anchor = findCtaAnchor(event.target);
   if (!anchor) return;
 
