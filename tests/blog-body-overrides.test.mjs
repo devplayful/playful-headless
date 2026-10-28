@@ -6,6 +6,8 @@ const {
   ZELLE_VE_BLOG_SLUG,
   ZELLE_VE_BLOG_BODY_HTML,
   ZELLE_FROZEN_HEADING_IDS,
+  CASHEA_COMERCIOS_BLOG_SLUG,
+  CASHEA_COMERCIOS_BLOG_BODY_HTML,
   MIGRACION_SEO_ALT_BLOG_BODY_HTML,
   blogBodyForSlug,
 } = await import('../lib/blog-body-overrides.ts');
@@ -74,8 +76,34 @@ test('migración SEO override books via /reunion-playful, not the widget API', (
   );
 });
 
+test('Cashea override points pasarela copy at the Zelle post, not the 404 landing', () => {
+  assert.equal(CASHEA_COMERCIOS_BLOG_SLUG, 'cashea-para-comercios');
+  const hrefs = [...CASHEA_COMERCIOS_BLOG_BODY_HTML.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(hrefs.some((href) => href.includes('pasarela-de-pagos-venezuela')), false);
+  assert.equal(
+    hrefs.filter((href) => href.includes('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce')).length,
+    2,
+  );
+  assert.match(
+    CASHEA_COMERCIOS_BLOG_BODY_HTML,
+    /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
+  );
+  const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
+    /<p[^>]*>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo[\s\S]*?<\/p>/,
+  )?.[0] || '';
+  assert.match(sitefParagraph, /moneda en la que recibes el dinero/);
+  assert.doesNotMatch(sitefParagraph, /pasarela de pagos en Venezuela/);
+  assert.equal(
+    (sitefParagraph.match(/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/g) || []).length,
+    1,
+  );
+  assert.doesNotMatch(sitefParagraph, /<a[^>]*>pasarela de pagos en Venezuela<\/a>/);
+  assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /\/lp\/integraciones-pasarela-erp/);
+});
+
 test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.match(blogPage, /rewriteInSitePageHrefs\(/);
+  assert.match(blogPage, /`\/blog\/\$\{category\}\/\$\{postSlug\}`/);
   assert.match(blogPage, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);
   assert.match(blogPage, /BLOG_SEO_OVERRIDES\[postSlug\]\?\.h1/);
   assert.match(blogPage, /zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/);

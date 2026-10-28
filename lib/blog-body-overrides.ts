@@ -108,10 +108,25 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 <p>Lo que sí ha crecido es la cantidad de negocios venezolanos que lo integran en sus tiendas en línea como método de pago formal dentro del checkout, en lugar de manejarlo por canales informales como WhatsApp o mensajes directos.</p>
 `.trim();
 
+/**
+ * playful-copy PR #380 SHA d4844d5 (pieces/2026-10-28-seo-enlaces-ve.md).
+ * SEO OK, estado «borrador para redline de José». No producción.
+ */
+export const PENDIENTE_FIRMA_JOSE_380 = 'PENDIENTE_FIRMA_JOSE_380';
+export const CASHEA_P1_COPY_ISSUE = 'playful-copy#380';
+
+/** PENDIENTE_FIRMA_JOSE_380 — párrafo 1 entero, literal de #380. */
+export const CASHEA_P1_CURRENT_HTML =
+  '<p>Si también cobras con Zelle, empieza por nuestra guía sobre <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>';
+
+/** PENDIENTE_FIRMA_JOSE_380 — 4º párrafo de SiTef/Banesco/Zelle, literal de #380. */
+export const CASHEA_SITEF_P4_HTML =
+  '<p>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>';
+
 export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `
 <p>Si tu tienda ya vende y tus compradores te preguntan si pueden pagar en cuotas, lo que te toca entender es Cashea para comercios, que no es lo mismo que la app que usan ellos.</p>
 <p>Esta guía está escrita para el comercio. Te explica cómo funciona Cashea desde el lado de quien vende, qué te pide el proveedor para afiliarte y qué tiene que resolver tu tienda para que las cuotas aparezcan en el checkout sin romper tu operación.</p>
-<p>Si todavía estás evaluando qué métodos de pago ofrecer en conjunto, empieza por nuestra guía de <a href="https://playfulagency.com/pasarela-de-pagos-venezuela">pasarela de pagos en Venezuela</a>, donde comparamos los métodos que integramos en tiendas online. Aquí vamos a fondo solo con Cashea.</p>
+${CASHEA_P1_CURRENT_HTML}
 <h2 id="que-es-cashea-para-un-comercio-y-que-es-la-app-del-comprador">Qué es Cashea para un comercio (y qué es la app del comprador)</h2>
 <p>Cashea es una empresa venezolana de compra ahora y paga después. El comprador paga una inicial en el momento de la compra y el resto en cuotas iguales sin interés.</p>
 <p>Para el comprador, Cashea es una app. Ahí paga sus cuotas y busca tiendas aliadas. Si llegaste a esta página buscando cómo pagar con Cashea, lo que necesitas está en esa app y no en este artículo.</p>
@@ -139,7 +154,7 @@ export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `
 <p>Cashea rara vez es el único método de pago de una tienda. Lo normal es que conviva con un botón de tarjeta como SiTef, con Banesco para tarjetas internacionales y con Zelle para pagos en dólares.</p>
 <p>Cada uno de esos métodos confirma el pago a su manera y liquida en sus propios plazos y en su propia moneda. Por eso el reto está en que tu tienda sepa qué pedidos están pagados por cada vía y que tu equipo pueda cuadrar cada abono con su pedido sin revisar capturas una por una.</p>
 <p>En el caso de Cashea, según el propio proveedor, el comercio recibe la inicial y las cuotas, así que la conciliación tiene que reconocer que un pedido pagado con Cashea puede no llegar en un solo abono, dependiendo de tu contrato.</p>
-<p>En nuestra guía de <a href="https://playfulagency.com/pasarela-de-pagos-venezuela">pasarela de pagos en Venezuela</a> comparamos SiTef, Instapago, Cashea, Banesco, Zelle y BDV, y explicamos por qué la moneda que ves en el checkout no siempre es la moneda en la que cobras. Si además cobras en dólares, en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>
+${CASHEA_SITEF_P4_HTML}
 <h2 id="que-no-hace-playful-con-cashea">Qué no hace Playful con Cashea</h2>
 <p>Playful es una agencia de integración de ecommerce. Conectamos Cashea con tu tienda, pero no somos Cashea, no somos la app del comprador y no somos una pasarela de pagos.</p>
 <p>No te afiliamos a Cashea, porque esa relación es directamente entre tu empresa y Cashea.</p>

@@ -14,6 +14,7 @@ export const SITEMAP_UNPUBLISHED_PATHS = [
   '/agencia-woocommerce',
   '/pasarela-de-pagos-venezuela',
   '/shopify-precios',
+  '/lp/integraciones-pasarela-erp',
 ] as const;
 
 const SITEMAP_UNPUBLISHED_PATH_SET = new Set<string>(SITEMAP_UNPUBLISHED_PATHS);
