@@ -106,7 +106,7 @@ test('FAQPage exists for the five service landings and Zelle, not a second Shopi
     'agencia-seo',
     'agencia-ux-ui',
   ]);
-  assert.equal(getServiceFaqJsonLd('agencia-e-commerce').mainEntity.length, 5);
+  assert.equal(getServiceFaqJsonLd('agencia-e-commerce').mainEntity.length, 6);
   assert.equal(getServiceFaqJsonLd('agencia-seo').mainEntity.length, 3);
   assert.equal(getServiceFaqJsonLd('agencia-shopify'), null);
   assert.equal(

@@ -33,6 +33,8 @@ import {
 } from '@/lib/blog-body-overrides';
 import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
+import { rewriteSeoSemAgenciaSeoAnchor } from '@/utils/blog-seo-sem-agencia-seo-anchor';
+import { rewriteBlogSeo380Appends } from '@/utils/blog-seo-380-appends';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
 import {
   buildBlogArticleJsonLd,
@@ -160,7 +162,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Extraer encabezados para la tabla de contenidos
   const sourceHtml = optimizeBlogInlineMedia(
     rewriteBookingWidgetHrefs(
-      rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+      rewriteBlogSeo380Appends(
+        rewriteSeoSemAgenciaSeoAnchor(
+          rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+          postSlug,
+        ),
+        postSlug,
+      ),
     ),
     postSlug,
   );
