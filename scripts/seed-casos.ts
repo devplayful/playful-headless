@@ -89,7 +89,7 @@ async function upsertUrlVideo(
 }
 
 async function ensureAdmin(payload: Payload) {
-  const email = process.env.CMS_ADMIN_EMAIL || 'admin@localhost';
+  const email = process.env.CMS_ADMIN_EMAIL || 'admin@example.com';
   const password = process.env.CMS_ADMIN_PASSWORD || 'playful-local';
   const found = await payload.find({
     collection: 'usuarios',
