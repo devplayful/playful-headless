@@ -7,8 +7,6 @@ export const CANIBALIZACION_301: Record<string, string> = canibalizacionOrigins;
 
 /** Waiting on the receptor page. Do not 301 these in this PR. */
 export const CANIBALIZACION_DEFERRED_PATHS = [
-  '/blog/pautas-digitales/consejos-para-que-hagas-pautas-en-tus-post-de-instagram',
-  '/blog/pautas-digitales/tipos-de-publicidad-online-conceptos-y-datos-curiosos',
   '/blog/mas-vistos/que-es-una-agencia-de-sem',
 ] as const;
 

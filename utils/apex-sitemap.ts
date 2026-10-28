@@ -1,7 +1,10 @@
 import { isHiddenFromBlogListings } from './blog-closed-paths.ts';
 import { listStagingSitemapBlogEntries } from '../lib/blog-local-posts.ts';
 import { isCanibalizacionOriginPath } from './blog-canibalizacion-redirects.ts';
+import seoCruce2810Redirects from './seo-cruce-2810-redirect-map.json' with { type: 'json' };
 import blogSitemapLastmodMap from '../config/blog-sitemap-lastmod.json' with { type: 'json' };
+
+const SEO_CRUCE_ORIGIN_SET = new Set(Object.keys(seoCruce2810Redirects));
 
 const SITEMAP_ORIGIN = 'https://playfulagency.com';
 
@@ -28,6 +31,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/agencia-sem",
   "/agencia-diseno-web",
   "/agencia-ux-ui",
+  "/seo-vigo",
   "/casos-de-exito",
   "/casos-de-exito/soytechno-ecommerce-venezuela",
   "/casos-de-exito/jumex-shopify-dtc-ecommerce",
@@ -170,6 +174,7 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/seo/google-y-su-inteligencia-artificial",
   "/blog/seo/hacks-seo-local",
   "/blog/seo/metadescripcion-que-es",
+  "/blog/seo/migracion-seo-cambiar-de-plataforma-alternativa",
   "/blog/seo/optimizacion-multimedia",
   "/blog/seo/posicionamiento-organico-vs-pago",
   "/blog/seo/que-es-data-studio-de-google-y-como-funciona",
@@ -203,7 +208,9 @@ export function getSitemapPaths(): string[] {
     ...SITEMAP_STATIC_PATHS,
     ...SITEMAP_PODCAST_PATHS,
     ...SITEMAP_BLOG_PATHS.filter((path) => (
-      !isHiddenFromBlogListings(path) && !isCanibalizacionOriginPath(path)
+      !isHiddenFromBlogListings(path)
+      && !isCanibalizacionOriginPath(path)
+      && !SEO_CRUCE_ORIGIN_SET.has(path)
     )),
   ].filter((path) => !SITEMAP_UNPUBLISHED_PATH_SET.has(path));
 }
