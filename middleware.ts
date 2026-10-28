@@ -18,9 +18,26 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import {
+  bookingSignalsFromSearch,
+  paBookingCookieLine,
+} from './lib/analytics/ads-booking-conversion';
+
+function appendPaBookingCookies(request: NextRequest, response: NextResponse): void {
+  const hostname = request.nextUrl.hostname;
+  for (const signal of bookingSignalsFromSearch(request.nextUrl.search)) {
+    response.headers.append(
+      'Set-Cookie',
+      paBookingCookieLine(signal.name, signal.value, hostname),
+    );
+  }
+}
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
-  if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
+  if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) {
+    appendPaBookingCookies(request, response);
+    return response;
+  }
   const { first, last } = nextAttributionFromRequest({
     pathname: request.nextUrl.pathname,
     search: request.nextUrl.search,
@@ -32,6 +49,7 @@ function attachAttributionCookies(request: NextRequest, response: NextResponse):
   const options = attributionCookieOptions();
   response.cookies.set(ATTRIBUTION_COOKIE_FIRST, serializeAttributionCookie(first), options);
   response.cookies.set(ATTRIBUTION_COOKIE_LAST, serializeAttributionCookie(last), options);
+  appendPaBookingCookies(request, response);
   return response;
 }
 
