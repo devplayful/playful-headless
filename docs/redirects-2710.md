@@ -33,18 +33,18 @@ No hay edición WP que aplicar. El HTML se cambió en esta rama. Si más adelant
 
 (dos anclas: el párrafo de apertura y el de SiTef / Banesco / Zelle)
 
-### HTML de después (playful-copy #380 SHA 11b38dc, PENDIENTE_FIRMA_JOSE_380)
+### HTML de después (playful-copy #380 SHA d4844d5, PENDIENTE_FIRMA_JOSE_380)
 
 Párrafo 1 entero (literal):
 
 ```html
-<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Si también cobras con Zelle, empieza por nuestra guía sobre <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>
+<p>Si también cobras con Zelle, empieza por nuestra guía sobre <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>
 ```
 
 4º párrafo de «Cómo convive con SiTef, Banesco y Zelle…» (literal):
 
 ```html
-<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="…zelle…">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>
+<p>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>
 ```
 
 Dos enlaces a Zelle, anclas distintas. Cero href a `/pasarela-de-pagos-venezuela`. Estado: borrador para redline de José.

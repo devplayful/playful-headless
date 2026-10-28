@@ -109,7 +109,7 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 `.trim();
 
 /**
- * playful-copy PR #380 SHA 11b38dc (pieces/2026-10-28-seo-enlaces-ve.md).
+ * playful-copy PR #380 SHA d4844d5 (pieces/2026-10-28-seo-enlaces-ve.md).
  * SEO OK, estado «borrador para redline de José». No producción.
  */
 export const PENDIENTE_FIRMA_JOSE_380 = 'PENDIENTE_FIRMA_JOSE_380';
@@ -117,11 +117,11 @@ export const CASHEA_P1_COPY_ISSUE = 'playful-copy#380';
 
 /** PENDIENTE_FIRMA_JOSE_380 — párrafo 1 entero, literal de #380. */
 export const CASHEA_P1_CURRENT_HTML =
-  '<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Si también cobras con Zelle, empieza por nuestra guía sobre <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>';
+  '<p>Si también cobras con Zelle, empieza por nuestra guía sobre <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>';
 
 /** PENDIENTE_FIRMA_JOSE_380 — 4º párrafo de SiTef/Banesco/Zelle, literal de #380. */
 export const CASHEA_SITEF_P4_HTML =
-  '<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>';
+  '<p>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>';
 
 export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `
 <p>Si tu tienda ya vende y tus compradores te preguntan si pueden pagar en cuotas, lo que te toca entender es Cashea para comercios, que no es lo mismo que la app que usan ellos.</p>

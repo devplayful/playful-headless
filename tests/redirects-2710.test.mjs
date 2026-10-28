@@ -137,7 +137,7 @@ test('3) Cashea body and template rewrite land on Zelle without hops', () => {
   assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /pasarela-de-pagos-venezuela/);
   assert.match(
     CASHEA_COMERCIOS_BLOG_BODY_HTML,
-    /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
+    /href="\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
   );
   const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
     /<p[^>]*>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo[\s\S]*?<\/p>/,
@@ -149,7 +149,7 @@ test('3) Cashea body and template rewrite land on Zelle without hops', () => {
   );
   assert.match(
     CASHEA_COMERCIOS_BLOG_BODY_HTML,
-    /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"/,
+    /href="\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"/,
   );
   const stale = `<p><a href="${APEX}${PASARELA_VE_HREF}">pasarela de pagos en Venezuela</a></p>`;
   const rewritten = rewriteInSitePageHrefs(stale, `/blog/tecnologia/${CASHEA_COMERCIOS_BLOG_SLUG}`);
@@ -169,12 +169,13 @@ test('3b) Cashea #380 copy is literal, two distinct Zelle anchors, no pasarela h
   assert.equal(CASHEA_P1_COPY_ISSUE, 'playful-copy#380');
   assert.match(CASHEA_P1_CURRENT_HTML, /Si también cobras con Zelle/);
   assert.match(CASHEA_P1_CURRENT_HTML, /cómo integrar Zelle en tu ecommerce/);
-  assert.match(CASHEA_P1_CURRENT_HTML, /data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380"/);
+  assert.doesNotMatch(CASHEA_P1_CURRENT_HTML, /data-pendiente-firma/);
+  assert.doesNotMatch(CASHEA_SITEF_P4_HTML, /data-pendiente-firma/);
   assert.ok(CASHEA_COMERCIOS_BLOG_BODY_HTML.includes(CASHEA_P1_CURRENT_HTML));
   assert.ok(CASHEA_COMERCIOS_BLOG_BODY_HTML.includes(CASHEA_SITEF_P4_HTML));
   const zelleAnchors = [
     ...CASHEA_COMERCIOS_BLOG_BODY_HTML.matchAll(
-      /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">([^<]+)<\/a>/g,
+      /href="\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">([^<]+)<\/a>/g,
     ),
   ].map((match) => match[1]);
   assert.deepEqual(zelleAnchors, [

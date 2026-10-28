@@ -12,7 +12,7 @@ test(
   'prerelease: Cashea #380 copy awaits José redline',
   {
     skip:
-      'PENDIENTE_FIRMA_JOSE_380 — playful-copy PR #380 SHA 11b38dc es borrador para redline de José. Quitar este skip cuando firme. El assert recuerda la marca.',
+      'PENDIENTE_FIRMA_JOSE_380 — playful-copy PR #380 SHA d4844d5 es borrador para redline de José. Quitar este skip cuando firme. El assert recuerda la marca.',
   },
   () => {
     assert.doesNotMatch(CASHEA_P1_CURRENT_HTML, /PENDIENTE_FIRMA_JOSE_380/);
