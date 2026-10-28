@@ -66,3 +66,8 @@ pids
 
 # Payload (medios en disco en local)
 /media
+
+# Checkpoints de la medición de imágenes WP (el CSV/MD sí se versionan)
+/docs/migracion/_raw-inventario.json
+/docs/migracion/_medidas.json
+/docs/migracion/_resumen.json
