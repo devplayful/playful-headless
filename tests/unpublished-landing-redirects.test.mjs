@@ -36,7 +36,7 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
 }, categoryRedirects);
 
 test('unpublished landing 404s 301 in one hop to live ecommerce/shopify pages', () => {
-  assert.equal(Object.keys(unpublishedLandingRedirects).length, 5);
+  assert.equal(Object.keys(unpublishedLandingRedirects).length, 6);
   assert.equal(unpublishedLandingRedirects['/lp/calentamiento'], undefined);
 
   for (const [origin, destPath] of LANDING_301) {

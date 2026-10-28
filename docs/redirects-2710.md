@@ -13,7 +13,7 @@ No son 410. Google Ads sigue pudiendo aterrizar en `/lp/integraciones-pasarela-e
 
 `/lp/calentamiento` no entra en el mapa. Se queda como está.
 
-Las reglas viven en `utils/unpublished-landing-redirect-map.json` y las carga `middleware.ts` en `PERMANENT_301`. El hop único (incluida la variante con barra final) ya lo resuelve `resolveSingleHopRedirect`.
+Las reglas viven en `utils/unpublished-landing-redirect-map.json` y las carga `middleware.ts` en `PERMANENT_301`. La variante con barra (`/pasarela-de-pagos-venezuela/`) está **también** en el mapa, para que un solo 301 salga aunque se evalúe el mapa antes de quitar la barra. `resolveSingleHopRedirect` sigue resolviendo el hop único si el path llega ya normalizado.
 
 ## Enlace interno de Cashea
 
@@ -33,10 +33,18 @@ No hay edición WP que aplicar. El HTML se cambió en esta rama. Si más adelant
 
 (dos anclas: el párrafo de apertura y el de SiTef / Banesco / Zelle)
 
-### HTML de después
+### HTML de después (GO 28 oct 2026)
+
+Párrafo 1 (ancla firmada):
 
 ```html
-<a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">pasarela de pagos en Venezuela</a>
+<a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>
+```
+
+Párrafo 2 (SiTef / Instapago): un solo enlace a Zelle. Se quitó el de «pasarela de pagos en Venezuela»; queda el de «Zelle en Venezuela como método de pago para tu ecommerce». Contenido reescribirá esa frase.
+
+```html
+<p>En nuestra guía de pasarela de pagos en Venezuela comparamos SiTef, Instapago… en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación.</p>
 ```
 
 ### Reescritura de plantilla (red de seguridad)

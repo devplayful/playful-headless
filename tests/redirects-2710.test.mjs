@@ -47,6 +47,21 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
   ...canibalizacionOrigins,
 }, categoryRedirects);
 
+function locationFromMap(originPath, incomingSearch) {
+  const dest =
+    unpublishedLandingRedirects[originPath] ||
+    unpublishedLandingRedirects[originPath.replace(/\/+$/, '') || '/'];
+  assert.ok(dest, `missing dest for ${originPath}`);
+  const url = /^https?:\/\//i.test(dest)
+    ? new URL(dest)
+    : new URL(dest, APEX);
+  const params = new URLSearchParams(
+    incomingSearch.startsWith('?') ? incomingSearch.slice(1) : incomingSearch,
+  );
+  url.search = params.toString() ? `?${params.toString()}` : '';
+  return `${url.pathname}${url.search}`;
+}
+
 test('1) /pasarela-de-pagos-venezuela 301s in one hop to the Zelle post', () => {
   assert.equal(unpublishedLandingRedirects[PASARELA_VE_HREF], ZELLE_DEST);
   assert.equal(permanent301[PASARELA_VE_HREF], ZELLE_DEST);
@@ -54,6 +69,17 @@ test('1) /pasarela-de-pagos-venezuela 301s in one hop to the Zelle post', () => 
   assert.equal(blogClosedDecision(`${PASARELA_VE_HREF}/`).type, 'next');
   assert.match(nextConfigSource, /skipTrailingSlashRedirect: true/);
   assert.match(middlewareSource, /NextResponse\.redirect\(target, 301\)/);
+});
+
+test('1b) slashed /pasarela-de-pagos-venezuela/ is on the map for a single 301', () => {
+  const slashed = `${PASARELA_VE_HREF}/`;
+  assert.equal(unpublishedLandingRedirects[slashed], ZELLE_DEST);
+  assert.equal(permanent301[slashed], ZELLE_DEST);
+  assert.equal(unpublishedLandingRedirects[PASARELA_VE_HREF], unpublishedLandingRedirects[slashed]);
+  assert.equal(locationFromMap(slashed, ''), ZELLE_VE_HREF);
+  assert.equal(locationFromMap(slashed, '?qa=1'), `${ZELLE_VE_HREF}?qa=1`);
+  assert.match(middlewareSource, /PERMANENT_301\[pathname\]/);
+  assert.match(middlewareSource, /hadTrailingSlash/);
 });
 
 test('2) /lp/integraciones-pasarela-erp 301s to /agencia-shopify and is not 410', () => {
@@ -64,8 +90,35 @@ test('2) /lp/integraciones-pasarela-erp 301s to /agencia-shopify and is not 410'
   assert.match(middlewareSource, /\$\{resolved\.pathname\}\$\{resolved\.search\}/);
 });
 
+test('2b) Location of /lp/integraciones-pasarela-erp keeps gclid and utm_*', () => {
+  const search =
+    '?gclid=EAIaX0&utm_source=google&utm_medium=cpc&utm_campaign=erp&utm_content=ad&utm_term=pasarela';
+  const location = locationFromMap(LP_INTEGRACIONES_PASARELA_ERP_HREF, search);
+  assert.equal(location, `${AGENCIA_SHOPIFY_HREF}${search}`);
+  const params = new URLSearchParams(location.slice(location.indexOf('?')));
+  assert.equal(params.get('gclid'), 'EAIaX0');
+  assert.equal(params.get('utm_source'), 'google');
+  assert.equal(params.get('utm_medium'), 'cpc');
+  assert.equal(params.get('utm_campaign'), 'erp');
+  assert.equal(params.get('utm_content'), 'ad');
+  assert.equal(params.get('utm_term'), 'pasarela');
+  assert.match(middlewareSource, /target\.search = resolved\.search/);
+  assert.match(middlewareSource, /\$\{resolved\.pathname\}\$\{resolved\.search\}/);
+});
+
 test('3) Cashea body and template rewrite land on Zelle without hops', () => {
   assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /pasarela-de-pagos-venezuela/);
+  assert.match(
+    CASHEA_COMERCIOS_BLOG_BODY_HTML,
+    /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
+  );
+  const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
+    /<p>En nuestra guía de pasarela de pagos en Venezuela[\s\S]*?<\/p>/,
+  )?.[0] || '';
+  assert.equal(
+    (sitefParagraph.match(/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/g) || []).length,
+    1,
+  );
   assert.match(
     CASHEA_COMERCIOS_BLOG_BODY_HTML,
     /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"/,

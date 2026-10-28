@@ -80,9 +80,23 @@ test('Cashea override points pasarela copy at the Zelle post, not the 404 landin
   assert.equal(CASHEA_COMERCIOS_BLOG_SLUG, 'cashea-para-comercios');
   const hrefs = [...CASHEA_COMERCIOS_BLOG_BODY_HTML.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(hrefs.some((href) => href.includes('pasarela-de-pagos-venezuela')), false);
-  assert.ok(
-    hrefs.filter((href) => href.includes('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce')).length >= 2,
+  assert.equal(
+    hrefs.filter((href) => href.includes('zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce')).length,
+    2,
   );
+  assert.match(
+    CASHEA_COMERCIOS_BLOG_BODY_HTML,
+    /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
+  );
+  const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
+    /<p>En nuestra guía de pasarela de pagos en Venezuela[\s\S]*?<\/p>/,
+  )?.[0] || '';
+  assert.match(sitefParagraph, /comparamos SiTef, Instapago/);
+  assert.equal(
+    (sitefParagraph.match(/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/g) || []).length,
+    1,
+  );
+  assert.doesNotMatch(sitefParagraph, /<a[^>]*>pasarela de pagos en Venezuela<\/a>/);
   assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /\/lp\/integraciones-pasarela-erp/);
 });
 
