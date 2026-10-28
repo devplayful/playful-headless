@@ -49,7 +49,7 @@ const CLIENT_NAME = /jumex|odwalla|soytechno|mercantil|venemergencia|aitheras|fu
 
 const EXPECTED_BUTTONS = [
   ['Reserva tu llamada diagnóstica', '/reunion-playful', 'btn-llamada'],
-  ['Cuotas con Cashea en WooCommerce', '/blog/tecnologia/cashea-para-comercios', 'btn-cashea'],
+  ['Cuotas con Cashea para comercios', '/blog/tecnologia/cashea-para-comercios', 'btn-cashea'],
   [
     'Cobra con Zelle en tu tienda',
     '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
@@ -83,7 +83,7 @@ test('Nuestra web goes to home with the same UTM; Cashea is untouched', () => {
     buildLinksBioHref(web),
     '/?utm_source=ig&utm_medium=social&utm_campaign=links&utm_content=btn-web',
   );
-  assert.equal(cashea.label, 'Cuotas con Cashea en WooCommerce');
+  assert.equal(cashea.label, 'Cuotas con Cashea para comercios');
   assert.equal(cashea.path, '/blog/tecnologia/cashea-para-comercios');
   assert.equal(cashea.utmContent, 'btn-cashea');
   assert.equal(

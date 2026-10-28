@@ -27,6 +27,9 @@ export const LINKS_BIO_UTM_CAMPAIGN = 'links';
 export const LINKS_BIO_UTM =
   '?utm_source=ig&utm_medium=social&utm_campaign=links';
 
+/** playful-copy PR #380 SHA 11b38dc. Borrador para redline de José. */
+export const PENDIENTE_FIRMA_JOSE_380 = 'PENDIENTE_FIRMA_JOSE_380';
+
 export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
   {
     label: 'Reserva tu llamada diagnóstica',
@@ -34,7 +37,8 @@ export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
     utmContent: 'btn-llamada',
   },
   {
-    label: 'Cuotas con Cashea en WooCommerce',
+    // PENDIENTE_FIRMA_JOSE_380 — playful-copy #380 SHA 11b38dc, redline de José.
+    label: 'Cuotas con Cashea para comercios',
     path: '/blog/tecnologia/cashea-para-comercios',
     utmContent: 'btn-cashea',
   },
