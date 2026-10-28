@@ -11,7 +11,12 @@ const {
   parseLpMetaAngle,
   parseLpMetaMarket,
 } = await import('../app/lp/agencia-shopify/variants.ts');
-const { LP_META_HERO_TITLES, LP_META_SHOPIFY_META } = await import('../app/lp/agencia-shopify/copy.ts');
+const {
+  LP_META_DESCRIPTION_PENDING_CONTENT_SIGNOFF,
+  LP_META_HERO_TITLES,
+  LP_META_PRODUCTION_TITLE,
+  LP_META_SHOPIFY_META,
+} = await import('../app/lp/agencia-shopify/copy.ts');
 const {
   generateStaticAngleParams,
   LP_META_ANGLE_TITLES,
@@ -49,9 +54,22 @@ const sitemap = readFileSync(new URL('../utils/apex-sitemap.ts', import.meta.url
 const expectedRoutes = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee searchParams', () => {
   assert.equal(LP_META_SHOPIFY_META.path, '/lp/agencia-shopify');
+  assert.equal(
+    LP_META_SHOPIFY_META.title,
+    'Agencia Shopify para marcas que ya venden | Playful Agency',
+  );
+  assert.equal(LP_META_SHOPIFY_META.title, LP_META_PRODUCTION_TITLE);
+  assert.doesNotMatch(LP_META_SHOPIFY_META.title, /staging|Meta Ads/i);
+  assert.doesNotMatch(
+    LP_META_SHOPIFY_META.description,
+    /staging|COPY SIN FIRMAR|Meta Ads|tráfico pagado|landing/i,
+  );
+  assert.equal(LP_META_DESCRIPTION_PENDING_CONTENT_SIGNOFF, true);
+  assert.match(copy, /PENDIENTE DE FIRMA DE CONTENIDO/);
   assert.match(page, /index:\s*false/);
   assert.match(page, /follow:\s*false/);
   assert.match(page, /canonical:\s*LP_META_SHOPIFY_META\.path/);
@@ -87,6 +105,11 @@ test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee se
   ]);
   assert.doesNotMatch(sitemap, /\/lp\/agencia-shopify/);
   assert.doesNotMatch(header, /\/lp\/agencia-shopify/);
+  assert.doesNotMatch(
+    packageJson.scripts['test:canonical'] || '',
+    /lp-meta-agencia-shopify-prerelease/,
+  );
+  assert.match(packageJson.scripts['test:prerelease'] || '', /prerelease/);
 });
 
 test('mkt y ang: default ES y titular genérico si faltan o no valen', () => {
@@ -170,6 +193,10 @@ test('VisitaCalificada se hereda del layout /lp; no se toca layout raíz ni CSS 
   assert.doesNotMatch(footer, /VisitaCalificada|lp-meta-shopify/);
   assert.doesNotMatch(globals, /lp-meta-shopify|visita.calificada|VisitaCalificada/);
 });
+
+// Merge gate (H1 placeholder): tests/lp-meta-agencia-shopify-prerelease.test.mjs
+// via `npm run test:prerelease`. No está en test:canonical. Hoy falla porque
+// el HTML visible sigue pintando COPY SIN FIRMAR en los H1. Nada se mergea así.
 
 test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(unsigned, /COPY SIN FIRMAR — \$\{tag\}/);

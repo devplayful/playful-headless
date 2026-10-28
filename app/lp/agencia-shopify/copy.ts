@@ -2,10 +2,20 @@ import type { ContentPlaceholder } from '../_lib/placeholders';
 import { LP_META_ANGLE_TITLES } from './angles.js';
 import type { LpMetaMarket } from './variants';
 
+/** Title de producción. Igual en la base y en /lp/agencia-shopify/[ang]. */
+export const LP_META_PRODUCTION_TITLE =
+  'Agencia Shopify para marcas que ya venden | Playful Agency';
+
+/**
+ * Meta description visible al usuario: placeholder neutro, sin jerga interna.
+ * PENDIENTE DE FIRMA DE CONTENIDO — no es copy firmado.
+ */
+export const LP_META_DESCRIPTION_PENDING_CONTENT_SIGNOFF = true;
+
 export const LP_META_SHOPIFY_META = {
-  title: 'Agencia Shopify — landing Meta Ads (staging) | Playful',
+  title: LP_META_PRODUCTION_TITLE,
   description:
-    'Landing Meta Ads /lp/agencia-shopify. Copy sin firmar. Tráfico pagado, noindex.',
+    'Agencia Shopify para marcas que ya venden. Diseño, desarrollo y migración de tiendas online. Reserva una reunión con Playful Agency.',
   path: '/lp/agencia-shopify',
 } as const;
 
