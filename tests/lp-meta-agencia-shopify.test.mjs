@@ -64,6 +64,8 @@ test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee se
   assert.match(nextConfig, /source: '\/lp\/:path\*'/);
   assert.match(nextConfig, /noindex, nofollow/);
   assert.match(nextConfig, /LP_META_ANG_QUERY_REDIRECTS/);
+  assert.match(nextConfig, /x-vercel-skip-toolbar/);
+  assert.match(nextConfig, /hero-gORwV7MSXO@1x\.webp/);
   assert.match(angRedirects, /permanent: true/);
   assert.match(angRedirects, /destination: `\/lp\/agencia-shopify\/\$\{ang\}`/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/lp/agencia-shopify'));

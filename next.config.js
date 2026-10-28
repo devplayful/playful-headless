@@ -55,6 +55,26 @@ const nextConfig = {
       { source: '/images/firmas/:path*', headers: [noIndex] },
       { source: '/lp/:path*', headers: [noIndex] },
       {
+        source: '/lp/agencia-shopify',
+        headers: [
+          { key: 'x-vercel-skip-toolbar', value: '1' },
+          {
+            key: 'Link',
+            value: '</images/agencia-shopify/hero-gORwV7MSXO@1x.webp>; rel=preload; as=image',
+          },
+        ],
+      },
+      {
+        source: '/lp/agencia-shopify/:path*',
+        headers: [
+          { key: 'x-vercel-skip-toolbar', value: '1' },
+          {
+            key: 'Link',
+            value: '</images/agencia-shopify/hero-gORwV7MSXO@1x.webp>; rel=preload; as=image',
+          },
+        ],
+      },
+      {
         source:
           '/:slug(agencia-e-commerce|agencia-seo|agencia-sem|agencia-diseno-web|agencia-ux-ui|marketing-internacional|seo-expertos|seo-vigo)',
         headers: [agencyCache],
