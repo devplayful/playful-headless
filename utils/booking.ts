@@ -4,6 +4,7 @@ import {
   isBookingHref,
   toServiceBookingHref,
 } from './booking-attribution.ts';
+import { rewriteEcommerceCtaSections } from './ecommerce-cta-sections.ts';
 
 /** Widget destination. Visible CTAs use SERVICE_BOOKING_HREF so the hop can fill query. */
 export const BOOKING_HREF = BOOKING_WIDGET_HREF;
@@ -275,11 +276,14 @@ export function rewriteInternacionalSeoHrefs(html: string, slug: string): string
   });
 }
 
-/** Elementor body pipeline: widget URLs, booking CTAs, leftover `/about`, then the 2025 SEO href. */
+/** Elementor body pipeline: widget URLs, booking CTAs, leftover `/about`, then the 2025 SEO href, then e-com CTA sections. */
 export function rewriteElementorBodyHrefs(html: string, slug: string): string {
-  return rewriteInternacionalSeoHrefs(
-    rewriteAboutHrefs(
-      rewriteServiceBookingCtas(rewriteBookingWidgetHrefs(html), slug),
+  return rewriteEcommerceCtaSections(
+    rewriteInternacionalSeoHrefs(
+      rewriteAboutHrefs(
+        rewriteServiceBookingCtas(rewriteBookingWidgetHrefs(html), slug),
+        slug,
+      ),
       slug,
     ),
     slug,

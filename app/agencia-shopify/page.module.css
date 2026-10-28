@@ -1,0 +1,65 @@
+/* Local to /agencia-shopify. Desktop (md+) keeps the existing hero stack. */
+
+.midCta {
+  display: flex;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.stickyBar {
+  display: none;
+}
+
+.pageWithSticky {
+  /* desktop: existing article pb-20 stays */
+}
+
+@media (max-width: 767px) {
+  .heroInner {
+    padding-bottom: 1.5rem;
+  }
+
+  .heroGrid {
+    gap: 1rem;
+  }
+
+  .heroCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .heroTitle {
+    order: 1;
+    font-size: 30px;
+    line-height: 1.15;
+  }
+
+  .heroCta {
+    order: 2;
+  }
+
+  .heroBody {
+    order: 3;
+  }
+
+  .heroArt {
+    display: none;
+  }
+
+  .pageWithSticky {
+    padding-bottom: calc(9rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Raised and inset so the GHL chat bubble (bottom-right) stays tappable. */
+  .stickyBar {
+    display: block;
+    position: fixed;
+    z-index: 40;
+    left: 12px;
+    right: 92px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+}
