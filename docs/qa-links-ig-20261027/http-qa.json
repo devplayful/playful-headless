@@ -1,0 +1,152 @@
+{
+  "ua": "PlayfulQA/1.0",
+  "sha": "",
+  "log": [
+    {
+      "id": 1,
+      "name": "/links 200 sin redirecciones + título",
+      "status": 200,
+      "location": null,
+      "title": "Enlaces | Playful Agency",
+      "ok": true
+    },
+    {
+      "id": 2,
+      "name": "orden y texto de botones; WhatsApp ausente",
+      "labels": [
+        "Reserva tu llamada diagnóstica",
+        "Cuotas con Cashea en WooCommerce",
+        "Cobra con Zelle en tu tienda",
+        "Casos",
+        "Nuestra web"
+      ],
+      "ok": false
+    },
+    {
+      "id": 3,
+      "name": "href exactos ig/links + utm_content propio",
+      "hrefs": [
+        "/reunion-playful?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-llamada",
+        "/blog/tecnologia/cashea-para-comercios?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-cashea",
+        "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-zelle",
+        "/casos-de-exito?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-casos",
+        "/agencia-e-commerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-web"
+      ],
+      "ok": false
+    },
+    {
+      "id": 4,
+      "name": "entrada con UTM de bio no cambia hrefs",
+      "status": 200,
+      "hrefs": [
+        "/reunion-playful?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-llamada",
+        "/blog/tecnologia/cashea-para-comercios?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-cashea",
+        "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-zelle",
+        "/casos-de-exito?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-casos",
+        "/agencia-e-commerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-web"
+      ],
+      "ok": true
+    },
+    {
+      "id": 5,
+      "name": "destinos 200 sin redirección HTTP",
+      "destResults": [
+        {
+          "path": "/reunion-playful?qa=1",
+          "status": 200,
+          "location": null,
+          "ok": true
+        },
+        {
+          "path": "/blog/tecnologia/cashea-para-comercios?qa=1",
+          "status": 200,
+          "location": null,
+          "ok": true
+        },
+        {
+          "path": "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?qa=1",
+          "status": 200,
+          "location": null,
+          "ok": true
+        },
+        {
+          "path": "/casos-de-exito?qa=1",
+          "status": 200,
+          "location": null,
+          "ok": true
+        },
+        {
+          "path": "/agencia-e-commerce?qa=1",
+          "status": 200,
+          "location": null,
+          "ok": true
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "destResults": [
+    {
+      "path": "/reunion-playful?qa=1",
+      "status": 200,
+      "location": null,
+      "ok": true
+    },
+    {
+      "path": "/blog/tecnologia/cashea-para-comercios?qa=1",
+      "status": 200,
+      "location": null,
+      "ok": true
+    },
+    {
+      "path": "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?qa=1",
+      "status": 200,
+      "location": null,
+      "ok": true
+    },
+    {
+      "path": "/casos-de-exito?qa=1",
+      "status": 200,
+      "location": null,
+      "ok": true
+    },
+    {
+      "path": "/agencia-e-commerce?qa=1",
+      "status": 200,
+      "location": null,
+      "ok": true
+    }
+  ],
+  "c1parsed": {
+    "hrefs": [
+      "/reunion-playful?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-llamada",
+      "/blog/tecnologia/cashea-para-comercios?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-cashea",
+      "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-zelle",
+      "/casos-de-exito?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-casos",
+      "/agencia-e-commerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-web"
+    ],
+    "labels": [
+      "Reserva tu llamada diagnóstica",
+      "Cuotas con Cashea en WooCommerce",
+      "Cobra con Zelle en tu tienda",
+      "Casos",
+      "Nuestra web"
+    ]
+  },
+  "c4parsed": {
+    "hrefs": [
+      "/reunion-playful?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-llamada",
+      "/blog/tecnologia/cashea-para-comercios?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-cashea",
+      "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-zelle",
+      "/casos-de-exito?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-casos",
+      "/agencia-e-commerce?utm_source=ig&amp;utm_medium=social&amp;utm_campaign=links&amp;utm_content=btn-web"
+    ],
+    "labels": [
+      "Reserva tu llamada diagnóstica",
+      "Cuotas con Cashea en WooCommerce",
+      "Cobra con Zelle en tu tienda",
+      "Casos",
+      "Nuestra web"
+    ]
+  }
+}

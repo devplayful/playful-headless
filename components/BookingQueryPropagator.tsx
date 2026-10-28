@@ -9,11 +9,15 @@ export default function BookingQueryPropagator() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // /links buttons keep a fixed href. Incoming bio UTM must not overwrite them.
+    if (pathname === '/links') return;
+
     const search = typeof window !== 'undefined' ? window.location.search : '';
     const nextHref = bookingHrefFromPageSearch(search || '');
 
     const applyHref = (anchor: HTMLAnchorElement) => {
       const href = anchor.getAttribute('href') || '';
+      if (anchor.hasAttribute('data-links-fixed-href')) return;
       if (!isBookingHref(href) || href === nextHref) return;
       anchor.setAttribute('href', nextHref);
     };

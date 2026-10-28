@@ -1,12 +1,11 @@
-import { CONTACT_HREF } from '../utils/booking.ts';
-
 /**
- * Instagram link-in-bio (/links). Keep a single ordered array so Cashea
- * can be inserted as the first item later without reshuffling the rest.
+ * Instagram link-in-bio (/links). Ordered list matches the 27 oct 2026 brief.
+ * WhatsApp fuera hasta que haya número oficial en la web.
  */
 export type LinksBioEntry = {
   label: string;
   path: string;
+  utmContent: string;
 };
 
 /** Square thumb fallback when the href is not a blog post or has no cover. */
@@ -20,33 +19,48 @@ export function linksBioArticleSlug(path: string): string | null {
   return parts[parts.length - 1] || null;
 }
 
+/** Shared UTM on every /links button. Each entry adds its own utm_content. */
+export const LINKS_BIO_UTM_SOURCE = 'ig';
+export const LINKS_BIO_UTM_MEDIUM = 'social';
+export const LINKS_BIO_UTM_CAMPAIGN = 'links';
+
 export const LINKS_BIO_UTM =
-  '?utm_source=instagram&utm_medium=social&utm_campaign=bio';
+  '?utm_source=ig&utm_medium=social&utm_campaign=links';
+
+/** playful-copy PR #380 SHA d4844d5. Borrador para redline de José. */
+export const PENDIENTE_FIRMA_JOSE_380 = 'PENDIENTE_FIRMA_JOSE_380';
 
 export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
-  // Cashea: add first when that campaign is ready.
   {
-    label: 'Cómo integrar Zelle en tu tienda',
+    label: 'Reserva tu llamada diagnóstica',
+    path: '/reunion-playful',
+    utmContent: 'btn-llamada',
+  },
+  {
+    // PENDIENTE_FIRMA_JOSE_380 — playful-copy #380 SHA d4844d5, redline de José.
+    label: 'Cuotas con Cashea para comercios',
+    path: '/blog/tecnologia/cashea-para-comercios',
+    utmContent: 'btn-cashea',
+  },
+  {
+    label: 'Cobra con Zelle en tu tienda',
     path: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    utmContent: 'btn-zelle',
   },
   {
-    label: 'Casos de éxito',
+    label: 'Casos',
     path: '/casos-de-exito',
+    utmContent: 'btn-casos',
   },
   {
-    label: 'Agencia e-commerce',
-    path: '/agencia-e-commerce',
-  },
-  {
-    label: 'Agencia Shopify',
-    path: '/agencia-shopify',
-  },
-  {
-    label: 'Contacto',
-    path: CONTACT_HREF,
+    label: 'Nuestra web',
+    path: '/',
+    utmContent: 'btn-web',
   },
 ];
 
-export function buildLinksBioHref(path: string): string {
-  return `${path}${LINKS_BIO_UTM}`;
+export function buildLinksBioHref(
+  entry: Pick<LinksBioEntry, 'path' | 'utmContent'>,
+): string {
+  return `${entry.path}${LINKS_BIO_UTM}&utm_content=${entry.utmContent}`;
 }

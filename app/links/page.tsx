@@ -116,7 +116,8 @@ export default async function LinksBioPage() {
 
           <nav className="flex w-full flex-col gap-4" aria-label="Enlaces de Instagram">
             <Link
-              href={buildLinksBioHref(featured.path)}
+              href={buildLinksBioHref(featured)}
+              data-links-fixed-href=""
               className={`group block w-full overflow-hidden rounded-[28px] bg-white ${CARD_SHADOW} ${CARD_HOVER}`}
             >
               <span className="relative block aspect-[16/10] w-full bg-[#F3E5F5]">
@@ -144,7 +145,8 @@ export default async function LinksBioPage() {
               return (
                 <Link
                   key={entry.path}
-                  href={buildLinksBioHref(entry.path)}
+                  href={buildLinksBioHref(entry)}
+                  data-links-fixed-href=""
                   className={`group flex w-full items-center gap-4 rounded-[24px] bg-white p-3 pr-4 ${CARD_SHADOW} ${CARD_HOVER}`}
                 >
                   <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-[#F3E5F5] sm:h-24 sm:w-24">

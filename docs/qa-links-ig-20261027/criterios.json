@@ -1,0 +1,57 @@
+{
+  "sha": "e7cf9b504a267d3d9e865d0e6ef7e7f94590122e",
+  "against": "next start http://127.0.0.1:3000",
+  "ua": "PlayfulQA/1.0",
+  "query": "qa=1",
+  "rate": "≤1 req/s en serie",
+  "criterios": [
+    {
+      "n": 1,
+      "texto": "/links responde 200 en móvil y escritorio, sin redirecciones. Título Enlaces | Playful Agency.",
+      "resultado": "PASS",
+      "nota": "HTTP 200, Location ausente, <title> exacto. Misma HTML estática a 390 y 1440."
+    },
+    {
+      "n": 2,
+      "texto": "Botones en el orden y con el texto de la tabla. WhatsApp solo si hay número confirmado.",
+      "resultado": "PASS",
+      "nota": "1 llamada, 2 Cashea, 3 Zelle, 4 Casos, 5 Nuestra web. WhatsApp fuera hasta que haya número oficial en la web."
+    },
+    {
+      "n": 3,
+      "texto": "Cada href coincide con la tabla (utm_source=ig, utm_medium=social, utm_campaign=links, utm_content propio). Sin utm_source=instagram ni utm_campaign=bio.",
+      "resultado": "PASS",
+      "nota": "En HTML los & salen como &amp; (escapado). El href del DOM es el de la tabla."
+    },
+    {
+      "n": 4,
+      "texto": "Entrando por /links?utm_source=ig&utm_medium=social&utm_content=link_in_bio, los href no cambian.",
+      "resultado": "PASS",
+      "nota": "SSR y post-hidratación (BookingQueryPropagator no corre en /links)."
+    },
+    {
+      "n": 5,
+      "texto": "Cada destino responde 200 (sin 404 ni cadenas de redirección).",
+      "resultado": "PASS",
+      "nota": "GET ?qa=1: /reunion-playful, cashea, zelle, /casos-de-exito, /agencia-e-commerce → 200 sin Location. /reunion-playful sigue haciendo redirect cliente a GHL (comportamiento existente)."
+    },
+    {
+      "n": 6,
+      "texto": "En GA4 (DebugView o Tiempo real), un clic genera sesión/page view con su utm_content.",
+      "resultado": "NO VERIFICADO",
+      "nota": "Este entorno no tiene DebugView. qa=1 y PlayfulQA/1.0 anulan GA4 a propósito. La preview tiene SSO."
+    },
+    {
+      "n": 7,
+      "texto": "Botones ≥44 px y la página carga en el navegador interno de Instagram.",
+      "resultado": "PASS (parcial)",
+      "nota": "A 390 px las 5 tarjetas miden ≥104 px de alto. No hay WebView de Instagram aquí; carga en Chromium sin errores JS."
+    },
+    {
+      "n": 8,
+      "texto": "No aparecen nombres de clientes en los textos de la página.",
+      "resultado": "PASS",
+      "nota": "Texto visible: Playful Agency, Agencia de e-commerce y los 5 labels del brief. Cashea es el producto del brief, no un cliente."
+    }
+  ]
+}
