@@ -184,11 +184,14 @@ test('CTA local conserva la query completa y el propagador global no se toca', (
   assert.match(bookingCta, /data-lp-meta-booking/);
 });
 
-test('VisitaCalificada se hereda del layout /lp; no se toca layout raíz ni CSS global', () => {
-  assert.match(layout, /VisitaCalificadaTracker/);
+test('VisitaCalificada de esta LP vive en app/lp/agencia-shopify; no se toca layout raíz ni GTM', () => {
+  assert.match(landing, /LP_META_VISITA_CALIFICADA_BOOT/);
+  assert.match(landing, /data-lp-meta-visita-calificada/);
   assert.match(page, /Landing/);
+  assert.match(anglePage, /Landing/);
   assert.doesNotMatch(root, /AdsMetaShopify/);
   assert.doesNotMatch(root, /lp-meta-agencia/);
+  assert.doesNotMatch(root, /visita_calificada|VisitaCalificada|lp-meta-visita/);
   assert.doesNotMatch(header, /VisitaCalificada|lp-meta-shopify/);
   assert.doesNotMatch(footer, /VisitaCalificada|lp-meta-shopify/);
   assert.doesNotMatch(globals, /lp-meta-shopify|visita.calificada|VisitaCalificada/);

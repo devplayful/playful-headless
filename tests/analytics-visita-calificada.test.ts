@@ -308,6 +308,21 @@ test('mountVisitaCalificada is a no-op outside /lp (no listeners, no timers)', (
   }
 });
 
+test('shared mount is a no-op on /lp/agencia-shopify (own 30s boot)', () => {
+  for (const pathname of ['/lp/agencia-shopify', '/lp/agencia-shopify/c3', '/lp/agencia-shopify/generic']) {
+    const f = installDom({ pathname });
+    try {
+      const stop = mountVisitaCalificada({ pathname });
+      assert.equal(f.listeners.size, 0, pathname);
+      assert.equal(f.timers.length, 0, pathname);
+      assert.equal(f.win.__vcSent, undefined, pathname);
+      stop();
+    } finally {
+      f.restore();
+    }
+  }
+});
+
 test('mount on /lp binds listeners; scroll+time and CTA each fire at most once', () => {
   const f = installDom({
     pathname: '/lp/calentamiento',

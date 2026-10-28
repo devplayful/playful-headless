@@ -36,6 +36,7 @@ import HeroLcp from './HeroLcp';
 import QueryLink from './QueryLink';
 import StickyCta from './StickyCta';
 import { QUERY_BOOT_SCRIPT } from './query-boot';
+import { LP_META_VISITA_CALIFICADA_BOOT } from './visita-calificada';
 import { LP_META_MARKETS, LP_META_STATIC_ANGLES, type LpMetaAngle, type LpMetaMarket } from './variants';
 
 const STEP_CARD_COLORS = ['bg-[#E9D7FF]', 'bg-[#FFEFD1]', 'bg-[#E4FFF9]', 'bg-[#FFDBDB]'] as const;
@@ -347,6 +348,11 @@ export default function Landing({ ang }: { ang: LpMetaAngle }) {
         </section>
       </article>
       <script type="module" dangerouslySetInnerHTML={{ __html: QUERY_BOOT_SCRIPT }} />
+      <script
+        type="module"
+        data-lp-meta-visita-calificada="1"
+        dangerouslySetInnerHTML={{ __html: LP_META_VISITA_CALIFICADA_BOOT }}
+      />
       <StickyCta />
     </>
   );

@@ -211,6 +211,11 @@ export function mountVisitaCalificada(input?: {
 
   const pathname = input?.pathname ?? window.location?.pathname ?? '';
   if (!isLpPath(pathname)) return () => {};
+  // /lp/agencia-shopify has its own 30s + 50% dataLayer boot (no fbq here).
+  const lpPath = pathname.split('?')[0].replace(/\/+$/, '') || '/';
+  if (lpPath === '/lp/agencia-shopify' || lpPath.startsWith('/lp/agencia-shopify/')) {
+    return () => {};
+  }
 
   window.__vcSent = false;
   delete window.__vcEventId;
