@@ -29,7 +29,13 @@ const HOST = 'endpoint.playfulagency.com';
 const CPT_FRONT = ['posts', 'pages', 'casos-de-exito', 'podcast', 'equipo'];
 
 const args = new Set(process.argv.slice(2));
-const MODE = args.has('--collect') ? 'collect' : args.has('--measure') ? 'measure' : args.has('--report') ? 'report' : 'all';
+const MODE = args.has('--collect')
+  ? 'collect'
+  : args.has('--measure')
+    ? (args.has('--report') ? 'measure+report' : 'measure')
+    : args.has('--report')
+      ? 'report'
+      : 'all';
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -54,10 +60,29 @@ async function paced() {
   requests += 1;
 }
 
+function looksLikeAsset(value) {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed.startsWith('WP:')) return true;
+  if (/^https?:\/\/endpoint\.playfulagency\.com\/wp-content\//i.test(trimmed)) return true;
+  if (/^\/\/endpoint\.playfulagency\.com\/wp-content\//i.test(trimmed)) return true;
+  if (trimmed.startsWith('/wp-content/')) return true;
+  return false;
+}
+
+function isUsableAssetPath(pathname) {
+  if (!pathname.startsWith('/wp-content/')) return false;
+  if (/[\[\]{}()$]/.test(pathname)) return false;
+  if (pathname.endsWith('/wp-content/uploads') || pathname.endsWith('/wp-content/plugins') || pathname.endsWith('/')) return false;
+  const last = pathname.split('/').pop() || '';
+  return last.includes('.');
+}
+
 function normalizeUrl(raw) {
   if (!raw || typeof raw !== 'string') return null;
   let value = raw.trim();
   if (!value || value.startsWith('data:') || value.startsWith('blob:')) return null;
+  if (!looksLikeAsset(value)) return null;
   value = value.replace(/\\u002d/g, '-').replace(/\\\//g, '/');
   try {
     value = decodeURI(value);
@@ -71,10 +96,10 @@ function normalizeUrl(raw) {
   try {
     const url = new URL(value, `${WP}/`);
     if (url.hostname !== HOST && url.hostname !== `www.${HOST}`) return null;
+    if (!isUsableAssetPath(url.pathname)) return null;
     url.protocol = 'https:';
     url.hash = '';
     url.hostname = HOST;
-    // uploads no usan query; plugins a veces sí (ver=)
     return url.href;
   } catch {
     return null;
@@ -432,14 +457,23 @@ function guessMimeFromUrl(url, headerMime) {
   return headerMime || '';
 }
 
+function abortable(ms) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  return { signal: ctrl.signal, done: () => clearTimeout(t) };
+}
+
 async function headOne(url) {
   await paced();
   try {
+    const ab = abortable(15000);
     const res = await fetch(url, {
       method: 'HEAD',
       headers: { 'User-Agent': UA, Accept: '*/*' },
       redirect: 'follow',
+      signal: ab.signal,
     });
+    ab.done();
     const len = res.headers.get('content-length');
     const mime = res.headers.get('content-type') || '';
     if (res.status === 404 || res.status === 410) {
@@ -454,11 +488,14 @@ async function headOne(url) {
 
   await paced();
   try {
+    const ab = abortable(15000);
     const res = await fetch(url, {
       method: 'GET',
       headers: { 'User-Agent': UA, Accept: '*/*', Range: 'bytes=0-0' },
       redirect: 'follow',
+      signal: ab.signal,
     });
+    ab.done();
     const mime = res.headers.get('content-type') || '';
     const total = parseContentRangeTotal(res.headers.get('content-range'));
     const len = res.headers.get('content-length');
@@ -767,7 +804,13 @@ function buildCost(pack) {
 }
 
 function report(raw, measures) {
-  const items = mergeItems(raw, measures);
+  const items = mergeItems(raw, measures).filter((item) => {
+    try {
+      return isUsableAssetPath(new URL(item.url).pathname);
+    } catch {
+      return false;
+    }
+  });
   const summary = summarize(items);
   writeCsv(items);
   const extra = {
@@ -802,10 +845,10 @@ async function main() {
   else raw = loadRaw();
 
   let measures = loadMeasures();
-  if (MODE === 'measure' || MODE === 'all') {
+  if (MODE === 'measure' || MODE === 'measure+report' || MODE === 'all') {
     measures = await measure(raw);
   }
-  if (MODE === 'report' || MODE === 'all' || MODE === 'collect') {
+  if (MODE === 'report' || MODE === 'measure+report' || MODE === 'all' || MODE === 'collect') {
     report(raw, measures);
   }
   log(`peticiones HTTP de esta ejecución: ${requests}`);
