@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { LP_META_SHOPIFY_META } from './copy';
 import { HERO_CRITICAL_STYLE } from './hero-critical-style';
 import Landing from './Landing';
+import { HeroLcpPreload } from './HeroLcp';
 import { DEFAULT_LP_META_ANGLE } from './variants';
 
 export const dynamic = 'force-static';
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 export default function LpAgenciaShopifyPage() {
   return (
     <>
+      <HeroLcpPreload />
       <style>{HERO_CRITICAL_STYLE}</style>
       <Landing ang={DEFAULT_LP_META_ANGLE} />
     </>

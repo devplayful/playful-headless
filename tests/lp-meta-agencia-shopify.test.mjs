@@ -188,9 +188,18 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
 test('hero LCP es img local con priority y sin lazy', () => {
   assert.match(hero, /fetchPriority="high"/);
   assert.match(hero, /hero-gORwV7MSXO@1x\.webp/);
-  assert.match(hero, /HERO_LCP_DATA_URI/);
-  assert.match(hero, /decoding="sync"/);
+  assert.match(hero, /HeroLcpPreload/);
+  assert.match(hero, /rel="preload"/);
+  assert.match(hero, /decoding="async"/);
+  assert.doesNotMatch(hero, /HERO_LCP_DATA_URI|data:image\/webp/);
+  assert.doesNotMatch(hero, /opacity\s*[:=]/);
   assert.doesNotMatch(hero, /loading=["']lazy["']/);
   assert.doesNotMatch(hero, /from ['"]next\/image['"]/);
+  assert.doesNotMatch(hero, /use client/);
   assert.match(landing, /HeroLcp/);
+  assert.doesNotMatch(landing, /use client/);
+  assert.match(page, /HeroLcpPreload/);
+  assert.match(anglePage, /HeroLcpPreload/);
+  assert.doesNotMatch(queryBoot, /data-lp-meta-shopify/);
+  assert.match(queryBoot, /addEventListener\("load"/);
 });

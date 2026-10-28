@@ -1,4 +1,4 @@
-/** Route-local boot: booking hop + mkt/ang below the fold. Does not touch the H1. */
+/** Route-local boot after load. Does not touch the H1 or the LCP image ancestor. */
 export const QUERY_BOOT_SCRIPT = `
 document.addEventListener("click", function (e) {
   var a = e.target && e.target.closest && e.target.closest("[data-lp-meta-booking]");
@@ -7,7 +7,7 @@ document.addEventListener("click", function (e) {
   var q = location.search;
   location.assign(q ? "/reunion-playful" + q : "/reunion-playful");
 }, true);
-(function () {
+function lpMetaBoot() {
   var q = new URLSearchParams(location.search);
   function mkt(v) {
     v = (v || "").toLowerCase();
@@ -22,11 +22,6 @@ document.addEventListener("click", function (e) {
   var M = mkt(q.get("mkt"));
   var pathAng = (location.pathname.replace(new RegExp("/+$"), "").match(new RegExp("/lp/agencia-shopify/(generic|c[1-5])$")) || [])[1];
   var A = pathAng || ang(q.get("ang"), q.get("utm_content"));
-  var root = document.querySelector("[data-lp-meta-shopify]");
-  if (root) {
-    root.setAttribute("data-lp-mkt", M);
-    root.setAttribute("data-lp-ang", A);
-  }
   document.querySelectorAll("[data-lp-when-mkt]").forEach(function (el) {
     el.classList.toggle("hidden", el.getAttribute("data-lp-when-mkt") !== M);
   });
@@ -68,5 +63,7 @@ document.addEventListener("click", function (e) {
     fl.setAttribute("data-lp-keep-search", featured[M]);
     fl.setAttribute("href", featured[M] + location.search);
   }
-})();
+}
+if (document.readyState === "complete") lpMetaBoot();
+else window.addEventListener("load", lpMetaBoot);
 `.trim();
