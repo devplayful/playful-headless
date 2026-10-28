@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { LP_META_SHOPIFY_META } from './copy';
+import { HERO_CRITICAL_STYLE } from './hero-critical-style';
 import Landing from './Landing';
+import { DEFAULT_LP_META_ANGLE } from './variants';
 
 export const dynamic = 'force-static';
 
@@ -11,14 +13,12 @@ export const metadata: Metadata = {
   alternates: { canonical: LP_META_SHOPIFY_META.path },
 };
 
-/** Static HTML. Hero H1 is always the generic title from the first paint. */
+/** Base variant: same generic H1 as f59d442 when ang is missing. */
 export default function LpAgenciaShopifyPage() {
   return (
     <>
-      <style>
-        {`[data-lp-meta-shopify] h1{font-family:system-ui,-apple-system,"Segoe UI",sans-serif!important;opacity:1!important;visibility:visible!important}[data-illustration-slot=ads-hero] img{display:block!important;width:100%!important;height:352px!important;object-fit:cover!important;opacity:1!important;visibility:visible!important}`}
-      </style>
-      <Landing />
+      <style>{HERO_CRITICAL_STYLE}</style>
+      <Landing ang={DEFAULT_LP_META_ANGLE} />
     </>
   );
 }

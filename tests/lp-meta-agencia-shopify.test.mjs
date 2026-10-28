@@ -5,6 +5,7 @@ import test from 'node:test';
 const {
   DEFAULT_LP_META_ANGLE,
   DEFAULT_LP_META_MARKET,
+  LP_META_STATIC_ANGLES,
   caseOrderForMarket,
   featuredCaseSlugForMarket,
   parseLpMetaAngle,
@@ -19,6 +20,11 @@ const {
 } = await import('../app/lp/_lib/meta-booking-href.ts');
 const { isBookingHref } = await import('../utils/booking-attribution.ts');
 const page = readFileSync(new URL('../app/lp/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+const anglePage = readFileSync(new URL('../app/lp/agencia-shopify/[ang]/page.tsx', import.meta.url), 'utf8');
+const angRedirects = readFileSync(
+  new URL('../app/lp/agencia-shopify/ang-query-redirects.js', import.meta.url),
+  'utf8',
+);
 const unsigned = readFileSync(new URL('../app/lp/_lib/unsigned-copy.tsx', import.meta.url), 'utf8');
 const copy = readFileSync(new URL('../app/lp/agencia-shopify/copy.ts', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../app/lp/agencia-shopify/Landing.tsx', import.meta.url), 'utf8');
@@ -46,11 +52,30 @@ test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee se
   assert.match(page, /force-static/);
   assert.doesNotMatch(page, /searchParams/);
   assert.doesNotMatch(page, /useSearchParams/);
+  assert.match(anglePage, /canonical:\s*LP_META_SHOPIFY_META\.path/);
+  assert.match(anglePage, /index:\s*false/);
+  assert.match(anglePage, /follow:\s*false/);
+  assert.match(anglePage, /generateStaticParams/);
+  assert.match(anglePage, /dynamicParams = false/);
+  assert.match(anglePage, /force-static/);
+  assert.doesNotMatch(anglePage, /useSearchParams/);
   assert.match(layout, /index:\s*false/);
   assert.match(layout, /follow:\s*false/);
   assert.match(nextConfig, /source: '\/lp\/:path\*'/);
   assert.match(nextConfig, /noindex, nofollow/);
+  assert.match(nextConfig, /LP_META_ANG_QUERY_REDIRECTS/);
+  assert.match(angRedirects, /permanent: true/);
+  assert.match(angRedirects, /destination: `\/lp\/agencia-shopify\/\$\{ang\}`/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/lp/agencia-shopify'));
+  assert.ok(expectedRoutes.sourceRoutes.includes('/lp/agencia-shopify/[ang]'));
+  assert.deepEqual(expectedRoutes.governedConcreteRoutes['/lp/agencia-shopify/[ang]'].slice().sort(), [
+    '/lp/agencia-shopify/c1',
+    '/lp/agencia-shopify/c2',
+    '/lp/agencia-shopify/c3',
+    '/lp/agencia-shopify/c4',
+    '/lp/agencia-shopify/c5',
+    '/lp/agencia-shopify/generic',
+  ]);
   assert.doesNotMatch(sitemap, /\/lp\/agencia-shopify/);
   assert.doesNotMatch(header, /\/lp\/agencia-shopify/);
 });
@@ -75,6 +100,7 @@ test('mkt y ang: default ES y titular genérico si faltan o no valen', () => {
   assert.equal(featuredCaseSlugForMarket('latam'), 'jumex-shopify-dtc-ecommerce');
   assert.equal(featuredCaseSlugForMarket('ve'), 'soytechno-ecommerce-venezuela');
   assert.deepEqual(caseOrderForMarket('latam')[0], 'jumex-shopify-dtc-ecommerce');
+  assert.deepEqual([...LP_META_STATIC_ANGLES], ['generic', 'c1', 'c2', 'c3', 'c4', 'c5']);
 });
 
 test('CTA local conserva la query completa y el propagador global no se toca', () => {
@@ -106,6 +132,8 @@ test('CTA local conserva la query completa y el propagador global no se toca', (
   );
   assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify'), true);
   assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify/'), true);
+  assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify/c3'), true);
+  assert.equal(isLpMetaShopifyPath('/lp/agencia-shopify/generic'), true);
   assert.equal(isLpMetaShopifyPath('/lp/calentamiento'), false);
 
   assert.doesNotMatch(propagator, /lpMetaBookingHrefFromSearch/);
@@ -147,8 +175,14 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(landing, /id="problema"/);
   assert.doesNotMatch(landing, /useSearchParams/);
   assert.doesNotMatch(landing, /hidden=\{ang !== 'generic'\}/);
-  assert.match(landing, /LP_META_HERO_TITLES\.generic/);
+  assert.match(landing, /LP_META_HERO_TITLES\[ang\]/);
   assert.match(landing, /as="h1"/);
+  assert.match(copy, /tag: 'titular genérico'/);
+  assert.match(copy, /tag: 'titular C1'/);
+  assert.match(copy, /tag: 'titular C2'/);
+  assert.match(copy, /tag: 'titular C3'/);
+  assert.match(copy, /tag: 'titular C4'/);
+  assert.match(copy, /tag: 'titular C5'/);
 });
 
 test('hero LCP es img local con priority y sin lazy', () => {

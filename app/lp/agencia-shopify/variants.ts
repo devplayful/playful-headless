@@ -1,7 +1,9 @@
 export const LP_META_ANGLES = ['c1', 'c2', 'c3', 'c4', 'c5'] as const;
+/** The six H1s that existed in f59d442 (generic + C1–C5). */
+export const LP_META_STATIC_ANGLES = ['generic', ...LP_META_ANGLES] as const;
 export const LP_META_MARKETS = ['es', 'latam', 've'] as const;
 
-export type LpMetaAngle = (typeof LP_META_ANGLES)[number] | 'generic';
+export type LpMetaAngle = (typeof LP_META_STATIC_ANGLES)[number];
 export type LpMetaMarket = (typeof LP_META_MARKETS)[number];
 
 export const DEFAULT_LP_META_ANGLE: LpMetaAngle = 'generic';
@@ -9,6 +11,10 @@ export const DEFAULT_LP_META_MARKET: LpMetaMarket = 'es';
 
 export function isLpMetaAngle(value: string): value is Exclude<LpMetaAngle, 'generic'> {
   return (LP_META_ANGLES as readonly string[]).includes(value);
+}
+
+export function isLpMetaStaticAngle(value: string): value is LpMetaAngle {
+  return (LP_META_STATIC_ANGLES as readonly string[]).includes(value);
 }
 
 export function isLpMetaMarket(value: string): value is LpMetaMarket {

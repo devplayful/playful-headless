@@ -193,7 +193,7 @@ test('accepts the exact governed template and concrete inventory', () => {
     manifest,
   });
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(validArtifact().concreteRoutes.length, 114);
+  assert.equal(validArtifact().concreteRoutes.length, 120);
 });
 
 test('blog category indexes stay out of the governed inventory (middleware 308, not next.config)', () => {
@@ -214,11 +214,15 @@ test('blog category indexes stay out of the governed inventory (middleware 308, 
     );
   }
   // skipTrailingSlashRedirect (#331): middleware owns slash variants in one 301 hop.
-  assert.deepEqual(manifest.nextRouting.redirects, []);
+  // The only next.config redirects are the LP Meta ?ang= 308s.
+  assert.ok(
+    manifest.nextRouting.redirects.length > 0
+      && manifest.nextRouting.redirects.every((rule) => rule.source === '/lp/agencia-shopify' && rule.statusCode === 308),
+  );
 });
 
-test('requires each of the four dynamic source templates in the artifact', async (t) => {
-  for (const route of ['/[slug]', '/blog/[...slug]', '/casos-de-exito/[slug]', '/podcast/[slug]']) {
+test('requires each dynamic source template in the artifact', async (t) => {
+  for (const route of ['/[slug]', '/blog/[...slug]', '/casos-de-exito/[slug]', '/lp/agencia-shopify/[ang]', '/podcast/[slug]']) {
     await t.test(route, () => {
       const artifact = validArtifact();
       artifact.templates = artifact.templates.filter((candidate) => candidate !== route);

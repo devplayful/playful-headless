@@ -37,7 +37,7 @@ import HeroLcp from './HeroLcp';
 import QueryLink from './QueryLink';
 import StickyCta from './StickyCta';
 import { QUERY_BOOT_SCRIPT } from './query-boot';
-import { LP_META_ANGLES, LP_META_MARKETS, type LpMetaMarket } from './variants';
+import { LP_META_MARKETS, LP_META_STATIC_ANGLES, type LpMetaAngle, type LpMetaMarket } from './variants';
 
 const STEP_CARD_COLORS = ['bg-[#E9D7FF]', 'bg-[#FFEFD1]', 'bg-[#E4FFF9]', 'bg-[#FFDBDB]'] as const;
 const JOSE_PHOTO = '/images/firmas/foto-jose-reyes-176.png';
@@ -69,8 +69,8 @@ function MarketSlot({
   );
 }
 
-export default function Landing() {
-  const defaultPainOrder = LP_META_PAIN_ORDER.generic;
+export default function Landing({ ang }: { ang: LpMetaAngle }) {
+  const painOrder = LP_META_PAIN_ORDER[ang];
 
   return (
     <>
@@ -79,7 +79,7 @@ export default function Landing() {
         data-ads-warm-landing
         data-lp-meta-shopify
         data-lp-mkt="es"
-        data-lp-ang="generic"
+        data-lp-ang={ang}
       >
         <section data-cta-section="hero" data-lp-block="1" className="relative overflow-hidden">
           <div className="mx-auto max-w-[1200px] px-4 pb-16 pt-4 md:px-6 md:pb-20">
@@ -89,7 +89,7 @@ export default function Landing() {
               </div>
               <div className="order-2 space-y-8 lg:order-1">
                 <UnsignedBlock
-                  block={LP_META_HERO_TITLES.generic}
+                  block={LP_META_HERO_TITLES[ang]}
                   as="h1"
                   className="text-[36px] leading-[42px] font-semibold text-[#440099] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]"
                   style={HERO_H1_STYLE}
@@ -151,7 +151,7 @@ export default function Landing() {
                   data-lp-when-mkt={mkt}
                   className={`flex flex-col gap-6 md:flex-row${mkt === 'es' ? '' : ' hidden'}`}
                 >
-                  {defaultPainOrder.map((index, position) => (
+                  {painOrder.map((index, position) => (
                     <li
                       key={`${mkt}-${index}`}
                       data-lp-pain-index={index}
@@ -212,13 +212,14 @@ export default function Landing() {
           className="mx-auto max-w-[1200px] scroll-mt-8 px-4 py-8 md:px-6 md:py-12"
         >
           <UnsignedBlock block={LP_META_PROOF_HEAD} as="h2" className="playful-h2 mb-4 text-center" />
-          <MarketSlot mkt="es">
-            <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE.generic} />
-          </MarketSlot>
-          {LP_META_ANGLES.map((ang) => (
-            <div key={ang} data-lp-when-ang={ang} className="hidden" data-copy-angle={ang}>
-              <UnsignedBlock block={LP_META_HERO_TITLES[ang]} />
-              <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[ang]} />
+          {LP_META_STATIC_ANGLES.map((angle) => (
+            <div
+              key={angle}
+              data-lp-when-ang={angle}
+              data-copy-angle={angle}
+              className={angle === ang ? undefined : 'hidden'}
+            >
+              <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[angle]} />
             </div>
           ))}
           <Suspense fallback={<div className="mt-10 min-h-[16rem]" />}>

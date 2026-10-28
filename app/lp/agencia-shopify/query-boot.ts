@@ -20,7 +20,8 @@ document.addEventListener("click", function (e) {
     return m ? m[1] : "generic";
   }
   var M = mkt(q.get("mkt"));
-  var A = ang(q.get("ang"), q.get("utm_content"));
+  var pathAng = (location.pathname.replace(new RegExp("/+$"), "").match(new RegExp("/lp/agencia-shopify/(generic|c[1-5])$")) || [])[1];
+  var A = pathAng || ang(q.get("ang"), q.get("utm_content"));
   var root = document.querySelector("[data-lp-meta-shopify]");
   if (root) {
     root.setAttribute("data-lp-mkt", M);

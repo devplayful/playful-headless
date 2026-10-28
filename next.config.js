@@ -6,6 +6,7 @@ const {
   getBlogSitemapLastmodMap,
   persistBlogSitemapLastmodMap,
 } = require('./lib/blog-sitemap-lastmod');
+const { LP_META_ANG_QUERY_REDIRECTS } = require('./app/lp/agencia-shopify/ang-query-redirects');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -94,7 +95,7 @@ const nextConfig = {
       persistBlogCategoryRedirectMap(rules);
       persistBlogSitemapLastmodMap(await getBlogSitemapLastmodMap());
     }
-    return [];
+    return [...LP_META_ANG_QUERY_REDIRECTS];
   },
 };
 

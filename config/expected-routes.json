@@ -22,6 +22,7 @@
     "/icon.svg",
     "/links",
     "/lp/agencia-shopify",
+    "/lp/agencia-shopify/[ang]",
     "/lp/calentamiento",
     "/lp/integraciones-pasarela-erp",
     "/lp/propuesta-ecommerce",
@@ -59,7 +60,164 @@
     "/test-blog"
   ],
   "nextRouting": {
-    "redirects": [],
+    "redirects": [
+      {
+        "destination": "/lp/agencia-shopify/generic",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "generic"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/generic",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "GENERIC"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c1",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "c1"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c1",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "C1"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c2",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "c2"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c2",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "C2"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c3",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "c3"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c3",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "C3"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c4",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "c4"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c4",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "C4"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c5",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "c5"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      },
+      {
+        "destination": "/lp/agencia-shopify/c5",
+        "has": [
+          {
+            "key": "ang",
+            "type": "query",
+            "value": "C5"
+          }
+        ],
+        "regex": "^(?!/_next)/lp/agencia-shopify(?:/)?$",
+        "source": "/lp/agencia-shopify",
+        "statusCode": 308
+      }
+    ],
     "rewrites": {
       "beforeFiles": [],
       "afterFiles": [],
@@ -186,6 +344,14 @@
       "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"
     ],
     "/casos-de-exito/[slug]": [],
+    "/lp/agencia-shopify/[ang]": [
+      "/lp/agencia-shopify/c1",
+      "/lp/agencia-shopify/c2",
+      "/lp/agencia-shopify/c3",
+      "/lp/agencia-shopify/c4",
+      "/lp/agencia-shopify/c5",
+      "/lp/agencia-shopify/generic"
+    ],
     "/podcast/[slug]": []
   },
   "allowedArtifactOnlyRoutes": [

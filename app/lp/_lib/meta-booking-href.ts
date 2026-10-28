@@ -7,7 +7,8 @@ export const LP_META_BOOKING_HOP = `${SERVICE_BOOKING_HREF}/ir`;
 
 export function isLpMetaShopifyPath(pathname: string): boolean {
   const path = (pathname || '').split('?')[0].replace(/\/+$/, '') || '/';
-  return path === LP_META_SHOPIFY_PATH;
+  if (path === LP_META_SHOPIFY_PATH) return true;
+  return path.startsWith(`${LP_META_SHOPIFY_PATH}/`);
 }
 
 function keptSearch(search: string): string {
