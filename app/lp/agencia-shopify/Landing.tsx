@@ -1,11 +1,10 @@
 import { Suspense } from 'react';
-import CimaBreaker from '@/components/premios-cima/CimaBreaker';
+import type { CaseStudy } from '@/components/CarouselResultados';
 import { getAllCaseStudies } from '@/services/wordpress';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { resolveImageAlt } from '@/lib/image-alt-overrides';
 import { toAdsLandingCaseCards } from '../_lib/ads-landing-cases';
 import { unsignedLabel, UnsignedBlock, UnsignedFaqAnswer } from '../_lib/unsigned-copy';
-import AdsCaseCard from '../_components/AdsCaseCard';
 import AdsFaq from '../_components/AdsFaq';
 import {
   faqItemsForMarket,
@@ -41,6 +40,9 @@ import { LP_META_MARKETS, LP_META_STATIC_ANGLES, type LpMetaAngle, type LpMetaMa
 
 const STEP_CARD_COLORS = ['bg-[#E9D7FF]', 'bg-[#FFEFD1]', 'bg-[#E4FFF9]', 'bg-[#FFDBDB]'] as const;
 const JOSE_PHOTO = '/images/firmas/foto-jose-reyes-176.png';
+const CIMA_ALT =
+  'Playful Agency, agencia reconocida en los Premios CIMA 2026, categoría Plataforma de E-commerce';
+const CIMA_HREF = '/casos-de-exito/soytechno-ecommerce-venezuela';
 const SERVICE_ART = [
   '/images/agencia-shopify/servicio-diseno-ovqmfMO829@1x.png',
   '/images/agencia-shopify/servicio-desarrollo-ovqEk50829@1x.png',
@@ -204,7 +206,28 @@ export default function Landing({ ang }: { ang: LpMetaAngle }) {
           </div>
         </section>
 
-        <CimaBreaker variant="shopify" />
+        <section aria-label="Premios CIMA 2026" data-cima-breaker="shopify" className="w-full">
+          <a href={CIMA_HREF} className="mx-auto block max-w-[1440px]">
+            <img
+              src="/images/premios-cima/breaker-shopify-desktop.png"
+              width={1440}
+              height={600}
+              alt={CIMA_ALT}
+              loading="lazy"
+              decoding="async"
+              className="hidden h-auto w-full md:block"
+            />
+            <img
+              src="/images/premios-cima/breaker-shopify-mobile.png"
+              width={390}
+              height={700}
+              alt={CIMA_ALT}
+              loading="lazy"
+              decoding="async"
+              className="block h-auto w-full md:hidden"
+            />
+          </a>
+        </section>
 
         <section
           id="prueba"
@@ -329,6 +352,54 @@ export default function Landing({ ang }: { ang: LpMetaAngle }) {
   );
 }
 
+function ProofCaseCard({ caseStudy }: { caseStudy: CaseStudy }) {
+  const href = `/casos-de-exito/${caseStudy.slug}`;
+  const alt = caseStudy.title?.trim() || caseStudy.slug;
+  return (
+    <article className="h-full">
+      <a
+        href={href}
+        className="flex h-full min-h-[48px] flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-shadow hover:shadow-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]"
+      >
+        <div className="relative h-48 flex-shrink-0 overflow-hidden bg-gray-100">
+          {caseStudy.image ? (
+            <img
+              src={caseStudy.image}
+              alt={alt}
+              width={560}
+              height={192}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="flex h-full items-center justify-center text-sm text-gray-500">Sin imagen</span>
+          )}
+        </div>
+        <div className="flex flex-1 flex-col p-6">
+          <h3 className="mb-4 text-xl font-normal leading-tight text-gray-900">{caseStudy.title}</h3>
+          {caseStudy.categories.length > 0 ? (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {caseStudy.categories.slice(0, 2).map((category) => (
+                <span
+                  key={category}
+                  className="rounded-full border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <p className="mb-6 flex-1 text-sm leading-5 text-gray-600">{caseStudy.description}</p>
+          <span className="mt-auto inline-flex min-h-12 items-center self-end rounded-full bg-[#2563EB] px-6 py-3 text-sm font-semibold text-white">
+            {caseStudy.buttonText || 'Ver más'}
+          </span>
+        </div>
+      </a>
+    </article>
+  );
+}
+
 async function CaseCards() {
   const casosDeExito = await getAllCaseStudies().catch(() => []);
   const caseCards = toAdsLandingCaseCards(casosDeExito);
@@ -351,7 +422,7 @@ async function CaseCards() {
             className="flex-1"
             style={{ order: index }}
           >
-            <AdsCaseCard caseStudy={caseStudy} />
+            <ProofCaseCard caseStudy={caseStudy} />
             <div className="mt-3">
               <UnsignedBlock
                 block={

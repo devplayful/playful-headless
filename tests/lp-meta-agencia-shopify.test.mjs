@@ -198,6 +198,9 @@ test('hero LCP es img local con priority y sin lazy', () => {
   assert.doesNotMatch(hero, /use client/);
   assert.match(landing, /HeroLcp/);
   assert.doesNotMatch(landing, /use client/);
+  assert.doesNotMatch(landing, /from ['"]next\/image['"]/);
+  assert.doesNotMatch(landing, /from ['"]next\/link['"]/);
+  assert.doesNotMatch(landing, /CimaBreaker|AdsCaseCard/);
   assert.match(page, /HeroLcpPreload/);
   assert.match(anglePage, /HeroLcpPreload/);
   assert.doesNotMatch(queryBoot, /data-lp-meta-shopify/);
