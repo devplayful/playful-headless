@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -40,6 +41,7 @@ export async function runGuardedCommand(command, args, options = {}) {
       // instead while retaining visible build logs.
       stdio,
       detached: process.platform !== 'win32',
+      env: options.env ?? process.env,
     },
   );
   if (!options.stdio) {
@@ -140,7 +142,29 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export function runGuardedBuild() {
+export { shouldRunPreviewMigrate };
+
+export function payloadMigrateArgs() {
+  return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
+}
+
+export async function runPayloadPreviewMigrate(env = process.env) {
+  if (!shouldRunPreviewMigrate(env)) {
+    console.log('payload migrate: omitido (sin DATABASE_URL o VERCEL_ENV=production)');
+    return 0;
+  }
+  console.log('payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)');
+  const migrateEnv = { ...env, PAYLOAD_MIGRATING: 'true' };
+  return runGuardedCommand(
+    process.execPath,
+    payloadMigrateArgs(),
+    { env: migrateEnv },
+  );
+}
+
+export async function runGuardedBuild() {
+  const migrateCode = await runPayloadPreviewMigrate();
+  if (migrateCode !== 0) return migrateCode;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

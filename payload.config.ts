@@ -11,12 +11,13 @@ import { Medios } from './cms/collections/Medios.ts';
 import { Paginas } from './cms/collections/Paginas.ts';
 import { Posts } from './cms/collections/Posts.ts';
 import { Usuarios } from './cms/collections/Usuarios.ts';
+import { getPayloadConnectionString } from './lib/cms-database.ts';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Sin DATABASE_URI la web pública sigue funcionando: solo /admin y /cms-api
-// necesitan base de datos, y se resuelven en petición (nunca en el build).
-const databaseUri = process.env.DATABASE_URI || process.env.POSTGRES_URL || '';
+// Sin DATABASE_URL (Production) la web pública sigue igual: /admin y /cms-api
+// solo tocan la base en petición. Migraciones usan DATABASE_URL_UNPOOLED.
+const databaseUri = getPayloadConnectionString();
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 export default buildConfig({
@@ -33,6 +34,8 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: databaseUri },
     push: process.env.PAYLOAD_DB_PUSH === 'true' || process.env.NODE_ENV !== 'production',
+    migrationDir: path.resolve(dirname, 'cms/migrations'),
+    disableCreateDatabase: true,
   }),
   plugins: [
     vercelBlobStorage({

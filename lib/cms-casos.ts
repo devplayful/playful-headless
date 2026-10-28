@@ -2,6 +2,7 @@ import { getPayload } from 'payload';
 import config from '@payload-config';
 import type { SuccessStory } from '@/services/wordpress';
 import { isCmsCasosFromPayload } from './cms-casos-flag.ts';
+import { hasRuntimeDatabase } from './cms-database.ts';
 import {
   soyTechnoApprovedCopy,
   type SoyTechnoApprovedCopy,
@@ -10,10 +11,6 @@ import {
 const APPROVED_COPY_KEYS = Object.keys(soyTechnoApprovedCopy) as Array<
   keyof SoyTechnoApprovedCopy
 >;
-
-function hasDatabaseUri(env: NodeJS.ProcessEnv = process.env): boolean {
-  return Boolean((env.DATABASE_URI || env.POSTGRES_URL || '').trim());
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -59,7 +56,7 @@ export function extractSoyTechnoCopy(doc: unknown): SoyTechnoApprovedCopy | null
 }
 
 export async function findCasoBySlug(slug: string): Promise<Record<string, unknown> | null> {
-  if (!isCmsCasosFromPayload() || !hasDatabaseUri()) return null;
+  if (!isCmsCasosFromPayload() || !hasRuntimeDatabase()) return null;
   try {
     const payload = await getPayload({ config });
     const found = await payload.find({
