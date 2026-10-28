@@ -7,7 +7,25 @@ No se edita WordPress. Title, meta y H1 de `/agencia-e-commerce` no se tocan.
 
 - H2 `Agencia E-commerce` → `Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España` (`utils/ecommerce-aeo-2810.ts`, solo ese slug).
 - Hueco bajo el H2: `<p data-copy-pending="agencia-e-commerce-intro">COPY SIN FIRMAR</p>`.
-- FAQ visible + JSON-LD: `¿Trabajáis con marcas de Caracas y del resto de Venezuela?` con respuesta `COPY SIN FIRMAR`.
+- FAQ visible + JSON-LD: `¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?` con respuesta `COPY SIN FIRMAR`.
+
+## H2 de José (playful-copy #377) — preparado, sin activar
+
+Hoy José **no ha firmado** el H2 de playful-copy #377. `ECOM_H2_JOSE` está vacío y el rewriter sigue con el comportamiento de la tanda 6: el H2 live `Agencia E-commerce` se sustituye por `Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España`, y el hueco `COPY SIN FIRMAR` va debajo.
+
+Cuando José firme ese H2, el orden ya está cableado en `applyJoseThenTanda6H2Order` (`utils/ecommerce-aeo-2810.ts`):
+
+1. El H2 firmado de José sustituye al H2 live `Agencia E-commerce`.
+2. El H2 de la tanda 6 entra como H2 **nuevo** justo después.
+3. El hueco de intro sigue debajo del H2 de la tanda 6, **antes** de `¿Buscas una Agencia e-Commerce que Hable Claro?`.
+
+Para activarlo: poner el literal firmado en `ECOM_H2_JOSE`. No inventar la frase.
+
+## Cintillos S3 — pendiente de playful-copy #380
+
+Pedido: en `/blog/tecnologia/cintillos-de-promocion`, ancla `diseño de tu tienda en Shopify` → `/agencia-shopify`.
+
+En el HTML live (28 oct, `PlayfulQA/1.0`, `?qa=1`) **esa frase no existe**. Tampoco hay «diseño de tu tienda» ni «tienda en Shopify» en el cuerpo. No se inventa. Cuando Contenido firme playful-copy #380 y la frase esté en el post (WP o rewriter que ya exista), se envuelve con `blog-landing-links.ts`. Hasta entonces, cero wrap.
 - En la sección de casos: enlace a `/casos-de-exito/soytechno-ecommerce-venezuela` con ancla `ecommerce en Venezuela: el caso SoyTechno`.
 - Schema Service: `areaServed` Venezuela / España / Latinoamérica. Sin LocalBusiness ni dirección.
 - Blog, texto que ya existe en WP (se envuelve en render, `utils/blog-landing-links.ts`):
@@ -32,6 +50,8 @@ Si Contenido firma esas anclas (o cambia el párrafo), se pueden envolver con el
 ## Copy pendiente (test pre-release, skip para CI)
 
 - Párrafo bajo el H2.
-- Respuesta de la FAQ de Caracas / Venezuela (visible y JSON-LD).
+- Respuesta de la FAQ `¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?` (visible y JSON-LD).
+- H2 de José (playful-copy #377): aún sin firmar; el rewriter lo tiene preparado y desactivado.
+- Ancla S3 de `/blog/tecnologia/cintillos-de-promocion` (`diseño de tu tienda en Shopify` → `/agencia-shopify`): espera el copy de playful-copy #380.
 
 Test: `tests/agencia-e-commerce-seo-2810.test.mjs` → `pre-release: intro and FAQ answer must not ship COPY SIN FIRMAR` (skip documentado). Quitar el skip cuando Contenido firme. El assert falla con `COPY SIN FIRMAR`.

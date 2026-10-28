@@ -4,11 +4,17 @@ import { readFileSync } from 'node:fs';
 
 const {
   COPY_UNSIGNED,
+  ECOM_H2_JOSE,
+  ECOM_H2_JOSE_COPY_ISSUE,
   ECOM_H2_LIVE,
   ECOM_H2_SIGNED,
+  ECOM_HABLE_CLARO,
   ECOM_INTRO_PLACEHOLDER_ATTR,
   ECOM_VE_FAQ_QUESTION,
+  ECOM_VE_FAQ_QUESTION_PREV,
   SOYTECHNO_CASE_ANCHOR,
+  applyJoseThenTanda6H2Order,
+  isJoseH2Signed,
   rewriteEcommerceAeo2810,
 } = await import('../utils/ecommerce-aeo-2810.ts');
 const { SOYTECHNO_CASE_HREF } = await import('../utils/ecommerce-soytechno-case-link.ts');
@@ -100,8 +106,59 @@ test('FAQPage JSON-LD includes the Caracas/Venezuela question', () => {
   const faq = getServiceFaqJsonLd('agencia-e-commerce');
   assert.equal(faq.mainEntity.length, 6);
   const last = faq.mainEntity[5];
+  assert.equal(
+    last.name,
+    '¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?',
+  );
   assert.equal(last.name, ECOM_VE_FAQ_QUESTION);
   assert.equal(last.acceptedAnswer.text, COPY_UNSIGNED);
+  assert.notEqual(last.name, ECOM_VE_FAQ_QUESTION_PREV);
+});
+
+test('accordion migrates the previous Caracas FAQ wording to the signed question', () => {
+  const rewritten = rewriteEcommerceAeo2810(
+    SAMPLE + ECOM_VE_FAQ_QUESTION_PREV,
+    'agencia-e-commerce',
+  );
+  assert.match(rewritten, new RegExp(ECOM_VE_FAQ_QUESTION.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.doesNotMatch(
+    rewritten,
+    new RegExp(ECOM_VE_FAQ_QUESTION_PREV.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+  );
+});
+
+test('José H2 from playful-copy #377 is prepared and stays unsigned', () => {
+  assert.equal(ECOM_H2_JOSE, '');
+  assert.equal(isJoseH2Signed(), false);
+  assert.equal(ECOM_H2_JOSE_COPY_ISSUE, 'playful-copy#377');
+  const current = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+  assert.equal((current.match(new RegExp(`<h2[^>]*>${ECOM_H2_SIGNED}</h2>`, 'g')) || []).length, 1);
+  assert.doesNotMatch(current, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
+  assert.match(current, new RegExp(ECOM_HABLE_CLARO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
+  const fixture = '__JOSE_H2_FIXTURE_PLAYFUL_COPY_377__';
+  const prepared = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce', { joseH2: fixture });
+  const joseThenTanda = new RegExp(
+    `<h2[^>]*>${fixture}</h2>\\s*<h2[^>]*>${ECOM_H2_SIGNED}</h2>\\s*<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>[\\s\\S]*${ECOM_HABLE_CLARO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+  );
+  assert.match(prepared, joseThenTanda);
+  assert.ok(prepared.indexOf(ECOM_H2_SIGNED) < prepared.indexOf(ECOM_HABLE_CLARO));
+  assert.doesNotMatch(prepared, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
+  assert.equal(applyJoseThenTanda6H2Order(SAMPLE, ''), SAMPLE);
+  assert.doesNotMatch(current, /__JOSE_H2_FIXTURE_PLAYFUL_COPY_377__/);
+});
+
+test('does not invent the cintillos S3 Shopify phrase pending playful-copy #380', () => {
+  const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+  assert.doesNotMatch(rewritten, /diseño de tu tienda en Shopify/);
+  const landing = readFileSync(
+    new URL('../utils/blog-landing-links.ts', import.meta.url),
+    'utf8',
+  );
+  assert.doesNotMatch(
+    landing,
+    /slug: 'cintillos-de-promocion'[\s\S]{0,200}diseño de tu tienda en Shopify/,
+  );
 });
 
 test('title, meta and H1 overrides stay untouched', () => {

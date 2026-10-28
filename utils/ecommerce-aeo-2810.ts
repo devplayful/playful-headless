@@ -11,11 +11,29 @@ export const ECOM_H2_LIVE = 'Agencia E-commerce';
 export const ECOM_H2_SIGNED =
   'Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España';
 
+/**
+ * H2 that José will sign in playful-copy #377.
+ * Empty until that copy is signed — do not invent the phrase.
+ * When set, it replaces the live H2 «Agencia E-commerce» and the tanda 6
+ * H2 (`ECOM_H2_SIGNED`) is inserted as a new H2 immediately after, before
+ * «¿Buscas una Agencia e-Commerce que Hable Claro?».
+ */
+export const ECOM_H2_JOSE = '';
+export const ECOM_H2_JOSE_COPY_ISSUE = 'playful-copy#377';
+export const ECOM_HABLE_CLARO = '¿Buscas una Agencia e-Commerce que Hable Claro?';
+
 export const COPY_UNSIGNED = 'COPY SIN FIRMAR';
 export const ECOM_INTRO_PLACEHOLDER_ATTR = 'agencia-e-commerce-intro';
 
-export const ECOM_VE_FAQ_QUESTION =
+export const ECOM_VE_FAQ_QUESTION_PREV =
   '¿Trabajáis con marcas de Caracas y del resto de Venezuela?';
+
+export const ECOM_VE_FAQ_QUESTION =
+  '¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?';
+
+export function isJoseH2Signed(joseH2: string = ECOM_H2_JOSE): boolean {
+  return Boolean(joseH2 && joseH2.trim());
+}
 
 export const SOYTECHNO_CASE_ANCHOR = 'ecommerce en Venezuela: el caso SoyTechno';
 
@@ -45,36 +63,65 @@ const FAQ_ITEM_HTML = `
 const CASE_LINK_HTML =
   `<p data-playful-soytechno-case="1"><a href="${SOYTECHNO_CASE_HREF}">${SOYTECHNO_CASE_ANCHOR}</a></p>`;
 
-function rewriteH2AndIntro(html: string): string {
+function ensureIntroAfterSignedH2(html: string): string {
+  if (
+    html.includes(ECOM_H2_SIGNED) &&
+    !html.includes(`data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}"`)
+  ) {
+    return html.replace(H2_SIGNED_HTML, `${H2_SIGNED_HTML}${INTRO_PLACEHOLDER_HTML}`);
+  }
+  return html;
+}
+
+/**
+ * Prepared order for when José signs playful-copy #377.
+ * Not called from production until `ECOM_H2_JOSE` is a non-empty signed literal.
+ */
+export function applyJoseThenTanda6H2Order(html: string, joseH2: string): string {
+  if (!isJoseH2Signed(joseH2)) return html;
+  const joseHtml = `<h2 class="elementor-heading-title elementor-size-default">${joseH2}</h2>`;
+  let out = html;
+  if (out.includes(H2_LIVE_HTML)) {
+    out = out.replace(H2_LIVE_HTML, joseHtml);
+  }
+  if (out.includes(joseHtml) && !out.includes(H2_SIGNED_HTML)) {
+    const joseEnd = out.indexOf(joseHtml) + joseHtml.length;
+    out = `${out.slice(0, joseEnd)}${H2_SIGNED_HTML}${out.slice(joseEnd)}`;
+  }
+  return ensureIntroAfterSignedH2(out);
+}
+
+function rewriteH2AndIntro(html: string, joseH2: string = ECOM_H2_JOSE): string {
+  if (isJoseH2Signed(joseH2)) {
+    return applyJoseThenTanda6H2Order(html, joseH2);
+  }
   let out = html;
   if (out.includes(H2_LIVE_HTML)) {
     out = out.replace(H2_LIVE_HTML, H2_SIGNED_HTML);
   }
-  if (
-    out.includes(ECOM_H2_SIGNED) &&
-    !out.includes(`data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}"`)
-  ) {
-    out = out.replace(H2_SIGNED_HTML, `${H2_SIGNED_HTML}${INTRO_PLACEHOLDER_HTML}`);
-  }
-  return out;
+  return ensureIntroAfterSignedH2(out);
 }
 
 function appendFaqItem(html: string): string {
-  if (html.includes(ECOM_VE_FAQ_QUESTION)) return html;
-  const titleIdx = html.indexOf(LAST_LIVE_FAQ);
-  if (titleIdx < 0) return html;
-  const itemStart = html.lastIndexOf('<div class="elementor-accordion-item">', titleIdx);
-  if (itemStart < 0) return html;
-  const contentMark = html.indexOf('elementor-tab-content', titleIdx);
-  if (contentMark < 0) return html;
-  const contentOpenEnd = html.indexOf('>', contentMark);
-  if (contentOpenEnd < 0) return html;
-  const contentClose = html.indexOf('</div>', contentOpenEnd);
-  if (contentClose < 0) return html;
-  const itemClose = html.indexOf('</div>', contentClose + 6);
-  if (itemClose < 0) return html;
+  let out = html;
+  if (out.includes(ECOM_VE_FAQ_QUESTION_PREV)) {
+    out = out.split(ECOM_VE_FAQ_QUESTION_PREV).join(ECOM_VE_FAQ_QUESTION);
+  }
+  if (out.includes(ECOM_VE_FAQ_QUESTION)) return out;
+  const titleIdx = out.indexOf(LAST_LIVE_FAQ);
+  if (titleIdx < 0) return out;
+  const itemStart = out.lastIndexOf('<div class="elementor-accordion-item">', titleIdx);
+  if (itemStart < 0) return out;
+  const contentMark = out.indexOf('elementor-tab-content', titleIdx);
+  if (contentMark < 0) return out;
+  const contentOpenEnd = out.indexOf('>', contentMark);
+  if (contentOpenEnd < 0) return out;
+  const contentClose = out.indexOf('</div>', contentOpenEnd);
+  if (contentClose < 0) return out;
+  const itemClose = out.indexOf('</div>', contentClose + 6);
+  if (itemClose < 0) return out;
   const insertAt = itemClose + 6;
-  return html.slice(0, insertAt) + FAQ_ITEM_HTML + html.slice(insertAt);
+  return out.slice(0, insertAt) + FAQ_ITEM_HTML + out.slice(insertAt);
 }
 
 function insertSoytechnoCaseAnchor(html: string): string {
@@ -94,7 +141,12 @@ function insertSoytechnoCaseAnchor(html: string): string {
 /**
  * On /agencia-e-commerce only. Idempotent. Other slugs are a no-op.
  */
-export function rewriteEcommerceAeo2810(html: string, slug: string): string {
+export function rewriteEcommerceAeo2810(
+  html: string,
+  slug: string,
+  options?: { joseH2?: string },
+): string {
   if (!html || slug !== ECOMMERCE_AEO_SLUG) return html;
-  return insertSoytechnoCaseAnchor(appendFaqItem(rewriteH2AndIntro(html)));
+  const joseH2 = options?.joseH2 ?? ECOM_H2_JOSE;
+  return insertSoytechnoCaseAnchor(appendFaqItem(rewriteH2AndIntro(html, joseH2)));
 }
