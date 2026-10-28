@@ -9,6 +9,9 @@ const {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Trailing-slash variants are 301'd by middleware in the same single hop as
+  // the legacy redirects (Next's built-in 308 made slash → 308 → 301 chains).
+  skipTrailingSlashRedirect: true,
   experimental: {
     // 404 global con layout de la web pública (app/global-not-found.tsx):
     // necesario porque Payload añade un segundo layout raíz.
@@ -48,7 +51,10 @@ const nextConfig = {
       key: 'Cache-Control',
       value: 'public, s-maxage=3600, stale-while-revalidate=86400',
     };
+    const noIndex = { key: 'X-Robots-Tag', value: 'noindex, nofollow' };
     return [
+      { source: '/firma/:path*', headers: [noIndex] },
+      { source: '/images/firmas/:path*', headers: [noIndex] },
       {
         source:
           '/:slug(agencia-e-commerce|agencia-seo|agencia-sem|agencia-diseno-web|agencia-ux-ui|marketing-internacional|seo-expertos|seo-vigo)',

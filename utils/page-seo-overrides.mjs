@@ -7,7 +7,7 @@
  */
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
-    'Agencia ecommerce para venta directa | Playful Agency',
+    'Agencia de ecommerce para marcas D2C | Playful',
   'agencia-seo':
     'Agencia SEO Playful Agency | Mejora tu Posicionamiento',
   'pagos-online-ecommerce':
@@ -24,7 +24,7 @@ export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {
 
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
-    'Para marcas que ya venden directo al consumidor (D2C): ordenamos tu tienda online, el posicionamiento y el diseño para que venda más. Agenda tu llamada.',
+    'Agencia de ecommerce para marcas que venden directo al consumidor: ordenamos tienda online, posicionamiento y diseño para vender más. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, _yoastOgDescription) {

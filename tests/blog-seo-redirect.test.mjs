@@ -29,14 +29,14 @@ test('category + noamp is one hop to the clean canonical path', () => {
     type: 'redirect',
     pathname: BAD_BUNNY_CANONICAL,
     search: '',
-    status: 308,
+    status: 301,
   });
 });
 
 test('category + amp junk + utm is one hop that keeps utm', () => {
   const decision = decide(`${BAD_BUNNY_ALIAS}?noamp=mobile&utm_source=x&utm_medium=cpc`);
   assert.equal(decision.type, 'redirect');
-  assert.equal(decision.status, 308);
+  assert.equal(decision.status, 301);
   assert.equal(decision.pathname, BAD_BUNNY_CANONICAL);
   assert.equal(decision.search, '?utm_source=x&utm_medium=cpc');
   assert.doesNotMatch(decision.search, /noamp|amp=/i);
@@ -56,7 +56,7 @@ test('category only still 308-preserves remaining query', () => {
     type: 'redirect',
     pathname: BAD_BUNNY_CANONICAL,
     search: '?utm_source=seo-smoke',
-    status: 308,
+    status: 301,
   });
 });
 
@@ -66,7 +66,7 @@ test('no category change and no junk → next()', () => {
   assert.deepEqual(decide('/agencia-sem?noamp=mobile'), { type: 'next' });
 });
 
-test('blog category indexes 308 once to /blog?category=, with or without a trailing slash', () => {
+test('blog category indexes 301 once to /blog?category=, with or without a trailing slash', () => {
   assert.deepEqual([...BLOG_LISTING_CATEGORY_SLUGS], [
     'e-commerce',
     'email-marketing',
@@ -81,13 +81,13 @@ test('blog category indexes 308 once to /blog?category=, with or without a trail
       type: 'redirect',
       pathname: '/blog',
       search: `?category=${slug}`,
-      status: 308,
+      status: 301,
     });
     assert.deepEqual(decide(`/blog/${slug}/`), {
       type: 'redirect',
       pathname: '/blog',
       search: `?category=${slug}`,
-      status: 308,
+      status: 301,
     });
   }
 });
@@ -97,7 +97,7 @@ test('category index + AMP junk is still one hop to the listing query', () => {
     type: 'redirect',
     pathname: '/blog',
     search: '?utm_source=gsc&category=seo',
-    status: 308,
+    status: 301,
   });
 });
 
@@ -112,41 +112,41 @@ test('category index redirect does not touch /blog/{category}/{post}', () => {
   );
 });
 
-test('legacy WordPress category archives 308 once to the blog listing', () => {
+test('legacy WordPress category archives 301 once to the blog listing', () => {
   for (const slug of BLOG_LISTING_CATEGORY_SLUGS) {
     assert.deepEqual(blogLegacyListingRedirectDecision(`/category/${slug}`), {
       type: 'redirect',
       pathname: '/blog',
       search: `?category=${slug}`,
-      status: 308,
+      status: 301,
     });
     assert.deepEqual(blogLegacyListingRedirectDecision(`/blog/category/${slug}`), {
       type: 'redirect',
       pathname: '/blog',
       search: `?category=${slug}`,
-      status: 308,
+      status: 301,
     });
   }
   assert.deepEqual(blogLegacyListingRedirectDecision('/category/unknown-slug'), {
     type: 'redirect',
     pathname: '/blog',
     search: '',
-    status: 308,
+    status: 301,
   });
 });
 
-test('legacy paginated category paths 308 once to /blog?page&category', () => {
+test('legacy paginated category paths 301 once to /blog?page&category', () => {
   assert.deepEqual(blogLegacyListingRedirectDecision('/blog/seo/page/2'), {
     type: 'redirect',
     pathname: '/blog',
     search: '?page=2&category=seo',
-    status: 308,
+    status: 301,
   });
   assert.deepEqual(blogLegacyListingRedirectDecision('/blog/page/2'), {
     type: 'redirect',
     pathname: '/blog',
     search: '?page=2',
-    status: 308,
+    status: 301,
   });
 });
 

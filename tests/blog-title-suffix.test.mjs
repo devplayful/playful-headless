@@ -19,14 +19,6 @@ test('withPlayfulTitleSuffix is idempotent for WordPress titles that already end
     withPlayfulTitleSuffix('Cintillos de promoción en ecommerce | Playful'),
     'Cintillos de promoción en ecommerce | Playful',
   );
-  assert.notEqual(
-    withPlayfulTitleSuffix('Guía | Playful Agency'),
-    'Guía | Playful Agency',
-  );
-  assert.equal(
-    withPlayfulTitleSuffix('Guía | Playful Agency'),
-    'Guía | Playful Agency | Playful',
-  );
 });
 
 test('eShow Madrid 2026 SEO title is exactly one | Playful suffix', () => {
@@ -55,4 +47,18 @@ test('root layout does not apply a title template that would double the brand su
   const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /template:\s*['"`][^'"`]*%s/);
   assert.doesNotMatch(layout, /title:\s*\{[\s\S]*template/);
+});
+
+test('WordPress « - Playful Agency» suffix variants are stripped before | Playful', () => {
+  assert.equal(withPlayfulTitleSuffix('Los 5 problemas de e-commerce - Playful Agency'), 'Los 5 problemas de e-commerce | Playful');
+  assert.equal(withPlayfulTitleSuffix('Guía – Playful Agency'), 'Guía | Playful');
+  assert.equal(withPlayfulTitleSuffix('Guía | Playful Agency'), 'Guía | Playful');
+  assert.equal(withPlayfulTitleSuffix('  Guía  -  Playful Agency  '), 'Guía | Playful');
+  assert.equal(withPlayfulTitleSuffix('Guía - Playful Agency | Playful'), 'Guía | Playful');
+});
+
+test('titles that already mention Playful do not get | Playful appended', () => {
+  assert.equal(withPlayfulTitleSuffix('Playful en los Premios CIMA - Playful Agency'), 'Playful en los Premios CIMA');
+  assert.equal(withPlayfulTitleSuffix('Así trabaja Playful'), 'Así trabaja Playful');
+  assert.equal(withPlayfulTitleSuffix('Sin marca'), 'Sin marca | Playful');
 });

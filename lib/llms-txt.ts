@@ -30,9 +30,8 @@ export const LLMS_TXT_BODY = `# Playful Agency
 
 ## Perfiles
 - LinkedIn: https://www.linkedin.com/company/playful-agency
-- Instagram: https://www.instagram.com/playfulagency
-- X: https://x.com/playfulagency
-- Facebook: https://www.facebook.com/playfulagency
+- Instagram: https://www.instagram.com/somosplayful
+- Facebook: https://www.facebook.com/somosplayful
 - YouTube: https://www.youtube.com/@playfulagency
 
 Versión larga: https://playfulagency.com/llms-full.txt

@@ -16,6 +16,7 @@
     "/casos-de-exito/[slug]",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
+    "/firma/alejandra-da-costa",
     "/gracias",
     "/icon.png",
     "/icon.svg",
@@ -54,15 +55,7 @@
     "/test-blog"
   ],
   "nextRouting": {
-    "redirects": [
-      {
-        "destination": "/:path+",
-        "internal": true,
-        "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$",
-        "source": "/:path+/",
-        "statusCode": 308
-      }
-    ],
+    "redirects": [],
     "rewrites": {
       "beforeFiles": [],
       "afterFiles": [],
