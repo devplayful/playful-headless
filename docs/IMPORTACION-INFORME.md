@@ -117,3 +117,13 @@ público de `endpoint.playfulagency.com`, en serie, 1 petición/s, user agent
   `camposNoMapeados.casos`.
 - Pasada 21 oct 08:48:34–08:48:52 (Madrid): los 2 casos (86237 Jumex, 86235
   Odwalla) quedan con `url_video = null`.
+- 28 oct 2026: `npm run cms:seed-casos` rellena `url_video` a mano (sin tocar
+  WP/ACF) con las URLs que sirve producción en el `<video>` de cada caso
+  (`PlayfulQA/1.0`, `?qa=1`): Jumex
+  `https://playfulagency.com/videos/casos/jumex-ux.mp4`, Odwalla
+  `https://playfulagency.com/videos/casos/odwalla.mp4`. El import conserva un
+  `url_video` ya escrito si WP sigue sin exponerlo.
+- El mismo seed upserta SoyTechno (`soytechno-ecommerce-venezuela`, wpId
+  sintético `-71001`) como tercer Caso. `/casos-de-exito/[slug]` lo lee de
+  Payload detrás de `CMS_CASOS_FROM_PAYLOAD` (el mismo flag que Jumex y
+  Odwalla). Flag apagado = HTML actual.

@@ -17,6 +17,12 @@ import '@/styles/slick-font-swap.css';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
+import { isCmsCasosFromPayload } from '@/lib/cms-casos-flag';
+import {
+  extractSoyTechnoCopy,
+  findCasoBySlug,
+  getSuccessStoryFromPayload,
+} from '@/lib/cms-casos';
 import { ogJpegForPath } from '@/lib/og-images';
 import { resolveCaseStudyOgImage } from '@/lib/case-study-listing-image';
 import {
@@ -129,6 +135,9 @@ export default async function SuccessStoryPage({
     const path = `/casos-de-exito/${slug}`;
     const headline = override?.title || 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
     const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
+    const soytechnoCopy = isCmsCasosFromPayload()
+      ? extractSoyTechnoCopy(await findCasoBySlug(slug))
+      : null;
     return (
       <>
         <script
@@ -153,12 +162,14 @@ export default async function SuccessStoryPage({
             })),
           }}
         />
-        <SoyTechnoCaseStudy />
+        <SoyTechnoCaseStudy {...(soytechnoCopy ? { copy: soytechnoCopy } : {})} />
       </>
     );
   }
 
-  const rawStory = await getSuccessStoryBySlug(slug);
+  const rawStory = isCmsCasosFromPayload()
+    ? ((await getSuccessStoryFromPayload(slug)) ?? await getSuccessStoryBySlug(slug))
+    : await getSuccessStoryBySlug(slug);
 
   if (!rawStory) {
     notFound();

@@ -255,7 +255,17 @@ async function main() {
       } catch {}
     }
     delete acf.url_video;
-    if (!url_video) noteUnmapped('casos', 'url_video (grupo ACF «Video» sin Show in REST; queda null)');
+    if (!url_video) {
+      const existing = await payload.find({
+        collection: 'casos',
+        where: { wpId: { equals: c.id } },
+        limit: 1,
+        depth: 0,
+      });
+      const previous = existing.docs[0]?.url_video;
+      if (typeof previous === 'string' && previous) url_video = previous;
+      else noteUnmapped('casos', 'url_video (grupo ACF «Video» sin Show in REST; queda null)');
+    }
     await upsert(payload, 'casos', c.id, {
       url_video,
       titulo: text(c.title?.rendered) || c.slug,
