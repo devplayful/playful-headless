@@ -89,9 +89,10 @@ test('Cashea override points pasarela copy at the Zelle post, not the 404 landin
     /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
   );
   const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
-    /<p>En nuestra guía de pasarela de pagos en Venezuela[\s\S]*?<\/p>/,
+    /<p[^>]*>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo[\s\S]*?<\/p>/,
   )?.[0] || '';
-  assert.match(sitefParagraph, /comparamos SiTef, Instapago/);
+  assert.match(sitefParagraph, /moneda en la que recibes el dinero/);
+  assert.doesNotMatch(sitefParagraph, /pasarela de pagos en Venezuela/);
   assert.equal(
     (sitefParagraph.match(/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/g) || []).length,
     1,

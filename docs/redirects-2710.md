@@ -33,25 +33,21 @@ No hay edición WP que aplicar. El HTML se cambió en esta rama. Si más adelant
 
 (dos anclas: el párrafo de apertura y el de SiTef / Banesco / Zelle)
 
-### HTML de después (GO 28 oct 2026)
+### HTML de después (playful-copy #380 SHA 11b38dc, PENDIENTE_FIRMA_JOSE_380)
 
-Párrafo 1 (ancla firmada):
-
-```html
-<a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>
-```
-
-Párrafo 2 (SiTef / Instapago): un solo enlace a Zelle. Se quitó el de «pasarela de pagos en Venezuela»; queda el de «Zelle en Venezuela como método de pago para tu ecommerce». Contenido reescribirá esa frase.
-
-### TODO playful-copy #380 (sin firmar)
-
-El **párrafo 1 cambia entero**, no solo el ancla. Es el que hoy empieza por «Si todavía estás evaluando qué métodos de pago ofrecer en conjunto…» y ancla `cómo integrar Zelle en tu ecommerce`.
-
-Contenido cierra el texto en playful-copy #380. **Aún no está firmado.** Se deja el párrafo actual (`CASHEA_P1_CURRENT_HTML` en `lib/blog-body-overrides.ts`). No se inventa un reemplazo. Cuando #380 esté firmado, sustituir ese HTML completo.
+Párrafo 1 entero (literal):
 
 ```html
-<p>En nuestra guía de pasarela de pagos en Venezuela comparamos SiTef, Instapago… en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación.</p>
+<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Si también cobras con Zelle, empieza por nuestra guía sobre <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>. Aquí vamos a fondo solo con Cashea.</p>
 ```
+
+4º párrafo de «Cómo convive con SiTef, Banesco y Zelle…» (literal):
+
+```html
+<p data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">Antes de sumar Cashea, revisa cómo concilia hoy tu equipo cada método, porque la moneda que ves en el checkout no siempre es la moneda en la que recibes el dinero. Si además cobras en dólares, en <a href="…zelle…">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación. Playful integra Zelle en tiendas de marcas que ya tienen cuenta, pero no abre cuentas Zelle.</p>
+```
+
+Dos enlaces a Zelle, anclas distintas. Cero href a `/pasarela-de-pagos-venezuela`. Estado: borrador para redline de José.
 
 ### Reescritura de plantilla (red de seguridad)
 

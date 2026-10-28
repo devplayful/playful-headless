@@ -28,6 +28,8 @@ const {
   CASHEA_COMERCIOS_BLOG_SLUG,
   CASHEA_P1_COPY_ISSUE,
   CASHEA_P1_CURRENT_HTML,
+  CASHEA_SITEF_P4_HTML,
+  PENDIENTE_FIRMA_JOSE_380,
 } = await import('../lib/blog-body-overrides.ts');
 const { rewriteInSitePageHrefs } = await import('../services/rewrite-in-site-hrefs.mjs');
 
@@ -115,8 +117,9 @@ test('3) Cashea body and template rewrite land on Zelle without hops', () => {
     /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce<\/a>/,
   );
   const sitefParagraph = CASHEA_COMERCIOS_BLOG_BODY_HTML.match(
-    /<p>En nuestra guía de pasarela de pagos en Venezuela[\s\S]*?<\/p>/,
+    /<p[^>]*>Antes de sumar Cashea, revisa cómo concilia hoy tu equipo[\s\S]*?<\/p>/,
   )?.[0] || '';
+  assert.equal(sitefParagraph, CASHEA_SITEF_P4_HTML);
   assert.equal(
     (sitefParagraph.match(/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/g) || []).length,
     1,
@@ -138,19 +141,25 @@ test('3) Cashea body and template rewrite land on Zelle without hops', () => {
   assert.match(blogPage, /`\/blog\/\$\{category\}\/\$\{postSlug\}`/);
 });
 
-test('3b) Cashea paragraph 1 stays until playful-copy #380 is signed', () => {
-  const docs = readFileSync(new URL('../docs/redirects-2710.md', import.meta.url), 'utf8');
-  const overrides = readFileSync(new URL('../lib/blog-body-overrides.ts', import.meta.url), 'utf8');
+test('3b) Cashea #380 copy is literal, two distinct Zelle anchors, no pasarela href', () => {
+  assert.equal(PENDIENTE_FIRMA_JOSE_380, 'PENDIENTE_FIRMA_JOSE_380');
   assert.equal(CASHEA_P1_COPY_ISSUE, 'playful-copy#380');
-  assert.match(
-    CASHEA_P1_CURRENT_HTML,
-    /cómo integrar Zelle en tu ecommerce/,
-  );
+  assert.match(CASHEA_P1_CURRENT_HTML, /Si también cobras con Zelle/);
+  assert.match(CASHEA_P1_CURRENT_HTML, /cómo integrar Zelle en tu ecommerce/);
+  assert.match(CASHEA_P1_CURRENT_HTML, /data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380"/);
   assert.ok(CASHEA_COMERCIOS_BLOG_BODY_HTML.includes(CASHEA_P1_CURRENT_HTML));
-  assert.match(docs, /TODO playful-copy #380/);
-  assert.match(docs, /párrafo 1 cambia entero/);
-  assert.match(overrides, /TODO playful-copy #380/);
-  assert.doesNotMatch(CASHEA_P1_CURRENT_HTML, /COPY SIN FIRMAR/);
+  assert.ok(CASHEA_COMERCIOS_BLOG_BODY_HTML.includes(CASHEA_SITEF_P4_HTML));
+  const zelleAnchors = [
+    ...CASHEA_COMERCIOS_BLOG_BODY_HTML.matchAll(
+      /href="https:\/\/playfulagency\.com\/blog\/tecnologia\/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">([^<]+)<\/a>/g,
+    ),
+  ].map((match) => match[1]);
+  assert.deepEqual(zelleAnchors, [
+    'cómo integrar Zelle en tu ecommerce',
+    'Zelle en Venezuela como método de pago para tu ecommerce',
+  ]);
+  assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /pasarela-de-pagos-venezuela/);
+  assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /<a[^>]*>pasarela de pagos en Venezuela<\/a>/);
 });
 
 test('4) /lp/calentamiento stays out of 301/410 maps and chrome files stay untouched', () => {
