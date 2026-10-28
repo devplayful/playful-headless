@@ -44,7 +44,7 @@ test('Yoast titles that already end in | Playful stay at one suffix', () => {
 });
 
 test('root layout does not apply a title template that would double the brand suffix', () => {
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /template:\s*['"`][^'"`]*%s/);
   assert.doesNotMatch(layout, /title:\s*\{[\s\S]*template/);
 });

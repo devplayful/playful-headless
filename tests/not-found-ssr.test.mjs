@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const notFound = readFileSync(new URL('../app/not-found.tsx', import.meta.url), 'utf8');
-const client = readFileSync(new URL('../app/not-found-client.tsx', import.meta.url), 'utf8');
+const notFound = readFileSync(new URL('../app/(frontend)/not-found.tsx', import.meta.url), 'utf8');
+const client = readFileSync(new URL('../app/(frontend)/not-found-client.tsx', import.meta.url), 'utf8');
 
 test('not-found is a server component that already paints the existing H1', () => {
   assert.doesNotMatch(notFound, /^['"]use client['"]/m);

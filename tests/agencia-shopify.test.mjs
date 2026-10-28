@@ -16,11 +16,11 @@ const {
   SOCIAL_PROOF,
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
-} = await import('../app/agencia-shopify/copy.ts');
+} = await import('../app/(frontend)/agencia-shopify/copy.ts');
 const { ZELLE_BLOG_POST_HREF } = await import('../utils/blog-service-cta.ts');
 const { buildSitemapXml } = await import('../utils/apex-sitemap.ts');
 
-const landing = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+const landing = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 const sitemap = buildSitemapXml();
 const form = readFileSync(new URL('../components/ContactLeadForm.tsx', import.meta.url), 'utf8');
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
@@ -165,7 +165,7 @@ test('Shopify case cards reuse Casos de Éxito featured tapas', async () => {
     CASOS_DE_EXITO_FEATURED_TAPAS['jumex-shopify-dtc-ecommerce'],
   );
   assert.equal(featuredTapaForSlug('odwalla-shopify-dtc-ecommerce'), CASOS_DE_EXITO_FEATURED_TAPAS['odwalla-shopify-dtc-ecommerce']);
-  const casesSource = readFileSync(new URL('../app/agencia-shopify/shopify-cases.ts', import.meta.url), 'utf8');
+  const casesSource = readFileSync(new URL('../app/(frontend)/agencia-shopify/shopify-cases.ts', import.meta.url), 'utf8');
   assert.match(casesSource, /featuredTapaForSlug/);
   assert.match(casesSource, /jumex-shopify-dtc-ecommerce/);
   assert.match(casesSource, /odwalla-shopify-dtc-ecommerce/);
@@ -191,7 +191,9 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
 
 test('does not ship ShopifyDeferredCss (cached CSS must not stay on media=print)', () => {
   const layoutPath = new URL('../app/agencia-shopify/layout.tsx', import.meta.url);
+  const frontendLayoutPath = new URL('../app/(frontend)/agencia-shopify/layout.tsx', import.meta.url);
   assert.equal(existsSync(layoutPath), false, 'route layout must not defer data-precedence=next stylesheets');
+  assert.equal(existsSync(frontendLayoutPath), false, 'frontend route layout must not defer data-precedence=next stylesheets');
   assert.equal(
     existsSync(new URL('../components/ShopifyDeferredCss.tsx', import.meta.url)),
     false,

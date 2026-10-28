@@ -9,7 +9,7 @@ const {
 const { BOOKING_WIDGET_HREF } = await import('../utils/booking-attribution.ts');
 
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const reunionPage = readFileSync(new URL('../app/reunion-playful/page.tsx', import.meta.url), 'utf8');
+const reunionPage = readFileSync(new URL('../app/(frontend)/reunion-playful/page.tsx', import.meta.url), 'utf8');
 
 test('/reunion-playful is a Next page, not a middleware 302 to GHL', () => {
   assert.match(reunionPage, /ReunionPlayfulRedirect/);

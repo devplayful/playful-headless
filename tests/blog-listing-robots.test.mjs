@@ -5,11 +5,11 @@ import { readFileSync } from 'node:fs';
 const { shouldNoindexBlogListing } = await import('../utils/blog-listing-robots.ts');
 
 const listingPage = readFileSync(
-  new URL('../app/blog/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/page.tsx', import.meta.url),
   'utf8',
 );
 const queryPage = readFileSync(
-  new URL('../app/blog/q/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/q/page.tsx', import.meta.url),
   'utf8',
 );
 const listingQuery = readFileSync(

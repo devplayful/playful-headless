@@ -14,7 +14,7 @@ const {
 } = await import('../utils/booking.ts');
 
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
+const slugPage = readFileSync(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
 const elementor = readFileSync(new URL('../components/ElementorPageContent.tsx', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');

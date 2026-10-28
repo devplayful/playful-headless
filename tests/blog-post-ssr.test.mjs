@@ -13,7 +13,7 @@ import {
 } from '../scripts/blog-post-ssr-html.mjs';
 
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
 const carousel = readFileSync(
   new URL('../components/CarouselResultados.tsx', import.meta.url),
   'utf8',

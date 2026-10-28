@@ -68,8 +68,8 @@ test('logo is a raster PNG of the header logo, at least 112 px', () => {
 });
 
 test('root layout emits the organization script once for every page', () => {
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
   assert.equal((layout.match(/id="playful-organization"/g) || []).length, 1);
   assert.match(layout, /type="application\/ld\+json"/);
   assert.match(layout, /__html: ORGANIZATION_JSON_LD/);
@@ -79,7 +79,7 @@ test('root layout emits the organization script once for every page', () => {
 });
 
 test('home emits WebSite JSON-LD next to the global Organization', () => {
-  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
   assert.equal(WEBSITE_SCHEMA['@type'], 'WebSite');
   assert.equal(WEBSITE_SCHEMA['@id'], 'https://playfulagency.com/#website');
   assert.equal(WEBSITE_SCHEMA.url, ORGANIZATION_SCHEMA.url);
@@ -91,7 +91,7 @@ test('home emits WebSite JSON-LD next to the global Organization', () => {
 });
 
 test('root layout keeps chat and gates analytics to production', () => {
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /seo-preview|readOnlySeoPreview|isReadOnlySeoPreview/);
   assert.match(layout, /<ChatWidget \/>/);
   assert.match(layout, /widgets\.leadconnectorhq\.com/);

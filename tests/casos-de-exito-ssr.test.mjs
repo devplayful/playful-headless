@@ -5,9 +5,9 @@ import { readFileSync } from 'node:fs';
 import { CASE_STUDIES_HUB_H1, CASE_STUDIES_HUB_LEAD } from '../utils/case-study-hub.ts';
 import { mapCaseStudyToListingCard } from '../lib/case-study-listing-card.ts';
 
-const hubPage = readFileSync(new URL('../app/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
 const hubContent = readFileSync(
-  new URL('../app/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
   'utf8',
 );
 const metadataFn = hubPage.slice(hubPage.indexOf('export async function generateMetadata'));
