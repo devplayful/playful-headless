@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 export const BUILD_WARNING_MS = 90_000;
-export const BUILD_INACTIVITY_MS = 90_000;
+export const BUILD_INACTIVITY_MS = 180_000;
 export const BUILD_BUDGET_MS = 300_000;
 export const FORCE_KILL_GRACE_MS = 5_000;
 
