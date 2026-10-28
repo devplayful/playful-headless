@@ -110,6 +110,29 @@ test('2b) Location of /lp/integraciones-pasarela-erp keeps gclid and utm_*', () 
   assert.match(middlewareSource, /\$\{resolved\.pathname\}\$\{resolved\.search\}/);
 });
 
+test('2c) slashed /lp/integraciones-pasarela-erp/ is a single 301 that keeps gclid and utm_*', () => {
+  const slashed = `${LP_INTEGRACIONES_PASARELA_ERP_HREF}/`;
+  const search =
+    '?gclid=EAIaX0&utm_source=google&utm_medium=cpc&utm_campaign=erp&utm_content=ad&utm_term=pasarela';
+  assert.equal(unpublishedLandingRedirects[slashed], SHOPIFY_DEST);
+  assert.equal(permanent301[slashed], SHOPIFY_DEST);
+  assert.equal(
+    unpublishedLandingRedirects[LP_INTEGRACIONES_PASARELA_ERP_HREF],
+    unpublishedLandingRedirects[slashed],
+  );
+  const location = locationFromMap(slashed, search);
+  assert.equal(location, `${AGENCIA_SHOPIFY_HREF}${search}`);
+  const params = new URLSearchParams(location.slice(location.indexOf('?')));
+  assert.equal(params.get('gclid'), 'EAIaX0');
+  assert.equal(params.get('utm_source'), 'google');
+  assert.equal(params.get('utm_medium'), 'cpc');
+  assert.equal(params.get('utm_campaign'), 'erp');
+  assert.equal(params.get('utm_content'), 'ad');
+  assert.equal(params.get('utm_term'), 'pasarela');
+  assert.match(middlewareSource, /target\.search = resolved\.search/);
+  assert.match(middlewareSource, /\$\{resolved\.pathname\}\$\{resolved\.search\}/);
+});
+
 test('3) Cashea body and template rewrite land on Zelle without hops', () => {
   assert.doesNotMatch(CASHEA_COMERCIOS_BLOG_BODY_HTML, /pasarela-de-pagos-venezuela/);
   assert.match(
