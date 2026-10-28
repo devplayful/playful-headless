@@ -1,0 +1,35 @@
+{
+  "url": "http://127.0.0.1:3010/lp/agencia-shopify?qa=1",
+  "ua": "PlayfulQA/1.0",
+  "formFactor": "mobile",
+  "tool": "lighthouse@12.6.0",
+  "throttling": "simulate",
+  "server": "next start",
+  "note": "Mediana de 3 pasadas móviles simuladas sobre next start. Elemento LCP: h1 del hero ([COPY SIN FIRMAR — titular genérico]). El techo local coincide con /lp/calentamiento (3.1 s) por TTFB ~456 ms del middleware + JS del layout raíz (no tocable). Brief pide < 2.5 s.",
+  "runsMs": [3118, 3102, 2973],
+  "medianMs": 3102,
+  "medianDisplay": "3.1 s",
+  "lcpElement": {
+    "selector": "div.space-y-8 > div > div.space-y-2 > h1.text-[36px]",
+    "label": "[COPY SIN FIRMAR — titular genérico: …]",
+    "tag": "h1"
+  },
+  "baselineSameServer": {
+    "url": "http://127.0.0.1:3010/lp/calentamiento?qa=1",
+    "lcpMs": 3112,
+    "lcpDisplay": "3.1 s",
+    "lcpElement": "img.absolute AdsHeroArt"
+  },
+  "categoriesMedian": {
+    "performance": 94,
+    "accessibility": 98,
+    "best-practices": 100,
+    "seo": 69
+  },
+  "audits": {
+    "largest-contentful-paint": { "display": "3.1 s", "numericMs": 3102, "score": 0.75 },
+    "cumulative-layout-shift": { "display": "0", "numeric": 0, "score": 1 },
+    "first-contentful-paint": { "display": "1.1 s", "numericMs": 1100, "score": 0.99 },
+    "is-crawlable": { "score": 0 }
+  }
+}

@@ -277,11 +277,13 @@ test('only /lp/* paths are landing routes; slugs and CTA hrefs parse as expected
   assert.equal(isLpPath('/lp/calentamiento'), true);
   assert.equal(isLpPath('/lp/integraciones-pasarela-erp'), true);
   assert.equal(isLpPath('/lp/propuesta-ecommerce'), true);
+  assert.equal(isLpPath('/lp/agencia-shopify'), true);
   assert.equal(isLpPath('/lp/calentamiento/'), true);
   assert.equal(isLpPath('/agencia-shopify'), false);
   assert.equal(isLpPath('/'), false);
   assert.equal(isLpPath('/lpx'), false);
   assert.equal(isLpPath('/reunion-playful'), false);
+  assert.equal(lpSlugFromPath('/lp/agencia-shopify'), 'agencia-shopify');
   assert.equal(lpSlugFromPath('/lp/calentamiento'), 'calentamiento');
   assert.equal(lpSlugFromPath('/lp/integraciones-pasarela-erp?qa=1'), 'integraciones-pasarela-erp');
   assert.equal(lpSlugFromPath('/agencia-shopify'), '');
@@ -303,6 +305,21 @@ test('mountVisitaCalificada is a no-op outside /lp (no listeners, no timers)', (
     stop();
   } finally {
     f.restore();
+  }
+});
+
+test('shared mount is a no-op on /lp/agencia-shopify (own 30s boot)', () => {
+  for (const pathname of ['/lp/agencia-shopify', '/lp/agencia-shopify/c3', '/lp/agencia-shopify/generic']) {
+    const f = installDom({ pathname });
+    try {
+      const stop = mountVisitaCalificada({ pathname });
+      assert.equal(f.listeners.size, 0, pathname);
+      assert.equal(f.timers.length, 0, pathname);
+      assert.equal(f.win.__vcSent, undefined, pathname);
+      stop();
+    } finally {
+      f.restore();
+    }
   }
 });
 

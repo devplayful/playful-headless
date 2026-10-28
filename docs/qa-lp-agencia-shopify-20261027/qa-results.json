@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "id": "default",
+      "url": "http://127.0.0.1:3010/lp/agencia-shopify?qa=1",
+      "status": 200,
+      "robots": "noindex, nofollow",
+      "mkt": "es",
+      "ang": "generic",
+      "h1": "[COPY SIN FIRMAR — titular genérico: …]",
+      "bookingHref": "/reunion-playful/ir?qa=1",
+      "ok": true
+    },
+    {
+      "id": "c3-latam",
+      "url": "http://127.0.0.1:3010/lp/agencia-shopify?ang=c3&mkt=latam&utm_source=facebook&fbclid=test&qa=1",
+      "status": 200,
+      "robots": "noindex, nofollow",
+      "mkt": "latam",
+      "ang": "c3",
+      "h1": "[COPY SIN FIRMAR — titular C3: …]",
+      "bookingHref": "/reunion-playful/ir?ang=c3&mkt=latam&utm_source=facebook&fbclid=test&qa=1",
+      "ok": true
+    },
+    {
+      "id": "invalid-ang",
+      "url": "http://127.0.0.1:3010/lp/agencia-shopify?ang=nope&mkt=xx&qa=1",
+      "status": 200,
+      "robots": "noindex, nofollow",
+      "mkt": "es",
+      "ang": "generic",
+      "h1": "[COPY SIN FIRMAR — titular genérico: …]",
+      "bookingHref": "/reunion-playful/ir?ang=nope&mkt=xx&qa=1",
+      "ok": true
+    },
+    {
+      "id": "home-propagator",
+      "url": "http://127.0.0.1:3010/?utm_source=facebook&fbclid=test&mkt=latam&ang=c3&qa=1",
+      "status": 200,
+      "bookingHref": "/reunion-playful?fbclid=test&utm_source=facebook",
+      "ok": true
+    },
+    {
+      "id": "reunion-propagator",
+      "url": "http://127.0.0.1:3010/reunion-playful?utm_source=facebook&fbclid=test&mkt=latam&ang=c3&qa=1",
+      "status": 200,
+      "bookingHref": "/reunion-playful?fbclid=test&utm_source=facebook",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "sha": "99b6a7c98bd805edde73144ef71c17f48fc8b634",
+  "deploymentId": "dpl_5NM2Yopwnv6Ft1uvZRUJ8RtzJX8K",
+  "previewAlias": "playful-headless-git-cursor-lp-meta-ag-757501-playfuls-projects.vercel.app",
+  "lighthouse": "12.6.0",
+  "formFactor": "mobile",
+  "throttling": "default (simulate, cpuSlowdownMultiplier=4)",
+  "shareParam": "_vercel_share",
+  "lcpElement": "img /images/agencia-shopify/hero-gORwV7MSXO@1x.webp",
+  "criterion": { "medianMs": 2500, "maxPassMs": 4000 },
+  "note": "c4 y c5 se rehicieron en Chrome fresco tras caducar el share token (las pasadas SSO se descartaron).",
+  "variants": [
+    {
+      "path": "/lp/agencia-shopify",
+      "passesMs": [2267, 2053, 2355, 2281, 2425],
+      "medianMs": 2281,
+      "maxMs": 2425,
+      "minMs": 2053
+    },
+    {
+      "path": "/lp/agencia-shopify/generic",
+      "passesMs": [2351, 2274, 2353, 2049, 8279],
+      "medianMs": 2351,
+      "maxMs": 8279,
+      "minMs": 2049
+    },
+    {
+      "path": "/lp/agencia-shopify/c1",
+      "passesMs": [2428, 2346, 2272, 2055, 2347],
+      "medianMs": 2346,
+      "maxMs": 2428,
+      "minMs": 2055
+    },
+    {
+      "path": "/lp/agencia-shopify/c2",
+      "passesMs": [2422, 2274, 2350, 2356, 2353],
+      "medianMs": 2353,
+      "maxMs": 2422,
+      "minMs": 2274
+    },
+    {
+      "path": "/lp/agencia-shopify/c3",
+      "passesMs": [2350, 8434, 2352, 2348, 2347],
+      "medianMs": 2350,
+      "maxMs": 8434,
+      "minMs": 2347
+    },
+    {
+      "path": "/lp/agencia-shopify/c4",
+      "passesMs": [2352, 2348, 2570, 2351, 2274],
+      "medianMs": 2351,
+      "maxMs": 2570,
+      "minMs": 2274
+    },
+    {
+      "path": "/lp/agencia-shopify/c5",
+      "passesMs": [2350, 2354, 2351, 2273, 2352],
+      "medianMs": 2351,
+      "maxMs": 2354,
+      "minMs": 2273
+    }
+  ]
+}
