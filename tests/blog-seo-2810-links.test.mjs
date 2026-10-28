@@ -11,6 +11,10 @@ const {
 const { applyBlogLandingLinkHtml, getBlogLandingLinks } = await import(
   '../utils/blog-landing-links.ts'
 );
+const { BLOG_SEO_380_APPENDS, rewriteBlogSeo380Appends } = await import(
+  '../utils/blog-seo-380-appends.ts'
+);
+const { PENDIENTE_FIRMA_JOSE_380 } = await import('../utils/pendiente-firma-jose-380.ts');
 
 const blogPage = readFileSync(
   new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
@@ -35,7 +39,24 @@ test('seo-y-sem rewrites the live SEO landing anchor and unwraps the image-only 
 
 test('blog page applies the seo-y-sem rewriter on the post body', () => {
   assert.match(blogPage, /rewriteSeoSemAgenciaSeoAnchor\(/);
+  assert.match(blogPage, /rewriteBlogSeo380Appends\(/);
   assert.match(blogPage, /rewriteSeoSemAgenciaSeoAnchor\(\s*rewriteInSitePageHrefs\(/);
+});
+
+test('playful-copy #380 appends only when the live original is present', () => {
+  assert.equal(BLOG_SEO_380_APPENDS.length, 6);
+  for (const item of BLOG_SEO_380_APPENDS) {
+    assert.match(item.replace, new RegExp(PENDIENTE_FIRMA_JOSE_380));
+    const applied = rewriteBlogSeo380Appends(`<p>${item.find}</p>`, item.slug);
+    assert.ok(applied.includes(item.replace), item.id);
+    assert.equal(rewriteBlogSeo380Appends(applied, item.slug), applied, `${item.id} idempotent`);
+    assert.equal(
+      rewriteBlogSeo380Appends(`<p>${item.find}</p>`, 'otro-slug'),
+      `<p>${item.find}</p>`,
+      `${item.id} other slug`,
+    );
+    assert.equal(rewriteBlogSeo380Appends('<p>sin la frase</p>', item.slug), '<p>sin la frase</p>');
+  }
 });
 
 test('28 oct blog body links wrap the live phrases that already exist', () => {

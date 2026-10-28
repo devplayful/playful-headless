@@ -1,5 +1,5 @@
 import { ZELLE_VE_BLOG_SLUG } from '../lib/blog-body-overrides.ts';
-import { COPY_UNSIGNED, ECOM_VE_FAQ_QUESTION } from './ecommerce-aeo-2810.ts';
+import { ECOM_VE_FAQ_ANSWER_JSONLD, ECOM_VE_FAQ_QUESTION } from './ecommerce-aeo-2810.ts';
 
 type FaqItem = {
   name: string;
@@ -45,7 +45,7 @@ export const SERVICE_FAQ_PAGES = Object.freeze({
     },
     {
       name: ECOM_VE_FAQ_QUESTION,
-      text: COPY_UNSIGNED,
+      text: ECOM_VE_FAQ_ANSWER_JSONLD,
     },
   ]),
   'agencia-seo': faqPage([

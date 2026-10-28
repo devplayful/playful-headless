@@ -4,6 +4,9 @@
  */
 
 import { SOYTECHNO_CASE_HREF } from './ecommerce-soytechno-case-link.ts';
+import { PENDIENTE_FIRMA_JOSE_380 } from './pendiente-firma-jose-380.ts';
+
+export { PENDIENTE_FIRMA_JOSE_380 };
 
 export const ECOMMERCE_AEO_SLUG = 'agencia-e-commerce';
 
@@ -25,6 +28,18 @@ export const ECOM_HABLE_CLARO = '¿Buscas una Agencia e-Commerce que Hable Claro
 export const COPY_UNSIGNED = 'COPY SIN FIRMAR';
 export const ECOM_INTRO_PLACEHOLDER_ATTR = 'agencia-e-commerce-intro';
 
+/** PENDIENTE_FIRMA_JOSE_380 — párrafo bajo el H2, literal de #380. */
+export const ECOM_INTRO_HTML_380 =
+  'Trabajamos desde Venezuela con marcas que ya venden online, y lo hacemos para Venezuela, para el resto de Latinoamérica y para España. En Venezuela eso pasa por integrar en el checkout los pagos que usan tus compradores, como Zelle para cobrar en dólares y Cashea para vender en cuotas. En <a href="/casos-de-exito/soytechno-ecommerce-venezuela">SoyTechno</a> desarrollamos un checkout propio que muestra los métodos de pago según la moneda que elige el comprador, y ahí logramos la primera integración de Cashea en web.';
+
+/** PENDIENTE_FIRMA_JOSE_380 — respuesta FAQ visible (href relativo). */
+export const ECOM_VE_FAQ_ANSWER_HTML =
+  'Sí, si tu marca ya vende online, esté en Caracas o en cualquier otra ciudad del país. Trabajamos sobre la tienda que ya tienes, incluidos pagos locales como Zelle y Cashea, y en <a href="/casos-de-exito/soytechno-ecommerce-venezuela">el caso SoyTechno</a> puedes ver cómo integramos esos pagos en una tienda de tecnología venezolana.';
+
+/** PENDIENTE_FIRMA_JOSE_380 — mismo texto en JSON-LD con href absoluto. */
+export const ECOM_VE_FAQ_ANSWER_JSONLD =
+  'Sí, si tu marca ya vende online, esté en Caracas o en cualquier otra ciudad del país. Trabajamos sobre la tienda que ya tienes, incluidos pagos locales como Zelle y Cashea, y en <a href="https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela">el caso SoyTechno</a> puedes ver cómo integramos esos pagos en una tienda de tecnología venezolana.';
+
 export const ECOM_VE_FAQ_QUESTION_PREV =
   '¿Trabajáis con marcas de Caracas y del resto de Venezuela?';
 
@@ -43,7 +58,7 @@ const H2_SIGNED_HTML =
   `<h2 class="elementor-heading-title elementor-size-default">${ECOM_H2_SIGNED}</h2>`;
 
 const INTRO_PLACEHOLDER_HTML =
-  `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>`;
+  `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_INTRO_HTML_380}</p>`;
 
 const LAST_LIVE_FAQ =
   '¿Puedo trabajar con una agencia e-commerce si ya tengo una tienda en línea?';
@@ -57,20 +72,25 @@ const FAQ_ITEM_HTML = `
 														</span>
 												<a class="elementor-accordion-title" tabindex="0">${ECOM_VE_FAQ_QUESTION}</a>
 					</div>
-					<div id="elementor-tab-content-playful-ve" class="elementor-tab-content elementor-clearfix" data-tab="6" role="region" aria-labelledby="elementor-tab-title-playful-ve"><p data-copy-pending="faq-caracas-venezuela">${COPY_UNSIGNED}</p></div>
+					<div id="elementor-tab-content-playful-ve" class="elementor-tab-content elementor-clearfix" data-tab="6" role="region" aria-labelledby="elementor-tab-title-playful-ve"><p data-copy-pending="faq-caracas-venezuela" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_VE_FAQ_ANSWER_HTML}</p></div>
 				</div>`;
 
 const CASE_LINK_HTML =
   `<p data-playful-soytechno-case="1"><a href="${SOYTECHNO_CASE_HREF}">${SOYTECHNO_CASE_ANCHOR}</a></p>`;
 
 function ensureIntroAfterSignedH2(html: string): string {
-  if (
-    html.includes(ECOM_H2_SIGNED) &&
-    !html.includes(`data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}"`)
-  ) {
-    return html.replace(H2_SIGNED_HTML, `${H2_SIGNED_HTML}${INTRO_PLACEHOLDER_HTML}`);
+  let out = html;
+  const staleIntro = `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>`;
+  if (out.includes(staleIntro)) {
+    out = out.replace(staleIntro, INTRO_PLACEHOLDER_HTML);
   }
-  return html;
+  if (
+    out.includes(ECOM_H2_SIGNED) &&
+    !out.includes(`data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}"`)
+  ) {
+    return out.replace(H2_SIGNED_HTML, `${H2_SIGNED_HTML}${INTRO_PLACEHOLDER_HTML}`);
+  }
+  return out;
 }
 
 /**
@@ -106,6 +126,13 @@ function appendFaqItem(html: string): string {
   let out = html;
   if (out.includes(ECOM_VE_FAQ_QUESTION_PREV)) {
     out = out.split(ECOM_VE_FAQ_QUESTION_PREV).join(ECOM_VE_FAQ_QUESTION);
+  }
+  const staleFaq = '<p data-copy-pending="faq-caracas-venezuela">COPY SIN FIRMAR</p>';
+  if (out.includes(staleFaq)) {
+    out = out.replace(
+      staleFaq,
+      `<p data-copy-pending="faq-caracas-venezuela" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_VE_FAQ_ANSWER_HTML}</p>`,
+    );
   }
   if (out.includes(ECOM_VE_FAQ_QUESTION)) return out;
   const titleIdx = out.indexOf(LAST_LIVE_FAQ);

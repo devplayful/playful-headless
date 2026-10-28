@@ -3,15 +3,18 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const {
-  COPY_UNSIGNED,
   ECOM_H2_JOSE,
   ECOM_H2_JOSE_COPY_ISSUE,
   ECOM_H2_LIVE,
   ECOM_H2_SIGNED,
   ECOM_HABLE_CLARO,
+  ECOM_INTRO_HTML_380,
   ECOM_INTRO_PLACEHOLDER_ATTR,
+  ECOM_VE_FAQ_ANSWER_HTML,
+  ECOM_VE_FAQ_ANSWER_JSONLD,
   ECOM_VE_FAQ_QUESTION,
   ECOM_VE_FAQ_QUESTION_PREV,
+  PENDIENTE_FIRMA_JOSE_380,
   SOYTECHNO_CASE_ANCHOR,
   applyJoseThenTanda6H2Order,
   isJoseH2Signed,
@@ -65,12 +68,10 @@ test('rewrites the e-commerce H2, intro slot, FAQ and SoyTechno case on that slu
   assert.match(rewritten, new RegExp(`<h1[^>]*>${LIVE_H1}</h1>`));
   assert.doesNotMatch(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
   assert.match(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_SIGNED}</h2>`));
-  assert.match(
-    rewritten,
-    new RegExp(
-      `<h2[^>]*>${ECOM_H2_SIGNED}</h2><p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>`,
-    ),
-  );
+  assert.ok(rewritten.includes(ECOM_INTRO_HTML_380));
+  assert.ok(rewritten.includes(`data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}"`));
+  assert.ok(rewritten.includes(ECOM_VE_FAQ_ANSWER_HTML));
+  assert.doesNotMatch(rewritten, /COPY SIN FIRMAR/);
   assert.match(rewritten, new RegExp(ECOM_VE_FAQ_QUESTION.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.match(
     rewritten,
@@ -111,7 +112,14 @@ test('FAQPage JSON-LD includes the Caracas/Venezuela question', () => {
     '¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?',
   );
   assert.equal(last.name, ECOM_VE_FAQ_QUESTION);
-  assert.equal(last.acceptedAnswer.text, COPY_UNSIGNED);
+  assert.equal(last.acceptedAnswer.text, ECOM_VE_FAQ_ANSWER_JSONLD);
+  assert.match(
+    last.acceptedAnswer.text,
+    /<a href="https:\/\/playfulagency\.com\/casos-de-exito\/soytechno-ecommerce-venezuela">el caso SoyTechno<\/a>/,
+  );
+  assert.equal(faq['@type'], 'FAQPage');
+  assert.equal(faq['@context'], 'https://schema.org');
+  JSON.parse(JSON.stringify(faq));
   assert.notEqual(last.name, ECOM_VE_FAQ_QUESTION_PREV);
 });
 
@@ -138,27 +146,21 @@ test('José H2 from playful-copy #377 is prepared and stays unsigned', () => {
 
   const fixture = '__JOSE_H2_FIXTURE_PLAYFUL_COPY_377__';
   const prepared = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce', { joseH2: fixture });
-  const joseThenTanda = new RegExp(
-    `<h2[^>]*>${fixture}</h2>\\s*<h2[^>]*>${ECOM_H2_SIGNED}</h2>\\s*<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>[\\s\\S]*${ECOM_HABLE_CLARO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
-  );
-  assert.match(prepared, joseThenTanda);
+  assert.ok(prepared.includes(`<h2 class="elementor-heading-title elementor-size-default">${fixture}</h2>`));
+  assert.ok(prepared.indexOf(fixture) < prepared.indexOf(ECOM_H2_SIGNED));
+  assert.ok(prepared.includes(ECOM_INTRO_HTML_380));
+  assert.ok(prepared.indexOf(ECOM_INTRO_PLACEHOLDER_ATTR) < prepared.indexOf(ECOM_HABLE_CLARO));
   assert.ok(prepared.indexOf(ECOM_H2_SIGNED) < prepared.indexOf(ECOM_HABLE_CLARO));
   assert.doesNotMatch(prepared, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
   assert.equal(applyJoseThenTanda6H2Order(SAMPLE, ''), SAMPLE);
   assert.doesNotMatch(current, /__JOSE_H2_FIXTURE_PLAYFUL_COPY_377__/);
 });
 
-test('does not invent the cintillos S3 Shopify phrase pending playful-copy #380', () => {
+test('landing rewriter does not invent D6/D7 or the cintillos S3 phrase', () => {
   const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
   assert.doesNotMatch(rewritten, /diseño de tu tienda en Shopify/);
-  const landing = readFileSync(
-    new URL('../utils/blog-landing-links.ts', import.meta.url),
-    'utf8',
-  );
-  assert.doesNotMatch(
-    landing,
-    /slug: 'cintillos-de-promocion'[\s\S]{0,200}diseño de tu tienda en Shopify/,
-  );
+  assert.doesNotMatch(rewritten, /SEO para tu tienda online/);
+  assert.doesNotMatch(rewritten, /diseño UX\/UI de tu tienda/);
 });
 
 test('title, meta and H1 overrides stay untouched', () => {
@@ -185,16 +187,3 @@ test('getPageBySlug and Elementor compose the 28 oct rewriter; chrome stays out'
   }
 });
 
-test(
-  'pre-release: intro and FAQ answer must not ship COPY SIN FIRMAR',
-  {
-    skip:
-      'Contenido firmará el párrafo bajo el H2 y la respuesta de la FAQ de Caracas/Venezuela. Quitar este skip cuando el copy esté firmado. El assert falla con «COPY SIN FIRMAR».',
-  },
-  () => {
-    const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
-    const faq = getServiceFaqJsonLd('agencia-e-commerce');
-    assert.doesNotMatch(rewritten, /COPY SIN FIRMAR/);
-    assert.doesNotMatch(JSON.stringify(faq), /COPY SIN FIRMAR/);
-  },
-);

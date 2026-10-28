@@ -3,55 +3,43 @@
 Rama `cursor/agencia-ecommerce-seo-2810-d6e9`. Draft contra `main`. No merge y no producción.
 No se edita WordPress. Title, meta y H1 de `/agencia-e-commerce` no se tocan.
 
-## Hecho en código (mecanismos que ya existían)
+Copy de playful-copy PR #380 SHA `11b38dc` (`pieces/2026-10-28-seo-enlaces-ve.md`): SEO OK, estado **borrador para redline de José**. Cada bloque nuevo lleva `PENDIENTE_FIRMA_JOSE_380`. Test prerelease: `tests/prerelease-firma-jose-380-ecom.test.mjs` (fuera de `test:canonical`).
 
-- H2 `Agencia E-commerce` → `Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España` (`utils/ecommerce-aeo-2810.ts`, solo ese slug).
-- Hueco bajo el H2: `<p data-copy-pending="agencia-e-commerce-intro">COPY SIN FIRMAR</p>`.
-- FAQ visible + JSON-LD: `¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?` con respuesta `COPY SIN FIRMAR`.
+## Hecho en código (`utils/ecommerce-aeo-2810.ts`, solo ese slug)
+
+- H2 `Agencia E-commerce` → `Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España`.
+- Párrafo bajo el H2 (literal #380, marca `PENDIENTE_FIRMA_JOSE_380`): «Trabajamos desde Venezuela con marcas que ya venden online…» con ancla `SoyTechno` a `/casos-de-exito/soytechno-ecommerce-venezuela`.
+- `¿Buscas una Agencia e-Commerce que Hable Claro?` se queda después.
+- FAQ visible + JSON-LD: pregunta `¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?`. Respuesta literal #380. En JSON-LD el enlace es `<a href="https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela">el caso SoyTechno</a>`.
+- En casos: `/casos-de-exito/soytechno-ecommerce-venezuela` con ancla `ecommerce en Venezuela: el caso SoyTechno`.
+- Schema Service: `areaServed` Venezuela / España / Latinoamérica. Sin LocalBusiness ni dirección.
 
 ## H2 de José (playful-copy #377) — preparado, sin activar
 
-Hoy José **no ha firmado** el H2 de playful-copy #377. `ECOM_H2_JOSE` está vacío y el rewriter sigue con el comportamiento de la tanda 6: el H2 live `Agencia E-commerce` se sustituye por `Agencia e-commerce para marcas que ya venden en Venezuela, LATAM y España`, y el hueco `COPY SIN FIRMAR` va debajo.
+`ECOM_H2_JOSE` está vacío. Hoy el H2 live se sustituye por el de la tanda 6 y el párrafo #380 va debajo. Cuando José firme #377, `applyJoseThenTanda6H2Order` ya tiene el orden: H2 de José, H2 de tanda 6, párrafo, luego `¿Buscas una Agencia e-Commerce que Hable Claro?`.
 
-Cuando José firme ese H2, el orden ya está cableado en `applyJoseThenTanda6H2Order` (`utils/ecommerce-aeo-2810.ts`):
+## Enlaces de cuerpo (wrap en render, no se edita WP)
 
-1. El H2 firmado de José sustituye al H2 live `Agencia E-commerce`.
-2. El H2 de la tanda 6 entra como H2 **nuevo** justo después.
-3. El hueco de intro sigue debajo del H2 de la tanda 6, **antes** de `¿Buscas una Agencia e-Commerce que Hable Claro?`.
+Los 4 que ya existían se mantienen (`utils/blog-landing-links.ts` + `blog-seo-sem-agencia-seo-anchor.ts`).
 
-Para activarlo: poner el literal firmado en `ECOM_H2_JOSE`. No inventar la frase.
+Appends de playful-copy #380 (`utils/blog-seo-380-appends.ts`), solo si el original está en el HTML live:
 
-## Cintillos S3 — pendiente de playful-copy #380
+| Id | Post | Original live | Qué se hace |
+| --- | --- | --- | --- |
+| E1 | `/blog/tecnologia/desarrollo-de-aplicaciones-web` | `Pero antes de dar este paso es necesario que evalúes si es realmente lo que necesitas.` | Añade la frase de agencia e-commerce. |
+| E2 | `/blog/mas-vistos/que-es-una-agencia-de-sem` | `y estamos aquí para ayudarte a alcanzar tus metas.` | Añade «ecommerce que ya vende». |
+| E3 | `/blog/seo/seo-y-sem-que-son-y-en-que-se-diferencian` | `Lo ideal, es combinar ambas estrategias para conseguir los objetivos deseados.` | Sustituye por la frase + «estrategia para tu tienda online». |
+| S1 | `/blog/tecnologia/crear-un-e-commerce` | Live: `<strong>Shopify</strong> ofrece soporte 24/7, lo que te da tranquilidad si algo sale mal.` (la frase sin `<strong>` no es contigua) | Sustituye por «Si montas una tienda en Shopify…». |
+| S2 | `/blog/mas-vistos/los-5-problemas-de-e-commerce` | Live: `<strong>Solución:</strong> Optimizar el proceso de compra es clave.` | Añade «checkout de tu tienda Shopify». |
+| S3 | `/blog/tecnologia/cintillos-de-promocion` | `aprovechen al máximo las ofertas que tienes para ellos.` | Añade «diseño de tu tienda en Shopify». |
 
-Pedido: en `/blog/tecnologia/cintillos-de-promocion`, ancla `diseño de tu tienda en Shopify` → `/agencia-shopify`.
+## No inventado (D6 y D7)
 
-En el HTML live (28 oct, `PlayfulQA/1.0`, `?qa=1`) **esa frase no existe**. Tampoco hay «diseño de tu tienda» ni «tienda en Shopify» en el cuerpo. No se inventa. Cuando Contenido firme playful-copy #380 y la frase esté en el post (WP o rewriter que ya exista), se envuelve con `blog-landing-links.ts`. Hasta entonces, cero wrap.
-- En la sección de casos: enlace a `/casos-de-exito/soytechno-ecommerce-venezuela` con ancla `ecommerce en Venezuela: el caso SoyTechno`.
-- Schema Service: `areaServed` Venezuela / España / Latinoamérica. Sin LocalBusiness ni dirección.
-- Blog, texto que ya existe en WP (se envuelve en render, `utils/blog-landing-links.ts`):
-  1. `/blog/mas-vistos/que-es-una-agencia-de-sem` — `SEO Avanzado` → `/agencia-seo`
-  2. `/blog/mas-vistos/diseno-web-de-paginas-web` — `navegación intuitiva` → `/agencia-ux-ui`
-  3. `/blog/tecnologia/desarrollo-de-aplicaciones-web` — `experiencia de usuario óptima` → `/agencia-ux-ui`
-- `/blog/seo/seo-y-sem-que-son-y-en-que-se-diferencian` — reescritura acotada (`utils/blog-seo-sem-agencia-seo-anchor.ts`):
-  - ancla `Landing Page sobre SEO` → `posicionamiento SEO para ecommerce` hacia `/agencia-seo`
-  - se quita el `<a href="/agencia-seo">` que solo envuelve la imagen (sin texto)
+En la landing en vivo **no existen** «SEO para tu tienda online» ni «diseño UX/UI de tu tienda». No se inventan.
 
-## No inventado (textos 6 y 7 del brief)
+## Fuera de alcance
 
-En la landing en vivo (28 oct, `PlayfulQA/1.0`, `?qa=1`) **no existen** estas frases:
-
-| Pedido | Texto live en ese H3 |
-| --- | --- |
-| Enlazar `SEO para tu tienda online` a `/agencia-seo` | H3 `SEO que Encuentra a tus Clientes`. Cuerpo: `Trabajamos el SEO de tu e-commerce para que quienes buscan productos como los tuyos, te encuentren primero.` |
-| Enlazar `diseño UX/UI de tu tienda` a `/agencia-ux-ui` | H3 `Diseño que Vende (y Convence)`. Cuerpo: `Diseñamos una tienda visualmente atractiva que haga que tus clientes quieran añadir al carrito y no mirar atrás.` |
-
-Si Contenido firma esas anclas (o cambia el párrafo), se pueden envolver con el mismo rewriter slug-scoped. Hasta entonces no se inventan.
-
-## Copy pendiente (test pre-release, skip para CI)
-
-- Párrafo bajo el H2.
-- Respuesta de la FAQ `¿Puedo trabajar con Playful si mi marca está en Caracas o en otra ciudad de Venezuela?` (visible y JSON-LD).
-- H2 de José (playful-copy #377): aún sin firmar; el rewriter lo tiene preparado y desactivado.
-- Ancla S3 de `/blog/tecnologia/cintillos-de-promocion` (`diseño de tu tienda en Shopify` → `/agencia-shopify`): espera el copy de playful-copy #380.
-
-Test: `tests/agencia-e-commerce-seo-2810.test.mjs` → `pre-release: intro and FAQ answer must not ship COPY SIN FIRMAR` (skip documentado). Quitar el skip cuando Contenido firme. El assert falla con `COPY SIN FIRMAR`.
+- Merge / quitar draft / producción
+- Edición en WordPress
+- Header, footer, layout raíz, CSS global, middleware
+- Inventar D6/D7 o el H2 de playful-copy #377
