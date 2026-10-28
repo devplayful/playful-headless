@@ -30,7 +30,7 @@ jobs:
       - name: Run blog cannibalization redirect tests
         run: node --experimental-strip-types --test tests/blog-canibalizacion-redirects.test.mjs
       - name: Run closed SEO service 301 and href tests
-        run: node --experimental-strip-types --test tests/seo-service-redirects.test.mjs tests/unpublished-landing-redirects.test.mjs tests/seo-closed-hrefs.test.mjs
+        run: node --experimental-strip-types --test tests/seo-service-redirects.test.mjs tests/unpublished-landing-redirects.test.mjs tests/seo-closed-hrefs.test.mjs tests/seo-cruce-2810-freeze.test.mjs tests/seo-cruce-2810-no-import.test.mjs
       - name: Run blog related-posts tests
         run: node --experimental-strip-types --test tests/blog-related-posts.test.mjs
       - name: Run blog article quote styles tests
@@ -43,3 +43,21 @@ jobs:
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact
         run: npm run verify:routes:build
+
+  unsigned-copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.6.0
+          cache: npm
+      - name: Use the declared npm version
+        run: npm install --global npm@10.9.8
+      - name: Install the locked dependency tree
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Fail while unsigned copy markers remain in source
+        run: npm run test:unsigned-copy

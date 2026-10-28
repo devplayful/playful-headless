@@ -44,6 +44,14 @@ export const GSC_GONE_PATHS: readonly string[] = Object.freeze([
 
 const GSC_GONE_PATH_SET = new Set(GSC_GONE_PATHS);
 
+/** SEO cruce 28 oct — exact 410s. Do not prefix-match /lp/* or other landings. */
+export const SEO_CRUCE_GONE_PATHS: readonly string[] = Object.freeze([
+  '/landing-page',
+  '/test-blog',
+]);
+
+const SEO_CRUCE_GONE_PATH_SET = new Set(SEO_CRUCE_GONE_PATHS);
+
 /** Live posts that 301 away. Keep them out of sitemap / related / listings. */
 export const HUMANIZAR_BLOG_PATH =
   '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio';
@@ -96,7 +104,9 @@ export type BlogClosedDecision =
 
 export function blogClosedDecision(pathname: string): BlogClosedDecision {
   const path = normalizeBlogPath(pathname);
-  return CLOSED_BLOG_PATH_SET.has(path) || GSC_GONE_PATH_SET.has(path)
+  return CLOSED_BLOG_PATH_SET.has(path)
+    || GSC_GONE_PATH_SET.has(path)
+    || SEO_CRUCE_GONE_PATH_SET.has(path)
     ? { type: 'gone', status: 410 }
     : { type: 'next' };
 }

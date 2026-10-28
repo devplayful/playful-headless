@@ -1,0 +1,456 @@
+{
+  "generatedFrom": "docs/migracion/seo-cruce-2810/urls-161.csv",
+  "count": 75,
+  "urls": [
+    {
+      "url": "/blog/pautas-digitales/google-grants-descubre-que-es-y-como-funciona",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/marketing-social-la-estrategia-ganadora-de-las-ong",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/mas-vistos/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/lgbtq-siglas-con-historia-significado-y-marketing-de-inclusion",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/debes-usar-el-lenguaje-inclusivo-en-redes-sociales",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/mas-vistos/quiero-ver-mi-negocio-en-google-maps",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/mas-vistos/shakira-y-pique-un-buen-ejemplo-del-marketing-emocional",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/ibai-llanos-por-que-es-tendencia-y-que-tiene-que-ver-con-el-futbol",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/consejos-para-que-hagas-pautas-en-tus-post-de-instagram",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/otros/conoce-todo-sobre-instagram-ads",
+      "expected": 301
+    },
+    {
+      "url": "/blog/email-marketing/email-marketing-efectivo-que-todas-las-empresas-deben-usar",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/email-marketing/estrategia-de-email-marketing",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/twitter-ads",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/hacks-seo-local",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/tendencias-seo-2020",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/aprende-todo-sobre-el-seo",
+      "expected": 301
+    },
+    {
+      "url": "/blog/email-marketing/aprende-como-hacer-un-estrategia-digital-de-email-marketing",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/email-marketing/estrategia-de-email-marketing",
+      "expected": 301
+    },
+    {
+      "url": "/blog/seo/que-es-un-blog",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/blog-corporativo-aumenta-el-trafico-de-tu-sitio-web",
+      "expected": 301
+    },
+    {
+      "url": "/blog/tecnologia/lenguajes-de-programacion-para-que-sirve-y-cuales-son-los-mas-usados",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/email-marketing/como-hacer-un-email-marketing-eficaz-durante-la-pandemia",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/email-marketing/email-marketing-beneficio-que-te-generara-ingresos",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/email-marketing/estrategia-de-email-marketing",
+      "expected": 301
+    },
+    {
+      "url": "/blog/email-marketing/email-marketing-una-herramienta-que-no-puedes-dejar-de-usar-en-tu-empresa",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/email-marketing/estrategia-de-email-marketing",
+      "expected": 301
+    },
+    {
+      "url": "/blog/mas-vistos/como-hacer-publicidad-en-instagram-en-el-2023",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/otros/conoce-todo-sobre-instagram-ads",
+      "expected": 301
+    },
+    {
+      "url": "/blog/mas-vistos/marketing-deportivo-qatar-2022",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/mas-vistos/messi-y-el-marketing-hablemos-sobre-su-marca-personal",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/descubre-por-que-debes-usar-whatsapp-business-en-tu-negocio",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/whatsapp-business",
+      "expected": 301
+    },
+    {
+      "url": "/blog/otros/marketing-de-guerrilla-te-atreves-a-intentarlo",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/marketing-para-medicos-como-ganar-mientras-ayudas",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/mes-del-orgullo-gay-por-que-se-celebra",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/metaverso-que-es",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/una-herramienta-para-ganar-autoridad",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/otros/ya-sabes-cuando-se-celebra-el-dia-mundial-del-emoji",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/5-ventajas-para-obtener-clientes-con-facebook-ads",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/como-crear-anuncios-en-facebook",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/actualizaciones-de-instagram",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/anuncios-en-linkedin",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/storytelling-en-el-marketing-digital",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/como-crear-anuncios-en-instagram",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/otros/conoce-todo-sobre-instagram-ads",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/conoce-como-impulsar-tu-marca-online",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/guia-para-hacer-marketing-digital",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/conoce-el-marketing-digital-del-2020",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/convierte-en-el-experto-de-los-webinar",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/estrategias-de-marketing-digital-para-el-2022",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/guia-para-hacer-marketing-digital",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/linkedin-ads-aumenta-el-alcance-de-tu-negocio",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/por-que-incluir-la-transformacion-digital-en-mi-negocio",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/mas-vistos/ecosistema-digital-de-tu-marca",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/porque-tener-un-perfil-empresarial-en-linkedin",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/7-consejos-seo-para-posicionar-tu-pagina",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/aprende-todo-sobre-el-seo",
+      "expected": 301
+    },
+    {
+      "url": "/blog/seo/black-hat-seo",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/busqueda-por-voz-que-es-y-como-afecta-al-seo",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/seo/como-hacer-posicionamiento-web-en-buscadores",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/aprende-todo-sobre-el-seo",
+      "expected": 301
+    },
+    {
+      "url": "/blog/seo/todo-sobre-el-seo",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/aprende-todo-sobre-el-seo",
+      "expected": 301
+    },
+    {
+      "url": "/blog/tecnologia/chatbot-inteligencia-artificial-personalizada-para-tu-activo-digital",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/tecnologia/como-crear-un-chatbot-para-tu-empresa-en-5-minutos",
+      "expected": 301
+    },
+    {
+      "url": "/blog/tecnologia/google-ads-grants-con-un-blog-digital",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/como-ser-tendencia",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/blog/pautas-digitales/tipos-de-publicidad-online-conceptos-y-datos-curiosos",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/publicidad-digital-en-tu-negocio",
+      "expected": 301
+    },
+    {
+      "url": "/blog/seo/posicionamiento-organico-vs-pago",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/seo/seo-y-sem-que-son-y-en-que-se-diferencian",
+      "expected": 301
+    },
+    {
+      "url": "/blog/otros/por-que-debes-hacer-publicidad-digital-en-tu-negocio",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/publicidad-digital-en-tu-negocio",
+      "expected": 301
+    },
+    {
+      "url": "/blog/pautas-digitales/tipos-de-publicidad-online",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/pautas-digitales/publicidad-digital-en-tu-negocio",
+      "expected": 301
+    },
+    {
+      "url": "/seo-internacional",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad",
+      "expected": 301
+    },
+    {
+      "url": "/servicio-marketing-digital",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-e-commerce",
+      "expected": 301
+    },
+    {
+      "url": "/email-marketing",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/email-marketing/estrategia-de-email-marketing",
+      "expected": 301
+    },
+    {
+      "url": "/marketing-digital-espana",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-e-commerce",
+      "expected": 301
+    },
+    {
+      "url": "/pasarela-de-pago-ecommerce",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/tecnologia/cashea-para-comercios",
+      "expected": 301
+    },
+    {
+      "url": "/pagos-online-ecommerce",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/blog/tecnologia/cashea-para-comercios",
+      "expected": 301
+    },
+    {
+      "url": "/home",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/",
+      "expected": 301
+    },
+    {
+      "url": "/home-2",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/",
+      "expected": 301
+    },
+    {
+      "url": "/landing-page",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/policlinica-metropolitana",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/casos-de-exito",
+      "expected": 301
+    },
+    {
+      "url": "/mercantil-servicios-financieros-internacional",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/casos-de-exito",
+      "expected": 301
+    },
+    {
+      "url": "/grupo-automotriz-multimarca",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/casos-de-exito",
+      "expected": 301
+    },
+    {
+      "url": "/miembros-de-equipo",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/nosotros",
+      "expected": 301
+    },
+    {
+      "url": "/privacy-policy",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/politica-de-privacidad",
+      "expected": 301
+    },
+    {
+      "url": "/landing-seo",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-seo",
+      "expected": 301
+    },
+    {
+      "url": "/services",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-e-commerce",
+      "expected": 301
+    },
+    {
+      "url": "/casos-de-exito-agencia-de-marketing-digital",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/casos-de-exito",
+      "expected": 301
+    },
+    {
+      "url": "/seo-expertos",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-seo",
+      "expected": 301
+    },
+    {
+      "url": "/marketing-internacional",
+      "decision": "REDIRIGIR (301)",
+      "destino_301": "/agencia-e-commerce",
+      "expected": 301
+    },
+    {
+      "url": "/test-blog",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    },
+    {
+      "url": "/project/cosmetic-mockup",
+      "decision": "RETIRAR (410)",
+      "destino_301": null,
+      "expected": 410
+    }
+  ]
+}
