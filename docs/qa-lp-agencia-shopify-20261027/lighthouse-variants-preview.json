@@ -1,6 +1,6 @@
 {
-  "sha": "57bd55ff6bf8d1b1d80199887033f8122f6fd2de",
-  "deploymentId": "dpl_5VfTdP9izL36JFJgpC9CKdrfHXED",
+  "sha": "99b6a7c98bd805edde73144ef71c17f48fc8b634",
+  "deploymentId": "dpl_5NM2Yopwnv6Ft1uvZRUJ8RtzJX8K",
   "previewAlias": "playful-headless-git-cursor-lp-meta-ag-757501-playfuls-projects.vercel.app",
   "lighthouse": "12.6.0",
   "formFactor": "mobile",
@@ -8,55 +8,56 @@
   "shareParam": "_vercel_share",
   "lcpElement": "img /images/agencia-shopify/hero-gORwV7MSXO@1x.webp",
   "criterion": { "medianMs": 2500, "maxPassMs": 4000 },
+  "note": "c4 y c5 se rehicieron en Chrome fresco tras caducar el share token (las pasadas SSO se descartaron).",
   "variants": [
     {
       "path": "/lp/agencia-shopify",
-      "passesMs": [2495, 2351, 2351, 2351, 2053],
-      "medianMs": 2351,
-      "maxMs": 2495,
+      "passesMs": [2267, 2053, 2355, 2281, 2425],
+      "medianMs": 2281,
+      "maxMs": 2425,
       "minMs": 2053
     },
     {
       "path": "/lp/agencia-shopify/generic",
-      "passesMs": [2356, 2578, 2048, 2347, 2348],
-      "medianMs": 2348,
-      "maxMs": 2578,
-      "minMs": 2048
+      "passesMs": [2351, 2274, 2353, 2049, 8279],
+      "medianMs": 2351,
+      "maxMs": 8279,
+      "minMs": 2049
     },
     {
       "path": "/lp/agencia-shopify/c1",
-      "passesMs": [2351, 2047, 8429, 2278, 2352],
-      "medianMs": 2351,
-      "maxMs": 8429,
-      "minMs": 2047
+      "passesMs": [2428, 2346, 2272, 2055, 2347],
+      "medianMs": 2346,
+      "maxMs": 2428,
+      "minMs": 2055
     },
     {
       "path": "/lp/agencia-shopify/c2",
-      "passesMs": [2357, 2276, 2356, 2350, 2354],
-      "medianMs": 2354,
-      "maxMs": 2357,
-      "minMs": 2276
+      "passesMs": [2422, 2274, 2350, 2356, 2353],
+      "medianMs": 2353,
+      "maxMs": 2422,
+      "minMs": 2274
     },
     {
       "path": "/lp/agencia-shopify/c3",
-      "passesMs": [2271, 2358, 1976, 2347, 2351],
-      "medianMs": 2347,
-      "maxMs": 2358,
-      "minMs": 1976
+      "passesMs": [2350, 8434, 2352, 2348, 2347],
+      "medianMs": 2350,
+      "maxMs": 8434,
+      "minMs": 2347
     },
     {
       "path": "/lp/agencia-shopify/c4",
-      "passesMs": [2048, 2351, 2278, 2350, 2350],
-      "medianMs": 2350,
-      "maxMs": 2351,
-      "minMs": 2048
+      "passesMs": [2352, 2348, 2570, 2351, 2274],
+      "medianMs": 2351,
+      "maxMs": 2570,
+      "minMs": 2274
     },
     {
       "path": "/lp/agencia-shopify/c5",
-      "passesMs": [2347, 1977, 2348, 2430, 2353],
-      "medianMs": 2348,
-      "maxMs": 2430,
-      "minMs": 1977
+      "passesMs": [2350, 2354, 2351, 2273, 2352],
+      "medianMs": 2351,
+      "maxMs": 2354,
+      "minMs": 2273
     }
   ]
 }

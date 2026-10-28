@@ -1,0 +1,62 @@
+{
+  "sha": "99b6a7c98bd805edde73144ef71c17f48fc8b634",
+  "lighthouse": "12.6.0",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "cpuSlowdownMultiplier": 4,
+  "slowPass": {
+    "path": "/lp/agencia-shopify/c3",
+    "pass": 2,
+    "lcpMs": 8434,
+    "observedLcpMs": 2335,
+    "lcpElement": "img /images/agencia-shopify/hero-gORwV7MSXO@1x.webp",
+    "phasesMs": { "TTFB": 631, "Load Delay": 3, "Load Time": 85, "Render Delay": 7715 },
+    "bootupTime": {
+      "totalMs": 230,
+      "top": [
+        { "url": "/_next/static/chunks/1255-*.js (framework)", "totalMs": 168, "scriptingMs": 92, "parseMs": 9 },
+        { "url": "Unattributable", "totalMs": 111, "scriptingMs": 10 },
+        { "url": "/_next/static/chunks/webpack-*.js", "totalMs": 99, "scriptingMs": 97 },
+        { "url": "document /lp/agencia-shopify/c3", "totalMs": 80, "scriptingMs": 9, "parseMs": 13 }
+      ]
+    },
+    "mainthreadWorkBreakdown": {
+      "totalMs": 531,
+      "items": [
+        { "group": "Script Evaluation", "ms": 227 },
+        { "group": "Other", "ms": 144 },
+        { "group": "Style & Layout", "ms": 83 },
+        { "group": "Script Parsing & Compilation", "ms": 44 },
+        { "group": "Parse HTML & CSS", "ms": 26 },
+        { "group": "Rendering", "ms": 7 }
+      ]
+    },
+    "renderBlockingResources": {
+      "estimatedSavingsMs": 150,
+      "items": [
+        { "url": "/_next/static/css/a6ef926c651ae29e.css", "transferBytes": 16310, "uncompressedBytes": 89225, "wastedMs": 150 }
+      ]
+    },
+    "longTasks": [
+      { "url": "/_next/static/chunks/webpack-*.js", "startMs": 2132, "durationMs": 95 }
+    ],
+    "thirdParty": {
+      "mainThreadBlockingMs": 0,
+      "items": [{ "entity": "vercel.live", "transferBytes": 157, "blockingMs": 0 }]
+    },
+    "fontDisplayScore": 1
+  },
+  "typicalPass": {
+    "path": "/lp/agencia-shopify",
+    "pass": 1,
+    "lcpMs": 2267,
+    "observedLcpMs": 1156,
+    "phasesMs": { "TTFB": 842, "Load Delay": 793, "Load Time": 266, "Render Delay": 366 },
+    "bootupTimeMs": 235,
+    "mainthreadMs": 587,
+    "renderBlockingMs": 113,
+    "longTasks": [
+      { "url": "/_next/static/chunks/1255-*.js (framework)", "startMs": 3099, "durationMs": 106 }
+    ]
+  }
+}
