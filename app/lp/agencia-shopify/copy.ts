@@ -1,5 +1,6 @@
 import type { ContentPlaceholder } from '../_lib/placeholders';
-import type { LpMetaAngle, LpMetaMarket } from './variants';
+import { LP_META_ANGLE_TITLES } from './angles.js';
+import type { LpMetaMarket } from './variants';
 
 export const LP_META_SHOPIFY_META = {
   title: 'Agencia Shopify — landing Meta Ads (staging) | Playful',
@@ -29,32 +30,8 @@ export const LP_META_PROOF_CASES = [
   },
 ] as const;
 
-export const LP_META_HERO_TITLES: Record<LpMetaAngle, ContentPlaceholder> = {
-  generic: {
-    tag: 'titular genérico',
-    note: 'Cuando ang falta o no es válido se muestra el titular genérico. El texto de los ganchos sale de los creativos C1–C5 firmados. No se reescribe aquí.',
-  },
-  c1: {
-    tag: 'titular C1',
-    note: 'El mismo gancho que el C1 del anuncio. Caso destacado: [definir con el creativo final].',
-  },
-  c2: {
-    tag: 'titular C2',
-    note: 'El mismo gancho que el C2. Caso destacado: [definir con el creativo final].',
-  },
-  c3: {
-    tag: 'titular C3',
-    note: 'El mismo gancho que el C3. Caso destacado: [definir con el creativo final].',
-  },
-  c4: {
-    tag: 'titular C4',
-    note: 'El mismo gancho que el C4. Caso destacado: [definir con el creativo final].',
-  },
-  c5: {
-    tag: 'titular C5',
-    note: 'El mismo gancho que el C5. Caso destacado: [definir con el creativo final].',
-  },
-};
+/** H1 por ángulo. Sale de angles.js; no listar slugs aquí. */
+export const LP_META_HERO_TITLES: Record<string, ContentPlaceholder> = LP_META_ANGLE_TITLES;
 
 export const LP_META_HERO_SUBTITLES: Record<LpMetaMarket, ContentPlaceholder> = {
   es: {
@@ -121,7 +98,9 @@ export const LP_META_PAINS_LATAM: [ContentPlaceholder, ContentPlaceholder, Conte
   },
 ];
 
-export const LP_META_PAIN_ORDER: Record<LpMetaAngle, [number, number, number]> = {
+const DEFAULT_PAIN_ORDER: [number, number, number] = [0, 1, 2];
+
+export const LP_META_PAIN_ORDER: Record<string, [number, number, number]> = {
   generic: [0, 1, 2],
   c1: [0, 1, 2],
   c2: [1, 0, 2],
@@ -129,6 +108,10 @@ export const LP_META_PAIN_ORDER: Record<LpMetaAngle, [number, number, number]> =
   c4: [0, 2, 1],
   c5: [1, 2, 0],
 };
+
+export function painOrderForAngle(ang: string): [number, number, number] {
+  return LP_META_PAIN_ORDER[ang] ?? DEFAULT_PAIN_ORDER;
+}
 
 export const LP_META_STORES_HEAD: ContentPlaceholder = {
   tag: 'H2 — hacemos tiendas',
@@ -163,7 +146,7 @@ export const LP_META_PROOF_FOOT: Record<(typeof LP_META_PROOF_CASES)[number]['sl
   },
 };
 
-export const LP_META_FEATURED_CASE_NOTE: Record<LpMetaAngle, ContentPlaceholder> = {
+export const LP_META_FEATURED_CASE_NOTE: Record<string, ContentPlaceholder> = {
   generic: {
     tag: 'caso destacado genérico',
     note: 'ES: CIMA 2026, Odwalla. LatAm: Jumex (MX/US), Odwalla, SoyTechno (LatAm). VE: SoyTechno.',
@@ -174,6 +157,16 @@ export const LP_META_FEATURED_CASE_NOTE: Record<LpMetaAngle, ContentPlaceholder>
   c4: { tag: 'caso destacado C4', note: '[definir con el creativo final]' },
   c5: { tag: 'caso destacado C5', note: '[definir con el creativo final]' },
 };
+
+export function featuredCaseNoteForAngle(ang: string): ContentPlaceholder {
+  return (
+    LP_META_FEATURED_CASE_NOTE[ang] ||
+    LP_META_FEATURED_CASE_NOTE.generic || {
+      tag: `caso destacado ${ang}`,
+      note: '[definir con el creativo final]',
+    }
+  );
+}
 
 export const LP_META_PROCESS_HEAD: ContentPlaceholder = {
   tag: 'H2 — proceso y plazos',

@@ -8,16 +8,16 @@ import { unsignedLabel, UnsignedBlock, UnsignedFaqAnswer } from '../_lib/unsigne
 import AdsFaq from '../_components/AdsFaq';
 import {
   faqItemsForMarket,
+  featuredCaseNoteForAngle,
   LP_META_CTA_PRIMARY,
   LP_META_CTA_SECONDARY,
-  LP_META_FEATURED_CASE_NOTE,
   LP_META_FINAL_BODY,
   LP_META_FINAL_BUTTON,
   LP_META_FINAL_HEAD,
   LP_META_FAQ_HEAD,
   LP_META_HERO_SUBTITLES,
   LP_META_HERO_TITLES,
-  LP_META_PAIN_ORDER,
+  painOrderForAngle,
   LP_META_PROBLEM_HEAD,
   LP_META_PROCESS_HEAD,
   LP_META_PROCESS_ITEMS,
@@ -72,7 +72,7 @@ function MarketSlot({
 }
 
 export default function Landing({ ang }: { ang: LpMetaAngle }) {
-  const painOrder = LP_META_PAIN_ORDER[ang];
+  const painOrder = painOrderForAngle(ang);
 
   return (
     <>
@@ -242,7 +242,7 @@ export default function Landing({ ang }: { ang: LpMetaAngle }) {
               data-copy-angle={angle}
               className={angle === ang ? undefined : 'hidden'}
             >
-              <UnsignedBlock block={LP_META_FEATURED_CASE_NOTE[angle]} />
+              <UnsignedBlock block={featuredCaseNoteForAngle(angle)} />
             </div>
           ))}
           <Suspense fallback={<div className="mt-10 min-h-[16rem]" />}>

@@ -4,20 +4,7 @@
  *
  * Next.js prepareDestination always merges the original query into the
  * destination, so `ang` cannot be stripped here without middleware.
+ *
+ * Slugs live in angles.js. Do not list ángulos here.
  */
-const LP_META_STATIC_ANGLES = ['generic', 'c1', 'c2', 'c3', 'c4', 'c5'];
-
-const LP_META_ANG_QUERY_REDIRECTS = LP_META_STATIC_ANGLES.flatMap((ang) => {
-  const values = ang === 'generic' ? ['generic', 'GENERIC'] : [ang, ang.toUpperCase()];
-  return values.map((value) => ({
-    source: '/lp/agencia-shopify',
-    has: [{ type: 'query', key: 'ang', value }],
-    destination: `/lp/agencia-shopify/${ang}`,
-    permanent: true,
-  }));
-});
-
-module.exports = {
-  LP_META_STATIC_ANGLES,
-  LP_META_ANG_QUERY_REDIRECTS,
-};
+module.exports = require('./angles');

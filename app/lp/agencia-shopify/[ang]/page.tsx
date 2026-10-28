@@ -4,13 +4,14 @@ import { LP_META_SHOPIFY_META } from '../copy';
 import { HERO_CRITICAL_STYLE } from '../hero-critical-style';
 import Landing from '../Landing';
 import { HeroLcpPreload } from '../HeroLcp';
-import { isLpMetaStaticAngle, LP_META_STATIC_ANGLES } from '../variants';
+import { generateStaticAngleParams } from '../angles.js';
+import { isLpMetaStaticAngle } from '../variants';
 
 export const dynamic = 'force-static';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return LP_META_STATIC_ANGLES.map((ang) => ({ ang }));
+  return generateStaticAngleParams();
 }
 
 export const metadata: Metadata = {

@@ -1,3 +1,16 @@
+import { DEFAULT_LP_META_ANGLE, LP_META_STATIC_ANGLES } from './angles.js';
+import { LP_META_PAIN_ORDER } from './copy';
+
+function escapeRe(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const ANGLE_SLUGS = LP_META_STATIC_ANGLES.filter((slug) => slug !== DEFAULT_LP_META_ANGLE);
+const ANGLE_SLUG_RE = ANGLE_SLUGS.map(escapeRe).join('|');
+const STATIC_ANGLE_RE = LP_META_STATIC_ANGLES.map(escapeRe).join('|');
+const PAIN_ORDER_JSON = JSON.stringify(LP_META_PAIN_ORDER);
+const DEFAULT_ANGLE_JSON = JSON.stringify(DEFAULT_LP_META_ANGLE);
+
 /** Route-local boot after load. Does not touch the H1 or the LCP image ancestor. */
 export const QUERY_BOOT_SCRIPT = `
 document.addEventListener("click", function (e) {
@@ -15,12 +28,12 @@ function lpMetaBoot() {
   }
   function ang(v, u) {
     v = (v || "").toLowerCase();
-    if (/^c[1-5]$/.test(v)) return v;
-    var m = (u || "").toLowerCase().match(/^(c[1-5])_/);
-    return m ? m[1] : "generic";
+    if (/^(${ANGLE_SLUG_RE})$/.test(v)) return v;
+    var m = (u || "").toLowerCase().match(/^((?:${ANGLE_SLUG_RE}))_/);
+    return m ? m[1] : ${DEFAULT_ANGLE_JSON};
   }
   var M = mkt(q.get("mkt"));
-  var pathAng = (location.pathname.replace(new RegExp("/+$"), "").match(new RegExp("/lp/agencia-shopify/(generic|c[1-5])$")) || [])[1];
+  var pathAng = (location.pathname.replace(new RegExp("/+$"), "").match(new RegExp("/lp/agencia-shopify/(${STATIC_ANGLE_RE})$")) || [])[1];
   var A = pathAng || ang(q.get("ang"), q.get("utm_content"));
   document.querySelectorAll("[data-lp-when-mkt]").forEach(function (el) {
     el.classList.toggle("hidden", el.getAttribute("data-lp-when-mkt") !== M);
@@ -28,8 +41,8 @@ function lpMetaBoot() {
   document.querySelectorAll("[data-lp-when-ang]").forEach(function (el) {
     el.classList.toggle("hidden", el.getAttribute("data-lp-when-ang") !== A);
   });
-  var pain = { generic: [0, 1, 2], c1: [0, 1, 2], c2: [1, 0, 2], c3: [2, 0, 1], c4: [0, 2, 1], c5: [1, 2, 0] };
-  var order = pain[A] || pain.generic;
+  var pain = ${PAIN_ORDER_JSON};
+  var order = pain[A] || pain[${DEFAULT_ANGLE_JSON}] || [0, 1, 2];
   document.querySelectorAll("[data-lp-pain-index]").forEach(function (el) {
     var idx = Number(el.getAttribute("data-lp-pain-index"));
     var pos = order.indexOf(idx);

@@ -11,7 +11,12 @@ const {
   parseLpMetaAngle,
   parseLpMetaMarket,
 } = await import('../app/lp/agencia-shopify/variants.ts');
-const { LP_META_SHOPIFY_META } = await import('../app/lp/agencia-shopify/copy.ts');
+const { LP_META_HERO_TITLES, LP_META_SHOPIFY_META } = await import('../app/lp/agencia-shopify/copy.ts');
+const {
+  generateStaticAngleParams,
+  LP_META_ANGLE_TITLES,
+  LP_META_ANG_QUERY_REDIRECTS,
+} = await import('../app/lp/agencia-shopify/angles.js');
 const {
   isLpMetaShopifyPath,
   lpMetaBookingAnchorHref,
@@ -27,6 +32,7 @@ const angRedirects = readFileSync(
 );
 const unsigned = readFileSync(new URL('../app/lp/_lib/unsigned-copy.tsx', import.meta.url), 'utf8');
 const copy = readFileSync(new URL('../app/lp/agencia-shopify/copy.ts', import.meta.url), 'utf8');
+const anglesSrc = readFileSync(new URL('../app/lp/agencia-shopify/angles.js', import.meta.url), 'utf8');
 const landing = readFileSync(new URL('../app/lp/agencia-shopify/Landing.tsx', import.meta.url), 'utf8');
 const queryBoot = readFileSync(new URL('../app/lp/agencia-shopify/query-boot.ts', import.meta.url), 'utf8');
 const bookingCta = readFileSync(new URL('../app/lp/agencia-shopify/BookingCta.tsx', import.meta.url), 'utf8');
@@ -66,8 +72,9 @@ test('ruta /lp/agencia-shopify es noindex, fuera del sitemap y el hero no lee se
   assert.match(nextConfig, /LP_META_ANG_QUERY_REDIRECTS/);
   assert.match(nextConfig, /x-vercel-skip-toolbar/);
   assert.match(nextConfig, /hero-gORwV7MSXO@1x\.webp/);
-  assert.match(angRedirects, /permanent: true/);
-  assert.match(angRedirects, /destination: `\/lp\/agencia-shopify\/\$\{ang\}`/);
+  assert.match(angRedirects, /require\(['"]\.\/angles['"]\)/);
+  assert.match(anglesSrc, /permanent: true/);
+  assert.match(anglesSrc, /destination: `\/lp\/agencia-shopify\/\$\{ang\}`/);
   assert.ok(expectedRoutes.sourceRoutes.includes('/lp/agencia-shopify'));
   assert.ok(expectedRoutes.sourceRoutes.includes('/lp/agencia-shopify/[ang]'));
   assert.deepEqual(expectedRoutes.governedConcreteRoutes['/lp/agencia-shopify/[ang]'].slice().sort(), [
@@ -165,7 +172,8 @@ test('VisitaCalificada se hereda del layout /lp; no se toca layout raíz ni CSS 
 
 test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.match(unsigned, /COPY SIN FIRMAR — \$\{tag\}/);
-  assert.match(copy, /COPY SIN FIRMAR|titular genérico|titular C3/);
+  assert.match(copy, /COPY SIN FIRMAR|PERMISO JOSÉ PENDIENTE/);
+  assert.match(anglesSrc, /titular genérico|titular C3/);
   assert.match(landing, /unsignedLabel|UnsignedBlock/);
   assert.doesNotMatch(copy, /\[COPY PENDIENTE/);
   assert.match(copy, /PERMISO JOSÉ PENDIENTE/);
@@ -179,12 +187,63 @@ test('copy visible va marcado COPY SIN FIRMAR y no inventa cifras', () => {
   assert.doesNotMatch(landing, /hidden=\{ang !== 'generic'\}/);
   assert.match(landing, /LP_META_HERO_TITLES\[ang\]/);
   assert.match(landing, /as="h1"/);
-  assert.match(copy, /tag: 'titular genérico'/);
-  assert.match(copy, /tag: 'titular C1'/);
-  assert.match(copy, /tag: 'titular C2'/);
-  assert.match(copy, /tag: 'titular C3'/);
-  assert.match(copy, /tag: 'titular C4'/);
-  assert.match(copy, /tag: 'titular C5'/);
+  assert.match(anglesSrc, /tag: 'titular genérico'/);
+  assert.match(anglesSrc, /tag: 'titular C1'/);
+  assert.match(anglesSrc, /tag: 'titular C2'/);
+  assert.match(anglesSrc, /tag: 'titular C3'/);
+  assert.match(anglesSrc, /tag: 'titular C4'/);
+  assert.match(anglesSrc, /tag: 'titular C5'/);
+});
+
+test('ángulos: un solo archivo de datos alimenta generateStaticParams, H1 y 308', () => {
+  const slugs = Object.keys(LP_META_ANGLE_TITLES);
+  assert.ok(slugs.includes('generic'));
+  assert.deepEqual([...LP_META_STATIC_ANGLES], slugs);
+  assert.deepEqual(Object.keys(LP_META_HERO_TITLES), slugs);
+  slugs.forEach((slug) => {
+    assert.equal(LP_META_HERO_TITLES[slug].tag, LP_META_ANGLE_TITLES[slug].tag);
+    assert.equal(LP_META_HERO_TITLES[slug].note, LP_META_ANGLE_TITLES[slug].note);
+  });
+
+  assert.deepEqual(
+    generateStaticAngleParams().map((p) => p.ang),
+    slugs,
+  );
+  assert.match(anglePage, /generateStaticAngleParams/);
+  assert.match(copy, /LP_META_ANGLE_TITLES/);
+  assert.match(landing, /LP_META_HERO_TITLES\[ang\]/);
+  assert.match(nextConfig, /LP_META_ANG_QUERY_REDIRECTS/);
+  assert.match(angRedirects, /require\(['"]\.\/angles['"]\)/);
+
+  const hardcodedList = /['"]c1['"]\s*,\s*['"]c2['"]\s*,\s*['"]c3['"]/;
+  assert.doesNotMatch(anglePage, hardcodedList);
+  assert.doesNotMatch(page, hardcodedList);
+  assert.doesNotMatch(nextConfig, hardcodedList);
+  assert.doesNotMatch(angRedirects, hardcodedList);
+  assert.doesNotMatch(landing, hardcodedList);
+  assert.doesNotMatch(copy, hardcodedList);
+
+  const destSlugs = [
+    ...new Set(
+      LP_META_ANG_QUERY_REDIRECTS.map((r) => r.destination.replace('/lp/agencia-shopify/', '')),
+    ),
+  ].sort();
+  assert.deepEqual(destSlugs, [...slugs].sort());
+  slugs.forEach((slug) => {
+    const values = new Set([slug, slug.toUpperCase()]);
+    values.forEach((value) => {
+      assert.ok(
+        LP_META_ANG_QUERY_REDIRECTS.some(
+          (r) =>
+            r.has[0].key === 'ang' &&
+            r.has[0].value === value &&
+            r.destination === `/lp/agencia-shopify/${slug}` &&
+            r.permanent === true,
+        ),
+        `falta 308 ?ang=${value} → /lp/agencia-shopify/${slug}`,
+      );
+    });
+  });
 });
 
 test('hero LCP es img local con priority y sin lazy', () => {

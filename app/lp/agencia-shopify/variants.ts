@@ -1,20 +1,28 @@
-export const LP_META_ANGLES = ['c1', 'c2', 'c3', 'c4', 'c5'] as const;
-/** The six H1s that existed in f59d442 (generic + C1–C5). */
-export const LP_META_STATIC_ANGLES = ['generic', ...LP_META_ANGLES] as const;
+import {
+  DEFAULT_LP_META_ANGLE as DEFAULT_ANGLE_FROM_DATA,
+  generateStaticAngleParams,
+  LP_META_STATIC_ANGLES as ANGLES_FROM_DATA,
+} from './angles.js';
+
+export { generateStaticAngleParams };
+
+export const LP_META_STATIC_ANGLES = ANGLES_FROM_DATA;
+export const DEFAULT_LP_META_ANGLE = DEFAULT_ANGLE_FROM_DATA;
+export const LP_META_ANGLES = LP_META_STATIC_ANGLES.filter((ang) => ang !== DEFAULT_LP_META_ANGLE);
+
 export const LP_META_MARKETS = ['es', 'latam', 've'] as const;
 
-export type LpMetaAngle = (typeof LP_META_STATIC_ANGLES)[number];
+export type LpMetaAngle = string;
 export type LpMetaMarket = (typeof LP_META_MARKETS)[number];
 
-export const DEFAULT_LP_META_ANGLE: LpMetaAngle = 'generic';
 export const DEFAULT_LP_META_MARKET: LpMetaMarket = 'es';
 
-export function isLpMetaAngle(value: string): value is Exclude<LpMetaAngle, 'generic'> {
-  return (LP_META_ANGLES as readonly string[]).includes(value);
+export function isLpMetaAngle(value: string): boolean {
+  return LP_META_ANGLES.includes(value);
 }
 
-export function isLpMetaStaticAngle(value: string): value is LpMetaAngle {
-  return (LP_META_STATIC_ANGLES as readonly string[]).includes(value);
+export function isLpMetaStaticAngle(value: string): boolean {
+  return LP_META_STATIC_ANGLES.includes(value);
 }
 
 export function isLpMetaMarket(value: string): value is LpMetaMarket {
@@ -45,9 +53,18 @@ export function parseLpMetaMarket(raw: string | null | undefined): LpMetaMarket 
   return isLpMetaMarket(value) ? value : DEFAULT_LP_META_MARKET;
 }
 
+function angleFromUtmContent(utmContent: string): string | undefined {
+  const fromUtm = utmContent.trim().toLowerCase();
+  const prefixes = LP_META_ANGLES.slice().sort((a, b) => b.length - a.length);
+  for (const slug of prefixes) {
+    if (fromUtm.startsWith(`${slug}_`)) return slug;
+  }
+  return undefined;
+}
+
 /**
- * `ang=c1…c5`. If missing/invalid, generic.
- * Fallback: `utm_content` starting with `{angulo}_` (brief §3).
+ * `ang=<slug>` from the data file. If missing/invalid, generic.
+ * Fallback: `utm_content` starting with `{slug}_` (brief §3).
  */
 export function parseLpMetaAngle(
   raw: string | null | undefined,
@@ -55,9 +72,8 @@ export function parseLpMetaAngle(
 ): LpMetaAngle {
   const direct = (raw || '').trim().toLowerCase();
   if (isLpMetaAngle(direct)) return direct;
-  const fromUtm = (utmContent || '').trim().toLowerCase();
-  const match = fromUtm.match(/^(c[1-5])_/);
-  if (match && isLpMetaAngle(match[1])) return match[1];
+  const fromUtm = angleFromUtmContent(utmContent || '');
+  if (fromUtm) return fromUtm;
   return DEFAULT_LP_META_ANGLE;
 }
 
