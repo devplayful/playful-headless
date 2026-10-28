@@ -64,6 +64,17 @@ test('sitemap service landings share the Service + BreadcrumbList builders', () 
   }
 
   assert.equal(buildServiceLandingJsonLd('marketing-internacional'), null);
+
+  const ecom = buildServiceLandingJsonLd('agencia-e-commerce', 'Desc agencia-e-commerce');
+  assert.deepEqual(ecom.service.areaServed, [
+    { '@type': 'Country', name: 'Venezuela' },
+    { '@type': 'Country', name: 'España' },
+    { '@type': 'Place', name: 'Latinoamérica' },
+  ]);
+  assert.doesNotMatch(serializeServiceLandingJsonLd(ecom.service), /LocalBusiness/);
+  assert.doesNotMatch(serializeServiceLandingJsonLd(ecom.service), /"address"/);
+  const seo = buildServiceLandingJsonLd('agencia-seo', 'Desc agencia-seo');
+  assert.equal(seo.service.areaServed, undefined);
 });
 
 test('[slug] and Shopify pages emit the playful-service scripts', () => {

@@ -46,6 +46,11 @@ export const SERVICE_LANDING_SCHEMAS = Object.freeze({
     name: 'Agencia ecommerce para venta directa',
     breadcrumbName: 'Agencia e-commerce',
     serviceType: 'E-commerce',
+    areaServed: Object.freeze([
+      Object.freeze({ '@type': 'Country', name: 'Venezuela' }),
+      Object.freeze({ '@type': 'Country', name: 'España' }),
+      Object.freeze({ '@type': 'Place', name: 'Latinoamérica' }),
+    ]),
   }),
   'agencia-shopify': Object.freeze({
     slug: 'agencia-shopify',
@@ -71,6 +76,7 @@ export function buildServiceJsonLd(input: {
   path: string;
   serviceType: string;
   description?: string;
+  areaServed?: readonly Record<string, string>[];
 }): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
@@ -85,6 +91,7 @@ export function buildServiceJsonLd(input: {
       name: ORGANIZATION_SCHEMA.name,
       url: ORGANIZATION_SCHEMA.url,
     },
+    ...(input.areaServed ? { areaServed: input.areaServed } : {}),
   };
 }
 
@@ -125,6 +132,9 @@ export function buildServiceLandingJsonLd(
       path: schema.path,
       serviceType: schema.serviceType,
       description,
+      ...('areaServed' in schema && schema.areaServed
+        ? { areaServed: schema.areaServed }
+        : {}),
     }),
     breadcrumb: buildBreadcrumbListJsonLd({
       name: schema.breadcrumbName,

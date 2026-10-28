@@ -63,7 +63,7 @@ export type BlogLandingLinkResult = {
 };
 
 /**
- * 29 contextual blog→landing links. `context` is the live visible phrase
+ * 32 contextual blog→landing links. `context` is the live visible phrase
  * (CSV rows 6/9/23 had a stray space before a comma; row 5 has a NBSP
  * before "de seguir"). We match the HTML, not invented copy.
  */
@@ -298,6 +298,30 @@ export const BLOG_CONTEXT_INTERNAL_LINKS: readonly BlogContextInternalLink[] = [
     anchor: 'tienda online',
     context:
       'Entre las ventajas que tiene este sistema de gestión de contenido es que puedes optar por un paquete gratuito, que te va a permitir realizar tu blog, sitio web o tienda online.',
+  },
+  {
+    n: 30,
+    slug: 'que-es-una-agencia-de-sem',
+    href: '/agencia-seo',
+    anchor: 'SEO Avanzado',
+    context:
+      'SEO Avanzado: Estrategias de optimización para mejorar tu visibilidad orgánica y atraer tráfico de calidad a tu sitio web.',
+  },
+  {
+    n: 31,
+    slug: 'diseno-web-de-paginas-web',
+    href: '/agencia-ux-ui',
+    anchor: 'navegación intuitiva',
+    context:
+      'Esto implica la facilidad de uso, la navegación intuitiva, la accesibilidad y la capacidad de respuesta del diseño.',
+  },
+  {
+    n: 32,
+    slug: 'desarrollo-de-aplicaciones-web',
+    href: '/agencia-ux-ui',
+    anchor: 'experiencia de usuario óptima',
+    context:
+      'optimizando el código, la carga de recursos y la velocidad de respuesta para garantizar una experiencia de usuario óptima.',
   },
 ];
 

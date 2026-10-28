@@ -1,0 +1,143 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const {
+  COPY_UNSIGNED,
+  ECOM_H2_LIVE,
+  ECOM_H2_SIGNED,
+  ECOM_INTRO_PLACEHOLDER_ATTR,
+  ECOM_VE_FAQ_QUESTION,
+  SOYTECHNO_CASE_ANCHOR,
+  rewriteEcommerceAeo2810,
+} = await import('../utils/ecommerce-aeo-2810.ts');
+const { SOYTECHNO_CASE_HREF } = await import('../utils/ecommerce-soytechno-case-link.ts');
+const { getServiceFaqJsonLd } = await import('../utils/service-faq-jsonld.ts');
+const {
+  buildServiceLandingJsonLd,
+  serializeServiceLandingJsonLd,
+} = await import('../utils/service-landing-jsonld.ts');
+const { PAGE_TITLE_OVERRIDES, PAGE_DESCRIPTION_OVERRIDES } = await import(
+  '../utils/page-seo-overrides.mjs'
+);
+
+const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+const elementor = readFileSync(
+  new URL('../components/ElementorPageContent.tsx', import.meta.url),
+  'utf8',
+);
+const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
+const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
+const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+const globalCss = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
+const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
+
+const LIVE_H1 = 'Tu Agencia e-Commerce para Resultados Reales';
+const LAST_FAQ =
+  '¿Puedo trabajar con una agencia e-commerce si ya tengo una tienda en línea?';
+
+const SAMPLE = `
+<h1 class="elementor-heading-title">${LIVE_H1}</h1>
+<h2 class="elementor-heading-title elementor-size-default">${ECOM_H2_LIVE}</h2>
+<p>¿Buscas una Agencia e-Commerce que Hable Claro?</p>
+<h3 class="elementor-image-box-title">SEO que Encuentra a tus Clientes</h3>
+<p>No es magia, es estrategia. Trabajamos el SEO de tu e-commerce para que quienes buscan productos como los tuyos, te encuentren primero.</p>
+<h3 class="elementor-image-box-title">Diseño que Vende (y Convence)</h3>
+<p>¿Bonito y funcional? ¡Sí, se puede! Diseñamos una tienda visualmente atractiva que haga que tus clientes quieran añadir al carrito y no mirar atrás.</p>
+<h2 class="main-heading">Marcas que han trabajado con nosotros</h2>
+<div class="elementor-accordion-item">
+  <div id="elementor-tab-title-1555" class="elementor-tab-title" data-tab="5">
+    <a class="elementor-accordion-title">${LAST_FAQ}</a>
+  </div>
+  <div id="elementor-tab-content-1555" class="elementor-tab-content" data-tab="5"><p>Si ya tienes una tienda online.</p></div>
+</div>
+`;
+
+test('rewrites the e-commerce H2, intro slot, FAQ and SoyTechno case on that slug only', () => {
+  const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+  assert.match(rewritten, new RegExp(`<h1[^>]*>${LIVE_H1}</h1>`));
+  assert.doesNotMatch(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
+  assert.match(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_SIGNED}</h2>`));
+  assert.match(
+    rewritten,
+    new RegExp(
+      `<h2[^>]*>${ECOM_H2_SIGNED}</h2><p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>`,
+    ),
+  );
+  assert.match(rewritten, new RegExp(ECOM_VE_FAQ_QUESTION.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(
+    rewritten,
+    new RegExp(`<a href="${SOYTECHNO_CASE_HREF}">${SOYTECHNO_CASE_ANCHOR}</a>`),
+  );
+  assert.equal(rewriteEcommerceAeo2810(SAMPLE, 'agencia-seo'), SAMPLE);
+  assert.equal(rewriteEcommerceAeo2810(rewritten, 'agencia-e-commerce'), rewritten);
+});
+
+test('does not invent the H3 phrases that are not on the live landing', () => {
+  const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+  assert.doesNotMatch(rewritten, /SEO para tu tienda online/);
+  assert.doesNotMatch(rewritten, /diseño UX\/UI de tu tienda/);
+  assert.match(rewritten, /SEO que Encuentra a tus Clientes/);
+  assert.match(rewritten, /Diseño que Vende \(y Convence\)/);
+});
+
+test('Service JSON-LD adds areaServed without LocalBusiness or address', () => {
+  const jsonLd = buildServiceLandingJsonLd('agencia-e-commerce', 'desc');
+  assert.equal(jsonLd.service['@type'], 'Service');
+  assert.deepEqual(jsonLd.service.areaServed, [
+    { '@type': 'Country', name: 'Venezuela' },
+    { '@type': 'Country', name: 'España' },
+    { '@type': 'Place', name: 'Latinoamérica' },
+  ]);
+  const serialized = serializeServiceLandingJsonLd(jsonLd.service);
+  assert.doesNotMatch(serialized, /LocalBusiness/);
+  assert.doesNotMatch(serialized, /"address"/);
+  assert.doesNotMatch(serialized, /PostalAddress/);
+});
+
+test('FAQPage JSON-LD includes the Caracas/Venezuela question', () => {
+  const faq = getServiceFaqJsonLd('agencia-e-commerce');
+  assert.equal(faq.mainEntity.length, 6);
+  const last = faq.mainEntity[5];
+  assert.equal(last.name, ECOM_VE_FAQ_QUESTION);
+  assert.equal(last.acceptedAnswer.text, COPY_UNSIGNED);
+});
+
+test('title, meta and H1 overrides stay untouched', () => {
+  assert.equal(
+    PAGE_TITLE_OVERRIDES['agencia-e-commerce'],
+    'Agencia de ecommerce para marcas D2C | Playful',
+  );
+  assert.equal(
+    PAGE_DESCRIPTION_OVERRIDES['agencia-e-commerce'],
+    'Agencia de ecommerce para marcas que venden directo al consumidor: ordenamos tienda online, posicionamiento y diseño para vender más. Agenda tu llamada.',
+  );
+  assert.match(SAMPLE, new RegExp(LIVE_H1));
+  assert.doesNotMatch(elementor, /yoast_wpseo_title/);
+  assert.match(slugPage, /applyPageTitleOverride/);
+});
+
+test('getPageBySlug and Elementor compose the 28 oct rewriter; chrome stays out', () => {
+  assert.match(wordpress, /rewriteEcommerceAeo2810\(/);
+  assert.match(elementor, /rewriteEcommerceAeo2810\(/);
+  assert.match(elementor, /rewriteEcommerceAeo2810\(\s*rewriteEcommerceZelleCover\(/);
+  for (const source of [header, footer, layout, globalCss, middleware]) {
+    assert.doesNotMatch(source, /rewriteEcommerceAeo2810/);
+    assert.doesNotMatch(source, /COPY SIN FIRMAR/);
+  }
+});
+
+test(
+  'pre-release: intro and FAQ answer must not ship COPY SIN FIRMAR',
+  {
+    skip:
+      'Contenido firmará el párrafo bajo el H2 y la respuesta de la FAQ de Caracas/Venezuela. Quitar este skip cuando el copy esté firmado. El assert falla con «COPY SIN FIRMAR».',
+  },
+  () => {
+    const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+    const faq = getServiceFaqJsonLd('agencia-e-commerce');
+    assert.doesNotMatch(rewritten, /COPY SIN FIRMAR/);
+    assert.doesNotMatch(JSON.stringify(faq), /COPY SIN FIRMAR/);
+  },
+);

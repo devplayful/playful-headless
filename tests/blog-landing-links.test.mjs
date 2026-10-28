@@ -57,8 +57,8 @@ test('map keeps the 22 closed slug→{href,anchor} primaries', () => {
     assert.equal(entry.context, item.context, item.slug);
     assert.equal(entry.occurrence, item.occurrence, item.slug);
   }
-  assert.equal(getBlogLandingLink('que-es-una-agencia-de-sem'), null);
-  assert.equal(Object.keys(BLOG_LANDING_LINKS).length, 37);
+  assert.equal(getBlogLandingLink('que-es-una-agencia-de-sem')?.href, '/agencia-seo');
+  assert.equal(Object.keys(BLOG_LANDING_LINKS).length, 39);
 });
 
 test('copy-locked slugs are the six with a different live anchor', () => {
@@ -365,8 +365,8 @@ function escapeRe(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-test('the 29 contextual internal links are in the map with exact context', () => {
-  assert.equal(BLOG_CONTEXT_INTERNAL_LINKS.length, 29);
+test('the 32 contextual internal links are in the map with exact context', () => {
+  assert.equal(BLOG_CONTEXT_INTERNAL_LINKS.length, 32);
   const destsBySlug = new Map();
   for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
     assert.ok(item.context.includes(item.anchor), `n=${item.n} context must contain anchor`);
@@ -385,7 +385,7 @@ test('the 29 contextual internal links are in the map with exact context', () =>
   }
 });
 
-test('each of the 29 wraps only the anchor inside the exact context phrase', () => {
+test('each of the 32 wraps only the anchor inside the exact context phrase', () => {
   for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
     const html =
       `<p>${item.context}</p>` +
@@ -407,7 +407,7 @@ test('each of the 29 wraps only the anchor inside the exact context phrase', () 
   }
 });
 
-test('each of the 29 skips an already-linked anchor in that context phrase', () => {
+test('each of the 32 skips an already-linked anchor in that context phrase', () => {
   for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
     const linked = item.context.replace(
       item.anchor,
@@ -426,7 +426,7 @@ test('each of the 29 skips an already-linked anchor in that context phrase', () 
   }
 });
 
-test('each of the 29 skips a missing context phrase without inventing copy', () => {
+test('each of the 32 skips a missing context phrase without inventing copy', () => {
   for (const item of BLOG_CONTEXT_INTERNAL_LINKS) {
     const html = `<p>Texto sin la frase de contexto ni el ancla mapeada para este destino.</p>`.repeat(8);
     const { html: out, results } = applyBlogLandingLinkHtml(html, item.slug);

@@ -1,4 +1,5 @@
 import { ZELLE_VE_BLOG_SLUG } from '../lib/blog-body-overrides.ts';
+import { COPY_UNSIGNED, ECOM_VE_FAQ_QUESTION } from './ecommerce-aeo-2810.ts';
 
 type FaqItem = {
   name: string;
@@ -41,6 +42,10 @@ export const SERVICE_FAQ_PAGES = Object.freeze({
     {
       name: '¿Puedo trabajar con una agencia e-commerce si ya tengo una tienda en línea?',
       text: 'Si ya tienes una tienda online, te ayudamos a mejorar su rendimiento, aumentar la visibilidad y optimizar la experiencia de compra. No importa en qué etapa estés, siempre hay formas de hacer que funcione mejor.',
+    },
+    {
+      name: ECOM_VE_FAQ_QUESTION,
+      text: COPY_UNSIGNED,
     },
   ]),
   'agencia-seo': faqPage([
