@@ -108,10 +108,19 @@ export const ZELLE_VE_BLOG_BODY_HTML = `
 <p>Lo que sí ha crecido es la cantidad de negocios venezolanos que lo integran en sus tiendas en línea como método de pago formal dentro del checkout, en lugar de manejarlo por canales informales como WhatsApp o mensajes directos.</p>
 `.trim();
 
+/**
+ * TODO playful-copy #380 (unsigned): Contenido will replace this entire
+ * paragraph — not just the Zelle anchor. Keep the current HTML until that
+ * copy is signed. Do not invent a replacement.
+ */
+export const CASHEA_P1_COPY_ISSUE = 'playful-copy#380';
+export const CASHEA_P1_CURRENT_HTML =
+  '<p>Si todavía estás evaluando qué métodos de pago ofrecer en conjunto, empieza por nuestra guía de <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>, donde comparamos los métodos que integramos en tiendas online. Aquí vamos a fondo solo con Cashea.</p>';
+
 export const CASHEA_COMERCIOS_BLOG_BODY_HTML = `
 <p>Si tu tienda ya vende y tus compradores te preguntan si pueden pagar en cuotas, lo que te toca entender es Cashea para comercios, que no es lo mismo que la app que usan ellos.</p>
 <p>Esta guía está escrita para el comercio. Te explica cómo funciona Cashea desde el lado de quien vende, qué te pide el proveedor para afiliarte y qué tiene que resolver tu tienda para que las cuotas aparezcan en el checkout sin romper tu operación.</p>
-<p>Si todavía estás evaluando qué métodos de pago ofrecer en conjunto, empieza por nuestra guía de <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">cómo integrar Zelle en tu ecommerce</a>, donde comparamos los métodos que integramos en tiendas online. Aquí vamos a fondo solo con Cashea.</p>
+${CASHEA_P1_CURRENT_HTML}
 <h2 id="que-es-cashea-para-un-comercio-y-que-es-la-app-del-comprador">Qué es Cashea para un comercio (y qué es la app del comprador)</h2>
 <p>Cashea es una empresa venezolana de compra ahora y paga después. El comprador paga una inicial en el momento de la compra y el resto en cuotas iguales sin interés.</p>
 <p>Para el comprador, Cashea es una app. Ahí paga sus cuotas y busca tiendas aliadas. Si llegaste a esta página buscando cómo pagar con Cashea, lo que necesitas está en esa app y no en este artículo.</p>

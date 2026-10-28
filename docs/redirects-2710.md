@@ -43,6 +43,12 @@ Párrafo 1 (ancla firmada):
 
 Párrafo 2 (SiTef / Instapago): un solo enlace a Zelle. Se quitó el de «pasarela de pagos en Venezuela»; queda el de «Zelle en Venezuela como método de pago para tu ecommerce». Contenido reescribirá esa frase.
 
+### TODO playful-copy #380 (sin firmar)
+
+El **párrafo 1 cambia entero**, no solo el ancla. Es el que hoy empieza por «Si todavía estás evaluando qué métodos de pago ofrecer en conjunto…» y ancla `cómo integrar Zelle en tu ecommerce`.
+
+Contenido cierra el texto en playful-copy #380. **Aún no está firmado.** Se deja el párrafo actual (`CASHEA_P1_CURRENT_HTML` en `lib/blog-body-overrides.ts`). No se inventa un reemplazo. Cuando #380 esté firmado, sustituir ese HTML completo.
+
 ```html
 <p>En nuestra guía de pasarela de pagos en Venezuela comparamos SiTef, Instapago… en <a href="https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce">Zelle en Venezuela como método de pago para tu ecommerce</a> está cómo automatizar su validación.</p>
 ```

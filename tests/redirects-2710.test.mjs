@@ -26,6 +26,8 @@ const {
 const {
   CASHEA_COMERCIOS_BLOG_BODY_HTML,
   CASHEA_COMERCIOS_BLOG_SLUG,
+  CASHEA_P1_COPY_ISSUE,
+  CASHEA_P1_CURRENT_HTML,
 } = await import('../lib/blog-body-overrides.ts');
 const { rewriteInSitePageHrefs } = await import('../services/rewrite-in-site-hrefs.mjs');
 
@@ -134,6 +136,21 @@ test('3) Cashea body and template rewrite land on Zelle without hops', () => {
     ZELLE_VE_HREF,
   );
   assert.match(blogPage, /`\/blog\/\$\{category\}\/\$\{postSlug\}`/);
+});
+
+test('3b) Cashea paragraph 1 stays until playful-copy #380 is signed', () => {
+  const docs = readFileSync(new URL('../docs/redirects-2710.md', import.meta.url), 'utf8');
+  const overrides = readFileSync(new URL('../lib/blog-body-overrides.ts', import.meta.url), 'utf8');
+  assert.equal(CASHEA_P1_COPY_ISSUE, 'playful-copy#380');
+  assert.match(
+    CASHEA_P1_CURRENT_HTML,
+    /cómo integrar Zelle en tu ecommerce/,
+  );
+  assert.ok(CASHEA_COMERCIOS_BLOG_BODY_HTML.includes(CASHEA_P1_CURRENT_HTML));
+  assert.match(docs, /TODO playful-copy #380/);
+  assert.match(docs, /párrafo 1 cambia entero/);
+  assert.match(overrides, /TODO playful-copy #380/);
+  assert.doesNotMatch(CASHEA_P1_CURRENT_HTML, /COPY SIN FIRMAR/);
 });
 
 test('4) /lp/calentamiento stays out of 301/410 maps and chrome files stay untouched', () => {
