@@ -152,6 +152,7 @@ test('CTA local conserva la query completa y el propagador global no se toca', (
   assert.match(landing, /dataCta="lp-meta-hero"/);
   assert.match(landing, /dataCta="lp-meta-hero-sec"/);
   assert.match(landing, /QUERY_BOOT_SCRIPT/);
+  assert.match(landing, /type="module"/);
   assert.match(queryBoot, /location\.search/);
   assert.doesNotMatch(queryBoot, /<h1|querySelector\(["']h1/);
   assert.match(sticky, /data-cta="lp-meta-sticky"|dataCta="lp-meta-sticky"/);
@@ -251,7 +252,7 @@ test('hero LCP es img local con priority y sin lazy', () => {
   assert.match(hero, /hero-gORwV7MSXO@1x\.webp/);
   assert.match(hero, /HeroLcpPreload/);
   assert.match(hero, /rel="preload"/);
-  assert.match(hero, /decoding="async"/);
+  assert.match(hero, /decoding="sync"/);
   assert.doesNotMatch(hero, /HERO_LCP_DATA_URI|data:image\/webp/);
   assert.doesNotMatch(hero, /opacity\s*[:=]/);
   assert.doesNotMatch(hero, /loading=["']lazy["']/);

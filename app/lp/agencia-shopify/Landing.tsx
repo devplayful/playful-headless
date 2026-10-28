@@ -346,7 +346,7 @@ export default function Landing({ ang }: { ang: LpMetaAngle }) {
           </div>
         </section>
       </article>
-      <script dangerouslySetInnerHTML={{ __html: QUERY_BOOT_SCRIPT }} />
+      <script type="module" dangerouslySetInnerHTML={{ __html: QUERY_BOOT_SCRIPT }} />
       <StickyCta />
     </>
   );

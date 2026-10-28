@@ -20,7 +20,7 @@ export default function HeroLcp() {
         height={360}
         alt={resolveImageAlt(HERO_LCP_PNG)}
         fetchPriority="high"
-        decoding="async"
+        decoding="sync"
         style={HERO_IMG_STYLE}
       />
     </div>
