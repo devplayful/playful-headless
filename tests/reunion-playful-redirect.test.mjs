@@ -31,6 +31,33 @@ test('reunionPlayfulWidgetDestination merges search onto the widget URL', () => 
   assert.equal(dest.startsWith(BOOKING_WIDGET_HREF), true);
 });
 
+test('utm_id is forwarded to GHL like the other utm_* and recovered from the cookie landing', async () => {
+  const { emptyAttribution, serializeAttributionCookie } = await import('../lib/contact/attribution.ts');
+  const fromUrl = reunionPlayfulWidgetDestination({
+    search: '?utm_id=123&utm_source=facebook',
+    lastCookie: '',
+    firstCookie: '',
+  });
+  const url = new URL(fromUrl);
+  assert.equal(url.searchParams.get('utm_id'), '123');
+  assert.equal(url.searchParams.get('utm_source'), 'facebook');
+
+  const lastCookie = serializeAttributionCookie(emptyAttribution({
+    captured: true,
+    source: 'facebook',
+    landing: '/agencia-shopify?utm_id=123&utm_source=facebook',
+    utm_source: 'facebook',
+  }));
+  const fromCookie = reunionPlayfulWidgetDestination({
+    search: '',
+    lastCookie,
+    firstCookie: '',
+  });
+  const cookieUrl = new URL(fromCookie);
+  assert.equal(cookieUrl.searchParams.get('utm_id'), '123');
+  assert.equal(cookieUrl.searchParams.get('utm_source'), 'facebook');
+});
+
 test('scheduleReunionPlayfulRedirect redirects after GA readiness', () => {
   let redirected = false;
   const timers = [];

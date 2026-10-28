@@ -69,7 +69,7 @@ const FIRST_TOUCH = emptyAttribution({
   gclid: 'FIRST999',
 });
 
-test('booking query keys are the Ads click ids, fbclid and five utms', () => {
+test('booking query keys are the Ads click ids, fbclid and six utms', () => {
   assert.deepEqual([...BOOKING_QUERY_KEYS], [
     'gclid',
     'gbraid',
@@ -80,6 +80,7 @@ test('booking query keys are the Ads click ids, fbclid and five utms', () => {
     'utm_campaign',
     'utm_term',
     'utm_content',
+    'utm_id',
   ]);
   assert.equal(BOOKING_WIDGET_HREF, 'https://api.playfulagency.com/widget/bookings/reunion-playful');
   assert.equal(BOOKING_HREF, BOOKING_WIDGET_HREF);
@@ -184,7 +185,7 @@ test('route resolver 302s to the widget with URL query, cookie fallback, or a cl
 });
 
 test('GET /reunion-playful forwards the entire incoming query including fbclid and unknown keys', () => {
-  const search = '?utm_source=facebook&utm_medium=paid_social&utm_campaign=set1&utm_content=ad1&fbclid=TEST123&gclid=G456&foo=bar';
+  const search = '?utm_source=facebook&utm_medium=paid_social&utm_campaign=set1&utm_content=ad1&utm_id=123&fbclid=TEST123&gclid=G456&foo=bar';
   const { location, status } = resolveBookingWidgetRedirect({ search });
   assert.equal(status, 302);
   const target = new URL(location);
@@ -194,6 +195,7 @@ test('GET /reunion-playful forwards the entire incoming query including fbclid a
   assert.equal(target.searchParams.get('utm_medium'), 'paid_social');
   assert.equal(target.searchParams.get('utm_campaign'), 'set1');
   assert.equal(target.searchParams.get('utm_content'), 'ad1');
+  assert.equal(target.searchParams.get('utm_id'), '123');
   assert.equal(target.searchParams.get('fbclid'), 'TEST123');
   assert.equal(target.searchParams.get('gclid'), 'G456');
   assert.equal(target.searchParams.get('foo'), 'bar');

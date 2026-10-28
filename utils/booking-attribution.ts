@@ -19,6 +19,7 @@ export const BOOKING_QUERY_KEYS = [
   'utm_campaign',
   'utm_term',
   'utm_content',
+  'utm_id',
 ] as const;
 
 export type BookingQueryKey = (typeof BOOKING_QUERY_KEYS)[number];
@@ -99,7 +100,7 @@ export function bookingQueryFromAttributionTouch(
     const value = firstNonEmptyBookingValue(touch[key]);
     if (value) fromFields[key] = value;
   }
-  // Cookie JSON does not store gbraid/wbraid; recover them from landing if present.
+  // Cookie JSON does not store gbraid/wbraid/utm_id; recover them from landing.
   return mergeBookingQuery(fromFields, bookingQueryFromLanding(touch.landing));
 }
 

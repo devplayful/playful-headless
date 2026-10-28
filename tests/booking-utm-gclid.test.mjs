@@ -10,14 +10,14 @@ const {
 } = await import('../utils/booking-attribution.ts');
 const { emptyAttribution, serializeAttributionCookie } = await import('../lib/contact/attribution.ts');
 
-const ALL_KEYS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+const ALL_KEYS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id'];
 
-test('booking keys cover the 9 click ids and utm params (CEO GO 21:01)', () => {
+test('booking keys cover the click ids and six utm params (tanda 16, 28 oct)', () => {
   assert.deepEqual([...BOOKING_QUERY_KEYS].sort(), [...ALL_KEYS].sort());
 });
 
 test('visible Reservar href keeps every key from the page URL, skips empty ones', () => {
-  const search = '?gclid=TEST123&gbraid=GB&wbraid=WB&fbclid=FB&utm_source=google&utm_medium=cpc&utm_campaign=c&utm_term=t&utm_content=x&utm_term2=&qa=1&utm_content=';
+  const search = '?gclid=TEST123&gbraid=GB&wbraid=WB&fbclid=FB&utm_source=google&utm_medium=cpc&utm_campaign=c&utm_term=t&utm_content=x&utm_id=123&utm_term2=&qa=1&utm_content=';
   const href = bookingHrefFromPageSearch(search);
   const url = new URL(href, 'https://playfulagency.com');
   assert.equal(url.pathname, '/reunion-playful');
