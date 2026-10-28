@@ -273,7 +273,7 @@
 }
 
 .challengeCopy .contentItem:nth-child(1) h3 { color: #00193f; }
-.challengeCopy .contentItem:nth-child(2) h3 { color: #297dff; }
+.challengeCopy .contentItem:nth-child(2) h3 { color: #1256B5; }
 .challengeCopy .contentItem:nth-child(3) h3 { color: #3a0ca3; }
 
 .challengeLogo {
@@ -433,7 +433,7 @@
 
 .paletteCard img { height: 120px; object-fit: contain; width: 120px; }
 .darkCard { background: #00193f; color: white; }
-.greenCard { background: #297dff; color: white; }
+.greenCard { background: #1256B5; color: white; }
 .orangeCard { background: #d4e5ff; color: #00193f; }
 .brandPhoneMask {
   align-self: center;

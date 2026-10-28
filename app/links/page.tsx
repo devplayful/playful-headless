@@ -73,18 +73,21 @@ export default async function LinksBioPage() {
       className="relative min-h-screen overflow-hidden bg-[#E9D7FF]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat opacity-50" />
-      <div className="absolute top-16 left-6 h-3 w-3 rounded-full bg-purple-300 opacity-60 animate-bounce" />
+      <div className="absolute top-16 left-6 h-3 w-3 rounded-full bg-purple-300 opacity-60 animate-bounce" aria-hidden="true" />
       <div
         className="absolute top-36 right-8 h-4 w-4 rounded-full bg-pink-300 opacity-60 animate-bounce"
         style={{ animationDelay: '0.5s' }}
+        aria-hidden="true"
       />
       <div
         className="absolute bottom-40 left-10 h-2.5 w-2.5 rounded-full bg-teal-300 opacity-60 animate-bounce"
         style={{ animationDelay: '1s' }}
+        aria-hidden="true"
       />
       <div
         className="absolute bottom-24 right-14 h-3.5 w-3.5 rounded-full bg-yellow-300 opacity-60 animate-bounce"
         style={{ animationDelay: '1.5s' }}
+        aria-hidden="true"
       />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center px-5 py-10 sm:py-14">

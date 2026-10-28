@@ -30,7 +30,6 @@ import {
   resolveImageAlt,
   resolveMediaAlt,
 } from '@/lib/image-alt-overrides';
-
 /** ISR + CDN cache for case studies (TTFB). */
 export const revalidate = 3600;
 
@@ -371,7 +370,7 @@ export default async function SuccessStoryPage({
                       {
                         content: story.acf?.sextap,
                         className:
-                          'text-[#F78D2B] font-payton font-bold text-[18px] md:text-[20px] leading-relaxed mt-4',
+                          'text-[#B45309] font-payton font-bold text-[18px] md:text-[20px] leading-relaxed mt-4',
                       },
                       {
                         content: story.acf?.septimap,

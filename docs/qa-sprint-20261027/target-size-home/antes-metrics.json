@@ -1,0 +1,294 @@
+{
+  "title": "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+  "bullets": [
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active swiper-pagination-bullet-active-main",
+      "role": null,
+      "tab": null,
+      "w": 8,
+      "h": 8,
+      "bg": "rgb(0, 122, 255)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next",
+      "role": null,
+      "tab": null,
+      "w": 5.3,
+      "h": 5.3,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next-next",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active swiper-pagination-bullet-active-main",
+      "role": null,
+      "tab": null,
+      "w": 8,
+      "h": 8,
+      "bg": "rgb(0, 122, 255)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next",
+      "role": null,
+      "tab": null,
+      "w": 5.3,
+      "h": 5.3,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet swiper-pagination-bullet-active-next-next",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    },
+    {
+      "className": "swiper-pagination-bullet",
+      "role": null,
+      "tab": null,
+      "w": 2.6,
+      "h": 2.6,
+      "bg": "rgb(0, 0, 0)",
+      "after": {
+        "w": "auto",
+        "h": "auto",
+        "content": "none"
+      }
+    }
+  ],
+  "hiddenFocus": [
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide"
+    },
+    {
+      "tag": "A",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    },
+    {
+      "tag": "BUTTON",
+      "tab": null,
+      "parent": "slick-slide slick-cloned"
+    }
+  ]
+}
