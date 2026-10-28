@@ -17,7 +17,13 @@ import {
   PUBLICIDAD_DIGITAL_HREF,
   SKIP_BROKEN_HREF_PATHS,
   SKIP_REWRITE_SOURCE_SLUGS,
+  PASARELA_VE_HREF,
+  ZELLE_VE_HREF,
+  MIGRACION_SEO_PLAN_HREF,
+  CASHEA_COMERCIOS_SOURCE_SLUG,
+  SPAM_UNWRAP_HOSTS,
   decideBrokenInternalHref,
+  isSpamUnwrapHost,
 } from '../utils/broken-internal-hrefs.ts';
 
 const REWRITES = [
@@ -209,6 +215,62 @@ test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', 
     '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
   );
   assert.equal(rewritten, '<h2>agencia de SEO</h2>');
+});
+
+test('unwraps knockoutantipathy.com on any post and leaves the anchor text', () => {
+  assert.deepEqual([...SPAM_UNWRAP_HOSTS], ['knockoutantipathy.com']);
+  assert.equal(isSpamUnwrapHost('knockoutantipathy.com'), true);
+  assert.equal(isSpamUnwrapHost('www.knockoutantipathy.com'), true);
+  assert.equal(isSpamUnwrapHost('evilknockoutantipathy.com'), false);
+
+  const spam = 'http://knockoutantipathy.com/zf5s9t93?key=9ca601a9f47c735df76d5ca46fa26a66&submetric=17624621';
+  const encoded = 'http://knockoutantipathy.com/zf5s9t93?key=9ca601a9f47c735df76d5ca46fa26a66&amp;submetric=17624621';
+  const cases = [
+    { source: '/blog/seo/que-es-un-blog', from: spam, anchor: 'blog de Policlínica Metropolitana' },
+    { source: '/blog/tecnologia/tendencias-en-diseno-web-para-el-2022', from: encoded, anchor: 'buyer persona' },
+    { source: '/blog/pautas-digitales/5-ventajas-para-obtener-clientes-con-facebook-ads', from: spam, anchor: 'sigue leyendo' },
+  ];
+
+  for (const item of cases) {
+    const html = renderCase(item);
+    const rewritten = rewriteInSitePageHrefs(html, item.source);
+    assert.doesNotMatch(rewritten, /<a\b/, `${item.source} still has <a>`);
+    assert.doesNotMatch(rewritten, /knockoutantipathy/i, `${item.source} still names the spam host`);
+    assert.match(rewritten, new RegExp(item.anchor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.equal(decideBrokenInternalHref(item.from, item.source, item.anchor).unwrap, true);
+  }
+});
+
+test('Cashea-only rewrite sends pasarela and migración hrefs to live dests', () => {
+  const cashea = `/blog/tecnologia/${CASHEA_COMERCIOS_SOURCE_SLUG}`;
+  assert.equal(decideBrokenInternalHref(PASARELA_VE_HREF, cashea).href, ZELLE_VE_HREF);
+  assert.equal(
+    decideBrokenInternalHref(`https://playfulagency.com${PASARELA_VE_HREF}`, cashea).href,
+    ZELLE_VE_HREF,
+  );
+  assert.equal(
+    decideBrokenInternalHref(MIGRACION_SEO_PLAN_HREF, cashea).href,
+    AGENCIA_SEO_HREF,
+  );
+
+  const pasarelaHtml = `<p>Lee <a href="${PASARELA_VE_HREF}">pasarela de pagos en Venezuela</a> hoy.</p>`;
+  const pasarelaRewritten = rewriteInSitePageHrefs(pasarelaHtml, cashea);
+  assert.match(pasarelaRewritten, new RegExp(`href="${ZELLE_VE_HREF.replaceAll('/', '\\/')}">pasarela de pagos en Venezuela</`));
+  assert.doesNotMatch(pasarelaRewritten, /pasarela-de-pagos-venezuela/);
+
+  const migracionHtml = `<p>Lee <a href="${MIGRACION_SEO_PLAN_HREF}">migración SEO al cambiar de plataforma</a> hoy.</p>`;
+  const migracionRewritten = rewriteInSitePageHrefs(migracionHtml, cashea);
+  assert.match(migracionRewritten, /href="\/agencia-seo">migración SEO al cambiar de plataforma</);
+  assert.doesNotMatch(migracionRewritten, /migracion-seo-cambiar-de-plataforma/);
+
+  assert.equal(
+    decideBrokenInternalHref(PASARELA_VE_HREF, '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce').href,
+    PASARELA_VE_HREF,
+  );
+  assert.equal(
+    decideBrokenInternalHref(MIGRACION_SEO_PLAN_HREF, '/blog/seo/que-es-un-blog').href,
+    MIGRACION_SEO_PLAN_HREF,
+  );
 });
 
 test('does not invent dests outside the closed list', () => {

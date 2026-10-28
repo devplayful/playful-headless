@@ -19,6 +19,13 @@ export const CASOS_HREF = '/casos-de-exito';
 export const PUBLICIDAD_DIGITAL_HREF = '/blog/pautas-digitales/publicidad-digital-en-tu-negocio';
 export const GUIA_MARKETING_HREF = '/blog/pautas-digitales/guia-para-hacer-marketing-digital';
 export const INSTAGRAM_ADS_HREF = '/blog/otros/conoce-todo-sobre-instagram-ads';
+export const ZELLE_VE_HREF = '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
+export const PASARELA_VE_HREF = '/pasarela-de-pagos-venezuela';
+export const MIGRACION_SEO_PLAN_HREF = '/blog/seo/migracion-seo-cambiar-de-plataforma';
+export const CASHEA_COMERCIOS_SOURCE_SLUG = 'cashea-para-comercios';
+
+/** External injection hosts. Unwrap the <a> on every post; keep the anchor text. */
+export const SPAM_UNWRAP_HOSTS = Object.freeze(['knockoutantipathy.com']);
 
 export const UNWRAP = null;
 
@@ -185,6 +192,11 @@ export const BROKEN_HREF_BY_SOURCE: Readonly<Record<string, Readonly<Record<stri
   'ecosistema-digital-de-tu-marca': {
     '/blog/email-marketing': '/blog/email-marketing/estrategia-de-email-marketing',
   },
+  /** GO 28 oct 2026: Cashea 404 hrefs. Keep the visible anchors. */
+  [CASHEA_COMERCIOS_SOURCE_SLUG]: {
+    [PASARELA_VE_HREF]: ZELLE_VE_HREF,
+    [MIGRACION_SEO_PLAN_HREF]: AGENCIA_SEO_HREF,
+  },
 });
 
 const TOC_SELF_PATHS = new Set([
@@ -228,6 +240,13 @@ export function isSkipRewriteSource(sourcePath: string): boolean {
 
 export function isLandingCarouselSource(sourcePath: string): boolean {
   return LANDING_SOURCE_SET.has(sourceSlugFromPath(sourcePath));
+}
+
+export function isSpamUnwrapHost(host: string): boolean {
+  const normalized = host.toLowerCase();
+  return SPAM_UNWRAP_HOSTS.some(
+    (spam) => normalized === spam || normalized.endsWith(`.${spam}`),
+  );
 }
 
 export function normalizeAnchorText(inner: string): string {
@@ -344,11 +363,14 @@ export function decideBrokenInternalHref(
   inner = '',
 ): HrefDecision {
   if (typeof href !== 'string' || !href) return { href, unwrap: false };
-  if (isSkipRewriteSource(sourcePath)) return { href, unwrap: false };
 
   const parsed = parseHref(href);
+  if (parsed && isSpamUnwrapHost(parsed.host)) {
+    return { href, unwrap: true };
+  }
+
+  if (isSkipRewriteSource(sourcePath)) return { href, unwrap: false };
   if (!parsed) return { href, unwrap: false };
-  if (SKIP_PATH_SET.has(parsed.pathname)) return { href, unwrap: false };
   if (isWpAsset(parsed.pathname)) return { href, unwrap: false };
 
   if (parsed.formDest) {
@@ -372,6 +394,8 @@ export function decideBrokenInternalHref(
       if (typeof override === 'string') return { href: joinDest(override, parsed), unwrap: false };
     }
   }
+
+  if (SKIP_PATH_SET.has(parsed.pathname)) return { href, unwrap: false };
 
   if (isLandingCarouselSource(sourcePath)) {
     const landing = landingCarouselDest(parsed.pathname);
