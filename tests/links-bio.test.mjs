@@ -56,7 +56,7 @@ const EXPECTED_BUTTONS = [
     'btn-zelle',
   ],
   ['Casos', '/casos-de-exito', 'btn-casos'],
-  ['Nuestra web', '/agencia-e-commerce', 'btn-web'],
+  ['Nuestra web', '/', 'btn-web'],
 ];
 
 function entryByPath(path) {
@@ -72,6 +72,24 @@ test('bio buttons stay in the brief order with exact labels and paths', () => {
   assert.doesNotMatch(page, /wa\.me|whatsapp|Escríbenos por WhatsApp/i);
   assert.doesNotMatch(entriesSource, /wa\.me|584121234567/i);
   assert.match(entriesSource, /WhatsApp fuera hasta que haya número oficial en la web/);
+});
+
+test('Nuestra web goes to home with the same UTM; Cashea is untouched', () => {
+  const web = entryByPath('/');
+  const cashea = entryByPath('/blog/tecnologia/cashea-para-comercios');
+  assert.equal(web.label, 'Nuestra web');
+  assert.equal(web.utmContent, 'btn-web');
+  assert.equal(
+    buildLinksBioHref(web),
+    '/?utm_source=ig&utm_medium=social&utm_campaign=links&utm_content=btn-web',
+  );
+  assert.equal(cashea.label, 'Cuotas con Cashea en WooCommerce');
+  assert.equal(cashea.path, '/blog/tecnologia/cashea-para-comercios');
+  assert.equal(cashea.utmContent, 'btn-cashea');
+  assert.equal(
+    buildLinksBioHref(cashea),
+    '/blog/tecnologia/cashea-para-comercios?utm_source=ig&utm_medium=social&utm_campaign=links&utm_content=btn-cashea',
+  );
 });
 
 test('each bio href carries the fixed ig/links campaign and its own utm_content', () => {
@@ -144,6 +162,7 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
   );
   assert.equal(linksBioArticleSlug('/casos-de-exito'), null);
   assert.equal(linksBioArticleSlug('/agencia-e-commerce'), null);
+  assert.equal(linksBioArticleSlug('/'), null);
   assert.equal(linksBioArticleSlug('/reunion-playful'), null);
   assert.equal(linksBioArticleSlug('/blog/tecnologia'), null);
   assert.equal(linksBioArticleSlug('/contactar-agencia-de-marketing-digital'), null);
@@ -176,7 +195,7 @@ test('article thumbs use the same blog cover; other links use destination covers
   assert.deepEqual(casos.collage, Object.values(CASOS_DE_EXITO_FEATURED_TAPAS));
   assert.equal(casos.collage?.length, 3);
 
-  for (const path of ['/reunion-playful', '/agencia-e-commerce']) {
+  for (const path of ['/reunion-playful', '/']) {
     const thumb = resolveLocalLinksBioThumbnail(entryByPath(path));
     assert.ok(thumb);
     assert.equal(thumb.isFallback, false);
@@ -184,7 +203,6 @@ test('article thumbs use the same blog cover; other links use destination covers
     assert.equal(thumb.src, LINKS_BIO_DESTINATION_COVERS[path].src);
   }
   assert.equal(LINKS_BIO_FALLBACK_THUMB, '/images/logos/playful-logov.svg');
-  assert.match(thumbsSource, /agencia-e-commerce\.jpg/);
   assert.match(thumbsSource, /\/images\/og\/home\.jpg/);
   assert.equal(
     resolveLocalLinksBioThumbnail({

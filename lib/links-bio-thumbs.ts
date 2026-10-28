@@ -39,8 +39,8 @@ export const LINKS_BIO_DESTINATION_COVERS: Record<
     objectFit: 'cover',
     collage: CASOS_COLLAGE,
   },
-  '/agencia-e-commerce': {
-    src: '/images/og/agencia-e-commerce.jpg',
+  '/': {
+    src: '/images/og/home.jpg',
     alt: '',
     objectFit: 'cover',
   },

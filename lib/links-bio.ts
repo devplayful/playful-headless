@@ -50,7 +50,7 @@ export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
   },
   {
     label: 'Nuestra web',
-    path: '/agencia-e-commerce',
+    path: '/',
     utmContent: 'btn-web',
   },
 ];
