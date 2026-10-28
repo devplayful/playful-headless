@@ -3,7 +3,7 @@
 Rama `cursor/agencia-ecommerce-seo-2810-d6e9`. Draft contra `main`. No merge y no producción.
 No se edita WordPress. Title, meta y H1 de `/agencia-e-commerce` no se tocan.
 
-Copy de playful-copy PR #380 SHA `11b38dc` / D6-D7 SHA `d4844d5`: SEO OK, estado **borrador para redline de José**. Cada bloque nuevo lleva `PENDIENTE_FIRMA_JOSE_380`. Guardia sin skip: `tests/unsigned-copy-guard.test.mjs`. Prerelease de la landing: `tests/prerelease-firma-jose-380-ecom.test.mjs` (sin skip).
+Copy de playful-copy PR #380 SHA `d4844d5`: SEO OK, estado **borrador para redline de José**. La marca `PENDIENTE_FIRMA_JOSE_380` vive en el código, no en el HTML. Guardia sin skip en el job `unsigned-copy`. Prerelease de la landing: `tests/prerelease-firma-jose-380-ecom.test.mjs` (sin skip).
 
 ## Hecho en código (`utils/ecommerce-aeo-2810.ts`, solo ese slug)
 

@@ -45,8 +45,14 @@ test('blog page applies the seo-y-sem rewriter on the post body', () => {
 
 test('playful-copy #380 appends only when the live original is present', () => {
   assert.equal(BLOG_SEO_380_APPENDS.length, 6);
+  const appendsSource = readFileSync(
+    new URL('../utils/blog-seo-380-appends.ts', import.meta.url),
+    'utf8',
+  );
+  assert.match(appendsSource, new RegExp(PENDIENTE_FIRMA_JOSE_380));
   for (const item of BLOG_SEO_380_APPENDS) {
-    assert.match(item.replace, new RegExp(PENDIENTE_FIRMA_JOSE_380));
+    assert.doesNotMatch(item.replace, /data-pendiente-firma/);
+    assert.doesNotMatch(item.replace, new RegExp(PENDIENTE_FIRMA_JOSE_380));
     const applied = rewriteBlogSeo380Appends(`<p>${item.find}</p>`, item.slug);
     assert.ok(applied.includes(item.replace), item.id);
     assert.equal(rewriteBlogSeo380Appends(applied, item.slug), applied, `${item.id} idempotent`);

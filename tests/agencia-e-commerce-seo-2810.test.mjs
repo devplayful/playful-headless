@@ -20,7 +20,6 @@ const {
   ECOM_VE_FAQ_ANSWER_JSONLD,
   ECOM_VE_FAQ_QUESTION,
   ECOM_VE_FAQ_QUESTION_PREV,
-  PENDIENTE_FIRMA_JOSE_380,
   SOYTECHNO_CASE_ANCHOR,
   applyJoseThenTanda6H2Order,
   isJoseH2Signed,
@@ -75,7 +74,7 @@ test('rewrites the e-commerce H2, intro slot, FAQ and SoyTechno case on that slu
   assert.doesNotMatch(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_LIVE}</h2>`));
   assert.match(rewritten, new RegExp(`<h2[^>]*>${ECOM_H2_SIGNED}</h2>`));
   assert.ok(rewritten.includes(ECOM_INTRO_HTML_380));
-  assert.ok(rewritten.includes(`data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}"`));
+  assert.doesNotMatch(rewritten, /data-pendiente-firma/);
   assert.ok(rewritten.includes(ECOM_VE_FAQ_ANSWER_HTML));
   assert.doesNotMatch(rewritten, /COPY SIN FIRMAR/);
   assert.match(rewritten, new RegExp(ECOM_VE_FAQ_QUESTION.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
@@ -95,12 +94,13 @@ test('appends D6 and D7 under their H3s when the live original is present', () =
   assert.ok(rewritten.includes(`${ECOM_D7_ORIGINAL}${ECOM_D7_APPEND}`));
   assert.match(
     rewritten,
-    /<a href="\/agencia-seo" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">SEO para tu tienda online<\/a>/,
+    /<a href="\/agencia-seo">SEO para tu tienda online<\/a>/,
   );
   assert.match(
     rewritten,
-    /<a href="\/agencia-ux-ui" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">diseño UX\/UI de tu tienda<\/a>/,
+    /<a href="\/agencia-ux-ui">diseño UX\/UI de tu tienda<\/a>/,
   );
+  assert.doesNotMatch(rewritten, /data-pendiente-firma/);
   assert.ok(rewritten.indexOf(ECOM_D6_H3) < rewritten.indexOf('SEO para tu tienda online'));
   assert.ok(rewritten.indexOf(ECOM_D7_H3) < rewritten.indexOf('diseño UX/UI de tu tienda'));
   assert.equal(rewriteEcommerceAeo2810(rewritten, 'agencia-e-commerce'), rewritten);
@@ -127,7 +127,7 @@ test('D6 can sit next to another /agencia-seo body link with a different anchor'
   assert.match(rewritten, /<a href="\/agencia-seo">agencia SEO<\/a>/);
   assert.match(
     rewritten,
-    /<a href="\/agencia-seo" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">SEO para tu tienda online<\/a>/,
+    /<a href="\/agencia-seo">SEO para tu tienda online<\/a>/,
   );
 });
 

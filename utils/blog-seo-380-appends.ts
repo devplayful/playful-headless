@@ -14,7 +14,8 @@ export type BlogSeo380Append = {
   replace: string;
 };
 
-const MARK = `data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}"`;
+// PENDIENTE_FIRMA_JOSE_380 — marca en código, no en el HTML renderizado.
+void PENDIENTE_FIRMA_JOSE_380;
 
 export const BLOG_SEO_380_APPENDS: readonly BlogSeo380Append[] = [
   {
@@ -22,21 +23,21 @@ export const BLOG_SEO_380_APPENDS: readonly BlogSeo380Append[] = [
     slug: 'desarrollo-de-aplicaciones-web',
     find: 'Pero antes de dar este paso es necesario que evalúes si es realmente lo que necesitas.',
     replace:
-      `Pero antes de dar este paso es necesario que evalúes si es realmente lo que necesitas. Si lo que te hace falta es mejorar la tienda online de tu negocio, también trabajamos como <a href="/agencia-e-commerce" ${MARK}>agencia de ecommerce para marcas que ya venden</a>.`,
+      'Pero antes de dar este paso es necesario que evalúes si es realmente lo que necesitas. Si lo que te hace falta es mejorar la tienda online de tu negocio, también trabajamos como <a href="/agencia-e-commerce">agencia de ecommerce para marcas que ya venden</a>.',
   },
   {
     id: 'E2',
     slug: 'que-es-una-agencia-de-sem',
     find: 'y estamos aquí para ayudarte a alcanzar tus metas.',
     replace:
-      `y estamos aquí para ayudarte a alcanzar tus metas. Si tienes un <a href="/agencia-e-commerce" ${MARK}>ecommerce que ya vende</a>, también trabajamos la tienda que recibe ese tráfico.`,
+      'y estamos aquí para ayudarte a alcanzar tus metas. Si tienes un <a href="/agencia-e-commerce">ecommerce que ya vende</a>, también trabajamos la tienda que recibe ese tráfico.',
   },
   {
     id: 'E3',
     slug: 'seo-y-sem-que-son-y-en-que-se-diferencian',
     find: 'Lo ideal, es combinar ambas estrategias para conseguir los objetivos deseados.',
     replace:
-      `Lo ideal, es combinar ambas estrategias para conseguir los objetivos deseados y, si vendes por internet, sumarlas a la <a href="/agencia-e-commerce" ${MARK}>estrategia para tu tienda online</a>.`,
+      'Lo ideal, es combinar ambas estrategias para conseguir los objetivos deseados y, si vendes por internet, sumarlas a la <a href="/agencia-e-commerce">estrategia para tu tienda online</a>.',
   },
   {
     id: 'S1',
@@ -44,21 +45,21 @@ export const BLOG_SEO_380_APPENDS: readonly BlogSeo380Append[] = [
     // Live HTML wraps Shopify in <strong>; the untagged phrase is not contiguous.
     find: '<strong>Shopify</strong> ofrece soporte 24/7, lo que te da tranquilidad si algo sale mal.',
     replace:
-      `Si montas una <a href="/agencia-shopify" ${MARK}>tienda en Shopify</a>, la plataforma ofrece soporte 24/7, lo que te da tranquilidad si algo sale mal.`,
+      'Si montas una <a href="/agencia-shopify">tienda en Shopify</a>, la plataforma ofrece soporte 24/7, lo que te da tranquilidad si algo sale mal.',
   },
   {
     id: 'S2',
     slug: 'los-5-problemas-de-e-commerce',
     find: '<strong>Solución:</strong> Optimizar el proceso de compra es clave.',
     replace:
-      `<strong>Solución:</strong> Optimizar el proceso de compra es clave. Si vendes con Shopify, ese trabajo empieza por el <a href="/agencia-shopify" ${MARK}>checkout de tu tienda Shopify</a>.`,
+      '<strong>Solución:</strong> Optimizar el proceso de compra es clave. Si vendes con Shopify, ese trabajo empieza por el <a href="/agencia-shopify">checkout de tu tienda Shopify</a>.',
   },
   {
     id: 'S3',
     slug: 'cintillos-de-promocion',
     find: 'aprovechen al máximo las ofertas que tienes para ellos.',
     replace:
-      `aprovechen al máximo las ofertas que tienes para ellos. Si vendes con Shopify, en Playful hacemos el <a href="/agencia-shopify" ${MARK}>diseño de tu tienda en Shopify</a> para móvil y escritorio.`,
+      'aprovechen al máximo las ofertas que tienes para ellos. Si vendes con Shopify, en Playful hacemos el <a href="/agencia-shopify">diseño de tu tienda en Shopify</a> para móvil y escritorio.',
   },
 ];
 

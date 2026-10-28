@@ -26,7 +26,6 @@ export const ECOM_H2_JOSE = '';
 export const ECOM_H2_JOSE_COPY_ISSUE = 'playful-copy#377';
 export const ECOM_HABLE_CLARO = '¿Buscas una Agencia e-Commerce que Hable Claro?';
 
-export const COPY_UNSIGNED = 'COPY SIN FIRMAR';
 export const ECOM_INTRO_PLACEHOLDER_ATTR = 'agencia-e-commerce-intro';
 
 /** PENDIENTE_FIRMA_JOSE_380 — párrafo bajo el H2, literal de #380. */
@@ -58,14 +57,14 @@ export const ECOM_D6_H3 = 'SEO que Encuentra a tus Clientes';
 export const ECOM_D6_ORIGINAL =
   'No es magia, es estrategia. Trabajamos el SEO de tu e-commerce para que quienes buscan productos como los tuyos, te encuentren primero.';
 export const ECOM_D6_APPEND =
-  ` En <a href="${AGENCIA_SEO_HREF}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">SEO para tu tienda online</a> te contamos cómo elegimos las palabras clave que busca tu audiencia y cómo ajustamos la tienda cuando cambian los buscadores.`;
+  ` En <a href="${AGENCIA_SEO_HREF}">SEO para tu tienda online</a> te contamos cómo elegimos las palabras clave que busca tu audiencia y cómo ajustamos la tienda cuando cambian los buscadores.`;
 
 /** D7 — UX3. Live HTML 28 oct 2026, bajo el H3. playful-copy #380 SHA d4844d5. */
 export const ECOM_D7_H3 = 'Diseño que Vende (y Convence)';
 export const ECOM_D7_ORIGINAL =
   '¿Bonito y funcional? ¡Sí, se puede! Diseñamos una tienda visualmente atractiva que haga que tus clientes quieran añadir al carrito y no mirar atrás.';
 export const ECOM_D7_APPEND =
-  ` En el <a href="${AGENCIA_UX_UI_HREF}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">diseño UX/UI de tu tienda</a> simplificamos la navegación para que tus clientes encuentren lo que buscan sin perderse.`;
+  ` En el <a href="${AGENCIA_UX_UI_HREF}">diseño UX/UI de tu tienda</a> simplificamos la navegación para que tus clientes encuentren lo que buscan sin perderse.`;
 
 const H2_LIVE_HTML =
   '<h2 class="elementor-heading-title elementor-size-default">Agencia E-commerce</h2>';
@@ -73,7 +72,7 @@ const H2_SIGNED_HTML =
   `<h2 class="elementor-heading-title elementor-size-default">${ECOM_H2_SIGNED}</h2>`;
 
 const INTRO_PLACEHOLDER_HTML =
-  `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_INTRO_HTML_380}</p>`;
+  `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${ECOM_INTRO_HTML_380}</p>`;
 
 const LAST_LIVE_FAQ =
   '¿Puedo trabajar con una agencia e-commerce si ya tengo una tienda en línea?';
@@ -87,7 +86,7 @@ const FAQ_ITEM_HTML = `
 														</span>
 												<a class="elementor-accordion-title" tabindex="0">${ECOM_VE_FAQ_QUESTION}</a>
 					</div>
-					<div id="elementor-tab-content-playful-ve" class="elementor-tab-content elementor-clearfix" data-tab="6" role="region" aria-labelledby="elementor-tab-title-playful-ve"><p data-copy-pending="faq-caracas-venezuela" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_VE_FAQ_ANSWER_HTML}</p></div>
+					<div id="elementor-tab-content-playful-ve" class="elementor-tab-content elementor-clearfix" data-tab="6" role="region" aria-labelledby="elementor-tab-title-playful-ve"><p data-copy-pending="faq-caracas-venezuela">${ECOM_VE_FAQ_ANSWER_HTML}</p></div>
 				</div>`;
 
 const CASE_LINK_HTML =
@@ -95,10 +94,6 @@ const CASE_LINK_HTML =
 
 function ensureIntroAfterSignedH2(html: string): string {
   let out = html;
-  const staleIntro = `<p data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}">${COPY_UNSIGNED}</p>`;
-  if (out.includes(staleIntro)) {
-    out = out.replace(staleIntro, INTRO_PLACEHOLDER_HTML);
-  }
   if (
     out.includes(ECOM_H2_SIGNED) &&
     !out.includes(`data-copy-pending="${ECOM_INTRO_PLACEHOLDER_ATTR}"`)
@@ -141,13 +136,6 @@ function appendFaqItem(html: string): string {
   let out = html;
   if (out.includes(ECOM_VE_FAQ_QUESTION_PREV)) {
     out = out.split(ECOM_VE_FAQ_QUESTION_PREV).join(ECOM_VE_FAQ_QUESTION);
-  }
-  const staleFaq = '<p data-copy-pending="faq-caracas-venezuela">COPY SIN FIRMAR</p>';
-  if (out.includes(staleFaq)) {
-    out = out.replace(
-      staleFaq,
-      `<p data-copy-pending="faq-caracas-venezuela" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">${ECOM_VE_FAQ_ANSWER_HTML}</p>`,
-    );
   }
   if (out.includes(ECOM_VE_FAQ_QUESTION)) return out;
   const titleIdx = out.indexOf(LAST_LIVE_FAQ);
