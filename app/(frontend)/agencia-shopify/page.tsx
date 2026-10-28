@@ -13,6 +13,7 @@ import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSecti
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import ServiceFaqAccordion from './ServiceFaqAccordion';
+import CimaBreaker from '@/components/premios-cima/CimaBreaker';
 import { toShopifyCaseCards } from './shopify-cases';
 import { ZELLE_BLOG_POST_HREF } from '@/utils/blog-service-cta';
 import {
@@ -283,6 +284,8 @@ export default async function AgenciaShopifyPage() {
             <PurpleBand title={MIGRATION.h2} body={MIGRATION.body} />
           </div>
         </section>
+
+        <CimaBreaker variant="shopify" />
 
         <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
           <h2 className="playful-h2 text-center mb-10">{SOCIAL_PROOF.h2}</h2>

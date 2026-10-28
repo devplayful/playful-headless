@@ -20,7 +20,13 @@ declare global {
 }
 
 let loadedListenerAttached = false;
-let beforeSubmitRegistered = false;
+/**
+ * HighLevel's enablePublicAPIs() replaces window.leadConnector.chatWidget with a
+ * fresh object (beforeSubmit: null) every time a widget instance mounts. A
+ * module-level boolean kept the first registration and silently skipped any
+ * later instance, so chat_lead never fired for it. Track the API objects.
+ */
+let registeredApis = new WeakSet<object>();
 let openWatchAttached = false;
 let lastOpenActive = false;
 let openObserver: MutationObserver | null = null;
@@ -35,7 +41,12 @@ function chatPagePath(): string {
 }
 
 function sendChatEvent(eventName: typeof CHAT_LEAD_EVENT | typeof CHAT_OPEN_EVENT): void {
-  sendGtagEvent(eventName, { page_path: chatPagePath() });
+  const params: Record<string, unknown> = { page_path: chatPagePath() };
+  // chat_lead is the conversion: send it by beacon so it survives the
+  // in-app browser (Instagram/Facebook WebView) or tab being closed or
+  // backgrounded right after the visitor submits the chat form.
+  if (eventName === CHAT_LEAD_EVENT) params.transport_type = 'beacon';
+  sendGtagEvent(eventName, params);
 }
 
 /**
@@ -52,10 +63,10 @@ export function handleChatBeforeSubmit(_values?: unknown, _host?: unknown): true
 }
 
 function registerBeforeSubmitOnce(): void {
-  if (beforeSubmitRegistered) return;
   const api = chatWidgetApi();
-  if (typeof api?.registerBeforeSubmit !== 'function') return;
-  beforeSubmitRegistered = true;
+  if (!api || typeof api.registerBeforeSubmit !== 'function') return;
+  if (registeredApis.has(api)) return;
+  registeredApis.add(api);
   api.registerBeforeSubmit(handleChatBeforeSubmit);
 }
 
@@ -122,7 +133,7 @@ export function resetChatWidgetAnalyticsForTests(): void {
     window.removeEventListener('LC_chatWidgetLoaded', onChatWidgetLoaded, false);
   }
   loadedListenerAttached = false;
-  beforeSubmitRegistered = false;
+  registeredApis = new WeakSet<object>();
   openWatchAttached = false;
   lastOpenActive = false;
   openObserver?.disconnect();

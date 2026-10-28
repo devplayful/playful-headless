@@ -10,6 +10,14 @@ declare global {
 export const GTAG_EVENT_TIMEOUT_MS = 300;
 
 /**
+ * GA4 + Ads destinations for every sendGtagEvent hit. G-WH76RQWSCT is loaded
+ * twice (layout gtag config + Google tag in GTM-MXHKJ4NW); once GTM's copy is
+ * initialised, a bare gtag('event') without send_to was dropped (no GA4 or Ads
+ * hit for cta_reunion_click in real Chrome, 22 oct). Explicit send_to fixes it.
+ */
+export const GTAG_EVENT_SEND_TO: readonly string[] = ['G-WH76RQWSCT', 'AW-427600160'];
+
+/**
  * gtag maps reserved `page_path` to collect `dp` and drops it as `ep.page_path`.
  * The `_&` raw-MP escape only allowlists gtag internals (`_&rcb`, `_&ae`, …);
  * `_&ep.page_path` is stripped before the collect URL is built. The «CTA página»
@@ -20,10 +28,6 @@ export const GTAG_EP_PAGE_PATH_KEY = '_&ep.page_path';
 
 // gtag often holds the hit 3–8s (`_et`, batching). 2.5s expired before collect.
 export const COLLECT_PAGE_PATH_TTL_MS = 20_000;
-
-/** GA4 event name when a tag (often GTM) mistakenly sends a full URL as `en`. */
-export const URL_LIKE_GA4_EVENT_FALLBACK = 'page_view';
-export const URL_LIKE_GA4_EVENT_PARAM = 'page_url';
 
 type PendingPagePath = {
   eventName: string;
@@ -41,6 +45,7 @@ export function encodeGtagEventParams(
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {
     ...params,
+    send_to: params.send_to ?? [...GTAG_EVENT_SEND_TO],
     event_callback: onDone,
     event_timeout: timeoutMs ?? GTAG_EVENT_TIMEOUT_MS,
   };
@@ -55,23 +60,6 @@ function prunePending(now = Date.now()): PendingPagePath[] {
   return pendingPagePaths;
 }
 
-export function isUrlLikeGa4EventName(eventName: string): boolean {
-  const en = (eventName || '').trim();
-  if (!en) return false;
-  if (/^https?:\/\//i.test(en)) return true;
-  if (en.includes('playfulagency.com') || en.includes('vercel.app')) return true;
-  return false;
-}
-
-export function rewriteUrlLikeGa4EventName(parsed: URL): void {
-  const en = parsed.searchParams.get('en') || '';
-  if (!isUrlLikeGa4EventName(en)) return;
-  if (!parsed.searchParams.has(`ep.${URL_LIKE_GA4_EVENT_PARAM}`)) {
-    parsed.searchParams.set(`ep.${URL_LIKE_GA4_EVENT_PARAM}`, en);
-  }
-  parsed.searchParams.set('en', URL_LIKE_GA4_EVENT_FALLBACK);
-}
-
 export function rewriteCollectUrlForPagePath(url: string, now = Date.now()): string {
   if (!url || !url.includes('/g/collect')) return url;
   let parsed: URL;
@@ -80,7 +68,6 @@ export function rewriteCollectUrlForPagePath(url: string, now = Date.now()): str
   } catch {
     return url;
   }
-  rewriteUrlLikeGa4EventName(parsed);
   if (parsed.searchParams.has('ep.page_path')) {
     return parsed.href;
   }
