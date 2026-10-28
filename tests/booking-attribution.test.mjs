@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 const {
   BOOKING_QUERY_KEYS,
   BOOKING_WIDGET_HREF,
+  GHL_WIDGET_ALIAS_KEYS,
   SERVICE_BOOKING_HREF,
   bookingHrefFromPageSearch,
   bookingQueryFromAttributionTouch,
@@ -58,6 +59,7 @@ const LAST_TOUCH = emptyAttribution({
   utm_term: 'shopify',
   utm_content: 'hero',
   gclid: 'COOKIE123',
+  gbraid: 'GBRAID-LT',
 });
 
 const FIRST_TOUCH = emptyAttribution({
@@ -67,6 +69,7 @@ const FIRST_TOUCH = emptyAttribution({
   utm_source: 'google',
   utm_campaign: 'cookie-ft',
   gclid: 'FIRST999',
+  wbraid: 'WBRAID-FT',
 });
 
 test('booking query keys are the Ads click ids, fbclid and five utms', () => {
@@ -136,10 +139,17 @@ test('builder prefers current URL, then pa_attr_lt, then pa_attr_ft', () => {
   assert.equal(fromFirst.wbraid, 'WBRAID-FT');
 });
 
-test('cookie JSON fields win over landing leftovers, landing fills gbraid/wbraid', () => {
+test('cookie JSON fields win over landing leftovers, landing fills missing gbraid/wbraid', () => {
   const touch = bookingQueryFromAttributionTouch(LAST_TOUCH);
   assert.equal(touch.gclid, 'COOKIE123');
   assert.equal(touch.gbraid, 'GBRAID-LT');
+  const storedWins = bookingQueryFromAttributionTouch(emptyAttribution({
+    captured: true,
+    gbraid: 'STORED-GB',
+    landing: '/?gbraid=LANDING-GB&wbraid=LANDING-WB',
+  }));
+  assert.equal(storedWins.gbraid, 'STORED-GB');
+  assert.equal(storedWins.wbraid, 'LANDING-WB');
   assert.deepEqual(bookingQueryFromLanding('/agencia-sem?wbraid=W1&gclid=L1'), {
     wbraid: 'W1',
     gclid: 'L1',
@@ -157,10 +167,17 @@ test('route resolver 302s to the widget with URL query, cookie fallback, or a cl
     search: '?gclid=TEST123&utm_source=google&utm_campaign=x',
   });
   assert.equal(fromUrl.status, 302);
-  assert.equal(
-    fromUrl.location,
-    'https://api.playfulagency.com/widget/bookings/reunion-playful?gclid=TEST123&utm_source=google&utm_campaign=x',
-  );
+  const fromUrlTarget = new URL(fromUrl.location);
+  assert.equal(fromUrlTarget.origin, 'https://api.playfulagency.com');
+  assert.equal(fromUrlTarget.pathname, '/widget/bookings/reunion-playful');
+  assert.equal(fromUrlTarget.searchParams.get('gclid'), 'TEST123');
+  assert.equal(fromUrlTarget.searchParams.get('utm_source'), 'google');
+  assert.equal(fromUrlTarget.searchParams.get('utm_campaign'), 'x');
+  assert.equal(fromUrlTarget.searchParams.get('gclid_web'), 'TEST123');
+  assert.equal(fromUrlTarget.searchParams.get('ft_gclid'), 'TEST123');
+  assert.equal(fromUrlTarget.searchParams.get('lt_gclid'), 'TEST123');
+  assert.equal(fromUrlTarget.searchParams.get('ft_utm_source'), 'google');
+  assert.equal(fromUrlTarget.searchParams.get('lt_utm_source'), 'google');
 
   const fromCookie = resolveBookingWidgetRedirect({
     search: '',
@@ -174,7 +191,10 @@ test('route resolver 302s to the widget with URL query, cookie fallback, or a cl
   assert.equal(cookieTarget.searchParams.get('utm_source'), 'google');
   assert.equal(cookieTarget.searchParams.get('utm_campaign'), 'cookie-lt');
   assert.equal(cookieTarget.searchParams.get('gbraid'), 'GBRAID-LT');
-  assert.equal(cookieTarget.search, searchFromBookingValues(buildBookingQueryValues({ lastCookie })));
+  const cookieValues = buildBookingQueryValues({ lastCookie });
+  for (const [key, value] of Object.entries(cookieValues)) {
+    assert.equal(cookieTarget.searchParams.get(key), value, key);
+  }
 
   const clean = resolveBookingWidgetRedirect({ search: '' });
   assert.equal(clean.status, 302);
@@ -440,6 +460,81 @@ test('GHL calendar postMessage: query-params reply only for allowed origins; con
     bookingQueryParamsReply(values, 'https://playfulagency.com/', '')[0],
     'query-params',
   );
+});
+
+test('widget URL receives GHL hidden-field names from URL or first/last cookies', () => {
+  assert.deepEqual([...GHL_WIDGET_ALIAS_KEYS], [
+    'gclid_web',
+    'ft_gclid',
+    'lt_gclid',
+    'ft_gbraid',
+    'lt_gbraid',
+    'ft_wbraid',
+    'lt_wbraid',
+    'ft_utm_source',
+    'lt_utm_source',
+    'ft_utm_medium',
+    'lt_utm_medium',
+    'ft_utm_campaign',
+    'lt_utm_campaign',
+    'ft_utm_term',
+    'lt_utm_term',
+    'ft_utm_content',
+    'lt_utm_content',
+  ]);
+
+  const lastCookie = serializeAttributionCookie(LAST_TOUCH);
+  const firstCookie = serializeAttributionCookie(FIRST_TOUCH);
+  const fromCookies = new URL(buildBookingWidgetUrl({
+    search: '',
+    lastCookie,
+    firstCookie,
+  }));
+  assert.equal(fromCookies.searchParams.get('gclid'), 'COOKIE123');
+  assert.equal(fromCookies.searchParams.get('gbraid'), 'GBRAID-LT');
+  assert.equal(fromCookies.searchParams.get('wbraid'), 'WBRAID-FT');
+  assert.equal(fromCookies.searchParams.get('gclid_web'), 'COOKIE123');
+  assert.equal(fromCookies.searchParams.get('ft_gclid'), 'FIRST999');
+  assert.equal(fromCookies.searchParams.get('lt_gclid'), 'COOKIE123');
+  assert.equal(fromCookies.searchParams.get('ft_gbraid'), 'GBRAID-LT');
+  assert.equal(fromCookies.searchParams.get('lt_gbraid'), 'GBRAID-LT');
+  assert.equal(fromCookies.searchParams.get('ft_wbraid'), 'WBRAID-FT');
+  assert.equal(fromCookies.searchParams.get('lt_wbraid'), 'WBRAID-FT');
+  assert.equal(fromCookies.searchParams.get('ft_utm_source'), 'google');
+  assert.equal(fromCookies.searchParams.get('lt_utm_source'), 'google');
+  assert.equal(fromCookies.searchParams.get('ft_utm_campaign'), 'cookie-ft');
+  assert.equal(fromCookies.searchParams.get('lt_utm_campaign'), 'cookie-lt');
+  assert.equal(fromCookies.searchParams.get('lt_utm_medium'), 'cpc');
+  assert.equal(fromCookies.searchParams.get('lt_utm_term'), 'shopify');
+  assert.equal(fromCookies.searchParams.get('lt_utm_content'), 'hero');
+
+  const fromUrl = new URL(buildBookingWidgetUrl({
+    search: '?gclid=URL_G&gbraid=URL_GB&wbraid=URL_WB&utm_source=google',
+    lastCookie,
+    firstCookie,
+  }));
+  assert.equal(fromUrl.searchParams.get('gclid'), 'URL_G');
+  assert.equal(fromUrl.searchParams.get('gbraid'), 'URL_GB');
+  assert.equal(fromUrl.searchParams.get('wbraid'), 'URL_WB');
+  assert.equal(fromUrl.searchParams.get('gclid_web'), 'URL_G');
+  assert.equal(fromUrl.searchParams.get('lt_gclid'), 'URL_G');
+  assert.equal(fromUrl.searchParams.get('ft_gclid'), 'FIRST999');
+  assert.equal(fromUrl.searchParams.get('lt_gbraid'), 'URL_GB');
+  assert.equal(fromUrl.searchParams.get('lt_wbraid'), 'URL_WB');
+  assert.equal(fromUrl.searchParams.get('fbclid'), null);
+  assert.equal(fromUrl.searchParams.get('qa'), null);
+
+  const doubleEncoded = encodeURIComponent(lastCookie);
+  const fromDouble = new URL(buildBookingWidgetUrl({
+    search: '?qa=1',
+    lastCookie: doubleEncoded,
+    firstCookie: encodeURIComponent(firstCookie),
+  }));
+  assert.equal(fromDouble.searchParams.get('gbraid'), 'GBRAID-LT');
+  assert.equal(fromDouble.searchParams.get('wbraid'), 'WBRAID-FT');
+  assert.equal(fromDouble.searchParams.get('ft_gclid'), 'FIRST999');
+  assert.equal(fromDouble.searchParams.get('lt_gbraid'), 'GBRAID-LT');
+  assert.equal(fromDouble.searchParams.get('qa'), '1');
 });
 
 test('no booking upsert route: GHL confirm does not send email or contactId', () => {

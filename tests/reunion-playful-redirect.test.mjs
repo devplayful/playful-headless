@@ -19,7 +19,7 @@ test('/reunion-playful is a Next page, not a middleware 302 to GHL', () => {
 
 test('reunionPlayfulWidgetDestination merges search onto the widget URL', () => {
   const dest = reunionPlayfulWidgetDestination({
-    search: '?utm_source=google&gclid=ABC',
+    search: '?utm_source=google&gclid=ABC&gbraid=GB1&wbraid=WB1',
     lastCookie: '',
     firstCookie: '',
   });
@@ -28,6 +28,13 @@ test('reunionPlayfulWidgetDestination merges search onto the widget URL', () => 
   assert.equal(url.pathname, '/widget/bookings/reunion-playful');
   assert.equal(url.searchParams.get('utm_source'), 'google');
   assert.equal(url.searchParams.get('gclid'), 'ABC');
+  assert.equal(url.searchParams.get('gbraid'), 'GB1');
+  assert.equal(url.searchParams.get('wbraid'), 'WB1');
+  assert.equal(url.searchParams.get('gclid_web'), 'ABC');
+  assert.equal(url.searchParams.get('ft_gbraid'), 'GB1');
+  assert.equal(url.searchParams.get('lt_gbraid'), 'GB1');
+  assert.equal(url.searchParams.get('ft_wbraid'), 'WB1');
+  assert.equal(url.searchParams.get('lt_wbraid'), 'WB1');
   assert.equal(dest.startsWith(BOOKING_WIDGET_HREF), true);
 });
 

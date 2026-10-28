@@ -74,6 +74,8 @@ export interface ContactAttribution {
   utm_term: string;
   utm_content: string;
   gclid: string;
+  gbraid: string;
+  wbraid: string;
   fbclid: string;
   referrer: string;
 }

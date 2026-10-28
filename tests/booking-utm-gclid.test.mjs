@@ -39,6 +39,9 @@ test('widget URL: page URL wins, cookies fill gaps, no duplicates, no empties', 
   assert.equal(out.searchParams.get('wbraid'), 'COOKIE_WB');
   assert.equal(out.searchParams.get('utm_source'), 'cookie_src');
   assert.equal(out.searchParams.get('utm_campaign'), 'otono');
+  assert.equal(out.searchParams.get('gclid_web'), 'TEST123');
+  assert.equal(out.searchParams.get('lt_gclid'), 'TEST123');
+  assert.equal(out.searchParams.get('lt_wbraid'), 'COOKIE_WB');
   assert.equal(out.searchParams.has('utm_medium'), false);
   for (const key of ALL_KEYS) assert.ok(out.searchParams.getAll(key).length <= 1, key);
 });

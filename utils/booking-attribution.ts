@@ -39,7 +39,43 @@ const BOOKING_HOSTS = new Set([
 
 const ATTRIBUTION_FIELD_KEYS = [
   'gclid',
+  'gbraid',
+  'wbraid',
   'fbclid',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_term',
+  'utm_content',
+] as const satisfies readonly BookingQueryKey[];
+
+/** Query names the GHL calendar hidden fields fill from (Ops O1). */
+export const GHL_WIDGET_ALIAS_KEYS = [
+  'gclid_web',
+  'ft_gclid',
+  'lt_gclid',
+  'ft_gbraid',
+  'lt_gbraid',
+  'ft_wbraid',
+  'lt_wbraid',
+  'ft_utm_source',
+  'lt_utm_source',
+  'ft_utm_medium',
+  'lt_utm_medium',
+  'ft_utm_campaign',
+  'lt_utm_campaign',
+  'ft_utm_term',
+  'lt_utm_term',
+  'ft_utm_content',
+  'lt_utm_content',
+] as const;
+
+export type GhlWidgetAliasKey = (typeof GHL_WIDGET_ALIAS_KEYS)[number];
+
+const GHL_ALIAS_BASE_KEYS = [
+  'gclid',
+  'gbraid',
+  'wbraid',
   'utm_source',
   'utm_medium',
   'utm_campaign',
@@ -99,7 +135,7 @@ export function bookingQueryFromAttributionTouch(
     const value = firstNonEmptyBookingValue(touch[key]);
     if (value) fromFields[key] = value;
   }
-  // Cookie JSON does not store gbraid/wbraid; recover them from landing if present.
+  // Landing leftovers cover older cookies that predate stored gbraid/wbraid.
   return mergeBookingQuery(fromFields, bookingQueryFromLanding(touch.landing));
 }
 
@@ -149,6 +185,7 @@ export function buildBookingQueryValues(input: {
 /** Incoming may overwrite these on the widget URL. Widget-only keys stay. */
 const ATTRIBUTION_OVERWRITE_KEYS = new Set<string>([
   ...BOOKING_QUERY_KEYS,
+  ...GHL_WIDGET_ALIAS_KEYS,
   'fbclid',
   'msclkid',
   'ttclid',
@@ -218,6 +255,42 @@ function applyCookieFallback(target: URL, input: {
   if (fbclid) target.searchParams.set('fbclid', fbclid);
 }
 
+function setAliasIfEmpty(target: URL, key: string, value: string): void {
+  const trimmed = firstNonEmptyBookingValue(value);
+  if (!trimmed) return;
+  if (firstNonEmptyBookingValue(target.searchParams.get(key))) return;
+  target.searchParams.set(key, trimmed);
+}
+
+/**
+ * Hidden-field names Ops maps in the GHL calendar (ft_*, lt_*, gclid_web).
+ * Incoming query wins; otherwise last/first cookies (URL already applied).
+ */
+function applyGhlWidgetAliases(target: URL, input: {
+  search?: string;
+  lastCookie?: string | null;
+  firstCookie?: string | null;
+}): void {
+  const fromUrl = bookingQueryFromSearch(input.search || '');
+  const last = bookingQueryFromAttributionTouch(deserializeAttributionCookie(input.lastCookie));
+  const first = bookingQueryFromAttributionTouch(deserializeAttributionCookie(input.firstCookie));
+  const lastTouch = mergeBookingQuery(fromUrl, last);
+  const firstTouch = mergeBookingQuery(first, lastTouch);
+
+  for (const key of GHL_ALIAS_BASE_KEYS) {
+    const lt = firstNonEmptyBookingValue(target.searchParams.get(key), lastTouch[key]);
+    const ft = firstNonEmptyBookingValue(first[key], firstTouch[key], lt);
+    setAliasIfEmpty(target, `ft_${key}`, ft);
+    setAliasIfEmpty(target, `lt_${key}`, lt);
+  }
+
+  setAliasIfEmpty(
+    target,
+    'gclid_web',
+    firstNonEmptyBookingValue(target.searchParams.get('gclid'), lastTouch.gclid, firstTouch.gclid),
+  );
+}
+
 export function buildBookingWidgetUrl(input: {
   search?: string;
   lastCookie?: string | null;
@@ -225,6 +298,7 @@ export function buildBookingWidgetUrl(input: {
 }): string {
   const target = mergeIncomingQueryOntoWidget(BOOKING_WIDGET_HREF, input.search || '');
   applyCookieFallback(target, input);
+  applyGhlWidgetAliases(target, input);
   return target.toString();
 }
 
