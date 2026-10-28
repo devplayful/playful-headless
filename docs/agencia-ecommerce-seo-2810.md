@@ -3,7 +3,7 @@
 Rama `cursor/agencia-ecommerce-seo-2810-d6e9`. Draft contra `main`. No merge y no producción.
 No se edita WordPress. Title, meta y H1 de `/agencia-e-commerce` no se tocan.
 
-Copy de playful-copy PR #380 SHA `11b38dc` (`pieces/2026-10-28-seo-enlaces-ve.md`): SEO OK, estado **borrador para redline de José**. Cada bloque nuevo lleva `PENDIENTE_FIRMA_JOSE_380`. Test prerelease: `tests/prerelease-firma-jose-380-ecom.test.mjs` (fuera de `test:canonical`).
+Copy de playful-copy PR #380 SHA `11b38dc` / D6-D7 SHA `d4844d5`: SEO OK, estado **borrador para redline de José**. Cada bloque nuevo lleva `PENDIENTE_FIRMA_JOSE_380`. Guardia sin skip: `tests/unsigned-copy-guard.test.mjs`. Prerelease de la landing: `tests/prerelease-firma-jose-380-ecom.test.mjs` (sin skip).
 
 ## Hecho en código (`utils/ecommerce-aeo-2810.ts`, solo ese slug)
 
@@ -33,13 +33,20 @@ Appends de playful-copy #380 (`utils/blog-seo-380-appends.ts`), solo si el origi
 | S2 | `/blog/mas-vistos/los-5-problemas-de-e-commerce` | Live: `<strong>Solución:</strong> Optimizar el proceso de compra es clave.` | Añade «checkout de tu tienda Shopify». |
 | S3 | `/blog/tecnologia/cintillos-de-promocion` | `aprovechen al máximo las ofertas que tienes para ellos.` | Añade «diseño de tu tienda en Shopify». |
 
-## No inventado (D6 y D7)
+## D6 y D7 (playful-copy #380 SHA `d4844d5`)
 
-En la landing en vivo **no existen** «SEO para tu tienda online» ni «diseño UX/UI de tu tienda». No se inventan.
+SEO OK. Se añaden al final del original live, bajo su H3, con `PENDIENTE_FIRMA_JOSE_380`. Si el original no está, no se aplica.
+
+| Id | H3 live | Original live | Qué se añade |
+| --- | --- | --- | --- |
+| D6 / SEO1 | `SEO que Encuentra a tus Clientes` | `No es magia, es estrategia. Trabajamos el SEO de tu e-commerce para que quienes buscan productos como los tuyos, te encuentren primero.` | ` En [SEO para tu tienda online](/agencia-seo) te contamos cómo elegimos las palabras clave que busca tu audiencia y cómo ajustamos la tienda cuando cambian los buscadores.` |
+| D7 / UX3 | `Diseño que Vende (y Convence)` | `¿Bonito y funcional? ¡Sí, se puede! Diseñamos una tienda visualmente atractiva que haga que tus clientes quieran añadir al carrito y no mirar atrás.` | ` En el [diseño UX/UI de tu tienda](/agencia-ux-ui) simplificamos la navegación para que tus clientes encuentren lo que buscan sin perderse.` |
+
+Dos enlaces de cuerpo a `/agencia-seo` con anclas distintas están permitidos.
 
 ## Fuera de alcance
 
 - Merge / quitar draft / producción
 - Edición en WordPress
 - Header, footer, layout raíz, CSS global, middleware
-- Inventar D6/D7 o el H2 de playful-copy #377
+- Inventar el H2 de playful-copy #377

@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const {
+  ECOM_D6_APPEND,
+  ECOM_D6_H3,
+  ECOM_D6_ORIGINAL,
+  ECOM_D7_APPEND,
+  ECOM_D7_H3,
+  ECOM_D7_ORIGINAL,
   ECOM_H2_JOSE,
   ECOM_H2_JOSE_COPY_ISSUE,
   ECOM_H2_LIVE,
@@ -81,12 +87,48 @@ test('rewrites the e-commerce H2, intro slot, FAQ and SoyTechno case on that slu
   assert.equal(rewriteEcommerceAeo2810(rewritten, 'agencia-e-commerce'), rewritten);
 });
 
-test('does not invent the H3 phrases that are not on the live landing', () => {
+test('appends D6 and D7 under their H3s when the live original is present', () => {
   const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
+  assert.match(rewritten, new RegExp(ECOM_D6_H3.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(rewritten, new RegExp(ECOM_D7_H3.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.ok(rewritten.includes(`${ECOM_D6_ORIGINAL}${ECOM_D6_APPEND}`));
+  assert.ok(rewritten.includes(`${ECOM_D7_ORIGINAL}${ECOM_D7_APPEND}`));
+  assert.match(
+    rewritten,
+    /<a href="\/agencia-seo" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">SEO para tu tienda online<\/a>/,
+  );
+  assert.match(
+    rewritten,
+    /<a href="\/agencia-ux-ui" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">diseño UX\/UI de tu tienda<\/a>/,
+  );
+  assert.ok(rewritten.indexOf(ECOM_D6_H3) < rewritten.indexOf('SEO para tu tienda online'));
+  assert.ok(rewritten.indexOf(ECOM_D7_H3) < rewritten.indexOf('diseño UX/UI de tu tienda'));
+  assert.equal(rewriteEcommerceAeo2810(rewritten, 'agencia-e-commerce'), rewritten);
+});
+
+test('does not invent D6 or D7 when the live original is missing', () => {
+  const missing = SAMPLE
+    .replace(ECOM_D6_ORIGINAL, 'Otro párrafo de SEO.')
+    .replace(ECOM_D7_ORIGINAL, 'Otro párrafo de diseño.');
+  const rewritten = rewriteEcommerceAeo2810(missing, 'agencia-e-commerce');
   assert.doesNotMatch(rewritten, /SEO para tu tienda online/);
   assert.doesNotMatch(rewritten, /diseño UX\/UI de tu tienda/);
   assert.match(rewritten, /SEO que Encuentra a tus Clientes/);
   assert.match(rewritten, /Diseño que Vende \(y Convence\)/);
+});
+
+test('D6 can sit next to another /agencia-seo body link with a different anchor', () => {
+  const html = SAMPLE.replace(
+    '</h1>',
+    '</h1><p>Lee nuestra <a href="/agencia-seo">agencia SEO</a>.</p>',
+  );
+  const rewritten = rewriteEcommerceAeo2810(html, 'agencia-e-commerce');
+  assert.equal((rewritten.match(/href="\/agencia-seo"/g) || []).length, 2);
+  assert.match(rewritten, /<a href="\/agencia-seo">agencia SEO<\/a>/);
+  assert.match(
+    rewritten,
+    /<a href="\/agencia-seo" data-pendiente-firma="PENDIENTE_FIRMA_JOSE_380">SEO para tu tienda online<\/a>/,
+  );
 });
 
 test('Service JSON-LD adds areaServed without LocalBusiness or address', () => {
@@ -156,11 +198,9 @@ test('José H2 from playful-copy #377 is prepared and stays unsigned', () => {
   assert.doesNotMatch(current, /__JOSE_H2_FIXTURE_PLAYFUL_COPY_377__/);
 });
 
-test('landing rewriter does not invent D6/D7 or the cintillos S3 phrase', () => {
+test('landing rewriter does not invent the cintillos S3 phrase', () => {
   const rewritten = rewriteEcommerceAeo2810(SAMPLE, 'agencia-e-commerce');
   assert.doesNotMatch(rewritten, /diseño de tu tienda en Shopify/);
-  assert.doesNotMatch(rewritten, /SEO para tu tienda online/);
-  assert.doesNotMatch(rewritten, /diseño UX\/UI de tu tienda/);
 });
 
 test('title, meta and H1 overrides stay untouched', () => {

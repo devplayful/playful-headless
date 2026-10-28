@@ -3,6 +3,7 @@
  * Body HTML only. Does not touch title, meta, H1, header, footer or CSS.
  */
 
+import { AGENCIA_SEO_HREF, AGENCIA_UX_UI_HREF } from './broken-internal-hrefs.ts';
 import { SOYTECHNO_CASE_HREF } from './ecommerce-soytechno-case-link.ts';
 import { PENDIENTE_FIRMA_JOSE_380 } from './pendiente-firma-jose-380.ts';
 
@@ -51,6 +52,20 @@ export function isJoseH2Signed(joseH2: string = ECOM_H2_JOSE): boolean {
 }
 
 export const SOYTECHNO_CASE_ANCHOR = 'ecommerce en Venezuela: el caso SoyTechno';
+
+/** D6 — SEO1. Live HTML 28 oct 2026, bajo el H3. playful-copy #380 SHA d4844d5. */
+export const ECOM_D6_H3 = 'SEO que Encuentra a tus Clientes';
+export const ECOM_D6_ORIGINAL =
+  'No es magia, es estrategia. Trabajamos el SEO de tu e-commerce para que quienes buscan productos como los tuyos, te encuentren primero.';
+export const ECOM_D6_APPEND =
+  ` En <a href="${AGENCIA_SEO_HREF}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">SEO para tu tienda online</a> te contamos cómo elegimos las palabras clave que busca tu audiencia y cómo ajustamos la tienda cuando cambian los buscadores.`;
+
+/** D7 — UX3. Live HTML 28 oct 2026, bajo el H3. playful-copy #380 SHA d4844d5. */
+export const ECOM_D7_H3 = 'Diseño que Vende (y Convence)';
+export const ECOM_D7_ORIGINAL =
+  '¿Bonito y funcional? ¡Sí, se puede! Diseñamos una tienda visualmente atractiva que haga que tus clientes quieran añadir al carrito y no mirar atrás.';
+export const ECOM_D7_APPEND =
+  ` En el <a href="${AGENCIA_UX_UI_HREF}" data-pendiente-firma="${PENDIENTE_FIRMA_JOSE_380}">diseño UX/UI de tu tienda</a> simplificamos la navegación para que tus clientes encuentren lo que buscan sin perderse.`;
 
 const H2_LIVE_HTML =
   '<h2 class="elementor-heading-title elementor-size-default">Agencia E-commerce</h2>';
@@ -151,6 +166,25 @@ function appendFaqItem(html: string): string {
   return out.slice(0, insertAt) + FAQ_ITEM_HTML + out.slice(insertAt);
 }
 
+/**
+ * Append D6/D7 after the live original under each H3.
+ * Missing original is a no-op — do not invent the stem.
+ */
+function appendD6D7(html: string): string {
+  let out = html;
+  const items = [
+    { h3: ECOM_D6_H3, original: ECOM_D6_ORIGINAL, append: ECOM_D6_APPEND },
+    { h3: ECOM_D7_H3, original: ECOM_D7_ORIGINAL, append: ECOM_D7_APPEND },
+  ];
+  for (const item of items) {
+    const replaced = `${item.original}${item.append}`;
+    if (out.includes(replaced)) continue;
+    if (!out.includes(item.h3) || !out.includes(item.original)) continue;
+    out = out.replace(item.original, replaced);
+  }
+  return out;
+}
+
 function insertSoytechnoCaseAnchor(html: string): string {
   if (html.includes(SOYTECHNO_CASE_ANCHOR)) return html;
   const resultsH2 =
@@ -175,5 +209,7 @@ export function rewriteEcommerceAeo2810(
 ): string {
   if (!html || slug !== ECOMMERCE_AEO_SLUG) return html;
   const joseH2 = options?.joseH2 ?? ECOM_H2_JOSE;
-  return insertSoytechnoCaseAnchor(appendFaqItem(rewriteH2AndIntro(html, joseH2)));
+  return appendD6D7(
+    insertSoytechnoCaseAnchor(appendFaqItem(rewriteH2AndIntro(html, joseH2))),
+  );
 }
