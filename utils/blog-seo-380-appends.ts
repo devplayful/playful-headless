@@ -1,5 +1,5 @@
 /**
- * Body appends/rewrites from playful-copy #380 SHA 11b38dc.
+ * Body appends/rewrites from playful-copy #380 SHA d4844d5.
  * Only when the live original is present. Never invent the stem.
  * PENDIENTE_FIRMA_JOSE_380 — redline de José, no producción.
  */
