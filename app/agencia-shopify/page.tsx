@@ -32,6 +32,7 @@ import {
   PLAYFUL_URL_RE,
   buildFaqPageJsonLd,
 } from './copy';
+import styles from './page.module.css';
 import {
   buildServiceLandingJsonLd,
   serializeServiceLandingJsonLd,
@@ -164,6 +165,14 @@ function TalkCta({ href = SERVICE_BOOKING_HREF }: { href?: string }) {
   );
 }
 
+function MidCta({ section }: { section: 'mid1' | 'mid2' }) {
+  return (
+    <section data-cta-section={section} className={styles.midCta}>
+      <TalkCta />
+    </section>
+  );
+}
+
 function PurpleBand({ title, body }: { title: string; body: string }) {
   return (
     <div className="relative overflow-hidden rounded-[32px] bg-[#440099] p-8 md:p-[60px]">
@@ -218,16 +227,16 @@ export default async function AgenciaShopifyPage() {
         </>
       ) : null}
 
-      <article className="w-full pb-20">
+      <article className={`w-full pb-20 ${styles.pageWithSticky}`}>
         <section data-cta-section="hero" className="relative overflow-hidden">
-          <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8">
-                <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
+          <div className={`max-w-[1200px] mx-auto px-4 md:px-6 pt-4 pb-16 md:pb-20 ${styles.heroInner}`}>
+            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${styles.heroGrid}`}>
+              <div className={`md:space-y-8 ${styles.heroCopy}`}>
+                <h1 className={`playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1] ${styles.heroTitle}`}>
                   {HERO.h1}
                 </h1>
-                <p className="playful-contenido-p">{HERO.body}</p>
-                <div className="space-y-3">
+                <p className={`playful-contenido-p ${styles.heroBody}`}>{HERO.body}</p>
+                <div className={`space-y-3 ${styles.heroCta}`}>
                   <TalkCta />
                   <p className="playful-contenido-p">{HERO.subline}</p>
                   <p className="playful-contenido-p">
@@ -240,7 +249,9 @@ export default async function AgenciaShopifyPage() {
                   </p>
                 </div>
               </div>
-              <IllustrationSlot id="hero" size="hero" />
+              <div className={styles.heroArt}>
+                <IllustrationSlot id="hero" size="hero" />
+              </div>
             </div>
           </div>
         </section>
@@ -275,6 +286,8 @@ export default async function AgenciaShopifyPage() {
             </div>
           </div>
         </section>
+
+        <MidCta section="mid1" />
 
         <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
           <div className="space-y-6 md:space-y-8">
@@ -337,6 +350,8 @@ export default async function AgenciaShopifyPage() {
           </div>
         </section>
 
+        <MidCta section="mid2" />
+
         <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
           <h2 className="playful-h2 text-center mb-10">{FAQ.h2}</h2>
           <div className="max-w-4xl mx-auto">
@@ -375,6 +390,9 @@ export default async function AgenciaShopifyPage() {
           </div>
         </section>
       </article>
+      <div data-cta-section="sticky" className={styles.stickyBar}>
+        <TalkCta />
+      </div>
     </>
   );
 }

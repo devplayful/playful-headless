@@ -204,6 +204,15 @@ test('/reunion-playful stays on the Next app for GA4 before the client redirect 
   assert.match(middleware, /'\/reunion-playful\/'/);
 });
 
+test('hero, sticky and mid CTAs share TalkCta and unique data-cta-section values', () => {
+  assert.match(landing, /data-cta-section="hero"/);
+  assert.match(landing, /data-cta-section="sticky"/);
+  assert.match(landing, /<MidCta section="mid1" \/>/);
+  assert.match(landing, /<MidCta section="mid2" \/>/);
+  assert.match(landing, /from '\.\/page\.module\.css'/);
+  assert.equal((landing.match(/<TalkCta \/>/g) || []).length, 3);
+});
+
 test('landing includes exactly one contextual href to the Zelle blog post', () => {
   assert.equal(
     ZELLE_BLOG_POST_HREF,

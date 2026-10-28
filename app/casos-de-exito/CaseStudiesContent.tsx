@@ -16,6 +16,10 @@ import {
 } from "@/lib/case-study-listing-card";
 import { mergePublicCaseStudies } from "@/lib/public-case-studies";
 import { CASE_STUDIES_HUB_H1, CASE_STUDIES_HUB_LEAD } from "@/utils/case-study-hub";
+import casosStyles from "./casos.module.css";
+
+/** Same default as TwoColumnCtaSection — do not invent copy. */
+const HUB_EXISTING_CTA_TEXT = "Llena el formulario y hablemos sobre tu web";
 
 // Importación dinámica para evitar problemas de hidratación
 const TestimonialsSection = dynamic(() => import("./TestimonialsSection"), {
@@ -219,6 +223,14 @@ export default function CaseStudiesContent({
             <p className="text-white text-lg leading-relaxed opacity-90">
               {CASE_STUDIES_HUB_LEAD}
             </p>
+            <div data-cta-section="top" className={casosStyles.topCta}>
+              <a
+                href={SERVICE_BOOKING_HREF}
+                className="playful-boton !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+              >
+                {HUB_EXISTING_CTA_TEXT}
+              </a>
+            </div>
           </div>
 
           <div className="flex justify-center lg:justify-end">

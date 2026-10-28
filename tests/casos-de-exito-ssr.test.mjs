@@ -47,6 +47,13 @@ test('hub still paints the existing H1; it does not add another', () => {
   assert.match(hubContent, /quality=\{CASE_CARD_IMAGE_QUALITY\}/);
 });
 
+test('hub adds a top CTA that reuses the existing closing CTA text and href', () => {
+  assert.match(hubContent, /data-cta-section="top"/);
+  assert.match(hubContent, /href=\{SERVICE_BOOKING_HREF\}/);
+  assert.match(hubContent, /Llena el formulario y hablemos sobre tu web/);
+  assert.match(hubContent, /from "\.\/casos\.module\.css"/);
+});
+
 test('listing image prefers the full WP source over medium/thumbnail', async () => {
   const { resolveCaseStudyListingImage } = await import('../lib/case-study-listing-image.ts');
   const full =
