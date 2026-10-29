@@ -12,6 +12,7 @@ const {
   hasRuntimeDatabase,
   getPayloadConnectionString,
   shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -32,6 +33,22 @@ test('DATABASE_URL is required for preview migrate; production never migrates', 
   );
   assert.equal(shouldRunPreviewMigrate({ POSTGRES_URL: 'postgres://example' }), false);
   assert.equal(shouldRunPreviewMigrate({ DATABASE_URI: 'postgres://example' }), false);
+});
+
+test('servicios seed runs only on Preview with DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewServiciosSeed({}), false);
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'development' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
 });
 
 test('runtime prefers DATABASE_URL; migrate prefers UNPOOLED without leaking aliases', () => {
@@ -68,6 +85,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(payloadConfig, /migrationDir/);
   assert.match(payloadConfig, /disableCreateDatabase: true/);
   assert.match(buildScript, /runPayloadPreviewMigrate/);
+  assert.match(buildScript, /runPayloadPreviewSeedServicios/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -81,7 +99,13 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
     new URL('../cms/migrations/20261028_195833_initial.ts', import.meta.url),
     'utf8',
   );
+  const servicios = readFileSync(
+    new URL('../cms/migrations/20261029_114031.ts', import.meta.url),
+    'utf8',
+  );
   assert.match(index, /20261028_195833_initial/);
+  assert.match(index, /20261029_114031/);
+  assert.match(servicios, /import type \{ MigrateDownArgs, MigrateUpArgs \}/);
   for (const table of [
     'posts',
     'paginas',
@@ -94,4 +118,5 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
   ]) {
     assert.match(initial, new RegExp(`CREATE TABLE "${table}"`));
   }
+  assert.match(servicios, /CREATE TABLE "servicios"/);
 });

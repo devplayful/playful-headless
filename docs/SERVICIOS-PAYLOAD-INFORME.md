@@ -1,66 +1,65 @@
-# H3 · Servicios en Payload (parte 1)
+# H3 · Servicios en Payload (parte 1 + Preview)
 
-Rama `cursor/payload-servicios-10e7` (base: `cursor/cms-payload-fase1`, PR #333).
+Rama `cursor/payload-servicios-10e7` · PR [#385](https://github.com/devplayful/playful-headless/pull/385) (base: `cursor/cms-payload-fase1`).
 
-## Resumen
+## Flag y Preview
 
-- Colección **`servicios`** en Payload con bloques reutilizables: hero, texto, ventajas, tarjetas, banda morada, logos/casos, FAQ, CTA, cuerpo Elementor (WP), separador CIMA y módulos extra (testimonios, blog).
-- **`CMS_SERVICIOS_FROM_PAYLOAD=false`** por defecto (`.env.example`): producción sin cambios.
-- Flag **`true`**: `/[slug]` (5 landings WP) y `/agencia-shopify` leen Payload si hay `DATABASE_URL` y documento; si no, fallback al comportamiento actual.
-- Seed **`npm run cms:seed-servicios`**: 5 páginas vía `getPageBySlug` + Yoast; Shopify desde `copy.ts` (mismas URLs de imagen, sin Blob).
+| Mecanismo | Production | Preview |
+|-----------|------------|---------|
+| `CMS_SERVICIOS_FROM_PAYLOAD=true` | Solo si se define (no previsto) | Igual |
+| `?cms=1` en la URL | Ignorado | Activa render Payload |
+| Default | WP / React Shopify | Igual que prod |
 
-## Flag
+## Build Preview (migrate + seed)
 
-| Variable | Default | Efecto |
-|----------|---------|--------|
-| `CMS_SERVICIOS_FROM_PAYLOAD` | `false` | WP + página React Shopify (actual) |
-| `CMS_SERVICIOS_FROM_PAYLOAD=true` | — | Payload cuando hay BD y seed |
+En `scripts/build-with-budget.mjs`, **antes** de `next build`:
 
-## Admin local
+1. **`payload migrate`** si `DATABASE_URL` y `VERCEL_ENV !== 'production'` (igual que H1).
+2. **`cms:seed-servicios`** solo si `VERCEL_ENV=preview` y `DATABASE_URL` (nunca Production).
 
-Tras `DATABASE_URI=… npm run cms:seed-servicios` → **6** documentos en `servicios` (comprobado en Preview/Neon al desplegar; en este box no había Postgres/Docker).
+Logs esperados en el build de Vercel Preview:
 
-## Comprobaciones (este box)
+```
+payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)
+Migrating: 20261029_114031
+cms:seed-servicios: ejecutando (Preview, DATABASE_URL presente)
+cms:seed-servicios: 6 documento(s) en colección servicios
+```
 
-| Check | Resultado |
-|-------|-----------|
-| `npm run typecheck` | OK |
-| `npm run build` | OK |
-| `npm run test:route-integrity` | OK (100 tests) |
+Migración: `cms/migrations/20261029_114031.ts` (`import type { MigrateUpArgs, MigrateDownArgs }` + `sql`).
 
-## Comparativa prod vs local (flag ON, sin BD)
+## Comprobar recuento = 6 en Preview
 
-Con `CMS_SERVICIOS_FROM_PAYLOAD=true` y **sin** `DATABASE_URL`, Payload no conecta → fallback idéntico a prod.
+Tras un deploy Preview READY:
 
-Script `scripts/compare-servicios-prod-local.mjs`: **0 diferencias** en title, meta description, canonical, H1 y recuento H2 en las 6 URLs.
+```bash
+curl -sS "https://<preview-host>/cms-api/servicios?limit=10&depth=0" | jq '.totalDocs, (.docs | length), [.docs[].slug]'
+```
 
-Capturas (viewport **390×844** y **1440×900**, producción):
+Debe devolver `totalDocs: 6` y los slugs `agencia-seo` … `agencia-shopify`.
 
-- `/opt/cursor/artifacts/screenshots/servicios-prod-<slug>-390.png`
-- `/opt/cursor/artifacts/screenshots/servicios-prod-<slug>-1440.png`
+Admin: `https://<preview-host>/admin` → colección **Servicios** (6 filas).
 
-Capturas locales (mismo fallback, prefijo `servicios-local-flag-on-fallback-*`).
+## Comparar render Payload vs producción
 
-### Diferencias visuales / HTML esperadas con flag ON **y** seed en Preview
+| Ruta | Prod (sin `?cms=1`) | Preview Payload |
+|------|---------------------|-----------------|
+| `/agencia-seo?cms=1` | — | Elementor desde Payload |
+| `/agencia-sem?cms=1` | — | idem |
+| `/agencia-diseno-web?cms=1` | — | idem |
+| `/agencia-e-commerce?cms=1` | — | idem |
+| `/agencia-ux-ui?cms=1` | — | idem |
+| `/agencia-shopify?cms=1` | — | Bloques React desde Payload |
 
-| Área | WP (bloque Elementor) | Shopify (bloques React) |
-|------|------------------------|-------------------------|
-| Cuerpo | Mismo HTML procesado que `getPageBySlug` | Misma plantilla que `agencia-shopify/page.tsx`; bloque FAQ en Payload no se pinta aparte (solo Elementor en WP incluye FAQ en HTML) |
-| Meta | Yoast en Payload + overrides `page-seo-overrides` | Yoast en seed = `SHOPIFY_META` |
-| Imágenes | URLs WP / `/images` sin Blob | Igual que código |
+Referencia prod (flag off): mismas URLs **sin** query en `https://playfulagency.com/...`.
 
-No se ejecutó render Payload real en local (sin Postgres). En Preview, tras `cms:migrate` + `cms:seed-servicios`, conviene repetir capturas con flag ON.
+## Comprobaciones locales (box)
 
-## Pendiente / no hecho aquí
+- `npm run typecheck` ✓
+- `npm run test:route-integrity` ✓
+- Migrate `20261029_114031` + seed → 6 servicios en Postgres local ✓
 
-1. **Migración Postgres** `payload migrate:create` para tablas `servicios` (en Preview suele usarse `PAYLOAD_DB_PUSH` o nueva migración tras merge).
-2. **Seed en Neon** y recuento admin = 6 en Preview (requiere BD).
-3. **Subida a Blob** de medios (otro hito, GO de gasto).
-4. Descomposición fina de Elementor en bloques editables (H3 parte 2); hoy el cuerpo WP va en un bloque `elementor` + bloque `faq` espejo para JSON-LD/ CMS.
+## Scripts
 
-## Archivos clave
-
-- `cms/collections/Servicios.ts`, `cms/blocks/servicio-blocks.ts`
-- `lib/cms-servicios-flag.ts`, `lib/cms-servicios.ts`
-- `components/servicios/*`
-- `scripts/seed-servicios.ts`
+- `npm run cms:seed-servicios` — manual (Preview build lo invoca solo en `VERCEL_ENV=preview`).
+- Lectura WP en seed: `scripts/servicios-wp-for-seed.mjs` (sin `next/cache`).

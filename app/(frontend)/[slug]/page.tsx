@@ -10,7 +10,11 @@ import {
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
 import { getServiceFaqJsonLd } from '@/utils/service-faq-jsonld';
-import { isCmsServiciosFromPayload, isPayloadServicioSlug } from '@/lib/cms-servicios-flag';
+import {
+  isPayloadServicioSlug,
+  parseCmsPreviewQuery,
+  shouldRenderServiciosFromPayload,
+} from '@/lib/cms-servicios-flag';
 import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
 import ServicioPayloadRenderer from '@/components/servicios/ServicioPayloadRenderer';
 
@@ -36,11 +40,23 @@ export async function generateStaticParams() {
   return SERVICE_SLUGS.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const resolved = await params;
   const slug = resolved.slug;
-  if (isCmsServiciosFromPayload() && isPayloadServicioSlug(slug) && slug !== 'agencia-shopify') {
-    const fromPayload = await buildServicioMetadata(slug);
+  const query = searchParams ? await searchParams : undefined;
+  const cmsOptIn = parseCmsPreviewQuery(query);
+  if (
+    shouldRenderServiciosFromPayload(cmsOptIn) &&
+    isPayloadServicioSlug(slug) &&
+    slug !== 'agencia-shopify'
+  ) {
+    const fromPayload = await buildServicioMetadata(slug, { renderFromPayload: true });
     if (fromPayload) return fromPayload;
   }
   // notFound() here (not only in the page) so Next paints app/not-found.tsx
@@ -85,13 +101,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function WordPressPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await params;
+  const query = searchParams ? await searchParams : undefined;
+  const cmsOptIn = parseCmsPreviewQuery(query);
 
-  if (isCmsServiciosFromPayload() && isPayloadServicioSlug(slug) && slug !== 'agencia-shopify') {
-    const servicio = await findServicioBySlug(slug);
+  if (
+    shouldRenderServiciosFromPayload(cmsOptIn) &&
+    isPayloadServicioSlug(slug) &&
+    slug !== 'agencia-shopify'
+  ) {
+    const servicio = await findServicioBySlug(slug, { renderFromPayload: true });
     if (servicio) {
       return <ServicioPayloadRenderer doc={servicio} slug={slug} />;
     }

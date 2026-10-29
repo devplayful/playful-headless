@@ -1,6 +1,5 @@
-import { load } from 'cheerio';
 import { getPayload } from 'payload';
-import config from '@payload-config';
+import config from '../payload.config.ts';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import {
@@ -9,7 +8,7 @@ import {
   pageSocialMetadata,
 } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
-import { isCmsServiciosFromPayload } from './cms-servicios-flag.ts';
+import { shouldRenderServiciosFromPayload } from './cms-servicios-flag.ts';
 import { hasRuntimeDatabase } from './cms-database.ts';
 
 export type ServicioBlock = Record<string, unknown> & { blockType: string };
@@ -50,8 +49,14 @@ export function normalizeServicioDoc(doc: unknown): ServicioDoc | null {
   };
 }
 
-export async function findServicioBySlug(slug: string): Promise<ServicioDoc | null> {
-  if (!isCmsServiciosFromPayload() || !hasRuntimeDatabase()) return null;
+export async function findServicioBySlug(
+  slug: string,
+  options?: { renderFromPayload?: boolean },
+): Promise<ServicioDoc | null> {
+  const enabled =
+    options?.renderFromPayload ??
+    shouldRenderServiciosFromPayload(false);
+  if (!enabled || !hasRuntimeDatabase()) return null;
   try {
     const payload = await getPayload({ config });
     const found = await payload.find({
@@ -66,18 +71,17 @@ export async function findServicioBySlug(slug: string): Promise<ServicioDoc | nu
   }
 }
 
-export function extractH1FromElementorHtml(html: string): string | null {
-  const $ = load(html);
-  const h1 = $('h1').first().text().replace(/\s+/g, ' ').trim();
-  return h1 || null;
-}
+export { extractH1FromElementorHtml } from './servicio-seed-utils.ts';
 
 export function servicioHasElementorBlock(doc: ServicioDoc): boolean {
   return Boolean(doc.bloques?.some((b) => b.blockType === 'elementor'));
 }
 
-export async function buildServicioMetadata(slug: string): Promise<Metadata | null> {
-  const doc = await findServicioBySlug(slug);
+export async function buildServicioMetadata(
+  slug: string,
+  options?: { renderFromPayload?: boolean },
+): Promise<Metadata | null> {
+  const doc = await findServicioBySlug(slug, options);
   if (!doc) return null;
   const yoast = doc.yoast || {};
   const { title, ogTitle } = applyPageTitleOverride(
@@ -120,14 +124,17 @@ export function elementorBlockFromDoc(doc: ServicioDoc): {
   if (!block) return null;
   const html = typeof block.html === 'string' ? block.html : '';
   const pageId = typeof block.pageId === 'number' ? block.pageId : doc.wpId || 0;
-  const rawIds = Array.isArray(block.stylesheetIds) ? block.stylesheetIds : [];
-  const stylesheetIds = rawIds
-    .map((entry) => {
-      if (typeof entry === 'number') return entry;
-      if (isRecord(entry) && typeof entry.id === 'number') return entry.id;
-      return null;
-    })
-    .filter((id): id is number => id !== null);
+  const rawIds = block.stylesheetIds;
+  let stylesheetIds: number[] = [];
+  if (Array.isArray(rawIds)) {
+    stylesheetIds = rawIds
+      .map((entry) => {
+        if (typeof entry === 'number') return entry;
+        if (isRecord(entry) && typeof entry.id === 'number') return entry.id;
+        return null;
+      })
+      .filter((id): id is number => id !== null);
+  }
   if (!html) return null;
   return { html, pageId, stylesheetIds: stylesheetIds.length ? stylesheetIds : [pageId] };
 }

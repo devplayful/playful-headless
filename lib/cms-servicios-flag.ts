@@ -11,6 +11,23 @@ export function isCmsServiciosFromPayload(
   return env[CMS_SERVICIOS_FROM_PAYLOAD_ENV] === 'true';
 }
 
+/** Opt-in Preview: ?cms=1 (ignorado fuera de VERCEL_ENV=preview). */
+export function parseCmsPreviewQuery(
+  searchParams: Record<string, string | string[] | undefined> | undefined,
+): boolean {
+  const raw = searchParams?.cms;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === '1';
+}
+
+export function shouldRenderServiciosFromPayload(
+  cmsQueryOptIn: boolean,
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  if (isCmsServiciosFromPayload(env)) return true;
+  return cmsQueryOptIn && env.VERCEL_ENV === 'preview';
+}
+
 /** Slugs de servicio gestionados por la colección Servicios (H3). */
 export const PAYLOAD_SERVICIO_SLUGS = [
   'agencia-seo',

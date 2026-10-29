@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
+import { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,7 +142,7 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate };
+export { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed };
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
@@ -162,9 +162,26 @@ export async function runPayloadPreviewMigrate(env = process.env) {
   );
 }
 
+export async function runPayloadPreviewSeedServicios(env = process.env) {
+  if (!shouldRunPreviewServiciosSeed(env)) {
+    console.log(
+      'cms:seed-servicios: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-servicios: ejecutando (Preview, DATABASE_URL presente)');
+  return runGuardedCommand(process.execPath, ['scripts/seed-servicios.ts'], {
+    env,
+    budgetMs: BUILD_BUDGET_MS,
+    inactivityMs: BUILD_INACTIVITY_MS,
+  });
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const seedCode = await runPayloadPreviewSeedServicios();
+  if (seedCode !== 0) return seedCode;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

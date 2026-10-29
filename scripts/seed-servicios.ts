@@ -12,8 +12,11 @@ import {
   AGENCIA_SHOPIFY_SLUG,
 } from '../cms/data/agencia-shopify-payload.ts';
 import { WP_SERVICIO_SLUGS } from '../cms/data/servicios-wp-slugs.ts';
-import { extractH1FromElementorHtml } from '../lib/cms-servicios.ts';
-import { getPageBySlug, getPageMetadataBySlug } from '../services/wordpress.ts';
+import { extractH1FromElementorHtml } from '../lib/servicio-seed-utils.ts';
+import {
+  fetchServicioPageBySlug,
+  fetchServicioPageMetadataBySlug,
+} from './servicios-wp-for-seed.mjs';
 import { getServiceFaqJsonLd } from '../utils/service-faq-jsonld.ts';
 
 type Action = 'creado' | 'actualizado';
@@ -60,11 +63,11 @@ function faqBlockFromSlug(slug: string) {
 }
 
 async function buildWpServicio(slug: (typeof WP_SERVICIO_SLUGS)[number]) {
-  const page = await getPageBySlug(slug);
+  const page = await fetchServicioPageBySlug(slug);
   if (!page) {
     throw new Error(`WP page not found: ${slug}`);
   }
-  const meta = await getPageMetadataBySlug(slug);
+  const meta = await fetchServicioPageMetadataBySlug(slug);
   const h1 = extractH1FromElementorHtml(page.html);
   const faq = faqBlockFromSlug(slug);
   const bloques: Record<string, unknown>[] = [
@@ -72,7 +75,7 @@ async function buildWpServicio(slug: (typeof WP_SERVICIO_SLUGS)[number]) {
       blockType: 'elementor',
       pageId: page.id,
       html: page.html,
-      stylesheetIds: page.stylesheetIds.map((id) => ({ id })),
+      stylesheetIds: page.stylesheetIds,
     },
   ];
   if (faq) bloques.push(faq);
@@ -123,7 +126,13 @@ async function main() {
   acciones[AGENCIA_SHOPIFY_SLUG] = await upsertServicio(payload, shopifyData);
 
   const count = await payload.count({ collection: 'servicios' });
-  console.log(JSON.stringify({ acciones, servicios: count.totalDocs }, null, 2));
+  const result = {
+    acciones,
+    servicios: count.totalDocs,
+    mensaje: `cms:seed-servicios: ${count.totalDocs} documento(s) en colección servicios`,
+  };
+  console.log(JSON.stringify(result, null, 2));
+  console.log(result.mensaje);
   process.exit(0);
 }
 

@@ -141,9 +141,9 @@ export const ElementorServicioBlock: Block = {
     { name: 'html', type: 'code', required: true, admin: { language: 'html' } },
     {
       name: 'stylesheetIds',
-      type: 'array',
+      type: 'json',
       required: true,
-      fields: [{ name: 'id', type: 'number', required: true }],
+      admin: { description: 'Lista de IDs de hojas Elementor (post + widgets).' },
     },
   ],
 };
