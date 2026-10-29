@@ -37,7 +37,9 @@
     "cms:importmap": "payload generate:importmap --disable-transpile",
     "cms:types": "payload generate:types --disable-transpile",
     "cms:import": "node scripts/import-wp.ts",
-    "cms:seed-casos": "node scripts/seed-casos.ts"
+    "cms:seed-casos": "node scripts/seed-casos.ts",
+    "cms:seed-posts-alts-h5": "node scripts/seed-posts-alts-h5.ts",
+    "test:payload-alts-h5": "node --experimental-strip-types --test tests/payload-posts-alts-h5.test.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
