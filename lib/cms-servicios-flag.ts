@@ -45,7 +45,7 @@ export function isPayloadServicioSlug(slug: string): slug is PayloadServicioSlug
 }
 
 /** Internal rewrite target for Preview ?cms=1 (keeps public URL, avoids searchParams SSG opt-out). */
-export const CMS_PREVIEW_SERVICIO_PATH_PREFIX = '/__preview_cms_servicio';
+export const CMS_PREVIEW_SERVICIO_PATH_PREFIX = '/cms-servicio-preview';
 
 export function cmsPreviewServicioPath(slug: string): string {
   return `${CMS_PREVIEW_SERVICIO_PATH_PREFIX}/${slug}`;

@@ -15,6 +15,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  if (process.env.VERCEL_ENV !== 'preview') {
+    notFound();
+  }
   const { slug } = await params;
   if (!isPayloadServicioSlug(slug)) {
     notFound();
@@ -29,6 +32,9 @@ export default async function PreviewCmsServicioPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  if (process.env.VERCEL_ENV !== 'preview') {
+    notFound();
+  }
   const { slug } = await params;
   if (!isPayloadServicioSlug(slug)) {
     notFound();

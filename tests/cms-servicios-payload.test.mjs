@@ -14,7 +14,7 @@ const shopifyPage = readFileSync(
   'utf8',
 );
 const previewPage = readFileSync(
-  new URL('../app/(frontend)/__preview_cms_servicio/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/cms-servicio-preview/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
