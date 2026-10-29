@@ -193,9 +193,38 @@ function dropDuplicateDesarrolloBlocks(acf: Record<string, unknown>): void {
   }
 }
 
+const ODWALLA_SLUG = 'odwalla-shopify-dtc-ecommerce';
+
+const TC_OR_SEO_UNSIGNED_RE =
+  /tasa de conversi[oó]n|\(tc\)|tercer puesto|posicionamiento seo consolidado/i;
+
+/** Propuesta 29 oct: quitar cifras TC y tercer puesto SEO sin firmar en Odwalla. */
+function stripOdwallaUnsignedStats(acf: Record<string, unknown>, slug?: string): void {
+  if (slug !== ODWALLA_SLUG) return;
+  if (typeof acf.resultado1 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultado1)) {
+    acf.resultado1 = '';
+  }
+  if (typeof acf.resultadop1 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultadop1)) {
+    acf.resultadop1 = '';
+  }
+  if (typeof acf.resultado2 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultado2)) {
+    acf.resultado2 = '';
+  }
+  if (typeof acf.resultadop2 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultadop2)) {
+    acf.resultadop2 = '';
+  }
+  if (typeof acf.resultado3 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultado3)) {
+    acf.resultado3 = '';
+  }
+  if (typeof acf.resultadop3 === 'string' && TC_OR_SEO_UNSIGNED_RE.test(acf.resultadop3)) {
+    acf.resultadop3 = '';
+  }
+}
+
 export function normalizeCaseStudyAcf<T extends Record<string, unknown>>(
   acf: T | null | undefined,
   title?: string,
+  slug?: string,
 ): T {
   const source = (acf && typeof acf === 'object' ? acf : {}) as Record<string, unknown>;
   const out: Record<string, unknown> = { ...source };
@@ -226,6 +255,8 @@ export function normalizeCaseStudyAcf<T extends Record<string, unknown>>(
     typeof out.resultado3 === 'string' ? out.resultado3 : '',
     typeof out.resultadop3 === 'string' ? out.resultadop3 : '',
   );
+
+  stripOdwallaUnsignedStats(out, slug);
 
   return out as T;
 }

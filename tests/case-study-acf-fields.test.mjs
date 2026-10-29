@@ -60,7 +60,7 @@ const odwallaAcf = {
 };
 
 test('page parses ACF through normalizeCaseStudyAcf and no longer dumps desarrollo JSON', () => {
-  assert.match(page, /normalizeCaseStudyAcf\(rawStory\.acf, rawStory\.title\?\.rendered\)/);
+  assert.match(page, /normalizeCaseStudyAcf\(rawStory\.acf, rawStory\.title\?\.rendered, slug\)/);
   assert.doesNotMatch(page, /JSON\.stringify\(\{[\s\S]*primerapdesarrollo/);
   assert.doesNotMatch(page, /primerh2 \|\| 'El Desafío'/);
 });
@@ -99,8 +99,8 @@ test('asRenderableHtml parses a single-field JSON string and discards multi-key 
   assert.equal(asRenderableHtml('Párrafo aprobado de WordPress'), 'Párrafo aprobado de WordPress');
 });
 
-test('Odwalla drops the H1-as-H2, the repeated Shopify block and the SEO bleed in result 1', () => {
-  const acf = normalizeCaseStudyAcf(odwallaAcf, odwallaTitle);
+test('Odwalla drops the H1-as-H2, the repeated Shopify block and unsigned TC/SEO stats', () => {
+  const acf = normalizeCaseStudyAcf(odwallaAcf, odwallaTitle, 'odwalla-shopify-dtc-ecommerce');
   assert.equal(acf.primerh2, '');
   assert.equal(
     acf.primerah3desarrollo,
@@ -109,13 +109,13 @@ test('Odwalla drops the H1-as-H2, the repeated Shopify block and the SEO bleed i
   assert.equal(acf.segundah3desarrollo, '');
   assert.equal(acf.segundapdesarrollo, '');
   assert.equal(acf.tercerh3desarrollo, 'Optimización de Velocidad y SEO Técnico');
+  assert.equal(acf.resultado1, '');
   assert.equal(
     acf.resultadop1,
     'El checkout funcional y la velocidad se tradujeron directamente en un incremento en los pedidos completados de Odwalla.',
   );
-  assert.equal(acf.resultado2, 'Posicionamiento SEO Consolidado');
-  assert.match(acf.resultadop2, /tercer puesto de búsquedas clave/);
-  assert.doesNotMatch(acf.resultadop1, /Posicionamiento SEO Consolidado/);
+  assert.equal(acf.resultado2, '');
+  assert.equal(acf.resultadop2, '');
 });
 
 test('Jumex approved headings and results stay intact', () => {

@@ -12,9 +12,9 @@ type CaseStudyRecord = {
  */
 const PUBLIC_CASE_STUDY_SEO: Record<string, { title: string; description: string }> = {
   'jumex-shopify-dtc-ecommerce': {
-    title: 'Jumex Shopify DTC: canal propio para un catálogo grande',
+    title: 'Jumex en Shopify: canal DTC y catálogo grande | Playful',
     description:
-      'Construimos el canal DTC de Jumex en Shopify. Catálogo grande y pedido propio en jumexus.com, para que la venta no se quede en el marketplace.',
+      'Implementamos la tienda DTC de Jumex en Shopify. El catálogo queda en colecciones y variantes, con fichas y vistas de escritorio y móvil, en jumexus.com.',
   },
   'odwalla-shopify-dtc-ecommerce': {
     title: 'Odwalla Shopify DTC: de sitio informativo a tienda',

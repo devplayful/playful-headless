@@ -4,6 +4,7 @@ import {
   GRACIAS_LEAD_CTA_HREF,
   GRACIAS_LEAD_CTA_LABEL,
   GRACIAS_LEAD_H1,
+  GRACIAS_SCHEDULE_BODY,
   GRACIAS_SCHEDULE_CTA_HREF,
   GRACIAS_SCHEDULE_CTA_LABEL,
   GRACIAS_SCHEDULE_H1,
@@ -28,9 +29,40 @@ export default async function ThankYouV2({
   const ctaHref = isSchedule ? GRACIAS_SCHEDULE_CTA_HREF : GRACIAS_LEAD_CTA_HREF;
   const ctaLabel = isSchedule ? GRACIAS_SCHEDULE_CTA_LABEL : GRACIAS_LEAD_CTA_LABEL;
 
+  if (isSchedule) {
+    return (
+      <div data-thanks-v2 className="min-h-screen relative overflow-hidden">
+        <BookAppointmentTracker />
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
+          <h1
+            className="text-center mb-12 md:mb-16"
+            style={{
+              fontSize: 'clamp(44px, 8vw, 150px)',
+              fontFamily: 'var(--font-paytone-one)',
+              lineHeight: '1.01',
+              color: '#440099',
+            }}
+          >
+            {h1}
+          </h1>
+          <div className="max-w-3xl mx-auto space-y-8 text-center">
+            <p className="playful-contenido-p">{GRACIAS_SCHEDULE_BODY}</p>
+            <div data-cta-section="gracias">
+              <a
+                href={ctaHref}
+                className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]"
+              >
+                {ctaLabel}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div data-thanks-v2 className="min-h-screen relative overflow-hidden">
-      {isSchedule ? <BookAppointmentTracker /> : null}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute top-10 left-10 w-3 h-3 bg-pink-400 rounded-full opacity-60" />
         <div className="absolute top-20 right-20 w-4 h-4 bg-yellow-400 rounded-full opacity-60" />
