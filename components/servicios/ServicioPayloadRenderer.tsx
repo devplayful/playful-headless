@@ -14,6 +14,9 @@ type Props = {
   slug: string;
 };
 
+const previewPayloadSourceAttr =
+  process.env.VERCEL_ENV === 'preview' ? ({ 'data-cms-source': 'payload' as const }) : {};
+
 function faqJsonLdFromBlocks(blocks: ServicioBlock[] | null | undefined) {
   const faq = blocks?.find((b) => b.blockType === 'faq');
   if (!faq || !Array.isArray(faq.items)) return null;
@@ -52,7 +55,7 @@ export default async function ServicioPayloadRenderer({ doc, slug }: Props) {
 
   if (slug === 'agencia-shopify' && !elementor) {
     return (
-      <>
+      <div {...previewPayloadSourceAttr}>
         {faqJsonLd ? (
           <script
             id="playful-faq"
@@ -75,14 +78,14 @@ export default async function ServicioPayloadRenderer({ doc, slug }: Props) {
           </>
         ) : null}
         <AgenciaShopifyFromPayload doc={doc} />
-      </>
+      </div>
     );
   }
 
   if (!elementor) return null;
 
   return (
-    <>
+    <div {...previewPayloadSourceAttr}>
       {landingJsonLd ? (
         <>
           <script
@@ -110,6 +113,6 @@ export default async function ServicioPayloadRenderer({ doc, slug }: Props) {
         stylesheetIds={elementor.stylesheetIds}
         slug={slug}
       />
-    </>
+    </div>
   );
 }

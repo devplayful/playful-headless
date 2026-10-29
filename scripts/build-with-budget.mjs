@@ -148,6 +148,80 @@ export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
 }
 
+function redactSecrets(text) {
+  return String(text)
+    .replace(/postgres(?:ql)?:\/\/[^\s'"`]+/gi, '[database-url]')
+    .replace(/\bDATABASE_URL(?:_UNPOOLED)?=[^\s]+/gi, 'DATABASE_URL=[redacted]')
+    .trim();
+}
+
+function shortErrorMessage(stdout, stderr, exitCode) {
+  const combined = redactSecrets(`${stderr}\n${stdout}`).replace(/\s+/g, ' ').trim();
+  if (!combined) return `exit code ${exitCode}`;
+  return combined.length > 180 ? `${combined.slice(0, 177)}…` : combined;
+}
+
+export function summarizePayloadMigrateOutput(output) {
+  const text = String(output);
+  const applied = [];
+  const patterns = [
+    /Migrat(?:e|ed|ing)(?::\s*|\s+)(20\d{6}_\d+)/gi,
+    /Ran migration (20\d{6}_\d+)/gi,
+    /Applying migration (20\d{6}_\d+)/gi,
+  ];
+  for (const pattern of patterns) {
+    let match = pattern.exec(text);
+    while (match) {
+      applied.push(match[1]);
+      match = pattern.exec(text);
+    }
+  }
+  const unique = [...new Set(applied)];
+  if (unique.length) return unique.join(', ');
+  if (/no migrations|nothing to migrate|already up to date|nada pendiente|0 migrations/i.test(text)) {
+    return 'nada pendiente';
+  }
+  return 'nada pendiente';
+}
+
+export function summarizeSeedServiciosOutput(output) {
+  const text = String(output);
+  const jsonStart = text.indexOf('{');
+  const jsonEnd = text.lastIndexOf('}');
+  if (jsonStart === -1 || jsonEnd <= jsonStart) return null;
+  try {
+    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    const acciones = parsed?.acciones && typeof parsed.acciones === 'object' ? parsed.acciones : {};
+    const values = Object.values(acciones);
+    const creados = values.filter((value) => value === 'creado').length;
+    const actualizados = values.filter((value) => value === 'actualizado').length;
+    return { creados, actualizados };
+  } catch {
+    return null;
+  }
+}
+
+async function runGuardedCommandWithCapture(command, args, options = {}) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await runGuardedCommand(command, args, {
+    ...options,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    onSpawn(child) {
+      options.onSpawn?.(child);
+      child.stdout?.on('data', (chunk) => {
+        stdout += chunk.toString();
+        process.stdout.write(chunk);
+      });
+      child.stderr?.on('data', (chunk) => {
+        stderr += chunk.toString();
+        process.stderr.write(chunk);
+      });
+    },
+  });
+  return { exitCode, stdout, stderr };
+}
+
 export async function runPayloadPreviewMigrate(env = process.env) {
   if (!shouldRunPreviewMigrate(env)) {
     console.log('payload migrate: omitido (sin DATABASE_URL o VERCEL_ENV=production)');
@@ -155,11 +229,17 @@ export async function runPayloadPreviewMigrate(env = process.env) {
   }
   console.log('payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)');
   const migrateEnv = { ...env, PAYLOAD_MIGRATING: 'true' };
-  return runGuardedCommand(
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
     payloadMigrateArgs(),
     { env: migrateEnv },
   );
+  if (exitCode !== 0) {
+    console.log(`payload migrate ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  console.log(`payload migrate OK: ${summarizePayloadMigrateOutput(`${stdout}\n${stderr}`)}`);
+  return exitCode;
 }
 
 export async function runPayloadPreviewSeedServicios(env = process.env) {
@@ -170,11 +250,26 @@ export async function runPayloadPreviewSeedServicios(env = process.env) {
     return 0;
   }
   console.log('cms:seed-servicios: ejecutando (Preview, DATABASE_URL presente)');
-  return runGuardedCommand(process.execPath, ['scripts/seed-servicios.ts'], {
-    env,
-    budgetMs: BUILD_BUDGET_MS,
-    inactivityMs: BUILD_INACTIVITY_MS,
-  });
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-servicios.ts'],
+    {
+      env,
+      budgetMs: BUILD_BUDGET_MS,
+      inactivityMs: BUILD_INACTIVITY_MS,
+    },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-servicios ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const counts = summarizeSeedServiciosOutput(stdout);
+  if (!counts) {
+    console.log('seed-servicios ERROR: no se pudo leer el resumen del seed');
+    return 1;
+  }
+  console.log(`seed-servicios OK: ${counts.creados} creados / ${counts.actualizados} actualizados`);
+  return exitCode;
 }
 
 export async function runGuardedBuild() {
