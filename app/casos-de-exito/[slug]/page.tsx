@@ -166,7 +166,7 @@ export default async function SuccessStoryPage({
 
   const story = {
     ...rawStory,
-    acf: normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered),
+    acf: normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered, slug),
   };
 
   // SoyTechno template detection

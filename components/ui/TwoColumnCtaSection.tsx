@@ -14,6 +14,9 @@ interface TwoColumnCtaSectionProps {
   ctaTitle?: string;
   buttonText?: string;
   buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
+  footerNote?: string;
   onButtonClick?: () => void;
 }
 
@@ -26,6 +29,9 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
   ctaTitle = "¡Contáctanos y hagamos que tu tienda online trabaje realmente para ti!",
   buttonText = "Llena el formulario y hablemos sobre tu web",
   buttonLink = "/contactar-agencia-de-marketing-digital",
+  secondaryButtonText,
+  secondaryButtonLink,
+  footerNote,
   onButtonClick,
 }) => {
   return (
@@ -78,14 +84,25 @@ const TwoColumnCtaSection: React.FC<TwoColumnCtaSectionProps> = ({
               </div>
             </div>
 
-            <div className="w-full flex justify-center px-5 py-5 md:p-0">
+            <div className="w-full flex flex-col items-center gap-4 justify-center px-5 py-5 md:p-0">
               <a
                 href={buttonLink}
                 onClick={onButtonClick}
-                className="mt-0 md:mt-8 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
+                className="mt-0 md:mt-4 bg-[#440099] text-white hover:bg-[#5B21B6] font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 no-underline text-center !text-[14px] !leading-[18px] md:!text-base md:!leading-normal"
               >
                 {buttonText}
               </a>
+              {secondaryButtonText && secondaryButtonLink ? (
+                <a
+                  href={secondaryButtonLink}
+                  className="text-[#440099] font-semibold underline underline-offset-4"
+                >
+                  {secondaryButtonText}
+                </a>
+              ) : null}
+              {footerNote ? (
+                <p className="text-sm text-[#453A53] text-center max-w-xl mt-4">{footerNote}</p>
+              ) : null}
             </div>
           </div>
         </div>

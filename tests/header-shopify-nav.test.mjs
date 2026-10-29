@@ -13,19 +13,19 @@ function servicesArrayLiteral(source) {
   return source.slice(start, end + 4);
 }
 
-test('SERVICIOS dropdown lists Shopify next to E-commerce with /agencia-shopify', () => {
+test('SERVICIOS dropdown lists Agencia Shopify next to E-commerce with /agencia-shopify', () => {
   const block = servicesArrayLiteral(header);
   assert.match(block, /title: 'SEO', url: '\/agencia-seo'/);
   assert.match(block, /title: 'SEM', url: '\/agencia-sem'/);
   assert.match(block, /title: 'Diseño Web', url: '\/agencia-diseno-web'/);
   assert.match(block, /title: 'E-commerce', url: '\/agencia-e-commerce'/);
-  assert.match(block, /title: 'Shopify', url: '\/agencia-shopify'/);
+  assert.match(block, /title: 'Agencia Shopify', url: '\/agencia-shopify'/);
   assert.match(block, /title: 'UX\/UI', url: '\/agencia-ux-ui'/);
 
   const titles = [...block.matchAll(/title: '([^']+)'/g)].map((m) => m[1]);
-  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Shopify', 'UX/UI']);
-  assert.equal(titles.indexOf('Shopify'), titles.indexOf('E-commerce') + 1);
-  assert.equal(titles.indexOf('UX/UI'), titles.indexOf('Shopify') + 1);
+  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Agencia Shopify', 'UX/UI']);
+  assert.equal(titles.indexOf('Agencia Shopify'), titles.indexOf('E-commerce') + 1);
+  assert.equal(titles.indexOf('UX/UI'), titles.indexOf('Agencia Shopify') + 1);
 });
 
 test('desktop and mobile SERVICIOS both iterate the same services array', () => {
