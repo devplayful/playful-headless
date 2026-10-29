@@ -4,6 +4,7 @@ import Image from 'next/image';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
 import CarouselResultados from '@/components/CarouselResultados';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
+import { NOSOTROS_H1 } from '@/lib/nosotros-copy';
 
 // Constante para clases de contenedor estandarizadas
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
@@ -367,7 +368,7 @@ export default async function Nosotros() {
                 {/* Columna Izquierda */}
                 <div className="md:w-1/2 text-left">
                   <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
-                    Para equipos que necesitan evolucionar su ecommerce
+                    {NOSOTROS_H1}
                   </h1>
                   <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
                     Diseño y desarrollo para ecommerce

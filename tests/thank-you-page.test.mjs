@@ -12,6 +12,8 @@ test('thank-you page branches on conv=Schedule vs Lead', () => {
   assert.match(page, /GRACIAS_SCHEDULE_CTA_HREF/);
   assert.match(page, /GRACIAS_LEAD_CTA_HREF/);
   assert.match(copy, /conv === 'Schedule'/);
+  assert.match(copy, /Tu reunión ya está confirmada/);
+  assert.match(copy, /GRACIAS_SCHEDULE_BODY/);
 });
 
 test('thank-you page has noindex and no widget API hrefs', () => {

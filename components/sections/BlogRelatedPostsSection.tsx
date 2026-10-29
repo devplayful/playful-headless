@@ -3,20 +3,42 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { excludeCurrentBlogPost } from '@/lib/blog-related-posts';
+import { BLOG_CARD_SIZES } from '@/lib/blog-image-sizes';
 
 interface BlogPost {
   id: number | string;
   imageUrl: string;
+  imageAlt?: string;
   title: string;
   category: string;
   excerpt: string;
   date: string;
   href: string;
+  slug?: string;
 }
 
-export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts?: BlogPost[] } = {}) {
+export default function BlogRelatedPostsSection({
+  posts: initialPosts,
+  excludeSlug,
+  excludeId,
+  sectionTitle,
+  sectionIntro,
+  ctaLabel,
+  ctaHref,
+}: {
+  posts?: BlogPost[];
+  excludeSlug?: string;
+  excludeId?: number | string;
+  sectionTitle?: string;
+  sectionIntro?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+} = {}) {
   const hasServerPosts = initialPosts !== undefined;
-  const [posts, setPosts] = useState<BlogPost[]>(initialPosts ?? []);
+  const [posts, setPosts] = useState<BlogPost[]>(() =>
+    excludeCurrentBlogPost(initialPosts ?? [], { slug: excludeSlug, id: excludeId }),
+  );
   const [loading, setLoading] = useState(!hasServerPosts);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -38,10 +60,14 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
     if (hasServerPosts) return;
     const fetchPosts = async () => {
       try {
-        const res = await fetch('/api/blog-posts');
+        const params = new URLSearchParams();
+        if (excludeSlug) params.set('exclude', excludeSlug);
+        else if (excludeId != null && excludeId !== '') params.set('exclude', String(excludeId));
+        const query = params.toString();
+        const res = await fetch(`/api/blog-posts${query ? `?${query}` : ''}`);
         const data = await res.json();
         const arr = Array.isArray(data) ? data : (Array.isArray(data?.posts) ? data.posts : []);
-        setPosts(arr);
+        setPosts(excludeCurrentBlogPost(arr, { slug: excludeSlug, id: excludeId }));
       } catch (e) {
         console.error('Error fetching blog posts', e);
       } finally {
@@ -49,10 +75,14 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
       }
     };
     fetchPosts();
-  }, [hasServerPosts]);
+  }, [hasServerPosts, excludeSlug, excludeId]);
 
   const totalPages = Math.ceil(posts.length / postsPerPage);
   const currentPosts = posts.slice(currentIndex * postsPerPage, (currentIndex + 1) * postsPerPage);
+
+  if (!loading && posts.length === 0) {
+    return null;
+  }
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % totalPages);
@@ -67,10 +97,15 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
-          ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
+          {sectionTitle ?? (
+            <>
+              ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
+            </>
+          )}
         </h2>
         <p className="text-white text-base md:text-lg leading-relaxed mb-10">
-          Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de <strong className="font-bold">UX/UI, E-commerce y desarrollo tecnológico</strong>. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.
+          {sectionIntro ??
+            'Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de UX/UI, E-commerce y desarrollo tecnológico. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.'}
         </p>
       </div>
 
@@ -84,7 +119,7 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
             <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
               <div className="relative h-48 bg-gray-100">
                 {post.imageUrl ? (
-                  <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
+                  <Image src={post.imageUrl} alt={post.imageAlt || post.title} fill className="object-cover" sizes={BLOG_CARD_SIZES} />
                 ) : (
                   <div className="w-full h-full bg-gray-200" />
                 )}
@@ -125,8 +160,8 @@ export default function BlogRelatedPostsSection({ posts: initialPosts }: { posts
       )}
 
       <div className="relative z-10 flex justify-center mt-12 pb-5 md:pb-0">
-        <Link href="/blog" className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 !text-[14px] !leading-[18px] md:!text-base md:!leading-normal shadow-lg transition-colors">
-          Ver más artículos
+        <Link href={ctaHref ?? '/blog'} className="bg-[#85ECD9] hover:bg-[#60dbc1] text-[#0E5942] font-bold rounded-full px-8 py-3 !text-[14px] !leading-[18px] md:!text-base md:!leading-normal shadow-lg transition-colors">
+          {ctaLabel ?? 'Ver más artículos'}
         </Link>
       </div>
     </section>

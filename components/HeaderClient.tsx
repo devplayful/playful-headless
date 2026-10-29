@@ -50,13 +50,8 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
     { title: 'SEO', url: '/agencia-seo' },
     { title: 'SEM', url: '/agencia-sem' },
     { title: 'Diseño Web', url: '/agencia-diseno-web' },
-<<<<<<< HEAD
-    { title: 'E-commerce', url: '/agencia-e-commerce' }
-=======
     { title: 'E-commerce', url: '/agencia-e-commerce' },
     { title: 'Agencia Shopify', url: '/agencia-shopify' },
-    { title: 'UX/UI', url: '/agencia-ux-ui' },
->>>>>>> dc24f38 ([preview] Header SERVICIOS: enlace Shopify → Agencia Shopify (mismo href))
   ]
 
   const { headerColor } = useTheme();

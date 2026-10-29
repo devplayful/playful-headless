@@ -19,11 +19,11 @@ test('Jumex and Odwalla no longer ship the PR #27 technical-scope rewrite', () =
   assert.doesNotMatch(overrides, /testimonialnombre: ''/);
 });
 
-test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => {
-  assert.match(overrides, /Jumex Shopify DTC: canal propio para un catálogo grande/);
+test('case SEO titles match propuestas 29 oct for Jumex; Odwalla meta unchanged', () => {
+  assert.match(overrides, /Jumex en Shopify: canal DTC y catálogo grande \| Playful/);
   assert.match(
     overrides,
-    /Construimos el canal DTC de Jumex en Shopify\. Catálogo grande y pedido propio en jumexus\.com/,
+    /Implementamos la tienda DTC de Jumex en Shopify\. El catálogo queda en colecciones y variantes/,
   );
   assert.match(overrides, /Odwalla Shopify DTC: de sitio informativo a tienda/);
   assert.match(

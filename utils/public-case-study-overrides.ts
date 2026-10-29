@@ -13,9 +13,9 @@ type PublicCaseStudyOverride = {
 
 const PUBLIC_CASE_STUDY_OVERRIDES: Record<string, PublicCaseStudyOverride> = {
   'jumex-shopify-dtc-ecommerce': {
-    title: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
+    title: 'Jumex en Shopify: canal DTC y catálogo grande | Playful',
     summary:
-      'Implementación técnica en Shopify para organizar un catálogo de bebidas mediante colecciones, variantes, páginas de producto y vistas adaptadas a escritorio y móvil.',
+      'Implementamos la tienda DTC de Jumex en Shopify. El catálogo queda en colecciones y variantes, con fichas y vistas de escritorio y móvil, en jumexus.com.',
     acf: {
       h1: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
       primerap:

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
+import { normalizeCaseStudyAcf } from '@/utils/case-study-acf-fields';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
 import SoyTechnoSectionB from '@/components/soytechno/SoyTechnoSectionB';
 import SoyTechnoSectionC from '@/components/soytechno/SoyTechnoSectionC';
@@ -78,11 +79,16 @@ export default async function SuccessStoryPage({
     notFound();
   }
 
-  const story = await getSuccessStoryBySlug(slug);
+  const rawStory = await getSuccessStoryBySlug(slug);
 
-  if (!story) {
+  if (!rawStory) {
     notFound();
   }
+
+  const story = {
+    ...rawStory,
+    acf: normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered, slug),
+  };
 
   // SoyTechno template detection
   const isSoyTechno = story.acf?.template === "soytechno_extended";
