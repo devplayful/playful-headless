@@ -11,6 +11,7 @@ import { BlogPostContent } from './BlogPostContent';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import NosotrosCTASection from '@/components/sections/NosotrosCTASection';
 import TwoColumnCtaSection from '@/components/ui/TwoColumnCtaSection';
+import { blogBodyForSlug } from '@/lib/blog-body-overrides';
 
 export async function generateStaticParams() {
   const { posts } = await getBlogPosts(1, 100);
@@ -64,7 +65,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const $ = cheerio.load(post.content?.rendered || '');
+  const $ = cheerio.load(blogBodyForSlug(postSlug) || post.content?.rendered || '');
   const headings = $('h2, h3, h4')
     .map((_, el) => {
       const $el = $(el);

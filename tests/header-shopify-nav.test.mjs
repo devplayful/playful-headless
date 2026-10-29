@@ -20,12 +20,11 @@ test('SERVICIOS dropdown lists Agencia Shopify next to E-commerce with /agencia-
   assert.match(block, /title: 'Diseño Web', url: '\/agencia-diseno-web'/);
   assert.match(block, /title: 'E-commerce', url: '\/agencia-e-commerce'/);
   assert.match(block, /title: 'Agencia Shopify', url: '\/agencia-shopify'/);
-  assert.match(block, /title: 'UX\/UI', url: '\/agencia-ux-ui'/);
+  assert.doesNotMatch(block, /agencia-ux-ui/);
 
   const titles = [...block.matchAll(/title: '([^']+)'/g)].map((m) => m[1]);
-  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Agencia Shopify', 'UX/UI']);
+  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Agencia Shopify']);
   assert.equal(titles.indexOf('Agencia Shopify'), titles.indexOf('E-commerce') + 1);
-  assert.equal(titles.indexOf('UX/UI'), titles.indexOf('Agencia Shopify') + 1);
 });
 
 test('desktop and mobile SERVICIOS both iterate the same services array', () => {

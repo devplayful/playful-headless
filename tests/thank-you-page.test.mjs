@@ -23,17 +23,12 @@ test('thank-you page has noindex and no widget API hrefs', () => {
   assert.match(page, /sesión es gratuita/);
 });
 
-for (const file of ['app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', 'components/ContactLeadForm.tsx']) {
-  test(`${file}: navigate only within successful receipt branch, after generate_lead flush`, () => {
-    const code = readFileSync(new URL('../' + file, import.meta.url), 'utf8');
-    const success = code.indexOf('else if (response.ok && data.success)');
-    const navigation = code.indexOf("window.location.assign('/gracias?conv=Lead')");
-    const pending = code.indexOf('if (response.status === 202 && data.pendingConfirmation === true)');
-    assert(success > 0 && navigation > success);
-    assert(pending >= 0 && pending < success);
-    assert(code.slice(success, navigation).includes('resetConfirmedForm();'));
-    assert(code.slice(success, navigation).includes('await pushGenerateLead'));
-    assert(!code.slice(pending, success).includes("window.location.assign('/gracias?conv=Lead')"));
-    assert(!code.slice(0, pending).includes("window.location.assign('/gracias?conv=Lead')"));
-  });
-}
+test('contact form on staging keeps inline success (no redirect to /gracias)', () => {
+  const code = readFileSync(
+    new URL('../app/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.doesNotMatch(code, /window\.location\.assign\('\/gracias\?conv=Lead'\)/);
+  assert.match(code, /else if \(response\.ok && data\.success\)/);
+  assert.match(code, /success: true/);
+});

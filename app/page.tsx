@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
-import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import {
   HOME_ANTETITULO,
@@ -68,7 +67,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import Link from "next/link";
-import HomeHeroArt, { homeHeroLcpHref } from "@/components/HomeHeroArt";
 import { HomePageContent } from "./HomePageContent";
 import CimaBreaker from "@/components/premios-cima/CimaBreaker";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
@@ -108,7 +106,7 @@ async function HomeContent() {
 
             {/* Right Illustration Area */}
             <div className="relative">
-              <HomeHeroArt />
+              <img src="../images/playful-imagen-banner.png" alt="" />
             </div>
           </div>
         </div>
@@ -188,14 +186,6 @@ async function HomeContent() {
 export default function Home() {
   return (
     <>
-      <link rel="canonical" href={HOME_CANONICAL} />
-      <meta property="og:url" content={HOME_CANONICAL} />
-      <link rel="preload" as="image" href={homeHeroLcpHref()} fetchPriority="high" />
-      <script
-        id="playful-website"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
-      />
       <h1 className="sr-only">{HOME_H1} </h1>
       <HomePageContent>
         <HomeContent />

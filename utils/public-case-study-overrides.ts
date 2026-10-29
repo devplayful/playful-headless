@@ -166,7 +166,7 @@ export function applyPublicCaseStudyOverrides<T extends CaseStudyRecord>(story: 
   const override = story.slug ? PUBLIC_CASE_STUDY_OVERRIDES[story.slug] : undefined;
   if (!override) return story;
 
-  const h1 = getPublicCaseStudyH1Override(story.slug) || override.title;
+  const h1 = getPublicCaseStudyH1Override(story.slug ?? '') || override.title;
 
   return {
     ...story,
