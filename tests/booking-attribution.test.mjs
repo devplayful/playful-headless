@@ -287,12 +287,13 @@ test('visible booking hrefs stay on /reunion-playful and rewrite widget URLs', (
   assert.doesNotMatch(otherLanding, /api\.playfulagency\.com/);
 });
 
-test('gracias keeps the home link CTA; layout propagates query', () => {
+test('gracias keeps Lead reunion CTA and Schedule home CTA in copy module', () => {
   assert.match(shopifyPage, /href = SERVICE_BOOKING_HREF/);
   assert.match(shopifyPage, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(shopifyPage, /buttonLink=\{BOOKING_HREF\}/);
-  assert.match(gracias, /Volver al inicio/);
-  assert.match(gracias, /href="\/"/);
+  assert.match(gracias, /GRACIAS_LEAD_CTA_HREF/);
+  assert.match(gracias, /GRACIAS_SCHEDULE_CTA_HREF/);
+  assert.match(gracias, /isScheduleThanksConv/);
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);
