@@ -36,6 +36,9 @@ import {
   buildServiceLandingJsonLd,
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
+import { isCmsServiciosFromPayload } from '@/lib/cms-servicios-flag';
+import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
+import ServicioPayloadRenderer from '@/components/servicios/ServicioPayloadRenderer';
 
 const PAGE_URL = canonicalForPath(SHOPIFY_META.path);
 const PORTFOLIO_URL = 'https://playfulagency.com/agencia-e-commerce';
@@ -46,20 +49,26 @@ const SERVICE_CARD_COLORS = [
   'bg-[#FFDBDB]',
 ] as const;
 
-export const metadata: Metadata = {
-  title: SHOPIFY_META.title,
-  description: SHOPIFY_META.description,
-  alternates: { canonical: PAGE_URL },
-  ...pageSocialMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  if (isCmsServiciosFromPayload()) {
+    const fromPayload = await buildServicioMetadata('agencia-shopify');
+    if (fromPayload) return fromPayload;
+  }
+  return {
     title: SHOPIFY_META.title,
     description: SHOPIFY_META.description,
-    url: PAGE_URL,
-    images: ogJpegForPath(SHOPIFY_META.path)
-      ? [ogJpegMeta(ogJpegForPath(SHOPIFY_META.path), SHOPIFY_META.title)]
-      : undefined,
-    type: 'website',
-  }),
-};
+    alternates: { canonical: PAGE_URL },
+    ...pageSocialMetadata({
+      title: SHOPIFY_META.title,
+      description: SHOPIFY_META.description,
+      url: PAGE_URL,
+      images: ogJpegForPath(SHOPIFY_META.path)
+        ? [ogJpegMeta(ogJpegForPath(SHOPIFY_META.path), SHOPIFY_META.title)]
+        : undefined,
+      type: 'website',
+    }),
+  };
+}
 
 const HERO_ART_1X = '/images/agencia-shopify/hero-gORwV7MSXO@1x.png';
 const HERO_ART_2X = '/images/agencia-shopify/hero-gORwV7MSXO@2x.png';
@@ -181,6 +190,13 @@ function PurpleBand({ title, body }: { title: string; body: string }) {
 }
 
 export default async function AgenciaShopifyPage() {
+  if (isCmsServiciosFromPayload()) {
+    const servicio = await findServicioBySlug('agencia-shopify');
+    if (servicio) {
+      return <ServicioPayloadRenderer doc={servicio} slug="agencia-shopify" />;
+    }
+  }
+
   const faqJsonLd = buildFaqPageJsonLd();
   const shopifyJsonLd = buildServiceLandingJsonLd('agencia-shopify', SHOPIFY_META.description);
   const [casosDeExito, blogPosts] = await Promise.all([
