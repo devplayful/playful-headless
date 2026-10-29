@@ -17,6 +17,11 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import {
+  cmsPreviewServicioPath,
+  isCmsPreviewServicioInternalPath,
+  isPayloadServicioSlug,
+} from './lib/cms-servicios-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -146,6 +151,24 @@ function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParam
 
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
+
+  if (isCmsPreviewServicioInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (
+    process.env.VERCEL_ENV === 'preview'
+    && request.nextUrl.searchParams.get('cms') === '1'
+    && path.length > 1
+    && path.indexOf('/', 1) === -1
+  ) {
+    const slug = path.slice(1);
+    if (isPayloadServicioSlug(slug)) {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewServicioPath(slug);
+      return attachAttributionCookies(request, NextResponse.rewrite(target));
+    }
+  }
 
   if (isWpProbePath(path)) {
     const target = request.nextUrl.clone();

@@ -10,6 +10,12 @@ import {
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
 import { getServiceFaqJsonLd } from '@/utils/service-faq-jsonld';
+import {
+  isPayloadServicioSlug,
+  shouldRenderServiciosFromPayload,
+} from '@/lib/cms-servicios-flag';
+import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
+import ServicioPayloadRenderer from '@/components/servicios/ServicioPayloadRenderer';
 
 /** Align with CDN s-maxage; WP failures rethrow so ISR keeps the last good HTML. */
 export const revalidate = 3600;
@@ -36,6 +42,14 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
+  if (
+    shouldRenderServiciosFromPayload(false) &&
+    isPayloadServicioSlug(slug) &&
+    slug !== 'agencia-shopify'
+  ) {
+    const fromPayload = await buildServicioMetadata(slug, { renderFromPayload: true });
+    if (fromPayload) return fromPayload;
+  }
   // notFound() here (not only in the page) so Next paints app/not-found.tsx
   // as HTML. A successful generateMetadata + later notFound() leaves the
   // empty __next_error__ shell.
@@ -76,12 +90,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function WordPressPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function WordPressPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (
+    shouldRenderServiciosFromPayload(false) &&
+    isPayloadServicioSlug(slug) &&
+    slug !== 'agencia-shopify'
+  ) {
+    const servicio = await findServicioBySlug(slug, { renderFromPayload: true });
+    if (servicio) {
+      return <ServicioPayloadRenderer doc={servicio} slug={slug} />;
+    }
+  }
+
   const page = await getPageBySlug(slug);
 
   if (!page) {
