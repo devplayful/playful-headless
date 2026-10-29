@@ -5,6 +5,7 @@
     "/",
     "/[slug]",
     "/admin/[[...segments]]",
+    "/__preview_cms_servicio/[slug]",
     "/agencia-shopify",
     "/api/blog-posts",
     "/api/contact",
@@ -184,6 +185,7 @@
       "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"
     ],
     "/admin/[[...segments]]": [],
+    "/__preview_cms_servicio/[slug]": [],
     "/casos-de-exito/[slug]": [],
     "/cms-api/[...slug]": [],
     "/podcast/[slug]": []
