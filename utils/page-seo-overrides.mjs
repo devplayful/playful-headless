@@ -7,7 +7,7 @@
  */
 export const PAGE_TITLE_OVERRIDES = {
   'agencia-e-commerce':
-    'Agencia de ecommerce para marcas D2C | Playful',
+    'Agencia ecommerce para marcas D2C que ya venden | Playful',
   'agencia-seo':
     'Agencia SEO Playful Agency | Mejora tu Posicionamiento',
   'pagos-online-ecommerce':
@@ -24,7 +24,7 @@ export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {
 
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
-    'Agencia de ecommerce para marcas que venden directo al consumidor: ordenamos tienda online, posicionamiento y diseño para vender más. Agenda tu llamada.',
+    'Agencia ecommerce para marcas D2C que ya venden: tienda online, posicionamiento y diseño. Casos reales de SoyTechno, Jumex y Odwalla. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, _yoastOgDescription) {
