@@ -23,7 +23,7 @@ export default function ThankYouV2() {
       </div>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
         <h1 className="text-center mb-12 md:mb-16" style={{ fontSize: 'clamp(44px, 8vw, 150px)', fontFamily: 'var(--font-paytone-one)', lineHeight: '1.01', color: '#440099' }}>
-          ¡Recibimos tu caso!
+          ¡Reunión confirmada!
         </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
           <div className="space-y-6">
@@ -52,8 +52,8 @@ export default function ThankYouV2() {
           </div>
         </section>
         <div data-cta-section="gracias" className="mt-8 text-center">
-          <a href="/reunion-playful" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
-            Cumplo estas condiciones: agendar sesión
+          <a href="/" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
+            Volver al inicio
           </a>
           <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
         </div>

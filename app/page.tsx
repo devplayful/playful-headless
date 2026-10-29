@@ -3,6 +3,15 @@ import { getHomePageMetadata } from '@/services/wordpress';
 import { canonicalForPath } from '@/utils/canonical';
 import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
+import {
+  HOME_ANTETITULO_AFTER_SHOPIFY,
+  HOME_ANTETITULO_BEFORE_SHOPIFY,
+  HOME_H1,
+  HOME_HERO_CTA_LABEL,
+  HOME_SHOPIFY_LINK_HREF,
+  HOME_SHOPIFY_LINK_LABEL,
+  HOME_SUBTITULO,
+} from '@/lib/home-copy';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 
@@ -85,28 +94,24 @@ async function HomeContent() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-2">
-                <p className="playful-miga-pan">Playful Agency:</p>
-                <p className="playful-h1">
-                  ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
+                <p className="playful-miga-pan">
+                  {HOME_ANTETITULO_BEFORE_SHOPIFY}
+                  <Link href={HOME_SHOPIFY_LINK_HREF} className="underline underline-offset-2">
+                    {HOME_SHOPIFY_LINK_LABEL}
+                  </Link>
+                  {HOME_ANTETITULO_AFTER_SHOPIFY}
                 </p>
+                <p className="playful-h1">{HOME_H1} </p>
               </div>
 
-              <div className="space-y-4 2 text-purple-800">
-                <p className="playful-contenido-p">
-                Tu sitio web no es solo un escaparate digital; es tu motor de ventas más crucial. Pero si tu web es lenta, confusa o se ve anticuada, no solo estás perdiendo clientes, sino que estás{" "}
-                  <b>dejando dinero sobre la mesa</b>.
-                </p>
-                <p className="playful-contenido-p">
-                  En <b>Playful Agency</b>, somos una <b>Agencia de E-commerce</b>
-                  que va más allá del diseño. Nos especializamos en transformar plataformas mediocres en
-                  <b> máquinas de conversión de alto rendimiento</b>. No creamos webs bonitas por hacer; desarrollamos tecnología que se traduce en <b>ventas consistentes y crecimiento real</b>.
-                </p>
+              <div className="space-y-4 text-purple-800">
+                <p className="playful-contenido-p">{HOME_SUBTITULO}</p>
               </div>
 
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/contactar-agencia-de-marketing-digital" className="playful-boton">
-                    Completa el formulario y cuéntanos tu idea
+                  <Link href={SERVICE_BOOKING_HREF} className="playful-boton">
+                    {HOME_HERO_CTA_LABEL}
                   </Link>
                 </div>
               </div>
@@ -185,9 +190,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
       />
-      <h1 className="sr-only">
-        ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
-      </h1>
+      <h1 className="sr-only">{HOME_H1} </h1>
       <HomePageContent>
         <HomeContent />
       </HomePageContent>

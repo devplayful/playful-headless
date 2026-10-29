@@ -182,9 +182,15 @@ test('SoyTechno body uses the approved CIMA case-study copy', () => {
   assert.doesNotMatch(soytechnoBody, />Odwalla<\/span>/);
 });
 
-test('applyPublicCaseStudyOverrides is a pass-through so WordPress ACF is used', () => {
+test('applyPublicCaseStudyOverrides only replaces approved H1 titles', () => {
+  assert.match(overrides, /PUBLIC_CASE_STUDY_H1/);
   assert.match(
     overrides,
-    /export function applyPublicCaseStudyOverrides[\s\S]*\{\s*return story;\s*\}/,
+    /Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande/,
   );
+  assert.match(
+    overrides,
+    /Caso Odwalla: de web informativa sin carrito a tienda DTC en Shopify/,
+  );
+  assert.doesNotMatch(overrides, /content:\s*\{/);
 });

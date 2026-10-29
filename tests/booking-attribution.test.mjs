@@ -287,11 +287,12 @@ test('visible booking hrefs stay on /reunion-playful and rewrite widget URLs', (
   assert.doesNotMatch(otherLanding, /api\.playfulagency\.com/);
 });
 
-test('Shopify, gracias and blog CTAs go through /reunion-playful; layout propagates query', () => {
+test('gracias keeps the home link CTA; layout propagates query', () => {
   assert.match(shopifyPage, /href = SERVICE_BOOKING_HREF/);
   assert.match(shopifyPage, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(shopifyPage, /buttonLink=\{BOOKING_HREF\}/);
-  assert.match(gracias, /href="\/reunion-playful"/);
+  assert.match(gracias, /Volver al inicio/);
+  assert.match(gracias, /href="\/"/);
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);

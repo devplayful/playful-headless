@@ -32,7 +32,28 @@ export function getPublicCaseStudySeoOverride(slug: string) {
   return PUBLIC_CASE_STUDY_SEO[slug];
 }
 
-/** Pass-through: do not replace WordPress case copy. */
+/** Visible H1 on case pages (Ale 28 oct 2026); SEO title/meta stay in PUBLIC_CASE_STUDY_SEO. */
+const PUBLIC_CASE_STUDY_H1: Record<string, string> = {
+  'jumex-shopify-dtc-ecommerce':
+    'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
+  'odwalla-shopify-dtc-ecommerce':
+    'Caso Odwalla: de web informativa sin carrito a tienda DTC en Shopify',
+};
+
+export function getPublicCaseStudyH1Override(slug: string): string | undefined {
+  return PUBLIC_CASE_STUDY_H1[slug];
+}
+
+/** Title/H1 overrides only; body and ACF come from WordPress. */
 export function applyPublicCaseStudyOverrides<T extends CaseStudyRecord>(story: T): T {
-  return story;
+  const slug = typeof story.slug === 'string' ? story.slug : '';
+  const h1 = getPublicCaseStudyH1Override(slug);
+  if (!h1 || !story.title) return story;
+  return {
+    ...story,
+    title: {
+      ...story.title,
+      rendered: h1,
+    },
+  };
 }
