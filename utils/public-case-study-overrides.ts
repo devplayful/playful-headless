@@ -13,11 +13,11 @@ type PublicCaseStudyOverride = {
 
 const PUBLIC_CASE_STUDY_OVERRIDES: Record<string, PublicCaseStudyOverride> = {
   'jumex-shopify-dtc-ecommerce': {
-    title: 'JUMEX: implementación de ecommerce en Shopify',
+    title: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
     summary:
       'Implementación técnica en Shopify para organizar un catálogo de bebidas mediante colecciones, variantes, páginas de producto y vistas adaptadas a escritorio y móvil.',
     acf: {
-      h1: 'JUMEX: implementación de ecommerce en Shopify',
+      h1: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
       primerap:
         'La ficha documenta una implementación en Shopify para organizar el catálogo mediante colecciones, variantes, páginas de producto y vistas adaptadas a escritorio y móvil.',
       primerh2: 'Alcance técnico del proyecto',
@@ -76,11 +76,11 @@ const PUBLIC_CASE_STUDY_OVERRIDES: Record<string, PublicCaseStudyOverride> = {
     },
   },
   'odwalla-shopify-dtc-ecommerce': {
-    title: 'ODWALLA: implementación de ecommerce en Shopify',
+    title: 'Caso Odwalla: de web informativa sin carrito a tienda DTC en Shopify',
     summary:
       'Implementación técnica en Shopify con colecciones, variantes, páginas de producto, contenido nutricional y vistas adaptadas a escritorio y móvil.',
     acf: {
-      h1: 'ODWALLA: implementación de ecommerce en Shopify',
+      h1: 'Caso Odwalla: de web informativa sin carrito a tienda DTC en Shopify',
       primerap:
         'La ficha documenta una tienda Shopify con colecciones, variantes, páginas de producto, contenido nutricional y vistas adaptadas a escritorio y móvil.',
       primerh2: 'Alcance técnico del proyecto',
@@ -151,15 +151,28 @@ export function getPublicCaseStudySeoOverride(slug: string) {
   };
 }
 
+const PUBLIC_CASE_STUDY_H1: Record<string, string> = {
+  'jumex-shopify-dtc-ecommerce':
+    'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
+  'odwalla-shopify-dtc-ecommerce':
+    'Caso Odwalla: de web informativa sin carrito a tienda DTC en Shopify',
+};
+
+export function getPublicCaseStudyH1Override(slug: string): string | undefined {
+  return PUBLIC_CASE_STUDY_H1[slug];
+}
+
 export function applyPublicCaseStudyOverrides<T extends CaseStudyRecord>(story: T): T {
   const override = story.slug ? PUBLIC_CASE_STUDY_OVERRIDES[story.slug] : undefined;
   if (!override) return story;
+
+  const h1 = getPublicCaseStudyH1Override(story.slug) || override.title;
 
   return {
     ...story,
     title: {
       ...story.title,
-      rendered: override.title,
+      rendered: h1,
     },
     content: {
       ...story.content,
@@ -168,6 +181,7 @@ export function applyPublicCaseStudyOverrides<T extends CaseStudyRecord>(story: 
     acf: {
       ...story.acf,
       ...override.acf,
+      h1,
     },
   } as T;
 }
