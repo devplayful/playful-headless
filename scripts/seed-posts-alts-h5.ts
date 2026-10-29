@@ -44,7 +44,7 @@ async function main() {
   const skipped66684 = !include66684;
 
   const wpIds = new Set(overrides.map((o) => o.wpId));
-  for (const wpId of wpIds) {
+  for (const wpId of Array.from(wpIds)) {
     const doc = await findPostByWpId(payload, wpId);
     if (!doc) {
       console.warn(`posts wpId=${wpId}: no encontrado (¿falta cms:import?)`);
