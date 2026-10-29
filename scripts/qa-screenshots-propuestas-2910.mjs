@@ -40,7 +40,7 @@ for (const { slug, path } of paths) {
     const bodyText = await page.locator('body').innerText();
     if (/log in to vercel/i.test(bodyText)) throw new Error(`Vercel login wall on ${url}`);
     const file = join(OUT, `${slug}-${vp.tag}.png`);
-    await page.screenshot({ path: file, fullPage: true });
+    await page.screenshot({ path: file, fullPage: slug !== 'home' });
     console.log('saved', file);
     await context.close();
   }
