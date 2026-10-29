@@ -1,5 +1,14 @@
 import type { Metadata } from 'next';
 import BookAppointmentTracker from '@/components/BookAppointmentTracker';
+import {
+  GRACIAS_LEAD_CTA_HREF,
+  GRACIAS_LEAD_CTA_LABEL,
+  GRACIAS_LEAD_H1,
+  GRACIAS_SCHEDULE_CTA_HREF,
+  GRACIAS_SCHEDULE_CTA_LABEL,
+  GRACIAS_SCHEDULE_H1,
+  isScheduleThanksConv,
+} from '@/lib/gracias-copy';
 
 export const metadata: Metadata = {
   title: 'Gracias — siguiente paso | Playful Agency',
@@ -7,10 +16,21 @@ export const metadata: Metadata = {
   alternates: { canonical: '/gracias' },
 };
 
-export default function ThankYouV2() {
+export default async function ThankYouV2({
+  searchParams,
+}: {
+  searchParams?: Promise<{ conv?: string | string[] }>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const conv = typeof sp.conv === 'string' ? sp.conv : undefined;
+  const isSchedule = isScheduleThanksConv(conv);
+  const h1 = isSchedule ? GRACIAS_SCHEDULE_H1 : GRACIAS_LEAD_H1;
+  const ctaHref = isSchedule ? GRACIAS_SCHEDULE_CTA_HREF : GRACIAS_LEAD_CTA_HREF;
+  const ctaLabel = isSchedule ? GRACIAS_SCHEDULE_CTA_LABEL : GRACIAS_LEAD_CTA_LABEL;
+
   return (
     <div data-thanks-v2 className="min-h-screen relative overflow-hidden">
-      <BookAppointmentTracker />
+      {isSchedule ? <BookAppointmentTracker /> : null}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute top-10 left-10 w-3 h-3 bg-pink-400 rounded-full opacity-60" />
         <div className="absolute top-20 right-20 w-4 h-4 bg-yellow-400 rounded-full opacity-60" />
@@ -23,7 +43,7 @@ export default function ThankYouV2() {
       </div>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
         <h1 className="text-center mb-12 md:mb-16" style={{ fontSize: 'clamp(44px, 8vw, 150px)', fontFamily: 'var(--font-paytone-one)', lineHeight: '1.01', color: '#440099' }}>
-          ¡Reunión confirmada!
+          {h1}
         </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
           <div className="space-y-6">
@@ -52,8 +72,8 @@ export default function ThankYouV2() {
           </div>
         </section>
         <div data-cta-section="gracias" className="mt-8 text-center">
-          <a href="/" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
-            Volver al inicio
+          <a href={ctaHref} className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
+            {ctaLabel}
           </a>
           <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
         </div>
