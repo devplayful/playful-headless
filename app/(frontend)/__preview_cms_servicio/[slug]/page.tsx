@@ -4,7 +4,11 @@ import { isPayloadServicioSlug } from '@/lib/cms-servicios-flag';
 import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
 import ServicioPayloadRenderer from '@/components/servicios/ServicioPayloadRenderer';
 
-export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
