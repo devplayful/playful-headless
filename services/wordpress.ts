@@ -10,6 +10,7 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
+import { applyBlogPostContentAltH5 } from '@/lib/blog-post-content-alt-h5';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -1299,7 +1300,7 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
   );
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
   return repairBlogPostYoastCanonical(
-    rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
+    rewriteWpYoastFields(applyBlogPostContentAltH5(rewriteWpRenderedHtmlFields(post))),
   );
 });
 
