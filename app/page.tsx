@@ -4,12 +4,9 @@ import { canonicalForPath } from '@/utils/canonical';
 import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import {
-  HOME_ANTETITULO_AFTER_SHOPIFY,
-  HOME_ANTETITULO_BEFORE_SHOPIFY,
+  HOME_ANTETITULO,
   HOME_H1,
   HOME_HERO_CTA_LABEL,
-  HOME_SHOPIFY_LINK_HREF,
-  HOME_SHOPIFY_LINK_LABEL,
   HOME_SUBTITULO,
 } from '@/lib/home-copy';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
@@ -94,13 +91,7 @@ async function HomeContent() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-2">
-                <p className="playful-miga-pan">
-                  {HOME_ANTETITULO_BEFORE_SHOPIFY}
-                  <Link href={HOME_SHOPIFY_LINK_HREF} className="underline underline-offset-2">
-                    {HOME_SHOPIFY_LINK_LABEL}
-                  </Link>
-                  {HOME_ANTETITULO_AFTER_SHOPIFY}
-                </p>
+                <p className="playful-miga-pan">{HOME_ANTETITULO}</p>
                 <p className="playful-h1">{HOME_H1} </p>
               </div>
 
