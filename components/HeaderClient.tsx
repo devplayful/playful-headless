@@ -51,7 +51,7 @@ export default function HeaderClient({ caseStudies }: HeaderClientProps) {
     { title: 'SEM', url: '/agencia-sem' },
     { title: 'Diseño Web', url: '/agencia-diseno-web' },
     { title: 'E-commerce', url: '/agencia-e-commerce' },
-    { title: 'Shopify', url: '/agencia-shopify' },
+    { title: 'Agencia Shopify', url: '/agencia-shopify' },
     { title: 'UX/UI', url: '/agencia-ux-ui' },
   ]
 
