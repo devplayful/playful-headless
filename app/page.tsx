@@ -13,12 +13,9 @@ import BlogPosts from '@/components/BlogPosts';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import { getAllCaseStudies, getLatestBlogPosts } from '@/services/wordpress';
 import {
-  HOME_ANTETITULO_AFTER_SHOPIFY,
-  HOME_ANTETITULO_BEFORE_SHOPIFY,
+  HOME_ANTETITULO,
   HOME_H1,
   HOME_HERO_CTA_LABEL,
-  HOME_SHOPIFY_LINK_HREF,
-  HOME_SHOPIFY_LINK_LABEL,
   HOME_SUBTITULO,
 } from '@/lib/home-copy';
 
@@ -100,13 +97,7 @@ async function HomeContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-2">
-                <p className="playful-miga-pan">
-                  {HOME_ANTETITULO_BEFORE_SHOPIFY}
-                  <Link href={HOME_SHOPIFY_LINK_HREF} className="underline underline-offset-2">
-                    {HOME_SHOPIFY_LINK_LABEL}
-                  </Link>
-                  {HOME_ANTETITULO_AFTER_SHOPIFY}
-                </p>
+                <p className="playful-miga-pan">{HOME_ANTETITULO}</p>
                 <p className="playful-h1">{HOME_H1} </p>
               </div>
 
