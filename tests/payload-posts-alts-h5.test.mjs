@@ -88,6 +88,18 @@ test('applyAltToContentHtml no altera imágenes de otro post (mismo archivo en o
   assert.notEqual(only68030.images[0].alt, only68207.images[0].alt);
 });
 
+test('H5 preview build verify list has 22 checks (17 A + 5 B)', async () => {
+  const { H5_PREVIEW_BUILD_VERIFY_COUNT } = await import('../cms/data/posts-content-alt-h5.ts');
+  assert.equal(H5_PREVIEW_BUILD_VERIFY_COUNT, 22);
+});
+
+test('preview build wires h5 seed only for VERCEL_ENV=preview', async () => {
+  const { shouldRunPreviewH5AltsSeed } = await import('../scripts/build-with-budget.mjs');
+  assert.equal(shouldRunPreviewH5AltsSeed({ DATABASE_URL: 'postgres://x', VERCEL_ENV: 'preview' }), true);
+  assert.equal(shouldRunPreviewH5AltsSeed({ DATABASE_URL: 'postgres://x', VERCEL_ENV: 'production' }), false);
+  assert.equal(shouldRunPreviewH5AltsSeed({ DATABASE_URL: 'postgres://x', VERCEL_ENV: 'development' }), false);
+});
+
 test('POST_CONTENT_ALT_OVERRIDE_66684 coincide con CSV fila 33', () => {
   assert.equal(
     POST_CONTENT_ALT_OVERRIDE_66684_H5.alt,
