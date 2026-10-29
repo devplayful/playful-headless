@@ -78,6 +78,41 @@ export const CRITERION_A_EXPECTED_ALTS: ExpectedPostContentAlt[] = [
 /** Posts únicos del criterio A (visible / 200, OK en log 23 oct). */
 export const CRITERION_A_UNIQUE_POST_COUNT = new Set(CRITERION_A_EXPECTED_ALTS.map((e) => e.wpId)).size;
 
+/** 17 filas criterio A (curl visible 23 oct) + 5 criterio B = 22 comprobaciones en log de build preview. */
+const H5_PREVIEW_A_CSV_ROWS = [3, 4, 5, 6, 14, 15, 16, 17, 18, 23, 24, 25, 26, 28, 30, 32, 34] as const;
+
+export type H5BuildVerifyCheck = {
+  wpId: number;
+  srcContains: string;
+  expectedAlt: string;
+};
+
+export const H5_PREVIEW_BUILD_VERIFY: H5BuildVerifyCheck[] = [
+  ...POST_CONTENT_ALT_OVERRIDES_H5.map((o) => ({
+    wpId: o.wpId,
+    srcContains: o.srcContains,
+    expectedAlt: o.alt,
+  })),
+  {
+    wpId: POST_CONTENT_ALT_OVERRIDE_66684_H5.wpId,
+    srcContains: POST_CONTENT_ALT_OVERRIDE_66684_H5.srcContains,
+    expectedAlt: POST_CONTENT_ALT_OVERRIDE_66684_H5.alt,
+  },
+  ...CRITERION_A_EXPECTED_ALTS.filter((row) =>
+    (H5_PREVIEW_A_CSV_ROWS as readonly number[]).includes(row.csvRow),
+  ).map((row) => ({
+    wpId: row.wpId,
+    srcContains: row.srcContains,
+    expectedAlt: row.alt,
+  })),
+];
+
+export const H5_PREVIEW_BUILD_VERIFY_COUNT = H5_PREVIEW_BUILD_VERIFY.length;
+
+export function uniqueH5PreviewBuildWpIds(): number[] {
+  return Array.from(new Set(H5_PREVIEW_BUILD_VERIFY.map((c) => c.wpId)));
+}
+
 export function activeH5ContentAltOverrides(include66684: boolean): ContentAltOverride[] {
   const list = [...POST_CONTENT_ALT_OVERRIDES_H5];
   if (include66684) list.push(POST_CONTENT_ALT_OVERRIDE_66684_H5);
