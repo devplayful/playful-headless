@@ -12,7 +12,6 @@ import {
 import { getServiceFaqJsonLd } from '@/utils/service-faq-jsonld';
 import {
   isPayloadServicioSlug,
-  parseCmsPreviewQuery,
   shouldRenderServiciosFromPayload,
 } from '@/lib/cms-servicios-flag';
 import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
@@ -40,19 +39,11 @@ export async function generateStaticParams() {
   return SERVICE_SLUGS.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
-  const query = searchParams ? await searchParams : undefined;
-  const cmsOptIn = parseCmsPreviewQuery(query);
   if (
-    shouldRenderServiciosFromPayload(cmsOptIn) &&
+    shouldRenderServiciosFromPayload(false) &&
     isPayloadServicioSlug(slug) &&
     slug !== 'agencia-shopify'
   ) {
@@ -99,19 +90,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function WordPressPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function WordPressPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const query = searchParams ? await searchParams : undefined;
-  const cmsOptIn = parseCmsPreviewQuery(query);
 
   if (
-    shouldRenderServiciosFromPayload(cmsOptIn) &&
+    shouldRenderServiciosFromPayload(false) &&
     isPayloadServicioSlug(slug) &&
     slug !== 'agencia-shopify'
   ) {

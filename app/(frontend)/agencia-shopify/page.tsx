@@ -36,7 +36,7 @@ import {
   buildServiceLandingJsonLd,
   serializeServiceLandingJsonLd,
 } from '@/utils/service-landing-jsonld';
-import { parseCmsPreviewQuery, shouldRenderServiciosFromPayload } from '@/lib/cms-servicios-flag';
+import { shouldRenderServiciosFromPayload } from '@/lib/cms-servicios-flag';
 import { buildServicioMetadata, findServicioBySlug } from '@/lib/cms-servicios';
 import ServicioPayloadRenderer from '@/components/servicios/ServicioPayloadRenderer';
 
@@ -49,14 +49,8 @@ const SERVICE_CARD_COLORS = [
   'bg-[#FFDBDB]',
 ] as const;
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const query = searchParams ? await searchParams : undefined;
-  const cmsOptIn = parseCmsPreviewQuery(query);
-  if (shouldRenderServiciosFromPayload(cmsOptIn)) {
+export async function generateMetadata(): Promise<Metadata> {
+  if (shouldRenderServiciosFromPayload(false)) {
     const fromPayload = await buildServicioMetadata('agencia-shopify', { renderFromPayload: true });
     if (fromPayload) return fromPayload;
   }
@@ -195,14 +189,8 @@ function PurpleBand({ title, body }: { title: string; body: string }) {
   );
 }
 
-export default async function AgenciaShopifyPage({
-  searchParams,
-}: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const query = searchParams ? await searchParams : undefined;
-  const cmsOptIn = parseCmsPreviewQuery(query);
-  if (shouldRenderServiciosFromPayload(cmsOptIn)) {
+export default async function AgenciaShopifyPage() {
+  if (shouldRenderServiciosFromPayload(false)) {
     const servicio = await findServicioBySlug('agencia-shopify', { renderFromPayload: true });
     if (servicio) {
       return <ServicioPayloadRenderer doc={servicio} slug="agencia-shopify" />;
