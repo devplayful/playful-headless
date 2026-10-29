@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
+const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
+
+function servicesArrayLiteral(source) {
+  const start = source.indexOf('const services = [');
+  assert.notEqual(start, -1, 'missing services array');
+  const end = source.indexOf('\n  ]', start);
+  assert.notEqual(end, -1, 'unclosed services array');
+  return source.slice(start, end + 4);
+}
+
+test('SERVICIOS dropdown lists Agencia Shopify next to E-commerce with /agencia-shopify', () => {
+  const block = servicesArrayLiteral(header);
+  assert.match(block, /title: 'SEO', url: '\/agencia-seo'/);
+  assert.match(block, /title: 'SEM', url: '\/agencia-sem'/);
+  assert.match(block, /title: 'Diseño Web', url: '\/agencia-diseno-web'/);
+  assert.match(block, /title: 'E-commerce', url: '\/agencia-e-commerce'/);
+  assert.match(block, /title: 'Agencia Shopify', url: '\/agencia-shopify'/);
+  assert.match(block, /title: 'UX\/UI', url: '\/agencia-ux-ui'/);
+
+  const titles = [...block.matchAll(/title: '([^']+)'/g)].map((m) => m[1]);
+  assert.deepEqual(titles, ['SEO', 'SEM', 'Diseño Web', 'E-commerce', 'Agencia Shopify', 'UX/UI']);
+  assert.equal(titles.indexOf('Agencia Shopify'), titles.indexOf('E-commerce') + 1);
+  assert.equal(titles.indexOf('UX/UI'), titles.indexOf('Agencia Shopify') + 1);
+});
+
+test('desktop and mobile SERVICIOS both iterate the same services array', () => {
+  assert.equal((header.match(/services\.map\(/g) || []).length, 2);
+});
+
+test('footer SERVICIOS is unchanged (CEO GO is header only)', () => {
+  assert.doesNotMatch(footer, /agencia-shopify/);
+  assert.doesNotMatch(footer, /agencia-ux-ui/);
+  assert.match(footer, /href="\/agencia-seo"/);
+  assert.match(footer, /href="\/agencia-sem"/);
+  assert.match(footer, /href="\/agencia-diseno-web"/);
+});
