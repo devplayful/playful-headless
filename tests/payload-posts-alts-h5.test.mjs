@@ -73,6 +73,28 @@ test('import-wp aplica overrides H5 (sin 66684) tras leer content.rendered', () 
   assert.match(source, /contentImages/);
 });
 
+test('getBlogPostBySlug aplica alts H5 en content.rendered servido', () => {
+  const source = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
+  assert.match(source, /applyBlogPostContentAltH5/);
+});
+
+test('criterio B: matching con proxy i0.wp.com y nombre con ¿', async () => {
+  const { applyBlogPostContentAltH5ToHtml } = await import('../lib/blog-post-content-alt-h5.ts');
+  const wpId = 68061;
+  const html =
+    '<img class="wp-image-77651" src="//i0.wp.com/crear.endpoint.playfulagency.com/wp-content/uploads/BANNER-CTA_PLAYFUL_%C2%BFQuieres-destacar-tu-negocio-en-la-web.png" alt="" />';
+  const out = applyBlogPostContentAltH5ToHtml(html, wpId);
+  assert.match(out, /alt="Banner de Playful Agency: ¿quieres destacar tu negocio en la web\?"/);
+});
+
+test('66717: Herramienta-SEO-2 en src i0.wp.com', async () => {
+  const { applyBlogPostContentAltH5ToHtml } = await import('../lib/blog-post-content-alt-h5.ts');
+  const html =
+    '<img src="//i0.wp.com/crear.endpoint.playfulagency.com/wp-content/uploads/Herramienta-SEO-2.png" alt="" />';
+  const out = applyBlogPostContentAltH5ToHtml(html, 66717);
+  assert.match(out, /auditoría SEO/);
+});
+
 test('criterio A esperado: cada fila tiene alt no vacío y fragmento de archivo', () => {
   for (const row of CRITERION_A_EXPECTED_ALTS) {
     assert.ok(row.alt.length > 10, `fila ${row.csvRow}`);
