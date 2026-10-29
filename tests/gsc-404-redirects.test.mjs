@@ -96,6 +96,7 @@ test('GSC junk paths are 410 and stay out of the CERRAR 31-path inventory', () =
     '/project/bottle-mockup',
     '/project/cosmetic-mockup',
     '/agencylog',
+    '/blog/otros/marketing-deportivo-qatar-2022',
   ]);
   assert.equal(CLOSED_BLOG_PATHS.length, 31);
   assert.deepEqual(closedPostsJson, [...CLOSED_BLOG_PATHS]);
