@@ -1,0 +1,34 @@
+[
+  {
+    "path": "/casos-de-exito",
+    "title": "Casos de éxito ecommerce y Shopify | Playful Agency",
+    "metaDesc": "Casos de éxito en ecommerce y Shopify de marcas que ya venden: mira cómo implementamos tiendas DTC como Jumex y Odwalla, de catálogo a checkout.",
+    "canonical": "https://playfulagency.com/casos-de-exito",
+    "h1": "Casos de éxito en ecommerce y Shopify de marcas que ya venden",
+    "ldJsonCount": 2
+  },
+  {
+    "path": "/casos-de-exito/jumex-shopify-dtc-ecommerce",
+    "title": "Jumex Shopify DTC: canal propio para un catálogo grande",
+    "metaDesc": "Construimos el canal DTC de Jumex en Shopify. Catálogo grande y pedido propio en jumexus.com, para que la venta no se quede en el marketplace.",
+    "canonical": "https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce",
+    "h1": "JUMEX y Shopify:  La Creación del Canal Directo (DTC) para un Portafolio Global",
+    "ldJsonCount": 3
+  },
+  {
+    "path": "/casos-de-exito/odwalla-shopify-dtc-ecommerce",
+    "title": "Odwalla Shopify DTC: de sitio informativo a tienda",
+    "metaDesc": "Odwalla tenía web y visitas, no carrito. En Shopify armamos el canal DTC en odwalladrinks.com para que el pedido no se fuera a un tercero.",
+    "canonical": "https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce",
+    "h1": "ODWALLA: De Marca Pionera a un gran jugador en el Direct To Consumer",
+    "ldJsonCount": 3
+  },
+  {
+    "path": "/casos-de-exito/soytechno-ecommerce-venezuela",
+    "title": "SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela",
+    "metaDesc": "Caso tienda online Venezuela: SoyTechno con Cashea en checkout, pagos multimoneda y MRW rastreo. Cómo compra y confía el mercado fuera del chat informal.",
+    "canonical": "https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela",
+    "h1": "SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela",
+    "ldJsonCount": 3
+  }
+]

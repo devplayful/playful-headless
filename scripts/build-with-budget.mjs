@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
+import { shouldRunPreviewMigrate, shouldRunPreviewCasosSeed } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,10 +142,75 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate };
+export { shouldRunPreviewMigrate, shouldRunPreviewCasosSeed };
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
+}
+
+function redactSecrets(text) {
+  return String(text)
+    .replace(/postgres(?:ql)?:\/\/[^\s'"`]+/gi, '[database-url]')
+    .replace(/\bDATABASE_URL(?:_UNPOOLED)?=[^\s]+/gi, 'DATABASE_URL=[redacted]')
+    .trim();
+}
+
+function shortErrorMessage(stdout, stderr, exitCode) {
+  const combined = redactSecrets(`${stderr}\n${stdout}`).replace(/\s+/g, ' ').trim();
+  if (!combined) return `exit code ${exitCode}`;
+  return combined.length > 180 ? `${combined.slice(0, 177)}…` : combined;
+}
+
+export function summarizePayloadMigrateOutput(output) {
+  const text = String(output);
+  const applied = [];
+  const patterns = [
+    /Migrat(?:e|ed|ing)(?::\s*|\s+)(20\d{6}_\d+)/gi,
+    /Ran migration (20\d{6}_\d+)/gi,
+    /Applying migration (20\d{6}_\d+)/gi,
+  ];
+  for (const pattern of patterns) {
+    let match = pattern.exec(text);
+    while (match) {
+      applied.push(match[1]);
+      match = pattern.exec(text);
+    }
+  }
+  const unique = [...new Set(applied)];
+  if (unique.length) return unique.join(', ');
+  if (/no migrations|nothing to migrate|already up to date|nada pendiente|0 migrations/i.test(text)) {
+    return 'nada pendiente';
+  }
+  return 'nada pendiente';
+}
+
+export function summarizePreviewH4CasosOutput(output) {
+  const lines = String(output).split('\n');
+  const h4 = lines.filter((line) => line.includes('[H4-CASOS]'));
+  const ok = h4.filter((line) => /\bOK\b/.test(line)).length;
+  const err = h4.filter((line) => /\bERROR\b/.test(line)).length;
+  return { ok, err, lines: h4 };
+}
+
+async function runGuardedCommandWithCapture(command, args, options = {}) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await runGuardedCommand(command, args, {
+    ...options,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    onSpawn(child) {
+      options.onSpawn?.(child);
+      child.stdout?.on('data', (chunk) => {
+        stdout += chunk.toString();
+        process.stdout.write(chunk);
+      });
+      child.stderr?.on('data', (chunk) => {
+        stderr += chunk.toString();
+        process.stderr.write(chunk);
+      });
+    },
+  });
+  return { exitCode, stdout, stderr };
 }
 
 export async function runPayloadPreviewMigrate(env = process.env) {
@@ -155,16 +220,52 @@ export async function runPayloadPreviewMigrate(env = process.env) {
   }
   console.log('payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)');
   const migrateEnv = { ...env, PAYLOAD_MIGRATING: 'true' };
-  return runGuardedCommand(
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
     payloadMigrateArgs(),
     { env: migrateEnv },
   );
+  if (exitCode !== 0) {
+    console.log(`payload migrate ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  console.log(`payload migrate OK: ${summarizePayloadMigrateOutput(`${stdout}\n${stderr}`)}`);
+  return exitCode;
+}
+
+export async function runPayloadPreviewH4Casos(env = process.env) {
+  if (!shouldRunPreviewCasosSeed(env)) {
+    console.log(
+      'preview-h4-casos: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('preview-h4-casos: ejecutando import WP casos + seed (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/preview-h4-casos.ts'],
+    {
+      env,
+      budgetMs: BUILD_BUDGET_MS,
+      inactivityMs: BUILD_INACTIVITY_MS,
+    },
+  );
+  const summary = summarizePreviewH4CasosOutput(`${stdout}\n${stderr}`);
+  if (exitCode !== 0) {
+    console.log(`preview-h4-casos ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  console.log(
+    `preview-h4-casos OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} líneas [H4-CASOS])`,
+  );
+  return exitCode;
 }
 
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const h4Code = await runPayloadPreviewH4Casos();
+  if (h4Code !== 0) return h4Code;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

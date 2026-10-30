@@ -1,12 +1,19 @@
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import type { SuccessStory } from '@/services/wordpress';
-import { isCmsCasosFromPayload } from './cms-casos-flag.ts';
+import {
+  isCmsCasosFromPayload,
+  shouldRenderCasosFromPayload,
+} from './cms-casos-flag.ts';
 import { hasRuntimeDatabase } from './cms-database.ts';
 import {
   soyTechnoApprovedCopy,
   type SoyTechnoApprovedCopy,
 } from '../cms/data/soytechno-caso.ts';
+import { mergePublicCaseStudies } from './public-case-studies.ts';
+import { applyPublicCaseStudyOverrides } from '../utils/public-case-study-overrides.ts';
+import { applyCaseStudyCoverOverride } from './case-study-listing-image.ts';
+import { preserveFeaturedMediaUrl } from '../services/case-study-media-policy.mjs';
 
 const APPROVED_COPY_KEYS = Object.keys(soyTechnoApprovedCopy) as Array<
   keyof SoyTechnoApprovedCopy
@@ -55,8 +62,13 @@ export function extractSoyTechnoCopy(doc: unknown): SoyTechnoApprovedCopy | null
   return copy;
 }
 
-export async function findCasoBySlug(slug: string): Promise<Record<string, unknown> | null> {
-  if (!isCmsCasosFromPayload() || !hasRuntimeDatabase()) return null;
+export async function findCasoBySlug(
+  slug: string,
+  options: { renderFromPayload?: boolean } = {},
+): Promise<Record<string, unknown> | null> {
+  const renderFromPayload =
+    options.renderFromPayload ?? shouldRenderCasosFromPayload(false);
+  if (!renderFromPayload || !hasRuntimeDatabase()) return null;
   try {
     const payload = await getPayload({ config });
     const found = await payload.find({
@@ -72,8 +84,11 @@ export async function findCasoBySlug(slug: string): Promise<Record<string, unkno
   }
 }
 
-export async function getSuccessStoryFromPayload(slug: string): Promise<SuccessStory | null> {
-  const doc = await findCasoBySlug(slug);
+export async function getSuccessStoryFromPayload(
+  slug: string,
+  options: { renderFromPayload?: boolean } = {},
+): Promise<SuccessStory | null> {
+  const doc = await findCasoBySlug(slug, options);
   if (!doc) return null;
   const titulo = typeof doc.titulo === 'string' ? doc.titulo : slug;
   const acf = normalizeAcf(doc.acf);
@@ -84,3 +99,60 @@ export async function getSuccessStoryFromPayload(slug: string): Promise<SuccessS
     acf: acf as SuccessStory['acf'],
   } as SuccessStory;
 }
+
+function mediaUrl(value: unknown): string | undefined {
+  const media = mediaOf(value);
+  return media?.url;
+}
+
+function payloadDocToListingItem(doc: Record<string, unknown>): Record<string, unknown> {
+  const slug = typeof doc.slug === 'string' ? doc.slug : '';
+  const titulo = typeof doc.titulo === 'string' ? doc.titulo : slug;
+  const acfRaw = isRecord(doc.acf) ? doc.acf : {};
+  const featured =
+    mediaUrl(doc.imagenDestacada) ||
+    mediaUrl(acfRaw.imagenbanner) ||
+    '';
+  const item = {
+    id: typeof doc.wpId === 'number' ? doc.wpId : 0,
+    slug,
+    title: { rendered: titulo },
+    excerpt: { rendered: typeof doc.contentHtml === 'string' ? doc.contentHtml.slice(0, 200) : '' },
+    featured_media_url: featured,
+    acf: acfRaw,
+  };
+  const sanitized = item as Record<string, unknown>;
+  return applyCaseStudyCoverOverride(
+    applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(item, sanitized)),
+  );
+}
+
+/** Hub listing when CMS_CASOS_FROM_PAYLOAD o ?cms=1 en Preview. */
+export async function getAllCaseStudiesFromPayload(
+  options: { renderFromPayload?: boolean } = {},
+): Promise<any[]> {
+  const renderFromPayload =
+    options.renderFromPayload ?? shouldRenderCasosFromPayload(false);
+  if (!renderFromPayload || !hasRuntimeDatabase()) return [];
+  try {
+    const payload = await getPayload({ config });
+    const found = await payload.find({
+      collection: 'casos',
+      where: { estado: { equals: 'publish' } },
+      limit: 20,
+      depth: 2,
+    });
+    const fromDb = found.docs.map((doc) =>
+      payloadDocToListingItem(doc as unknown as Record<string, unknown>),
+    );
+    return mergePublicCaseStudies(fromDb);
+  } catch {
+    return [];
+  }
+}
+
+export function renderCasosFromPayloadNow(cmsQueryOptIn = false): boolean {
+  return shouldRenderCasosFromPayload(cmsQueryOptIn);
+}
+
+export { isCmsCasosFromPayload };

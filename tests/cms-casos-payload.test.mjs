@@ -11,9 +11,15 @@ const {
 const { CASOS_URL_VIDEO, CASOS_URL_VIDEO_WP_IDS } = await import(
   '../cms/data/casos-url-video.ts'
 );
-const { isCmsCasosFromPayload, CMS_CASOS_FROM_PAYLOAD_ENV } = await import(
-  '../lib/cms-casos-flag.ts'
-);
+const {
+  isCmsCasosFromPayload,
+  CMS_CASOS_FROM_PAYLOAD_ENV,
+  shouldRenderCasosFromPayload,
+  parseCmsPreviewQuery,
+} = await import('../lib/cms-casos-flag.ts');
+const buildScript = readFileSync(new URL('../scripts/build-with-budget.mjs', import.meta.url), 'utf8');
+const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 
 const soytechnoBody = readFileSync(
   new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url),
@@ -30,10 +36,17 @@ test('feature flag is off by default and shared by Jumex, Odwalla and SoyTechno'
   assert.equal(isCmsCasosFromPayload({}), false);
   assert.equal(isCmsCasosFromPayload({ [CMS_CASOS_FROM_PAYLOAD_ENV]: 'false' }), false);
   assert.equal(isCmsCasosFromPayload({ [CMS_CASOS_FROM_PAYLOAD_ENV]: 'true' }), true);
-  assert.match(page, /isCmsCasosFromPayload\(\)/);
-  assert.match(page, /getSuccessStoryFromPayload\(slug\)/);
-  assert.match(page, /findCasoBySlug\(slug\)/);
+  assert.equal(shouldRenderCasosFromPayload(true, { VERCEL_ENV: 'production' }), false);
+  assert.equal(shouldRenderCasosFromPayload(true, { VERCEL_ENV: 'preview' }), true);
+  assert.equal(parseCmsPreviewQuery({ cms: '1' }), true);
+  assert.match(page, /resolveRenderCasosFromPayloadServer\(\)/);
+  assert.match(page, /getSuccessStoryFromPayload\(slug/);
+  assert.match(page, /findCasoBySlug\(slug/);
   assert.match(page, /slug === 'soytechno-ecommerce-venezuela'/);
+  assert.match(hubPage, /getAllCaseStudiesFromPayload/);
+  assert.match(middleware, /cmsPreviewCasosHubPath/);
+  assert.match(buildScript, /preview-h4-casos/);
+  assert.match(readFileSync(new URL('../scripts/preview-h4-casos.ts', import.meta.url), 'utf8'), /\[H4-CASOS\]/);
 });
 
 test('seed data copies SoyTechno approvedCopy character-for-character from the component', () => {

@@ -19,7 +19,7 @@ const listing = readFileSync(
   'utf8',
 );
 const header = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');
-const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 
 const jumex = {
   id: 86237,
