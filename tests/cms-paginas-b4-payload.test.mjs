@@ -69,6 +69,11 @@ test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () =
   assert.match(previewPage, /export const dynamic = 'force-static'/);
   assert.match(previewPage, /generateStaticParams/);
   assert.match(previewPage, /NEXT_PHASE === 'phase-production-build'/);
+  assert.match(previewPage, /\[B4-RENDER\]/);
+  assert.doesNotMatch(
+    readFileSync(new URL('../lib/cms-paginas-b4.ts', import.meta.url), 'utf8'),
+    /payload\.destroy/,
+  );
   assert.match(previewPage, /ContactPageClient/);
   assert.match(previewPage, /ReunionPlayfulRedirect/);
   assert.match(previewPage, /paginasB4PayloadPreviewAttrs/);

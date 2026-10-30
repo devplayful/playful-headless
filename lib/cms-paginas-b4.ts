@@ -53,9 +53,8 @@ const loadPaginaCodigoDocFromDb = cache(async function loadPaginaCodigoDocFromDb
 ): Promise<PaginaCodigoDoc | null> {
   if (!hasRuntimeDatabase()) return null;
   if (!isPaginasB4Slug(slug)) return null;
-  let payload: Awaited<ReturnType<typeof getPayload>> | null = null;
   try {
-    payload = await getPayload({ config });
+    const payload = await getPayload({ config });
     const found = await payload.find({
       collection: 'paginas-codigo',
       where: { slug: { equals: slug } },
@@ -65,10 +64,6 @@ const loadPaginaCodigoDocFromDb = cache(async function loadPaginaCodigoDocFromDb
     return normalizePaginaCodigoDoc(found.docs[0]);
   } catch {
     return null;
-  } finally {
-    if (payload && process.env.NEXT_PHASE === 'phase-production-build') {
-      await payload.destroy().catch(() => undefined);
-    }
   }
 });
 

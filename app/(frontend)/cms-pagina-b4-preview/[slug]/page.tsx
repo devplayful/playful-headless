@@ -15,6 +15,16 @@ import { paginasB4PayloadPreviewAttrs } from '@/lib/cms-paginas-b4-flag';
 import { generateContactoMetadata } from '@/lib/paginas-codigo/contacto-metadata';
 import { generateReunionPlayfulMetadata } from '@/lib/paginas-codigo/reunion-playful-metadata';
 
+function logB4BuildRender(
+  slug: string,
+  doc: Awaited<ReturnType<typeof findPaginaCodigoBySlug>>,
+  expectedContent: Record<string, unknown>,
+) {
+  if (process.env.NEXT_PHASE !== 'phase-production-build') return;
+  const found = Boolean(doc && paginaCodigoContentMatchesSeed(doc, expectedContent));
+  console.log(`[B4-RENDER] ${slug} found=${found}`);
+}
+
 export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
@@ -35,6 +45,7 @@ export async function generateMetadata({
   }
   const expected = paginasB4SeedBodyForSlug(slug);
   const doc = await findPaginaCodigoBySlug(slug, { renderFromPayload: true });
+  logB4BuildRender(slug, doc, expected.content);
   const yoast = doc && paginaCodigoContentMatchesSeed(doc, expected.content) ? doc.yoast : undefined;
   if (slug === CONTACT_SLUG) {
     return generateContactoMetadata(yoast);
@@ -52,6 +63,7 @@ export default async function CmsPaginaB4PreviewPage({
 
   const expected = paginasB4SeedBodyForSlug(slug);
   const doc = await findPaginaCodigoBySlug(slug, { renderFromPayload: true });
+  logB4BuildRender(slug, doc, expected.content);
   if (!doc || !paginaCodigoContentMatchesSeed(doc, expected.content)) {
     notFound();
   }
