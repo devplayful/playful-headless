@@ -24,7 +24,6 @@ import {
   rewriteEndpointAssetUrlForPreview,
   rewriteElementorScriptUrlForPreview,
 } from '@/lib/wp-endpoint-surface.ts';
-import { toAbsoluteSiteUrl } from '@/utils/canonical';
 import { ELEMENTOR_PAGE_SCRIPTS } from '@/lib/elementor-static-asset-urls';
 
 const WP_HOST = WP_ENDPOINT_ORIGIN;
@@ -178,7 +177,7 @@ export default function ElementorPageContent({
     ? ELEMENTOR_PAGE_SCRIPTS.map((src) => rewriteElementorScriptUrlForPreview(src))
     : undefined;
   const elementorAssetsBase = blobPreview
-    ? toAbsoluteSiteUrl('/wp-static/wp-content/plugins/elementor/assets/')
+    ? '/wp-static/wp-content/plugins/elementor/assets/'
     : undefined;
 
   return (

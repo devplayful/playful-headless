@@ -1,6 +1,5 @@
 import { loadBlobMigrationMap } from './blob-image-map.ts';
 import { isBlobImagesEnabled, maybeRewriteMediaUrl } from './blob-image-url.ts';
-import { toAbsoluteSiteUrl } from '../utils/canonical.ts';
 import { lookupWpStaticPublicUrl, resolveMirroredAssetUrl } from './wp-static-assets-map.ts';
 
 export const WP_ENDPOINT_ORIGIN = 'https://endpoint.playfulagency.com';
@@ -35,10 +34,10 @@ export function rewriteEndpointAssetUrlForPreview(
   if (fromBlob !== href) return fromBlob;
   const trimmed = href.trim().split('?')[0];
   const staticPath = lookupWpStaticPublicUrl(trimmed);
-  if (staticPath) return toAbsoluteSiteUrl(staticPath);
+  if (staticPath) return staticPath;
   const mirrored = resolveMirroredAssetUrl(trimmed, map, env);
   if (mirrored?.startsWith('http')) return mirrored;
-  if (mirrored) return toAbsoluteSiteUrl(mirrored);
+  if (mirrored?.startsWith('/')) return mirrored;
   if (trimmed.startsWith('//endpoint.playfulagency.com')) {
     return rewriteEndpointAssetUrlForPreview(`https:${trimmed}`, env);
   }

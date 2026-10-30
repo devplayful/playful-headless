@@ -9,12 +9,13 @@ const { rewriteEndpointAssetUrlForPreview, rewriteElementorScriptUrlForPreview }
   '../lib/wp-endpoint-surface.ts'
 );
 
-test('CSS endpoint → copia /wp-static en preview H2', () => {
+test('CSS endpoint → copia /wp-static relativa en preview H2', () => {
   const href =
     'https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/frontend.min.css';
   const out = rewriteEndpointAssetUrlForPreview(href);
-  assert.match(out, /^https:\/\/playfulagency\.com\/wp-static\//);
+  assert.equal(out, '/wp-static/wp-content/plugins/elementor/assets/css/frontend.min.css');
   assert.doesNotMatch(out, /endpoint\.playfulagency/);
+  assert.doesNotMatch(out, /^https?:\/\//);
 });
 
 test('JS endpoint → copia /wp-static en preview H2', () => {
