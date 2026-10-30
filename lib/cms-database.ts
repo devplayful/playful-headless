@@ -47,3 +47,10 @@ export function shouldRunPreviewMigrate(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV !== 'production';
 }
+
+/** Seed Home CMS: solo Preview con DATABASE_URL (nunca Production). */
+export function shouldRunPreviewHomeSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}

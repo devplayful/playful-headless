@@ -6,6 +6,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import { Autores } from './cms/collections/Autores.ts';
 import { Casos } from './cms/collections/Casos.ts';
+import { Home } from './cms/collections/Home.ts';
 import { Categorias } from './cms/collections/Categorias.ts';
 import { Medios } from './cms/collections/Medios.ts';
 import { Paginas } from './cms/collections/Paginas.ts';
@@ -29,7 +30,7 @@ export default buildConfig({
     importMap: { baseDir: dirname },
     meta: { titleSuffix: ' · CMS Playful', robots: 'noindex, nofollow' },
   },
-  collections: [Posts, Paginas, Casos, Autores, Categorias, Medios, Usuarios],
+  collections: [Posts, Paginas, Casos, Home, Autores, Categorias, Medios, Usuarios],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: { connectionString: databaseUri },
