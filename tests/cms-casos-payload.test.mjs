@@ -41,8 +41,8 @@ test('feature flag is off by default and shared by Jumex, Odwalla and SoyTechno'
   assert.equal(parseCmsPreviewQuery({ cms: '1' }), true);
   assert.match(page, /resolveRenderCasosFromPayloadServer\(\)/);
   assert.match(page, /getSuccessStoryFromPayload\(slug/);
-  assert.match(page, /findCasoBySlug\(slug/);
   assert.match(page, /slug === 'soytechno-ecommerce-venezuela'/);
+  assert.match(page, /<SoyTechnoCaseStudy\s*\/>/);
   assert.match(hubPage, /getAllCaseStudiesFromPayload/);
   assert.match(middleware, /cmsPreviewCasosHubPath/);
   assert.match(buildScript, /preview-h4-casos/);

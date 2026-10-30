@@ -66,17 +66,30 @@ test('mergePublicCaseStudies prepends SoyTechno and keeps Jumex then Odwalla', (
   );
 });
 
-test('mergePublicCaseStudies deduplicates by slug and prefers the WordPress row', () => {
+test('mergePublicCaseStudies deduplicates by slug and keeps WP id with public hub listing copy', () => {
   const fromWp = {
     id: 99999,
     slug: SOYTECHNO_CASE_SLUG,
-    title: { rendered: 'SoyTechno: publicado en WordPress' },
+    title: { rendered: 'SoyTechno: El eCommerce from CMS' },
   };
   const merged = mergePublicCaseStudies([jumex, fromWp]);
   const soytechno = merged.find((item) => item.slug === SOYTECHNO_CASE_SLUG);
   assert.equal(merged.filter((item) => item.slug === SOYTECHNO_CASE_SLUG).length, 1);
   assert.equal(soytechno.id, 99999);
-  assert.equal(soytechno.title.rendered, 'SoyTechno: publicado en WordPress');
+  assert.match(soytechno.title.rendered, /SoyTechno: el eCommerce/);
+  assert.equal(soytechno.acf.categoria1, 'E-commerce');
+});
+
+test('sortHubCaseStudies orders Odwalla after Jumex when Payload returns reverse', () => {
+  const merged = mergePublicCaseStudies([odwalla, jumex]);
+  assert.deepEqual(
+    merged.map((item) => item.slug),
+    [
+      'soytechno-ecommerce-venezuela',
+      'jumex-shopify-dtc-ecommerce',
+      'odwalla-shopify-dtc-ecommerce',
+    ],
+  );
 });
 
 test('mergePublicCaseStudies still yields SoyTechno when WordPress is empty', () => {

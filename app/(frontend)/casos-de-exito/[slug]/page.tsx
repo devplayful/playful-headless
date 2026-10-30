@@ -18,11 +18,7 @@ import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
 import { casosPayloadPreviewAttrs, resolveRenderCasosFromPayloadServer } from '@/lib/cms-casos-flag';
-import {
-  extractSoyTechnoCopy,
-  findCasoBySlug,
-  getSuccessStoryFromPayload,
-} from '@/lib/cms-casos';
+import { getSuccessStoryFromPayload } from '@/lib/cms-casos';
 import { ogJpegForPath } from '@/lib/og-images';
 import { resolveCaseStudyOgImage } from '@/lib/case-study-listing-image';
 import {
@@ -138,9 +134,6 @@ export default async function SuccessStoryPage({
     const path = `/casos-de-exito/${slug}`;
     const headline = override?.title || 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
     const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
-    const soytechnoCopy = renderFromPayload
-      ? extractSoyTechnoCopy(await findCasoBySlug(slug, { renderFromPayload: true }))
-      : null;
     return (
       <div {...payloadMarker}>
         <script
@@ -165,7 +158,7 @@ export default async function SuccessStoryPage({
             })),
           }}
         />
-        <SoyTechnoCaseStudy {...(soytechnoCopy ? { copy: soytechnoCopy } : {})} />
+        <SoyTechnoCaseStudy />
       </div>
     );
   }

@@ -14,6 +14,7 @@ import { mergePublicCaseStudies } from './public-case-studies.ts';
 import { applyPublicCaseStudyOverrides } from '../utils/public-case-study-overrides.ts';
 import { applyCaseStudyCoverOverride } from './case-study-listing-image.ts';
 import { preserveFeaturedMediaUrl } from '../services/case-study-media-policy.mjs';
+import { finalizePayloadSuccessStory } from './payload-success-story.ts';
 
 const APPROVED_COPY_KEYS = Object.keys(soyTechnoApprovedCopy) as Array<
   keyof SoyTechnoApprovedCopy
@@ -92,12 +93,13 @@ export async function getSuccessStoryFromPayload(
   if (!doc) return null;
   const titulo = typeof doc.titulo === 'string' ? doc.titulo : slug;
   const acf = normalizeAcf(doc.acf);
-  return {
+  const story = {
     id: typeof doc.wpId === 'number' ? doc.wpId : typeof doc.id === 'number' ? doc.id : 0,
     slug,
     title: { rendered: titulo },
     acf: acf as SuccessStory['acf'],
   } as SuccessStory;
+  return finalizePayloadSuccessStory(story);
 }
 
 function mediaUrl(value: unknown): string | undefined {
@@ -117,7 +119,7 @@ function payloadDocToListingItem(doc: Record<string, unknown>): Record<string, u
     id: typeof doc.wpId === 'number' ? doc.wpId : 0,
     slug,
     title: { rendered: titulo },
-    excerpt: { rendered: typeof doc.contentHtml === 'string' ? doc.contentHtml.slice(0, 200) : '' },
+    excerpt: { rendered: '' },
     featured_media_url: featured,
     acf: acfRaw,
   };
