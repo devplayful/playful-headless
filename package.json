@@ -41,7 +41,8 @@
     "cms:migrate-images": "node scripts/migrate-images-to-blob.ts",
     "cms:migrate-images:upload": "node scripts/migrate-images-to-blob.ts --upload",
     "cms:seed-blob-urls": "node scripts/seed-blob-urls.ts",
-    "test:blob-images": "node --experimental-strip-types --test tests/blob-image-url-rewrite.test.mjs"
+    "test:blob-images": "node --experimental-strip-types --test tests/blob-image-url-rewrite.test.mjs",
+    "test:h2-upload-route": "node --experimental-strip-types --test tests/h2-blob-upload-route.test.mjs"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

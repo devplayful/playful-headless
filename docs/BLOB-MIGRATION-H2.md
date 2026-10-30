@@ -17,7 +17,18 @@ Salidas:
 REST WordPress: GET en serie, 1 petición/s, `User-Agent: PlayfulQA/1.0`.  
 Sondeo de binarios: `HEAD` con la misma cadencia hacia `endpoint.playfulagency.com` / proxies `i0.wp.com`.
 
-## Upload (cuando existan store y token)
+## Upload en Preview (ruta temporal, rama `cursor/payload-h2-upload-route-5a28`)
+
+PR **NO MERGE**. POST solo cuando `VERCEL_ENV=preview`:
+
+`/api/internal/h2-blob-upload?offset=0&limit=40`
+
+Cabecera `x-h2-secret`: valor en claro cuyo SHA-256 coincide con el hash embebido en la ruta (no loguear).
+
+Respuesta: `{ offset, limit, total, uploaded, skipped, failed, urls }`.
+
+Lotes: `ceil(total / 40)` (ver `npm run test:h2-upload-route`).
+
 
 ```bash
 export BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
