@@ -27,7 +27,7 @@
     "test:highlevel-evidence": "node --test tests/highlevel/redacted-export-audit.test.mjs",
     "audit:highlevel-export": "node scripts/highlevel-redacted-export-audit.mjs",
     "typecheck": "tsc --noEmit",
-    "test:route-integrity": "node --experimental-strip-types --test tests/cms-casos-payload.test.mjs tests/cms-database.test.mjs tests/route-integrity.test.mjs tests/twitter-og-parity.test.mjs tests/page-seo-overrides.test.mjs tests/not-found-dynamic.test.mjs tests/wp-probe-404.test.mjs tests/agencia-ux-ui-sitemap.test.mjs tests/sitemap-unpublished.test.mjs tests/podcast-sitemap.test.mjs tests/links-bio.test.mjs",
+    "test:route-integrity": "node --experimental-strip-types --test tests/cms-casos-payload.test.mjs tests/cms-database.test.mjs tests/cms-paginas-b3-payload.test.mjs tests/route-integrity.test.mjs tests/twitter-og-parity.test.mjs tests/page-seo-overrides.test.mjs tests/not-found-dynamic.test.mjs tests/wp-probe-404.test.mjs tests/agencia-ux-ui-sitemap.test.mjs tests/sitemap-unpublished.test.mjs tests/podcast-sitemap.test.mjs tests/links-bio.test.mjs",
     "cms:migrate": "payload migrate --disable-transpile",
     "cms:migrate:create": "payload migrate:create --disable-transpile",
     "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
@@ -37,7 +37,8 @@
     "cms:importmap": "payload generate:importmap --disable-transpile",
     "cms:types": "payload generate:types --disable-transpile",
     "cms:import": "node scripts/import-wp.ts",
-    "cms:seed-casos": "node scripts/seed-casos.ts"
+    "cms:seed-casos": "node scripts/seed-casos.ts",
+    "cms:seed-paginas-b3": "node scripts/seed-paginas-b3.mts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

@@ -181,7 +181,7 @@ test('non-blog generateMetadata wires twitter from the same og values', async ()
   assert.match(caseStudyPage, /pageSocialMetadata\(/);
   assert.match(caseStudyPage, /type: 'website'/);
   assert.match(casosPage, /twitterFromOpenGraph\(title, description\)/);
-  assert.match(nosotrosPage, /twitterFromOpenGraph\(title, description\)/);
+  assert.match(nosotrosPage, /generateNosotrosMetadata/);
 });
 
 
