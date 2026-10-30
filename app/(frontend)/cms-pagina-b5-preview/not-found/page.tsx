@@ -22,7 +22,7 @@ export async function generateMetadata() {
   const base = await layoutMetadata();
   return {
     ...base,
-    robots: { index: false, follow: true },
+    robots: 'noindex',
   };
 }
 

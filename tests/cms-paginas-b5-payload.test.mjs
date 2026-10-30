@@ -54,6 +54,8 @@ test('ruta interna preview B5 pinta NotFoundView con data-cms-source en Preview'
   assert.match(previewNotFoundPage, /NotFoundView/);
   assert.match(previewNotFoundPage, /paginasB5PayloadPreviewAttrs/);
   assert.match(previewNotFoundPage, /paginaCodigoContentMatchesSeed/);
+  assert.match(previewNotFoundPage, /robots: 'noindex'/);
+  assert.doesNotMatch(previewNotFoundPage, /follow:\s*true/);
   assert.match(notFoundView, /Página no encontrada/);
 });
 
