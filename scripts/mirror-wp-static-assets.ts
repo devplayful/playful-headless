@@ -18,11 +18,13 @@ import {
   collectElementorStylesheetIds,
   elementorPageStylesheetUrls,
 } from '../lib/elementor-stylesheet-urls.ts';
+import { collectApiMediaSeedUrls } from '../lib/wp-static-api-media-urls.ts';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_ROOT = path.join(ROOT, 'public/wp-static');
 const MAP_PATH = path.join(ROOT, 'docs/wp-static-assets-map.json');
 const INV_PATH = path.join(ROOT, 'docs/wp-static-assets-inventory.json');
+const API_REPORT_PATH = path.join(ROOT, 'docs/wp-static-api-images-report.json');
 const BLOB_MAP_PATH = path.join(ROOT, 'docs/blob-migration-map.json');
 const UA = 'PlayfulQA/1.0';
 const WP_JSON = `${WP_ENDPOINT_ORIGIN}/wp-json`;
@@ -32,7 +34,7 @@ type InvRow = {
   publicPath: string | null;
   httpStatus: number;
   bytes: number | null;
-  kind: 'css' | 'js' | 'font' | 'other';
+  kind: 'css' | 'js' | 'font' | 'image' | 'other';
   error?: string;
 };
 
@@ -51,6 +53,7 @@ function kindFor(url: string): InvRow['kind'] {
   if (/\.css(\?|$)/i.test(url)) return 'css';
   if (/\.js(\?|$)/i.test(url)) return 'js';
   if (/\.(woff2?|ttf|eot|otf)(\?|$)/i.test(url)) return 'font';
+  if (/\.(png|jpe?g|gif|webp|svg|avif)(\?|$)/i.test(url)) return 'image';
   return 'other';
 }
 
@@ -183,15 +186,37 @@ async function collectSeedUrls(): Promise<string[]> {
     for (const s of sheets) urls.add(s.split('?')[0]);
     for (const j of collectUploadAssetUrls(page.html)) urls.add(j);
   }
+  for (const u of await collectApiMediaSeedUrls(blobImageMap)) urls.add(u);
   return Array.from(urls).sort();
 }
 
 async function main() {
   const seeds = await collectSeedUrls();
+  const apiImageSeeds = await collectApiMediaSeedUrls(blobImageMap);
+  const addedApiImages: string[] = [];
+  const api404: string[] = [];
   for (const u of seeds) {
     await mirrorOne(u);
   }
   await drainPending();
+  for (const row of inventory) {
+    if (row.kind !== 'image') continue;
+    if (row.publicPath && apiImageSeeds.includes(row.url)) addedApiImages.push(row.url);
+    if (row.httpStatus === 404 && apiImageSeeds.includes(row.url)) api404.push(row.url);
+  }
+  writeFileSync(
+    API_REPORT_PATH,
+    JSON.stringify(
+      {
+        generated: new Date().toISOString(),
+        apiImageSeeds: apiImageSeeds.length,
+        mirroredOk: addedApiImages,
+        endpoint404: api404,
+      },
+      null,
+      2,
+    ) + '\n',
+  );
   writeFileSync(
     MAP_PATH,
     JSON.stringify({ generated: new Date().toISOString(), origin: WP_ENDPOINT_ORIGIN, map }, null, 2) + '\n',

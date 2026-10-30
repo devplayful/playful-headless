@@ -1416,7 +1416,12 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
   const processedEpisodes = episodes.map(episode => {
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-    return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+    const featured_media_url = applyBlobImagesToUrl(featuredMedia?.source_url || null);
+    return {
+      ...episode,
+      featured_media_url: featured_media_url || null,
+      featured_media_alt: featuredMedia?.alt_text || '',
+    };
   });
   return { episodes: processedEpisodes, totalPages };
 }
@@ -1531,7 +1536,11 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
   if (!episode.excerpt) episode.excerpt = { rendered: '' };
-  return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+  return {
+    ...episode,
+    featured_media_url: applyBlobImagesToUrl(featuredMedia?.source_url || null) || null,
+    featured_media_alt: featuredMedia?.alt_text || '',
+  };
 }
 
 const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
@@ -1543,9 +1552,13 @@ async function loadAllCaseStudies(): Promise<any[]> {
   );
   const published = casos.map((caso: Record<string, unknown>) => {
     const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
-    return applyCaseStudyCoverOverride(
+    const withMedia = applyCaseStudyCoverOverride(
       applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized)),
-    );
+    ) as Record<string, unknown>;
+    if (typeof withMedia.featured_media_url === 'string') {
+      withMedia.featured_media_url = applyBlobImagesToUrl(withMedia.featured_media_url);
+    }
+    return withMedia;
   });
   return mergePublicCaseStudies(published);
 }

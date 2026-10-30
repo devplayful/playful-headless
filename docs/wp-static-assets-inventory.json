@@ -1,7 +1,7 @@
 {
-  "generated": "2026-10-30T20:29:27.330Z",
-  "total": 81,
-  "ok": 80,
+  "generated": "2026-10-30T20:36:42.232Z",
+  "total": 91,
+  "ok": 90,
   "http404": 1,
   "items": [
     {
@@ -292,11 +292,81 @@
       "kind": "js"
     },
     {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep1-2.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep1-2.jpg",
+      "httpStatus": 200,
+      "bytes": 105165,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep2.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep2.jpg",
+      "httpStatus": 200,
+      "bytes": 97251,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep3.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep3.jpg",
+      "httpStatus": 200,
+      "bytes": 91921,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/06/E1_T2_Podcast-Bendita-Web.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/06/E1_T2_Podcast-Bendita-Web.jpg",
+      "httpStatus": 200,
+      "bytes": 90110,
+      "kind": "image"
+    },
+    {
       "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
       "publicPath": "/wp-static/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
       "httpStatus": 200,
       "bytes": 5039,
       "kind": "other"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Alejandro-Da-Costa.-Directora-Fundadora.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Alejandro-Da-Costa.-Directora-Fundadora.png",
+      "httpStatus": 200,
+      "bytes": 101944,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Arturo-Tovar-Avatar.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Arturo-Tovar-Avatar.png",
+      "httpStatus": 200,
+      "bytes": 247797,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Avata-Playful.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Avata-Playful.png",
+      "httpStatus": 200,
+      "bytes": 8894,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Indira-Jaen.-Disenador-UIUX.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Indira-Jaen.-Disenador-UIUX.png",
+      "httpStatus": 200,
+      "bytes": 95120,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Jose-Miguel-Reyes.-Director-Fundador.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Jose-Miguel-Reyes.-Director-Fundador.png",
+      "httpStatus": 200,
+      "bytes": 82978,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Stefanni-Paravabidez.-Redactora-creativa-Seo.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Stefanni-Paravabidez.-Redactora-creativa-Seo.png",
+      "httpStatus": 200,
+      "bytes": 96756,
+      "kind": "image"
     },
     {
       "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-8.css",
@@ -408,7 +478,7 @@
       "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.svg",
       "httpStatus": 200,
       "bytes": 354110,
-      "kind": "other"
+      "kind": "image"
     },
     {
       "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.eot",
@@ -527,14 +597,14 @@
       "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.svg",
       "httpStatus": 200,
       "bytes": 123878,
-      "kind": "other"
+      "kind": "image"
     },
     {
       "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/img/cbp-sprite.png",
       "publicPath": null,
       "httpStatus": 404,
       "bytes": null,
-      "kind": "other",
+      "kind": "image",
       "error": "not_found"
     },
     {
@@ -563,14 +633,14 @@
       "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.svg",
       "httpStatus": 200,
       "bytes": 66060,
-      "kind": "other"
+      "kind": "image"
     },
     {
       "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/Dayflow-Abstract-5.png",
       "publicPath": "/wp-static/wp-content/uploads/2024/08/Dayflow-Abstract-5.png",
       "httpStatus": 200,
       "bytes": 18054,
-      "kind": "other"
+      "kind": "image"
     }
   ],
   "pendingUnresolved": []

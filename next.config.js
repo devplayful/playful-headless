@@ -26,6 +26,11 @@ const nextConfig = {
     staticGenerationRetryCount: 1,
   },
   images: {
+    localPatterns: [
+      {
+        pathname: '/wp-static/**',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',

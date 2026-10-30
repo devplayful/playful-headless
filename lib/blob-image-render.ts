@@ -4,7 +4,7 @@ import {
   maybeRewriteHtmlForBlob,
   maybeRewriteMediaUrl,
 } from './blob-image-url.ts';
-import { stripWtiLikeTrackingPixels, rewriteEndpointUrlsInHtmlForPreview } from './wp-endpoint-surface.ts';
+import { stripWtiLikeTrackingPixels, rewriteEndpointUrlsInHtmlForPreview, rewriteEndpointAssetUrlForPreview } from './wp-endpoint-surface.ts';
 import { ORGANIZATION_LOGO_URL } from '../utils/organization-schema.mjs';
 
 const YOAST_SCHEMA_LOGO_ENDPOINT =
@@ -28,6 +28,9 @@ export function applyBlobImagesToUrl(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!url) return url || '';
+  if (isBlobImagesEnabled(env)) {
+    return rewriteEndpointAssetUrlForPreview(url, env);
+  }
   const map = loadBlobMigrationMap(env);
   return maybeRewriteMediaUrl(url, map, env);
 }
@@ -38,6 +41,7 @@ export function applyBlobImagesToJsonLd<T>(value: T, env: NodeJS.ProcessEnv = pr
   if (!map) return value;
   let json = JSON.stringify(value);
   json = maybeRewriteHtmlForBlob(json, map, env);
+  json = rewriteEndpointUrlsInHtmlForPreview(json, env);
   json = json.split(YOAST_SCHEMA_LOGO_ENDPOINT).join(ORGANIZATION_LOGO_URL);
   return JSON.parse(json) as T;
 }
