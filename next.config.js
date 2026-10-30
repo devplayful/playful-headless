@@ -104,6 +104,14 @@ const nextConfig = {
     }
     return [];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/legacy-wp/:path*',
+        destination: 'https://endpoint.playfulagency.com/:path*',
+      },
+    ];
+  },
 };
 
 // Payload v3 (CMS en /admin y /cms-api). withPayload solo añade alias y

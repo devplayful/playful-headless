@@ -41,7 +41,7 @@
     "cms:migrate-images": "node scripts/migrate-images-to-blob.ts",
     "cms:migrate-images:upload": "node scripts/migrate-images-to-blob.ts --upload",
     "cms:seed-blob-urls": "node scripts/seed-blob-urls.ts",
-    "test:blob-images": "node --experimental-strip-types --test tests/blob-image-url-rewrite.test.mjs tests/blob-images-preview-flag.test.mjs",
+    "test:blob-images": "node --experimental-strip-types --test tests/blob-image-url-rewrite.test.mjs tests/blob-images-preview-flag.test.mjs tests/wp-endpoint-surface.test.mjs",
     "cms:audit-endpoint-urls": "node scripts/audit-rendered-endpoint-urls.ts",
     "cms:normalize-blob-map": "node scripts/normalize-blob-migration-map.ts"
   },

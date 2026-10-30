@@ -4,6 +4,7 @@ import {
   maybeRewriteHtmlForBlob,
   maybeRewriteMediaUrl,
 } from './blob-image-url.ts';
+import { stripWtiLikeTrackingPixels } from './wp-endpoint-surface.ts';
 import { ORGANIZATION_LOGO_URL } from '../utils/organization-schema.mjs';
 
 const YOAST_SCHEMA_LOGO_ENDPOINT =
@@ -17,7 +18,8 @@ export function applyBlobImagesToHtml(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   const map = loadBlobMigrationMap(env);
-  return maybeRewriteHtmlForBlob(html, map, env);
+  const rewritten = maybeRewriteHtmlForBlob(html, map, env);
+  return stripWtiLikeTrackingPixels(rewritten, env);
 }
 
 export function applyBlobImagesToUrl(

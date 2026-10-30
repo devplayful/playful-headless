@@ -1,5 +1,5 @@
 import type { BlobUrlMap } from './blob-image-url.ts';
-import mapDocument from '../docs/blob-migration-map.json';
+import mapDocument from '../docs/blob-migration-map.json' with { type: 'json' };
 
 type MapDocument = {
   map: BlobUrlMap;

@@ -27,7 +27,7 @@ import {
   resolveBlogCoverAlt,
   resolveBlogCoverUrl,
 } from '@/lib/blog-cover-image';
-import { repairBlogPostYoastCanonical } from '@/utils/blog-yoast-canonical';
+import { repairBlogPostYoastCanonical, type BlogPostYoastFields } from '@/utils/blog-yoast-canonical';
 import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import {
@@ -602,7 +602,9 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       || featuredMedia.media_details?.sizes?.medium?.source_url
       || imageUrl;
   }
-  imageUrl = publicWebpIfPresent(resolveBlogCoverUrl(post.slug, imageUrl));
+  imageUrl = applyBlobImagesToUrl(
+    publicWebpIfPresent(resolveBlogCoverUrl(post.slug, imageUrl)),
+  );
   const imageAlt = resolveBlogCoverAlt(
     post.slug,
     post.featured_media_alt || featuredMedia?.alt_text || '',
@@ -1072,8 +1074,10 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       },
       'slash',
     ),
-    imageUrl: publicWebpIfPresent(
-      resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+    imageUrl: applyBlobImagesToUrl(
+      publicWebpIfPresent(
+        resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+      ),
     ),
     imageAlt: resolveBlogCoverAlt(post.slug, post.featuredMediaAlt || ''),
     slug: post.slug,
@@ -1303,8 +1307,8 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
   const rewritten = repairBlogPostYoastCanonical(
     applyBlobImagesToWpItem(
-      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)) as unknown as import('@/utils/blog-yoast-canonical').BlogPostYoastFields,
-    ) as import('@/utils/blog-yoast-canonical').BlogPostYoastFields,
+      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)) as unknown as BlogPostYoastFields,
+    ) as BlogPostYoastFields,
   );
   return rewritten as WPPost;
 });

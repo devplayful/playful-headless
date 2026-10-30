@@ -15,39 +15,19 @@ import {
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
+import {
+  elementorPageStylesheetUrls,
+  WP_ENDPOINT_ORIGIN,
+} from '@/lib/elementor-stylesheet-urls';
+import { isBlobImagesEnabled } from '@/lib/blob-image-url.ts';
+import {
+  rewriteEndpointAssetUrlForPreview,
+} from '@/lib/wp-endpoint-surface.ts';
 
-const WP_HOST = 'https://endpoint.playfulagency.com';
+const WP_HOST = WP_ENDPOINT_ORIGIN;
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap';
-
-const CORE_STYLESHEETS = [
-  `${WP_HOST}/wp-content/uploads/elementor/css/post-8.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/frontend.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-heading.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-image.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-spacer.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-accordion.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/widget-image-carousel.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor-pro/assets/css/widget-form.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/font-awesome/css/all.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/font-awesome/css/v4-shims.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/animations/styles/zoomIn.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/css/conditionals/e-swiper.min.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/mae-widgets.min.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/core-icons.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/pollock-icons.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/cubeportfolio.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/flickity.css`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css`,
-];
 
 /** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy.
  *  Encode U+2028/U+2029 inside src/srcset before stripping them from copy —
@@ -185,28 +165,27 @@ export default function ElementorPageContent({
     applyElementorIntrinsicDimensions(preparedHtml),
     slug,
   );
-  const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
-  const pageStylesheets = ids
-    .filter((id) => id !== 8)
-    .map((id) => `${WP_HOST}/wp-content/uploads/elementor/css/post-${id}.css`);
+  const allStylesheets = elementorPageStylesheetUrls(pageId, stylesheetIds);
+
+  const blobPreview = isBlobImagesEnabled();
+  const stylesheetHref = (href: string) =>
+    blobPreview ? rewriteEndpointAssetUrlForPreview(href) : href;
+  const resolvedLcp = lcpSrc ? stylesheetHref(lcpSrc) : null;
 
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link rel="preconnect" href={WP_HOST} />
-      {lcpSrc ? (
-        <link rel="preload" as="image" href={lcpSrc} fetchPriority="high" />
+      {!blobPreview ? <link rel="preconnect" href={WP_HOST} /> : null}
+      {resolvedLcp ? (
+        <link rel="preload" as="image" href={resolvedLcp} fetchPriority="high" />
       ) : null}
       {slug === 'agencia-e-commerce' ? (
         <style id="playful-ecom-hero-cls">{ECOM_HERO_CRITICAL_CSS}</style>
       ) : null}
       <link rel="stylesheet" href={FONTS} />
-      {CORE_STYLESHEETS.map((href) => (
-        <link key={href} rel="stylesheet" href={href} />
-      ))}
-      {pageStylesheets.map((href) => (
-        <link key={href} rel="stylesheet" href={href} />
+      {allStylesheets.map((href) => (
+        <link key={href} rel="stylesheet" href={stylesheetHref(href)} />
       ))}
       <div className={`${styles.page} playful-wp-page playful-servicios-page elementor-kit-8`} data-playful-page={pageId}>
         <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
