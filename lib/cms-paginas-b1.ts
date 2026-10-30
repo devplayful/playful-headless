@@ -3,6 +3,7 @@ import config from '@payload-config';
 import { hasRuntimeDatabase } from './cms-database.ts';
 import { shouldRenderPaginasB1FromPayload } from './cms-paginas-b1-flag.ts';
 import { isPaginasB1Slug, type PaginasB1Slug } from '../cms/data/paginas-b1-payload.ts';
+import { paginaCodigoContentMatchesSeed as paginaCodigoContentMatchesSeedCore } from './paginas-b1-seed-compare.ts';
 
 export type PaginaCodigoDoc = {
   id: number | string;
@@ -55,16 +56,7 @@ export function paginaCodigoContentMatchesSeed(
   doc: PaginaCodigoDoc,
   expectedContent: Record<string, unknown>,
 ): boolean {
-  const expectedChecksum =
-    typeof expectedContent.checksum === 'string' ? expectedContent.checksum : '';
-  const actualChecksum =
-    typeof doc.content.checksum === 'string' ? doc.content.checksum : '';
-  if (!expectedChecksum || expectedChecksum !== actualChecksum) return false;
-  const expectedBody =
-    typeof expectedContent.bodyVersion === 'string' ? expectedContent.bodyVersion : '';
-  const actualBody =
-    typeof doc.content.bodyVersion === 'string' ? doc.content.bodyVersion : '';
-  return expectedBody === actualBody && Boolean(expectedBody);
+  return paginaCodigoContentMatchesSeedCore(doc, expectedContent);
 }
 
 export type { PaginasB1Slug };
