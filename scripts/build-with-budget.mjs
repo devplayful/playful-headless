@@ -200,16 +200,17 @@ export function summarizePayloadMigrateOutput(output) {
 
 export function summarizePreviewHomeSeedOutput(output) {
   const text = String(output);
-  const blockPattern =
-    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) (OK|ERROR)/gm;
-  const blockLines = [...text.matchAll(blockPattern)];
-  const ok = blockLines.filter((match) => match[2] === 'OK').length;
-  const err = blockLines.filter((match) => match[2] === 'ERROR').length;
+  const okPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) OK(?: \(updated\))?/gm;
+  const errPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) ERROR/gm;
+  const okLines = [...text.matchAll(okPattern)];
+  const errLines = [...text.matchAll(errPattern)];
   const resumen = text.match(/\[HOME-CMS\] resumen: (\d+) OK \/ (\d+) ERROR/);
   return {
-    ok: resumen ? Number(resumen[1]) : ok,
-    err: resumen ? Number(resumen[2]) : err,
-    lines: blockLines.map((match) => match[0]),
+    ok: resumen ? Number(resumen[1]) : okLines.length,
+    err: resumen ? Number(resumen[2]) : errLines.length,
+    lines: okLines.map((match) => match[0]),
     resumenLine: resumen ? resumen[0] : null,
   };
 }
@@ -250,7 +251,7 @@ export async function runPayloadPreviewHomeSeed(env = process.env) {
   console.log('cms:seed-home: ejecutando (Preview, DATABASE_URL presente)');
   const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
-    ['scripts/seed-home.ts'],
+    ['scripts/seed-home.mts'],
     { env },
   );
   const combined = `${stdout}\n${stderr}`;

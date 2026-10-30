@@ -38,7 +38,7 @@
     "cms:types": "payload generate:types --disable-transpile",
     "cms:import": "node scripts/import-wp.ts",
     "cms:seed-casos": "node scripts/seed-casos.ts",
-    "cms:seed-home": "node scripts/seed-home.ts"
+    "cms:seed-home": "node scripts/seed-home.mts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

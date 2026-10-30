@@ -11,7 +11,8 @@ const {
 } = await import('../lib/cms-home-flag.ts');
 
 const buildScript = readFileSync(new URL('../scripts/build-with-budget.mjs', import.meta.url), 'utf8');
-const seedSource = readFileSync(new URL('../scripts/seed-home.ts', import.meta.url), 'utf8');
+const seedSource = readFileSync(new URL('../scripts/seed-home.mts', import.meta.url), 'utf8');
+const seedCompare = readFileSync(new URL('../lib/home-seed-compare.ts', import.meta.url), 'utf8');
 const payloadConfig = readFileSync(new URL('../payload.config.ts', import.meta.url), 'utf8');
 const migrationIndex = readFileSync(new URL('../cms/migrations/index.ts', import.meta.url), 'utf8');
 
@@ -41,11 +42,24 @@ test('data-cms-source payload solo en preview', () => {
   process.env.VERCEL_ENV = prev;
 });
 
+const { homeSeedJsonEqual } = await import('../lib/home-seed-compare.ts');
+
+test('homeSeedJsonEqual ignora orden de claves e ids string/number', () => {
+  assert.equal(
+    homeSeedJsonEqual({ b: 1, a: { id: 2 } }, { a: { id: '2' }, b: 1 }),
+    true,
+  );
+});
+
 test('build preview ejecuta migrate + seed home con logs HOME-CMS', () => {
   assert.match(buildScript, /runPayloadPreviewHomeSeed/);
   assert.match(buildScript, /summarizePreviewHomeSeedOutput/);
+  assert.match(buildScript, /seed-home\.mts/);
   assert.match(seedSource, /\[HOME-CMS\]/);
   assert.match(seedSource, /resumen:/);
+  assert.match(seedSource, /payload\.destroy\(\)/);
+  assert.match(seedSource, /process\.exit\(/);
+  assert.match(seedCompare, /homeSeedJsonEqual/);
 });
 
 test('colección home registrada y migración 20261030_100000_home', () => {
