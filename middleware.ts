@@ -17,6 +17,8 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import { isKnownPublicAppPath } from './lib/cms-paginas-b5-known-paths';
+import { cmsPreviewPaginaB5Path } from './lib/cms-paginas-b5-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -151,6 +153,16 @@ export function middleware(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname = '/_not-found';
     return attachAttributionCookies(request, NextResponse.rewrite(target));
+  }
+
+  if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    if (!isKnownPublicAppPath(path)) {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewPaginaB5Path('not-found');
+      target.searchParams.delete('cms');
+      const response = NextResponse.rewrite(target, { status: 404 });
+      return attachAttributionCookies(request, response);
+    }
   }
 
   const closed = blogClosedDecision(path);
