@@ -75,6 +75,7 @@ import {
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
+import { applyBlobImagesToHtml, applyBlobImagesToJsonLd, applyBlobImagesToUrl } from '@/lib/blob-image-render';
 import articleBodyStyles from '../article-body.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
 
@@ -158,11 +159,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Extraer encabezados para la tabla de contenidos
-  const sourceHtml = optimizeBlogInlineMedia(
-    rewriteBookingWidgetHrefs(
-      rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+  const sourceHtml = applyBlobImagesToHtml(
+    optimizeBlogInlineMedia(
+      rewriteBookingWidgetHrefs(
+        rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+      ),
+      postSlug,
     ),
-    postSlug,
   );
   const $ = cheerio.load(sourceHtml);
   $('[data-eshow-lista-form]').replaceWith(ESHOW_LISTA_FORM_MARKER);
@@ -208,24 +211,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
   );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
-  const ogImagePath =
-    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
+  const ogImagePath = applyBlobImagesToUrl(
+    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK),
+  );
   const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
   const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
-  const articleJsonLd = buildBlogArticleJsonLd({
-    headline: pageH1,
-    description: metaDescription,
-    image: toAbsoluteSiteUrl(ogImagePath),
-    datePublished: articleDates.datePublished,
-    dateModified: articleDates.dateModified,
-    url: postCanonical,
-    publisherName: ORGANIZATION_SCHEMA.name,
-    publisherLogo: ORGANIZATION_LOGO_URL,
-    ...jsonLdExtras,
-    authorName: articleAuthor.entityName,
-    authorType: articleAuthor.schemaType,
-    authorUrl: articleAuthor.schemaUrl,
-  });
+  const articleJsonLd = applyBlobImagesToJsonLd(
+    buildBlogArticleJsonLd({
+      headline: pageH1,
+      description: metaDescription,
+      image: toAbsoluteSiteUrl(ogImagePath),
+      datePublished: articleDates.datePublished,
+      dateModified: articleDates.dateModified,
+      url: postCanonical,
+      publisherName: ORGANIZATION_SCHEMA.name,
+      publisherLogo: ORGANIZATION_LOGO_URL,
+      ...jsonLdExtras,
+      authorName: articleAuthor.entityName,
+      authorType: articleAuthor.schemaType,
+      authorUrl: articleAuthor.schemaUrl,
+    }),
+  );
   const faqJsonLd = blogFaqPageJsonLd(postSlug) || getBlogFaqJsonLd(postSlug);
   const hasEshowForm = isEshow && contentWithIds.includes(ESHOW_LISTA_FORM_MARKER);
   const [eshowBodyBefore, eshowBodyAfter] = hasEshowForm

@@ -5,7 +5,15 @@
 
 export const CMS_BLOB_IMAGES_ENV = 'CMS_BLOB_IMAGES';
 
+/** Preview de medición H2 (PR #393): nunca producción. */
+export const BLOB_IMAGES_PREVIEW_BRANCH = 'cursor/payload-h2-imagenes-5a28';
+
 export function isBlobImagesEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.VERCEL_ENV === 'production') return false;
+  if (env.VERCEL_ENV === 'preview') {
+    const ref = env.VERCEL_GIT_COMMIT_REF || '';
+    return ref === BLOB_IMAGES_PREVIEW_BRANCH;
+  }
   const v = env[CMS_BLOB_IMAGES_ENV];
   return v === '1' || v === 'true';
 }
@@ -105,7 +113,7 @@ export function blobPublicUrlFromKey(
 ): string {
   const base =
     env.BLOB_PUBLIC_BASE_URL?.replace(/\/$/, '') ||
-    'https://BLOB_STORE_ID.public.blob.vercel-storage.com';
+    'https://xl21culwxno499zc.public.blob.vercel-storage.com';
   return `${base}/${key.replace(/^\//, '')}`;
 }
 
@@ -139,11 +147,11 @@ export function extractImageUrlsFromHtml(html: string): string[] {
     const srcset = /\bsrcset\s*=\s*(["'])([^"']*)\1/i.exec(tag)?.[2];
     if (srcset) for (const u of parseSrcset(srcset)) found.add(u);
   }
-  for (const match of html.matchAll(IMG_URL_IN_HTML_RE)) {
+  for (const match of Array.from(html.matchAll(IMG_URL_IN_HTML_RE))) {
     const u = match[1];
     if (u && isMigratableWordPressMediaUrl(u)) found.add(u);
   }
-  return [...found];
+  return Array.from(found);
 }
 
 export type BlobUrlMap = Record<string, string>;

@@ -10,6 +10,7 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
+import { applyBlobImagesToHtml, applyBlobImagesToJsonLd, applyBlobImagesToUrl, applyBlobImagesToWpItem } from '@/lib/blob-image-render.ts';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -409,13 +410,16 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = applyImageAltOverrides(
-    rewriteElementorBodyHrefs(
-      rewriteEcommerceZelleCover(
-        rewriteEcommerceSoytechnoCaseLink(
-          rewriteEcommerceShopifyLink(
-            rewriteAgenciaDisenoUxUiLink(
-              rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+  const html = applyBlobImagesToHtml(
+    applyImageAltOverrides(
+      rewriteElementorBodyHrefs(
+        rewriteEcommerceZelleCover(
+          rewriteEcommerceSoytechnoCaseLink(
+            rewriteEcommerceShopifyLink(
+              rewriteAgenciaDisenoUxUiLink(
+                rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+                slug,
+              ),
               slug,
             ),
             slug,
@@ -424,7 +428,6 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
         ),
         slug,
       ),
-      slug,
     ),
   );
   const title = stripHtml(page.title?.rendered || slug);
@@ -1294,13 +1297,16 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
       }
     }
   }
-  post.featured_media_url = publicWebpIfPresent(
-    resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
+  post.featured_media_url = applyBlobImagesToUrl(
+    publicWebpIfPresent(resolveBlogCoverUrl(post.slug, post.featured_media_url || '')),
   );
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
-  return repairBlogPostYoastCanonical(
-    rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
+  const rewritten = repairBlogPostYoastCanonical(
+    applyBlobImagesToWpItem(
+      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)) as unknown as import('@/utils/blog-yoast-canonical').BlogPostYoastFields,
+    ) as import('@/utils/blog-yoast-canonical').BlogPostYoastFields,
   );
+  return rewritten as WPPost;
 });
 
 /**
@@ -1504,7 +1510,20 @@ export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory 
     ...sanitizedStory.acf,
     ...preserveCaseStudyMediaFields(story.acf as Record<string, unknown>),
   };
-  return applyCaseStudyCoverOverride(applyPublicCaseStudyOverrides(sanitizedStory));
+  return applyBlobImagesToSuccessStory(
+    applyCaseStudyCoverOverride(applyPublicCaseStudyOverrides(sanitizedStory)),
+  );
+}
+
+function applyBlobImagesToSuccessStory(story: SuccessStory): SuccessStory {
+  let next = applyBlobImagesToWpItem(story as unknown as Record<string, unknown>) as unknown as SuccessStory;
+  if (next.acf) {
+    next = { ...next, acf: applyBlobImagesToJsonLd(next.acf) as ACFSuccessStory };
+  }
+  if (next.featured_media_url) {
+    next.featured_media_url = applyBlobImagesToUrl(next.featured_media_url);
+  }
+  return next;
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {

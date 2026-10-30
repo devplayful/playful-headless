@@ -18,8 +18,14 @@ export function loadBlobMigrationMap(env: NodeJS.ProcessEnv = process.env): Blob
     return null;
   }
   try {
-    const raw = JSON.parse(readFileSync(file, 'utf8')) as { map?: BlobUrlMap } | BlobUrlMap;
-    cached = 'map' in raw && raw.map ? raw.map : (raw as BlobUrlMap);
+    const raw: unknown = JSON.parse(readFileSync(file, 'utf8'));
+    if (raw && typeof raw === 'object' && 'map' in raw && raw.map && typeof raw.map === 'object') {
+      cached = raw.map as BlobUrlMap;
+    } else if (raw && typeof raw === 'object') {
+      cached = raw as BlobUrlMap;
+    } else {
+      cached = null;
+    }
     return cached;
   } catch {
     cached = null;

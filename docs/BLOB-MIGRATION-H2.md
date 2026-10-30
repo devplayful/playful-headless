@@ -29,7 +29,10 @@ Idempotente: `addRandomSuffix: false`, clave `media/AAAA/MM/archivo`. Omite blob
 
 ## Reescritura en Payload
 
-Por defecto **desactivado** (`CMS_BLOB_IMAGES` vacío o distinto de `1`).
+Por defecto **desactivado** en producción y en previews de otras ramas.
+
+Activo cuando `VERCEL_ENV=preview` **y** `VERCEL_GIT_COMMIT_REF=cursor/payload-h2-imagenes-5a28`.
+En local/scripts: `CMS_BLOB_IMAGES=1`.
 
 ```bash
 CMS_BLOB_IMAGES=1 DATABASE_URI=postgres://... npm run cms:seed-blob-urls

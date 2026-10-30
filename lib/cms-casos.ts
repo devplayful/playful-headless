@@ -3,8 +3,7 @@ import config from '@payload-config';
 import type { SuccessStory } from '@/services/wordpress';
 import { isCmsCasosFromPayload } from './cms-casos-flag.ts';
 import { hasRuntimeDatabase } from './cms-database.ts';
-import { loadBlobMigrationMap } from './blob-image-map.ts';
-import { maybeRewriteMediaUrl } from './blob-image-url.ts';
+import { applyBlobImagesToUrl } from './blob-image-render.ts';
 import {
   soyTechnoApprovedCopy,
   type SoyTechnoApprovedCopy,
@@ -28,9 +27,7 @@ function mediaOf(value: unknown): { url: string; alt: string } | undefined {
     '';
   if (!url) return undefined;
   const alt = typeof value.alt === 'string' ? value.alt : '';
-  const map = loadBlobMigrationMap();
-  const rewritten = maybeRewriteMediaUrl(url, map);
-  return { url: rewritten, alt };
+  return { url: applyBlobImagesToUrl(url), alt };
 }
 
 function normalizeAcf(acf: unknown): Record<string, unknown> {
