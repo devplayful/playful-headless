@@ -22,7 +22,10 @@ import {
 import { isBlobImagesEnabled } from '@/lib/blob-image-url.ts';
 import {
   rewriteEndpointAssetUrlForPreview,
+  rewriteElementorScriptUrlForPreview,
 } from '@/lib/wp-endpoint-surface.ts';
+import { toAbsoluteSiteUrl } from '@/utils/canonical';
+import { ELEMENTOR_PAGE_SCRIPTS } from '@/lib/elementor-static-asset-urls';
 
 const WP_HOST = WP_ENDPOINT_ORIGIN;
 
@@ -171,6 +174,12 @@ export default function ElementorPageContent({
   const stylesheetHref = (href: string) =>
     blobPreview ? rewriteEndpointAssetUrlForPreview(href) : href;
   const resolvedLcp = lcpSrc ? stylesheetHref(lcpSrc) : null;
+  const resolvedScripts = blobPreview
+    ? ELEMENTOR_PAGE_SCRIPTS.map((src) => rewriteElementorScriptUrlForPreview(src))
+    : undefined;
+  const elementorAssetsBase = blobPreview
+    ? toAbsoluteSiteUrl('/wp-static/wp-content/plugins/elementor/assets/')
+    : undefined;
 
   return (
     <>
@@ -198,7 +207,12 @@ html body .playful-wp-page .playful-post-home .recent-news li .texts .playful-me
 html body .playful-wp-page .elementor-element-145155f,
 html body .playful-wp-page .elementor-element-0088077{display:none!important;height:0!important;margin:0!important;padding:0!important}
 `}</style>
-      <ElementorPageScripts pageId={pageId} deferUntilLoad={shouldDeferElementorScriptsUntilLoad(slug)} />
+      <ElementorPageScripts
+        pageId={pageId}
+        deferUntilLoad={shouldDeferElementorScriptsUntilLoad(slug)}
+        scriptUrls={resolvedScripts}
+        elementorAssetsBase={elementorAssetsBase}
+      />
     </>
   );
 }

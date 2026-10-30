@@ -24,7 +24,7 @@ const WP = 'https://endpoint.playfulagency.com/wp-json';
 
 function collectStylesheetIds(html: string, pageId: number): number[] {
   const ids = new Set<number>([pageId]);
-  for (const match of html.matchAll(/elementor-post-(\d+)/g)) {
+  for (const match of Array.from(html.matchAll(/elementor-post-(\d+)/g))) {
     const id = Number(match[1]);
     if (!Number.isNaN(id)) ids.add(id);
   }
