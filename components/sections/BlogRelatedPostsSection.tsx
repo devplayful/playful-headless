@@ -22,10 +22,14 @@ export default function BlogRelatedPostsSection({
   posts: initialPosts,
   excludeSlug,
   excludeId,
+  headingHtml,
+  introHtml,
 }: {
   posts?: BlogPost[];
   excludeSlug?: string;
   excludeId?: number | string;
+  headingHtml?: string;
+  introHtml?: string;
 } = {}) {
   const hasServerPosts = initialPosts !== undefined;
   const [posts, setPosts] = useState<BlogPost[]>(() =>
@@ -88,12 +92,26 @@ export default function BlogRelatedPostsSection({
     <section className="relative overflow-hidden bg-[#006A61] rounded-3xl p-8 md:p-16 w-[calc(100%-0px)] max-w-[1200px] mx-auto mt-4 mb-16">
       <div className="pointer-events-none absolute inset-0 bg-[url('/images/background.webp')] bg-cover bg-center bg-no-repeat" />
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
-          ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
-        </h2>
-        <p className="text-white text-base md:text-lg leading-relaxed mb-10">
-          Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de <strong className="font-bold">UX/UI, E-commerce y desarrollo tecnológico</strong>. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.
-        </p>
+        {headingHtml ? (
+          <h2
+            className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4"
+            dangerouslySetInnerHTML={{ __html: headingHtml }}
+          />
+        ) : (
+          <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] text-white font-[700] text-[28px] md:text-[45px] leading-[32px] md:leading-[52px] mb-4">
+            ¿Tendencias? ¿Dudas? <strong className="font-bold">Estrategias y Novedades del Sector</strong>
+          </h2>
+        )}
+        {introHtml ? (
+          <p
+            className="text-white text-base md:text-lg leading-relaxed mb-10"
+            dangerouslySetInnerHTML={{ __html: introHtml }}
+          />
+        ) : (
+          <p className="text-white text-base md:text-lg leading-relaxed mb-10">
+            Explora nuestro blog para obtener información valiosa y mantenerte al día con las últimas estrategias de <strong className="font-bold">UX/UI, E-commerce y desarrollo tecnológico</strong>. Aquí compartimos análisis, guías prácticas y todo lo que necesitas para tomar decisiones informadas en el entorno digital.
+          </p>
+        )}
       </div>
 
       {loading ? (

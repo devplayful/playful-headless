@@ -1,12 +1,9 @@
 import type { Metadata } from 'next';
 import { getHomePageMetadata } from '@/services/wordpress';
-import { canonicalForPath } from '@/utils/canonical';
-import { WEBSITE_JSON_LD } from '@/utils/organization-schema.mjs';
 import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 
-const HOME_CANONICAL = canonicalForPath('/');
 
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = 'Playful Agency - Agencia de E-commerce | Marketing Digital';
@@ -57,12 +54,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import Link from "next/link";
-import HomeHeroArt, { homeHeroLcpHref } from "@/components/HomeHeroArt";
+import HomeHeroArt from "@/components/HomeHeroArt";
 import MaterialServicesSection from "@/components/MaterialServicesSection";
 import SolucionesPlayful from "@/components/SolucionesPlayful";
 import CarouselResultados from "@/components/CarouselResultados";
 import TestimonialsSection from "@/components/TestimonialsSectionClient";
-import { HomePageContent } from "./HomePageContent";
+import { HomeDocumentFrame } from "./home/HomeDocumentFrame";
+import { HomePayloadBody } from "@/components/home/HomePayloadBody";
+import { resolveRenderHomeFromPayloadServer } from "@/lib/cms-home-flag";
+import { resolveHomeContentForPayloadRender } from "@/lib/cms-home";
 import CimaBreaker from "@/components/premios-cima/CimaBreaker";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
@@ -174,23 +174,18 @@ async function HomeContent() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  if (await resolveRenderHomeFromPayloadServer()) {
+    const content = await resolveHomeContentForPayloadRender();
+    return (
+      <HomeDocumentFrame>
+        <HomePayloadBody content={content} />
+      </HomeDocumentFrame>
+    );
+  }
   return (
-    <>
-      <link rel="canonical" href={HOME_CANONICAL} />
-      <meta property="og:url" content={HOME_CANONICAL} />
-      <link rel="preload" as="image" href={homeHeroLcpHref()} fetchPriority="high" />
-      <script
-        id="playful-website"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: WEBSITE_JSON_LD }}
-      />
-      <h1 className="sr-only">
-        ¿Tu e-commerce está perdiendo dinero sin que lo sepas?{" "}
-      </h1>
-      <HomePageContent>
-        <HomeContent />
-      </HomePageContent>
-    </>
+    <HomeDocumentFrame>
+      <HomeContent />
+    </HomeDocumentFrame>
   );
 }

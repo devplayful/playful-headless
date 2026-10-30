@@ -15,6 +15,7 @@
     "/blog/[...slug]",
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
+    "/cms-home-preview",
     "/cms-api/[...slug]",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
@@ -186,6 +187,7 @@
     "/admin/[[...segments]]": [],
     "/casos-de-exito/[slug]": [],
     "/cms-api/[...slug]": [],
+    "/cms-home-preview": [],
     "/podcast/[slug]": []
   },
   "allowedArtifactOnlyRoutes": [

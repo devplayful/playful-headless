@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
+import { shouldRunPreviewMigrate, shouldRunPreviewHomeSeed } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,7 +142,80 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate };
+async function runGuardedCommandWithCapture(command, args, options = {}) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await runGuardedCommand(command, args, {
+    ...options,
+    onSpawn: (child) => {
+      options.onSpawn?.(child);
+      child.stdout?.on('data', (chunk) => {
+        stdout += chunk.toString();
+        process.stdout.write(chunk);
+      });
+      child.stderr?.on('data', (chunk) => {
+        stderr += chunk.toString();
+        process.stderr.write(chunk);
+      });
+    },
+  });
+  return { exitCode, stdout, stderr };
+}
+
+function redactSecrets(text) {
+  return String(text)
+    .replace(/postgres(?:ql)?:\/\/[^\s'"`]+/gi, '[database-url]')
+    .replace(/\bDATABASE_URL(?:_UNPOOLED)?=[^\s]+/gi, 'DATABASE_URL=[redacted]')
+    .trim();
+}
+
+function shortErrorMessage(stdout, stderr, exitCode) {
+  const combined = redactSecrets(`${stderr}\n${stdout}`).replace(/\s+/g, ' ').trim();
+  if (!combined) return `exit code ${exitCode}`;
+  return combined.length > 180 ? `${combined.slice(0, 177)}…` : combined;
+}
+
+export function summarizePayloadMigrateOutput(output) {
+  const text = String(output);
+  const applied = [];
+  const patterns = [
+    /Migrat(?:e|ed|ing)(?::\s*|\s+)(20\d{6}_\d+)/gi,
+    /Ran migration (20\d{6}_\d+)/gi,
+    /Applying migration (20\d{6}_\d+)/gi,
+  ];
+  for (const pattern of patterns) {
+    let match = pattern.exec(text);
+    while (match) {
+      applied.push(match[1]);
+      match = pattern.exec(text);
+    }
+  }
+  const unique = [...new Set(applied)];
+  if (unique.length) return unique.join(', ');
+  if (/no migrations|nothing to migrate|already up to date|nada pendiente|0 migrations/i.test(text)) {
+    return 'nada pendiente';
+  }
+  return 'nada pendiente';
+}
+
+export function summarizePreviewHomeSeedOutput(output) {
+  const text = String(output);
+  const okPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) OK(?: \(updated\))?/gm;
+  const errPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) ERROR/gm;
+  const okLines = [...text.matchAll(okPattern)];
+  const errLines = [...text.matchAll(errPattern)];
+  const resumen = text.match(/\[HOME-CMS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  return {
+    ok: resumen ? Number(resumen[1]) : okLines.length,
+    err: resumen ? Number(resumen[2]) : errLines.length,
+    lines: okLines.map((match) => match[0]),
+    resumenLine: resumen ? resumen[0] : null,
+  };
+}
+
+export { shouldRunPreviewMigrate, shouldRunPreviewHomeSeed };
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
@@ -155,16 +228,56 @@ export async function runPayloadPreviewMigrate(env = process.env) {
   }
   console.log('payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)');
   const migrateEnv = { ...env, PAYLOAD_MIGRATING: 'true' };
-  return runGuardedCommand(
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
     payloadMigrateArgs(),
     { env: migrateEnv },
   );
+  if (exitCode !== 0) {
+    console.log(`payload migrate ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  console.log(`payload migrate OK: ${summarizePayloadMigrateOutput(`${stdout}\n${stderr}`)}`);
+  return exitCode;
+}
+
+export async function runPayloadPreviewHomeSeed(env = process.env) {
+  if (!shouldRunPreviewHomeSeed(env)) {
+    console.log(
+      'cms:seed-home: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-home: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-home.mts'],
+    { env },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewHomeSeedOutput(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-home ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
+  console.log(
+    `seed-home OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} bloques [HOME-CMS])`,
+  );
+  if (summary.lines.length !== 8 || summary.err !== 0) {
+    console.log('seed-home ERROR: se esperaban 8 líneas OK por bloque');
+    return 1;
+  }
+  return exitCode;
 }
 
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const homeSeedCode = await runPayloadPreviewHomeSeed();
+  if (homeSeedCode !== 0) return homeSeedCode;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],
