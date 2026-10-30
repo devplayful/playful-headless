@@ -1,91 +1,17 @@
-import { getAllCaseStudies, getPageMetadataBySlug } from '@/services/wordpress';
-import { mapCaseStudyToListingCard } from '@/lib/case-study-listing-card';
-import { canonicalForPath } from '@/utils/canonical';
 import {
-  CASE_STUDIES_HUB_DESCRIPTION,
-  CASE_STUDIES_HUB_PATH,
-  CASE_STUDIES_HUB_TITLE,
-  CASE_STUDIES_HUB_WP_SLUG,
-} from '@/utils/case-study-hub';
-import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
-import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
-import CaseStudiesContent from './CaseStudiesContent';
+  defaultHubRenderFromPayload,
+  generateCaseStudiesHubMetadata,
+  renderCaseStudiesHub,
+} from './hub-page';
 
-/** ISR + CDN cache for case-study hub (TTFB). */
 export const revalidate = 3600;
-import { buildCaseStudiesHubBreadcrumbJsonLd } from '@/utils/case-study-jsonld';
-import { serializeServiceLandingJsonLd } from '@/utils/service-landing-jsonld';
 
 export default async function CaseStudiesPage() {
-  const items = await getAllCaseStudies();
-  const initialCaseStudies = items.map(mapCaseStudyToListingCard);
-
-  return (
-    <>
-      <script
-        id="playful-breadcrumb"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serializeServiceLandingJsonLd(buildCaseStudiesHubBreadcrumbJsonLd()),
-        }}
-      />
-      <CaseStudiesContent initialCaseStudies={initialCaseStudies} />
-    </>
-  );
+  return renderCaseStudiesHub({
+    renderFromPayload: defaultHubRenderFromPayload(),
+  });
 }
 
 export async function generateMetadata() {
-  // Contento hub SERP 1247n70uwtz
-  const url = canonicalForPath(CASE_STUDIES_HUB_PATH);
-  const title = CASE_STUDIES_HUB_TITLE;
-  const description = CASE_STUDIES_HUB_DESCRIPTION;
-
-  try {
-    const metadata = await getPageMetadataBySlug(CASE_STUDIES_HUB_WP_SLUG);
-
-    return {
-      title,
-      description,
-      alternates: { canonical: url },
-      openGraph: {
-        title,
-        description,
-        type: 'website',
-        url,
-        images: (() => {
-          const jpeg = ogJpegForPath(CASE_STUDIES_HUB_PATH);
-          if (jpeg) return [ogJpegMeta(jpeg, title)];
-          return metadata.yoast_wpseo_og_image
-            ? [
-                {
-                  url: metadata.yoast_wpseo_og_image,
-                  width: 1200,
-                  height: 630,
-                  alt: title,
-                },
-              ]
-            : [];
-        })(),
-      },
-      twitter: {
-        ...twitterFromOpenGraph(title, description),
-        ...(ogJpegForPath(CASE_STUDIES_HUB_PATH)
-          ? { images: [ogJpegForPath(CASE_STUDIES_HUB_PATH)] }
-          : {}),
-      },
-    };
-  } catch (error) {
-    console.error('Error al generar metadatos de la página de casos de éxito:', error);
-    return {
-      title,
-      description,
-      alternates: { canonical: url },
-      openGraph: {
-        title,
-        description,
-        url,
-      },
-      twitter: twitterFromOpenGraph(title, description),
-    };
-  }
+  return generateCaseStudiesHubMetadata();
 }

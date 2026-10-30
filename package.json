@@ -37,7 +37,9 @@
     "cms:importmap": "payload generate:importmap --disable-transpile",
     "cms:types": "payload generate:types --disable-transpile",
     "cms:import": "node scripts/import-wp.ts",
-    "cms:seed-casos": "node scripts/seed-casos.ts"
+    "cms:import-casos": "node scripts/import-casos-wp.ts",
+    "cms:seed-casos": "node scripts/seed-casos.ts",
+    "cms:preview-h4-casos": "node scripts/preview-h4-casos.mts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

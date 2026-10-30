@@ -6,18 +6,19 @@ import { CASE_STUDIES_HUB_H1, CASE_STUDIES_HUB_LEAD } from '../utils/case-study-
 import { mapCaseStudyToListingCard } from '../lib/case-study-listing-card.ts';
 
 const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubServer = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 const hubContent = readFileSync(
   new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url),
   'utf8',
 );
-const metadataFn = hubPage.slice(hubPage.indexOf('export async function generateMetadata'));
+const metadataFn = hubServer.slice(hubServer.indexOf('export async function generateCaseStudiesHubMetadata'));
 
 test('hub page fetches cases on the server and keeps generateMetadata', () => {
   assert.doesNotMatch(hubPage, /^['"]use client['"]/m);
   assert.match(hubPage, /export default async function CaseStudiesPage/);
-  assert.match(hubPage, /getAllCaseStudies\(\)/);
-  assert.match(hubPage, /mapCaseStudyToListingCard/);
-  assert.match(hubPage, /initialCaseStudies=\{initialCaseStudies\}/);
+  assert.match(hubServer, /getAllCaseStudies\(\)/);
+  assert.match(hubServer, /mapCaseStudyToListingCard/);
+  assert.match(hubServer, /initialCaseStudies=\{initialCaseStudies\}/);
   assert.doesNotMatch(hubPage, /<Suspense/);
   assert.doesNotMatch(hubPage, /<h1[\s>]/);
   assert.match(metadataFn, /CASE_STUDIES_HUB_TITLE/);

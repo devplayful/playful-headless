@@ -11,9 +11,15 @@ const {
 const { CASOS_URL_VIDEO, CASOS_URL_VIDEO_WP_IDS } = await import(
   '../cms/data/casos-url-video.ts'
 );
-const { isCmsCasosFromPayload, CMS_CASOS_FROM_PAYLOAD_ENV } = await import(
-  '../lib/cms-casos-flag.ts'
-);
+const {
+  isCmsCasosFromPayload,
+  CMS_CASOS_FROM_PAYLOAD_ENV,
+  shouldRenderCasosFromPayload,
+  parseCmsPreviewQuery,
+} = await import('../lib/cms-casos-flag.ts');
+const buildScript = readFileSync(new URL('../scripts/build-with-budget.mjs', import.meta.url), 'utf8');
+const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 
 const soytechnoBody = readFileSync(
   new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url),
@@ -30,10 +36,21 @@ test('feature flag is off by default and shared by Jumex, Odwalla and SoyTechno'
   assert.equal(isCmsCasosFromPayload({}), false);
   assert.equal(isCmsCasosFromPayload({ [CMS_CASOS_FROM_PAYLOAD_ENV]: 'false' }), false);
   assert.equal(isCmsCasosFromPayload({ [CMS_CASOS_FROM_PAYLOAD_ENV]: 'true' }), true);
-  assert.match(page, /isCmsCasosFromPayload\(\)/);
-  assert.match(page, /getSuccessStoryFromPayload\(slug\)/);
-  assert.match(page, /findCasoBySlug\(slug\)/);
+  assert.equal(shouldRenderCasosFromPayload(true, { VERCEL_ENV: 'production' }), false);
+  assert.equal(shouldRenderCasosFromPayload(true, { VERCEL_ENV: 'preview' }), true);
+  assert.equal(parseCmsPreviewQuery({ cms: '1' }), true);
+  assert.match(page, /resolveRenderCasosFromPayloadServer\(\)/);
+  assert.match(page, /getSuccessStoryFromPayload\(slug/);
   assert.match(page, /slug === 'soytechno-ecommerce-venezuela'/);
+  assert.match(page, /<SoyTechnoCaseStudy\s*\/>/);
+  assert.match(hubPage, /getAllCaseStudiesFromPayload/);
+  assert.match(middleware, /cmsPreviewCasosHubPath/);
+  assert.match(buildScript, /preview-h4-casos/);
+  assert.match(readFileSync(new URL('../scripts/preview-h4-casos.mts', import.meta.url), 'utf8'), /\[H4-CASOS\]/);
+  assert.match(
+    readFileSync(new URL('../scripts/preview-h4-casos.mts', import.meta.url), 'utf8'),
+    /resumen:/,
+  );
 });
 
 test('seed data copies SoyTechno approvedCopy character-for-character from the component', () => {
@@ -48,6 +65,21 @@ test('seed data copies SoyTechno approvedCopy character-for-character from the c
   assert.equal(payload.acf.soytechno.copy.title, soyTechnoApprovedCopy.title);
   assert.ok(payload.acf.soytechno.seccion_a);
   assert.ok(payload.acf.soytechno.seccion_f);
+});
+
+test('summarizePreviewH4CasosOutput counts slug lines and resumen', async () => {
+  const { summarizePreviewH4CasosOutput } = await import('../scripts/build-with-budget.mjs');
+  const sample = `
+[H4-CASOS] import-wp OK (casos=2, medios=45, requests=4)
+[H4-CASOS] jumex-shopify-dtc-ecommerce OK (url_video actualizado)
+[H4-CASOS] odwalla-shopify-dtc-ecommerce OK (url_video actualizado)
+[H4-CASOS] soytechno-ecommerce-venezuela OK (soytechno actualizado)
+[H4-CASOS] resumen: 3 OK / 0 ERROR
+`;
+  const summary = summarizePreviewH4CasosOutput(sample);
+  assert.equal(summary.ok, 3);
+  assert.equal(summary.err, 0);
+  assert.equal(summary.lines.length, 3);
 });
 
 test('url_video values are the mp4s that production serves today', () => {

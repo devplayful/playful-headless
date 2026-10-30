@@ -17,12 +17,8 @@ import '@/styles/slick-font-swap.css';
 import CasoExitoCta from './CasoExitoCta';
 import ShopifyServiceLink, { isShopifyCaseStudySlug } from './ShopifyServiceLink';
 import SoyTechnoCaseStudy from '@/components/soytechno/SoyTechnoCaseStudy';
-import { isCmsCasosFromPayload } from '@/lib/cms-casos-flag';
-import {
-  extractSoyTechnoCopy,
-  findCasoBySlug,
-  getSuccessStoryFromPayload,
-} from '@/lib/cms-casos';
+import { casosPayloadPreviewAttrs, resolveRenderCasosFromPayloadServer } from '@/lib/cms-casos-flag';
+import { getSuccessStoryFromPayload } from '@/lib/cms-casos';
 import { ogJpegForPath } from '@/lib/og-images';
 import { resolveCaseStudyOgImage } from '@/lib/case-study-listing-image';
 import {
@@ -130,16 +126,16 @@ export default async function SuccessStoryPage({
 
   // This case study is intentionally self-contained so its Figma-faithful
   // layout and media do not depend on the legacy WordPress field structure.
+  const renderFromPayload = await resolveRenderCasosFromPayloadServer();
+  const payloadMarker = renderFromPayload ? casosPayloadPreviewAttrs() : {};
+
   if (slug === 'soytechno-ecommerce-venezuela') {
     const override = getPublicCaseStudySeoOverride(slug);
     const path = `/casos-de-exito/${slug}`;
     const headline = override?.title || 'SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela';
     const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
-    const soytechnoCopy = isCmsCasosFromPayload()
-      ? extractSoyTechnoCopy(await findCasoBySlug(slug))
-      : null;
     return (
-      <>
+      <div {...payloadMarker}>
         <script
           id="playful-article"
           type="application/ld+json"
@@ -162,13 +158,14 @@ export default async function SuccessStoryPage({
             })),
           }}
         />
-        <SoyTechnoCaseStudy {...(soytechnoCopy ? { copy: soytechnoCopy } : {})} />
-      </>
+        <SoyTechnoCaseStudy />
+      </div>
     );
   }
 
-  const rawStory = isCmsCasosFromPayload()
-    ? ((await getSuccessStoryFromPayload(slug)) ?? await getSuccessStoryBySlug(slug))
+  const rawStory = renderFromPayload
+    ? ((await getSuccessStoryFromPayload(slug, { renderFromPayload: true })) ??
+        await getSuccessStoryBySlug(slug))
     : await getSuccessStoryBySlug(slug);
 
   if (!rawStory) {
@@ -190,7 +187,7 @@ export default async function SuccessStoryPage({
   const og = resolveCaseStudyOgImage(slug, ogJpegForPath(path), headline);
 
   return (
-    <div className="text-gray-800 overflow-x-clip max-w-[100vw]">
+    <div {...payloadMarker} className="text-gray-800 overflow-x-clip max-w-[100vw]">
       <script
         id="playful-article"
         type="application/ld+json"
