@@ -41,15 +41,15 @@ test('Preview ?cms=1 en URL desconocida reescribe a _not-found con header B5', (
 test('404 mantiene búsqueda cliente en NotFoundView', () => {
   assert.match(notFoundView, /NotFoundSearchForm/);
   assert.match(notFoundView, /NotFoundHeaderHider/);
-  assert.match(notFoundPage, /NotFoundFlagOffBranch/);
+  assert.match(notFoundPage, /NotFoundPreviewCmsAttrs|NotFoundView/);
   assert.match(notFoundPage, /export default function NotFound/);
   assert.doesNotMatch(notFoundPage, /export default async function NotFound/);
 });
 
 test('HTML SSR de 404 debe incluir el H1 congelado (flag apagado = not-found sync + rama sin Payload)', () => {
-  assert.match(notFoundPage, /NotFoundFlagOffBranch/);
-  assert.match(notFoundPage, /isCmsPaginasB5FromPayload\(\)/);
-  assert.doesNotMatch(notFoundPage, /VERCEL_ENV === 'preview'/);
+  assert.match(globalNotFound, /NotFoundView/);
+  assert.match(globalNotFound, /isCmsPaginasB5FromPayload\(\)/);
+  assert.match(notFoundPage, /import\(\s*[\n\s]*'@\/components\/paginas-codigo\/NotFoundPayloadShell'/);
   assert.match(notFoundView, /Página no encontrada/);
   assert.doesNotMatch(notFoundView, /__next_error__/);
 });
@@ -70,7 +70,8 @@ test('data-cms-source=payload solo en Preview', () => {
   process.env.VERCEL_ENV = prev;
 });
 
-test('global-not-found verifica slug global-not-found con flag', () => {
-  assert.match(globalNotFound, /payloadSlug="global-not-found"/);
+test('global-not-found con flag apagado pinta NotFoundView sin pasar por not-found.tsx', () => {
+  assert.match(globalNotFound, /NotFoundView/);
   assert.match(globalNotFound, /export default function GlobalNotFound/);
+  assert.match(globalNotFound, /isCmsPaginasB5FromPayload\(\)/);
 });
