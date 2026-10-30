@@ -19,15 +19,16 @@ Sondeo de binarios: `HEAD` con la misma cadencia hacia `endpoint.playfulagency.c
 
 ## Upload en Preview (ruta temporal, rama `cursor/payload-h2-upload-route-5a28`)
 
-PR **NO MERGE**. POST solo cuando `VERCEL_ENV=preview`:
+PR **NO MERGE**. GET solo cuando `VERCEL_ENV=preview`:
 
-`/api/internal/h2-blob-upload?offset=0&limit=40`
+`/api/internal/h2-blob-upload?b=<0-72>&t=<token hex 64>`
 
-Cabecera `x-h2-secret`: valor en claro cuyo SHA-256 coincide con el hash embebido en la ruta (no loguear).
+Token de un solo uso por lote: `h` aplicada `(b+1)` veces a `t` debe igualar `ANCHOR` embebido (ver `lib/h2-blob-upload-auth.ts`). No loguear `t` ni la query.
 
-Respuesta: `{ offset, limit, total, uploaded, skipped, failed, urls }`.
+Respuesta: `{ b, offset, limit, total, uploaded, skipped, failed, urls }` (URLs de `put()`/`head()`).
 
-Lotes: `ceil(total / 40)` (ver `npm run test:h2-upload-route`).
+Store público: `https://xl21culwxno499zc.public.blob.vercel-storage.com`
+
 
 
 ```bash

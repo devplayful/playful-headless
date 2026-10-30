@@ -1,6 +1,9 @@
-import { createHash, timingSafeEqual } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { head, put } from '@vercel/blob';
+import {
+  H2_BATCH_SIZE,
+  verifyH2BatchToken,
+} from '@/lib/h2-blob-upload-auth';
 import {
   sliceH2BlobUploadJobs,
   totalH2BlobUploadJobs,
@@ -9,48 +12,35 @@ import {
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
-const H2_SECRET_SHA256_HEX =
-  '5171c7ccbb82730befe09c114965e39da9638e014f02b8249df464edc66f2dbe';
-const EXPECTED_SECRET_HASH = Buffer.from(H2_SECRET_SHA256_HEX, 'hex');
 const UA = 'PlayfulQA/1.0';
 
-function unauthorized(): NextResponse {
-  return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+function notFound(): NextResponse {
+  return new NextResponse(null, { status: 404 });
 }
 
-function verifyH2Secret(header: string | null): boolean {
-  if (!header || typeof header !== 'string') return false;
-  const digest = createHash('sha256').update(header, 'utf8').digest();
-  if (digest.length !== EXPECTED_SECRET_HASH.length) return false;
-  return timingSafeEqual(digest, EXPECTED_SECRET_HASH);
-}
-
-function parseBatchParams(url: URL): { offset: number; limit: number } {
-  const offsetRaw = url.searchParams.get('offset');
-  const limitRaw = url.searchParams.get('limit');
-  const offset = offsetRaw == null || offsetRaw === '' ? 0 : Number.parseInt(offsetRaw, 10);
-  const limit = limitRaw == null || limitRaw === '' ? 40 : Number.parseInt(limitRaw, 10);
-  return {
-    offset: Number.isFinite(offset) && offset >= 0 ? offset : 0,
-    limit: Number.isFinite(limit) && limit > 0 ? Math.min(limit, 200) : 40,
-  };
-}
-
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   if (process.env.VERCEL_ENV !== 'preview') {
-    return new NextResponse(null, { status: 404 });
+    return notFound();
   }
 
-  if (!verifyH2Secret(request.headers.get('x-h2-secret'))) {
-    return unauthorized();
+  const url = new URL(request.url);
+  const bRaw = url.searchParams.get('b');
+  const t = url.searchParams.get('t');
+  if (bRaw === null || t === null) {
+    return notFound();
+  }
+  const b = Number.parseInt(bRaw, 10);
+  if (!Number.isFinite(b) || !verifyH2BatchToken(b, t)) {
+    return notFound();
   }
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!blobToken) {
     return NextResponse.json({ error: 'no-token' }, { status: 500 });
   }
 
-  const { offset, limit } = parseBatchParams(new URL(request.url));
+  const offset = b * H2_BATCH_SIZE;
+  const limit = H2_BATCH_SIZE;
   const total = totalH2BlobUploadJobs();
   const jobs = sliceH2BlobUploadJobs(offset, limit);
 
@@ -66,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const existing = await head(job.blobKey, { token });
+      const existing = await head(job.blobKey, { token: blobToken });
       if (existing?.url) {
         skipped += 1;
         urls.push(existing.url);
@@ -90,7 +80,7 @@ export async function POST(request: NextRequest) {
       const body = Buffer.from(await origin.arrayBuffer());
       const result = await put(job.blobKey, body, {
         access: 'public',
-        token,
+        token: blobToken,
         addRandomSuffix: false,
       });
       uploaded += 1;
@@ -101,6 +91,7 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({
+    b,
     offset,
     limit,
     total,

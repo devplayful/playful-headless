@@ -105,7 +105,7 @@ export function blobPublicUrlFromKey(
 ): string {
   const base =
     env.BLOB_PUBLIC_BASE_URL?.replace(/\/$/, '') ||
-    'https://BLOB_STORE_ID.public.blob.vercel-storage.com';
+    'https://xl21culwxno499zc.public.blob.vercel-storage.com';
   return `${base}/${key.replace(/^\//, '')}`;
 }
 

@@ -1,11 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import {
   countH2BlobUploadBatches,
   getH2BlobUploadJobs,
   totalH2BlobUploadJobs,
 } from '../lib/h2-blob-upload-queue.ts';
+import {
+  H2_MAX_BATCH_INDEX,
+  h2HashHex,
+  verifyH2BatchToken,
+} from '../lib/h2-blob-upload-auth.ts';
 
 describe('h2-blob-upload-queue', () => {
   it('expone jobs deduplicados alineados con el inventario', () => {
@@ -20,15 +24,44 @@ describe('h2-blob-upload-queue', () => {
     const total = totalH2BlobUploadJobs();
     const batches = countH2BlobUploadBatches(40);
     assert.equal(batches, Math.ceil(total / 40));
+    assert.equal(H2_MAX_BATCH_INDEX, 72);
   });
 });
 
-describe('h2 secret hash (documentación operador)', () => {
-  it('el hash embebido es sha256 de un valor conocido solo en runtime preview', () => {
-    const embedded =
-      '5171c7ccbb82730befe09c114965e39da9638e014f02b8249df464edc66f2dbe';
-    assert.equal(embedded.length, 64);
-    assert.match(embedded, /^[0-9a-f]+$/);
-    assert.notEqual(createHash('sha256').update('wrong', 'utf8').digest('hex'), embedded);
+describe('validación cadena de tokens (semilla de prueba, no producción)', () => {
+  const TEST_SEED = 'h2-test-seed-not-production';
+  const TEST_STEPS = 5;
+  const TEST_MAX_B = 2;
+
+  function buildChain(seed, steps) {
+    const chain = [seed];
+    for (let i = 0; i < steps; i++) {
+      chain.push(h2HashHex(chain[chain.length - 1]));
+    }
+    return chain;
+  }
+
+  const chain = buildChain(TEST_SEED, TEST_STEPS);
+  const TEST_ANCHOR = chain[TEST_STEPS];
+
+  function tokenForBatch(b) {
+    return chain[TEST_STEPS - 1 - b];
+  }
+
+  function verifyTest(b, t) {
+    return verifyH2BatchToken(b, t, TEST_ANCHOR, TEST_MAX_B);
+  }
+
+  it('b=0 válido con el token de su lote', () => {
+    assert.ok(verifyTest(0, tokenForBatch(0)));
+  });
+
+  it('b=1 con el token de b=0 debe fallar', () => {
+    assert.equal(verifyTest(1, tokenForBatch(0)), false);
+  });
+
+  it('token mal formado debe fallar', () => {
+    assert.equal(verifyTest(0, 'zzzz'), false);
+    assert.equal(verifyTest(0, 'a'.repeat(63)), false);
   });
 });
