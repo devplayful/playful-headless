@@ -1,5 +1,15 @@
 export const CMS_PAGINAS_B5_FROM_PAYLOAD_ENV = 'CMS_PAGINAS_B5_FROM_PAYLOAD';
-export const CMS_PAGINAS_B5_PREVIEW_HEADER = 'x-cms-paginas-b5-preview';
+
+export const CMS_PREVIEW_PAGINA_B5_PATH_PREFIX = '/cms-pagina-b5-preview';
+
+export function cmsPreviewPaginaB5Path(slug: string): string {
+  return `${CMS_PREVIEW_PAGINA_B5_PATH_PREFIX}/${slug}`;
+}
+
+export function isCmsPreviewPaginaB5InternalPath(pathname: string): boolean {
+  const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return normalized.startsWith(`${CMS_PREVIEW_PAGINA_B5_PATH_PREFIX}/`);
+}
 
 export function isCmsPaginasB5FromPayload(
   env: NodeJS.ProcessEnv = process.env,
