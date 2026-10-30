@@ -22,7 +22,7 @@ export function getH2BlobUploadJobs(): H2UploadJob[] {
       inventoryStatus: row.httpStatus ?? null,
     });
   }
-  cachedJobs = [...byCanonical.values()].sort((a, b) => a.src.localeCompare(b.src));
+  cachedJobs = Array.from(byCanonical.values()).sort((a, b) => a.src.localeCompare(b.src));
   return cachedJobs;
 }
 

@@ -139,11 +139,11 @@ export function extractImageUrlsFromHtml(html: string): string[] {
     const srcset = /\bsrcset\s*=\s*(["'])([^"']*)\1/i.exec(tag)?.[2];
     if (srcset) for (const u of parseSrcset(srcset)) found.add(u);
   }
-  for (const match of html.matchAll(IMG_URL_IN_HTML_RE)) {
+  for (const match of Array.from(html.matchAll(IMG_URL_IN_HTML_RE))) {
     const u = match[1];
     if (u && isMigratableWordPressMediaUrl(u)) found.add(u);
   }
-  return [...found];
+  return Array.from(found);
 }
 
 export type BlobUrlMap = Record<string, string>;

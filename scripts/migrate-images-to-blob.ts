@@ -307,7 +307,7 @@ async function main() {
   }
   console.log(`Sondeando ${canonicalSet.size} canonical únicas (HEAD paralelo, REST ya a 1 req/s)…`);
   const probeCache = new Map<string, Pick<InventoryRow, 'httpStatus' | 'sizeBytes' | 'error'>>();
-  const toProbe = [...canonicalSet];
+  const toProbe = Array.from(canonicalSet);
   const CONCURRENCY = 12;
   for (let i = 0; i < toProbe.length; i += CONCURRENCY) {
     const chunk = toProbe.slice(i, i + CONCURRENCY);
@@ -351,7 +351,7 @@ async function main() {
 
   let totalBytes = 0;
   let count404 = 0;
-  for (const c of canonicalSet) {
+  for (const c of Array.from(canonicalSet)) {
     const cached = probeCache.get(c);
     if (!cached) continue;
     if (cached.httpStatus === 404) count404++;
