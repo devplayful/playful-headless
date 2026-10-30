@@ -1,36 +1,24 @@
-import { readFileSync, existsSync } from 'node:fs';
-import path from 'node:path';
 import type { BlobUrlMap } from './blob-image-url.ts';
+import mapDocument from '../docs/blob-migration-map.json';
 
-const DEFAULT_MAP_PATH = path.join(process.cwd(), 'docs/blob-migration-map.json');
+type MapDocument = {
+  map: BlobUrlMap;
+  blobPublicBase?: string;
+};
+
+const bundledMap = (mapDocument as MapDocument).map;
 
 let cached: BlobUrlMap | null | undefined;
 
+/** Ruta lógica del mapa (scripts / documentación); el runtime usa el JSON empaquetado. */
 export function getBlobMigrationMapPath(env: NodeJS.ProcessEnv = process.env): string {
-  return env.BLOB_MIGRATION_MAP_PATH || DEFAULT_MAP_PATH;
+  return env.BLOB_MIGRATION_MAP_PATH || 'docs/blob-migration-map.json';
 }
 
-export function loadBlobMigrationMap(env: NodeJS.ProcessEnv = process.env): BlobUrlMap | null {
+export function loadBlobMigrationMap(_env: NodeJS.ProcessEnv = process.env): BlobUrlMap | null {
   if (cached !== undefined) return cached;
-  const file = getBlobMigrationMapPath(env);
-  if (!existsSync(file)) {
-    cached = null;
-    return null;
-  }
-  try {
-    const raw: unknown = JSON.parse(readFileSync(file, 'utf8'));
-    if (raw && typeof raw === 'object' && 'map' in raw && raw.map && typeof raw.map === 'object') {
-      cached = raw.map as BlobUrlMap;
-    } else if (raw && typeof raw === 'object') {
-      cached = raw as BlobUrlMap;
-    } else {
-      cached = null;
-    }
-    return cached;
-  } catch {
-    cached = null;
-    return null;
-  }
+  cached = bundledMap && typeof bundledMap === 'object' ? bundledMap : null;
+  return cached;
 }
 
 export function clearBlobMigrationMapCache(): void {
