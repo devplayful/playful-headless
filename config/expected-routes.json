@@ -16,6 +16,7 @@
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
     "/cms-api/[...slug]",
+    "/cms-pagina-b4-preview/[slug]",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
     "/firma/alejandra-da-costa",
@@ -186,6 +187,10 @@
     "/admin/[[...segments]]": [],
     "/casos-de-exito/[slug]": [],
     "/cms-api/[...slug]": [],
+    "/cms-pagina-b4-preview/[slug]": [
+      "/cms-pagina-b4-preview/contactar-agencia-de-marketing-digital",
+      "/cms-pagina-b4-preview/reunion-playful"
+    ],
     "/podcast/[slug]": []
   },
   "allowedArtifactOnlyRoutes": [

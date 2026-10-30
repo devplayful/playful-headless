@@ -68,6 +68,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(payloadConfig, /migrationDir/);
   assert.match(payloadConfig, /disableCreateDatabase: true/);
   assert.match(buildScript, /runPayloadPreviewMigrate/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -82,6 +83,12 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
     'utf8',
   );
   assert.match(index, /20261028_195833_initial/);
+  assert.match(index, /20261030_120000_paginas_codigo/);
+  const paginasCodigo = readFileSync(
+    new URL('../cms/migrations/20261030_120000_paginas_codigo.ts', import.meta.url),
+    'utf8',
+  );
+  assert.match(paginasCodigo, /CREATE TABLE "paginas_codigo"/);
   for (const table of [
     'posts',
     'paginas',
