@@ -17,6 +17,10 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import {
+  cmsPreviewPaginaB1Path,
+} from './lib/cms-paginas-b1-flag';
+import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -151,6 +155,21 @@ export function middleware(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname = '/_not-found';
     return attachAttributionCookies(request, NextResponse.rewrite(target));
+  }
+
+  if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    const slug = path.length > 1 ? path.slice(1) : path;
+    if (isPaginasB1Slug(slug)) {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewPaginaB1Path(slug);
+      target.searchParams.delete('cms');
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-cms-paginas-b1-preview', slug);
+      return attachAttributionCookies(
+        request,
+        NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+      );
+    }
   }
 
   const closed = blogClosedDecision(path);
