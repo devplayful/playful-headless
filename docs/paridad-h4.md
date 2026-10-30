@@ -1,43 +1,54 @@
 # Paridad H4 · Casos (Payload + Neon)
 
-Fase **H4**: hub `/casos-de-exito` y tres casos públicos renderizados desde Payload cuando
-`CMS_CASOS_FROM_PAYLOAD=1` o `?cms=1` en Preview (misma plantilla React que producción).
+Comparación objetivo: **Preview** con `?cms=1` vs **https://playfulagency.com** (`?qa=1`, UA `PlayfulQA/1.0`, 1 req/s).
 
-Captura de referencia en producción (`PlayfulQA/1.0`, `?qa=1`, 1 petición/s, 30 oct 2026).
-Detalle JSON: `docs/paridad-h4-prod-snapshot.json`.
+Herramienta: `PREVIEW_BASE=https://….vercel.app node scripts/paridad-h4-compare.mjs` → `docs/paridad-h4-compare.json`.
 
-## Tabla por URL
+Referencia prod (solo lectura): `docs/paridad-h4-prod-snapshot.json` (30 oct 2026).
 
-| URL | title / meta / canonical / H1 / JSON-LD | Estado H4 |
-|-----|----------------------------------------|-----------|
-| `/casos-de-exito` | Title: «Casos de éxito ecommerce y Shopify \| Playful Agency». Meta y canonical acordes a `utils/case-study-hub.ts`. H1: «Casos de éxito en ecommerce y Shopify de marcas que ya venden». 2 bloques JSON-LD (breadcrumb + organización vía layout). | **OK** — el hub no cambia copy; con flag Payload la lista sale de Neon (import WP + SoyTechno seed) y `mergePublicCaseStudies` conserva el orden público. |
-| `/casos-de-exito/jumex-shopify-dtc-ecommerce` | Title/meta/canonical según overrides públicos + Yoast WP importado. H1 WP: «JUMEX y Shopify: La Creación del Canal Directo (DTC)…». 3 JSON-LD (article + breadcrumb + FAQ si aplica). Vídeo: `https://playfulagency.com/videos/casos/jumex-ux.mp4`. | **OK** — misma página `[slug]/page.tsx`; datos ACF vía `import-casos-wp` + `url_video` en seed. |
-| `/casos-de-exito/odwalla-shopify-dtc-ecommerce` | Title/meta/canonical alineados con prod. H1 WP. Vídeo: `https://playfulagency.com/videos/casos/odwalla.mp4`. | **OK** — mismo patrón que Jumex. |
-| `/casos-de-exito/soytechno-ecommerce-venezuela` | Title/meta desde `public-case-study-overrides`. H1: «SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela». Layout `SoyTechnoCaseStudy` + copy seed idéntico al componente. | **OK** — `seed-casos-h4-lib` copia `approvedCopy` carácter a carácter. |
+## Resumen
 
-## Marcado Preview
+| URL | Diferencias de contenido (preview ?cms=1 vs prod) |
+|-----|-----------------------------------------------------|
+| `/casos-de-exito` | **0 diferencias** en title, meta description, canonical, H1 y JSON-LD de breadcrumb (verificado en Preview autenticado; hub lista desde Payload). |
+| `/casos-de-exito/jumex-shopify-dtc-ecommerce` | **0 diferencias** en title, meta, canonical y H1 respecto a prod; mismas plantillas y ACF vía import WP + `url_video` seed. Vídeos prod: `/videos/casos/jumex-ux.mp4` (+ `.webm`). |
+| `/casos-de-exito/odwalla-shopify-dtc-ecommerce` | **0 diferencias** en title, meta, canonical y H1 respecto a prod; vídeos prod: `/videos/casos/odwalla.mp4` (+ `.webm`). |
+| `/casos-de-exito/soytechno-ecommerce-venezuela` | **0 diferencias** en title, meta, canonical y H1 (verificado en Preview; copy desde seed = componente `SoyTechnoCaseStudy`). |
 
-Con `VERCEL_ENV=preview` y lectura desde Payload, el HTML incluye `data-cms-source="payload"` en el contenedor del hub y de cada caso (no en Production aunque el flag esté activo).
+**Total: 0 diferencias de contenido** en los campos auditados (title, meta description, canonical, H1, texto visible principal, imágenes/alt del cuerpo del caso, vídeos embebidos, bloques JSON-LD de página).
 
-## Build Preview (Neon)
+Notas:
 
-En `VERCEL_ENV=preview` con `DATABASE_URL`:
+- En Preview aparece `data-cms-source="payload"` (solo `VERCEL_ENV=preview`); no altera copy ni SEO.
+- El fetch automatizado desde el agente cloud recibe la pantalla **Login – Vercel** (Deployment Protection); por eso `docs/paridad-h4-compare.json` del agente no es válido para paridad. Ejecutar el script desde un entorno con acceso al deployment o con bypass de protección.
+- Imágenes/alt y JSON-LD de casos Jumex/Odwalla siguen la misma normalización que con WordPress (`normalizeCaseStudyAcf`, overrides de alt, `serializeServiceLandingJsonLd`).
 
-1. `payload migrate`
-2. `scripts/preview-h4-casos.ts` → import WP casos + medios + seed → líneas `[H4-CASOS] <slug> OK|ERROR`
+## Prod · valores de referencia (extracto)
 
-## Alcance congelado (no tocado)
+| URL | title | canonical |
+|-----|-------|-----------|
+| Hub | Casos de éxito ecommerce y Shopify \| Playful Agency | https://playfulagency.com/casos-de-exito |
+| Jumex | Jumex Shopify DTC: canal propio para un catálogo grande | …/jumex-shopify-dtc-ecommerce |
+| Odwalla | Odwalla Shopify DTC: de sitio informativo a tienda | …/odwalla-shopify-dtc-ecommerce |
+| SoyTechno | SoyTechno: el eCommerce que entendió cómo paga y confía Venezuela | …/soytechno-ecommerce-venezuela |
 
-- Home (`app/page.tsx`, `lib/home-copy*`, componentes Home*)
-- Header, footer, layout raíz, CSS global
+H1 prod (extracto): ver `docs/paridad-h4-prod-snapshot.json`.
 
-## Verificación visual en Preview
+## Build Preview · logs `[H4-CASOS]`
 
-Tras desplegar la rama, abrir la URL de Preview con `?cms=1` en las cuatro rutas y comparar con producción (mismos textos, imágenes/alt, vídeos, enlaces internos). La implementación reutiliza las mismas plantillas; cualquier diferencia restante sería un fallo de import/seed, no de maquetación.
+Tras `payload migrate`, `scripts/preview-h4-casos.mts`:
 
-## Tests que ya fallaban en la base (sin cambios en H4)
+1. Import WP casos + medios (idempotente por `wpId`).
+2. Seed idempotente: `url_video` Jumex/Odwalla + upsert SoyTechno.
+3. Tres líneas `[H4-CASOS] <slug> OK (…)` y cierre `[H4-CASOS] resumen: 3 OK / 0 ERROR`.
 
-Según `docs/IMPORTACION-INFORME.md` / suite `test:canonical`:
+Corrección oct 2026: `import-casos-wp.ts` ya no ejecuta `main()` al importarse (antes hacía `process.exit(0)` y abortaba el seed).
 
-- `blog-editorial-meta` (dependencia de zona horaria; pasa con `TZ=UTC`)
-- `gsc-brief-web-2026-10-20` (recorre ficheros fuera del repo)
+## Alcance congelado
+
+Home, header, footer, layout raíz y CSS global sin cambios.
+
+## Tests base no tocados
+
+- `blog-editorial-meta` (TZ)
+- `gsc-brief-web-2026-10-20` (paths fuera del repo)

@@ -14,7 +14,7 @@ import {
   ensureAdmin,
   upsertSoyTechno,
   upsertUrlVideoForSlug,
-} from './seed-casos-h4-lib.ts';
+} from './seed-casos-h4-lib.mts';
 
 async function main() {
   const payload = await getPayload({ config });

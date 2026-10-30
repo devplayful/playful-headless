@@ -5,6 +5,8 @@
  *   DATABASE_URI=postgres://... node scripts/import-casos-wp.ts
  */
 import { getPayload, type Payload } from 'payload';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import config from '../payload.config.ts';
 import { CASO_ACF_IMAGE_FIELDS } from '../cms/collections/casos-acf-fields.ts';
 
@@ -205,7 +207,10 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+if (fileURLToPath(import.meta.url) === invokedPath) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

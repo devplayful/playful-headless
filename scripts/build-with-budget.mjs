@@ -185,11 +185,18 @@ export function summarizePayloadMigrateOutput(output) {
 }
 
 export function summarizePreviewH4CasosOutput(output) {
-  const lines = String(output).split('\n');
-  const h4 = lines.filter((line) => line.includes('[H4-CASOS]'));
-  const ok = h4.filter((line) => /\bOK\b/.test(line)).length;
-  const err = h4.filter((line) => /\bERROR\b/.test(line)).length;
-  return { ok, err, lines: h4 };
+  const text = String(output);
+  const slugLines = [...text.matchAll(/^\[H4-CASOS\] ([a-z0-9-]+) (OK|ERROR)/gm)];
+  const ok = slugLines.filter((match) => match[2] === 'OK').length;
+  const err = slugLines.filter((match) => match[2] === 'ERROR').length;
+  const resumen = text.match(/\[H4-CASOS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  const lines = slugLines.map((match) => match[0]);
+  return {
+    ok: resumen ? Number(resumen[1]) : ok,
+    err: resumen ? Number(resumen[2]) : err,
+    lines,
+    resumenLine: resumen ? resumen[0] : null,
+  };
 }
 
 async function runGuardedCommandWithCapture(command, args, options = {}) {
@@ -243,21 +250,29 @@ export async function runPayloadPreviewH4Casos(env = process.env) {
   console.log('preview-h4-casos: ejecutando import WP casos + seed (Preview, DATABASE_URL presente)');
   const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
-    ['scripts/preview-h4-casos.ts'],
+    ['scripts/preview-h4-casos.mts'],
     {
       env,
       budgetMs: BUILD_BUDGET_MS,
       inactivityMs: BUILD_INACTIVITY_MS,
     },
   );
-  const summary = summarizePreviewH4CasosOutput(`${stdout}\n${stderr}`);
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewH4CasosOutput(combined);
   if (exitCode !== 0) {
     console.log(`preview-h4-casos ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
     return exitCode;
   }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
   console.log(
-    `preview-h4-casos OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} líneas [H4-CASOS])`,
+    `preview-h4-casos OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} casos [H4-CASOS])`,
   );
+  if (summary.lines.length !== 3 || summary.err !== 0) {
+    console.log('preview-h4-casos ERROR: se esperaban 3 líneas OK por slug');
+    return 1;
+  }
   return exitCode;
 }
 

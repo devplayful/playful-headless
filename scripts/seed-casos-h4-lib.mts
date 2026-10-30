@@ -9,6 +9,8 @@ import {
 } from '../cms/data/casos-url-video.ts';
 import { soyTechnoPayloadData, SOYTECHNO_SLUG } from '../cms/data/soytechno-caso.ts';
 
+export { SOYTECHNO_SLUG };
+
 export const H4_CASO_SLUGS = [
   'jumex-shopify-dtc-ecommerce',
   'odwalla-shopify-dtc-ecommerce',

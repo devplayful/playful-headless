@@ -46,7 +46,11 @@ test('feature flag is off by default and shared by Jumex, Odwalla and SoyTechno'
   assert.match(hubPage, /getAllCaseStudiesFromPayload/);
   assert.match(middleware, /cmsPreviewCasosHubPath/);
   assert.match(buildScript, /preview-h4-casos/);
-  assert.match(readFileSync(new URL('../scripts/preview-h4-casos.ts', import.meta.url), 'utf8'), /\[H4-CASOS\]/);
+  assert.match(readFileSync(new URL('../scripts/preview-h4-casos.mts', import.meta.url), 'utf8'), /\[H4-CASOS\]/);
+  assert.match(
+    readFileSync(new URL('../scripts/preview-h4-casos.mts', import.meta.url), 'utf8'),
+    /resumen:/,
+  );
 });
 
 test('seed data copies SoyTechno approvedCopy character-for-character from the component', () => {
@@ -63,7 +67,20 @@ test('seed data copies SoyTechno approvedCopy character-for-character from the c
   assert.ok(payload.acf.soytechno.seccion_f);
 });
 
-test('url_video values are the mp4s that production serves today', () => {
+test('summarizePreviewH4CasosOutput counts slug lines and resumen', async () => {
+  const { summarizePreviewH4CasosOutput } = await import('../scripts/build-with-budget.mjs');
+  const sample = `
+[H4-CASOS] import-wp OK (casos=2, medios=45, requests=4)
+[H4-CASOS] jumex-shopify-dtc-ecommerce OK (url_video actualizado)
+[H4-CASOS] odwalla-shopify-dtc-ecommerce OK (url_video actualizado)
+[H4-CASOS] soytechno-ecommerce-venezuela OK (soytechno actualizado)
+[H4-CASOS] resumen: 3 OK / 0 ERROR
+`;
+  const summary = summarizePreviewH4CasosOutput(sample);
+  assert.equal(summary.ok, 3);
+  assert.equal(summary.err, 0);
+  assert.equal(summary.lines.length, 3);
+});
   assert.equal(
     CASOS_URL_VIDEO['jumex-shopify-dtc-ecommerce'],
     'https://playfulagency.com/videos/casos/jumex-ux.mp4',
