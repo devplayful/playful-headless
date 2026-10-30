@@ -202,7 +202,7 @@ export async function runPayloadPreviewSeedPaginasB1(env = process.env) {
   console.log('cms:seed-paginas-b1: ejecutando (Preview, DATABASE_URL presente)');
   const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
-    ['--import', 'tsx', 'scripts/seed-paginas-b1.mts'],
+    ['scripts/seed-paginas-b1.mts'],
     { env, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
   );
   if (exitCode !== 0) {

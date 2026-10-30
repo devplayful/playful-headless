@@ -1,107 +1,96 @@
-# H6 — Inventario de páginas con contenido en código
+# H6 — Inventario de páginas (contenido y origen)
 
-Base: `cursor/cms-payload-fase1`. Ámbito: rutas bajo `app/(frontend)/` cuyo **cuerpo visible** está maquetado en React/TSX (no HTML Elementor de WordPress ni lectura Payload ya migrada).
+Base: `cursor/cms-payload-fase1`. Ámbito: todo `app/**/page.tsx` y `app/**/route.ts` que devuelve documento (HTML, XML o texto plano) al navegador.
 
-Metodología: revisión de `app/**/page.tsx`, `config/expected-routes.json`, consumo de `services/wordpress` y mapa de sitemap (`utils/apex-sitemap.ts`).
+Leyenda **origen del contenido**:
 
-## Resumen
+| Valor | Significado |
+|--------|-------------|
+| **Código** | Copy y maquetación en TSX/TS del repo |
+| **WordPress** | Cuerpo o listados vía `services/wordpress` / Elementor |
+| **Payload (ya)** | Flag o colección Payload ya cableada (H3/H4/B1) |
+| **Redirect** | Página mínima cuyo propósito es redirigir (cliente o middleware) |
+| **Técnica** | Admin, API JSON, SEO/sitemap, preview interno, QA |
 
-| Ámbito | Cantidad |
-|--------|----------|
-| Páginas candidatas H6 (inventario principal) | **14** |
-| Excluidas (Home, H3, H4, técnicas, layout) | **9 plantillas / grupos** |
-| Slugs servicio WP vía `[slug]` (H3, no código) | **8** |
-| Landings no publicadas (sin `page.tsx`, solo redirect) | **4** |
-| **Total referencias en plan H6** | **14 + 8 + 4 = 26** (≈22 centradas en migración de rutas con page propio) |
-
----
-
-## Excluidas (no entran en bloques H6)
-
-| Ruta / grupo | Archivo | Motivo |
-|--------------|---------|--------|
-| `/` | `app/(frontend)/page.tsx` | Home — PR #388 / `CMS_HOME_FROM_PAYLOAD` |
-| `/agencia-seo`, `/agencia-sem`, `/agencia-diseno-web`, `/agencia-e-commerce`, `/agencia-ux-ui`, `/marketing-internacional`, `/seo-expertos`, `/seo-vigo` | `app/(frontend)/[slug]/page.tsx` | Servicios H3 — Elementor/WP o `CMS_SERVICIOS_FROM_PAYLOAD` |
-| `/agencia-shopify` | `app/(frontend)/agencia-shopify/page.tsx` | Servicios H3 (React, incluida en seed servicios) |
-| `/casos-de-exito`, `/casos-de-exito/[slug]` | `app/(frontend)/casos-de-exito/**` | Casos H4 — `CMS_CASOS_FROM_PAYLOAD` |
-| `/blog`, `/blog/q`, `/blog/[...slug]` | `app/(frontend)/blog/**` | Posts y listados desde WordPress |
-| `/podcast`, `/podcast/[slug]` | `app/(frontend)/podcast/**` | CPT podcast en WordPress |
-| `/api/*`, `/cms-api/*`, `/admin/*` | varios | Rutas técnicas / Payload admin |
-| `/robots.txt`, `/sitemap.xml`, `/llms.txt`, `/llms-full.txt`, `/manifest.webmanifest`, iconos | `app/robots.ts`, etc. | SEO / assets técnicos |
-| `/firma/*` | `app/(frontend)/firma/**` | Firma de email (herramienta interna) |
-| `/gracias` | `app/(frontend)/gracias/page.tsx` | Post-submit técnico (noindex; tracker reserva) |
-| `/test-blog` | `app/(frontend)/test-blog/page.tsx` | QA interno (noindex) |
-| Layout raíz, header, footer, CSS global | `layout.tsx`, `components/Header*`, `Footer.tsx`, `globals.css` | Fuera de alcance H6 |
+Leyenda **H6**: ¿entra en la migración de «páginas que viven en código»?
 
 ---
 
-## Inventario principal (contenido en código)
+## Tabla exhaustiva
 
-| Ruta | Archivo | Indexable | Formulario / script |
-|------|---------|-----------|---------------------|
-| `/politica-de-privacidad` | `app/(frontend)/politica-de-privacidad/page.tsx` | Sí (`sitemap`, canonical) | No |
-| `/links` | `app/(frontend)/links/page.tsx` + `links/layout.tsx` | No (`robots: noindex`) | No |
-| `/nosotros` | `app/(frontend)/nosotros/page.tsx` | Sí | No (equipo vía WP API; cuerpo en TSX) |
-| `/contactar-agencia-de-marketing-digital` | `app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx` | Sí | **Sí** — formulario + reCAPTCHA → `/api/contact` |
-| `/reunion-playful` | `app/(frontend)/reunion-playful/page.tsx` | No (`noindex, follow`) | **Sí** — redirect cliente a widget reserva (GHL) |
-| `/not-found` (UI 404) | `app/(frontend)/not-found.tsx` | N/A | No (formulario búsqueda cliente) |
-| `global-not-found` | `app/global-not-found.tsx` | N/A | No |
+| Ruta (plantilla) | Archivo | Indexable | Formulario / script | Origen contenido | H6 |
+|------------------|---------|-----------|---------------------|------------------|-----|
+| `/` | `app/(frontend)/page.tsx` | Sí | No | Código (+ Yoast home vía WP en metadata) | **No** — Home PR #388 / `CMS_HOME_FROM_PAYLOAD` |
+| `/[slug]` (p. ej. `/agencia-seo`, `/marketing-internacional`, `/seo-vigo`, …) | `app/(frontend)/[slug]/page.tsx` | Sí (por slug) | No | WordPress (Elementor HTML) | **No** — H3 Servicios / `CMS_SERVICIOS_FROM_PAYLOAD` |
+| `/agencia-shopify` | `app/(frontend)/agencia-shopify/page.tsx` | Sí | No (CTAs enlace) | Código (+ casos/blog WP en secciones) | **No** — H3 (React en seed servicios) |
+| `/blog` | `app/(frontend)/blog/page.tsx` | Sí | No | WordPress (listado posts) | **No** — blog WP |
+| `/blog/q` | `app/(frontend)/blog/q/page.tsx` | Sí (query) | No | WordPress (misma vista listado) | **No** — blog WP |
+| `/blog/[...slug]` | `app/(frontend)/blog/[...slug]/page.tsx` | Sí (por URL) | No | WordPress (post + categorías) | **No** — blog WP |
+| `/casos-de-exito` | `app/(frontend)/casos-de-exito/page.tsx` | Sí | No | Código hub (+ cards WP) | **No** — H4 Casos |
+| `/casos-de-exito/[slug]` | `app/(frontend)/casos-de-exito/[slug]/page.tsx` | Sí (3 slugs públicos) | No | Código SoyTechno + WP/Jumex/Odwalla | **No** — H4 / `CMS_CASOS_FROM_PAYLOAD` |
+| `/contactar-agencia-de-marketing-digital` | `app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx` | Sí | **Sí** — formulario + reCAPTCHA → `/api/contact` | Código (+ carrusel casos WP) | **Sí** — bloque 4 (contacto) |
+| `/cms-pagina-b1-preview/[slug]` | `app/(frontend)/cms-pagina-b1-preview/[slug]/page.tsx` | N/A (rewrite Preview) | No | Payload (preview `?cms=1`) | **No** — infra H6 B1, no URL pública indexable |
+| `/politica-de-privacidad` | `app/(frontend)/politica-de-privacidad/page.tsx` | Sí | No | Código (B1 en Payload con flag apagado) | **Sí** — bloque 1 (**migrado** en PR #389) |
+| `/nosotros` | `app/(frontend)/nosotros/page.tsx` | Sí | No | Código (+ **equipo WP**; sin mover equipo en H6) | **Sí** — bloque 3 (copy TSX; equipo sigue WP) |
+| `/links` | `app/(frontend)/links/page.tsx` (+ `links/layout.tsx`) | No (`noindex`) | No | Código | **Sí** — bloque 2 (sin tocar en paralelo a eShow staging) |
+| `/reunion-playful` | `app/(frontend)/reunion-playful/page.tsx` | No (`noindex, follow`) | **Sí** — redirect cliente GHL | Redirect (+ metadata código) | **Sí** — bloque 4 (funnel) |
+| `/gracias` | `app/(frontend)/gracias/page.tsx` | No | **Sí** — `BookAppointmentTracker` | Código (post-submit) | **No** — página técnica funnel |
+| `/firma/alejandra-da-costa` | `app/(frontend)/firma/alejandra-da-costa/page.tsx` | No | No (copiar firma HTML) | Código | **No** — herramienta firma email |
+| `/podcast` | `app/(frontend)/podcast/page.tsx` | No (hub noindex) | No | WordPress (episodios CPT) | **No** — podcast WP |
+| `/podcast/[slug]` | `app/(frontend)/podcast/[slug]/page.tsx` | Sí (episodios publicados) | No | WordPress | **No** — podcast WP |
+| `/test-blog` | `app/(frontend)/test-blog/page.tsx` | No | No | WordPress (slug fijo prueba) | **No** — QA interno |
+| `/admin/[[...segments]]` | `app/(payload)/admin/[[...segments]]/page.tsx` | No | No | Payload Admin UI | **No** — CMS técnico |
+| UI 404 App Router | `app/(frontend)/not-found.tsx` | N/A | Búsqueda cliente | Código | **Sí** — bloque 5 (plantilla 404) |
+| UI 404 global | `app/global-not-found.tsx` | N/A | No | Código | **Sí** — bloque 5 (variante global) |
+| `/robots.txt` | `app/robots.ts` | N/A | No | Técnica (generado) | **No** |
+| `/sitemap.xml` | `app/sitemap.xml/route.ts` | N/A | No | Técnica (XML estático + blog) | **No** |
+| `/manifest.webmanifest` | `app/manifest.ts` | N/A | No | Técnica | **No** |
+| `/llms.txt` | `app/llms.txt/route.ts` | N/A | No | Técnica (texto) | **No** |
+| `/llms-full.txt` | `app/llms-full.txt/route.ts` | N/A | No | Técnica (texto) | **No** |
+| `/api/contact` | `app/api/contact/route.ts` | N/A | API POST | Técnica (backend) | **No** |
+| `/api/blog-posts` | `app/api/blog-posts/route.ts` | N/A | API GET | Técnica | **No** |
+| `/api/eshow-lista` | `app/api/eshow-lista/route.ts` | N/A | API | Técnica | **No** |
+| `/cms-api/[...slug]` | `app/(payload)/cms-api/[...slug]/route.ts` | N/A | API Payload | Técnica | **No** |
+| `/lp/*` | *(sin `page.tsx` en repo)* | — | — | WordPress histórico / redirects (`middleware`, mapas SEO) | **No** — no hay ruta App dedicada; no cuenta como fila de migración TSX |
 
-**Nota:** `/reunion-playful` y `/gracias` son funnel post-conversión; se migran en bloques posteriores solo si se congela copy en Payload (scripts de reserva siguen en cliente).
-
-### Landings solo en redirect (sin `page.tsx` propio)
-
-| Ruta | Indexable | Notas |
-|------|-----------|-------|
-| `/agencia-prestashop` | No (410/redirect) | `SITEMAP_UNPUBLISHED_PATHS` |
-| `/agencia-woocommerce` | No | idem |
-| `/pasarela-de-pagos-venezuela` | No | idem |
-| `/shopify-precios` | No | idem |
-
----
-
-## Bloques propuestos para H6 (3–6 páginas)
-
-### Bloque 1 — Legales (más simple) **← PR `cursor/payload-paginas-b1`**
-
-| Slug | Flag |
-|------|------|
-| `politica-de-privacidad` | `CMS_PAGINAS_B1_FROM_PAYLOAD` |
-
-### Bloque 2 — Bio / enlaces
-
-| Slug |
-|------|
-| `links` |
-
-### Bloque 3 — Sobre nosotros / equipo
-
-| Slug | Notas |
-|------|-------|
-| `nosotros` | Híbrido: copy en TSX + miembros WP (decidir si equipo queda fuera del doc Payload en H6) |
-
-### Bloque 4 — Contacto y funnel
-
-| Slug | Notas |
-|------|-------|
-| `contactar-agencia-de-marketing-digital` | Formulario + carrusel casos WP |
-| `reunion-playful` | Redirect script |
-| `gracias` | Opcional; página técnica |
-
-### Bloque 5 — Utilidades / errores
-
-| Slug |
-|------|
-| `not-found` (plantilla 404) |
+**Nota `/lp/*`:** no existe carpeta `app/(frontend)/lp`. Landings tipo landing-page WP viven en `[slug]` o en redirects (`utils/unpublished-landing-redirect-map.json`, etc.).
 
 ---
 
-## Orden sugerido
+## Totales (conteo de filas de la tabla)
 
-1. Bloque 1 (legales) — una página, sin formularios, copy estable.  
-2. Bloque 2 (`links`).  
-3. Bloque 3 (`nosotros`).  
-4. Bloque 4 (contacto + funnel).  
-5. Bloque 5 (404).
+| Concepto | Cantidad |
+|----------|----------|
+| **Filas totales** | **30** |
+| **H6 = Sí** (candidatas a migrar origen código → Payload) | **8** |
+| **H6 = No** | **22** |
 
-Servicios (H3), casos (H4) y Home siguen en sus flags/PRs; blog y podcast permanecen en WordPress hasta fases posteriores.
+Desglose **H6 = Sí** (bloques propuestos):
+
+| Bloque | Rutas | Estado |
+|--------|-------|--------|
+| **1 — Legales** | `politica-de-privacidad` | Migrado PR #389 (`CMS_PAGINAS_B1_FROM_PAYLOAD`) |
+| **2 — Bio** | `links` | Pendiente (no mezclar con eShow staging) |
+| **3 — Nosotros** | `nosotros` | Pendiente; **equipo permanece en WordPress** |
+| **4 — Contacto / funnel** | `contactar-agencia-de-marketing-digital`, `reunion-playful` | Pendiente |
+| **5 — Errores** | `not-found`, `global-not-found` | Pendiente |
+
+---
+
+## Excluidos de H6 (referencia rápida)
+
+- **Home** `/` — PR #388.
+- **Servicios** `[slug]` + `/agencia-shopify` — H3.
+- **Casos** `/casos-de-exito/*` — H4.
+- **Blog y podcast** — WordPress.
+- **Técnicas** — API, sitemap, robots, llms, admin Payload, preview B1, `gracias`, `test-blog`, `firma/*`.
+
+---
+
+## Orden sugerido de migración
+
+1. Bloque 1 — legales (**hecho** en B1).  
+2. Bloque 2 — `links` (cuando eShow staging esté cerrado).  
+3. Bloque 3 — `nosotros` (solo copy TSX; equipo WP).  
+4. Bloque 4 — contacto + reunión.  
+5. Bloque 5 — plantillas 404.

@@ -13,7 +13,7 @@ import {
   paginasB1SeedBodyForSlug,
   type PaginasB1Slug,
 } from '../cms/data/paginas-b1-payload.ts';
-import { paginaCodigoContentMatchesSeed } from '../lib/cms-paginas-b1.ts';
+import { paginaCodigoContentMatchesSeed } from '../lib/paginas-b1-seed-compare.ts';
 
 type BlockResult = 'OK' | 'ERROR';
 
