@@ -1,11 +1,16 @@
-import NotFoundView from '@/components/paginas-codigo/NotFoundView';
-import {
-  ensurePaginasB5NotFoundRender,
-  resolveNotFoundPayloadPreviewAttrs,
-} from '@/lib/cms-paginas-b5-not-found';
+import { isCmsPaginasB5FromPayload } from '@/lib/cms-paginas-b5-flag';
+import NotFoundPayloadShell from '@/components/paginas-codigo/NotFoundPayloadShell';
+import NotFoundFlagOffBranch from '@/components/paginas-codigo/NotFoundFlagOffBranch';
+import type { PaginasB5Slug } from '@/cms/data/paginas-b5-payload';
 
-export default async function NotFound() {
-  await ensurePaginasB5NotFoundRender('not-found');
-  const cmsSourceAttrs = await resolveNotFoundPayloadPreviewAttrs();
-  return <NotFoundView cmsSourceAttrs={cmsSourceAttrs} />;
+type NotFoundProps = {
+  /** Cuando global-not-found verifica el doc `global-not-found` con flag ON. */
+  payloadSlug?: PaginasB5Slug;
+};
+
+export default function NotFound({ payloadSlug = 'not-found' }: NotFoundProps) {
+  if (isCmsPaginasB5FromPayload()) {
+    return <NotFoundPayloadShell slug={payloadSlug} />;
+  }
+  return <NotFoundFlagOffBranch />;
 }

@@ -11,7 +11,7 @@ const client = readFileSync(new URL('../app/(frontend)/not-found-client.tsx', im
 
 test('not-found is a server component that already paints the existing H1', () => {
   assert.doesNotMatch(notFound, /^['"]use client['"]/m);
-  assert.match(notFound, /NotFoundView/);
+  assert.match(notFound, /NotFoundFlagOffBranch|NotFoundView/);
   assert.match(notFoundView, /<h1 className="text-center mb-12 md:mb-16"/);
   assert.match(notFoundView, /Página no encontrada/);
   assert.match(notFoundView, /Parece que esta página se perdió/);
