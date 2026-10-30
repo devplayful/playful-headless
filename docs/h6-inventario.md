@@ -61,9 +61,9 @@ Leyenda **H6**: ¿entra en la migración de «páginas que viven en código»?
 
 | Concepto | Cantidad |
 |----------|----------|
-| **Filas totales** | **30** |
-| **H6 = Sí** (candidatas a migrar origen código → Payload) | **8** |
-| **H6 = No** | **22** |
+| **Filas totales** | **32** |
+| **H6 = Sí** (candidatas a migrar origen código → Payload) | **7** |
+| **H6 = No** | **25** |
 
 Desglose **H6 = Sí** (bloques propuestos):
 

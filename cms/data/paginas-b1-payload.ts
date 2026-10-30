@@ -39,6 +39,7 @@ export function politicaPrivacidadPayloadBody() {
     yoast: {
       title: POLITICA_PRIVACIDAD_SEO.title,
       description: POLITICA_PRIVACIDAD_SEO.description,
+      canonical: 'https://playfulagency.com/politica-de-privacidad',
     },
   };
 }

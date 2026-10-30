@@ -4,6 +4,7 @@ import { hasRuntimeDatabase } from './cms-database.ts';
 import { shouldRenderPaginasB1FromPayload } from './cms-paginas-b1-flag.ts';
 import { isPaginasB1Slug, type PaginasB1Slug } from '../cms/data/paginas-b1-payload.ts';
 import { paginaCodigoContentMatchesSeed as paginaCodigoContentMatchesSeedCore } from './paginas-b1-seed-compare.ts';
+import type { PaginaCodigoYoastLike } from './paginas-codigo/politica-privacidad-metadata.ts';
 
 export type PaginaCodigoDoc = {
   id: number | string;
@@ -11,6 +12,7 @@ export type PaginaCodigoDoc = {
   slug: string;
   bloque: string;
   content: Record<string, unknown>;
+  yoast?: PaginaCodigoYoastLike;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -21,12 +23,27 @@ export function normalizePaginaCodigoDoc(doc: unknown): PaginaCodigoDoc | null {
   if (!isRecord(doc)) return null;
   const slug = typeof doc.slug === 'string' ? doc.slug : '';
   if (!slug) return null;
+  const yoastRaw = isRecord(doc.yoast) ? doc.yoast : null;
+  const yoast: PaginaCodigoYoastLike | undefined = yoastRaw
+    ? {
+        title: typeof yoastRaw.title === 'string' ? yoastRaw.title : undefined,
+        description:
+          typeof yoastRaw.description === 'string' ? yoastRaw.description : undefined,
+        canonical:
+          typeof yoastRaw.canonical === 'string' ? yoastRaw.canonical : undefined,
+        ogTitle: typeof yoastRaw.ogTitle === 'string' ? yoastRaw.ogTitle : undefined,
+        ogDescription:
+          typeof yoastRaw.ogDescription === 'string' ? yoastRaw.ogDescription : undefined,
+        ogImage: typeof yoastRaw.ogImage === 'string' ? yoastRaw.ogImage : undefined,
+      }
+    : undefined;
   return {
     id: doc.id as number | string,
     titulo: typeof doc.titulo === 'string' ? doc.titulo : slug,
     slug,
     bloque: typeof doc.bloque === 'string' ? doc.bloque : '',
     content: isRecord(doc.content) ? doc.content : {},
+    yoast,
   };
 }
 

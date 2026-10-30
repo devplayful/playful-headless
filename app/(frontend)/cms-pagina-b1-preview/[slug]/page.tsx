@@ -7,11 +7,34 @@ import {
 } from '@/lib/cms-paginas-b1';
 import { paginasB1SeedBodyForSlug, isPaginasB1Slug } from '@/cms/data/paginas-b1-payload';
 import { paginasB1PayloadPreviewAttrs } from '@/lib/cms-paginas-b1-flag';
+import { generatePoliticaPrivacidadMetadata } from '@/lib/paginas-codigo/politica-privacidad-metadata';
 
 export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
   return [{ slug: POLITICA_PRIVACIDAD_SLUG }];
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  if (process.env.VERCEL_ENV !== 'preview') {
+    notFound();
+  }
+  const { slug } = await params;
+  if (!isPaginasB1Slug(slug)) {
+    notFound();
+  }
+  if (slug === POLITICA_PRIVACIDAD_SLUG) {
+    const expected = paginasB1SeedBodyForSlug(slug);
+    const doc = await findPaginaCodigoBySlug(slug, { renderFromPayload: true });
+    if (doc && paginaCodigoContentMatchesSeed(doc, expected.content)) {
+      return generatePoliticaPrivacidadMetadata(doc.yoast);
+    }
+  }
+  return generatePoliticaPrivacidadMetadata();
 }
 
 export default async function CmsPaginaB1PreviewPage({
