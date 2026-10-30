@@ -4,10 +4,7 @@ import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
 import ElementorPageContent from '@/components/ElementorPageContent';
 
 export const revalidate = 300;
-// Unknown slugs must not enter this page: generateMetadata+notFound()
-// still ships the empty __next_error__ shell. dynamicParams=false makes
-// a miss the same prerendered 404 as /a/b/c, with the H1 in the HTML.
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 const SERVICE_SLUGS = [
   'agencia-seo',
@@ -27,13 +24,6 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   const slug = resolved.slug;
-  // notFound() here (not only in the page) so Next paints app/not-found.tsx
-  // as HTML. A successful generateMetadata + later notFound() leaves the
-  // empty __next_error__ shell.
-  const page = await getPageBySlug(slug);
-  if (!page) {
-    notFound();
-  }
   const url = canonicalForPath(`/${slug}`);
   const metadata = await getPageMetadataBySlug(slug);
   return {
