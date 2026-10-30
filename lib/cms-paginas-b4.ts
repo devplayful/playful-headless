@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import { hasRuntimeDatabase } from './cms-database.ts';
@@ -47,15 +48,16 @@ export function normalizePaginaCodigoDoc(doc: unknown): PaginaCodigoDoc | null {
   };
 }
 
-export async function findPaginaCodigoBySlug(
+export const findPaginaCodigoBySlug = cache(async function findPaginaCodigoBySlug(
   slug: string,
   options?: { renderFromPayload?: boolean },
 ): Promise<PaginaCodigoDoc | null> {
   const enabled = options?.renderFromPayload ?? isCmsPaginasB4FromPayload();
   if (!enabled || !hasRuntimeDatabase()) return null;
   if (!isPaginasB4Slug(slug)) return null;
+  let payload: Awaited<ReturnType<typeof getPayload>> | null = null;
   try {
-    const payload = await getPayload({ config });
+    payload = await getPayload({ config });
     const found = await payload.find({
       collection: 'paginas-codigo',
       where: { slug: { equals: slug } },
@@ -65,8 +67,12 @@ export async function findPaginaCodigoBySlug(
     return normalizePaginaCodigoDoc(found.docs[0]);
   } catch {
     return null;
+  } finally {
+    if (payload) {
+      await payload.destroy().catch(() => undefined);
+    }
   }
-}
+});
 
 export function paginaCodigoContentMatchesSeed(
   doc: PaginaCodigoDoc,

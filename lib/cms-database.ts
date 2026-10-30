@@ -52,5 +52,5 @@ export function shouldRunPreviewMigrate(
 export function shouldRunPreviewPaginasB4Seed(
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
-  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+  return hasRuntimeDatabase(env) && env.VERCEL_ENV === 'preview';
 }

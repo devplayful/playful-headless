@@ -15,11 +15,7 @@ import { paginasB4PayloadPreviewAttrs } from '@/lib/cms-paginas-b4-flag';
 import { generateContactoMetadata } from '@/lib/paginas-codigo/contacto-metadata';
 import { generateReunionPlayfulMetadata } from '@/lib/paginas-codigo/reunion-playful-metadata';
 
-export const dynamic = 'force-static';
-
-export async function generateStaticParams() {
-  return [{ slug: CONTACT_SLUG }, { slug: REUNION_PLAYFUL_SLUG }];
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,

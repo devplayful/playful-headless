@@ -66,6 +66,8 @@ test('páginas públicas B4 sin diff respecto a fase1', () => {
 });
 
 test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () => {
+  assert.match(previewPage, /export const dynamic = 'force-dynamic'/);
+  assert.doesNotMatch(previewPage, /generateStaticParams/);
   assert.match(previewPage, /ContactPageClient/);
   assert.match(previewPage, /ReunionPlayfulRedirect/);
   assert.match(previewPage, /paginasB4PayloadPreviewAttrs/);
