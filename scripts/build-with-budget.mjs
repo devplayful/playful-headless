@@ -186,7 +186,9 @@ export function summarizePayloadMigrateOutput(output) {
 
 export function summarizePreviewH4CasosOutput(output) {
   const text = String(output);
-  const slugLines = [...text.matchAll(/^\[H4-CASOS\] ([a-z0-9-]+) (OK|ERROR)/gm)];
+  const slugPattern =
+    /^\[H4-CASOS\] (jumex-shopify-dtc-ecommerce|odwalla-shopify-dtc-ecommerce|soytechno-ecommerce-venezuela) (OK|ERROR)/gm;
+  const slugLines = [...text.matchAll(slugPattern)];
   const ok = slugLines.filter((match) => match[2] === 'OK').length;
   const err = slugLines.filter((match) => match[2] === 'ERROR').length;
   const resumen = text.match(/\[H4-CASOS\] resumen: (\d+) OK \/ (\d+) ERROR/);

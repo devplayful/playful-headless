@@ -81,6 +81,8 @@ test('summarizePreviewH4CasosOutput counts slug lines and resumen', async () => 
   assert.equal(summary.err, 0);
   assert.equal(summary.lines.length, 3);
 });
+
+test('url_video values are the mp4s that production serves today', () => {
   assert.equal(
     CASOS_URL_VIDEO['jumex-shopify-dtc-ecommerce'],
     'https://playfulagency.com/videos/casos/jumex-ux.mp4',
