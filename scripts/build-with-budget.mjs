@@ -1,10 +1,16 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
+import {
+  getPayloadConnectionString,
+  hasDatabaseUrl,
+  hasRuntimeDatabase,
+  shouldRunPreviewMigrate,
+  shouldRunPreviewPaginasB4Seed,
+} from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
-export const BUILD_INACTIVITY_MS = 180_000;
+export const BUILD_INACTIVITY_MS = 90_000;
 export const BUILD_BUDGET_MS = 300_000;
 export const FORCE_KILL_GRACE_MS = 5_000;
 
@@ -142,7 +148,98 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate };
+export { shouldRunPreviewMigrate, shouldRunPreviewPaginasB4Seed };
+
+function redactSecrets(text) {
+  return String(text).replace(/postgres(?:ql)?:\/\/[^\s]+/gi, 'postgres://***');
+}
+
+function shortErrorMessage(stdout, stderr, exitCode) {
+  const combined = redactSecrets(`${stderr}\n${stdout}`).replace(/\s+/g, ' ').trim();
+  if (!combined) return `exit code ${exitCode}`;
+  return combined.length > 180 ? `${combined.slice(0, 177)}…` : combined;
+}
+
+export function summarizeSeedPaginasB4Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B4\] (?!resumen:).+ OK(?:\s|$)/gm) ?? [];
+  const errLines = text.match(/^\[H6-B4\] (?!resumen:).+ ERROR(?:\s|$)/gm) ?? [];
+  const resumen = text.match(/\[H6-B4\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+async function runGuardedCommandWithCapture(command, args, options = {}) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await runGuardedCommand(command, args, {
+    ...options,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    onSpawn(child) {
+      options.onSpawn?.(child);
+      child.stdout?.on('data', (chunk) => {
+        stdout += chunk.toString();
+        process.stdout.write(chunk);
+      });
+      child.stderr?.on('data', (chunk) => {
+        stderr += chunk.toString();
+        process.stderr.write(chunk);
+      });
+    },
+  });
+  return { exitCode, stdout, stderr };
+}
+
+function seedPaginasB4ChildEnv(env = process.env) {
+  const childEnv = { ...env };
+  if (!hasDatabaseUrl(childEnv) && hasRuntimeDatabase(childEnv)) {
+    childEnv.DATABASE_URL = getPayloadConnectionString(childEnv);
+  }
+  return childEnv;
+}
+
+function echoH6B4LogLines(combinedOutput) {
+  for (const line of String(combinedOutput).split(/\r?\n/)) {
+    if (line.includes('[H6-B4]')) console.log(line);
+  }
+}
+
+export async function runPayloadPreviewSeedPaginasB4(env = process.env) {
+  if (!shouldRunPreviewPaginasB4Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b4: omitido (requiere VERCEL_ENV=preview y Postgres en runtime; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b4: ejecutando (Preview, Postgres presente)');
+  const childEnv = seedPaginasB4ChildEnv(env);
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b4.mts'],
+    { env: childEnv, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  echoH6B4LogLines(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b4 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB4Output(combined);
+  if (!summary || summary.err > 0 || summary.ok < 2 || summary.slugOkCount < 2) {
+    console.log('seed-paginas-b4 ERROR: se esperaban [H6-B4] contactar-agencia-de-marketing-digital y reunion-playful OK');
+    console.log('[H6-B4] resumen: build rechazado (seed incompleto o sin líneas OK)');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b4 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B4])`,
+  );
+  return 0;
+}
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
@@ -165,6 +262,8 @@ export async function runPayloadPreviewMigrate(env = process.env) {
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const seedCode = await runPayloadPreviewSeedPaginasB4();
+  if (seedCode !== 0) return seedCode;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

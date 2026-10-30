@@ -47,3 +47,10 @@ export function shouldRunPreviewMigrate(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV !== 'production';
 }
+
+/** Preview: seed H6 bloque 4 (contacto + reunión). */
+export function shouldRunPreviewPaginasB4Seed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasRuntimeDatabase(env) && env.VERCEL_ENV === 'preview';
+}
