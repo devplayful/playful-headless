@@ -18,6 +18,19 @@ const politicaPage = readFileSync(
   'utf8',
 );
 
+const previewPage = readFileSync(
+  new URL('../app/(frontend)/cms-pagina-b1-preview/[slug]/page.tsx', import.meta.url),
+  'utf8',
+);
+
+const politicaMetadataHelper = readFileSync(
+  new URL('../lib/paginas-codigo/politica-privacidad-metadata.ts', import.meta.url),
+  'utf8',
+);
+
+const { POLITICA_PRIVACIDAD_SEO } = await import('../cms/data/paginas-b1-payload.ts');
+const { canonicalForPath } = await import('../utils/canonical.ts');
+
 test('CMS_PAGINAS_B1_FROM_PAYLOAD apagado por defecto', () => {
   assert.equal(isCmsPaginasB1FromPayload({}), false);
   assert.equal(isCmsPaginasB1FromPayload({ [CMS_PAGINAS_B1_FROM_PAYLOAD_ENV]: 'false' }), false);
@@ -51,4 +64,28 @@ test('seed B1 define un slug legal con checksum', () => {
   assert.equal(body.slug, 'politica-de-privacidad');
   assert.equal(body.bloque, 'b1');
   assert.match(String(body.content.checksum), /^[a-f0-9]{64}$/);
+  assert.equal(
+    body.yoast.canonical,
+    'https://playfulagency.com/politica-de-privacidad',
+  );
+});
+
+test('metadatos públicos de política (canonical URL pública, no preview)', () => {
+  const publicCanonical = canonicalForPath('/politica-de-privacidad');
+  assert.equal(POLITICA_PRIVACIDAD_SEO.title, 'Política de Privacidad | Playful Agency');
+  assert.equal(
+    POLITICA_PRIVACIDAD_SEO.description,
+    'Conoce cómo protegemos tu información personal en Playful Agency. Política de privacidad actualizada.',
+  );
+  assert.equal(publicCanonical, 'https://playfulagency.com/politica-de-privacidad');
+  assert.match(politicaMetadataHelper, /buildPoliticaPrivacidadMetadata/);
+  assert.match(politicaMetadataHelper, /canonicalForPath\(POLITICA_PRIVACIDAD_PUBLIC_PATH\)/);
+  assert.match(politicaMetadataHelper, /twitterFromOpenGraph\(ogTitle, ogDescription\)/);
+});
+
+test('Preview B1 exporta generateMetadata reutilizando el helper de política', () => {
+  assert.match(previewPage, /export async function generateMetadata/);
+  assert.match(previewPage, /generatePoliticaPrivacidadMetadata/);
+  assert.match(politicaPage, /generatePoliticaPrivacidadMetadata/);
+  assert.doesNotMatch(previewPage, /cms-pagina-b1-preview.*canonical/i);
 });
