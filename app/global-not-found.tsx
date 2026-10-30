@@ -9,12 +9,14 @@
 import type { Metadata } from 'next';
 import RootLayout, { generateMetadata as layoutMetadata } from './(frontend)/layout';
 import NotFound from './(frontend)/not-found';
+import { ensurePaginasB5NotFoundRender } from '@/lib/cms-paginas-b5-not-found';
 
 export async function generateMetadata(): Promise<Metadata> {
   return layoutMetadata();
 }
 
-export default function GlobalNotFound() {
+export default async function GlobalNotFound() {
+  await ensurePaginasB5NotFoundRender('global-not-found');
   return (
     <RootLayout>
       <NotFound />
