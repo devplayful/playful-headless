@@ -15,6 +15,7 @@ import {
 } from '../lib/elementor-static-asset-urls.ts';
 import {
   ELEMENTOR_CORE_STYLESHEETS,
+  collectElementorStylesheetIds,
   elementorPageStylesheetUrls,
 } from '../lib/elementor-stylesheet-urls.ts';
 
@@ -143,13 +144,17 @@ async function drainPending(maxRounds = 12): Promise<void> {
   }
 }
 
-function collectStylesheetIds(html: string, pageId: number): number[] {
-  const ids = new Set<number>([pageId]);
-  for (const match of Array.from(html.matchAll(/elementor-post-(\d+)/g))) {
-    const id = Number(match[1]);
-    if (!Number.isNaN(id)) ids.add(id);
+function collectUploadAssetUrls(html: string): string[] {
+  const urls = new Set<string>();
+  const decoded = html.replace(/&quot;/g, '"').replace(/\\\//g, '/');
+  for (const match of Array.from(
+    decoded.matchAll(
+      /https?:\/\/endpoint\.playfulagency\.com\/wp-content\/uploads\/[^\s"'<>)]+\.(json|woff2?|ttf|eot|otf)/gi,
+    ),
+  )) {
+    urls.add(match[0].split('?')[0]);
   }
-  return Array.from(ids);
+  return Array.from(urls);
 }
 
 async function wpPage(slug: string): Promise<{ id: number; html: string } | null> {
@@ -171,8 +176,12 @@ async function collectSeedUrls(): Promise<string[]> {
   for (const slug of ELEMENTOR_SERVICE_PAGE_SLUGS) {
     const page = await wpPage(slug);
     if (!page) continue;
-    const sheets = elementorPageStylesheetUrls(page.id, collectStylesheetIds(page.html, page.id));
+    const sheets = elementorPageStylesheetUrls(
+      page.id,
+      collectElementorStylesheetIds(page.html, page.id),
+    );
     for (const s of sheets) urls.add(s.split('?')[0]);
+    for (const j of collectUploadAssetUrls(page.html)) urls.add(j);
   }
   return Array.from(urls).sort();
 }

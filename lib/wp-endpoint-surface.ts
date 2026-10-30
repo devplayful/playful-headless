@@ -51,6 +51,36 @@ export function rewriteElementorScriptUrlForPreview(
   return rewriteEndpointAssetUrlForPreview(src, env);
 }
 
+const ENDPOINT_URL_IN_TEXT_RE =
+  /https?:\/\/endpoint\.playfulagency\.com[^\s"'<>\\)]*/gi;
+
+const JSON_ESCAPED_ENDPOINT_URL_RE =
+  /https:\\\/\\\/endpoint\.playfulagency\.com\\\/[^&]+?\.json(?=&quot;)/gi;
+
+function unescapeJsonSlashes(value: string): string {
+  return value.replace(/\\\//g, '/');
+}
+
+function escapeJsonSlashes(value: string): string {
+  return value.replace(/\//g, '\\/');
+}
+
+/** Preview H2: reescribe URLs endpoint embebidas en HTML (p. ej. Lottie en data-settings). */
+export function rewriteEndpointUrlsInHtmlForPreview(
+  html: string,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  if (!html || !isBlobImagesEnabled(env)) return html;
+  let out = html.replace(ENDPOINT_URL_IN_TEXT_RE, (url) => rewriteEndpointAssetUrlForPreview(url, env));
+  out = out.replace(JSON_ESCAPED_ENDPOINT_URL_RE, (escaped) => {
+    const plain = unescapeJsonSlashes(escaped);
+    const resolved = rewriteEndpointAssetUrlForPreview(plain, env);
+    if (resolved === plain) return escaped;
+    return escapeJsonSlashes(resolved);
+  });
+  return out;
+}
+
 export function stripWtiLikeTrackingPixels(html: string, env: NodeJS.ProcessEnv = process.env): string {
   if (!html || !isBlobImagesEnabled(env)) return html;
   return html.replace(/<img\b[^>]*>/gi, (tag) => (WTI_PIXEL_RE.test(tag) ? '' : tag));

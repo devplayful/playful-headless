@@ -1,7 +1,7 @@
 {
-  "generated": "2026-10-30T19:50:50.254Z",
-  "total": 77,
-  "ok": 76,
+  "generated": "2026-10-30T20:29:27.330Z",
+  "total": 81,
+  "ok": 80,
   "http404": 1,
   "items": [
     {
@@ -292,6 +292,13 @@
       "kind": "js"
     },
     {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
+      "publicPath": "/wp-static/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
+      "httpStatus": 200,
+      "bytes": 5039,
+      "kind": "other"
+    },
+    {
       "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-8.css",
       "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-8.css",
       "httpStatus": 200,
@@ -317,6 +324,27 @@
       "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-83849.css",
       "httpStatus": 200,
       "bytes": 65036,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84478.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84478.css",
+      "httpStatus": 200,
+      "bytes": 3972,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84514.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84514.css",
+      "httpStatus": 200,
+      "bytes": 4711,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84545.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84545.css",
+      "httpStatus": 200,
+      "bytes": 3290,
       "kind": "css"
     },
     {

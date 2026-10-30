@@ -29,6 +29,24 @@ export const ELEMENTOR_CORE_STYLESHEETS = [
   `${WP_ENDPOINT_ORIGIN}/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css`,
 ];
 
+/** IDs con hoja post-{id}.css (plantillas globales, data-elementor-id, etc.). */
+export function collectElementorStylesheetIds(html: string, pageId: number): number[] {
+  const ids = new Set<number>([pageId]);
+  const patterns = [
+    /data-elementor-id=["'](\d+)["']/gi,
+    /elementor-post-(\d+)/g,
+    /\belementor elementor-(\d+)\b/g,
+  ] as const;
+  for (const re of patterns) {
+    re.lastIndex = 0;
+    for (const match of Array.from(html.matchAll(re))) {
+      const id = Number(match[1]);
+      if (!Number.isNaN(id)) ids.add(id);
+    }
+  }
+  return Array.from(ids);
+}
+
 export function elementorPageStylesheetUrls(pageId: number, stylesheetIds: number[]): string[] {
   const ids = Array.from(new Set([8, pageId, ...stylesheetIds]));
   const pageSheets = ids

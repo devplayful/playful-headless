@@ -1,0 +1,53 @@
+.elementor-84514 .elementor-element.elementor-element-647a642:not(.elementor-motion-effects-element-type-background), .elementor-84514 .elementor-element.elementor-element-647a642 > .elementor-motion-effects-container > .elementor-motion-effects-layer{background-color:#FFDBDB;background-image:url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png");}.elementor-84514 .elementor-element.elementor-element-647a642{transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;}.elementor-84514 .elementor-element.elementor-element-647a642 > .elementor-background-overlay{transition:background 0.3s, border-radius 0.3s, opacity 0.3s;}.elementor-84514 .elementor-element.elementor-element-dd929a9{--spacer-size:120px;}.elementor-84514 .elementor-element.elementor-element-e92c878 > .elementor-widget-container{margin:0px 0px 53px 0px;}.elementor-84514 .elementor-element.elementor-element-e92c878 .master-heading .main-heading{max-width:970px;}.elementor-84514 .elementor-element.elementor-element-e92c878 .master-heading .sub-heading{color:#000000;font-size:18px;}.elementor-84514 .elementor-element.elementor-element-e92c878 .master-heading h2{font-family:"Paytone One", Montserrat;font-size:48px;font-weight:400;line-height:56px;letter-spacing:-2px;}.elementor-84514 .elementor-element.elementor-element-a330f72 .elementor-column-gap-custom .elementor-column > .elementor-element-populated{padding:10px;}.elementor-84514 .elementor-element.elementor-element-a330f72{padding:0px 0px 0px 0px;}.elementor-84514 .elementor-element.elementor-element-45525c1 > .elementor-element-populated{margin:0px 0px 0px 0px;--e-column-margin-right:0px;--e-column-margin-left:0px;padding:0px 0px 0px 0px;}.elementor-84514 .elementor-element.elementor-element-f8402e3 .master-news .headline-2{color:#453A53;}.elementor-84514 .elementor-element.elementor-element-f8402e3 .master-news .desc{color:#453A53;}.elementor-84514 .elementor-element.elementor-element-7176339 > .elementor-element-populated{margin:-3px 0px 0px 0px;--e-column-margin-right:0px;--e-column-margin-left:0px;padding:0px 0px 0px 0px;}.elementor-84514 .elementor-element.elementor-element-cea8fe8 > .elementor-widget-container{margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;border-radius:8px 8px 8px 8px;}.elementor-84514 .elementor-element.elementor-element-0088077{--spacer-size:120px;}@media(max-width:1024px){.elementor-84514 .elementor-element.elementor-element-dd929a9{--spacer-size:100px;}.elementor-84514 .elementor-element.elementor-element-e92c878 > .elementor-widget-container{margin:0px 0px 30px 0px;}.elementor-84514 .elementor-element.elementor-element-0088077{--spacer-size:100px;}}@media(max-width:767px){.elementor-84514 .elementor-element.elementor-element-dd929a9{--spacer-size:80px;}.elementor-84514 .elementor-element.elementor-element-f8402e3 > .elementor-widget-container{margin:0px 0px 30px 0px;}.elementor-84514 .elementor-element.elementor-element-0088077{--spacer-size:80px;}}@media(min-width:768px){.elementor-84514 .elementor-element.elementor-element-45525c1{width:66.667%;}.elementor-84514 .elementor-element.elementor-element-7176339{width:33.333%;}}@media(max-width:1024px) and (min-width:768px){.elementor-84514 .elementor-element.elementor-element-45525c1{width:50%;}.elementor-84514 .elementor-element.elementor-element-7176339{width:50%;}}/* Start custom CSS for mae-news-carousel, class: .elementor-element-f8402e3 */.playful-post-home-dos .master-news {
+    border-radius: 8px !important;
+    min-height: 620px !important;
+    max-height: 620px !important;
+}
+
+.playful-post-home-dos .post-meta-categories {
+    background: #E9D7FF;
+    color: #453A53 !important;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.post-meta-categories:after {
+    position: absolute;
+    top: 4px !important;
+    left: 0px;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--e-global-color-pollock_accent);
+}
+
+.playful-post-home-dos .post-meta-categories a{
+    color: #886cff !important;
+}/* End custom CSS */
+/* Start custom CSS for wp-widget-widget_news_post, class: .elementor-element-cea8fe8 */.playful-post-home .clearfix , .playful-post-home-dos .master-news{
+    background: white !important;
+    padding: 10px;
+}
+
+.playful-post-home .recent-news {
+    border-radius: 8px !important;
+}
+
+.playful-post-home h3 a{
+    font-size: 18px !important;
+    line-height: 26px !important;
+}
+
+
+
+@media only screen and (min-width: 768px) {
+.playful-post-home .post-meta {
+    width: 49% !important
+}
+}
+
+.playful-post-home .entry-date,.playful-post-home  .name{
+    font-family: 'DM Sans';
+    color: #141414 !important;
+    font-weight: bold;
+}/* End custom CSS */

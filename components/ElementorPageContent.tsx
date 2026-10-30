@@ -192,9 +192,10 @@ export default function ElementorPageContent({
         <style id="playful-ecom-hero-cls">{ECOM_HERO_CRITICAL_CSS}</style>
       ) : null}
       <link rel="stylesheet" href={FONTS} />
-      {allStylesheets.map((href) => (
-        <link key={href} rel="stylesheet" href={stylesheetHref(href)} />
-      ))}
+      {allStylesheets.map((href) => {
+        const resolved = stylesheetHref(href);
+        return <link key={resolved} rel="stylesheet" href={resolved} />;
+      })}
       <div className={`${styles.page} playful-wp-page playful-servicios-page elementor-kit-8`} data-playful-page={pageId}>
         <div className="playful-wp-elementor" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
       </div>

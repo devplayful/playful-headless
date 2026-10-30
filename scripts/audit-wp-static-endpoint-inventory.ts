@@ -9,6 +9,7 @@ import {
   WP_ENDPOINT_ORIGIN,
 } from '../lib/elementor-static-asset-urls.ts';
 import {
+  collectElementorStylesheetIds,
   elementorPageStylesheetUrls,
   elementorStylesheetLinkHtml,
 } from '../lib/elementor-stylesheet-urls.ts';
@@ -24,15 +25,6 @@ import inventory from '../docs/wp-static-assets-inventory.json' with { type: 'js
 const AUDIT_ENV = { ...process.env, CMS_BLOB_IMAGES: '1' } as NodeJS.ProcessEnv;
 const WP_JSON = `${WP_ENDPOINT_ORIGIN}/wp-json`;
 const OUT = path.join(process.cwd(), 'docs/wp-static-endpoint-audit.json');
-
-function collectStylesheetIds(html: string, pageId: number): number[] {
-  const ids = new Set<number>([pageId]);
-  for (const match of Array.from(html.matchAll(/elementor-post-(\d+)/g))) {
-    const id = Number(match[1]);
-    if (!Number.isNaN(id)) ids.add(id);
-  }
-  return Array.from(ids);
-}
 
 async function wpPage(slug: string) {
   const res = await fetch(`${WP_JSON}/wp/v2/pages?slug=${slug}&_fields=id,content`, {
@@ -63,7 +55,10 @@ async function main() {
   for (const slug of ELEMENTOR_SERVICE_PAGE_SLUGS) {
     const page = await wpPage(slug);
     if (!page) continue;
-    const sheets = elementorPageStylesheetUrls(page.id, collectStylesheetIds(page.content.rendered, page.id));
+    const sheets = elementorPageStylesheetUrls(
+      page.id,
+      collectElementorStylesheetIds(page.content.rendered, page.id),
+    );
     allCssBefore.push(...sheets);
     allCssAfter.push(...sheets.map((u) => rewriteEndpointAssetUrlForPreview(u, AUDIT_ENV)));
   }

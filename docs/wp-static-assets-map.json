@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-30T19:50:50.253Z",
+  "generated": "2026-10-30T20:29:27.330Z",
   "origin": "https://endpoint.playfulagency.com",
   "map": {
     "https://endpoint.playfulagency.com/wp-content/plugins/elementor-pro/assets/css/widget-form.min.css": "/wp-static/wp-content/plugins/elementor-pro/assets/css/widget-form.min.css",
@@ -43,10 +43,14 @@
     "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/magnific.popup.js": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/magnific.popup.js",
     "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/parallax-scroll.js": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/parallax-scroll.js",
     "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/waitforimages.js": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/waitforimages.js",
+    "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/system-regular-161-trending-flat.json": "/wp-static/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-8.css": "/wp-static/wp-content/uploads/elementor/css/post-8.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83510.css": "/wp-static/wp-content/uploads/elementor/css/post-83510.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83848.css": "/wp-static/wp-content/uploads/elementor/css/post-83848.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83849.css": "/wp-static/wp-content/uploads/elementor/css/post-83849.css",
+    "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84478.css": "/wp-static/wp-content/uploads/elementor/css/post-84478.css",
+    "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84514.css": "/wp-static/wp-content/uploads/elementor/css/post-84514.css",
+    "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84545.css": "/wp-static/wp-content/uploads/elementor/css/post-84545.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85414.css": "/wp-static/wp-content/uploads/elementor/css/post-85414.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85582.css": "/wp-static/wp-content/uploads/elementor/css/post-85582.css",
     "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85604.css": "/wp-static/wp-content/uploads/elementor/css/post-85604.css",

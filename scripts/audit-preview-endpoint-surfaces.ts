@@ -6,6 +6,7 @@ import { applyBlobImagesToHtml, applyBlobImagesToUrl } from '../lib/blob-image-r
 import { publicWebpIfPresent } from '../lib/public-webp-src.ts';
 import { resolveBlogCoverUrl } from '../lib/blog-cover-image.ts';
 import {
+  collectElementorStylesheetIds,
   elementorPageStylesheetUrls,
   elementorStylesheetLinkHtml,
 } from '../lib/elementor-stylesheet-urls.ts';
@@ -21,15 +22,6 @@ import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
 
 const AUDIT_ENV = { ...process.env, CMS_BLOB_IMAGES: '1' } as NodeJS.ProcessEnv;
 const WP = 'https://endpoint.playfulagency.com/wp-json';
-
-function collectStylesheetIds(html: string, pageId: number): number[] {
-  const ids = new Set<number>([pageId]);
-  for (const match of Array.from(html.matchAll(/elementor-post-(\d+)/g))) {
-    const id = Number(match[1]);
-    if (!Number.isNaN(id)) ids.add(id);
-  }
-  return Array.from(ids);
-}
 
 function prepareSemPageHtml(raw: string): string {
   return applyBlobImagesToHtml(rewriteInSitePageHrefs(raw, '/agencia-sem'), AUDIT_ENV);
@@ -64,7 +56,7 @@ async function main() {
   const pages = await wpJson('/wp/v2/pages?slug=agencia-sem&_fields=id,content');
   const semRaw = pages[0]?.content?.rendered || '';
   const semPageId = pages[0]?.id || 0;
-  const sheetIds = collectStylesheetIds(semRaw, semPageId);
+  const sheetIds = collectElementorStylesheetIds(semRaw, semPageId);
   const sheetUrls = elementorPageStylesheetUrls(semPageId, sheetIds);
   const sheetHtmlAfter = elementorStylesheetLinkHtml(
     sheetUrls.map((u) => rewriteEndpointAssetUrlForPreview(u, AUDIT_ENV)),

@@ -30,6 +30,7 @@ import {
 import { repairBlogPostYoastCanonical, type BlogPostYoastFields } from '@/utils/blog-yoast-canonical';
 import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
+import { collectElementorStylesheetIds } from '@/lib/elementor-stylesheet-urls';
 import {
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
@@ -387,17 +388,6 @@ function stripScripts(html: string): string {
   return html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
 }
 
-function collectStylesheetIds(html: string, pageId: number): number[] {
-  const ids = new Set<number>([pageId]);
-  const re = /data-elementor-id=["'](\d+)["']/gi;
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(html))) {
-    const id = Number(match[1]);
-    if (!Number.isNaN(id)) ids.add(id);
-  }
-  return Array.from(ids);
-}
-
 /** Página WP (servicios, etc.) con HTML de Elementor para renderizarla en el Next. */
 export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const { items: pages } = await wordpressFetchCollection<any>(
@@ -431,7 +421,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
     ),
   );
   const title = stripHtml(page.title?.rendered || slug);
-  const stylesheetIds = collectStylesheetIds(html, page.id);
+  const stylesheetIds = collectElementorStylesheetIds(html, page.id);
   return { id: page.id, slug: page.slug, title, html, stylesheetIds };
 }
 
@@ -1458,7 +1448,9 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
           })(),
           linkedin_url: linkedinUrl,
           imagen: {
-            url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/avatar-playful.svg',
+            url: applyBlobImagesToUrl(
+              featuredMedia?.source_url || member.acf?.imagen?.url || '/images/avatar-playful.svg',
+            ),
             alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
           }
         }
