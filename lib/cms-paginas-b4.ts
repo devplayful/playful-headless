@@ -48,12 +48,10 @@ export function normalizePaginaCodigoDoc(doc: unknown): PaginaCodigoDoc | null {
   };
 }
 
-export const findPaginaCodigoBySlug = cache(async function findPaginaCodigoBySlug(
+const loadPaginaCodigoDocFromDb = cache(async function loadPaginaCodigoDocFromDb(
   slug: string,
-  options?: { renderFromPayload?: boolean },
 ): Promise<PaginaCodigoDoc | null> {
-  const enabled = options?.renderFromPayload ?? isCmsPaginasB4FromPayload();
-  if (!enabled || !hasRuntimeDatabase()) return null;
+  if (!hasRuntimeDatabase()) return null;
   if (!isPaginasB4Slug(slug)) return null;
   let payload: Awaited<ReturnType<typeof getPayload>> | null = null;
   try {
@@ -68,11 +66,20 @@ export const findPaginaCodigoBySlug = cache(async function findPaginaCodigoBySlu
   } catch {
     return null;
   } finally {
-    if (payload) {
+    if (payload && process.env.NEXT_PHASE === 'phase-production-build') {
       await payload.destroy().catch(() => undefined);
     }
   }
 });
+
+export async function findPaginaCodigoBySlug(
+  slug: string,
+  options?: { renderFromPayload?: boolean },
+): Promise<PaginaCodigoDoc | null> {
+  const enabled = options?.renderFromPayload ?? isCmsPaginasB4FromPayload();
+  if (!enabled) return null;
+  return loadPaginaCodigoDocFromDb(slug);
+}
 
 export function paginaCodigoContentMatchesSeed(
   doc: PaginaCodigoDoc,

@@ -15,7 +15,11 @@ import { paginasB4PayloadPreviewAttrs } from '@/lib/cms-paginas-b4-flag';
 import { generateContactoMetadata } from '@/lib/paginas-codigo/contacto-metadata';
 import { generateReunionPlayfulMetadata } from '@/lib/paginas-codigo/reunion-playful-metadata';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+
+export async function generateStaticParams() {
+  return [{ slug: CONTACT_SLUG }, { slug: REUNION_PLAYFUL_SLUG }];
+}
 
 export async function generateMetadata({
   params,
@@ -55,7 +59,9 @@ export default async function CmsPaginaB4PreviewPage({
   const cmsSourceAttrs = paginasB4PayloadPreviewAttrs();
 
   if (slug === CONTACT_SLUG) {
-    const casosDeExito = await (await import('@/services/wordpress')).getAllCaseStudies();
+    const casosDeExito = process.env.NEXT_PHASE === 'phase-production-build'
+      ? []
+      : await (await import('@/services/wordpress')).getAllCaseStudies();
     const previewSimulation =
       process.env.VERCEL_ENV === 'preview'
       && process.env.PREVIEW_CONTACT_SIMULATOR_ENABLED === 'true';
