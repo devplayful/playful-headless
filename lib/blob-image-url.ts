@@ -216,6 +216,51 @@ export function extractImageUrlsFromHtml(html: string): string[] {
 
 export type BlobUrlMap = Record<string, string>;
 
+/** Variantes de URL endpoint para acertar claves del mapa (NFC/NFD, U+2028, etc.). */
+export function blobMapLookupKeys(url: string): string[] {
+  const keys: string[] = [];
+  const seen = new Set<string>();
+  const push = (value: string | undefined | null) => {
+    if (!value || seen.has(value)) return;
+    seen.add(value);
+    keys.push(value);
+  };
+
+  const trimmed = url.trim().split('?')[0];
+  push(trimmed);
+  push(url.trim());
+
+  const canonical = canonicalWordPressUploadUrl(url);
+  if (!canonical) return keys;
+
+  push(canonical);
+  push(canonical.normalize('NFC'));
+  push(canonical.normalize('NFD'));
+
+  try {
+    const u = new URL(canonical);
+    const decodedPath = decodePath(u.pathname).normalize('NFC');
+    push(`https://${WP_ENDPOINT_HOST}${decodedPath}`);
+    push(`https://${WP_ENDPOINT_HOST}${decodedPath.normalize('NFD')}`);
+    const withLineSep = decodedPath.replace(/\u2028/g, '%E2%80%A8');
+    if (withLineSep !== decodedPath) {
+      push(`https://${WP_ENDPOINT_HOST}${withLineSep}`);
+    }
+  } catch {
+    /* ignore */
+  }
+
+  return keys;
+}
+
+export function lookupBlobMapTarget(url: string, map: BlobUrlMap): string | undefined {
+  for (const key of blobMapLookupKeys(url)) {
+    const target = map[key];
+    if (target) return target;
+  }
+  return undefined;
+}
+
 /** Sustituye URLs conocidas en HTML (src, srcset, comillas). URLs no migrables se dejan igual. */
 export function rewriteHtmlWithBlobMap(html: string, map: BlobUrlMap): string {
   if (!html || !map || Object.keys(map).length === 0) return html;
@@ -274,13 +319,7 @@ export function maybeRewriteMediaUrl(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!url || !isBlobImagesEnabled(env) || !map) return url;
-  const canonical = canonicalWordPressUploadUrl(url);
-  if (canonical) {
-    const mapped = map[canonical];
-    if (mapped) return blobPublicUrlFromStoredMapTarget(mapped, env);
-    const key = blobStorageKeyFromCanonicalUrl(canonical);
-    if (key) return blobPublicUrlFromKey(key, env);
-  }
-  if (map[url]) return blobPublicUrlFromStoredMapTarget(map[url], env);
+  const target = lookupBlobMapTarget(url, map);
+  if (target) return blobPublicUrlFromStoredMapTarget(target, env);
   return url;
 }

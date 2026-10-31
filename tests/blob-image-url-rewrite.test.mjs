@@ -95,4 +95,20 @@ describe('blob-image-url', () => {
     const out = maybeRewriteMediaUrl(wp, map, env);
     assert.match(out, /TAPA_%25C2%25BFQue-es-Google-Ad-Grants-150x150\.png$/);
   });
+
+  it('maybeRewriteMediaUrl leaves unmapped uploads unchanged', async () => {
+    const { loadBlobMigrationMap, clearBlobMigrationMapCache } = await import(
+      '../lib/blob-image-map.ts'
+    );
+    const { maybeRewriteMediaUrl } = await import('../lib/blob-image-url.ts');
+    clearBlobMigrationMapCache();
+    const env = {
+      VERCEL_ENV: 'preview',
+      VERCEL_GIT_COMMIT_REF: 'cursor/payload-h2-imagenes-5a28',
+    };
+    const map = loadBlobMigrationMap(env);
+    const wp =
+      'https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Jose-Miguel-Reyes.-Director-Fundador.png';
+    assert.equal(maybeRewriteMediaUrl(wp, map, env), wp);
+  });
 });

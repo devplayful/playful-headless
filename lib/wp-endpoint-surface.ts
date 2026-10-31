@@ -1,5 +1,10 @@
 import { loadBlobMigrationMap } from './blob-image-map.ts';
-import { isBlobImagesEnabled, maybeRewriteMediaUrl } from './blob-image-url.ts';
+import {
+  blobPublicUrlFromStoredMapTarget,
+  isBlobImagesEnabled,
+  lookupBlobMapTarget,
+  maybeRewriteMediaUrl,
+} from './blob-image-url.ts';
 import { lookupWpStaticPublicUrl, resolveMirroredAssetUrl } from './wp-static-assets-map.ts';
 
 export const WP_ENDPOINT_ORIGIN = 'https://endpoint.playfulagency.com';
@@ -30,10 +35,12 @@ export function rewriteEndpointAssetUrlForPreview(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!href?.trim() || !isBlobImagesEnabled(env)) return href;
-  const map = loadBlobMigrationMap(env);
-  const fromBlob = maybeRewriteMediaUrl(href, map, env);
-  if (fromBlob !== href) return fromBlob;
   const trimmed = href.trim().split('?')[0];
+  const map = loadBlobMigrationMap(env);
+  const mapped = lookupBlobMapTarget(href, map || {});
+  if (mapped) {
+    return blobPublicUrlFromStoredMapTarget(mapped, env);
+  }
   const staticPath = lookupWpStaticPublicUrl(trimmed);
   if (staticPath) return staticPath;
   const mirrored = resolveMirroredAssetUrl(trimmed, map, env);

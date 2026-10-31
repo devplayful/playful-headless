@@ -1,4 +1,5 @@
 import type { BlobUrlMap } from './blob-image-url.ts';
+import { lookupBlobMapTarget, blobPublicUrlFromStoredMapTarget } from './blob-image-url.ts';
 import mapDocument from '../docs/wp-static-assets-map.json' with { type: 'json' };
 
 type MapDocument = { map: Record<string, string> };
@@ -30,6 +31,9 @@ export function resolveMirroredAssetUrl(
   if (!trimmed) return null;
   const staticPath = lookupWpStaticPublicUrl(trimmed);
   if (staticPath) return staticPath;
-  if (blobMap && blobMap[trimmed]) return blobMap[trimmed];
+  if (blobMap) {
+    const target = lookupBlobMapTarget(trimmed, blobMap);
+    if (target) return blobPublicUrlFromStoredMapTarget(target, env);
+  }
   return null;
 }
