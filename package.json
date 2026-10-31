@@ -46,7 +46,15 @@
     "cms:seed-paginas-b4": "node scripts/seed-paginas-b4.mts",
     "cms:seed-home": "node scripts/seed-home.mts",
     "cms:seed-posts-alts-h5": "node scripts/seed-posts-alts-h5.ts",
-    "test:payload-alts-h5": "node --experimental-strip-types --test tests/payload-posts-alts-h5.test.mjs"
+    "test:payload-alts-h5": "node --experimental-strip-types --test tests/payload-posts-alts-h5.test.mjs",
+    "cms:migrate-images": "node scripts/migrate-images-to-blob.ts",
+    "cms:migrate-images:upload": "node scripts/migrate-images-to-blob.ts --upload",
+    "cms:seed-blob-urls": "node scripts/seed-blob-urls.ts",
+    "test:blob-images": "node --experimental-strip-types --test tests/blob-image-url-rewrite.test.mjs tests/blob-images-preview-flag.test.mjs tests/wp-endpoint-surface.test.mjs tests/podcast-client-payload.test.mjs tests/blob-preview-resolved-urls.test.mjs tests/blob-preview-three-fixes.test.mjs",
+    "cms:audit-endpoint-urls": "node scripts/audit-rendered-endpoint-urls.ts",
+    "cms:mirror-wp-static": "node scripts/mirror-wp-static-assets.ts",
+    "cms:audit-wp-static": "node scripts/audit-wp-static-endpoint-inventory.ts",
+    "cms:normalize-blob-map": "node scripts/normalize-blob-migration-map.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -66,6 +74,7 @@
     "@types/jspdf": "^1.3.3",
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-slick": "^0.23.13",
+    "@vercel/blob": "^2.8.2",
     "cheerio": "^1.1.2",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.13",

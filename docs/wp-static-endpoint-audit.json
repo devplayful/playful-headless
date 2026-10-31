@@ -1,0 +1,27 @@
+{
+  "generated": "2026-10-30T19:52:05.793Z",
+  "mappedAssets": 76,
+  "inventory404": 1,
+  "items404": [
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/img/cbp-sprite.png",
+      "publicPath": null,
+      "httpStatus": 404,
+      "bytes": null,
+      "kind": "other",
+      "error": "not_found"
+    }
+  ],
+  "before": {
+    "css-link-href": 33,
+    "script-src": 14,
+    "font-face-header-fix": 5,
+    "total-non-image-static": 52
+  },
+  "after": {
+    "css-link-href": 0,
+    "script-src": 0,
+    "font-face-header-fix": 0,
+    "total-non-image-static": 0
+  }
+}
