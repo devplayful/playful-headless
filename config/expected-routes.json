@@ -21,6 +21,7 @@
     "/cms-api/[...slug]",
     "/cms-pagina-b1-preview/[slug]",
     "/cms-pagina-b4-preview/[slug]",
+    "/cms-pagina-b5-preview/not-found",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
     "/firma/alejandra-da-costa",
