@@ -42,6 +42,22 @@ function stripQueryAndHash(value: string): string {
  * Keys a rendered src can match: raw, decoded, WP: shorthand, path-only,
  * and the same forms with the -WxH WordPress suffix stripped.
  */
+function blobMediaWpKey(pathname: string): string | null {
+  const match = /^\/media\/(\d{4})\/(\d{2})\/(.+)$/i.exec(pathname);
+  if (!match) return null;
+  const file = match[3]
+    .split('/')
+    .map((segment) => {
+      try {
+        return decodeURIComponent(segment);
+      } catch {
+        return segment;
+      }
+    })
+    .join('/');
+  return `${WP_KEY_PREFIX}${match[1]}/${match[2]}/${file}`;
+}
+
 export function imageAltLookupKeys(src: string): string[] {
   const keys: string[] = [];
   const seen = new Set<string>();
@@ -56,6 +72,24 @@ export function imageAltLookupKeys(src: string): string[] {
   if (!trimmed) return keys;
 
   const base = stripQueryAndHash(trimmed);
+  if (/\.public\.blob\.vercel-storage\.com/i.test(base)) {
+    try {
+      const url = new URL(base.startsWith('//') ? `https:${base}` : base);
+      const wpKey = blobMediaWpKey(url.pathname);
+      if (wpKey) {
+        push(wpKey);
+        push(withoutSizeSuffix(wpKey));
+        const rest = wpKey.slice(WP_KEY_PREFIX.length);
+        push(`${WP_MEDIA_HOST}${WP_UPLOADS_PREFIX}${rest}`);
+        push(`${WP_MEDIA_HOST}${WP_UPLOADS_PREFIX}${withoutSizeSuffix(rest)}`);
+        push(`${WP_UPLOADS_PREFIX}${rest}`);
+        push(`${WP_UPLOADS_PREFIX}${withoutSizeSuffix(rest)}`);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
   const decoded = decodeSrc(base);
   const encoded = encodeLineSeparators(decoded);
 

@@ -26,6 +26,11 @@ const nextConfig = {
     staticGenerationRetryCount: 1,
   },
   images: {
+    localPatterns: [
+      {
+        pathname: '/wp-static/**',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -36,6 +41,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
         port: '',
         pathname: '/**',
       },

@@ -10,6 +10,7 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
+import { applyBlobImagesToHtml, applyBlobImagesToJsonLd, applyBlobImagesToUrl, applyBlobImagesToWpItem } from '@/lib/blob-image-render.ts';
 import {
   rewriteInSitePageHrefs,
   rewriteWpRenderedHtmlFields,
@@ -26,9 +27,11 @@ import {
   resolveBlogCoverAlt,
   resolveBlogCoverUrl,
 } from '@/lib/blog-cover-image';
-import { repairBlogPostYoastCanonical } from '@/utils/blog-yoast-canonical';
+import { repairBlogPostYoastCanonical, type BlogPostYoastFields } from '@/utils/blog-yoast-canonical';
 import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
+import { collectElementorStylesheetIds } from '@/lib/elementor-stylesheet-urls';
+import { sanitizePodcastEpisodeForHubClient } from '@/lib/podcast-client-payload';
 import {
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
@@ -386,17 +389,6 @@ function stripScripts(html: string): string {
   return html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
 }
 
-function collectStylesheetIds(html: string, pageId: number): number[] {
-  const ids = new Set<number>([pageId]);
-  const re = /data-elementor-id=["'](\d+)["']/gi;
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(html))) {
-    const id = Number(match[1]);
-    if (!Number.isNaN(id)) ids.add(id);
-  }
-  return Array.from(ids);
-}
-
 /** Página WP (servicios, etc.) con HTML de Elementor para renderizarla en el Next. */
 export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   const { items: pages } = await wordpressFetchCollection<any>(
@@ -409,13 +401,16 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   if (!pages?.[0]) return null;
   const page = pages[0];
   const rawHtml: string = page.content?.rendered || '';
-  const html = applyImageAltOverrides(
-    rewriteElementorBodyHrefs(
-      rewriteEcommerceZelleCover(
-        rewriteEcommerceSoytechnoCaseLink(
-          rewriteEcommerceShopifyLink(
-            rewriteAgenciaDisenoUxUiLink(
-              rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+  const html = applyBlobImagesToHtml(
+    applyImageAltOverrides(
+      rewriteElementorBodyHrefs(
+        rewriteEcommerceZelleCover(
+          rewriteEcommerceSoytechnoCaseLink(
+            rewriteEcommerceShopifyLink(
+              rewriteAgenciaDisenoUxUiLink(
+                rewriteInSitePageHrefs(stripScripts(rawHtml), `/${slug}`),
+                slug,
+              ),
               slug,
             ),
             slug,
@@ -424,11 +419,10 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
         ),
         slug,
       ),
-      slug,
     ),
   );
   const title = stripHtml(page.title?.rendered || slug);
-  const stylesheetIds = collectStylesheetIds(html, page.id);
+  const stylesheetIds = collectElementorStylesheetIds(html, page.id);
   return { id: page.id, slug: page.slug, title, html, stylesheetIds };
 }
 
@@ -599,7 +593,9 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
       || featuredMedia.media_details?.sizes?.medium?.source_url
       || imageUrl;
   }
-  imageUrl = publicWebpIfPresent(resolveBlogCoverUrl(post.slug, imageUrl));
+  imageUrl = applyBlobImagesToUrl(
+    publicWebpIfPresent(resolveBlogCoverUrl(post.slug, imageUrl)),
+  );
   const imageAlt = resolveBlogCoverAlt(
     post.slug,
     post.featured_media_alt || featuredMedia?.alt_text || '',
@@ -1069,8 +1065,10 @@ function relatedCardFromIndexPost(post: RelatedIndexPost): RelatedBlogCard {
       },
       'slash',
     ),
-    imageUrl: publicWebpIfPresent(
-      resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+    imageUrl: applyBlobImagesToUrl(
+      publicWebpIfPresent(
+        resolveBlogCoverUrl(post.slug, post.featuredMediaUrl || BLOG_COVER_FALLBACK),
+      ),
     ),
     imageAlt: resolveBlogCoverAlt(post.slug, post.featuredMediaAlt || ''),
     slug: post.slug,
@@ -1294,13 +1292,16 @@ const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> =>
       }
     }
   }
-  post.featured_media_url = publicWebpIfPresent(
-    resolveBlogCoverUrl(post.slug, post.featured_media_url || ''),
+  post.featured_media_url = applyBlobImagesToUrl(
+    publicWebpIfPresent(resolveBlogCoverUrl(post.slug, post.featured_media_url || '')),
   );
   post.featured_media_alt = resolveBlogCoverAlt(post.slug, post.featured_media_alt || '');
-  return repairBlogPostYoastCanonical(
-    rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)),
+  const rewritten = repairBlogPostYoastCanonical(
+    applyBlobImagesToWpItem(
+      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(post)) as unknown as BlogPostYoastFields,
+    ) as BlogPostYoastFields,
   );
+  return rewritten as WPPost;
 });
 
 /**
@@ -1414,9 +1415,14 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-  const processedEpisodes = episodes.map(episode => {
+  const processedEpisodes = episodes.map((episode) => {
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-    return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+    const withMedia: PodcastEpisode = {
+      ...episode,
+      featured_media_url: applyBlobImagesToUrl(featuredMedia?.source_url || null) || null,
+      featured_media_alt: featuredMedia?.alt_text || '',
+    };
+    return sanitizePodcastEpisodeForHubClient(withMedia);
   });
   return { episodes: processedEpisodes, totalPages };
 }
@@ -1448,7 +1454,9 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
           })(),
           linkedin_url: linkedinUrl,
           imagen: {
-            url: featuredMedia?.source_url || member.acf?.imagen?.url || '/images/avatar-playful.svg',
+            url: applyBlobImagesToUrl(
+              featuredMedia?.source_url || member.acf?.imagen?.url || '/images/avatar-playful.svg',
+            ),
             alt: featuredMedia?.alt_text || member.acf?.imagen?.alt || `Imagen de ${member.title?.rendered || 'miembro del equipo'}`
           }
         }
@@ -1504,7 +1512,20 @@ export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory 
     ...sanitizedStory.acf,
     ...preserveCaseStudyMediaFields(story.acf as Record<string, unknown>),
   };
-  return applyCaseStudyCoverOverride(applyPublicCaseStudyOverrides(sanitizedStory));
+  return applyBlobImagesToSuccessStory(
+    applyCaseStudyCoverOverride(applyPublicCaseStudyOverrides(sanitizedStory)),
+  );
+}
+
+function applyBlobImagesToSuccessStory(story: SuccessStory): SuccessStory {
+  let next = applyBlobImagesToWpItem(story as unknown as Record<string, unknown>) as unknown as SuccessStory;
+  if (next.acf) {
+    next = { ...next, acf: applyBlobImagesToJsonLd(next.acf) as ACFSuccessStory };
+  }
+  if (next.featured_media_url) {
+    next.featured_media_url = applyBlobImagesToUrl(next.featured_media_url);
+  }
+  return next;
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
@@ -1516,7 +1537,11 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
   if (!episode.excerpt) episode.excerpt = { rendered: '' };
-  return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+  return {
+    ...episode,
+    featured_media_url: applyBlobImagesToUrl(featuredMedia?.source_url || null) || null,
+    featured_media_alt: featuredMedia?.alt_text || '',
+  };
 }
 
 const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
@@ -1528,9 +1553,13 @@ async function loadAllCaseStudies(): Promise<any[]> {
   );
   const published = casos.map((caso: Record<string, unknown>) => {
     const sanitized = sanitizeWpPayload(caso) as Record<string, unknown>;
-    return applyCaseStudyCoverOverride(
+    const withMedia = applyCaseStudyCoverOverride(
       applyPublicCaseStudyOverrides(preserveFeaturedMediaUrl(caso, sanitized)),
-    );
+    ) as Record<string, unknown>;
+    if (typeof withMedia.featured_media_url === 'string') {
+      withMedia.featured_media_url = applyBlobImagesToUrl(withMedia.featured_media_url);
+    }
+    return withMedia;
   });
   return mergePublicCaseStudies(published);
 }
