@@ -192,7 +192,6 @@
     "/cms-servicio-preview/[slug]": [],
     "/casos-de-exito/[slug]": [],
     "/cms-api/[...slug]": [],
-    "/cms-home-preview": [],
     "/podcast/[slug]": [],
     "/cms-pagina-b1-preview/[slug]": [
       "/cms-pagina-b1-preview/politica-de-privacidad"

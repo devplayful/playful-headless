@@ -44,7 +44,7 @@ test('shared booking constant matches the Shopify GHL widget', () => {
   assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
   assert.equal(BOOKING_CTA_LABEL, 'Agendar Reunión con Playful');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
-  assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF \} from '\.\.\/\.\.\/utils\/booking\.ts'/);
+  assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF \} from '\.\.\/\.\.\/\.\.\/utils\/booking\.ts'/);
 });
 
 test('allowlist is the GO service landings including /agencia-ux-ui', () => {

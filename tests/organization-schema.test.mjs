@@ -70,24 +70,25 @@ test('logo is a raster PNG of the header logo, at least 112 px', () => {
 test('root layout emits the organization script once for every page', () => {
   const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
+  const homeFrame = readFileSync(new URL('../app/(frontend)/home/HomeDocumentFrame.tsx', import.meta.url), 'utf8');
   assert.equal((layout.match(/id="playful-organization"/g) || []).length, 1);
   assert.match(layout, /type="application\/ld\+json"/);
   assert.match(layout, /__html: ORGANIZATION_JSON_LD/);
   assert.doesNotMatch(home, /id="playful-organization"/);
-  assert.match(home, /rel="canonical" href=\{HOME_CANONICAL\}/);
+  assert.match(homeFrame, /rel="canonical" href=\{HOME_CANONICAL\}/);
   assert.doesNotMatch(home, /^["']use client["']/);
 });
 
 test('home emits WebSite JSON-LD next to the global Organization', () => {
-  const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
+  const homeFrame = readFileSync(new URL('../app/(frontend)/home/HomeDocumentFrame.tsx', import.meta.url), 'utf8');
   assert.equal(WEBSITE_SCHEMA['@type'], 'WebSite');
   assert.equal(WEBSITE_SCHEMA['@id'], 'https://playfulagency.com/#website');
   assert.equal(WEBSITE_SCHEMA.url, ORGANIZATION_SCHEMA.url);
   assert.deepEqual(WEBSITE_SCHEMA.publisher, { '@id': ORGANIZATION_SCHEMA['@id'] });
   assert.deepEqual(JSON.parse(WEBSITE_JSON_LD), WEBSITE_SCHEMA);
   assert.doesNotMatch(WEBSITE_JSON_LD, /</);
-  assert.equal((home.match(/id="playful-website"/g) || []).length, 1);
-  assert.match(home, /__html: WEBSITE_JSON_LD/);
+  assert.equal((homeFrame.match(/id="playful-website"/g) || []).length, 1);
+  assert.match(homeFrame, /__html: WEBSITE_JSON_LD/);
 });
 
 test('root layout keeps chat and gates analytics to production', () => {
