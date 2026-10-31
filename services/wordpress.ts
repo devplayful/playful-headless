@@ -31,6 +31,7 @@ import { repairBlogPostYoastCanonical, type BlogPostYoastFields } from '@/utils/
 import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { collectElementorStylesheetIds } from '@/lib/elementor-stylesheet-urls';
+import { sanitizePodcastEpisodeForHubClient } from '@/lib/podcast-client-payload';
 import {
   getStagingLocalBlogPost,
   listStagingLocalBlogStaticParams,
@@ -1414,14 +1415,14 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-  const processedEpisodes = episodes.map(episode => {
+  const processedEpisodes = episodes.map((episode) => {
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-    const featured_media_url = applyBlobImagesToUrl(featuredMedia?.source_url || null);
-    return {
+    const withMedia: PodcastEpisode = {
       ...episode,
-      featured_media_url: featured_media_url || null,
+      featured_media_url: applyBlobImagesToUrl(featuredMedia?.source_url || null) || null,
       featured_media_alt: featuredMedia?.alt_text || '',
     };
+    return sanitizePodcastEpisodeForHubClient(withMedia);
   });
   return { episodes: processedEpisodes, totalPages };
 }

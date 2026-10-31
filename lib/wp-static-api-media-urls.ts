@@ -54,6 +54,24 @@ async function wpCollection(path: string): Promise<any[]> {
   return res.json();
 }
 
+async function wpAllPodcastEpisodes(): Promise<any[]> {
+  const out: any[] = [];
+  let page = 1;
+  let totalPages = 1;
+  while (page <= totalPages) {
+    const res = await fetch(
+      `${WP_JSON}/wp/v2/podcast?per_page=100&page=${page}&_embed=wp:featuredmedia`,
+      { headers: { 'User-Agent': UA, Accept: 'application/json' } },
+    );
+    if (!res.ok) break;
+    totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
+    const rows = await res.json();
+    out.push(...rows);
+    page += 1;
+  }
+  return out;
+}
+
 /** Imágenes endpoint en equipo, casos (ACF + featured) y podcast (featured). */
 export async function collectApiMediaSeedUrls(blobMap: Record<string, string>): Promise<string[]> {
   const urls = new Set<string>();
@@ -83,7 +101,7 @@ export async function collectApiMediaSeedUrls(blobMap: Record<string, string>): 
     }
   }
 
-  const episodes = await wpCollection('/wp/v2/podcast?per_page=100&_embed=wp:featuredmedia');
+  const episodes = await wpAllPodcastEpisodes();
   for (const ep of episodes) {
     collectEndpointUploadUrlsFromValue(
       ep._embedded?.['wp:featuredmedia']?.[0]?.source_url,
