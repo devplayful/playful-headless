@@ -15,6 +15,7 @@ const {
   shouldRunPreviewServiciosSeed,
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -77,6 +78,18 @@ test('Preview seed paginas B1 solo en VERCEL_ENV=preview con DATABASE_URL', () =
   );
   assert.equal(
     shouldRunPreviewPaginasB1Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('Preview seed paginas B5 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB5Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB5Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB5Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
     true,
   );
 });
