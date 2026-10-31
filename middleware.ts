@@ -22,6 +22,11 @@ import {
   isCmsPreviewServicioInternalPath,
   isPayloadServicioSlug,
 } from './lib/cms-servicios-flag';
+import {
+  cmsPreviewCasosHubPath,
+  isCmsPreviewCasosInternalPath,
+  isPayloadCasoSlug,
+} from './lib/cms-casos-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -156,17 +161,37 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
-  if (
-    process.env.VERCEL_ENV === 'preview'
-    && request.nextUrl.searchParams.get('cms') === '1'
-    && path.length > 1
-    && path.indexOf('/', 1) === -1
-  ) {
-    const slug = path.slice(1);
-    if (isPayloadServicioSlug(slug)) {
+  if (isCmsPreviewCasosInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    if (path === '/casos-de-exito') {
       const target = request.nextUrl.clone();
-      target.pathname = cmsPreviewServicioPath(slug);
+      target.pathname = cmsPreviewCasosHubPath();
+      target.searchParams.delete('cms');
       return attachAttributionCookies(request, NextResponse.rewrite(target));
+    }
+    if (path.startsWith('/casos-de-exito/')) {
+      const slug = path.slice('/casos-de-exito/'.length);
+      if (slug && !slug.includes('/') && isPayloadCasoSlug(slug)) {
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-casos-preview', '1');
+        const target = request.nextUrl.clone();
+        target.searchParams.delete('cms');
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+    }
+    if (path.length > 1 && path.indexOf('/', 1) === -1) {
+      const slug = path.slice(1);
+      if (isPayloadServicioSlug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewServicioPath(slug);
+        return attachAttributionCookies(request, NextResponse.rewrite(target));
+      }
     }
   }
 

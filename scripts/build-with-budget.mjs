@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed } from '../lib/cms-database.mjs';
+import { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed, shouldRunPreviewCasosSeed } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,7 +142,7 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed };
+export { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed, shouldRunPreviewCasosSeed };
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
@@ -199,6 +199,23 @@ export function summarizeSeedServiciosOutput(output) {
   } catch {
     return null;
   }
+}
+
+export function summarizePreviewH4CasosOutput(output) {
+  const text = String(output);
+  const slugPattern =
+    /^\[H4-CASOS\] (jumex-shopify-dtc-ecommerce|odwalla-shopify-dtc-ecommerce|soytechno-ecommerce-venezuela) (OK|ERROR)/gm;
+  const slugLines = [...text.matchAll(slugPattern)];
+  const ok = slugLines.filter((match) => match[2] === 'OK').length;
+  const err = slugLines.filter((match) => match[2] === 'ERROR').length;
+  const resumen = text.match(/\[H4-CASOS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  const lines = slugLines.map((match) => match[0]);
+  return {
+    ok: resumen ? Number(resumen[1]) : ok,
+    err: resumen ? Number(resumen[2]) : err,
+    lines,
+    resumenLine: resumen ? resumen[0] : null,
+  };
 }
 
 async function runGuardedCommandWithCapture(command, args, options = {}) {
@@ -272,11 +289,49 @@ export async function runPayloadPreviewSeedServicios(env = process.env) {
   return exitCode;
 }
 
+export async function runPayloadPreviewH4Casos(env = process.env) {
+  if (!shouldRunPreviewCasosSeed(env)) {
+    console.log(
+      'preview-h4-casos: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('preview-h4-casos: ejecutando import WP casos + seed (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/preview-h4-casos.mts'],
+    {
+      env,
+      budgetMs: BUILD_BUDGET_MS,
+      inactivityMs: BUILD_INACTIVITY_MS,
+    },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewH4CasosOutput(combined);
+  if (exitCode !== 0) {
+    console.log(`preview-h4-casos ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
+  console.log(
+    `preview-h4-casos OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} casos [H4-CASOS])`,
+  );
+  if (summary.lines.length !== 3 || summary.err !== 0) {
+    console.log('preview-h4-casos ERROR: se esperaban 3 líneas OK por slug');
+    return 1;
+  }
+  return exitCode;
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
   const seedCode = await runPayloadPreviewSeedServicios();
   if (seedCode !== 0) return seedCode;
+  const h4Code = await runPayloadPreviewH4Casos();
+  if (h4Code !== 0) return h4Code;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

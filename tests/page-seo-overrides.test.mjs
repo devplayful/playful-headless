@@ -170,7 +170,7 @@ test('pageSocialMetadata inherits title and meta and sets og:type', () => {
 test('non-blog generateMetadata wires twitter from the same og values', async () => {
   const slugPage = await readFile(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
   const shopifyPage = await readFile(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-  const casosPage = await readFile(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+  const casosPage = await readFile(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
   const caseStudyPage = await readFile(new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
   const nosotrosPage = await readFile(new URL('../app/(frontend)/nosotros/page.tsx', import.meta.url), 'utf8');
 

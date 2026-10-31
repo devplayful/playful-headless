@@ -54,3 +54,10 @@ export function shouldRunPreviewServiciosSeed(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
+
+/** Seed/migrate H4 casos: solo Preview con DATABASE_URL (nunca Production). */
+export function shouldRunPreviewCasosSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}

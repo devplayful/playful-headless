@@ -13,6 +13,7 @@ const {
   getPayloadConnectionString,
   shouldRunPreviewMigrate,
   shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -47,6 +48,22 @@ test('servicios seed runs only on Preview with DATABASE_URL', () => {
   );
   assert.equal(
     shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('H4 casos seed runs only on Preview with DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewCasosSeed({}), false);
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'development' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
     true,
   );
 });
@@ -86,6 +103,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(payloadConfig, /disableCreateDatabase: true/);
   assert.match(buildScript, /runPayloadPreviewMigrate/);
   assert.match(buildScript, /runPayloadPreviewSeedServicios/);
+  assert.match(buildScript, /runPayloadPreviewH4Casos/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
