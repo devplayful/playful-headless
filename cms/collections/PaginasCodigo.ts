@@ -17,7 +17,7 @@ export const PaginasCodigo: CollectionConfig = {
       name: 'bloque',
       type: 'text',
       required: true,
-      admin: { description: 'Bloque H6 (p. ej. b1 legales).' },
+      admin: { description: 'Bloque H6 (p. ej. b1 legales, b4 contacto/reunión).' },
     },
     {
       name: 'content',

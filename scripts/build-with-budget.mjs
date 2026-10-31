@@ -7,6 +7,10 @@ import {
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
+  hasDatabaseUrl,
+  getPayloadConnectionString,
+  hasRuntimeDatabase,
 } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
@@ -154,6 +158,7 @@ export {
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
 };
 
 export function payloadMigrateArgs() {
@@ -421,6 +426,66 @@ export async function runPayloadPreviewSeedPaginasB5(env = process.env) {
   return 0;
 }
 
+export function summarizeSeedPaginasB4Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B4\] (?!resumen:).+ OK(?:\s|$)/gm) ?? [];
+  const errLines = text.match(/^\[H6-B4\] (?!resumen:).+ ERROR(?:\s|$)/gm) ?? [];
+  const resumen = text.match(/\[H6-B4\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+function seedPaginasB4ChildEnv(env = process.env) {
+  const childEnv = { ...env };
+  if (!hasDatabaseUrl(childEnv) && hasRuntimeDatabase(childEnv)) {
+    childEnv.DATABASE_URL = getPayloadConnectionString(childEnv);
+  }
+  return childEnv;
+}
+
+function echoH6B4LogLines(combinedOutput) {
+  for (const line of String(combinedOutput).split(/\r?\n/)) {
+    if (line.includes('[H6-B4]')) console.log(line);
+  }
+}
+
+export async function runPayloadPreviewSeedPaginasB4(env = process.env) {
+  if (!shouldRunPreviewPaginasB4Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b4: omitido (requiere VERCEL_ENV=preview y Postgres en runtime; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b4: ejecutando (Preview, Postgres presente)');
+  const childEnv = seedPaginasB4ChildEnv(env);
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b4.mts'],
+    { env: childEnv, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  echoH6B4LogLines(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b4 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB4Output(combined);
+  if (!summary || summary.err > 0 || summary.ok < 2 || summary.slugOkCount < 2) {
+    console.log('seed-paginas-b4 ERROR: se esperaban [H6-B4] contactar-agencia-de-marketing-digital y reunion-playful OK');
+    console.log('[H6-B4] resumen: build rechazado (seed incompleto o sin líneas OK)');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b4 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B4])`,
+  );
+  return 0;
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
@@ -432,6 +497,8 @@ export async function runGuardedBuild() {
   if (b1Code !== 0) return b1Code;
   const b5Code = await runPayloadPreviewSeedPaginasB5();
   if (b5Code !== 0) return b5Code;
+  const b4Code = await runPayloadPreviewSeedPaginasB4();
+  if (b4Code !== 0) return b4Code;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

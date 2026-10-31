@@ -19,6 +19,7 @@
     "/cms-casos-preview/hub",
     "/cms-api/[...slug]",
     "/cms-pagina-b1-preview/[slug]",
+    "/cms-pagina-b4-preview/[slug]",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
     "/firma/alejandra-da-costa",
@@ -193,6 +194,10 @@
     "/podcast/[slug]": [],
     "/cms-pagina-b1-preview/[slug]": [
       "/cms-pagina-b1-preview/politica-de-privacidad"
+    ],
+    "/cms-pagina-b4-preview/[slug]": [
+      "/cms-pagina-b4-preview/contactar-agencia-de-marketing-digital",
+      "/cms-pagina-b4-preview/reunion-playful"
     ]
   },
   "allowedArtifactOnlyRoutes": [

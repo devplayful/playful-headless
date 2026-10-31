@@ -32,6 +32,11 @@ import {
   isCmsPreviewPaginaB1InternalPath,
 } from './lib/cms-paginas-b1-flag';
 import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
+import { isPaginasB4Slug } from './cms/data/paginas-b4-payload';
+import {
+  cmsPreviewPaginaB4Path,
+  isCmsPreviewPaginaB4InternalPath,
+} from './lib/cms-paginas-b4-flag';
 import { isKnownPublicAppPath } from './lib/cms-paginas-b5-known-paths';
 import {
   cmsPreviewPaginaB5Path,
@@ -179,6 +184,10 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
+  if (isCmsPreviewPaginaB4InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
   if (isCmsPreviewPaginaB5InternalPath(path)) {
     return attachAttributionCookies(request, NextResponse.next());
   }
@@ -211,6 +220,17 @@ export function middleware(request: NextRequest) {
         target.searchParams.delete('cms');
         const requestHeaders = new Headers(request.headers);
         requestHeaders.set('x-cms-paginas-b1-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+      if (isPaginasB4Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB4Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b4-preview', slug);
         return attachAttributionCookies(
           request,
           NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
