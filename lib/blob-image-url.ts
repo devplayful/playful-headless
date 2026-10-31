@@ -5,14 +5,19 @@
 
 export const CMS_BLOB_IMAGES_ENV = 'CMS_BLOB_IMAGES';
 
-/** Preview de medición H2 (PR #393): nunca producción. */
+/** Preview de medición H2 (PR #393) e integración H7 (#396): nunca producción. */
 export const BLOB_IMAGES_PREVIEW_BRANCH = 'cursor/payload-h2-imagenes-5a28';
+
+export const BLOB_IMAGES_PREVIEW_BRANCHES = [
+  BLOB_IMAGES_PREVIEW_BRANCH,
+  'cursor/payload-h7-integracion',
+] as const;
 
 export function isBlobImagesEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.VERCEL_ENV === 'production') return false;
   if (env.VERCEL_ENV === 'preview') {
     const ref = env.VERCEL_GIT_COMMIT_REF || '';
-    return ref === BLOB_IMAGES_PREVIEW_BRANCH;
+    return (BLOB_IMAGES_PREVIEW_BRANCHES as readonly string[]).includes(ref);
   }
   const v = env[CMS_BLOB_IMAGES_ENV];
   return v === '1' || v === 'true';

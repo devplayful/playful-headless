@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BLOB_IMAGES_PREVIEW_BRANCH,
+  BLOB_IMAGES_PREVIEW_BRANCHES,
   CMS_BLOB_IMAGES_ENV,
   isBlobImagesEnabled,
 } from '../lib/blob-image-url.ts';
@@ -14,14 +14,17 @@ describe('isBlobImagesEnabled', () => {
     );
   });
 
-  it('solo preview de la rama H2', () => {
-    assert.equal(
-      isBlobImagesEnabled({
-        VERCEL_ENV: 'preview',
-        VERCEL_GIT_COMMIT_REF: BLOB_IMAGES_PREVIEW_BRANCH,
-      }),
-      true,
-    );
+  it('solo preview de ramas H2 e integración H7', () => {
+    for (const ref of BLOB_IMAGES_PREVIEW_BRANCHES) {
+      assert.equal(
+        isBlobImagesEnabled({
+          VERCEL_ENV: 'preview',
+          VERCEL_GIT_COMMIT_REF: ref,
+        }),
+        true,
+        ref,
+      );
+    }
     assert.equal(
       isBlobImagesEnabled({
         VERCEL_ENV: 'preview',
