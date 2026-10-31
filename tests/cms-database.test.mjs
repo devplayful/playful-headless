@@ -16,6 +16,7 @@ const {
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -94,6 +95,18 @@ test('Preview seed paginas B5 solo en VERCEL_ENV=preview con DATABASE_URL', () =
   );
 });
 
+test('Preview seed paginas B4 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB4Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
 test('runtime prefers DATABASE_URL; migrate prefers UNPOOLED without leaking aliases', () => {
   assert.equal(hasDatabaseUrl({}), false);
   assert.equal(hasDatabaseUrl({ DATABASE_URL: 'postgres://pooled' }), true);
@@ -132,6 +145,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewH4Casos/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB1/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB5/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
