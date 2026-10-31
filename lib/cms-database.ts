@@ -68,3 +68,10 @@ export function shouldRunPreviewPaginasB1Seed(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
+
+/** Preview: seed H6 bloque 5 (404). */
+export function shouldRunPreviewPaginasB5Seed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}

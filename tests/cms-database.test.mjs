@@ -118,6 +118,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewSeedServicios/);
   assert.match(buildScript, /runPayloadPreviewH4Casos/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB1/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB5/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);

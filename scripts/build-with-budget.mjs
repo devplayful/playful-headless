@@ -6,6 +6,7 @@ import {
   shouldRunPreviewServiciosSeed,
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
 } from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
@@ -152,6 +153,7 @@ export {
   shouldRunPreviewServiciosSeed,
   shouldRunPreviewCasosSeed,
   shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
 };
 
 export function payloadMigrateArgs() {
@@ -377,6 +379,48 @@ export async function runPayloadPreviewSeedPaginasB1(env = process.env) {
   return 0;
 }
 
+export function summarizeSeedPaginasB5Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B5\] [\w-]+ OK/gm) ?? [];
+  const errLines = text.match(/^\[H6-B5\] [\w-]+ ERROR/gm) ?? [];
+  const resumen = text.match(/\[H6-B5\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+export async function runPayloadPreviewSeedPaginasB5(env = process.env) {
+  if (!shouldRunPreviewPaginasB5Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b5: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b5: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b5.mts'],
+    { env, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b5 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB5Output(stdout);
+  if (!summary || summary.err > 0 || summary.slugOkCount < 2) {
+    console.log('seed-paginas-b5 ERROR: se esperaban [H6-B5] not-found y global-not-found OK');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b5 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B5])`,
+  );
+  return 0;
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
@@ -386,6 +430,8 @@ export async function runGuardedBuild() {
   if (h4Code !== 0) return h4Code;
   const b1Code = await runPayloadPreviewSeedPaginasB1();
   if (b1Code !== 0) return b1Code;
+  const b5Code = await runPayloadPreviewSeedPaginasB5();
+  if (b5Code !== 0) return b5Code;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],
