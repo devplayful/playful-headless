@@ -9,6 +9,7 @@ import { Casos } from './cms/collections/Casos.ts';
 import { Categorias } from './cms/collections/Categorias.ts';
 import { Medios } from './cms/collections/Medios.ts';
 import { Paginas } from './cms/collections/Paginas.ts';
+import { PaginasCodigo } from './cms/collections/PaginasCodigo.ts';
 import { Posts } from './cms/collections/Posts.ts';
 import { Servicios } from './cms/collections/Servicios.ts';
 import { Usuarios } from './cms/collections/Usuarios.ts';
@@ -30,7 +31,7 @@ export default buildConfig({
     importMap: { baseDir: dirname },
     meta: { titleSuffix: ' · CMS Playful', robots: 'noindex, nofollow' },
   },
-  collections: [Posts, Paginas, Casos, Servicios, Autores, Categorias, Medios, Usuarios],
+  collections: [Posts, Paginas, PaginasCodigo, Casos, Servicios, Autores, Categorias, Medios, Usuarios],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: { connectionString: databaseUri },

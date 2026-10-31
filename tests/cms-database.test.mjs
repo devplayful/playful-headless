@@ -14,6 +14,7 @@ const {
   shouldRunPreviewMigrate,
   shouldRunPreviewServiciosSeed,
   shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -68,6 +69,18 @@ test('H4 casos seed runs only on Preview with DATABASE_URL', () => {
   );
 });
 
+test('Preview seed paginas B1 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB1Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB1Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB1Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
 test('runtime prefers DATABASE_URL; migrate prefers UNPOOLED without leaking aliases', () => {
   assert.equal(hasDatabaseUrl({}), false);
   assert.equal(hasDatabaseUrl({ DATABASE_URL: 'postgres://pooled' }), true);
@@ -104,6 +117,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewMigrate/);
   assert.match(buildScript, /runPayloadPreviewSeedServicios/);
   assert.match(buildScript, /runPayloadPreviewH4Casos/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB1/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -121,9 +135,15 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
     new URL('../cms/migrations/20261029_114031.ts', import.meta.url),
     'utf8',
   );
+  const paginasCodigo = readFileSync(
+    new URL('../cms/migrations/20261030_120000_paginas_codigo.ts', import.meta.url),
+    'utf8',
+  );
   assert.match(index, /20261028_195833_initial/);
   assert.match(index, /20261029_114031/);
+  assert.match(index, /20261030_120000_paginas_codigo/);
   assert.match(servicios, /import type \{ MigrateDownArgs, MigrateUpArgs \}/);
+  assert.match(paginasCodigo, /paginas_codigo/);
   for (const table of [
     'posts',
     'paginas',

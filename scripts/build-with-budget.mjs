@@ -1,7 +1,12 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed, shouldRunPreviewCasosSeed } from '../lib/cms-database.mjs';
+import {
+  shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
+} from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,7 +147,12 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate, shouldRunPreviewServiciosSeed, shouldRunPreviewCasosSeed };
+export {
+  shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
+};
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
@@ -325,6 +335,48 @@ export async function runPayloadPreviewH4Casos(env = process.env) {
   return exitCode;
 }
 
+export function summarizeSeedPaginasB1Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B1\] [\w-]+ OK/gm) ?? [];
+  const errLines = text.match(/^\[H6-B1\] [\w-]+ ERROR/gm) ?? [];
+  const resumen = text.match(/\[H6-B1\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+export async function runPayloadPreviewSeedPaginasB1(env = process.env) {
+  if (!shouldRunPreviewPaginasB1Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b1: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b1: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b1.mts'],
+    { env, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b1 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB1Output(stdout);
+  if (!summary || summary.err > 0 || summary.slugOkCount < 1) {
+    console.log('seed-paginas-b1 ERROR: se esperaba [H6-B1] politica-de-privacidad OK');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b1 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B1])`,
+  );
+  return 0;
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
@@ -332,6 +384,8 @@ export async function runGuardedBuild() {
   if (seedCode !== 0) return seedCode;
   const h4Code = await runPayloadPreviewH4Casos();
   if (h4Code !== 0) return h4Code;
+  const b1Code = await runPayloadPreviewSeedPaginasB1();
+  if (b1Code !== 0) return b1Code;
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],

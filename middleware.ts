@@ -27,6 +27,11 @@ import {
   isCmsPreviewCasosInternalPath,
   isPayloadCasoSlug,
 } from './lib/cms-casos-flag';
+import {
+  cmsPreviewPaginaB1Path,
+  isCmsPreviewPaginaB1InternalPath,
+} from './lib/cms-paginas-b1-flag';
+import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -165,6 +170,10 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
+  if (isCmsPreviewPaginaB1InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
     if (path === '/casos-de-exito') {
       const target = request.nextUrl.clone();
@@ -187,6 +196,17 @@ export function middleware(request: NextRequest) {
     }
     if (path.length > 1 && path.indexOf('/', 1) === -1) {
       const slug = path.slice(1);
+      if (isPaginasB1Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB1Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b1-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
       if (isPayloadServicioSlug(slug)) {
         const target = request.nextUrl.clone();
         target.pathname = cmsPreviewServicioPath(slug);
