@@ -20,6 +20,7 @@ import {
   WP_ENDPOINT_ORIGIN,
 } from '@/lib/elementor-stylesheet-urls';
 import { isBlobImagesEnabled } from '@/lib/blob-image-url.ts';
+import { applyBlobImagesToHtml } from '@/lib/blob-image-render.ts';
 import {
   rewriteEndpointAssetUrlForPreview,
   rewriteElementorScriptUrlForPreview,
@@ -30,6 +31,16 @@ const WP_HOST = WP_ENDPOINT_ORIGIN;
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap';
+
+const ENDPOINT_UPLOAD_URL_IN_HTML_RE =
+  /(?:https?:)?\/\/endpoint\.playfulagency\.com\/wp-content\/uploads\/[^\s"'<>\\)]*/gi;
+
+/** Codifica U+2028/U+2029 en rutas de upload antes de limpiar separadores del copy. */
+function encodeLineSeparatorsInEndpointUploadUrls(html: string): string {
+  return html.replace(ENDPOINT_UPLOAD_URL_IN_HTML_RE, (url) =>
+    url.replace(/\u2028/g, '%E2%80%A8').replace(/\u2029/g, '%E2%80%A9'),
+  );
+}
 
 /** Keep WP magia-negra/demo heading in HTML but hidden; show old.playfulagency.com copy.
  *  Encode U+2028/U+2029 inside src/srcset before stripping them from copy —
@@ -55,11 +66,12 @@ const CIMA_ECOM_BREAKER_HTML =
   + '@media (min-width:768px){[data-cima-breaker=ecommerce] .cima-ecom-img{width:100%!important;max-width:1110px!important}}</style>';
 
 function restoreOldBodyCopy(html: string): string {
-  let out = preserveMediaLineSeparators(html);
+  let out = encodeLineSeparatorsInEndpointUploadUrls(html);
+  out = preserveMediaLineSeparators(out);
   out = out.replace(/\u2028|\u2029/g, '');
   // File on disk still has U+2028 in the name; clean URL 404s.
   out = out.replace(
-    /Haz-Pruebas-y-Optimiza-tus-Campanas/g,
+    /Haz-Pruebas-y-(?!%E2%80%A8)Optimiza-tus-Campanas/g,
     'Haz-Pruebas-y-%E2%80%A8Optimiza-tus-Campanas',
   );
   out = out.replace(/perder y\s+empezar a ganar/g, 'perder y empezar a ganar');
@@ -163,9 +175,11 @@ export default function ElementorPageContent({
     ),
   );
   const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
-  const bodyHtml = optimizeElementorLcpHero(
-    applyElementorIntrinsicDimensions(preparedHtml),
-    slug,
+  const bodyHtml = applyBlobImagesToHtml(
+    optimizeElementorLcpHero(
+      applyElementorIntrinsicDimensions(preparedHtml),
+      slug,
+    ),
   );
   const allStylesheets = elementorPageStylesheetUrls(pageId, stylesheetIds);
 

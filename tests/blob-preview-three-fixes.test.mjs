@@ -58,3 +58,26 @@ test('agencia-sem srcset drops unmapped size variants and keeps mapped original'
   assert.doesNotMatch(out, /-300x255\.png/);
   assert.doesNotMatch(out, /-768x653\.png/);
 });
+
+test('seo-vigo Yoast og:image rewrites to blob when mapped', () => {
+  clearBlobMigrationMapCache();
+  const wp = `${WP}/2024/11/Playful-SEO-en-Vigo0.svg`;
+  const out = applyBlobImagesToUrl(wp, PREVIEW_ENV);
+  assert.match(out, /\.public\.blob\.vercel-storage\.com\/media\/2024\/11\/Playful-SEO-en-Vigo0\.svg/);
+  assert.doesNotMatch(out, /endpoint\.playfulagency\.com/);
+});
+
+test('srcset entries drop URLs that contain whitespace in the path', () => {
+  clearBlobMigrationMapCache();
+  const broken = `${WP}/2024/09/Haz-Pruebas-y- Optimiza-tus-Campanas-300x255.png`;
+  const good = `${WP}/2024/09/Haz-Pruebas-y-%E2%80%A8Optimiza-tus-Campanas.png`;
+  const html = `<img src="${good}" srcset="${broken} 300w, ${good} 1000w" />`;
+  const out = applyBlobImagesToHtml(html, PREVIEW_ENV);
+  const srcset = out.match(/\bsrcset=(["'])([^"']*)\1/i)?.[2] || '';
+  assert.doesNotMatch(srcset, /300w/);
+  assert.match(srcset, /1000w/);
+  for (const part of srcset.split(',')) {
+    const url = part.trim().split(/\s+/)[0];
+    assert.doesNotMatch(url, /\s/);
+  }
+});

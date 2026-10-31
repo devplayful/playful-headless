@@ -3,6 +3,7 @@ import { canonicalForPath } from '@/utils/canonical';
 import { getPageBySlug, getPageMetadataBySlug } from '@/services/wordpress';
 import { applyPageTitleOverride, applyPageDescriptionOverride, pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
+import { applyBlobImagesToUrl } from '@/lib/blob-image-render';
 import ElementorPageContent from '@/components/ElementorPageContent';
 import {
   buildServiceLandingJsonLd,
@@ -56,10 +57,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     metadata.yoast_wpseo_og_description,
   );
   const jpeg = ogJpegForPath(`/${slug}`);
+  const wpOgImage = metadata.yoast_wpseo_og_image
+    ? applyBlobImagesToUrl(metadata.yoast_wpseo_og_image)
+    : '';
   const images = jpeg
     ? [ogJpegMeta(jpeg, title || 'Playful Agency')]
-    : metadata.yoast_wpseo_og_image
-      ? [metadata.yoast_wpseo_og_image]
+    : wpOgImage
+      ? [wpOgImage]
       : undefined;
   return {
     title,

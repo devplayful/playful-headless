@@ -70,6 +70,40 @@ export function rewriteEndpointAssetUrlForPreview(
   return href.startsWith('//') ? normalized : href;
 }
 
+function isInvalidSrcsetUrl(url: string): boolean {
+  return !url || /[\s\u2028\u2029]/.test(url);
+}
+
+function isCompleteEndpointUploadUrl(url: string): boolean {
+  if (!/\/wp-content\/uploads\//i.test(url)) return true;
+  try {
+    const absolute = normalizePreviewAssetHref(url).split('?')[0];
+    const file = decodeURIComponent(new URL(absolute).pathname).split('/').pop() || '';
+    if (!file || !/\.\w{2,5}$/i.test(file)) return false;
+    if (/[\s\u2028\u2029]/.test(file)) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function rewriteEndpointUrlInHtmlFragment(url: string, env: NodeJS.ProcessEnv): string {
+  if (!isCompleteEndpointUploadUrl(url)) return url;
+  return rewriteEndpointAssetUrlForPreview(url, env);
+}
+
+function parseSrcsetCandidate(part: string): { url: string; descriptor: string } | null {
+  const trimmed = part.trim();
+  if (!trimmed) return null;
+  const descriptorMatch = trimmed.match(/\s+(\d+(?:\.\d+)?[wx])$/i);
+  if (!descriptorMatch) {
+    return { url: trimmed, descriptor: '' };
+  }
+  const descriptor = descriptorMatch[1];
+  const url = trimmed.slice(0, trimmed.length - descriptorMatch[0].length);
+  return { url, descriptor };
+}
+
 /** Reescribe src/srcset de img; omite entradas srcset sin Blob ni /wp-static. */
 export function rewritePreviewMediaAttributesInHtml(
   html: string,
@@ -89,13 +123,13 @@ export function rewritePreviewMediaAttributesInHtml(
       const q = srcsetMatch[1];
       const kept: string[] = [];
       for (const part of srcsetMatch[2].split(',')) {
-        const trimmedPart = part.trim();
-        if (!trimmedPart) continue;
-        const tokens = trimmedPart.split(/\s+/);
-        const resolved = rewriteEndpointAssetUrlForPreview(tokens[0], env);
-        if (isUnresolvedEndpointUploadUrl(resolved)) continue;
-        tokens[0] = resolved;
-        kept.push(tokens.join(' '));
+        const parsed = parseSrcsetCandidate(part);
+        if (!parsed) continue;
+        const { url: rawUrl, descriptor } = parsed;
+        if (isInvalidSrcsetUrl(rawUrl)) continue;
+        const resolved = rewriteEndpointAssetUrlForPreview(rawUrl, env);
+        if (isInvalidSrcsetUrl(resolved) || isUnresolvedEndpointUploadUrl(resolved)) continue;
+        kept.push(descriptor ? `${resolved} ${descriptor}` : resolved);
       }
       if (kept.length === 0) {
         next = next.replace(srcsetMatch[0], '');
@@ -137,9 +171,10 @@ export function rewriteEndpointUrlsInHtmlForPreview(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!html || !isBlobImagesEnabled(env)) return html;
-  let out = html.replace(ENDPOINT_URL_IN_TEXT_RE, (url) => rewriteEndpointAssetUrlForPreview(url, env));
+  let out = rewritePreviewMediaAttributesInHtml(html, env);
+  out = out.replace(ENDPOINT_URL_IN_TEXT_RE, (url) => rewriteEndpointUrlInHtmlFragment(url, env));
   out = out.replace(PROTOCOL_RELATIVE_ENDPOINT_UPLOAD_RE, (url) => {
-    const resolved = rewriteEndpointAssetUrlForPreview(`https:${url}`, env);
+    const resolved = rewriteEndpointUrlInHtmlFragment(`https:${url}`, env);
     if (resolved.startsWith('https://') && !resolved.includes('endpoint.playfulagency.com')) {
       return resolved;
     }
