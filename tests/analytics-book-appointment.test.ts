@@ -3,8 +3,10 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   BOOK_APPOINTMENT_EVENT,
+  BOOK_APPOINTMENT_GA4_SEND_TO,
   BOOK_APPOINTMENT_STORAGE_PREFIX,
   bookAppointmentDedupeKey,
+  bookAppointmentGtagParams,
   normalizeThankYouSearch,
   pushBookAppointmentOnce,
   readConvParam,
@@ -37,6 +39,34 @@ function memoryStorage() {
   };
 }
 
+function captureGtag() {
+  const calls: unknown[][] = [];
+  return {
+    calls,
+    gtag: (...args: unknown[]) => {
+      calls.push([...args]);
+    },
+  };
+}
+
+function bookAppointmentGtagCalls(calls: unknown[][]): unknown[][] {
+  return calls.filter(
+    (call) => call[0] === 'event' && call[1] === BOOK_APPOINTMENT_EVENT,
+  );
+}
+
+function assertSingleBookAppointmentGtag(
+  calls: unknown[][],
+  expectedPageLocation: string,
+) {
+  const hits = bookAppointmentGtagCalls(calls);
+  assert.equal(hits.length, 1, `expected one gtag hit, got ${hits.length}`);
+  assert.deepEqual(hits[0][2], {
+    send_to: BOOK_APPOINTMENT_GA4_SEND_TO,
+    page_location: expectedPageLocation,
+  });
+}
+
 test('only Schedule conversions are booking events', () => {
   assert.equal(shouldTrackBookAppointment('?conv=Schedule'), true);
   assert.equal(shouldTrackBookAppointment('conv=Schedule&timezone=Europe/Madrid'), true);
@@ -53,70 +83,108 @@ test('treats GHL duplicate ?conv=Schedule as Schedule', () => {
   );
 });
 
-test('fires book_appointment when GHL duplicates conv in the query string', () => {
-  resetBookAppointmentForTests();
-  const storage = memoryStorage();
-  withWindow({ dataLayer: [] }, () => {
-    assert.equal(
-      pushBookAppointmentOnce({ search: '?conv=Schedule?conv=Schedule', storage }),
-      true,
-    );
-    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
-  });
-});
-
 test('dedupes by pa_booking_id when present, otherwise once per session', () => {
   assert.equal(bookAppointmentDedupeKey('?conv=Schedule&pa_booking_id=abc-1'), 'abc-1');
   assert.equal(bookAppointmentDedupeKey('?conv=Schedule'), 'gracias:conv=Schedule');
 });
 
-test('pushes book_appointment through dataLayer once per booking', () => {
+test('normal URL: one gtag book_appointment with send_to and clean page_location', () => {
   resetBookAppointmentForTests();
   const storage = memoryStorage();
-  withWindow({ dataLayer: [] }, () => {
-    assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), true);
-    assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), false);
-    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
+  const { calls, gtag } = captureGtag();
+  withWindow({ dataLayer: [], gtag }, () => {
+    assert.equal(
+      pushBookAppointmentOnce({ search: '?conv=Schedule', pathname: '/gracias', storage }),
+      true,
+    );
+    assert.equal(
+      pushBookAppointmentOnce({ search: '?conv=Schedule', pathname: '/gracias', storage }),
+      false,
+    );
+    assertSingleBookAppointmentGtag(calls, '/gracias?conv=Schedule');
     assert.equal(storage.records.get(`${BOOK_APPOINTMENT_STORAGE_PREFIX}gracias:conv=Schedule`), '1');
+  });
+});
+
+test('duplicated conv URL: still one gtag hit with normalized page_location', () => {
+  resetBookAppointmentForTests();
+  const storage = memoryStorage();
+  const { calls, gtag } = captureGtag();
+  withWindow({ dataLayer: [], gtag }, () => {
+    assert.equal(
+      pushBookAppointmentOnce({
+        search: '?conv=Schedule?conv=Schedule',
+        pathname: '/gracias',
+        storage,
+      }),
+      true,
+    );
+    assertSingleBookAppointmentGtag(calls, '/gracias?conv=Schedule');
+  });
+});
+
+test('double invoke (StrictMode): exactly one gtag book_appointment', () => {
+  resetBookAppointmentForTests();
+  const storage = memoryStorage();
+  const { calls, gtag } = captureGtag();
+  withWindow({ dataLayer: [], gtag }, () => {
+    assert.equal(
+      pushBookAppointmentOnce({ search: '?conv=Schedule', pathname: '/gracias', storage }),
+      true,
+    );
+    assert.equal(
+      pushBookAppointmentOnce({ search: '?conv=Schedule', pathname: '/gracias', storage }),
+      false,
+    );
+    assertSingleBookAppointmentGtag(calls, '/gracias?conv=Schedule');
   });
 });
 
 test('treats a new pa_booking_id as a distinct reservation', () => {
   resetBookAppointmentForTests();
   const storage = memoryStorage();
-  withWindow({ dataLayer: [] }, () => {
+  const { calls, gtag } = captureGtag();
+  withWindow({ dataLayer: [], gtag }, () => {
     assert.equal(pushBookAppointmentOnce({
       search: '?conv=Schedule&pa_booking_id=first',
+      pathname: '/gracias',
       storage,
     }), true);
     assert.equal(pushBookAppointmentOnce({
       search: '?conv=Schedule&pa_booking_id=first',
+      pathname: '/gracias',
       storage,
     }), false);
     assert.equal(pushBookAppointmentOnce({
       search: '?conv=Schedule&pa_booking_id=second',
+      pathname: '/gracias',
       storage,
     }), true);
-    assert.deepEqual(window.dataLayer, [
-      { event: BOOK_APPOINTMENT_EVENT },
-      { event: BOOK_APPOINTMENT_EVENT },
-    ]);
+    assert.equal(bookAppointmentGtagCalls(calls).length, 2);
   });
 });
 
-test('does not call gtag and does not fire for Lead', () => {
+test('does not fire for Lead conv', () => {
   resetBookAppointmentForTests();
   const storage = memoryStorage();
-  const gtagCalls: unknown[] = [];
-  withWindow({
-    dataLayer: [],
-    gtag: (...args: unknown[]) => { gtagCalls.push(args); },
-  }, () => {
+  const { calls, gtag } = captureGtag();
+  withWindow({ dataLayer: [], gtag }, () => {
     assert.equal(pushBookAppointmentOnce({ search: '?conv=Lead', storage }), false);
-    assert.equal(pushBookAppointmentOnce({ search: '?conv=Schedule', storage }), true);
-    assert.equal(gtagCalls.length, 0);
-    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
+    assert.equal(bookAppointmentGtagCalls(calls).length, 0);
   });
+});
+
+test('bookAppointmentGtagParams uses normalized search only', () => {
+  assert.deepEqual(
+    bookAppointmentGtagParams({
+      pathname: '/gracias',
+      search: '?conv=Schedule?conv=Schedule',
+    }),
+    {
+      send_to: BOOK_APPOINTMENT_GA4_SEND_TO,
+      page_location: '/gracias?conv=Schedule',
+    },
+  );
 });
 
 test('thank-you page mounts the tracker without changing gtag loading', () => {
@@ -129,5 +197,6 @@ test('thank-you page mounts the tracker without changing gtag loading', () => {
   assert.match(ga, /strategy="afterInteractive"/);
   assert.match(ga, /gtag\/js\?id=/);
   assert.match(layout, /GoogleAnalytics/);
+  assert.match(layout, /gtag-data-layer-stub/);
   assert.doesNotMatch(layout, /BookAppointmentTracker/);
 });

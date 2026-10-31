@@ -8,9 +8,8 @@ import {
 import { clearBookingIntent } from '@/lib/analytics/booking-abandon';
 
 /**
- * Invisible tracker for /gracias?conv=Schedule. Pushes book_appointment to
- * dataLayer once per booking and clears booking-abandon intent.
- * Does not change gtag loading.
+ * Invisible tracker for /gracias?conv=Schedule. Sends book_appointment via gtag
+ * (GA4 G-WH76RQWSCT) once per booking and clears booking-abandon intent.
  */
 export default function BookAppointmentTracker() {
   useEffect(() => {
@@ -21,7 +20,11 @@ export default function BookAppointmentTracker() {
     if (normalized && normalized !== search) {
       window.history.replaceState(window.history.state, '', `${window.location.pathname}${normalized}`);
     }
-    pushBookAppointmentOnce({ search: normalized || search });
+    const trackingSearch = normalized || search;
+    pushBookAppointmentOnce({
+      search: trackingSearch,
+      pathname: window.location.pathname,
+    });
   }, []);
 
   return null;

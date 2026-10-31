@@ -1,10 +1,7 @@
-declare global {
-  interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
-  }
-}
+import { isQaTraffic } from './qa-traffic.ts';
 
 export const BOOK_APPOINTMENT_EVENT = 'book_appointment';
+export const BOOK_APPOINTMENT_GA4_SEND_TO = 'G-WH76RQWSCT';
 export const BOOK_APPOINTMENT_STORAGE_PREFIX = 'playful:ga4:book_appointment:';
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
@@ -51,6 +48,17 @@ export function normalizeThankYouSearch(search: string): string {
   return qs ? `?${qs}` : '';
 }
 
+export function bookAppointmentPageLocation(input: {
+  pathname?: string;
+  search: string;
+}): string {
+  const pathname = input.pathname || '/gracias';
+  const normalized = normalizeThankYouSearch(input.search);
+  const search = normalized || input.search;
+  if (!search || search === '?') return pathname;
+  return search.startsWith('?') ? `${pathname}${search}` : `${pathname}?${search}`;
+}
+
 export function bookAppointmentDedupeKey(search: string): string {
   const bookingId = searchParams(search).get('pa_booking_id')?.trim();
   if (bookingId) return bookingId;
@@ -85,11 +93,29 @@ function writeStorageFlag(key: string, storage?: StorageLike | null): void {
   sentInMemory.add(key);
 }
 
-function getDataLayer(): { push: (...items: Array<Record<string, unknown>>) => unknown } | undefined {
-  if (typeof window === 'undefined') return undefined;
-  const dataLayer = window.dataLayer;
-  if (!dataLayer || typeof dataLayer.push !== 'function') return undefined;
-  return dataLayer;
+/** Synchronous claim so React StrictMode / double effects only emit once. */
+function claimBookAppointmentSend(key: string, storage?: StorageLike | null): boolean {
+  if (sentInMemory.has(key)) return false;
+  if (readStorageFlag(key, storage)) {
+    sentInMemory.add(key);
+    return false;
+  }
+  sentInMemory.add(key);
+  writeStorageFlag(key, storage);
+  return true;
+}
+
+/** Same inline stub as app/layout.tsx when production omits the head script (preview). */
+export function ensureGtagStub(): void {
+  if (typeof window === 'undefined') return;
+  window.dataLayer = window.dataLayer || [];
+  if (typeof window.gtag === 'function') return;
+  window.gtag = function gtag(...args: unknown[]) {
+    const layer = window.dataLayer as unknown[] | undefined;
+    if (!layer) return;
+    // gtag.js replays queued `arguments` objects from the layout stub.
+    layer.push(args);
+  };
 }
 
 function defaultStorage(): StorageLike | null {
@@ -101,23 +127,43 @@ function defaultStorage(): StorageLike | null {
   }
 }
 
+export function bookAppointmentGtagParams(input: {
+  pathname?: string;
+  search: string;
+}): Record<string, string> {
+  return {
+    send_to: BOOK_APPOINTMENT_GA4_SEND_TO,
+    page_location: bookAppointmentPageLocation(input),
+  };
+}
+
 /**
- * Queues book_appointment on the existing dataLayer. Does not call gtag or
- * change how gtag.js loads. Once per booking: pa_booking_id when present,
- * otherwise once per session for /gracias?conv=Schedule.
+ * Sends book_appointment via gtag (GA4 direct, not GTM). Once per booking:
+ * pa_booking_id when present, otherwise once per session for conv=Schedule.
+ * Installs the gtag queue stub if layout did not (Vercel preview builds).
  */
 export function pushBookAppointmentOnce(input: {
   search: string;
+  pathname?: string;
   storage?: StorageLike | null;
 }): boolean {
+  if (typeof window === 'undefined') return false;
+  if (isQaTraffic()) return false;
   if (!shouldTrackBookAppointment(input.search)) return false;
+
   const key = storageKey(bookAppointmentDedupeKey(input.search));
   const storage = input.storage === undefined ? defaultStorage() : input.storage;
-  if (readStorageFlag(key, storage)) return false;
-  const dataLayer = getDataLayer();
-  if (!dataLayer) return false;
-  dataLayer.push({ event: BOOK_APPOINTMENT_EVENT });
-  writeStorageFlag(key, storage);
+  if (!claimBookAppointmentSend(key, storage)) return false;
+
+  ensureGtagStub();
+  window.gtag!(
+    'event',
+    BOOK_APPOINTMENT_EVENT,
+    bookAppointmentGtagParams({
+      pathname: input.pathname,
+      search: input.search,
+    }),
+  );
   return true;
 }
 
