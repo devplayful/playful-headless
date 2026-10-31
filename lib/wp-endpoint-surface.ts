@@ -8,6 +8,7 @@ const ENDPOINT_HOST_RE =
   /(?:https?:)?\/\/(?:endpoint\.|crear\.endpoint\.)?playfulagency\.com/gi;
 
 const WTI_PIXEL_RE = /wti-like-post\/images\/pixel\.gif/i;
+const WTI_PIXEL_STATIC = '/wp-static/wp-content/plugins/wti-like-post/images/pixel.gif';
 
 const NON_IMAGE_STATIC_RE =
   /\/wp-content\/(?:plugins|uploads\/elementor\/css|themes)|\/wp-includes\/js\//i;
@@ -81,9 +82,15 @@ export function rewriteEndpointUrlsInHtmlForPreview(
   return out;
 }
 
-export function stripWtiLikeTrackingPixels(html: string, env: NodeJS.ProcessEnv = process.env): string {
+export function rewriteWtiLikeTrackingPixels(html: string, env: NodeJS.ProcessEnv = process.env): string {
   if (!html || !isBlobImagesEnabled(env)) return html;
-  return html.replace(/<img\b[^>]*>/gi, (tag) => (WTI_PIXEL_RE.test(tag) ? '' : tag));
+  return html.replace(/<img\b[^>]*>/gi, (tag) => {
+    if (!WTI_PIXEL_RE.test(tag)) return tag;
+    if (/\bsrc\s*=/i.test(tag)) {
+      return tag.replace(/\bsrc\s*=\s*(["'])[^"']*\1/i, `src="${WTI_PIXEL_STATIC}"`);
+    }
+    return tag.replace(/<img\b/i, `<img src="${WTI_PIXEL_STATIC}"`);
+  });
 }
 
 export function countEndpointHostRefs(text: string): number {

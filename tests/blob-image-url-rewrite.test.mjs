@@ -2,9 +2,11 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   blobStorageKeyFromCanonicalUrl,
+  blobPublicUrlFromKey,
   canonicalWordPressUploadUrl,
   extractImageUrlsFromHtml,
   isMigratableWordPressMediaUrl,
+  maybeRewriteMediaUrl,
   rewriteMigratableUrlsInHtml,
 } from '../lib/blob-image-url.ts';
 
@@ -64,5 +66,33 @@ describe('blob-image-url', () => {
     const urls = extractImageUrlsFromHtml(html);
     assert.ok(urls.some((u) => u.includes('i1.wp.com')));
     assert.ok(urls.some((u) => u.includes('x-300x300')));
+  });
+
+  it('codifica claves Blob con % en el nombre (TAPA ¿)', () => {
+    const canonical =
+      'https://endpoint.playfulagency.com/wp-content/uploads/2020/08/TAPA_¿Que-es-Google-Ad-Grants-150x150.png';
+    const key = blobStorageKeyFromCanonicalUrl(canonical);
+    assert.equal(key, 'media/2020/08/TAPA_%C2%BFQue-es-Google-Ad-Grants-150x150.png');
+    const pub = blobPublicUrlFromKey(key);
+    assert.match(pub, /TAPA_%25C2%25BFQue-es-Google-Ad-Grants-150x150\.png$/);
+  });
+
+  it('maybeRewriteMediaUrl re-codifica entradas del mapa', async () => {
+    const { loadBlobMigrationMap, clearBlobMigrationMapCache } = await import(
+      '../lib/blob-image-map.ts'
+    );
+    const { maybeRewriteMediaUrl, isBlobImagesEnabled } = await import('../lib/blob-image-url.ts');
+    clearBlobMigrationMapCache();
+    const env = {
+      ...process.env,
+      VERCEL_ENV: 'preview',
+      VERCEL_GIT_COMMIT_REF: 'cursor/payload-h2-imagenes-5a28',
+    };
+    assert.ok(isBlobImagesEnabled(env));
+    const wp =
+      'https://endpoint.playfulagency.com/wp-content/uploads/2020/08/TAPA_¿Que-es-Google-Ad-Grants-150x150.png';
+    const map = loadBlobMigrationMap(env);
+    const out = maybeRewriteMediaUrl(wp, map, env);
+    assert.match(out, /TAPA_%25C2%25BFQue-es-Google-Ad-Grants-150x150\.png$/);
   });
 });

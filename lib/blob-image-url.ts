@@ -38,6 +38,31 @@ function decodePath(pathname: string): string {
   }
 }
 
+/** Claves Blob alineadas con la subida (NFC + segmentos de nombre codificados). */
+export function normalizeBlobFilenameSegment(segment: string): string {
+  return encodeURIComponent(segment.normalize('NFC'));
+}
+
+export function blobKeyPathFromCanonicalPathname(pathname: string): string | null {
+  if (!pathname.startsWith(WP_UPLOADS_PREFIX)) return null;
+  const relative = decodePath(pathname).slice(WP_UPLOADS_PREFIX.length);
+  const parts = relative.split('/').filter(Boolean);
+  if (parts.length < 3) return null;
+  const [year, month, ...rest] = parts;
+  const file = rest.join('/');
+  return `media/${year}/${month}/${normalizeBlobFilenameSegment(file)}`;
+}
+
+/** Clave en Blob a partir de la URL pública (sin decodificar el path). */
+export function blobStorageKeyFromPublicBlobUrl(raw: string): string | null {
+  if (!raw?.trim()) return null;
+  const trimmed = raw.trim().split('?')[0];
+  const match = trimmed.match(/\.public\.blob\.vercel-storage\.com\/(.+)$/i);
+  if (!match?.[1]) return null;
+  const key = match[1].replace(/^\/+/, '');
+  return key.startsWith('media/') ? key : null;
+}
+
 /** ¿Es una URL de imagen/medio servida desde WP (directo, proxy wp.com o subdominio crear.*)? */
 export function isMigratableWordPressMediaUrl(raw: string): boolean {
   if (typeof raw !== 'string' || !raw.trim()) return false;
@@ -84,7 +109,7 @@ export function canonicalWordPressUploadUrl(raw: string): string | null {
     if (!pathname.startsWith(WP_UPLOADS_PREFIX)) return null;
     if (host !== WP_ENDPOINT_HOST && !host.endsWith('.playfulagency.com')) return null;
 
-    const path = decodePath(pathname);
+    const path = decodePath(pathname).normalize('NFC');
     return `https://${WP_ENDPOINT_HOST}${path}`;
   } catch {
     return null;
@@ -98,10 +123,7 @@ export function blobStorageKeyFromCanonicalUrl(canonical: string): string | null
     if (url.hostname !== WP_ENDPOINT_HOST || !url.pathname.startsWith(WP_UPLOADS_PREFIX)) {
       return null;
     }
-    const relative = url.pathname.slice(WP_UPLOADS_PREFIX.length);
-    const parts = relative.split('/').filter(Boolean);
-    if (parts.length < 2) return null;
-    return `media/${parts.join('/')}`;
+    return blobKeyPathFromCanonicalPathname(url.pathname.normalize('NFC'));
   } catch {
     return null;
   }
@@ -114,7 +136,45 @@ export function blobPublicUrlFromKey(
   const base =
     env.BLOB_PUBLIC_BASE_URL?.replace(/\/$/, '') ||
     'https://xl21culwxno499zc.public.blob.vercel-storage.com';
-  return `${base}/${key.replace(/^\//, '')}`;
+  return blobPublicUrlWithBase(base, key);
+}
+
+export function blobPublicUrlWithBase(base: string, key: string): string {
+  const cleanBase = base.replace(/\/$/, '');
+  const clean = key.replace(/^\//, '');
+  const encoded = clean
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/');
+  return `${cleanBase}/${encoded}`;
+}
+
+/** Re-codifica el path solo si el nombre en Blob lleva secuencias % literales. */
+export function blobPublicUrlFromStoredMapTarget(
+  blobUrl: string,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  const key = blobStorageKeyFromPublicBlobUrl(blobUrl);
+  if (!key) return blobUrl;
+  const file = key.split('/').pop() || '';
+  if (!file.includes('%')) return blobUrl;
+  const base = blobUrl.match(/^(https:\/\/[^/]+)/i)?.[1];
+  if (!base) return blobPublicUrlFromKey(key, env);
+  return blobPublicUrlWithBase(base, key);
+}
+
+/** URL pública Blob coherente con la clave almacenada (doble codificación de % en nombres). */
+export function blobPublicUrlForCanonical(
+  canonical: string,
+  map: BlobUrlMap | null | undefined,
+  env: NodeJS.ProcessEnv = process.env,
+): string | null {
+  const mapped = map?.[canonical];
+  const key =
+    (mapped && blobStorageKeyFromPublicBlobUrl(mapped)) ||
+    blobStorageKeyFromCanonicalUrl(canonical);
+  if (!key) return null;
+  return blobPublicUrlFromKey(key, env);
 }
 
 export function plannedBlobUrlForSource(raw: string, env?: NodeJS.ProcessEnv): string | null {
@@ -171,11 +231,16 @@ export function rewriteHtmlWithBlobMap(html: string, map: BlobUrlMap): string {
 }
 
 /** Aplica el mapa solo a URLs migrables; el resto del HTML no cambia. */
-export function rewriteMigratableUrlsInHtml(html: string, map: BlobUrlMap): string {
+export function rewriteMigratableUrlsInHtml(
+  html: string,
+  map: BlobUrlMap,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
   if (!html) return html;
   const effective: BlobUrlMap = {};
   for (const [from, to] of Object.entries(map)) {
-    if (isMigratableWordPressMediaUrl(from)) effective[from] = to;
+    if (!isMigratableWordPressMediaUrl(from)) continue;
+    effective[from] = blobPublicUrlFromStoredMapTarget(to, env);
   }
   return rewriteHtmlWithBlobMap(html, effective);
 }
@@ -186,9 +251,8 @@ export function buildBlobMapFromCanonicalEntries(
 ): BlobUrlMap {
   const map: BlobUrlMap = {};
   for (const { sourceUrl, canonical } of entries) {
-    const key = blobStorageKeyFromCanonicalUrl(canonical);
-    if (!key) continue;
-    const blob = blobPublicUrlFromKey(key, env);
+    const blob = blobPublicUrlForCanonical(canonical, map, env);
+    if (!blob) continue;
     map[sourceUrl] = blob;
     map[canonical] = blob;
   }
@@ -210,8 +274,13 @@ export function maybeRewriteMediaUrl(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!url || !isBlobImagesEnabled(env) || !map) return url;
-  if (map[url]) return map[url];
   const canonical = canonicalWordPressUploadUrl(url);
-  if (canonical && map[canonical]) return map[canonical];
+  if (canonical) {
+    const mapped = map[canonical];
+    if (mapped) return blobPublicUrlFromStoredMapTarget(mapped, env);
+    const key = blobStorageKeyFromCanonicalUrl(canonical);
+    if (key) return blobPublicUrlFromKey(key, env);
+  }
+  if (map[url]) return blobPublicUrlFromStoredMapTarget(map[url], env);
   return url;
 }
