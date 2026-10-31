@@ -486,6 +486,23 @@ export async function runPayloadPreviewSeedPaginasB4(env = process.env) {
   return 0;
 }
 
+export function shouldRunPreviewH5AltsSeed(env = process.env) {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+export async function runPreviewH5AltsBuild(env = process.env) {
+  if (!shouldRunPreviewH5AltsSeed(env)) {
+    console.log('h5 alts preview seed: omitido (solo VERCEL_ENV=preview con DATABASE_URL)');
+    return 0;
+  }
+  console.log('h5 alts preview seed: ejecutando tras migrate (idempotente)');
+  const code = await runGuardedCommand(process.execPath, ['scripts/preview-h5-alts-build.ts'], { env });
+  if (code !== 0) {
+    console.warn(`h5 alts preview seed: terminó con código ${code} (no bloquea el build)`);
+  }
+  return 0;
+}
+
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
@@ -499,6 +516,7 @@ export async function runGuardedBuild() {
   if (b5Code !== 0) return b5Code;
   const b4Code = await runPayloadPreviewSeedPaginasB4();
   if (b4Code !== 0) return b4Code;
+  await runPreviewH5AltsBuild();
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],
