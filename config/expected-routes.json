@@ -17,6 +17,7 @@
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
     "/cms-casos-preview/hub",
+    "/cms-home-preview",
     "/cms-api/[...slug]",
     "/cms-pagina-b1-preview/[slug]",
     "/cms-pagina-b4-preview/[slug]",
@@ -191,6 +192,7 @@
     "/cms-servicio-preview/[slug]": [],
     "/casos-de-exito/[slug]": [],
     "/cms-api/[...slug]": [],
+    "/cms-home-preview": [],
     "/podcast/[slug]": [],
     "/cms-pagina-b1-preview/[slug]": [
       "/cms-pagina-b1-preview/politica-de-privacidad"

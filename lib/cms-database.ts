@@ -82,3 +82,10 @@ export function shouldRunPreviewPaginasB4Seed(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
+
+/** Preview: seed Home congelada (main). */
+export function shouldRunPreviewHomeSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}

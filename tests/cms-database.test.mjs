@@ -17,6 +17,7 @@ const {
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
   shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -146,6 +147,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB1/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB5/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
+  assert.match(buildScript, /runPayloadPreviewHomeSeed/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);

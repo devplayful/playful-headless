@@ -8,6 +8,7 @@ import {
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
   shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
   hasDatabaseUrl,
   getPayloadConnectionString,
   hasRuntimeDatabase,
@@ -159,6 +160,7 @@ export {
   shouldRunPreviewPaginasB1Seed,
   shouldRunPreviewPaginasB5Seed,
   shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
 };
 
 export function payloadMigrateArgs() {
@@ -486,6 +488,55 @@ export async function runPayloadPreviewSeedPaginasB4(env = process.env) {
   return 0;
 }
 
+export function summarizePreviewHomeSeedOutput(output) {
+  const text = String(output);
+  const okPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) OK(?: \(updated\))?/gm;
+  const errPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) ERROR/gm;
+  const okLines = [...text.matchAll(okPattern)];
+  const errLines = [...text.matchAll(errPattern)];
+  const resumen = text.match(/\[HOME-CMS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  return {
+    ok: resumen ? Number(resumen[1]) : okLines.length,
+    err: resumen ? Number(resumen[2]) : errLines.length,
+    lines: okLines.map((match) => match[0]),
+    resumenLine: resumen ? resumen[0] : null,
+  };
+}
+
+export async function runPayloadPreviewHomeSeed(env = process.env) {
+  if (!shouldRunPreviewHomeSeed(env)) {
+    console.log(
+      'cms:seed-home: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-home: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-home.mts'],
+    { env },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewHomeSeedOutput(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-home ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
+  console.log(
+    `seed-home OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} bloques [HOME-CMS])`,
+  );
+  if (summary.lines.length !== 8 || summary.err !== 0) {
+    console.log('seed-home ERROR: se esperaban 8 líneas OK por bloque');
+    return 1;
+  }
+  return exitCode;
+}
+
 export function shouldRunPreviewH5AltsSeed(env = process.env) {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
@@ -506,6 +557,8 @@ export async function runPreviewH5AltsBuild(env = process.env) {
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const homeSeedCode = await runPayloadPreviewHomeSeed();
+  if (homeSeedCode !== 0) return homeSeedCode;
   const seedCode = await runPayloadPreviewSeedServicios();
   if (seedCode !== 0) return seedCode;
   const h4Code = await runPayloadPreviewH4Casos();

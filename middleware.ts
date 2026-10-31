@@ -42,6 +42,10 @@ import {
   cmsPreviewPaginaB5Path,
   isCmsPreviewPaginaB5InternalPath,
 } from './lib/cms-paginas-b5-flag';
+import {
+  CMS_PREVIEW_HOME_PATH,
+  isCmsPreviewHomeInternalPath,
+} from './lib/cms-home-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -192,7 +196,22 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
+  if (isCmsPreviewHomeInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    if (path === '/') {
+      const target = request.nextUrl.clone();
+      target.pathname = CMS_PREVIEW_HOME_PATH;
+      target.searchParams.delete('cms');
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-cms-home-preview', '1');
+      return attachAttributionCookies(
+        request,
+        NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+      );
+    }
     if (path === '/casos-de-exito') {
       const target = request.nextUrl.clone();
       target.pathname = cmsPreviewCasosHubPath();

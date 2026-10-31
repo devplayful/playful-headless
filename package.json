@@ -44,6 +44,7 @@
     "cms:seed-paginas-b1": "node scripts/seed-paginas-b1.mts",
     "cms:seed-paginas-b5": "node scripts/seed-paginas-b5.mts",
     "cms:seed-paginas-b4": "node scripts/seed-paginas-b4.mts",
+    "cms:seed-home": "node scripts/seed-home.mts",
     "cms:seed-posts-alts-h5": "node scripts/seed-posts-alts-h5.ts",
     "test:payload-alts-h5": "node --experimental-strip-types --test tests/payload-posts-alts-h5.test.mjs"
   },
