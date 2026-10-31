@@ -5,7 +5,9 @@ import {
   BOOK_APPOINTMENT_EVENT,
   BOOK_APPOINTMENT_STORAGE_PREFIX,
   bookAppointmentDedupeKey,
+  normalizeThankYouSearch,
   pushBookAppointmentOnce,
+  readConvParam,
   resetBookAppointmentForTests,
   shouldTrackBookAppointment,
 } from '../lib/analytics/book-appointment.ts';
@@ -40,6 +42,27 @@ test('only Schedule conversions are booking events', () => {
   assert.equal(shouldTrackBookAppointment('conv=Schedule&timezone=Europe/Madrid'), true);
   assert.equal(shouldTrackBookAppointment('?conv=Lead'), false);
   assert.equal(shouldTrackBookAppointment(''), false);
+});
+
+test('treats GHL duplicate ?conv=Schedule as Schedule', () => {
+  assert.equal(readConvParam('?conv=Schedule?conv=Schedule'), 'Schedule');
+  assert.equal(shouldTrackBookAppointment('?conv=Schedule?conv=Schedule'), true);
+  assert.equal(
+    normalizeThankYouSearch('?conv=Schedule?conv=Schedule'),
+    '?conv=Schedule',
+  );
+});
+
+test('fires book_appointment when GHL duplicates conv in the query string', () => {
+  resetBookAppointmentForTests();
+  const storage = memoryStorage();
+  withWindow({ dataLayer: [] }, () => {
+    assert.equal(
+      pushBookAppointmentOnce({ search: '?conv=Schedule?conv=Schedule', storage }),
+      true,
+    );
+    assert.deepEqual(window.dataLayer, [{ event: BOOK_APPOINTMENT_EVENT }]);
+  });
 });
 
 test('dedupes by pa_booking_id when present, otherwise once per session', () => {

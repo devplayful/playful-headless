@@ -11,13 +11,44 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
 const sentInMemory = new Set<string>();
 
-function searchParams(search: string): URLSearchParams {
+/**
+ * GHL thank-you redirects sometimes append `?conv=Schedule` to a URL that
+ * already carries conv, yielding `?conv=Schedule?conv=Schedule`. URLSearchParams
+ * then reads conv as `Schedule?conv=Schedule`, which breaks strict checks.
+ */
+function normalizeSearchRaw(search: string): string {
   const raw = (search || '').startsWith('?') ? search.slice(1) : search || '';
-  return new URLSearchParams(raw);
+  return raw.replace(/\?(?=conv=)/gi, '&');
+}
+
+function searchParams(search: string): URLSearchParams {
+  return new URLSearchParams(normalizeSearchRaw(search));
+}
+
+export function readConvParam(search: string): string | null {
+  const value = searchParams(search).get('conv');
+  if (!value) return null;
+  const primary = value.split('?')[0]?.split('&')[0]?.trim() ?? '';
+  return primary || null;
 }
 
 export function shouldTrackBookAppointment(search: string): boolean {
-  return searchParams(search).get('conv') === 'Schedule';
+  return readConvParam(search) === 'Schedule';
+}
+
+/** Collapses duplicate/malformed conv into a single query param for the address bar. */
+export function normalizeThankYouSearch(search: string): string {
+  const conv = readConvParam(search);
+  if (!conv) return search;
+  const params = searchParams(search);
+  const clean = new URLSearchParams();
+  params.forEach((v, key) => {
+    if (key === 'conv') return;
+    clean.append(key, v);
+  });
+  clean.set('conv', conv);
+  const qs = clean.toString();
+  return qs ? `?${qs}` : '';
 }
 
 export function bookAppointmentDedupeKey(search: string): string {

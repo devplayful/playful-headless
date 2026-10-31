@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { pushBookAppointmentOnce } from '@/lib/analytics/book-appointment';
+import {
+  normalizeThankYouSearch,
+  pushBookAppointmentOnce,
+} from '@/lib/analytics/book-appointment';
 import { clearBookingIntent } from '@/lib/analytics/booking-abandon';
 
 /**
@@ -13,7 +16,12 @@ export default function BookAppointmentTracker() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     clearBookingIntent();
-    pushBookAppointmentOnce({ search: window.location.search });
+    const search = window.location.search;
+    const normalized = normalizeThankYouSearch(search);
+    if (normalized && normalized !== search) {
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${normalized}`);
+    }
+    pushBookAppointmentOnce({ search: normalized || search });
   }, []);
 
   return null;
