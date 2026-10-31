@@ -1,19 +1,30 @@
 'use client';
 
 import { useEffect } from 'react';
-import { pushBookAppointmentOnce } from '@/lib/analytics/book-appointment';
+import {
+  normalizeThankYouSearch,
+  pushBookAppointmentOnce,
+} from '@/lib/analytics/book-appointment';
 import { clearBookingIntent } from '@/lib/analytics/booking-abandon';
 
 /**
- * Invisible tracker for /gracias?conv=Schedule. Pushes book_appointment to
- * dataLayer once per booking and clears booking-abandon intent.
- * Does not change gtag loading.
+ * Invisible tracker for /gracias?conv=Schedule. Sends book_appointment via gtag
+ * (GA4 G-WH76RQWSCT) once per booking and clears booking-abandon intent.
  */
 export default function BookAppointmentTracker() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     clearBookingIntent();
-    pushBookAppointmentOnce({ search: window.location.search });
+    const search = window.location.search;
+    const normalized = normalizeThankYouSearch(search);
+    if (normalized && normalized !== search) {
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${normalized}`);
+    }
+    const trackingSearch = normalized || search;
+    pushBookAppointmentOnce({
+      search: trackingSearch,
+      pathname: window.location.pathname,
+    });
   }, []);
 
   return null;
