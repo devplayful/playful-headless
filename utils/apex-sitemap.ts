@@ -170,6 +170,7 @@ export const SITEMAP_BLOG_PATHS = [
   "/blog/seo/google-y-su-inteligencia-artificial",
   "/blog/seo/hacks-seo-local",
   "/blog/seo/metadescripcion-que-es",
+  "/blog/seo/migracion-seo-cambiar-de-plataforma-alternativa",
   "/blog/seo/optimizacion-multimedia",
   "/blog/seo/posicionamiento-organico-vs-pago",
   "/blog/seo/que-es-data-studio-de-google-y-como-funciona",
