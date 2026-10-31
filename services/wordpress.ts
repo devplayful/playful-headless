@@ -809,10 +809,12 @@ async function hydrateListingPosts(
     return {
       ...rewritten,
       categories,
-      featured_media_url: publicWebpIfPresent(
-        resolveBlogCoverUrl(
-          rewritten.slug,
-          mediaItem?.source_url || rewritten.featured_media_url || '',
+      featured_media_url: applyBlobImagesToUrl(
+        publicWebpIfPresent(
+          resolveBlogCoverUrl(
+            rewritten.slug,
+            mediaItem?.source_url || rewritten.featured_media_url || '',
+          ),
         ),
       ),
       featured_media_alt: resolveBlogCoverAlt(

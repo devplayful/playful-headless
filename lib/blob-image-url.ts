@@ -226,11 +226,15 @@ export function blobMapLookupKeys(url: string): string[] {
     keys.push(value);
   };
 
-  const trimmed = url.trim().split('?')[0];
+  let trimmed = url.trim().split('?')[0];
+  if (trimmed.startsWith('//endpoint.') || trimmed.startsWith('//crear.endpoint.')) {
+    push(`https:${trimmed}`);
+    trimmed = `https:${trimmed}`;
+  }
   push(trimmed);
   push(url.trim());
 
-  const canonical = canonicalWordPressUploadUrl(url);
+  const canonical = canonicalWordPressUploadUrl(url.startsWith('//') ? `https:${url.trim()}` : url);
   if (!canonical) return keys;
 
   push(canonical);
@@ -261,6 +265,20 @@ export function lookupBlobMapTarget(url: string, map: BlobUrlMap): string | unde
   return undefined;
 }
 
+/** Ignora claves truncadas del mapa (p. ej. …/Haz-Pruebas-y-) que rompen srcset por prefijo. */
+export function isCompleteBlobMapSourceUrl(from: string): boolean {
+  if (!isMigratableWordPressMediaUrl(from)) return false;
+  try {
+    const absolute = from.trim().startsWith('//') ? `https:${from.trim()}` : from.trim();
+    const file = decodePath(new URL(absolute).pathname).split('/').pop() || '';
+    if (!file || !/\.\w{2,5}$/i.test(file)) return false;
+    if (/[-_]$/.test(file.replace(/\.\w+$/i, ''))) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Sustituye URLs conocidas en HTML (src, srcset, comillas). URLs no migrables se dejan igual. */
 export function rewriteHtmlWithBlobMap(html: string, map: BlobUrlMap): string {
   if (!html || !map || Object.keys(map).length === 0) return html;
@@ -284,7 +302,7 @@ export function rewriteMigratableUrlsInHtml(
   if (!html) return html;
   const effective: BlobUrlMap = {};
   for (const [from, to] of Object.entries(map)) {
-    if (!isMigratableWordPressMediaUrl(from)) continue;
+    if (!isCompleteBlobMapSourceUrl(from)) continue;
     effective[from] = blobPublicUrlFromStoredMapTarget(to, env);
   }
   return rewriteHtmlWithBlobMap(html, effective);

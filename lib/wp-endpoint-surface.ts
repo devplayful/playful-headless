@@ -30,14 +30,35 @@ export function isNonImageEndpointStaticUrl(url: string): boolean {
  * Preview H2: CSS/JS/fuentes → copia en /wp-static; uploads en mapa Blob.
  * Sin sustituto si no hay copia (404 en origen).
  */
+function normalizePreviewAssetHref(href: string): string {
+  const trimmed = href.trim();
+  if (trimmed.startsWith('//endpoint.') || trimmed.startsWith('//crear.endpoint.')) {
+    return `https:${trimmed}`;
+  }
+  return trimmed;
+}
+
+function isUnresolvedEndpointUploadUrl(url: string): boolean {
+  if (!url?.trim()) return false;
+  try {
+    const absolute = normalizePreviewAssetHref(url).split('?')[0];
+    const parsed = new URL(absolute);
+    if (!parsed.hostname.endsWith('playfulagency.com')) return false;
+    return parsed.pathname.startsWith('/wp-content/uploads/');
+  } catch {
+    return false;
+  }
+}
+
 export function rewriteEndpointAssetUrlForPreview(
   href: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!href?.trim() || !isBlobImagesEnabled(env)) return href;
-  const trimmed = href.trim().split('?')[0];
+  const normalized = normalizePreviewAssetHref(href);
+  const trimmed = normalized.split('?')[0];
   const map = loadBlobMigrationMap(env);
-  const mapped = lookupBlobMapTarget(href, map || {});
+  const mapped = lookupBlobMapTarget(normalized, map || {});
   if (mapped) {
     return blobPublicUrlFromStoredMapTarget(mapped, env);
   }
@@ -46,10 +67,44 @@ export function rewriteEndpointAssetUrlForPreview(
   const mirrored = resolveMirroredAssetUrl(trimmed, map, env);
   if (mirrored?.startsWith('http')) return mirrored;
   if (mirrored?.startsWith('/')) return mirrored;
-  if (trimmed.startsWith('//endpoint.playfulagency.com')) {
-    return rewriteEndpointAssetUrlForPreview(`https:${trimmed}`, env);
-  }
-  return href;
+  return href.startsWith('//') ? normalized : href;
+}
+
+/** Reescribe src/srcset de img; omite entradas srcset sin Blob ni /wp-static. */
+export function rewritePreviewMediaAttributesInHtml(
+  html: string,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  if (!html || !isBlobImagesEnabled(env)) return html;
+  return html.replace(/<img\b([^>]*)>/gi, (_full, attrs: string) => {
+    let next = attrs;
+    const srcMatch = /\bsrc\s*=\s*(["'])([^"']*)\1/i.exec(attrs);
+    if (srcMatch) {
+      const q = srcMatch[1];
+      const resolved = rewriteEndpointAssetUrlForPreview(srcMatch[2], env);
+      next = next.replace(srcMatch[0], `src=${q}${resolved}${q}`);
+    }
+    const srcsetMatch = /\bsrcset\s*=\s*(["'])([^"']*)\1/i.exec(attrs);
+    if (srcsetMatch) {
+      const q = srcsetMatch[1];
+      const kept: string[] = [];
+      for (const part of srcsetMatch[2].split(',')) {
+        const trimmedPart = part.trim();
+        if (!trimmedPart) continue;
+        const tokens = trimmedPart.split(/\s+/);
+        const resolved = rewriteEndpointAssetUrlForPreview(tokens[0], env);
+        if (isUnresolvedEndpointUploadUrl(resolved)) continue;
+        tokens[0] = resolved;
+        kept.push(tokens.join(' '));
+      }
+      if (kept.length === 0) {
+        next = next.replace(srcsetMatch[0], '');
+      } else {
+        next = next.replace(srcsetMatch[0], `srcset=${q}${kept.join(', ')}${q}`);
+      }
+    }
+    return `<img${next}>`;
+  });
 }
 
 export function rewriteElementorScriptUrlForPreview(
@@ -61,6 +116,9 @@ export function rewriteElementorScriptUrlForPreview(
 
 const ENDPOINT_URL_IN_TEXT_RE =
   /https?:\/\/endpoint\.playfulagency\.com[^\s"'<>\\)]*/gi;
+
+const PROTOCOL_RELATIVE_ENDPOINT_UPLOAD_RE =
+  /(?<![:/])\/\/endpoint\.playfulagency\.com\/wp-content\/uploads\/[^\s"'<>\\)]*/gi;
 
 const JSON_ESCAPED_ENDPOINT_URL_RE =
   /https:\\\/\\\/endpoint\.playfulagency\.com\\\/[^&]+?\.json(?=&quot;)/gi;
@@ -80,6 +138,15 @@ export function rewriteEndpointUrlsInHtmlForPreview(
 ): string {
   if (!html || !isBlobImagesEnabled(env)) return html;
   let out = html.replace(ENDPOINT_URL_IN_TEXT_RE, (url) => rewriteEndpointAssetUrlForPreview(url, env));
+  out = out.replace(PROTOCOL_RELATIVE_ENDPOINT_UPLOAD_RE, (url) => {
+    const resolved = rewriteEndpointAssetUrlForPreview(`https:${url}`, env);
+    if (resolved.startsWith('https://') && !resolved.includes('endpoint.playfulagency.com')) {
+      return resolved;
+    }
+    if (resolved.startsWith('/')) return resolved;
+    return resolved;
+  });
+  out = rewritePreviewMediaAttributesInHtml(out, env);
   out = out.replace(JSON_ESCAPED_ENDPOINT_URL_RE, (escaped) => {
     const plain = unescapeJsonSlashes(escaped);
     const resolved = rewriteEndpointAssetUrlForPreview(plain, env);
