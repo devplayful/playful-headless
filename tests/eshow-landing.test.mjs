@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const {
-  ESHOW_LANDING_ALLOWED_TAG,
   ESHOW_LANDING_CANONICAL,
+  ESHOW_LANDING_DEFAULT_TAG,
   ESHOW_LANDING_DEFAULT_UTM,
   ESHOW_LANDING_FORM_ID,
   ESHOW_LANDING_SOURCE,
@@ -134,7 +134,7 @@ test('assertEshowLandingTag rejects inbound and lista tags', () => {
   assert.throws(() => assertEshowLandingTag('lista-sigue-eshow-2026'));
 });
 
-test('syncEshowLandingToHighLevel upserts with tag and source fields', async () => {
+test('syncEshowLandingToHighLevel upserts with default tag without GHL_TAG_ESHOW', async () => {
   const attribution = withEshowLandingAttribution({});
   const gateway = mockGateway();
   const result = await syncEshowLandingToHighLevel({
@@ -144,32 +144,27 @@ test('syncEshowLandingToHighLevel upserts with tag and source fields', async () 
     recentAttribution: attribution,
     consentCapturedAt: '2026-11-02T16:00:00+01:00',
     env: {
-      [ESHOW_LANDING_TAG_ENV]: ESHOW_LANDING_ALLOWED_TAG,
       HIGHLEVEL_LOCATION_ID: 'loc-test',
       HIGHLEVEL_TEST_MODE: 'true',
     },
     gateway,
   });
   assert.equal(result.wrote, true);
-  assert.equal(result.tag, 'eshow-quiere-noticias');
-  const always = buildEshowLandingAlwaysFields({
-    recentAttribution: attribution,
-    consentCapturedAt: '2026-11-02T16:00:00+01:00',
-  });
-  const alwaysById = fieldMap(always);
-  assert.equal(alwaysById.get(ESHOW_LISTA_FIELD_IDS.fuente_reciente), ESHOW_LANDING_SOURCE);
-  assert.equal(alwaysById.get(ESHOW_LISTA_FIELD_IDS.landing_reciente), ESHOW_LANDING_CANONICAL);
-  assert.equal(alwaysById.get(ESHOW_LISTA_FIELD_IDS.id_de_formulario), 'eshow');
+  assert.equal(result.tag, ESHOW_LANDING_DEFAULT_TAG);
   assert.deepEqual(
     gateway.calls.find((item) => item[0] === 'tags')?.[2],
-    ['eshow-quiere-noticias'],
+    [ESHOW_LANDING_DEFAULT_TAG],
   );
 });
 
-test('readEshowLandingTag reads GHL_TAG_ESHOW', () => {
+test('readEshowLandingTag defaults to eshow-quiere-noticias without env override', () => {
+  assert.equal(readEshowLandingTag({}), ESHOW_LANDING_DEFAULT_TAG);
+});
+
+test('readEshowLandingTag accepts optional GHL_TAG_ESHOW override', () => {
   assert.equal(
-    readEshowLandingTag({ GHL_TAG_ESHOW: 'eshow-quiere-noticias' }),
-    'eshow-quiere-noticias',
+    readEshowLandingTag({ GHL_TAG_ESHOW: 'custom-eshow-tag' }),
+    'custom-eshow-tag',
   );
 });
 

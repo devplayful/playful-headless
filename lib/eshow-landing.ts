@@ -16,7 +16,9 @@ export const ESHOW_LANDING_CANONICAL = 'https://playfulagency.com/eshow';
 export const ESHOW_LANDING_FORM_ID = 'eshow';
 export const ESHOW_LANDING_SOURCE = 'eShow 2026 · suscripción';
 export const ESHOW_LANDING_TAG_ENV = 'GHL_TAG_ESHOW';
-export const ESHOW_LANDING_ALLOWED_TAG = 'eshow-quiere-noticias';
+/** Etiqueta GHL por defecto; `GHL_TAG_ESHOW` solo la sustituye si Ops lo necesita. */
+export const ESHOW_LANDING_DEFAULT_TAG = 'eshow-quiere-noticias';
+export const ESHOW_LANDING_ALLOWED_TAG = ESHOW_LANDING_DEFAULT_TAG;
 export const ESHOW_LANDING_FORBIDDEN_TAGS = [
   'eshow-2026',
   'website-inbound',
@@ -97,7 +99,8 @@ function pushUtmFields(
 }
 
 export function readEshowLandingTag(env: Record<string, string | undefined> = process.env): string {
-  return env[ESHOW_LANDING_TAG_ENV]?.trim() || '';
+  const override = env[ESHOW_LANDING_TAG_ENV]?.trim();
+  return assertEshowLandingTag(override || ESHOW_LANDING_DEFAULT_TAG);
 }
 
 export function assertEshowLandingTag(tag: string): string {
@@ -210,7 +213,6 @@ export function withEshowLandingAttribution(
 }
 
 export type EshowLandingSyncResult =
-  | { wrote: false; reason: 'tag-unset' }
   | { wrote: true; contactId: string; isNew: boolean; tag: string };
 
 export async function syncEshowLandingToHighLevel(input: {
@@ -223,19 +225,18 @@ export async function syncEshowLandingToHighLevel(input: {
   gateway?: HighLevelGateway;
 }): Promise<EshowLandingSyncResult> {
   const env = input.env || process.env;
-  const tag = assertEshowLandingTag(readEshowLandingTag(env));
-  if (!tag) return { wrote: false, reason: 'tag-unset' };
+  const tag = readEshowLandingTag(env);
 
   const { token, locationId, testMode, timeoutMs } = resolveEshowListaHighLevelAuth(env);
   if (!locationId) {
     throw new HighLevelConfigurationError(
-      `${ESHOW_LANDING_TAG_ENV} está definida, pero falta HIGHLEVEL_LOCATION_ID o GHL_LOCATION_ID.`,
+      'Falta HIGHLEVEL_LOCATION_ID o GHL_LOCATION_ID para el alta del eShow.',
     );
   }
 
   if (!testMode && !token && !input.gateway) {
     throw new HighLevelConfigurationError(
-      `${ESHOW_LANDING_TAG_ENV} está definida, pero falta HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN o GHL_PRIVATE_INTEGRATION_TOKEN.`,
+      'Falta HIGHLEVEL_PRIVATE_INTEGRATION_TOKEN o GHL_PRIVATE_INTEGRATION_TOKEN para el alta del eShow.',
     );
   }
 

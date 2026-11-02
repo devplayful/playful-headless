@@ -65,10 +65,8 @@ export async function POST(request: NextRequest) {
       },
       crm: {
         wrote: sync.wrote,
-        reason: sync.wrote ? undefined : sync.reason,
-        ...(sync.wrote
-          ? { contactId: sync.contactId, tag: sync.tag }
-          : {}),
+        contactId: sync.contactId,
+        tag: sync.tag,
       },
     });
   } catch (error) {
