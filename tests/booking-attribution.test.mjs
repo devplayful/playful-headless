@@ -447,6 +447,7 @@ test('no booking upsert route: GHL confirm does not send email or contactId', ()
   const names = existsSync(apiDir) ? readdirSync(apiDir) : [];
   assert.equal(names.includes('booking-attribution'), false);
   assert.equal(names.includes('eshow-lista'), true);
+  assert.equal(names.includes('eshow'), true);
   const component = readFileSync(new URL('../components/BookingWidgetAttribution.tsx', import.meta.url), 'utf8');
   assert.match(component, /does not upsert/);
   assert.doesNotMatch(component, /fetch\('\/api\//);
