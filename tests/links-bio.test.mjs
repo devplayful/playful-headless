@@ -45,6 +45,7 @@ test('bio buttons stay in one array, Cashea can be prepended later', () => {
   assert.deepEqual(
     LINKS_BIO_ENTRIES.map((entry) => [entry.label, entry.path]),
     [
+      ['eShow Madrid 2026: te lo contamos', '/eshow'],
       ['Cómo integrar Zelle en tu tienda', '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
       ['Casos de éxito', '/casos-de-exito'],
       ['Agencia e-commerce', '/agencia-e-commerce'],
@@ -108,7 +109,7 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
 });
 
 test('article thumbs use the same blog cover; other links use destination covers', () => {
-  const zelle = LINKS_BIO_ENTRIES[0];
+  const zelle = LINKS_BIO_ENTRIES[1];
   const zelleSlug = 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const zelleThumb = resolveLocalLinksBioThumbnail(zelle);
   assert.ok(zelleThumb);
@@ -120,14 +121,14 @@ test('article thumbs use the same blog cover; other links use destination covers
   );
   assert.equal(zelleThumb.alt, resolveBlogCoverAlt(zelleSlug, ''));
 
-  const casos = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[1]);
+  const casos = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[2]);
   assert.ok(casos);
   assert.equal(casos.isFallback, false);
   assert.notEqual(casos.src, LINKS_BIO_FALLBACK_THUMB);
   assert.deepEqual(casos.collage, Object.values(CASOS_DE_EXITO_FEATURED_TAPAS));
   assert.equal(casos.collage?.length, 3);
 
-  for (const entry of LINKS_BIO_ENTRIES.slice(2)) {
+  for (const entry of LINKS_BIO_ENTRIES.slice(3)) {
     const thumb = resolveLocalLinksBioThumbnail(entry);
     assert.ok(thumb);
     assert.equal(thumb.isFallback, false);
