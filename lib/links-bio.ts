@@ -26,6 +26,10 @@ export const LINKS_BIO_UTM =
 export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
   // Cashea: add first when that campaign is ready.
   {
+    label: 'eShow Madrid 2026: te lo contamos',
+    path: '/eshow',
+  },
+  {
     label: 'Cómo integrar Zelle en tu tienda',
     path: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   },
