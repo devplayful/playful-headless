@@ -40,14 +40,15 @@ const EMPTY = {
   email: '',
   selling: '',
   platform: '',
-  revenue: '',
+  revenueOnline: '',
+  revenueOtherChannels: '',
   businessType: '',
   thirdParty: '',
   team: '',
 };
 
 const QA_CALENDAR_INTRO =
-  'Estás pidiendo una posible reunión; revisamos tus respuestas y te confirmamos.';
+  'Esto es una solicitud, no una reunión confirmada. Revisamos tus respuestas y te confirmamos solo si de verdad podemos ayudarte.';
 
 function GhlDryRunPanel({ payload }: { payload: QaFiltroGhlContactPayload }) {
   return (
@@ -57,7 +58,7 @@ function GhlDryRunPanel({ payload }: { payload: QaFiltroGhlContactPayload }) {
     >
       <p className="font-medium text-amber-900">Modo dry-run GHL (sin envío)</p>
       <p className="text-amber-900/90">{payload.wouldNotSend}</p>
-      <pre className="max-h-64 overflow-auto rounded bg-white p-2 text-xs text-neutral-800">
+      <pre className="qa-filtro-dry-run-json rounded bg-white p-2 text-xs text-neutral-800">
         {JSON.stringify(payload.upsertContact, null, 2)}
       </pre>
     </aside>
@@ -217,13 +218,33 @@ function QaFiltroReunionClientInner({ calendarId }: { calendarId: string }) {
         </label>
 
         <label className="block space-y-1">
-          <span className="text-sm font-medium">Facturación mensual sumando todos los canales</span>
+          <span className="text-sm font-medium">Facturación mensual de la tienda online (USD)</span>
           <select
+            required
+            name="revenueOnline"
             className="w-full rounded border border-neutral-300 px-3 py-2"
-            value={form.revenue}
-            onChange={(e) => setForm({ ...form, revenue: e.target.value })}
+            value={form.revenueOnline}
+            onChange={(e) => setForm({ ...form, revenueOnline: e.target.value })}
           >
-            <option value="">Prefiero no indicarlo ahora</option>
+            <option value="">Selecciona…</option>
+            {QA_REVENUE_OPTIONS.map((value) => (
+              <option key={value} value={value}>{QA_REVENUE_LABELS[value]}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block space-y-1">
+          <span className="text-sm font-medium">
+            Facturación mensual del resto de canales (tiendas físicas, distribuidores, retail) (USD)
+          </span>
+          <select
+            required
+            name="revenueOtherChannels"
+            className="w-full rounded border border-neutral-300 px-3 py-2"
+            value={form.revenueOtherChannels}
+            onChange={(e) => setForm({ ...form, revenueOtherChannels: e.target.value })}
+          >
+            <option value="">Selecciona…</option>
             {QA_REVENUE_OPTIONS.map((value) => (
               <option key={value} value={value}>{QA_REVENUE_LABELS[value]}</option>
             ))}

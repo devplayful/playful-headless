@@ -6,7 +6,6 @@ import {
   QA_SELLING_OPTIONS,
   QA_THIRD_PARTY_OPTIONS,
   type QaFiltroAnswers,
-  type QaRevenue,
 } from './types.ts';
 
 function text(value: unknown, max: number): string {
@@ -28,11 +27,6 @@ function option<T extends string>(value: unknown, field: string, allowed: readon
   return normalized as T;
 }
 
-function optionalRevenue(value: unknown): QaRevenue | '' {
-  if (value === undefined || value === null || value === '') return '';
-  return option<QaRevenue>(value, 'revenue', QA_REVENUE_OPTIONS);
-}
-
 export function parseQaFiltroSubmission(value: unknown): QaFiltroAnswers {
   if (!value || typeof value !== 'object') {
     throw new SubmissionValidationError('El cuerpo del formulario no es válido.');
@@ -52,7 +46,8 @@ export function parseQaFiltroSubmission(value: unknown): QaFiltroAnswers {
     email,
     selling: option(input.selling, 'selling', QA_SELLING_OPTIONS),
     platform: option(input.platform, 'platform', QA_PLATFORM_OPTIONS),
-    revenue: optionalRevenue(input.revenue),
+    revenueOnline: option(input.revenueOnline, 'revenueOnline', QA_REVENUE_OPTIONS),
+    revenueOtherChannels: option(input.revenueOtherChannels, 'revenueOtherChannels', QA_REVENUE_OPTIONS),
     businessType: option(input.businessType, 'businessType', QA_BUSINESS_TYPE_OPTIONS),
     thirdParty: option(input.thirdParty, 'thirdParty', QA_THIRD_PARTY_OPTIONS),
     team: text(input.team, 250),

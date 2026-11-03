@@ -10,7 +10,8 @@ function base(overrides: Partial<QaFiltroAnswers> = {}): QaFiltroAnswers {
     email: 'qa@example.com',
     selling: 'vendo_online',
     platform: 'shopify',
-    revenue: '50k_100k',
+    revenueOnline: '50k_100k',
+    revenueOtherChannels: 'under_10k',
     businessType: 'marca_d2c',
     thirdParty: 'no',
     team: '',
@@ -18,23 +19,37 @@ function base(overrides: Partial<QaFiltroAnswers> = {}): QaFiltroAnswers {
   };
 }
 
-test('rechaza aún no vendo, bajo facturación y revendedor/agencia', () => {
+test('rechaza aún no vendo, ambos canales <10k y revendedor/agencia', () => {
   assert.equal(evaluateQaFiltro(base({ selling: 'aun_no_vendo' })).outcome, 'rejected');
-  assert.equal(evaluateQaFiltro(base({ revenue: 'under_10k' })).outcome, 'rejected');
+  assert.equal(
+    evaluateQaFiltro(base({ revenueOnline: 'under_10k', revenueOtherChannels: 'under_10k' })).outcome,
+    'rejected',
+  );
   assert.equal(evaluateQaFiltro(base({ businessType: 'revendedor' })).outcome, 'rejected');
   assert.equal(evaluateQaFiltro(base({ businessType: 'agencia' })).califTag, 'calif-no');
 });
 
-test('caso límite: 10–50k con terceros o facturación en blanco', () => {
+test('caso límite: ambos canales bajo 50k con al menos uno en 10–50k u otros canales sí', () => {
   assert.equal(
-    evaluateQaFiltro(base({ revenue: '10k_50k', thirdParty: 'si' })).outcome,
+    evaluateQaFiltro(base({
+      revenueOnline: '10k_50k',
+      revenueOtherChannels: 'under_10k',
+      thirdParty: 'no',
+    })).outcome,
     'review',
   );
-  assert.equal(evaluateQaFiltro(base({ revenue: '' })).outcome, 'review');
+  assert.equal(
+    evaluateQaFiltro(base({ revenueOnline: '50k_100k', thirdParty: 'si' })).outcome,
+    'review',
+  );
 });
 
-test('califica con facturación >= 10k y marca D2C sin terceros conflictivos', () => {
-  const result = evaluateQaFiltro(base({ revenue: '100k_250k', thirdParty: 'no' }));
+test('solicitud pendiente (calendario) con algún canal >= 50k USD/mes', () => {
+  const result = evaluateQaFiltro(base({
+    revenueOnline: '100k_250k',
+    revenueOtherChannels: 'under_10k',
+    thirdParty: 'no',
+  }));
   assert.equal(result.outcome, 'qualified');
   assert.equal(result.califTag, 'calif-pendiente');
 });

@@ -6,9 +6,8 @@ import {
   QA_BUSINESS_LABELS,
   QA_PLATFORM_LABELS,
   QA_SELLING_LABELS,
-  QA_THIRD_PARTY_LABELS,
 } from './labels.ts';
-import type { QaCalifTag, QaFiltroAnswers, QaRevenue } from './types.ts';
+import type { QaCalifTag, QaFiltroAnswers, QaRevenue, QaThirdParty } from './types.ts';
 
 export const QA_FILTRO_GHL_DRY_RUN_REASON = [
   'La ruta compartida del formulario web (/api/contact → syncWebsiteLeadToHighLevel) no se usa en este preview porque,',
@@ -28,9 +27,12 @@ export interface QaFiltroGhlContactPayload {
   wouldNotSend: typeof QA_FILTRO_GHL_DRY_RUN_REASON;
 }
 
-function revenueValue(revenue: QaRevenue | ''): string {
-  if (!revenue) return '(sin respuesta)';
+function revenuePayloadValue(revenue: QaRevenue): string {
   return QA_GHL_REVENUE_VALUES[revenue];
+}
+
+function thirdPartyPayloadValue(thirdParty: QaThirdParty): string {
+  return thirdParty === 'si' ? 'sí' : 'no';
 }
 
 export function buildQaFiltroGhlContactPayload(
@@ -49,9 +51,14 @@ export function buildQaFiltroGhlContactPayload(
       fieldValue: QA_PLATFORM_LABELS[answers.platform],
     },
     {
-      id: QA_GHL_FIELD_IDS.calif_facturacion_mensual,
-      key: 'calif_facturacion_mensual',
-      fieldValue: revenueValue(answers.revenue),
+      id: QA_GHL_FIELD_IDS.calif_facturacion_online,
+      key: 'contact.calif_facturacion_online',
+      fieldValue: revenuePayloadValue(answers.revenueOnline),
+    },
+    {
+      id: QA_GHL_FIELD_IDS.calif_facturacion_otros_canales,
+      key: 'contact.calif_facturacion_otros_canales',
+      fieldValue: revenuePayloadValue(answers.revenueOtherChannels),
     },
     {
       id: QA_GHL_FIELD_IDS.calif_tipo_negocio,
@@ -61,7 +68,7 @@ export function buildQaFiltroGhlContactPayload(
     {
       id: QA_GHL_FIELD_IDS.calif_otros_canales,
       key: 'calif_otros_canales',
-      fieldValue: QA_THIRD_PARTY_LABELS[answers.thirdParty],
+      fieldValue: thirdPartyPayloadValue(answers.thirdParty),
     },
   ];
 

@@ -24,11 +24,11 @@ export const QA_PLATFORM_LABELS: Record<QaPlatform, string> = {
 };
 
 export const QA_REVENUE_LABELS: Record<QaRevenue, string> = {
-  under_10k: 'Menos de 10.000 USD',
-  '10k_50k': '10.000–50.000 USD',
-  '50k_100k': '50.000–100.000 USD',
-  '100k_250k': '100.000–250.000 USD',
-  over_250k: 'Más de 250.000 USD',
+  under_10k: '<10k',
+  '10k_50k': '10–50k',
+  '50k_100k': '50–100k',
+  '100k_250k': '100–250k',
+  over_250k: '>250k',
 };
 
 export const QA_BUSINESS_LABELS: Record<QaBusinessType, string> = {
@@ -43,14 +43,12 @@ export const QA_THIRD_PARTY_LABELS: Record<QaThirdParty, string> = {
 };
 
 export function formatQaFiltroNote(answers: QaFiltroAnswers): string {
-  const revenueLabel = answers.revenue
-    ? QA_REVENUE_LABELS[answers.revenue]
-    : '(sin respuesta)';
   return [
     '[QA filtro reunión — preview]',
     `¿Ya vendes?: ${QA_SELLING_LABELS[answers.selling]}`,
     `Plataforma: ${QA_PLATFORM_LABELS[answers.platform]}`,
-    `Facturación mensual (todos los canales): ${revenueLabel}`,
+    `Facturación tienda online: ${QA_REVENUE_LABELS[answers.revenueOnline]}`,
+    `Facturación otros canales: ${QA_REVENUE_LABELS[answers.revenueOtherChannels]}`,
     `Tipo de negocio: ${QA_BUSINESS_LABELS[answers.businessType]}`,
     `¿Terceros/distribuidores?: ${QA_THIRD_PARTY_LABELS[answers.thirdParty]}`,
   ].join('\n');

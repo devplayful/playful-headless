@@ -41,7 +41,8 @@ export interface QaFiltroAnswers {
   email: string;
   selling: QaSelling;
   platform: QaPlatform;
-  revenue: QaRevenue | '';
+  revenueOnline: QaRevenue;
+  revenueOtherChannels: QaRevenue;
   businessType: QaBusinessType;
   thirdParty: QaThirdParty;
   /** Informativo; campo GHL calif_equipo. */

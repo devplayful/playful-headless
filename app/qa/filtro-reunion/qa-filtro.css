@@ -18,6 +18,27 @@ body:has([data-qa-filtro-root]) iframe#lc_widget_iframe {
   scroll-margin-top: 7rem;
 }
 
+.qa-filtro-root [data-qa-ghl-dry-run="true"] .qa-filtro-dry-run-json {
+  max-height: none;
+  overflow: visible;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.qa-filtro-root [data-qa-outcome="rejected"],
+.qa-filtro-root [data-qa-outcome="review"] {
+  padding-top: 7rem;
+  scroll-margin-top: 7rem;
+}
+
+@media (min-width: 768px) {
+  .qa-filtro-root [data-qa-outcome="rejected"],
+  .qa-filtro-root [data-qa-outcome="review"] {
+    padding-top: 6.5rem;
+  }
+}
+
 .qa-filtro-root [data-qa-filtro-content]:not([data-qa-page="gracias"]):not([data-qa-outcome="qualified"]) {
   padding-top: 0.5rem;
 }
