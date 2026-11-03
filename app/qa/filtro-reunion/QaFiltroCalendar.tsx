@@ -1,6 +1,6 @@
 'use client';
 
-import { QA_FILTRO_CALENDAR_WIDGET_URL } from '@/lib/qa-filtro/ghl-fields';
+import { buildQaFiltroCalendarWidgetSrc } from '@/lib/qa-filtro/calendar-widget-url';
 
 export default function QaFiltroCalendar({ calendarId }: { calendarId: string }) {
   if (!calendarId) {
@@ -14,9 +14,7 @@ export default function QaFiltroCalendar({ calendarId }: { calendarId: string })
     );
   }
 
-  const src = calendarId === 'AR82Tqlm75JTU8QMk5ID'
-    ? QA_FILTRO_CALENDAR_WIDGET_URL
-    : `https://api.leadconnectorhq.com/widget/booking/${encodeURIComponent(calendarId)}`;
+  const src = buildQaFiltroCalendarWidgetSrc(calendarId);
 
   return (
     <iframe
@@ -24,6 +22,7 @@ export default function QaFiltroCalendar({ calendarId }: { calendarId: string })
       src={src}
       className="min-h-[640px] w-full rounded border border-neutral-200"
       data-qa-calendar="embedded"
+      data-qa-calendar-src={src}
     />
   );
 }

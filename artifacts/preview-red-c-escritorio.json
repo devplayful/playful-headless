@@ -1,0 +1,1515 @@
+{
+  "scenario": "c",
+  "viewport": "escritorio",
+  "base": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app",
+  "shareBootstrapUrl": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/qa/filtro-reunion?_vercel_share=oIhxoV0IbqnrL3rk9urrFrvIaJsOtXVK",
+  "conversionHits": [],
+  "taggingRequests": [],
+  "networkLog": [
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/qa/filtro-reunion?_vercel_share=oIhxoV0IbqnrL3rk9urrFrvIaJsOtXVK",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/qa/filtro-reunion",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/13971731025ec697-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/50ae58c90b3efe37-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/904be59b21bd51cb-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/logos/playful-logov.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/ffedda2352b4d6b9.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/cbe18726b2b69fbc.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/webpack-7dbce404cc407b6f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1255-7e5873f06b25e129.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/main-app-b7ac91ae224968d9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2619-04bc32f026a0d946.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1356-b1f982685cfcaf9f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/9413-eb8df6cbc5433d97.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/layout-e0c8c6518399e096.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/not-found-1f818408550c9a83.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1610-9eb4f633117b40e7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1160-3e9a93f26fa2e1de.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/5605-83fb22f73486a49e.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/page-aaf9a96bd5c93fe6.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/qa/filtro-reunion/page-df57f7dade8ae63a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/premios-cima/escudo-cima.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://vercel.live/_next-live/feedback/feedback.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/background.webp",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/soytechno-ecommerce-venezuela?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/jumex-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/odwalla-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a407a29b8eb4f53c.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a8de8b11771de49e.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-seo?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-sem?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1984-7017167052aa1be2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/casos-de-exito/page-43c4b985afd6dc63.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-diseno-web?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-e-commerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/2803ef729393e009.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/9c7412245db0c9ed.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/%5Bslug%5D/page-41ebe3d2f955a4e4.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-shopify?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-ux-ui?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/nosotros?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/agencia-shopify/page-50e528491313840b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/blog?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/contactar-agencia-de-marketing-digital?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/politica-de-privacidad?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/nosotros/page-6ed64e628d6e20ae.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/5529-279d5c9eec6e660f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/contactar-agencia-de-marketing-digital/page-780496604b1180f3.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2f0b94e8-3186a98eb4c9012b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/164f4fb6-97d30b4ab6fdcc8a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/ad2866b8-e13a3cf75ccf0eb8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2667-7bc79ef27ea50df9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1866-dfe519fef8627646.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/blog/%5B...slug%5D/page-b8ae90199da9b1c7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/194-1dbe129c343afc0c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2496-1d72b4d925934f0a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/blog/page-acc0c0819620d49c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/politica-de-privacidad/page-9b24a70bfc6b6563.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/qa/filtro-reunion",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/13971731025ec697-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/50ae58c90b3efe37-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/904be59b21bd51cb-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/logos/playful-logov.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/ffedda2352b4d6b9.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/cbe18726b2b69fbc.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/webpack-7dbce404cc407b6f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1255-7e5873f06b25e129.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/main-app-b7ac91ae224968d9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2619-04bc32f026a0d946.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1356-b1f982685cfcaf9f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/9413-eb8df6cbc5433d97.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/layout-e0c8c6518399e096.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/not-found-1f818408550c9a83.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1610-9eb4f633117b40e7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1160-3e9a93f26fa2e1de.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/5605-83fb22f73486a49e.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/page-aaf9a96bd5c93fe6.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/qa/filtro-reunion/page-df57f7dade8ae63a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/premios-cima/escudo-cima.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://vercel.live/_next-live/feedback/feedback.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/background.webp",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/soytechno-ecommerce-venezuela?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/jumex-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/odwalla-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1984-7017167052aa1be2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/casos-de-exito/page-43c4b985afd6dc63.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-seo?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/2803ef729393e009.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/9c7412245db0c9ed.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/%5Bslug%5D/page-41ebe3d2f955a4e4.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-seo?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-sem?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-sem?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-diseno-web?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-diseno-web?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-e-commerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-e-commerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-shopify?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a407a29b8eb4f53c.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a8de8b11771de49e.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-ux-ui?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/nosotros?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-ux-ui?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/loader.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/blog?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/contactar-agencia-de-marketing-digital?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/politica-de-privacidad?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/agencia-shopify/page-50e528491313840b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/nosotros/page-6ed64e628d6e20ae.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2f0b94e8-3186a98eb4c9012b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/164f4fb6-97d30b4ab6fdcc8a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/ad2866b8-e13a3cf75ccf0eb8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2667-7bc79ef27ea50df9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1866-dfe519fef8627646.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/blog/%5B...slug%5D/page-b8ae90199da9b1c7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/194-1dbe129c343afc0c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2496-1d72b4d925934f0a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/blog/page-acc0c0819620d49c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/politica-de-privacidad/page-9b24a70bfc6b6563.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/5529-279d5c9eec6e660f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/contactar-agencia-de-marketing-digital/page-780496604b1180f3.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://services.leadconnectorhq.com/chat-widget/public/config/67ac6d90a81d1c5969d763e7",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/api/qa-filtro-reunion",
+      "method": "POST",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/chat-widget.esm.js?v=1793700745623",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://api.leadconnectorhq.com/widget/booking/AR82Tqlm75JTU8QMk5ID",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-Do7bswAW.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-bf4c51ad.entry.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-CLHbrrou.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-PNSdff9m.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-C-eXWQ9m.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-BMwyzDLY.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/intl-tel-input/intlTelInput.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/libphonenumber/1.12.41/libphonenumber-js.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://services.leadconnectorhq.com/funnels/funnel/geo-location/",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/css?family=Roboto",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/css?family=Roboto:bold",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/css?family=Roboto,%20%27Helvetica%20Neue%27,%20Helvetica,%20Arial,%20sans-serif",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/css?family=Roboto,%20%27Helvetica%20Neue%27,%20Helvetica,%20Arial,%20sans-serif:bold",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/assets/i18n/es.json",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://services.leadconnectorhq.com/appengine/cors/js/user-session.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://images.leadconnectorhq.com/image/f_webp/q_100/r_180/u_https://assets.cdn.filesafe.space/3sc1AO5Eju01llYk7Qpr/media/67adcdcf773f0239272e7d1e.jpeg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/roboto/files/roboto-latin-700-normal.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.bunny.net/roboto/files/roboto-latin-400-normal.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://services.msgsndr.com/attribution_service/user_session_v3/create_session",
+      "method": "POST",
+      "conversionHit": false
+    },
+    {
+      "url": "https://storage.googleapis.com/builder-preview/iframe/iframeResizer.contentWindow.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/libphonenumber/1.12.41/libphonenumber-js.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/intl-tel-input/17.0.12/js/utils.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/intl-tel-input/intlTelInput.min.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/2Aq6E_vm.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/useUploadSubmitDisable.DpGolzH4.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/PhoneElement.CqrgXvy-.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/TextBoxListElement.BbmoZcvv.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/TextAreaElement.CLLI-KzT.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/OptionElement.BqgLznve.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/authorizeNet.goKbu3C6.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/FormComponent.CJjZPMDB.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/app.DVqQD2Si.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/RazorPayErrorPopup.BmAiZy8Q.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarRecurringAppointments.Vukvl6Jq.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DatePick.CgU1guwP.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/UICouponElement.QQk4NWrz.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarCoupon.tn0RQdqM.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/ghl-calendar-element.BoF0rRWL.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarComponent.Bcm5WNRh.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/_main.BGhWvMME.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/ServiceCard.D5DSVrtm.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/ghl-payment-element.C8kKxUgx.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarPaymentPage.D7KINoYb.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarLoader.DCl8rx9c.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CalendarComponentv3.BNgi8MTq.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C0t41IhT.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CCXW8c_B.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CIJsWwXY.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/knGmARi7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BNS_imcC.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DYlWnUMb.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/tvvj0oXg.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CoZ9IAbl.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/Cm2DxyB6.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DNCN8sE2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DSmj2DSc.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/xT9mo3wI.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/D9rfd7_j.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BibCuXbn.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C0KmQWLV.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BbuvQ32r.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CatL0Bo1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/wL8_3sb1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BqLws8Aa.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CuDLoimn.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BgDqsf5s.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/D1OHNg6k.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C_41Ww-s.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/D-E1CimI.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/ByPzgX-f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BtZ3MJ8i.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DI6rIXsI.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/968joEsy.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B1wccWkT.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B7OQ8pX2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B-gqTgYG.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C3e4t58V.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DpGxo2Of.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B4FRqeku.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DKeuBCMA.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CtMfA3V_.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BPzZT6qn.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DRNKrJGC.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/Dqx7RcEs.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BaDNRu_X.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/4sNQ-ky-.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B4xsife8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/Eyx5Qpaq.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CaEqWYxR.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CVloMUK5.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/B397yQe8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/7r4VeC1b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CHRWkYoh.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CvQUBO-0.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CV4XDVD-.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/97cjYN0o.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C8Z4_UDy.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DkSaRE3q.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DHD9Rr4c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DMAgBTta.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DuXkUNn9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/Cie4PUAu.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/cCduacGN.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CPFORjEt.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BTnKUHrr.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/BQUYsvrU.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DM13YxPy.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DR3JJppE.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/Cc7A-XL9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CRAcYrx0.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/CNy_Nzk3.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C-4L8jwe.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/C17z7VQ0.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DgPVeXlH.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/DD9pE_8k.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://unpkg.com/dayjs@1.8.21/locale/es.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://backend.leadconnectorhq.com/calendars/AR82Tqlm75JTU8QMk5ID/free-slots?startDate=1793491200000&endDate=1796083199999&timezone=UTC&sendSeatsPerSlot=false",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/intl-tel-input/17.0.12/css/intlTelInput.min.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://backend.leadconnectorhq.com/attribution_service/user_session_v3/create_session",
+      "method": "POST",
+      "conversionHit": false
+    },
+    {
+      "url": "https://stcdn.leadconnectorhq.com/_preview/builds/meta/9524619e-a05c-463b-a17d-c37a7d4e0d69.json",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/qa/filtro-reunion/gracias",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://backend.leadconnectorhq.com/calendars/booking-analytics/event/submit",
+      "method": "POST",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/13971731025ec697-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/50ae58c90b3efe37-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/media/904be59b21bd51cb-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/logos/playful-logov.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/ffedda2352b4d6b9.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/cbe18726b2b69fbc.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/webpack-7dbce404cc407b6f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1255-7e5873f06b25e129.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/main-app-b7ac91ae224968d9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/2619-04bc32f026a0d946.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1356-b1f982685cfcaf9f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/9413-eb8df6cbc5433d97.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/layout-e0c8c6518399e096.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/not-found-1f818408550c9a83.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1610-9eb4f633117b40e7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1160-3e9a93f26fa2e1de.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/5605-83fb22f73486a49e.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/page-aaf9a96bd5c93fe6.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://vercel.live/_next-live/feedback/feedback.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/premios-cima/escudo-cima.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/images/background.webp",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/soytechno-ecommerce-venezuela?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/jumex-shopify-dtc-ecommerce?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/casos-de-exito/odwalla-shopify-dtc-ecommerce?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/1984-7017167052aa1be2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/casos-de-exito/page-43c4b985afd6dc63.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-seo?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-sem?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-diseno-web?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a407a29b8eb4f53c.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/a8de8b11771de49e.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-e-commerce?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/2803ef729393e009.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/css/9c7412245db0c9ed.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/%5Bslug%5D/page-41ebe3d2f955a4e4.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-shopify?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/agencia-ux-ui?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/nosotros?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/blog?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/contactar-agencia-de-marketing-digital?_rsc=ngvB9e6WHZccgQTg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/agencia-shopify/page-50e528491313840b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://playful-headless-git-cursor-qa-d25174-playful-agencys-projects.vercel.app/_next/static/chunks/app/nosotros/page-6ed64e628d6e20ae.js",
+      "method": "GET",
+      "conversionHit": false
+    }
+  ]
+}

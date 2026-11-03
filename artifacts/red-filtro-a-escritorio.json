@@ -1,0 +1,327 @@
+{
+  "scenario": "a",
+  "viewport": "escritorio",
+  "networkLog": [
+    {
+      "url": "http://127.0.0.1:3000/qa/filtro-reunion",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/media/13971731025ec697-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/media/50ae58c90b3efe37-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/media/904be59b21bd51cb-s.p.woff2",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/images/logos/playful-logov.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/ffedda2352b4d6b9.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/cbe18726b2b69fbc.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/webpack-5f4eb3d14c009d8c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1255-7e5873f06b25e129.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/main-app-df7f376871fb71d8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/2619-04bc32f026a0d946.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1356-b1f982685cfcaf9f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/9413-7c839d5f72ea5961.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/layout-d35c8d3354c18df7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/not-found-ff40ee6ce98f1e78.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1610-9eb4f633117b40e7.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1160-3e9a93f26fa2e1de.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/5605-83fb22f73486a49e.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/page-6fc7a1a272380f06.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/qa/filtro-reunion/page-1b558f162a9c0196.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/images/premios-cima/escudo-cima.svg",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/casos-de-exito?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/casos-de-exito/soytechno-ecommerce-venezuela?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/casos-de-exito/jumex-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/casos-de-exito/odwalla-shopify-dtc-ecommerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/images/background.webp",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/a407a29b8eb4f53c.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/a8de8b11771de49e.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-seo?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-sem?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-diseno-web?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-e-commerce?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/loader.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1984-7017167052aa1be2.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/casos-de-exito/page-2a6b534e69e83b27.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-shopify?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/2803ef729393e009.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/css/9c7412245db0c9ed.css",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/%5Bslug%5D/page-8ca6ba60d979c67a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/agencia-ux-ui?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/nosotros?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/blog?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/contactar-agencia-de-marketing-digital?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/5529-279d5c9eec6e660f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/contactar-agencia-de-marketing-digital/page-c8d0cfcfd4dfcb5f.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/politica-de-privacidad?_rsc=0L6dnuq1VsipMzGR",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/2f0b94e8-3186a98eb4c9012b.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/164f4fb6-97d30b4ab6fdcc8a.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/ad2866b8-e13a3cf75ccf0eb8.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/2667-7bc79ef27ea50df9.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/1866-dfe519fef8627646.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/blog/%5B...slug%5D/page-bde09da5c94bb4fb.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/194-1dbe129c343afc0c.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/6240-2de2e2aa8917a240.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/blog/page-ce5f5d47a3be9e71.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/agencia-shopify/page-24f8bd371299b137.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/nosotros/page-e055c64d092d7105.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/_next/static/chunks/app/politica-de-privacidad/page-a52365bc3b0816b4.js",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://services.leadconnectorhq.com/chat-widget/public/config/67ac6d90a81d1c5969d763e7",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "http://127.0.0.1:3000/api/qa-filtro-reunion",
+      "method": "POST",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/chat-widget.esm.js?v=1793700606886",
+      "method": "GET",
+      "conversionHit": false
+    },
+    {
+      "url": "https://widgets.leadconnectorhq.com/chat-widget/p-Do7bswAW.js",
+      "method": "GET",
+      "conversionHit": false
+    }
+  ],
+  "conversionHits": []
+}

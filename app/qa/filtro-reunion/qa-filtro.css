@@ -1,0 +1,23 @@
+/* Solo rutas /qa/filtro-reunion* (importado desde layout QA, no globals.css). */
+
+body:has([data-qa-filtro-root]) #lc_chat-widget,
+body:has([data-qa-filtro-root]) #chat-widget-container,
+body:has([data-qa-filtro-root]) .lc_text-widget--bubble,
+body:has([data-qa-filtro-root]) [class*="chat-widget-launcher"],
+body:has([data-qa-filtro-root]) iframe#lc_widget_iframe {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.qa-filtro-root {
+  scroll-padding-top: 7rem;
+}
+
+.qa-filtro-root [data-qa-ghl-dry-run="true"] {
+  scroll-margin-top: 7rem;
+}
+
+.qa-filtro-root [data-qa-filtro-content] {
+  padding-top: 0.5rem;
+}

@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { getOrCreateSubmissionId } from '@/lib/contact/client-attribution';
 import type { QaFiltroGhlContactPayload } from '@/lib/qa-filtro/ghl-payload';
 import {
@@ -44,6 +46,9 @@ const EMPTY = {
   team: '',
 };
 
+const QA_CALENDAR_INTRO =
+  'Estás pidiendo una posible reunión; revisamos tus respuestas y te confirmamos.';
+
 function GhlDryRunPanel({ payload }: { payload: QaFiltroGhlContactPayload }) {
   return (
     <aside
@@ -60,6 +65,16 @@ function GhlDryRunPanel({ payload }: { payload: QaFiltroGhlContactPayload }) {
 }
 
 export default function QaFiltroReunionClient({ calendarId }: { calendarId: string }) {
+  return (
+    <Suspense fallback={null}>
+      <QaFiltroReunionClientInner calendarId={calendarId} />
+    </Suspense>
+  );
+}
+
+function QaFiltroReunionClientInner({ calendarId }: { calendarId: string }) {
+  const searchParams = useSearchParams();
+  const showDryRunPanel = searchParams.get('panel') !== '0';
   const [form, setForm] = useState(EMPTY);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [step, setStep] = useState<Step>('form');
@@ -101,12 +116,14 @@ export default function QaFiltroReunionClient({ calendarId }: { calendarId: stri
     }
   }
 
-  const dryRunPanel = ghlPayload ? <GhlDryRunPanel payload={ghlPayload} /> : null;
+  const dryRunPanel = showDryRunPanel && ghlPayload
+    ? <GhlDryRunPanel payload={ghlPayload} />
+    : null;
 
   if (step === 'result' && outcome) {
     if (outcome === 'rejected') {
       return (
-        <div className="mx-auto max-w-xl px-4 py-10 space-y-4" data-qa-outcome="rejected">
+        <div className="mx-auto max-w-xl px-4 py-10 space-y-4" data-qa-outcome="rejected" data-qa-filtro-content>
           <p>
             Gracias por contarnos tu proyecto. Ahora mismo no es el momento para una reunión, pero te
             dejamos una guía para tu etapa y puedes apuntarte a nuestro newsletter.
@@ -123,7 +140,7 @@ export default function QaFiltroReunionClient({ calendarId }: { calendarId: stri
 
     if (outcome === 'review') {
       return (
-        <div className="mx-auto max-w-xl px-4 py-10 space-y-4" data-qa-outcome="review">
+        <div className="mx-auto max-w-xl px-4 py-10 space-y-4" data-qa-outcome="review" data-qa-filtro-content>
           <p>Te escribimos en 1 día laborable.</p>
           {dryRunPanel}
         </div>
@@ -131,11 +148,8 @@ export default function QaFiltroReunionClient({ calendarId }: { calendarId: stri
     }
 
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 space-y-6" data-qa-outcome="qualified">
-        <p className="text-sm text-neutral-600">
-          El calendario de prueba no confirma la cita automáticamente; el equipo revisa tus respuestas
-          antes de confirmar.
-        </p>
+      <div className="mx-auto max-w-3xl px-4 py-10 space-y-6" data-qa-outcome="qualified" data-qa-filtro-content>
+        <p className="text-[15px] leading-relaxed">{QA_CALENDAR_INTRO}</p>
         {dryRunPanel}
         <QaFiltroCalendar calendarId={calendarId} />
       </div>
@@ -143,9 +157,9 @@ export default function QaFiltroReunionClient({ calendarId }: { calendarId: stri
   }
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-10">
+    <div className="mx-auto max-w-xl px-4 py-10" data-qa-filtro-content>
       <p className="mb-6 text-[15px] leading-relaxed">
-        Estás pidiendo una posible reunión; revisamos tus respuestas y te confirmamos
+        {QA_CALENDAR_INTRO}
       </p>
       <form className="space-y-5" onSubmit={handleSubmit} data-qa-step="form">
         <label className="block space-y-1">
