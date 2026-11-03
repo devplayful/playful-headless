@@ -9,7 +9,6 @@ import {
   shouldRunPreviewPaginasB5Seed,
   shouldRunPreviewPaginasB4Seed,
   shouldRunPreviewHomeSeed,
-  shouldRunPreviewUsuariosWipe,
   hasDatabaseUrl,
   getPayloadConnectionString,
   hasRuntimeDatabase,
@@ -162,7 +161,6 @@ export {
   shouldRunPreviewPaginasB5Seed,
   shouldRunPreviewPaginasB4Seed,
   shouldRunPreviewHomeSeed,
-  shouldRunPreviewUsuariosWipe,
 };
 
 export function payloadMigrateArgs() {
@@ -507,29 +505,6 @@ export function summarizePreviewHomeSeedOutput(output) {
   };
 }
 
-export async function runPayloadPreviewUsuariosWipe(env = process.env) {
-  if (!shouldRunPreviewUsuariosWipe(env)) {
-    console.log(
-      'wipe-preview-usuarios: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
-    );
-    return 0;
-  }
-  console.log('wipe-preview-usuarios: ejecutando (Preview, DATABASE_URL presente; one-shot)');
-  const unpooled = (env.DATABASE_URL_UNPOOLED || '').trim();
-  const wipeEnv = unpooled ? { ...env, DATABASE_URL: unpooled } : env;
-  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
-    process.execPath,
-    ['scripts/wipe-preview-usuarios.mts'],
-    { env: wipeEnv },
-  );
-  if (exitCode !== 0) {
-    console.log(`wipe-preview-usuarios ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
-    return exitCode;
-  }
-  console.log('wipe-preview-usuarios OK');
-  return exitCode;
-}
-
 export async function runPayloadPreviewHomeSeed(env = process.env) {
   if (!shouldRunPreviewHomeSeed(env)) {
     console.log(
@@ -582,8 +557,6 @@ export async function runPreviewH5AltsBuild(env = process.env) {
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
-  const wipeCode = await runPayloadPreviewUsuariosWipe();
-  if (wipeCode !== 0) return wipeCode;
   const homeSeedCode = await runPayloadPreviewHomeSeed();
   if (homeSeedCode !== 0) return homeSeedCode;
   const seedCode = await runPayloadPreviewSeedServicios();

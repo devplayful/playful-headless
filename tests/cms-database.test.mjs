@@ -165,11 +165,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB5/);
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
   assert.match(buildScript, /runPayloadPreviewHomeSeed/);
-  assert.match(buildScript, /runPayloadPreviewUsuariosWipe/);
-  const wipeScript = readFileSync(new URL('../scripts/wipe-preview-usuarios.mts', import.meta.url), 'utf8');
-  assert.match(wipeScript, /getPayload/);
-  assert.equal(wipeScript.includes("from 'pg'"), false);
-  assert.match(wipeScript, /overrideAccess: true/);
+  assert.equal(buildScript.includes('runPayloadPreviewUsuariosWipe'), false);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -194,6 +190,14 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
   assert.match(index, /20261028_195833_initial/);
   assert.match(index, /20261029_114031/);
   assert.match(index, /20261030_120000_paginas_codigo/);
+  assert.match(index, /20261103_170000_wipe_preview_usuarios/);
+  const wipeMigration = readFileSync(
+    new URL('../cms/migrations/20261103_170000_wipe_preview_usuarios.ts', import.meta.url),
+    'utf8',
+  );
+  assert.match(wipeMigration, /VERCEL_ENV !== 'preview'/);
+  assert.match(wipeMigration, /delete from usuarios/);
+  assert.match(wipeMigration, /nunca Production/);
   assert.match(servicios, /import type \{ MigrateDownArgs, MigrateUpArgs \}/);
   assert.match(paginasCodigo, /paginas_codigo/);
   for (const table of [
