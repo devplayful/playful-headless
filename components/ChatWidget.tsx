@@ -18,7 +18,7 @@ export default function ChatWidget() {
 
   useEffect(() => {
     const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
-    if (pathname === '/links') {
+    if (pathname === '/links' || pathname.startsWith('/qa/filtro-reunion')) {
       return undefined
     }
 
