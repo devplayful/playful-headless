@@ -78,10 +78,8 @@ async function fillForm(page, answers) {
   await page.locator('select[name="revenueOnline"]').selectOption(answers.revenueOnline);
   await page.locator('select[name="revenueOtherChannels"]').selectOption(answers.revenueOtherChannels);
 
-  if (answers.selling !== 'aun_no_vendo') {
-    await page.getByRole('radio', { name: /Marca propia/i }).check();
-    await page.locator(`input[name="thirdParty"][value="${answers.thirdParty}"]`).check();
-  }
+  await page.getByRole('radio', { name: /Marca propia/i }).check();
+  await page.locator(`input[name="thirdParty"][value="${answers.thirdParty}"]`).check();
 
   await page.locator('input[type="checkbox"]').check();
 }
