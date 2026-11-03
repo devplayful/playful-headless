@@ -89,3 +89,10 @@ export function shouldRunPreviewHomeSeed(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
+
+/** One-shot: vaciar `usuarios` solo en Preview. Nunca Production. */
+export function shouldRunPreviewUsuariosWipe(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
