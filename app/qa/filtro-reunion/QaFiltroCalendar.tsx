@@ -20,7 +20,7 @@ export default function QaFiltroCalendar({ calendarId }: { calendarId: string })
     <iframe
       title="Calendario de prueba QA"
       src={src}
-      className="min-h-[640px] w-full rounded border border-neutral-200"
+      className="qa-filtro-calendar-iframe w-full rounded border border-neutral-200"
       data-qa-calendar="embedded"
       data-qa-calendar-src={src}
     />

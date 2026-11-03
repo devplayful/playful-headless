@@ -21,3 +21,26 @@ body:has([data-qa-filtro-root]) iframe#lc_widget_iframe {
 .qa-filtro-root [data-qa-filtro-content] {
   padding-top: 0.5rem;
 }
+
+.qa-filtro-root .qa-filtro-calendar-iframe {
+  min-height: 920px;
+  height: min(920px, 78vh);
+}
+
+@media (min-width: 768px) {
+  .qa-filtro-root .qa-filtro-calendar-iframe {
+    min-height: 880px;
+    height: 880px;
+  }
+}
+
+.qa-filtro-root [data-qa-page="gracias"] {
+  padding-top: 5.75rem;
+  scroll-margin-top: 7rem;
+}
+
+@media (min-width: 768px) {
+  .qa-filtro-root [data-qa-page="gracias"] {
+    padding-top: 2.5rem;
+  }
+}

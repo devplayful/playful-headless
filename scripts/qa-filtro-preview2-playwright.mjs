@@ -102,16 +102,18 @@ async function openFiltro(page, query = panelQuery) {
 async function selectCalendarDayMobile(page) {
   const frame = page.frameLocator('[data-qa-calendar="embedded"]');
   await page.waitForTimeout(6_000);
-  const dayButton = frame.locator('button:not([disabled])').filter({ hasText: /\d/ }).first();
+  const dayButton = frame.locator('button:not([disabled])').filter({ hasText: /^[0-9]{1,2}$/ }).first();
   if (await dayButton.count()) {
     await dayButton.click({ timeout: 15_000 });
-    await page.waitForTimeout(3_000);
+    await page.waitForTimeout(4_000);
+    await frame.locator('button').filter({ hasText: /:\d{2}/ }).first().waitFor({ timeout: 20_000 }).catch(() => {});
     return true;
   }
   const alt = frame.locator('[role="button"], .calendar-day, .day').filter({ hasText: /^[0-9]{1,2}$/ }).first();
   if (await alt.count()) {
     await alt.click({ timeout: 15_000 });
-    await page.waitForTimeout(3_000);
+    await page.waitForTimeout(4_000);
+    await frame.locator('button').filter({ hasText: /:\d{2}/ }).first().waitFor({ timeout: 20_000 }).catch(() => {});
     return true;
   }
   return false;

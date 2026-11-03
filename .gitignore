@@ -61,5 +61,8 @@ pids
 # Optional eslint cache
 .eslintcache
 
+# QA Playwright captures (agent artifacts only)
+/artifacts/
+
 # Batch files (opcional, puedes comentar si quieres subirlos)
 *.bat

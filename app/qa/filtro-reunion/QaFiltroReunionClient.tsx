@@ -151,7 +151,9 @@ function QaFiltroReunionClientInner({ calendarId }: { calendarId: string }) {
       <div className="mx-auto max-w-3xl px-4 py-10 space-y-6" data-qa-outcome="qualified" data-qa-filtro-content>
         <p className="text-[15px] leading-relaxed">{QA_CALENDAR_INTRO}</p>
         {dryRunPanel}
-        <QaFiltroCalendar calendarId={calendarId} />
+        <div data-qa-calendar-wrap>
+          <QaFiltroCalendar calendarId={calendarId} />
+        </div>
       </div>
     );
   }
