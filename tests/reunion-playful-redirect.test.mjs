@@ -8,12 +8,11 @@ const {
 } = await import('../lib/analytics/reunion-playful-redirect.ts');
 
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const reunionPage = readFileSync(new URL('../app/reunion-playful/page.tsx', import.meta.url), 'utf8');
 
-test('/reunion-playful is a Next page, not a middleware 302 to GHL', () => {
-  assert.match(reunionPage, /ReunionPlayfulRedirect/);
+test('/reunion-playful 308s to /reunion in middleware (query preserved)', () => {
+  assert.match(middleware, /path === '\/reunion-playful'/);
+  assert.match(middleware, /NextResponse\.redirect\(target, 308\)/);
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
-  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
 });
 
 test('reunionPlayfulWidgetDestination merges attribution onto /reunion', () => {
@@ -29,7 +28,7 @@ test('reunionPlayfulWidgetDestination merges attribution onto /reunion', () => {
   assert.equal(url.searchParams.get('gclid'), 'ABC');
 });
 
-test('scheduleReunionPlayfulRedirect redirects after GA readiness', () => {
+test('scheduleReunionPlayfulRedirect still waits for GA when used client-side', () => {
   let redirected = false;
   const timers = [];
   scheduleReunionPlayfulRedirect({
