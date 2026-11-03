@@ -1,6 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { LINKS_BIO_ENTRIES, buildLinksBioHref } from '@/lib/links-bio';
+import {
+  LINKS_BIO_ENTRIES,
+  LINKS_BIO_INTRO_LINE1,
+  LINKS_BIO_INTRO_LINE2,
+  buildLinksBioHref,
+} from '@/lib/links-bio';
 import {
   resolveLinksBioThumbnails,
   type LinksBioThumb,
@@ -113,6 +118,14 @@ export default async function LinksBioPage() {
               </p>
             </div>
           </div>
+
+          <p className="max-w-md px-1 text-center font-dm-sans text-sm leading-relaxed text-[#4A4453] sm:text-base">
+            {LINKS_BIO_INTRO_LINE1}
+            <span className="block sm:inline">
+              <span className="hidden sm:inline"> </span>
+              {LINKS_BIO_INTRO_LINE2}
+            </span>
+          </p>
 
           <nav className="flex w-full flex-col gap-4" aria-label="Enlaces de Instagram">
             <Link
