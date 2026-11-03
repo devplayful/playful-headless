@@ -12,6 +12,7 @@ import {
 import {
   LINKS_BIO_ENTRIES,
   LINKS_BIO_FALLBACK_THUMB,
+  LINKS_BIO_INTRO,
   LINKS_BIO_UTM,
   buildLinksBioHref,
   linksBioArticleSlug,
@@ -57,6 +58,15 @@ test('bio buttons stay in one array, Cashea can be prepended later', () => {
   assert.match(entriesSource, /Cashea: add first/);
   assert.doesNotMatch(page, /reunion-playful/);
   assert.doesNotMatch(entriesSource, /reunion-playful/);
+});
+
+test('/links intro mentions eShow Madrid above the bio buttons', () => {
+  assert.equal(
+    LINKS_BIO_INTRO,
+    'E-commerce para marcas D2C que ya facturan. Shopify / WooCommerce. ¿Vas al eShow Madrid 4–5 nov? Te lo contamos ↓',
+  );
+  assert.match(page, /LINKS_BIO_INTRO_LINE1/);
+  assert.match(page, /LINKS_BIO_INTRO_LINE2/);
 });
 
 test('each bio href carries the Instagram campaign query', () => {
