@@ -5,6 +5,7 @@ export const QA_FILTRO_REVENUE_CUTOFF_USD = 50_000;
 
 export const QA_FILTRO_FORM_ID = 'qa-filtro-reunion';
 
+/** Misma URL que FILTRO_REUNION_BLOG_GUIDE_HREF (lib/filtro-reunion/copy.ts). */
 export const QA_FILTRO_BLOG_GUIDE_HREF =
   '/blog/pautas-digitales/guia-para-hacer-marketing-digital';
 

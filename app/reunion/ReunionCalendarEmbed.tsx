@@ -1,17 +1,19 @@
 'use client';
 
-import { buildQaFiltroCalendarWidgetSrc } from '@/lib/qa-filtro/calendar-widget-url';
-import { PROD_FILTRO_CALENDAR_ID } from '@/lib/calificacion/constants';
+import { buildCalificacionCalendarWidgetSrc } from '@/lib/calificacion/calendar-widget-url';
 
 export default function ReunionCalendarEmbed() {
-  const src = buildQaFiltroCalendarWidgetSrc(PROD_FILTRO_CALENDAR_ID);
+  const src = buildCalificacionCalendarWidgetSrc();
 
   return (
     <iframe
       title="Calendario de reunión Playful"
       src={src}
-      className="reunion-calendar-iframe w-full rounded border border-neutral-200"
+      className="reunion-calendar-iframe w-full rounded border border-neutral-200 bg-white"
       data-reunion-calendar="embedded"
+      loading="eager"
+      referrerPolicy="strict-origin-when-cross-origin"
+      allow="clipboard-read; clipboard-write"
     />
   );
 }

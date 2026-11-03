@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import BookAppointmentTracker from '@/components/BookAppointmentTracker';
 import GraciasScheduleBody from './GraciasScheduleBody';
-import { SERVICE_BOOKING_HREF } from '@/utils/booking';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking-attribution';
 
 export const metadata: Metadata = {
   title: 'Gracias — siguiente paso | Playful Agency',

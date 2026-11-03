@@ -1,6 +1,7 @@
 import {
-  bookingHrefFromPageSearch,
-  buildBookingWidgetUrl,
+  buildBookingQueryValues,
+  searchFromBookingValues,
+  SERVICE_BOOKING_HREF,
 } from '../../utils/booking-attribution.ts';
 import { isGa4CollectReady } from './booking-abandon.ts';
 
@@ -17,14 +18,12 @@ export function reunionPlayfulWidgetDestination(input: {
   lastCookie: string;
   firstCookie: string;
 }): string {
-  const widgetUrl = buildBookingWidgetUrl({
+  const values = buildBookingQueryValues({
     search: input.search,
     lastCookie: input.lastCookie || null,
     firstCookie: input.firstCookie || null,
   });
-  const widget = new URL(widgetUrl);
-  const mergedSearch = widget.search;
-  return bookingHrefFromPageSearch(mergedSearch || input.search);
+  return `${SERVICE_BOOKING_HREF}${searchFromBookingValues(values)}`;
 }
 
 /**

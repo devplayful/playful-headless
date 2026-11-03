@@ -7,7 +7,7 @@ import {
   getOrCreateSubmissionId,
   getSubmissionAttribution,
 } from '@/lib/contact/client-attribution';
-import { QA_FILTRO_BLOG_GUIDE_HREF } from '@/lib/qa-filtro/constants';
+import { FILTRO_REUNION_BLOG_GUIDE_HREF } from '@/lib/filtro-reunion/copy';
 import {
   QA_BUSINESS_TYPE_OPTIONS,
   QA_PLATFORM_OPTIONS,
@@ -121,7 +121,7 @@ function ReunionCalificacionClientInner() {
             dejamos una guía para tu etapa y puedes apuntarte a nuestro newsletter.
           </p>
           <p>
-            <Link className="text-[#6B2C91] underline" href={QA_FILTRO_BLOG_GUIDE_HREF}>
+            <Link className="text-[#6B2C91] underline" href={FILTRO_REUNION_BLOG_GUIDE_HREF}>
               Guía para hacer marketing digital
             </Link>
           </p>
