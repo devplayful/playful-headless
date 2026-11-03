@@ -40,6 +40,10 @@ export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
     path: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
   },
   {
+    label: 'Cashea para comercios',
+    path: '/blog/tecnologia/cashea-para-comercios',
+  },
+  {
     label: 'Casos de éxito',
     path: '/casos-de-exito',
   },

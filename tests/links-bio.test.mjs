@@ -48,6 +48,7 @@ test('bio buttons stay in one array, Cashea can be prepended later', () => {
     [
       ['eShow Madrid 2026: te lo contamos', '/eshow'],
       ['Cómo integrar Zelle en tu tienda', '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
+      ['Cashea para comercios', '/blog/tecnologia/cashea-para-comercios'],
       ['Casos de éxito', '/casos-de-exito'],
       ['Agencia e-commerce', '/agencia-e-commerce'],
       ['Agencia Shopify', '/agencia-shopify'],
@@ -116,6 +117,10 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
   assert.equal(linksBioArticleSlug('/agencia-e-commerce'), null);
   assert.equal(linksBioArticleSlug('/blog/tecnologia'), null);
   assert.equal(linksBioArticleSlug('/contactar-agencia-de-marketing-digital'), null);
+  assert.equal(
+    linksBioArticleSlug('/blog/tecnologia/cashea-para-comercios'),
+    'cashea-para-comercios',
+  );
 });
 
 test('article thumbs use the same blog cover; other links use destination covers', () => {
@@ -131,14 +136,18 @@ test('article thumbs use the same blog cover; other links use destination covers
   );
   assert.equal(zelleThumb.alt, resolveBlogCoverAlt(zelleSlug, ''));
 
-  const casos = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[2]);
+  const cashea = LINKS_BIO_ENTRIES[2];
+  assert.equal(cashea.path, '/blog/tecnologia/cashea-para-comercios');
+  assert.equal(resolveLocalLinksBioThumbnail(cashea), null);
+
+  const casos = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[3]);
   assert.ok(casos);
   assert.equal(casos.isFallback, false);
   assert.notEqual(casos.src, LINKS_BIO_FALLBACK_THUMB);
   assert.deepEqual(casos.collage, Object.values(CASOS_DE_EXITO_FEATURED_TAPAS));
   assert.equal(casos.collage?.length, 3);
 
-  for (const entry of LINKS_BIO_ENTRIES.slice(3)) {
+  for (const entry of LINKS_BIO_ENTRIES.slice(4)) {
     const thumb = resolveLocalLinksBioThumbnail(entry);
     assert.ok(thumb);
     assert.equal(thumb.isFallback, false);
