@@ -64,25 +64,43 @@ async function scrollCalendarIntoView(page) {
   await page.waitForTimeout(600);
 }
 
-function slotLocator(frame) {
-  return frame.locator('span').filter({ hasText: /^\d{1,2}:\d{2}$/ });
+async function countTimeSlots(frame) {
+  return frame.evaluate(() =>
+    [...document.querySelectorAll('span')].filter((el) =>
+      /^\d{1,2}:\d{2}$/.test((el.textContent || '').trim()),
+    ).length,
+  );
 }
 
 async function pickDayAndWaitSlots(page, frame) {
   await frame.locator('td.selectable.vdpCell:not(.disabled)').first().waitFor({ timeout: 45_000 });
-  const dayCells = frame.locator('td.selectable.vdpCell:not(.disabled)');
-  const count = await dayCells.count();
-  for (let i = 0; i < Math.min(count, 25); i += 1) {
-    await dayCells.nth(i).click({ timeout: 10_000 });
-    await page.waitForTimeout(2500);
-    const slots = slotLocator(frame);
-    if ((await slots.count()) >= 3) {
-      return await slots.count();
+  const dayIds = await frame.evaluate(() =>
+    [...document.querySelectorAll('td.selectable.vdpCell:not(.disabled)')]
+      .map((cell) => cell.getAttribute('data-id'))
+      .filter(Boolean),
+  );
+
+  const ordered = [
+    ...dayIds.filter((id) => Number(id.split('-')[2]) >= 15),
+    ...dayIds.filter((id) => Number(id.split('-')[2]) < 15),
+  ];
+
+  for (const dayId of ordered.slice(0, 12)) {
+    await frame
+      .click(`td[data-id="${dayId}"]`, { force: true, timeout: 8_000 })
+      .catch(async () => {
+        await frame.evaluate((id) => {
+          document.querySelector(`td[data-id="${id}"]`)?.click();
+        }, dayId);
+      });
+    await page.waitForTimeout(10_000);
+    const count = await countTimeSlots(frame);
+    if (count >= 3) {
+      return count;
     }
   }
-  const slots = slotLocator(frame);
-  await slots.first().waitFor({ timeout: 25_000 }).catch(() => {});
-  return await slots.count();
+
+  return countTimeSlots(frame);
 }
 
 async function runCalendarCapture(page, viewport, shotName, logName) {
@@ -99,8 +117,11 @@ async function runCalendarCapture(page, viewport, shotName, logName) {
   await page.waitForSelector('[data-qa-outcome="qualified"]', { timeout: 45_000 });
   await page.waitForSelector('[data-qa-calendar="embedded"]', { timeout: 60_000 });
 
-  const frame = page.frameLocator('[data-qa-calendar="embedded"]');
-  await page.waitForTimeout(5000);
+  const iframeHandle = await page.$('[data-qa-calendar="embedded"]');
+  assert.ok(iframeHandle, 'calendar iframe missing');
+  const frame = await iframeHandle.contentFrame();
+  assert.ok(frame, 'calendar iframe frame missing');
+  await page.waitForTimeout(10_000);
   const slotCount = await pickDayAndWaitSlots(page, frame);
   assert.ok(slotCount >= 3, `expected >=3 time slots, got ${slotCount}`);
 
