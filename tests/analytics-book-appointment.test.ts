@@ -189,10 +189,12 @@ test('bookAppointmentGtagParams uses normalized search only', () => {
 
 test('thank-you page mounts the tracker without changing gtag loading', () => {
   const page = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
+  const schedule = readFileSync(new URL('../app/gracias/GraciasScheduleBody.tsx', import.meta.url), 'utf8');
   const ga = readFileSync(new URL('../components/GoogleAnalytics.tsx', import.meta.url), 'utf8');
   const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
   assert.match(page, /BookAppointmentTracker/);
-  assert.match(page, /href="\/reunion-playful"/);
+  assert.match(page, /SERVICE_BOOKING_HREF/);
+  assert.match(schedule, /Tu reunión aún no está confirmada/);
   assert.doesNotMatch(page, /gtag\(/);
   assert.match(ga, /strategy="afterInteractive"/);
   assert.match(ga, /gtag\/js\?id=/);

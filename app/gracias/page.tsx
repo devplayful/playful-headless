@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import BookAppointmentTracker from '@/components/BookAppointmentTracker';
+import GraciasScheduleBody from './GraciasScheduleBody';
+import { SERVICE_BOOKING_HREF } from '@/utils/booking';
 
 export const metadata: Metadata = {
   title: 'Gracias — siguiente paso | Playful Agency',
@@ -21,6 +23,7 @@ export default function ThankYouV2() {
         <div className="absolute bottom-32 left-1/4 w-6 h-6 border-2 border-cyan-300 rounded-full opacity-40" />
         <div className="absolute top-24 left-1/3 w-12 h-1 bg-purple-300 opacity-30 rotate-45" />
       </div>
+      <GraciasScheduleBody>
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
         <h1 className="text-center mb-12 md:mb-16" style={{ fontSize: 'clamp(44px, 8vw, 150px)', fontFamily: 'var(--font-paytone-one)', lineHeight: '1.01', color: '#440099' }}>
           ¡Recibimos tu caso!
@@ -52,7 +55,7 @@ export default function ThankYouV2() {
           </div>
         </section>
         <div data-cta-section="gracias" className="mt-8 text-center">
-          <a href="/reunion-playful" className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
+          <a href={SERVICE_BOOKING_HREF} className="inline-flex min-h-12 items-center justify-center px-8 py-4 rounded-full font-semibold text-white bg-[#5724AB] shadow-md hover:bg-[#440099] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#440099]">
             Cumplo estas condiciones: agendar sesión
           </a>
           <p className="mt-3 text-sm text-[#453A53]">Sesión gratuita de evaluación comercial, sin compromiso de contratación.</p>
@@ -63,6 +66,7 @@ export default function ThankYouV2() {
           <p className="text-sm text-[#453A53]">¿Todavía no es tu momento? No hace falta reservar ni reenviar el formulario. Revisaremos la solicitud que ya nos compartiste.</p>
         </section>
       </div>
+      </GraciasScheduleBody>
     </div>
   );
 }

@@ -28,7 +28,7 @@ import { PLAYFUL_QA_UA } from '../lib/analytics/qa-traffic.ts';
 const SAMPLE: BookingIntent = {
   ts: 1_000_000,
   page_path: '/agencia-e-commerce',
-  link_url: '/reunion-playful',
+  link_url: '/reunion',
   cta_section: 'hero',
 };
 

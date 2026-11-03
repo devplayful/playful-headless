@@ -68,7 +68,7 @@ test('case, hub and blog pages wire the JSON-LD scripts', () => {
   assert.match(blogPost, /id="playful-article"/);
 });
 
-test('existing body CTAs point at /reunion-playful without touching header Contáctanos', () => {
+test('existing body CTAs point at /reunion without touching header Contáctanos', () => {
   assert.match(casoCta, /SERVICE_BOOKING_HREF/);
   assert.doesNotMatch(casoCta, /href="\/contactar-agencia-de-marketing-digital"/);
   assert.match(home, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
