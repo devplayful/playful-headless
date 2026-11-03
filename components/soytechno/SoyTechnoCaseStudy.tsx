@@ -320,7 +320,7 @@ export default function SoyTechnoCaseStudy() {
         <div className={styles.ctaCopy}>
           <h2>¿Listo para convertir la complejidad en una mejor experiencia de compra?</h2>
           <p>Diseñemos un eCommerce preparado para pagos, logística y atención a la escala de tu negocio.</p>
-          <Link href="/reunion-playful">Agenda una reunión</Link>
+          <Link href="/reunion">Agenda una reunión</Link>
         </div>
       </section>
 

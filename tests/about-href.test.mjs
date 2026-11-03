@@ -146,7 +146,7 @@ test('composed Elementor rewriter still books contact CTAs and remaps /about', (
   const rewritten = rewriteElementorBodyHrefs(html, 'agencia-seo');
   assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
   assert.equal(rewritten.includes('/about'), false);
-  assert.match(rewritten, /href="\/reunion-playful"/);
+  assert.match(rewritten, /href="\/reunion"/);
   assert.match(rewritten, /href="\/nosotros"/);
   assert.match(rewritten, /¡Quiero saber más!/);
   assert.match(rewritten, /Contacta a tu Agencia SEO/);
