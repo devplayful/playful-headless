@@ -515,10 +515,12 @@ export async function runPayloadPreviewUsuariosWipe(env = process.env) {
     return 0;
   }
   console.log('wipe-preview-usuarios: ejecutando (Preview, DATABASE_URL presente; one-shot)');
+  const unpooled = (env.DATABASE_URL_UNPOOLED || '').trim();
+  const wipeEnv = unpooled ? { ...env, DATABASE_URL: unpooled } : env;
   const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
     ['scripts/wipe-preview-usuarios.mts'],
-    { env },
+    { env: wipeEnv },
   );
   if (exitCode !== 0) {
     console.log(`wipe-preview-usuarios ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);

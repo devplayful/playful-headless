@@ -166,6 +166,10 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
   assert.match(buildScript, /runPayloadPreviewHomeSeed/);
   assert.match(buildScript, /runPayloadPreviewUsuariosWipe/);
+  const wipeScript = readFileSync(new URL('../scripts/wipe-preview-usuarios.mts', import.meta.url), 'utf8');
+  assert.match(wipeScript, /getPayload/);
+  assert.equal(wipeScript.includes("from 'pg'"), false);
+  assert.match(wipeScript, /overrideAccess: true/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
