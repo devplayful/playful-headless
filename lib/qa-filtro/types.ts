@@ -51,7 +51,7 @@ export interface QaFiltroAnswers {
 
 export type QaFiltroOutcome = 'rejected' | 'review' | 'qualified';
 
-export type QaCalifTag = 'calif-no' | 'calif-pendiente';
+export type QaCalifTag = 'calif-no' | 'calif-pendiente' | 'calif-limite';
 
 export interface QaFiltroEvaluation {
   outcome: QaFiltroOutcome;

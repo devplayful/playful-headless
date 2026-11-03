@@ -54,6 +54,41 @@ test('solicitud pendiente (calendario) con algún canal >= 50k USD/mes', () => {
   assert.equal(result.califTag, 'calif-pendiente');
 });
 
+test('etiquetas calif por resultado: pendiente, límite y no pasa', () => {
+  assert.equal(
+    evaluateQaFiltro(base({
+      revenueOnline: '50k_100k',
+      revenueOtherChannels: 'under_10k',
+      thirdParty: 'no',
+    })).califTag,
+    'calif-pendiente',
+  );
+  assert.equal(
+    evaluateQaFiltro(base({
+      revenueOnline: '10k_50k',
+      revenueOtherChannels: 'under_10k',
+      thirdParty: 'no',
+    })).califTag,
+    'calif-limite',
+  );
+  assert.equal(
+    evaluateQaFiltro(base({
+      revenueOnline: 'under_10k',
+      revenueOtherChannels: 'under_10k',
+      thirdParty: 'no',
+    })).califTag,
+    'calif-no',
+  );
+  assert.equal(
+    evaluateQaFiltro(base({
+      revenueOnline: '50k_100k',
+      revenueOtherChannels: 'under_10k',
+      thirdParty: 'si',
+    })).califTag,
+    'calif-limite',
+  );
+});
+
 test('prod guard solo preview', () => {
   assert.equal(qaFiltroRouteEnabled({ VERCEL_ENV: 'production' }), false);
   assert.equal(qaFiltroRouteEnabled({ VERCEL_ENV: 'preview' }), true);

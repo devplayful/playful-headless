@@ -58,8 +58,15 @@ export function evaluateQaFiltro(answers: QaFiltroAnswers): QaFiltroEvaluation {
     outcome = 'review';
   }
 
+  const califTag =
+    outcome === 'rejected'
+      ? 'calif-no'
+      : outcome === 'review'
+        ? 'calif-limite'
+        : 'calif-pendiente';
+
   return {
     outcome,
-    califTag: outcome === 'rejected' ? 'calif-no' : 'calif-pendiente',
+    califTag,
   };
 }
