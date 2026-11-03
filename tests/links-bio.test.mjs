@@ -27,6 +27,7 @@ import {
   resolveBlogCoverAlt,
 } from '../lib/blog-cover-image.ts';
 import { publicWebpIfPresent } from '../lib/public-webp-src.ts';
+import { ESHOW_MADRID_2026_CABECERA_SRC } from '../lib/eshow-madrid-2026.ts';
 import {
   LINKS_BIO_FEATURED_SIZES,
   LINKS_BIO_THUMB_SIZES,
@@ -119,6 +120,14 @@ test('blog article slugs come from /blog/{category}/{slug}', () => {
 });
 
 test('article thumbs use the same blog cover; other links use destination covers', () => {
+  const eshow = resolveLocalLinksBioThumbnail(LINKS_BIO_ENTRIES[0]);
+  assert.ok(eshow);
+  assert.equal(eshow.isFallback, false);
+  assert.equal(eshow.src, ESHOW_MADRID_2026_CABECERA_SRC);
+  assert.equal(eshow.alt, 'eShow Madrid 2026');
+  assert.equal(eshow.objectFit, 'contain');
+  assert.notEqual(eshow.src, LINKS_BIO_FALLBACK_THUMB);
+
   const zelle = LINKS_BIO_ENTRIES[1];
   const zelleSlug = 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce';
   const zelleThumb = resolveLocalLinksBioThumbnail(zelle);
@@ -149,6 +158,7 @@ test('article thumbs use the same blog cover; other links use destination covers
   assert.match(thumbsSource, /contacto-imagen\.png/);
   assert.match(thumbsSource, /agencia-shopify\/hero-/);
   assert.match(thumbsSource, /agencia-e-commerce\.jpg/);
+  assert.match(thumbsSource, /ESHOW_MADRID_2026_CABECERA_SRC/);
   assert.equal(
     resolveLocalLinksBioThumbnail({
       label: 'Sin portada local',
