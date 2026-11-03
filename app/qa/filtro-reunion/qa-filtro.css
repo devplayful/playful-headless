@@ -18,7 +18,7 @@ body:has([data-qa-filtro-root]) iframe#lc_widget_iframe {
   scroll-margin-top: 7rem;
 }
 
-.qa-filtro-root [data-qa-filtro-content] {
+.qa-filtro-root [data-qa-filtro-content]:not([data-qa-page="gracias"]) {
   padding-top: 0.5rem;
 }
 
@@ -35,7 +35,7 @@ body:has([data-qa-filtro-root]) iframe#lc_widget_iframe {
 }
 
 .qa-filtro-root [data-qa-page="gracias"] {
-  padding-top: 5.75rem;
+  padding-top: 7rem;
   scroll-margin-top: 7rem;
 }
 

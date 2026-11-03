@@ -64,19 +64,23 @@ async function scrollCalendarIntoView(page) {
   await page.waitForTimeout(600);
 }
 
+function slotLocator(frame) {
+  return frame.locator('span').filter({ hasText: /^\d{1,2}:\d{2}$/ });
+}
+
 async function pickDayAndWaitSlots(page, frame) {
-  await frame.locator('button:not([disabled])').first().waitFor({ timeout: 45_000 });
-  const dayButtons = frame.locator('button:not([disabled])').filter({ hasText: /^[0-9]{1,2}$/ });
-  const count = await dayButtons.count();
-  for (let i = 0; i < Math.min(count, 20); i += 1) {
-    await dayButtons.nth(i).click({ timeout: 10_000 });
+  await frame.locator('td.selectable.vdpCell:not(.disabled)').first().waitFor({ timeout: 45_000 });
+  const dayCells = frame.locator('td.selectable.vdpCell:not(.disabled)');
+  const count = await dayCells.count();
+  for (let i = 0; i < Math.min(count, 25); i += 1) {
+    await dayCells.nth(i).click({ timeout: 10_000 });
     await page.waitForTimeout(2500);
-    const slots = frame.locator('button').filter({ hasText: /^\d{1,2}:\d{2}/ });
-    if (await slots.count() >= 3) {
+    const slots = slotLocator(frame);
+    if ((await slots.count()) >= 3) {
       return await slots.count();
     }
   }
-  const slots = frame.locator('button').filter({ hasText: /^\d{1,2}:\d{2}/ });
+  const slots = slotLocator(frame);
   await slots.first().waitFor({ timeout: 25_000 }).catch(() => {});
   return await slots.count();
 }
@@ -97,7 +101,7 @@ async function runCalendarCapture(page, viewport, shotName, logName) {
 
   const frame = page.frameLocator('[data-qa-calendar="embedded"]');
   await page.waitForTimeout(5000);
-  const slotCount = await pickDayAndWaitSlots(frame);
+  const slotCount = await pickDayAndWaitSlots(page, frame);
   assert.ok(slotCount >= 3, `expected >=3 time slots, got ${slotCount}`);
 
   await scrollCalendarIntoView(page);
