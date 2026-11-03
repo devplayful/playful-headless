@@ -11,5 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function ReunionPage() {
-  return <ReunionCalificacionClient />;
+  const previewSimulation = process.env.VERCEL_ENV === 'preview';
+  return <ReunionCalificacionClient previewSimulation={previewSimulation} />;
 }

@@ -48,15 +48,23 @@ const EMPTY = {
 const CALENDAR_INTRO =
   'Esto es una solicitud, no una reunión confirmada. Revisamos tus respuestas y te confirmamos solo si de verdad podemos ayudarte.';
 
-export default function ReunionCalificacionClient() {
+export default function ReunionCalificacionClient({
+  previewSimulation = false,
+}: {
+  previewSimulation?: boolean;
+}) {
   return (
     <Suspense fallback={null}>
-      <ReunionCalificacionClientInner />
+      <ReunionCalificacionClientInner previewSimulation={previewSimulation} />
     </Suspense>
   );
 }
 
-function ReunionCalificacionClientInner() {
+function ReunionCalificacionClientInner({
+  previewSimulation,
+}: {
+  previewSimulation: boolean;
+}) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -76,8 +84,12 @@ function ReunionCalificacionClientInner() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError('');
-    const recaptchaToken = recaptchaSiteKey ? recaptchaRef.current?.getValue() : undefined;
-    if (recaptchaSiteKey && !recaptchaToken) {
+    const recaptchaToken = previewSimulation
+      ? undefined
+      : recaptchaSiteKey
+        ? recaptchaRef.current?.getValue()
+        : undefined;
+    if (!previewSimulation && recaptchaSiteKey && !recaptchaToken) {
       setError('Por favor, completa la verificación de seguridad.');
       return;
     }
@@ -298,12 +310,12 @@ function ReunionCalificacionClientInner() {
           </span>
         </label>
 
-        {!recaptchaSiteKey ? null : (
+        {!previewSimulation && recaptchaSiteKey ? (
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={recaptchaSiteKey}
           />
-        )}
+        ) : null}
 
         {error ? <p className="text-sm text-red-700" role="alert">{error}</p> : null}
 
