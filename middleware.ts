@@ -175,6 +175,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  if (path === '/reunion-playful') {
+    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
+  }
+
   const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
   const hadTrailingSlash = request.nextUrl.pathname !== path;
   if (resolved.changed || hadTrailingSlash) {

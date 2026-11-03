@@ -106,7 +106,9 @@ test('SEO cruce 22 new 301s are one hop and last-write the closed list', () => {
   assert.match(middlewareSource, /seo-cruce-2810-redirect-map\.json/);
   assert.match(middlewareSource, /\.\.\.seoCruce2810Redirects/);
   assert.match(middlewareSource, /NextResponse\.redirect\(target, 301\)/);
-  assert.doesNotMatch(middlewareSource, /NextResponse\.redirect\([^)]*,\s*308\)/);
+  const redirect308 = middlewareSource.match(/NextResponse\.redirect\([^)]*,\s*308\)/g) || [];
+  assert.equal(redirect308.length, 1, 'only /reunion-playful → /reunion uses 308');
+  assert.match(middlewareSource, /path === '\/reunion-playful'/);
 
   for (const [origin, dest] of Object.entries(SEO_CRUCE_2810_REDIRECTS)) {
     const destPath = pathnameFromDest(dest);
