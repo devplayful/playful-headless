@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Playwright check: /reunion-playful emits GA4 collect page_view (G-WH76RQWSCT)
- * and no collect hit uses a URL as event name (en=).
+ * Playwright check (legacy): /reunion-playful used to emit GA4 page_view before client redirect.
+ * Production now 308s /reunion-playful → /reunion in middleware; use /reunion for GA checks.
  *
  * Usage (production analytics on a local/preview server):
  *   VERCEL_ENV=production NEXT_PUBLIC_GA_MEASUREMENT_ID=G-WH76RQWSCT \

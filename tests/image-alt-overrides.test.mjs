@@ -106,6 +106,12 @@ test('resolveImageAlt uses the map and otherwise the fallback', () => {
   );
 });
 
+test('blob media URLs resolve Jumex WP alt keys', () => {
+  const blob =
+    'https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2025/11/Azul.png';
+  assert.equal(lookupImageAlt(blob), 'Muestra del color Catalina Blue (HEX 113278)');
+});
+
 test('the transform is idempotent', () => {
   const html =
     `<img src="${FUND_SRC}" alt="viejo"><img src="" alt="Image"><img src="${PIXEL_SRC}">`;

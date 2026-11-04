@@ -5,6 +5,9 @@ import {
   resolveBlogCoverAlt,
 } from './blog-cover-image.ts';
 import { CASOS_DE_EXITO_FEATURED_TAPAS } from './case-study-listing-image.ts';
+import {
+  ESHOW_MADRID_2026_CABECERA_SRC,
+} from './eshow-madrid-2026.ts';
 import { publicWebpIfPresent } from './public-webp-src.ts';
 import {
   LINKS_BIO_FALLBACK_THUMB,
@@ -34,6 +37,11 @@ export const LINKS_BIO_DESTINATION_COVERS: Record<
   string,
   Omit<LinksBioThumb, 'isFallback'>
 > = {
+  '/eshow': {
+    src: ESHOW_MADRID_2026_CABECERA_SRC,
+    alt: 'eShow Madrid 2026',
+    objectFit: 'contain',
+  },
   '/casos-de-exito': {
     src: CASOS_COLLAGE[0],
     alt: '',
