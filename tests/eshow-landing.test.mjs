@@ -29,11 +29,11 @@ const {
 } = await import('../lib/eshow-landing-copy.ts');
 
 const pageSource = readFileSync(
-  new URL('../app/eshow/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/eshow/page.tsx', import.meta.url),
   'utf8',
 );
 const formSource = readFileSync(
-  new URL('../app/eshow/EshowLandingForm.tsx', import.meta.url),
+  new URL('../app/(frontend)/eshow/EshowLandingForm.tsx', import.meta.url),
   'utf8',
 );
 const apiSource = readFileSync(

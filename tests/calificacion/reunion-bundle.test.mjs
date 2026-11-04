@@ -14,8 +14,8 @@ function readSource(relativePath) {
 
 test('/reunion client sources do not import QA calendar constants module', () => {
   for (const relativePath of [
-    'app/reunion/ReunionCalendarEmbed.tsx',
-    'app/reunion/ReunionCalificacionClient.tsx',
+    'app/(frontend)/reunion/ReunionCalendarEmbed.tsx',
+    'app/(frontend)/reunion/ReunionCalificacionClient.tsx',
   ]) {
     const source = readSource(relativePath);
     assert.doesNotMatch(source, /from ['"]@\/lib\/qa-filtro\/constants['"]/);
@@ -23,7 +23,7 @@ test('/reunion client sources do not import QA calendar constants module', () =>
     assert.doesNotMatch(source, /QA_FILTRO_CALENDAR_ID/);
     assert.doesNotMatch(source, /buildQaFiltroCalendarWidgetSrc/);
   }
-  assert.match(readSource('app/reunion/ReunionCalendarEmbed.tsx'), /buildCalificacionCalendarWidgetSrc/);
+  assert.match(readSource('app/(frontend)/reunion/ReunionCalendarEmbed.tsx'), /buildCalificacionCalendarWidgetSrc/);
 });
 
 function reunionAppChunks() {

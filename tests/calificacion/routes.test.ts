@@ -5,7 +5,7 @@ import { CALIFICACION_PUBLIC_ROUTE } from '../../lib/calificacion/constants.ts';
 import { qaFiltroRouteEnabled } from '../../lib/qa-filtro/constants.ts';
 
 test('/reunion page exists with noindex metadata', () => {
-  const page = readFileSync(new URL('../../app/reunion/page.tsx', import.meta.url), 'utf8');
+  const page = readFileSync(new URL('../../app/(frontend)/reunion/page.tsx', import.meta.url), 'utf8');
   assert.match(page, /index: false/);
   assert.match(page, /ReunionCalificacionClient/);
 });
