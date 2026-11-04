@@ -28,8 +28,6 @@ import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
 import {
   blogBodyForSlug,
-  MIGRACION_SEO_ALT_BLOG_SLUG,
-  MIGRACION_SEO_PLAN_PATH,
 } from '@/lib/blog-body-overrides';
 import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
@@ -204,9 +202,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const editorial = resolveBlogEditorialUpdate(postSlug, editorialDates);
   const articleDates = resolveBlogArticleTimestamps(editorialDates);
   const articleAuthor = resolveBlogArticleAuthor(post, editorial);
-  const postCanonical = canonicalForPath(
-    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
-  );
+  const postCanonical = canonicalForPath(blogPostPath(post));
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath =
     resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
@@ -652,9 +648,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
-  const url = canonicalForPath(
-    postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
-  );
+  const url = canonicalForPath(blogPostPath(post));
 
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);
@@ -680,9 +674,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description,
     alternates: { canonical: url },
-    ...(postSlug === MIGRACION_SEO_ALT_BLOG_SLUG
-      ? { robots: { index: false, follow: true } }
-      : {}),
     openGraph: {
       title,
       description,

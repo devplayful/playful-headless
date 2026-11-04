@@ -12,7 +12,12 @@ const {
   hasRuntimeDatabase,
   getPayloadConnectionString,
   shouldRunPreviewMigrate,
+  shouldRunPreviewPaginasB4Seed,
 } = await import('../lib/cms-database.mjs');
+
+const {
+  summarizeSeedPaginasB4Output,
+} = await import('../scripts/build-with-budget.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
   assert.equal(shouldRunPreviewMigrate({}), false);
@@ -32,6 +37,38 @@ test('DATABASE_URL is required for preview migrate; production never migrates', 
   );
   assert.equal(shouldRunPreviewMigrate({ POSTGRES_URL: 'postgres://example' }), false);
   assert.equal(shouldRunPreviewMigrate({ DATABASE_URI: 'postgres://example' }), false);
+});
+
+test('preview B4 seed runs with runtime Postgres aliases on Preview only', () => {
+  assert.equal(shouldRunPreviewPaginasB4Seed({}), false);
+  assert.equal(shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example' }), false);
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ POSTGRES_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('summarizeSeedPaginasB4Output accepts long slugs and resumen line', () => {
+  const sample = [
+    '[H6-B4] contactar-agencia-de-marketing-digital OK',
+    '[H6-B4] reunion-playful OK',
+    '[H6-B4] resumen: 2 OK / 0 ERROR',
+  ].join('\n');
+  const summary = summarizeSeedPaginasB4Output(sample);
+  assert.deepEqual(summary, {
+    ok: 2,
+    err: 0,
+    slugOkCount: 2,
+    slugErrCount: 0,
+  });
 });
 
 test('runtime prefers DATABASE_URL; migrate prefers UNPOOLED without leaking aliases', () => {
@@ -68,6 +105,7 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(payloadConfig, /migrationDir/);
   assert.match(payloadConfig, /disableCreateDatabase: true/);
   assert.match(buildScript, /runPayloadPreviewMigrate/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -82,6 +120,12 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
     'utf8',
   );
   assert.match(index, /20261028_195833_initial/);
+  assert.match(index, /20261030_120000_paginas_codigo/);
+  const paginasCodigo = readFileSync(
+    new URL('../cms/migrations/20261030_120000_paginas_codigo.ts', import.meta.url),
+    'utf8',
+  );
+  assert.match(paginasCodigo, /CREATE TABLE "paginas_codigo"/);
   for (const table of [
     'posts',
     'paginas',
