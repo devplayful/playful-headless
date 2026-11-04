@@ -6,32 +6,29 @@ const {
   reunionPlayfulWidgetDestination,
   scheduleReunionPlayfulRedirect,
 } = await import('../lib/analytics/reunion-playful-redirect.ts');
-const { BOOKING_WIDGET_HREF } = await import('../utils/booking-attribution.ts');
 
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const reunionPage = readFileSync(new URL('../app/(frontend)/reunion-playful/page.tsx', import.meta.url), 'utf8');
 
-test('/reunion-playful is a Next page, not a middleware 302 to GHL', () => {
-  assert.match(reunionPage, /ReunionPlayfulRedirect/);
+test('/reunion-playful 308s to /reunion in middleware (query preserved)', () => {
+  assert.match(middleware, /path === '\/reunion-playful'/);
+  assert.match(middleware, /NextResponse\.redirect\(target, 308\)/);
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
-  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
 });
 
-test('reunionPlayfulWidgetDestination merges search onto the widget URL', () => {
+test('reunionPlayfulWidgetDestination merges attribution onto /reunion', () => {
   const dest = reunionPlayfulWidgetDestination({
     search: '?utm_source=google&gclid=ABC',
     lastCookie: '',
     firstCookie: '',
   });
-  const url = new URL(dest);
-  assert.equal(url.origin, 'https://api.playfulagency.com');
-  assert.equal(url.pathname, '/widget/bookings/reunion-playful');
+  assert.equal(dest.startsWith('/reunion'), true);
+  const url = new URL(dest, 'https://playfulagency.com');
+  assert.equal(url.pathname, '/reunion');
   assert.equal(url.searchParams.get('utm_source'), 'google');
   assert.equal(url.searchParams.get('gclid'), 'ABC');
-  assert.equal(dest.startsWith(BOOKING_WIDGET_HREF), true);
 });
 
-test('scheduleReunionPlayfulRedirect redirects after GA readiness', () => {
+test('scheduleReunionPlayfulRedirect still waits for GA when used client-side', () => {
   let redirected = false;
   const timers = [];
   scheduleReunionPlayfulRedirect({
