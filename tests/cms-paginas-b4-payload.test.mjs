@@ -27,11 +27,11 @@ const contactClient = readFileSync(
   'utf8',
 );
 const reunionPage = readFileSync(
-  new URL('../app/(frontend)/reunion-playful/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/reunion/page.tsx', import.meta.url),
   'utf8',
 );
-const reunionRedirect = readFileSync(
-  new URL('../app/(frontend)/reunion-playful/ReunionPlayfulRedirect.tsx', import.meta.url),
+const reunionClient = readFileSync(
+  new URL('../app/(frontend)/reunion/ReunionCalificacionClient.tsx', import.meta.url),
   'utf8',
 );
 
@@ -50,12 +50,10 @@ test('Preview ?cms=1 reescribe slugs B4 a cms-pagina-b4-preview', () => {
   );
 });
 
-test('páginas públicas B4 sin diff respecto a fase1', () => {
+test('página pública de contacto B4 sin diff respecto a fase1', () => {
   const paths = [
     'app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx',
     'app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient.tsx',
-    'app/(frontend)/reunion-playful/page.tsx',
-    'app/(frontend)/reunion-playful/ReunionPlayfulRedirect.tsx',
   ];
   for (const file of paths) {
     const diff = execSync(`git diff origin/cursor/cms-payload-fase1 -- "${file}"`, {
@@ -75,14 +73,14 @@ test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () =
     /payload\.destroy/,
   );
   assert.match(previewPage, /ContactPageClient/);
-  assert.match(previewPage, /ReunionPlayfulRedirect/);
+  assert.match(previewPage, /ReunionCalificacionClient/);
   assert.match(previewPage, /paginasB4PayloadPreviewAttrs/);
   assert.match(previewPage, /generateContactoMetadata/);
   assert.match(previewPage, /generateReunionPlayfulMetadata/);
   assert.doesNotMatch(contactPage, /cms-paginas-b4|paginas-b4/);
   assert.doesNotMatch(contactClient, /cms-paginas-b4|paginas-b4/);
   assert.doesNotMatch(reunionPage, /cms-paginas-b4|paginas-b4/);
-  assert.doesNotMatch(reunionRedirect, /cms-paginas-b4|paginas-b4/);
+  assert.doesNotMatch(reunionClient, /cms-paginas-b4|paginas-b4/);
 });
 
 test('seed B4 define contacto y reunión', () => {

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import ContactPageClient from '@/app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient';
-import ReunionPlayfulRedirect from '@/app/(frontend)/reunion-playful/ReunionPlayfulRedirect';
+import ReunionCalificacionClient from '@/app/(frontend)/reunion/ReunionCalificacionClient';
 import {
   CONTACT_SLUG,
   REUNION_PLAYFUL_SLUG,
@@ -85,9 +85,10 @@ export default async function CmsPaginaB4PreviewPage({
   }
 
   if (slug === REUNION_PLAYFUL_SLUG) {
+    const previewSimulation = process.env.VERCEL_ENV === 'preview';
     return (
       <div {...cmsSourceAttrs}>
-        <ReunionPlayfulRedirect />
+        <ReunionCalificacionClient previewSimulation={previewSimulation} />
       </div>
     );
   }
