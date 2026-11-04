@@ -20,11 +20,11 @@ test('visible Reservar href keeps every key from the page URL, skips empty ones'
   const search = '?gclid=TEST123&gbraid=GB&wbraid=WB&fbclid=FB&utm_source=google&utm_medium=cpc&utm_campaign=c&utm_term=t&utm_content=x&utm_term2=&qa=1&utm_content=';
   const href = bookingHrefFromPageSearch(search);
   const url = new URL(href, 'https://playfulagency.com');
-  assert.equal(url.pathname, '/reunion-playful');
+  assert.equal(url.pathname, '/reunion');
   for (const key of ALL_KEYS) assert.equal(url.searchParams.getAll(key).length, 1, key);
   assert.equal(url.searchParams.get('fbclid'), 'FB');
   assert.equal(url.searchParams.has('qa'), false);
-  assert.equal(bookingHrefFromPageSearch('?gclid=&utm_source=%20'), '/reunion-playful');
+  assert.equal(bookingHrefFromPageSearch('?gclid=&utm_source=%20'), '/reunion');
 });
 
 test('widget URL: page URL wins, cookies fill gaps, no duplicates, no empties', () => {
@@ -43,9 +43,9 @@ test('widget URL: page URL wins, cookies fill gaps, no duplicates, no empties', 
   for (const key of ALL_KEYS) assert.ok(out.searchParams.getAll(key).length <= 1, key);
 });
 
-test('direct widget hrefs in HTML go through /reunion-playful with fbclid kept', () => {
+test('direct widget hrefs in HTML go through /reunion with fbclid kept', () => {
   assert.equal(
     toServiceBookingHref('https://api.playfulagency.com/widget/bookings/reunion-playful?fbclid=FB&gclid=TEST123&utm_source='),
-    '/reunion-playful?gclid=TEST123&fbclid=FB',
+    '/reunion?gclid=TEST123&fbclid=FB',
   );
 });
