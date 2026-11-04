@@ -148,9 +148,9 @@ test('sendGtagEvent queues the collect rewrite before calling gtag', () => {
 
 test('encodeGtagEventParams routes every event to GA4 + Ads via send_to', () => {
   assert.deepEqual([...GTAG_EVENT_SEND_TO], ['G-WH76RQWSCT', 'AW-427600160']);
-  const payload = encodeGtagEventParams({ link_url: '/reunion-playful' });
+  const payload = encodeGtagEventParams({ link_url: '/reunion' });
   assert.deepEqual(payload.send_to, ['G-WH76RQWSCT', 'AW-427600160']);
-  assert.equal(payload.link_url, '/reunion-playful');
+  assert.equal(payload.link_url, '/reunion');
   const explicit = encodeGtagEventParams({ send_to: 'G-WH76RQWSCT' });
   assert.equal(explicit.send_to, 'G-WH76RQWSCT');
 });
