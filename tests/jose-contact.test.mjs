@@ -7,6 +7,7 @@ import {
   buildJoseVCard,
   escapeVCardValue,
   isJosePhonePlaceholder,
+  josePhoneTelValue,
 } from '../lib/jose-contact.ts';
 import {
   SITEMAP_STATIC_PATHS,
@@ -23,26 +24,39 @@ const manifest = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );
 
-test('JOSE_CONTACT placeholders are easy to spot before eShow', () => {
-  assert.equal(JOSE_CONTACT.fullName, 'José Miguel Reyes');
-  assert.equal(JOSE_CONTACT.title, 'PENDIENTE');
-  assert.equal(JOSE_CONTACT.phone, '+34 PENDIENTE');
+test('JOSE_CONTACT carries production contact data', () => {
+  assert.equal(JOSE_CONTACT.fullName, 'José Reyes Labrador');
+  assert.equal(JOSE_CONTACT.givenName, 'José');
+  assert.equal(JOSE_CONTACT.familyName, 'Reyes Labrador');
+  assert.equal(JOSE_CONTACT.title, 'Socio y CMO');
+  assert.equal(JOSE_CONTACT.phone, '+34 658 09 35 80');
   assert.equal(JOSE_CONTACT.email, 'josemiguel@playfulagency.com'); // pragma: allowlist secret
   assert.equal(JOSE_CONTACT.website, 'https://playfulagency.com');
-  assert.equal(isJosePhonePlaceholder(), true);
+  assert.equal(JOSE_CONTACT.linkedin, 'https://www.linkedin.com/company/playful-agency/');
+  assert.equal(JOSE_CONTACT.instagram, 'https://www.instagram.com/somosplayful');
+  assert.equal(isJosePhonePlaceholder(), false);
+  assert.equal(josePhoneTelValue(), '+34658093580');
 });
 
-test('vCard 3.0 uses CRLF, required fields, and omits TEL while phone is placeholder', () => {
+test('vCard 3.0 uses CRLF, N/FN, TEL, URL and social profiles', () => {
   const vcf = buildJoseVCard();
   assert.match(vcf, /^BEGIN:VCARD\r\n/);
   assert.match(vcf, /\r\nVERSION:3.0\r\n/);
-  assert.match(vcf, /\r\nN:Reyes;José Miguel;;;\r\n/);
-  assert.match(vcf, /\r\nFN:José Miguel Reyes\r\n/);
+  assert.match(vcf, /\r\nN:Reyes Labrador;José;;;\r\n/);
+  assert.match(vcf, /\r\nFN:José Reyes Labrador\r\n/);
   assert.match(vcf, /\r\nORG:Playful Agency\r\n/);
-  assert.match(vcf, /\r\nTITLE:PENDIENTE\r\n/);
-  assert.doesNotMatch(vcf, /\r\nTEL;/);
+  assert.match(vcf, /\r\nTITLE:Socio y CMO\r\n/);
+  assert.match(vcf, /\r\nTEL;TYPE=CELL:\+34658093580\r\n/);
   assert.match(vcf, new RegExp(`\\r\\nEMAIL;TYPE=INTERNET:${JOSE_CONTACT.email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r\\n`));
   assert.match(vcf, /\r\nURL:https:\/\/playfulagency.com\r\n/);
+  assert.match(
+    vcf,
+    /\r\nX-SOCIALPROFILE;type=linkedin:https:\/\/www\.linkedin\.com\/company\/playful-agency\/\r\n/,
+  );
+  assert.match(
+    vcf,
+    /\r\nX-SOCIALPROFILE;type=instagram:https:\/\/www\.instagram\.com\/somosplayful\r\n/,
+  );
   assert.match(vcf, /\r\nEND:VCARD\r\n$/);
   assert.doesNotMatch(vcf, /[^\r]\n/);
 });
@@ -69,9 +83,12 @@ test('vcf route sets attachment headers and robots tag', () => {
   assert.match(route, /buildJoseVCard/);
 });
 
-test('page wires tel, mailto, web and vCard download from JOSE_CONTACT', () => {
+test('page wires tel, mailto, web, social and vCard download from JOSE_CONTACT', () => {
   assert.match(page, /JOSE_CONTACT/);
+  assert.match(page, /josePhoneTelValue/);
   assert.match(page, /mailto:\$\{JOSE_CONTACT\.email\}/);
+  assert.match(page, /JOSE_CONTACT\.linkedin/);
+  assert.match(page, /JOSE_CONTACT\.instagram/);
   assert.match(page, /\/jose\/contacto\.vcf/);
   assert.match(page, /Guardar contacto/);
 });

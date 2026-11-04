@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { JOSE_CONTACT, isJosePhonePlaceholder } from '@/lib/jose-contact';
+import { JOSE_CONTACT, isJosePhonePlaceholder, josePhoneTelValue } from '@/lib/jose-contact';
 import styles from './jose-contact.module.css';
 
 export default function JoseContactPage() {
@@ -29,7 +29,7 @@ export default function JoseContactPage() {
             {showPhone ? (
               <li>
                 <span className={styles.itemLabel}>Teléfono</span>
-                <a className={styles.itemLink} href={`tel:${JOSE_CONTACT.phone.replace(/\s/g, '')}`}>
+                <a className={styles.itemLink} href={`tel:${josePhoneTelValue()}`}>
                   {JOSE_CONTACT.phone}
                 </a>
               </li>
@@ -54,6 +54,28 @@ export default function JoseContactPage() {
                 rel="noopener noreferrer"
               >
                 playfulagency.com
+              </a>
+            </li>
+            <li>
+              <span className={styles.itemLabel}>LinkedIn</span>
+              <a
+                className={styles.itemLink}
+                href={JOSE_CONTACT.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Playful Agency
+              </a>
+            </li>
+            <li>
+              <span className={styles.itemLabel}>Instagram</span>
+              <a
+                className={styles.itemLink}
+                href={JOSE_CONTACT.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @somosplayful
               </a>
             </li>
           </ul>

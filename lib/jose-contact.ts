@@ -1,19 +1,23 @@
 /**
- * Tarjeta de contacto de José (/jose). Edita solo este objeto antes del eShow.
+ * Tarjeta de contacto de José (/jose). Edita solo este objeto si cambian los datos.
  */
 export const JOSE_CONTACT = {
-  /** TODO: confirmar nombre tal como debe verse en la tarjeta */
-  fullName: 'José Miguel Reyes',
-  givenName: 'José Miguel',
-  familyName: 'Reyes',
-  /** TODO: cargo definitivo (p. ej. CEO, Fundador) */
-  title: 'PENDIENTE',
+  fullName: 'José Reyes Labrador',
+  givenName: 'José',
+  familyName: 'Reyes Labrador',
+  title: 'Socio y CMO',
   organization: 'Playful Agency',
-  /** TODO: móvil con prefijo internacional (+34…) */
-  phone: '+34 PENDIENTE',
+  /** Formato legible en pantalla; tel: y vCard usan solo dígitos y + */
+  phone: '+34 658 09 35 80',
   email: 'josemiguel@playfulagency.com', // pragma: allowlist secret
   website: 'https://playfulagency.com',
+  linkedin: 'https://www.linkedin.com/company/playful-agency/',
+  instagram: 'https://www.instagram.com/somosplayful',
 } as const;
+
+export function josePhoneTelValue(phone: string = JOSE_CONTACT.phone): string {
+  return phone.replace(/\s/g, '');
+}
 
 export function isJosePhonePlaceholder(phone: string = JOSE_CONTACT.phone): boolean {
   return /PENDIENTE/i.test(phone);
@@ -42,14 +46,14 @@ export function buildJoseVCard(): string {
   ];
 
   if (!isJosePhonePlaceholder(c.phone)) {
-    lines.push(`TEL;TYPE=CELL:${escapeVCardValue(c.phone)}`);
+    lines.push(`TEL;TYPE=CELL:${escapeVCardValue(josePhoneTelValue(c.phone))}`);
   }
 
-  lines.push(
-    `EMAIL;TYPE=INTERNET:${escapeVCardValue(c.email)}`,
-    `URL:${escapeVCardValue(c.website)}`,
-    'END:VCARD',
-  );
+  lines.push(`EMAIL;TYPE=INTERNET:${escapeVCardValue(c.email)}`);
+  lines.push(`URL:${escapeVCardValue(c.website)}`);
+  lines.push(`X-SOCIALPROFILE;type=linkedin:${escapeVCardValue(c.linkedin)}`);
+  lines.push(`X-SOCIALPROFILE;type=instagram:${escapeVCardValue(c.instagram)}`);
+  lines.push('END:VCARD');
 
   return `${lines.join('\r\n')}\r\n`;
 }
