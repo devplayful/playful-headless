@@ -28,8 +28,8 @@ const { buildSitemapXml, getSitemapLocs, SITEMAP_STATIC_PATHS } = await import(
 );
 
 const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
-const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const slugPage = readFileSync(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
+const blogPage = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 const importManifest = require('../docs/migracion/payload-importar.json');
 const APEX = 'https://playfulagency.com';
 
