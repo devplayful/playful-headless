@@ -6,8 +6,8 @@ export const BOOKING_WIDGET_ORIGIN = 'https://api.playfulagency.com';
 export const BOOKING_WIDGET_PATH = '/widget/bookings/reunion-playful';
 export const BOOKING_WIDGET_HREF = `${BOOKING_WIDGET_ORIGIN}${BOOKING_WIDGET_PATH}`;
 
-/** Same-origin hop that can read pa_attr_* before the 302 to the widget. */
-export const SERVICE_BOOKING_HREF = '/reunion-playful';
+/** Same-origin hop before the calificación form (/reunion). */
+export const SERVICE_BOOKING_HREF = '/reunion';
 
 export const BOOKING_QUERY_KEYS = [
   'gclid',

@@ -16,9 +16,9 @@ import {
 } from '../lib/analytics/cta-click.ts';
 
 test('classifies reunion-playful and GHL widget/calendar hrefs', () => {
-  assert.equal(classifyCtaHref('/reunion-playful'), CTA_REUNION_EVENT);
-  assert.equal(classifyCtaHref('/reunion-playful?gclid=abc'), CTA_REUNION_EVENT);
-  assert.equal(classifyCtaHref('https://playfulagency.com/reunion-playful'), CTA_REUNION_EVENT);
+  assert.equal(classifyCtaHref('/reunion'), CTA_REUNION_EVENT);
+  assert.equal(classifyCtaHref('/reunion?gclid=abc'), CTA_REUNION_EVENT);
+  assert.equal(classifyCtaHref('https://playfulagency.com/reunion'), CTA_REUNION_EVENT);
   assert.equal(
     classifyCtaHref('https://api.playfulagency.com/widget/bookings/reunion-playful'),
     CTA_REUNION_EVENT,
@@ -66,7 +66,7 @@ test('ignores share-only mailto/WhatsApp, nav links and hashes', () => {
 test('builds params from section hints and clips visible text', () => {
   const long = `${'Agenda una reunión con Playful '.repeat(8)}fin`;
   const collected = collectCtaClick({
-    href: '/reunion-playful',
+    href: '/reunion',
     pagePath: '/agencia-shopify',
     textContent: `  ${long}  `,
     ariaLabel: 'ignored when text exists',
@@ -81,7 +81,7 @@ test('builds params from section hints and clips visible text', () => {
       page_path: '/agencia-shopify',
       cta_section: 'hero',
       cta_text: long.replace(/\s+/g, ' ').trim().slice(0, CTA_TEXT_MAX),
-      link_url: '/reunion-playful',
+      link_url: '/reunion',
     },
   });
   assert.equal(collected?.params.cta_text.length, CTA_TEXT_MAX);
@@ -132,7 +132,7 @@ test('sendCtaEvent uses gtag with beacon transport', () => {
       page_path: '/agencia-shopify',
       cta_section: 'hero',
       cta_text: 'Agendar Reunión con Playful',
-      link_url: '/reunion-playful',
+      link_url: '/reunion',
     });
     assert.equal(calls.length, 1);
     assert.equal(calls[0][0], 'event');
@@ -142,7 +142,7 @@ test('sendCtaEvent uses gtag with beacon transport', () => {
     assert.equal(payload.page_path, '/agencia-shopify');
     assert.equal(payload[GTAG_EP_PAGE_PATH_KEY], '/agencia-shopify');
     assert.equal(payload.cta_section, 'hero');
-    assert.equal(payload.link_url, '/reunion-playful');
+    assert.equal(payload.link_url, '/reunion');
     assert.equal(payload.event_timeout, CTA_EVENT_TIMEOUT_MS);
     assert.equal(typeof payload.event_callback, 'function');
     assert.deepEqual(window.dataLayer, []);
@@ -159,9 +159,9 @@ function fakeWindow(withGtag: boolean) {
   const assigned: string[] = [];
   const timers: Array<() => void> = [];
   const anchor = {
-    href: 'https://playfulagency.com/reunion-playful',
+    href: 'https://playfulagency.com/reunion',
     textContent: 'Reservar',
-    getAttribute: (n: string) => (n === 'href' ? '/reunion-playful' : null),
+    getAttribute: (n: string) => (n === 'href' ? '/reunion' : null),
     hasAttribute: () => false,
     closest: (sel: string) => (sel === 'a' ? anchor : null),
   };
@@ -209,7 +209,7 @@ test('cta_reunion_click: gtag gets transport_type beacon + callback, navigation 
     assert.equal(f.assigned.length, 0);
     (params.event_callback as () => void)();
     f.timers.forEach((t) => t());
-    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion-playful']);
+    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion']);
   } finally { f.restore(); }
 });
 
@@ -219,6 +219,6 @@ test('cta_reunion_click: without gtag navigation still happens (once)', async ()
   try {
     handleCtaDocumentClick(f.event as unknown as MouseEvent);
     f.timers.forEach((t) => t());
-    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion-playful']);
+    assert.deepEqual(f.assigned, ['https://playfulagency.com/reunion']);
   } finally { f.restore(); }
 });

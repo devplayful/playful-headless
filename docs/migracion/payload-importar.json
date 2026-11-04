@@ -1,0 +1,12 @@
+{
+  "generatedFrom": "docs/migracion/seo-cruce-2810/urls-161.csv",
+  "note": "Registro de importación a Payload. Esta rama no migra contenido.",
+  "pagesToImport": [
+    {
+      "url": "/seo-vigo",
+      "wp_payload": "página WP · importar",
+      "decision": "CONSERVAR",
+      "kind": "page"
+    }
+  ]
+}
