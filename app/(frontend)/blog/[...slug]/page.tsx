@@ -26,7 +26,9 @@ import {
 } from '@/lib/blog-cover-image';
 import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
-import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  blogBodyForSlug,
+} from '@/lib/blog-body-overrides';
 import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
