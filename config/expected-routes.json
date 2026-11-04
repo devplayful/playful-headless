@@ -16,6 +16,7 @@
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
     "/cms-api/[...slug]",
+    "/cms-pagina-b5-preview/not-found",
     "/contactar-agencia-de-marketing-digital",
     "/favicon.ico",
     "/firma/alejandra-da-costa",
