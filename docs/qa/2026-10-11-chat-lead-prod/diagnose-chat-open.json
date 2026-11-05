@@ -1,0 +1,196 @@
+{
+  "openedAtMadrid": "2026-10-11 19:35:52 Europe/Madrid",
+  "openedAtIso": "2026-10-11T17:35:52.727Z",
+  "snapshot": {
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36",
+    "webdriver": true,
+    "brands": [
+      {
+        "brand": "Not:A-Brand",
+        "version": "8"
+      },
+      {
+        "brand": "Chromium",
+        "version": "156"
+      },
+      {
+        "brand": "HeadlessChrome",
+        "version": "156"
+      }
+    ],
+    "gtagType": "function",
+    "widgetActive": true,
+    "dataLayer": [
+      {
+        "gtm.start": 1791740148470,
+        "event": "gtm.js",
+        "gtm.uniqueEventId": 3
+      },
+      [
+        "js",
+        "2026-10-11T17:35:48.471Z"
+      ],
+      [
+        "config",
+        "G-WH76RQWSCT",
+        {
+          "page_path": "/"
+        }
+      ],
+      {
+        "event": "gtm.dom",
+        "gtm.uniqueEventId": 13
+      },
+      {
+        "event": "gtm.load",
+        "gtm.uniqueEventId": 14
+      },
+      [
+        "event",
+        "chat_open",
+        {
+          "page_path": "/",
+          "event_timeout": 300
+        }
+      ]
+    ],
+    "destinations": [
+      "G-WH76RQWSCT",
+      "GTM-MXHKJ4NW"
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtm.js?id=GTM-MXHKJ4NW",
+      "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/427600160/?random=1791740148546&cv=11&fst=1791740148546&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a72v887660124za208zd887660124xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&u_w=1440&u_h=900&url=https%3A%2F%2Fplayfulagency.com%2F&rcb=3&frm=0&tiba=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=811148336.1791740149&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uamb=0&uam=&uap=Linux&uapv=&uaw=0&data=event%3Dgtag.config%3Bpage_path%3D%2F&ept=9&rfmt=3&fmt=4",
+      "https://www.googletagmanager.com/gtag/js?id=G-WH76RQWSCT"
+    ]
+  },
+  "pageView": {
+    "atMadrid": "2026-10-11 19:35:48 Europe/Madrid",
+    "status": null,
+    "host": "analytics.google.com",
+    "en": "page_view",
+    "tid": "G-WH76RQWSCT",
+    "cid": "749491838.1791740149",
+    "sid": "1791740148",
+    "_s": "1",
+    "seg": "0",
+    "_dbg": null,
+    "debug_mode": null,
+    "page_path": null,
+    "dp": "/",
+    "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za208zd887660124xf1&_p=1791740148470&_gaz=1&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGAC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=1&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=365"
+  },
+  "chatOpen": {
+    "atMadrid": "2026-10-11 19:35:57 Europe/Madrid",
+    "status": null,
+    "host": "analytics.google.com",
+    "en": "chat_open",
+    "tid": "G-WH76RQWSCT",
+    "cid": "749491838.1791740149",
+    "sid": "1791740148",
+    "_s": "2",
+    "seg": "0",
+    "_et": "4189",
+    "_dbg": null,
+    "debug_mode": null,
+    "page_path": null,
+    "dp": "/",
+    "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za200zd887660124xf1&_p=1791740148470&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=2&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=chat_open&_ee=1&_et=4189&tfd=9556"
+  },
+  "chatOpenResponses": [
+    {
+      "atMadrid": "2026-10-11 19:35:57 Europe/Madrid",
+      "status": 204,
+      "host": "analytics.google.com",
+      "en": "chat_open",
+      "tid": "G-WH76RQWSCT",
+      "cid": "749491838.1791740149",
+      "sid": "1791740148",
+      "_s": "2",
+      "seg": "0",
+      "_et": "4189",
+      "_dbg": null,
+      "debug_mode": null,
+      "page_path": null,
+      "dp": "/",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za200zd887660124xf1&_p=1791740148470&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=2&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=chat_open&_ee=1&_et=4189&tfd=9556",
+      "statusText": ""
+    }
+  ],
+  "cidSame": true,
+  "sidSame": true,
+  "allCollectReq": [
+    {
+      "atMadrid": "2026-10-11 19:35:48 Europe/Madrid",
+      "status": null,
+      "host": "analytics.google.com",
+      "en": "page_view",
+      "tid": "G-WH76RQWSCT",
+      "cid": "749491838.1791740149",
+      "sid": "1791740148",
+      "_s": "1",
+      "seg": "0",
+      "_dbg": null,
+      "debug_mode": null,
+      "page_path": null,
+      "dp": "/",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za208zd887660124xf1&_p=1791740148470&_gaz=1&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGAC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=1&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=365"
+    },
+    {
+      "atMadrid": "2026-10-11 19:35:48 Europe/Madrid",
+      "status": null,
+      "host": "stats.g.doubleclick.net",
+      "en": null,
+      "tid": "G-WH76RQWSCT",
+      "cid": "749491838.1791740149",
+      "_dbg": null,
+      "debug_mode": null,
+      "page_path": null,
+      "url": "https://stats.g.doubleclick.net/g/collect?v=2&tid=G-WH76RQWSCT&cid=749491838.1791740149&gtm=45je6a72v887660124za208zd887660124xf1&rcb=3&aip=1&dma=0&gcd=13l3l3l3l1l1&npa=0&frm=0&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034"
+    },
+    {
+      "atMadrid": "2026-10-11 19:35:57 Europe/Madrid",
+      "status": null,
+      "host": "analytics.google.com",
+      "en": "chat_open",
+      "tid": "G-WH76RQWSCT",
+      "cid": "749491838.1791740149",
+      "sid": "1791740148",
+      "_s": "2",
+      "seg": "0",
+      "_et": "4189",
+      "_dbg": null,
+      "debug_mode": null,
+      "page_path": null,
+      "dp": "/",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za200zd887660124xf1&_p=1791740148470&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=2&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=chat_open&_ee=1&_et=4189&tfd=9556"
+    }
+  ],
+  "allCollectRes": [
+    {
+      "atMadrid": "2026-10-11 19:35:48 Europe/Madrid",
+      "status": 204,
+      "en": null,
+      "host": "stats.g.doubleclick.net",
+      "url": "https://stats.g.doubleclick.net/g/collect?v=2&tid=G-WH76RQWSCT&cid=749491838.1791740149&gtm=45je6a72v887660124za208zd887660124xf1&rcb=3&aip=1&dma=0&gcd=13l3l3l3l1l1&npa=0&frm=0&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034"
+    },
+    {
+      "atMadrid": "2026-10-11 19:35:48 Europe/Madrid",
+      "status": 204,
+      "en": "page_view",
+      "host": "analytics.google.com",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za208zd887660124xf1&_p=1791740148470&_gaz=1&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGAC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=1&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=365"
+    },
+    {
+      "atMadrid": "2026-10-11 19:35:57 Europe/Madrid",
+      "status": 204,
+      "en": "chat_open",
+      "host": "analytics.google.com",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za200zd887660124xf1&_p=1791740148470&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&cid=749491838.1791740149&frm=0&pscdl=noapi&rcb=3&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=2&tag_exp=100940059~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791740148&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=chat_open&_ee=1&_et=4189&tfd=9556"
+    }
+  ],
+  "gtmScripts": [
+    "https://www.googletagmanager.com/gtag/js?id=G-WH76RQWSCT",
+    "https://www.googletagmanager.com/gtm.js?id=GTM-MXHKJ4NW"
+  ]
+}

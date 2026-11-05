@@ -1,0 +1,434 @@
+{
+  "url": "https://playfulagency.com/",
+  "startedAtMadrid": "2026-10-11 19:27:07 Europe/Madrid",
+  "stoppedAtMadrid": "2026-10-11 19:27:45 Europe/Madrid",
+  "openedViaClick": {
+    "ok": true,
+    "active": true
+  },
+  "sendAttempted": false,
+  "sendConfirmed": false,
+  "stopReason": "El campo Teléfono (WhatsApp) es obligatorio (required + asterisco). Instrucción: no enviar.",
+  "state": {
+    "href": "https://playfulagency.com/",
+    "widgetActive": true,
+    "widgetLoaded": true,
+    "hasRegisterBeforeSubmit": true,
+    "beforeSubmitType": "function",
+    "beforeSubmitSource": "function f(e,t){try{d(\"chat_lead\")}catch(e){}return!0}",
+    "fields": [
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "name": "name",
+        "id": "msgsndr_1",
+        "placeholder": "Nombre *",
+        "required": true,
+        "asterisk": true,
+        "valueLength": 0
+      },
+      {
+        "tag": "INPUT",
+        "type": "email",
+        "name": "email",
+        "id": "msgsndr_3",
+        "placeholder": "Correo electrónico *",
+        "required": true,
+        "asterisk": true,
+        "valueLength": 0
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "name": "5195639797teléfono(whatsapp)",
+        "id": "msgsndr_b0X8V7LtCqsgIXNom0lW",
+        "placeholder": "Teléfono (WhatsApp) *",
+        "required": true,
+        "asterisk": true,
+        "valueLength": 0
+      },
+      {
+        "tag": "SELECT",
+        "type": "select-one",
+        "name": "1856895012país(código)",
+        "id": "msgsndr_tjEgfjZKHh7hW0mXgWmY",
+        "placeholder": null,
+        "required": false,
+        "asterisk": false,
+        "valueLength": 0
+      }
+    ],
+    "phone": {
+      "tag": "INPUT",
+      "type": "text",
+      "name": "5195639797teléfono(whatsapp)",
+      "id": "msgsndr_b0X8V7LtCqsgIXNom0lW",
+      "placeholder": "Teléfono (WhatsApp) *",
+      "required": true,
+      "asterisk": true,
+      "valueLength": 0
+    },
+    "phoneRequired": true,
+    "dataLayerEvents": [
+      {
+        "at": "2026-10-11T17:27:07.915Z",
+        "eventName": "gtm.js",
+        "args": [
+          {
+            "gtm.start": 1791739627915,
+            "event": "gtm.js"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:08.009Z",
+        "eventName": "gtm.dom",
+        "args": [
+          {
+            "event": "gtm.dom"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:08.373Z",
+        "eventName": "gtm.load",
+        "args": [
+          {
+            "event": "gtm.load"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:11.697Z",
+        "eventName": "chat_open",
+        "args": [
+          [
+            "event",
+            "chat_open",
+            {
+              "page_path": "/",
+              "event_callback": "[fn]",
+              "event_timeout": 300
+            }
+          ]
+        ]
+      }
+    ],
+    "dataLayerChat": [
+      {
+        "at": "2026-10-11T17:27:11.697Z",
+        "eventName": "chat_open",
+        "args": [
+          [
+            "event",
+            "chat_open",
+            {
+              "page_path": "/",
+              "event_callback": "[fn]",
+              "event_timeout": 300
+            }
+          ]
+        ]
+      }
+    ],
+    "gtagChat": [
+      {
+        "at": "2026-10-11T17:27:11.697Z",
+        "args": [
+          "event",
+          "chat_open",
+          {
+            "page_path": "/",
+            "event_callback": "[fn]",
+            "event_timeout": 300
+          }
+        ]
+      }
+    ],
+    "gtagAll": [
+      {
+        "at": "2026-10-11T17:27:11.697Z",
+        "command": "event",
+        "name": "chat_open",
+        "params": {
+          "page_path": "/",
+          "event_callback": "[fn]",
+          "event_timeout": 300
+        }
+      }
+    ],
+    "dataLayerRaw": [
+      {
+        "at": "2026-10-11T17:27:07.915Z",
+        "eventName": "gtm.js",
+        "args": [
+          {
+            "gtm.start": 1791739627915,
+            "event": "gtm.js"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:07.916Z",
+        "eventName": null,
+        "args": [
+          [
+            "js",
+            "2026-10-11T17:27:07.916Z"
+          ]
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:07.916Z",
+        "eventName": null,
+        "args": [
+          [
+            "config",
+            "G-WH76RQWSCT",
+            {
+              "page_path": "/"
+            }
+          ]
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:08.009Z",
+        "eventName": "gtm.dom",
+        "args": [
+          {
+            "event": "gtm.dom"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:08.373Z",
+        "eventName": "gtm.load",
+        "args": [
+          {
+            "event": "gtm.load"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-11T17:27:11.697Z",
+        "eventName": "chat_open",
+        "args": [
+          [
+            "event",
+            "chat_open",
+            {
+              "page_path": "/",
+              "event_callback": "[fn]",
+              "event_timeout": 300
+            }
+          ]
+        ]
+      }
+    ]
+  },
+  "network": {
+    "collectCount": 2,
+    "gtmCount": 8,
+    "collectEvents": [
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "en": "page_view",
+        "tid": "G-WH76RQWSCT",
+        "params": {
+          "v": "2",
+          "tid": "G-WH76RQWSCT",
+          "gtm": "45je6a72v887660124za208zd887660124xf1",
+          "_p": "1791739627915",
+          "_gaz": "1",
+          "gcd": "13l3l3l3l1l1",
+          "npa": "0",
+          "dma": "0",
+          "_eu": "AAAAAGAC",
+          "cid": "217864990.1791739628",
+          "frm": "0",
+          "pscdl": "noapi",
+          "rcb": "17",
+          "sr": "1440x900",
+          "uaa": "x86",
+          "uab": "64",
+          "uafvl": "Not%3AA-Brand;8.0.0.0|Chromium;156.0.8078.4|HeadlessChrome;156.0.8078.4",
+          "uam": "",
+          "uamb": "0",
+          "uap": "Linux",
+          "uapv": "",
+          "uaw": "0",
+          "ul": "es-es",
+          "gaf": "2",
+          "_s": "1",
+          "tag_exp": "115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034",
+          "dp": "/",
+          "sid": "1791739627",
+          "sct": "1",
+          "seg": "0",
+          "dl": "https://playfulagency.com/",
+          "dt": "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+          "en": "page_view",
+          "_fv": "1",
+          "_nsi": "1",
+          "_ss": "1",
+          "_ee": "1",
+          "tfd": "330"
+        }
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:16 Europe/Madrid",
+        "en": "chat_open",
+        "tid": "G-WH76RQWSCT",
+        "params": {
+          "v": "2",
+          "tid": "G-WH76RQWSCT",
+          "gtm": "45je6a72v887660124za200zd887660124xf1",
+          "_p": "1791739627915",
+          "gcd": "13l3l3l3l1l1",
+          "npa": "0",
+          "dma": "0",
+          "_eu": "AAAAAGQC",
+          "cid": "217864990.1791739628",
+          "frm": "0",
+          "pscdl": "noapi",
+          "rcb": "17",
+          "sr": "1440x900",
+          "uaa": "x86",
+          "uab": "64",
+          "uafvl": "Not%3AA-Brand;8.0.0.0|Chromium;156.0.8078.4|HeadlessChrome;156.0.8078.4",
+          "uam": "",
+          "uamb": "0",
+          "uap": "Linux",
+          "uapv": "",
+          "uaw": "0",
+          "ul": "es-es",
+          "gaf": "2",
+          "_s": "2",
+          "tag_exp": "115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034",
+          "dp": "/",
+          "sid": "1791739627",
+          "sct": "1",
+          "seg": "0",
+          "dl": "https://playfulagency.com/",
+          "dt": "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+          "en": "chat_open",
+          "_ee": "1",
+          "_et": "3705",
+          "tfd": "9037"
+        }
+      }
+    ],
+    "chatLeadCollect": [],
+    "chatOpenCollect": [
+      {
+        "atIso": "2026-10-11T17:27:16.704Z",
+        "atMadrid": "2026-10-11 19:27:16 Europe/Madrid",
+        "method": "POST",
+        "resourceType": "fetch",
+        "host": "analytics.google.com",
+        "pathname": "/g/collect",
+        "en": "chat_open",
+        "tid": "G-WH76RQWSCT",
+        "params": {
+          "v": "2",
+          "tid": "G-WH76RQWSCT",
+          "gtm": "45je6a72v887660124za200zd887660124xf1",
+          "_p": "1791739627915",
+          "gcd": "13l3l3l3l1l1",
+          "npa": "0",
+          "dma": "0",
+          "_eu": "AAAAAGQC",
+          "cid": "217864990.1791739628",
+          "frm": "0",
+          "pscdl": "noapi",
+          "rcb": "17",
+          "sr": "1440x900",
+          "uaa": "x86",
+          "uab": "64",
+          "uafvl": "Not%3AA-Brand;8.0.0.0|Chromium;156.0.8078.4|HeadlessChrome;156.0.8078.4",
+          "uam": "",
+          "uamb": "0",
+          "uap": "Linux",
+          "uapv": "",
+          "uaw": "0",
+          "ul": "es-es",
+          "gaf": "2",
+          "_s": "2",
+          "tag_exp": "115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034",
+          "dp": "/",
+          "sid": "1791739627",
+          "sct": "1",
+          "seg": "0",
+          "dl": "https://playfulagency.com/",
+          "dt": "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+          "en": "chat_open",
+          "_ee": "1",
+          "_et": "3705",
+          "tfd": "9037"
+        },
+        "url": "https://analytics.google.com/g/collect?v=2&tid=G-WH76RQWSCT&gtm=45je6a72v887660124za200zd887660124xf1&_p=1791739627915&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&cid=217864990.1791739628&frm=0&pscdl=noapi&rcb=17&sr=1440x900&uaa=x86&uab=64&uafvl=Not%253AA-Brand%3B8.0.0.0%7CChromium%3B156.0.8078.4%7CHeadlessChrome%3B156.0.8078.4&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=es-es&gaf=2&_s=2&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&dp=%2F&sid=1791739627&sct=1&seg=0&dl=https%3A%2F%2Fplayfulagency.com%2F&dt=Playful%20Agency%20%7C%20Hacemos%20tu%20Tienda%20Online%20o%20E-commerce&en=chat_open&_ee=1&_et=3705&tfd=9037",
+        "postData": null
+      }
+    ],
+    "gtmUrls": [
+      {
+        "atMadrid": "2026-10-11 19:27:07 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/gtag/js",
+        "url": "https://www.googletagmanager.com/gtag/js?id=G-WH76RQWSCT"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:07 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/gtm.js",
+        "url": "https://www.googletagmanager.com/gtm.js?id=GTM-MXHKJ4NW"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&es=1&e=gtm.init&eid=2&u=AAA"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&es=1&e=gtm.js&eid=3&u=AAAAA"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&es=1&e=gtag.config&eid=12&u"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&es=1&e=gtm.dom&eid=13&u=AAA"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:08 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&e=gtm.init&eid=2&u=AAAAAAAA"
+      },
+      {
+        "atMadrid": "2026-10-11 19:27:12 Europe/Madrid",
+        "host": "www.googletagmanager.com",
+        "pathname": "/a",
+        "url": "https://www.googletagmanager.com/a?id=G-WH76RQWSCT&v=3&t=t&pid=1165065851&gtm=45je6a72v887660124za200zd887660124xf1&cv=3&rv=6a72&tc=27&tag_exp=115616986~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121046263~121046271~121246026~121246034&es=1&e=*&eid=15&u=AgAAAAAAA"
+      }
+    ]
+  },
+  "consoleNotes": [
+    {
+      "type": "log",
+      "text": "📝 ChatWidget: Script de chat agregado al DOM"
+    },
+    {
+      "type": "log",
+      "text": "✅ ChatWidget: Widget de High Level cargado"
+    }
+  ]
+}
