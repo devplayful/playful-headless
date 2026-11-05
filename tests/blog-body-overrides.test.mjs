@@ -76,6 +76,7 @@ test('migración SEO override books via /reunion-playful, not the widget API', (
 
 test('blog post page prefers the body override before WP rendered HTML', () => {
   assert.match(blogPage, /rewriteInSitePageHrefs\(/);
+  assert.match(blogPage, /`\/\$\{postSlug\}`/);
   assert.match(blogPage, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);
   assert.match(blogPage, /BLOG_SEO_OVERRIDES\[postSlug\]\?\.h1/);
   assert.match(blogPage, /zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/);
