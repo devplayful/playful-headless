@@ -42,7 +42,7 @@ test('listing and params fetches use _fields and never a full _embed', () => {
 
   assert.match(params, /BLOG_STATIC_PARAMS_FIELDS/);
   assert.doesNotMatch(params, /_embed=/);
-  assert.match(blogPage, /getBlogStaticParams\(\)/);
+  assert.match(blogPage, /getBlogStaticParams(?:ForBuild)?\(\)/);
 
   assert.match(article, /BLOG_ARTICLE_POST_FIELDS/);
   assert.match(article, /_embed=wp:featuredmedia,wp:term,author/);
