@@ -280,7 +280,11 @@ export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
   const seedB1Code = await runPayloadPreviewSeedPaginasB1();
-  if (seedB1Code !== 0) return seedB1Code;
+  if (seedB1Code !== 0) {
+    console.warn(
+      `seed-paginas-b1: terminó con código ${seedB1Code} (continúa build; ejecutar cms:seed-paginas-b1 manual)`,
+    );
+  }
   await runPreviewH5WpImport();
   await runPreviewH5AltsBuild();
   return runGuardedCommand(
