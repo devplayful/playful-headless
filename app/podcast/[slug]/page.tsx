@@ -255,7 +255,7 @@ export default function EpisodePage() {
               href="https://benditaweb.buzzsprout.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 bg-[#9A3412] text-white rounded-lg hover:bg-[#7C2D12] transition-colors duration-200"
             >
               <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>

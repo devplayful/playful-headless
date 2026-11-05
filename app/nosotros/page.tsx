@@ -381,12 +381,12 @@ export default async function Nosotros() {
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 {/* Columna Izquierda */}
                 <div className="md:w-1/2 text-left">
-                  <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
+                  <p className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[28px] leading-[32px] md:text-[20px] md:leading-[1.1] lg:text-[28px] text-[#4A4453] mb-4">
                     Para equipos que necesitan evolucionar su ecommerce
-                  </h1>
-                  <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
+                  </p>
+                  <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal leading-[1.1] text-[57px] text-[#440099] mb-6">
                     Diseño y desarrollo para ecommerce
-                  </h2>
+                  </h1>
                   <div className="prose [font-family:var(--font-dm-sans),sans-serif] font-normal leading-[1.5] text-[14px] sm:text-[16px] text-gray-600 w-full max-w-none">
                     <p>
                       En Playful Agency convertimos requisitos de negocio en experiencias digitales funcionales. Nuestro equipo de diseño y desarrollo trabaja sobre arquitectura, flujos, interfaz e integraciones para resolver necesidades concretas de ecommerce.
@@ -399,9 +399,10 @@ export default async function Nosotros() {
                   <div className="relative w-full max-w-[580px] min-h-[300px] md:h-[480px]">
                     <Image
                       src={publicWebpIfPresent('/images/nosotros-playful-imagen.png')}
-                      alt="Playful Agency"
+                      alt="Equipo de Playful Agency trabajando en un proyecto de ecommerce"
                       width={580}
                       height={480}
+                      sizes="(min-width: 768px) 580px, 100vw"
                       className="object-contain w-full h-auto"
                       priority
                     />

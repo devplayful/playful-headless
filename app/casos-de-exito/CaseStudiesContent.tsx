@@ -180,8 +180,9 @@ export default function CaseStudiesContent({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="min-h-screen flex items-center justify-center" role="status" aria-live="polite">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500" aria-hidden="true"></div>
+        <span className="sr-only">Cargando casos de éxito</span>
       </div>
     );
   }
@@ -223,10 +224,14 @@ export default function CaseStudiesContent({
 
           <div className="flex justify-center lg:justify-end">
             <div className="relative">
-              <img
+              <Image
                 src="/images/casos-de-exito.png"
                 alt="Playful Agency - Casos de éxito"
-                className="w-full max-w-sm lg:max-w-md"
+                width={640}
+                height={640}
+                sizes="(min-width: 1024px) 448px, (min-width: 640px) 384px, 90vw"
+                priority
+                className="w-full max-w-sm lg:max-w-md h-auto"
               />
             </div>
           </div>
@@ -249,11 +254,17 @@ export default function CaseStudiesContent({
           <div className="w-full bg-[#B3FFF3] rounded-3xl lg:rounded-full px-6 py-6 flex flex-col gap-4">
             {/* Contenedor con scroll horizontal en mobile */}
             <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal">
+              <div
+                className="flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal"
+                role="group"
+                aria-label="Filtrar casos de éxito"
+              >
                 {allCategories.map((category) => (
                   <button
                     key={category}
+                    type="button"
                     onClick={() => toggleFilter(category)}
+                    aria-pressed={activeFilters.includes(category)}
                     className={`px-4 py-2 rounded-full text-sm font-medium ${
                       activeFilters.includes(category)
                         ? "bg-[#39DDCB] text-[#2A0064] shadow-sm"
@@ -318,14 +329,15 @@ export default function CaseStudiesContent({
           <div className="py-8 px-4">
             {filteredCaseStudies.length === 0 ? (
               <div className="text-center py-12">
-                <h3 className="text-xl font-medium text-white mb-2">
+                <h3 className="text-xl font-medium text-[#2A0064] mb-2">
                   No se encontraron resultados
                 </h3>
-                <p className="text-white/80">
+                <p className="text-[#4A4453]">
                   Intenta con otros filtros o{" "}
                   <button
+                    type="button"
                     onClick={() => setActiveFilters([])}
-                    className="text-white font-medium underline hover:text-teal-200"
+                    className="text-[#440099] font-medium underline hover:text-[#2A0064]"
                   >
                     limpiar todos los filtros
                   </button>

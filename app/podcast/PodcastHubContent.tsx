@@ -6,8 +6,9 @@ import { loadPodcastEpisodesState, resolvePodcastEpisodesView } from '@/services
 
 function LoadingSpinner() {
   return (
-    <div className="flex justify-center items-center py-12">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" aria-hidden="true"></div>
+      <span className="sr-only">Cargando episodios</span>
     </div>
   );
 }
@@ -279,7 +280,7 @@ export default function PodcastHubContent({
                 href="https://benditaweb.buzzsprout.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-[#9A3412] text-white rounded-lg hover:bg-[#7C2D12] transition-colors duration-200"
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -299,7 +300,7 @@ export default function PodcastHubContent({
               
               <a
                 href="#"
-                className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-[#166534] text-white rounded-lg hover:bg-[#14532D] transition-colors duration-200"
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>

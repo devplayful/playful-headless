@@ -37,6 +37,7 @@ test('live scripts, smoke and lighthouse always send qa=1 and PlayfulQA except L
     'scripts/blog-post-ssr-html.mjs',
     'scripts/audit-blog-yoast-canonicals.mjs',
     'scripts/lighthouse-mobile-median.mjs',
+    'scripts/qa-lighthouse-a11y.mjs',
   ];
   for (const file of files) {
     const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');

@@ -231,8 +231,8 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Columna Izquierda: textos e ilustración */}
           <div className="flex flex-col justify-center items-start text-left">
-            <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</h1>
-            <h2 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Hablemos de tu próximo proyecto</h2>
+            <p className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-normal text-[20px] text-[#453A53] mb-2">Playful Agency</p>
+            <h1 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[45px] leading-[52px] text-[#440099] mb-2">Hablemos de tu próximo proyecto</h1>
             <h3 className="[font-family:var(--font-paytone-one),var(--font-montserrat),sans-serif] font-[700] text-[28px] leading-[36px] text-[#453A53] mb-2">¡Explícanos tu caso!</h3>
             <p className="[font-family:var(--font-dm-sans),sans-serif] font-normal text-[16px] leading-[24px] text-[#4A4453] max-w-[600px]">
             ¿Tienes un proyecto en la mira o una pregunta técnica que necesita respuesta? Estamos listos para escuchar. Completa el formulario o escríbenos directamente. Analizaremos tu necesidad y nos pondremos en contacto contigo lo antes posible. <strong className="font-bold">Empecemos a planificar tus resultados.</strong>
@@ -480,16 +480,22 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                   </div>
                 )}
                 {MARKETPLACE_MODELS.has(formData.salesModel) && (
-                  <input
-                    type="text"
-                    name="secondaryMarketplaces"
-                    value={formData.secondaryMarketplaces}
-                    onChange={handleChange}
-                    disabled={isPendingConfirmation || isSubmitting}
-                    placeholder="¿En qué otros marketplaces vendes? (opcional)"
-                    className="mt-3 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    maxLength={250}
-                  />
+                  <div className="mt-3">
+                    <label htmlFor="secondaryMarketplaces" className="block [font-family:var(--font-dm-sans),sans-serif] font-bold text-[14px] leading-[130%] text-[#453A53] mb-1">
+                      ¿En qué otros marketplaces vendes? (opcional)
+                    </label>
+                    <input
+                      type="text"
+                      id="secondaryMarketplaces"
+                      name="secondaryMarketplaces"
+                      value={formData.secondaryMarketplaces}
+                      onChange={handleChange}
+                      disabled={isPendingConfirmation || isSubmitting}
+                      placeholder="Amazon, Mercado Libre, otros"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      maxLength={250}
+                    />
+                  </div>
                 )}
               </div>
 
@@ -606,7 +612,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                   />
                   <span>
                     Acepto el tratamiento de mis datos según la
-                    <a href="/politica-de-privacidad" className="text-purple-700 font-semibold hover:underline ml-1">Política de Privacidad</a>
+                    <a href="/politica-de-privacidad" className="text-[#440099] font-semibold hover:underline ml-1">Política de Privacidad</a>
                   </span>
                 </label>
                 <label className="flex items-start gap-3 [font-family:var(--font-dm-sans),sans-serif] font-medium text-[12px] leading-[16px] tracking-[0.4px] text-[#453A53]">
@@ -625,7 +631,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
               
               {/* Preview simulator never requests a real reCAPTCHA token. */}
               {!previewSimulation && (
-                <div className="flex justify-center">
+                <div className="flex justify-center" role="group" aria-label="Verificación reCAPTCHA">
                   <ReCAPTCHA
                     ref={recaptchaRef}
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
@@ -664,7 +670,7 @@ function ContactForm({ casosDeExito, previewSimulation }: ContactPageClientProps
                 </div>
               )}
               
-              <p className="text-sm text-[#4A4453]">
+              <p className="text-sm text-[#2A0064]">
                 {previewSimulation
                   ? 'La simulación no guarda ni envía los datos introducidos.'
                   : 'Al hacer clic en "Enviar mensaje", aceptas nuestra Política de Privacidad y das tu consentimiento para que nos pongamos en contacto contigo.'}

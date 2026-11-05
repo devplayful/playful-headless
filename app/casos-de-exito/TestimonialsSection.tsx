@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import Image from "next/image";
@@ -145,9 +145,13 @@ export default function TestimonialsSection({
         <div className="w-full overflow-hidden pb-12">
           <div className="max-w-[1200px] mx-auto px-4">
             <Swiper
-              modules={[Pagination, Autoplay]}
+              modules={[Pagination, Autoplay, A11y]}
               slidesPerView={1}
               spaceBetween={20}
+              a11y={{
+                enabled: true,
+                paginationBulletMessage: 'Ir al testimonio {{index}}',
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
@@ -170,18 +174,20 @@ export default function TestimonialsSection({
                     <div className="w-20 h-20 relative mb-4">
                       <Image
                         src="/images/avatar-playful.svg"
-                        alt="Avatar Playful"
+                        alt=""
                         fill
+                        sizes="80px"
                         className="object-contain"
+                        aria-hidden
                       />
                     </div>
 
-                    <h4 className="font-semibold text-lg mb-2" style={textStyle}>
+                    <h3 className="font-semibold text-lg mb-2" style={textStyle}>
                       {testimonial.name}
-                    </h4>
+                    </h3>
 
-                    <div className="flex justify-center mb-4">
-                      <div className="text-yellow-400 text-xl">
+                    <div className="flex justify-center mb-4" role="img" aria-label="5 de 5 estrellas">
+                      <div className="text-yellow-400 text-xl" aria-hidden="true">
                         {[...Array(5)].map((_, i) => (
                           <span key={i}>★</span>
                         ))}
@@ -206,9 +212,13 @@ export default function TestimonialsSection({
 
           <div className="w-full max-w-[1200px] mx-auto px-4 pb-12">
             <Swiper
-              modules={[Pagination, Autoplay]}
+              modules={[Pagination, Autoplay, A11y]}
               slidesPerView={1}
               spaceBetween={20}
+              a11y={{
+                enabled: true,
+                paginationBulletMessage: 'Ir al logo {{index}}',
+              }}
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
@@ -253,6 +263,50 @@ export default function TestimonialsSection({
           </div>
         </div>
       </div>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+.testimonials-swiper .swiper-pagination-bullet,
+.logos-swiper .swiper-pagination-bullet {
+  box-sizing: border-box;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative;
+}
+.testimonials-swiper .swiper-pagination-bullet::before,
+.logos-swiper .swiper-pagination-bullet::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--swiper-pagination-bullet-inactive-color, #000);
+  opacity: var(--swiper-pagination-bullet-inactive-opacity, 0.2);
+  transform: translate(-50%, -50%) scale(0.33);
+}
+.testimonials-swiper .swiper-pagination-bullet-active-next::before,
+.testimonials-swiper .swiper-pagination-bullet-active-prev::before,
+.logos-swiper .swiper-pagination-bullet-active-next::before,
+.logos-swiper .swiper-pagination-bullet-active-prev::before {
+  transform: translate(-50%, -50%) scale(0.66);
+}
+.testimonials-swiper .swiper-pagination-bullet-active::before,
+.testimonials-swiper .swiper-pagination-bullet-active-main::before,
+.logos-swiper .swiper-pagination-bullet-active::before,
+.logos-swiper .swiper-pagination-bullet-active-main::before {
+  background: var(--swiper-pagination-color, var(--swiper-theme-color, #007aff));
+  opacity: var(--swiper-pagination-bullet-opacity, 1);
+  transform: translate(-50%, -50%) scale(1);
+}
+`,
+        }}
+      />
     </section>
   );
 }
