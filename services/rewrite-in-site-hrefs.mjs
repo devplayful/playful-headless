@@ -126,6 +126,36 @@ export function isGoneInternalHref(href) {
   }
 }
 
+/**
+ * Short links that no longer resolve to the article they were written for.
+ * Two of them 301 into adult sites. The anchor text stays; the href goes.
+ */
+const HIJACKED_SHORT_LINKS = new Set([
+  'https://bit.ly/3cmk03n',
+  'https://bit.ly/3cpmfub',
+]);
+
+function isHijackedShortLink(href) {
+  if (typeof href !== 'string' || !href.trim()) return false;
+  try {
+    const url = new URL(href.trim());
+    url.hash = '';
+    url.search = '';
+    return HIJACKED_SHORT_LINKS.has(url.toString().replace(/\/$/, '').toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
+export function unwrapHijackedShortLinks(html) {
+  if (typeof html !== 'string' || !html) return html;
+  return html.replace(ANCHOR_RE, (full, attrs, inner) => {
+    const href = hrefFromAttrs(attrs);
+    if (!isHijackedShortLink(href)) return full;
+    return inner;
+  });
+}
+
 /** Drop <a> to 410 destinations. Image-only banner/CTA blocks go away entirely. */
 export function unwrapGoneInternalAnchors(html) {
   if (typeof html !== 'string' || !html) return html;
@@ -221,9 +251,9 @@ export function rewriteInSitePageHrefs(html, sourcePath = '') {
   const remapped = html.replace(/href=(["'])([^"']+)\1/gi, (_full, quote, href) => {
     return `href=${quote}${remapInSiteHref(href)}${quote}`;
   });
-  return rewriteAgenciaUxUiBannerCta(
+  return unwrapHijackedShortLinks(rewriteAgenciaUxUiBannerCta(
     unwrapGoneInternalAnchors(rewriteBrokenInternalAnchors(remapped, sourcePath)),
-  );
+  ));
 }
 
 /**
