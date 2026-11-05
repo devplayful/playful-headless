@@ -3,7 +3,7 @@
  * Solo VERCEL_ENV=preview con DATABASE_URL. No borra datos.
  */
 import { spawn } from 'node:child_process';
-import { countPayloadPosts } from '../lib/cms-blog.ts';
+import { countPayloadPosts } from '../lib/cms-blog.server.ts';
 
 const MIN_POSTS = 130;
 

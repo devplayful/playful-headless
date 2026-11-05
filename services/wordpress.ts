@@ -10,14 +10,6 @@ import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
-import {
-  findPayloadPostBySlug,
-  getBlogPostsFromPayload,
-  getBlogStaticParamsFromPayload,
-  shouldServeBlogFromPayload,
-} from '@/lib/cms-blog.ts';
-import { isCmsBlogFromPayload } from '@/lib/cms-blog-flag.ts';
-import { hasRuntimeDatabase } from '@/lib/cms-database.ts';
 import { applyBlogPostContentAltH5 } from '@/lib/blog-post-content-alt-h5';
 import {
   rewriteInSitePageHrefs,
@@ -637,12 +629,6 @@ function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): Re
 }
 
 export async function getBlogPosts(page: number = 1, perPage: number = 6, categorySlug: string = ''): Promise<{ posts: WPPost[], totalPages: number }> {
-  if ((await shouldServeBlogFromPayload()) || isCmsBlogFromPayload()) {
-    const fromPayload = await getBlogPostsFromPayload(page, perPage, categorySlug);
-    if (fromPayload.posts.length > 0 || (await shouldServeBlogFromPayload())) {
-      return fromPayload;
-    }
-  }
   page = Math.max(1, page);
   perPage = Math.min(100, Math.max(1, perPage));
   const url = new URL(`${WORDPRESS_API_URL}/wp/v2/posts`);
@@ -1238,12 +1224,6 @@ export async function getRelatedBlogPostsForPost(
 }
 
 export async function getBlogStaticParams(): Promise<Array<{ slug: string[] }>> {
-  if (isCmsBlogFromPayload() && hasRuntimeDatabase()) {
-    const fromPayload = await getBlogStaticParamsFromPayload();
-    if (fromPayload.length > 0) {
-      return [...fromPayload, ...listStagingLocalBlogStaticParams()];
-    }
-  }
   const terms = await getBlogCategoryTerms().catch(() => new Map<number, RelatedCategoryTerm>());
   const first = await loadBlogStaticParamsPage(1);
   const posts = [...first.items];
@@ -1290,20 +1270,6 @@ const blogPostBySlugBuildCache = new Map<string, Promise<WPPost | null>>();
 const loadBlogPostBySlug = cache(async (slug: string): Promise<WPPost | null> => {
   const local = localBlogPostBySlug(slug);
   if (local) return local;
-
-  const fromPayload = await findPayloadPostBySlug(slug);
-  if (fromPayload) {
-    fromPayload.featured_media_url = publicWebpIfPresent(
-      resolveBlogCoverUrl(fromPayload.slug, fromPayload.featured_media_url || ''),
-    );
-    fromPayload.featured_media_alt = resolveBlogCoverAlt(
-      fromPayload.slug,
-      fromPayload.featured_media_alt || '',
-    );
-    return repairBlogPostYoastCanonical(
-      rewriteWpYoastFields(rewriteWpRenderedHtmlFields(fromPayload)),
-    );
-  }
 
   const { items: posts } = await wordpressFetchCollection<WPPost>(
     `${WORDPRESS_API_URL}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term,author&acf_format=standard&_fields=${BLOG_ARTICLE_POST_FIELDS}`,
