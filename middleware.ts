@@ -21,6 +21,7 @@ import {
   cmsPreviewPaginaB1Path,
 } from './lib/cms-paginas-b1-flag';
 import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
+import { CMS_BLOG_PREVIEW_HEADER } from './lib/cms-blog-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -168,6 +169,14 @@ export function middleware(request: NextRequest) {
       return attachAttributionCookies(
         request,
         NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+      );
+    }
+    if (path === '/blog' || path.startsWith('/blog/')) {
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set(CMS_BLOG_PREVIEW_HEADER, '1');
+      return attachAttributionCookies(
+        request,
+        NextResponse.next({ request: { headers: requestHeaders } }),
       );
     }
   }

@@ -246,6 +246,23 @@ export function shouldRunPreviewH5AltsSeed(env = process.env) {
   return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
 }
 
+export async function runPreviewH5WpImport(env = process.env) {
+  if (!shouldRunPreviewH5AltsSeed(env)) {
+    console.log('h5 wp import: omitido (solo VERCEL_ENV=preview con DATABASE_URL)');
+    return 0;
+  }
+  console.log('h5 wp import: comprobando recuento de posts en Payload');
+  const code = await runGuardedCommand(process.execPath, ['scripts/preview-h5-wp-import.ts'], {
+    env,
+    budgetMs: 240_000,
+    inactivityMs: 120_000,
+  });
+  if (code !== 0) {
+    console.warn(`h5 wp import: terminó con código ${code} (continúa build; ejecutar cms:import manual)`);
+  }
+  return 0;
+}
+
 export async function runPreviewH5AltsBuild(env = process.env) {
   if (!shouldRunPreviewH5AltsSeed(env)) {
     console.log('h5 alts preview seed: omitido (solo VERCEL_ENV=preview con DATABASE_URL)');
@@ -264,6 +281,7 @@ export async function runGuardedBuild() {
   if (migrateCode !== 0) return migrateCode;
   const seedB1Code = await runPayloadPreviewSeedPaginasB1();
   if (seedB1Code !== 0) return seedB1Code;
+  await runPreviewH5WpImport();
   await runPreviewH5AltsBuild();
   return runGuardedCommand(
     process.execPath,
