@@ -1,4 +1,4 @@
-import { buildNextImageUrl, isOptimizableWpUpload } from './next-image-url.ts';
+import { isOptimizableWpUpload } from './next-image-url.ts';
 
 const LAZY_SVG_SLUGS = new Set(['5-plataformas-para-email-marketing-efectivo']);
 
@@ -31,7 +31,8 @@ function setDecodingAsync(attrs: string): string {
 
 /**
  * Email-marketing audit: below-the-fold SVG illustrations from endpoint
- * should not compete with the H2 LCP — lazy-load or serve via `/_next/image`.
+ * should not compete with the H2 LCP. Lazy-load them. Do not send SVG
+ * through `/_next/image` — the optimizer answers 400 and the image breaks.
  */
 export function optimizeBlogInlineMedia(html: string, postSlug: string): string {
   if (!html || !LAZY_SVG_SLUGS.has(postSlug)) return html;
@@ -41,13 +42,9 @@ export function optimizeBlogInlineMedia(html: string, postSlug: string): string 
     const base = basenameFromSrc(src);
     if (!LAZY_SVG_BASENAMES.has(base) && !/\.svg(\?|$)/i.test(src)) return full;
 
+    // SVG through /_next/image returns 400 (the optimizer rejects SVG).
+    // Keep the WordPress URL and only defer it so it does not compete with LCP.
     let next = attrs;
-    if (/\.svg(\?|$)/i.test(src)) {
-      next = next.replace(
-        /src=(["'])([^"']+)\1/i,
-        (_m, q: string, url: string) => `src=${q}${buildNextImageUrl(url, 640)}${q}`,
-      );
-    }
     next = setLoadingLazy(setDecodingAsync(next));
     if (/fetchpriority=/i.test(next)) {
       next = next.replace(/\sfetchpriority=(["'])[^"']*\1/i, '');
