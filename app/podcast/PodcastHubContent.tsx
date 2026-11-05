@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getPodcastEpisodes, PodcastEpisode } from '@/services/wordpress';
 import { loadPodcastEpisodesState, resolvePodcastEpisodesView } from '@/services/podcast-loader.mjs';
@@ -68,7 +69,11 @@ function EpisodeCard({ episode }: { episode: PodcastEpisode }) {
   );
 }
 
-function Pagination({ currentPage, totalPages, onPageChange }: {
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -101,41 +106,58 @@ function Pagination({ currentPage, totalPages, onPageChange }: {
 
   if (totalPages <= 1) return null;
 
+  const pageHref = (page: number) => (page <= 1 ? '/podcast' : `/podcast?page=${page}`);
+
   return (
-    <div className="flex justify-center items-center space-x-2 mt-12">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
-        className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Anterior
-      </button>
-
-      {getVisiblePages().map((page, index) => (
-        <button
-          key={index}
-          onClick={() => typeof page === 'number' && onPageChange(page)}
-          disabled={typeof page !== 'number'}
-          className={`px-3 py-2 rounded-md ${
-            page === currentPage
-              ? 'bg-blue-600 text-white'
-              : typeof page === 'number'
-              ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              : 'bg-transparent text-gray-500 cursor-default'
-          }`}
+    <nav
+      aria-label="Paginación de episodios"
+      className="flex justify-center items-center space-x-2 mt-12"
+    >
+      {currentPage > 1 ? (
+        <Link
+          href={pageHref(currentPage - 1)}
+          className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
         >
-          {page}
-        </button>
-      ))}
+          Anterior
+        </Link>
+      ) : (
+        <span className="px-3 py-2 rounded-md bg-gray-100 text-gray-400 cursor-not-allowed">
+          Anterior
+        </span>
+      )}
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
-        className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Siguiente
-      </button>
-    </div>
+      {getVisiblePages().map((page, index) =>
+        typeof page === 'number' ? (
+          <Link
+            key={index}
+            href={pageHref(page)}
+            className={`px-3 py-2 rounded-md ${
+              page === currentPage
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+            aria-current={page === currentPage ? 'page' : undefined}
+          >
+            {page}
+          </Link>
+        ) : (
+          <span key={index} className="px-2 text-gray-500">{page}</span>
+        ),
+      )}
+
+      {currentPage < totalPages ? (
+        <Link
+          href={pageHref(currentPage + 1)}
+          className="px-3 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+        >
+          Siguiente
+        </Link>
+      ) : (
+        <span className="px-3 py-2 rounded-md bg-gray-100 text-gray-400 cursor-not-allowed">
+          Siguiente
+        </span>
+      )}
+    </nav>
   );
 }
 
@@ -146,15 +168,17 @@ type InitialState = Awaited<
 export default function PodcastHubContent({
   initialState,
   episodesPerPage,
+  initialPage = 1,
 }: {
   initialState: InitialState;
   episodesPerPage: number;
+  initialPage?: number;
 }) {
   const hasServerEpisodes = initialState.status === 'ready';
   const [episodes, setEpisodes] = useState<PodcastEpisode[]>(
     hasServerEpisodes ? initialState.episodes : [],
   );
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(
     hasServerEpisodes ? initialState.totalPages : 0,
   );
@@ -165,7 +189,7 @@ export default function PodcastHubContent({
   const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    if (currentPage === 1 && retryKey === 0 && hasServerEpisodes) {
+    if (currentPage === initialPage && retryKey === 0 && hasServerEpisodes) {
       return;
     }
 
@@ -186,7 +210,7 @@ export default function PodcastHubContent({
       setEpisodesLoading(false);
     }
     loadEpisodes();
-  }, [currentPage, retryKey, episodesPerPage, hasServerEpisodes]);
+  }, [currentPage, retryKey, episodesPerPage, hasServerEpisodes, initialPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
