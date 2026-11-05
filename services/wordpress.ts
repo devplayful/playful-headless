@@ -15,6 +15,7 @@ import {
   rewriteWpRenderedHtmlFields,
   rewriteWpYoastFields,
 } from './rewrite-in-site-hrefs.mjs';
+import { stripHijackedPodcastAnchors } from '@/utils/podcast-html';
 import {
   isAllowedCaseStudyMediaUrl,
   preserveFeaturedMediaUrl,
@@ -1516,7 +1517,21 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
   if (!episode.excerpt) episode.excerpt = { rendered: '' };
-  return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+  const sourcePath = `/podcast/${slug}`;
+  const rewriteHtml = (html: string) => stripHijackedPodcastAnchors(
+    rewriteInSitePageHrefs(html, sourcePath),
+  );
+  return {
+    ...episode,
+    content: episode.content?.rendered
+      ? { ...episode.content, rendered: rewriteHtml(episode.content.rendered) }
+      : episode.content,
+    excerpt: episode.excerpt?.rendered
+      ? { ...episode.excerpt, rendered: rewriteHtml(episode.excerpt.rendered) }
+      : episode.excerpt,
+    featured_media_url: featuredMedia?.source_url || null,
+    featured_media_alt: featuredMedia?.alt_text || '',
+  };
 }
 
 const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };
