@@ -17,6 +17,35 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import {
+  cmsPreviewServicioPath,
+  isCmsPreviewServicioInternalPath,
+  isPayloadServicioSlug,
+} from './lib/cms-servicios-flag';
+import {
+  cmsPreviewCasosHubPath,
+  isCmsPreviewCasosInternalPath,
+  isPayloadCasoSlug,
+} from './lib/cms-casos-flag';
+import {
+  cmsPreviewPaginaB1Path,
+  isCmsPreviewPaginaB1InternalPath,
+} from './lib/cms-paginas-b1-flag';
+import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
+import { isPaginasB4Slug } from './cms/data/paginas-b4-payload';
+import {
+  cmsPreviewPaginaB4Path,
+  isCmsPreviewPaginaB4InternalPath,
+} from './lib/cms-paginas-b4-flag';
+import { isKnownPublicAppPath } from './lib/cms-paginas-b5-known-paths';
+import {
+  cmsPreviewPaginaB5Path,
+  isCmsPreviewPaginaB5InternalPath,
+} from './lib/cms-paginas-b5-flag';
+import {
+  CMS_PREVIEW_HOME_PATH,
+  isCmsPreviewHomeInternalPath,
+} from './lib/cms-home-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -146,6 +175,100 @@ function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParam
 
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
+
+  if (isCmsPreviewServicioInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewCasosInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB1InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB4InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB5InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewHomeInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    if (path === '/') {
+      const target = request.nextUrl.clone();
+      target.pathname = CMS_PREVIEW_HOME_PATH;
+      target.searchParams.delete('cms');
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-cms-home-preview', '1');
+      return attachAttributionCookies(
+        request,
+        NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+      );
+    }
+    if (path === '/casos-de-exito') {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewCasosHubPath();
+      target.searchParams.delete('cms');
+      return attachAttributionCookies(request, NextResponse.rewrite(target));
+    }
+    if (path.startsWith('/casos-de-exito/')) {
+      const slug = path.slice('/casos-de-exito/'.length);
+      if (slug && !slug.includes('/') && isPayloadCasoSlug(slug)) {
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-casos-preview', '1');
+        const target = request.nextUrl.clone();
+        target.searchParams.delete('cms');
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+    }
+    if (path.length > 1 && path.indexOf('/', 1) === -1) {
+      const slug = path.slice(1);
+      if (isPaginasB1Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB1Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b1-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+      if (isPaginasB4Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB4Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b4-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+      if (isPayloadServicioSlug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewServicioPath(slug);
+        return attachAttributionCookies(request, NextResponse.rewrite(target));
+      }
+    }
+    if (!isKnownPublicAppPath(path)) {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewPaginaB5Path('not-found');
+      target.searchParams.delete('cms');
+      const response = NextResponse.rewrite(target, { status: 404 });
+      return attachAttributionCookies(request, response);
+    }
+  }
 
   if (isWpProbePath(path)) {
     const target = request.nextUrl.clone();

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
+const homeFrame = readFileSync(new URL('../app/(frontend)/home/HomeDocumentFrame.tsx', import.meta.url), 'utf8');
 const carousel = readFileSync(
   new URL('../components/CarouselResultados.tsx', import.meta.url),
   'utf8',
@@ -12,9 +13,9 @@ test('home hero banner uses next/image with priority and fetchPriority high', ()
   const art = readFileSync(new URL('../components/HomeHeroArt.tsx', import.meta.url), 'utf8');
   const lottie = readFileSync(new URL('../components/HomeHeroLottie.tsx', import.meta.url), 'utf8');
   assert.match(home, /<HomeHeroArt/);
-  assert.match(home, /rel="preload" as="image"/);
-  assert.match(home, /homeHeroLcpHref\(\)/);
-  assert.match(home, /fetchPriority="high"/);
+  assert.match(homeFrame, /rel="preload" as="image"/);
+  assert.match(homeFrame, /homeHeroLcpHref\(\)/);
+  assert.match(homeFrame, /fetchPriority="high"/);
   assert.doesNotMatch(home, /AnimatedButton/);
   assert.doesNotMatch(home, /from ['"]lottie-react['"]/);
   assert.match(art, /from ['"]next\/image['"]/);

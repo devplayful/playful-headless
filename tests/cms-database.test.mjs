@@ -12,6 +12,13 @@ const {
   hasRuntimeDatabase,
   getPayloadConnectionString,
   shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
+  shouldRunPreviewUsuariosWipe,
 } = await import('../lib/cms-database.mjs');
 
 test('DATABASE_URL is required for preview migrate; production never migrates', () => {
@@ -32,6 +39,90 @@ test('DATABASE_URL is required for preview migrate; production never migrates', 
   );
   assert.equal(shouldRunPreviewMigrate({ POSTGRES_URL: 'postgres://example' }), false);
   assert.equal(shouldRunPreviewMigrate({ DATABASE_URI: 'postgres://example' }), false);
+});
+
+test('servicios seed runs only on Preview with DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewServiciosSeed({}), false);
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'development' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewServiciosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('H4 casos seed runs only on Preview with DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewCasosSeed({}), false);
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'development' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewCasosSeed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('Preview seed paginas B1 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB1Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB1Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB1Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('Preview seed paginas B5 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB5Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB5Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB5Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('Preview seed paginas B4 solo en VERCEL_ENV=preview con DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewPaginasB4Seed({}), false);
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewPaginasB4Seed({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
+});
+
+test('usuarios wipe runs only on Preview with DATABASE_URL', () => {
+  assert.equal(shouldRunPreviewUsuariosWipe({}), false);
+  assert.equal(
+    shouldRunPreviewUsuariosWipe({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'production' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewUsuariosWipe({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'development' }),
+    false,
+  );
+  assert.equal(
+    shouldRunPreviewUsuariosWipe({ DATABASE_URL: 'postgres://example', VERCEL_ENV: 'preview' }),
+    true,
+  );
 });
 
 test('runtime prefers DATABASE_URL; migrate prefers UNPOOLED without leaking aliases', () => {
@@ -68,6 +159,13 @@ test('payload adapter and preview build wire DATABASE_URL without printing secre
   assert.match(payloadConfig, /migrationDir/);
   assert.match(payloadConfig, /disableCreateDatabase: true/);
   assert.match(buildScript, /runPayloadPreviewMigrate/);
+  assert.match(buildScript, /runPayloadPreviewSeedServicios/);
+  assert.match(buildScript, /runPayloadPreviewH4Casos/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB1/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB5/);
+  assert.match(buildScript, /runPayloadPreviewSeedPaginasB4/);
+  assert.match(buildScript, /runPayloadPreviewHomeSeed/);
+  assert.equal(buildScript.includes('runPayloadPreviewUsuariosWipe'), false);
   assert.match(buildScript, /PAYLOAD_MIGRATING/);
   assert.match(tsSource, /DATABASE_URL_UNPOOLED/);
   assert.match(jsSource, /DATABASE_URL_UNPOOLED/);
@@ -81,7 +179,20 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
     new URL('../cms/migrations/20261028_195833_initial.ts', import.meta.url),
     'utf8',
   );
+  const servicios = readFileSync(
+    new URL('../cms/migrations/20261029_114031.ts', import.meta.url),
+    'utf8',
+  );
+  const paginasCodigo = readFileSync(
+    new URL('../cms/migrations/20261030_120000_paginas_codigo.ts', import.meta.url),
+    'utf8',
+  );
   assert.match(index, /20261028_195833_initial/);
+  assert.match(index, /20261029_114031/);
+  assert.match(index, /20261030_120000_paginas_codigo/);
+  assert.equal(index.includes('20261103_170000_wipe_preview_usuarios'), false);
+  assert.match(servicios, /import type \{ MigrateDownArgs, MigrateUpArgs \}/);
+  assert.match(paginasCodigo, /paginas_codigo/);
   for (const table of [
     'posts',
     'paginas',
@@ -94,4 +205,5 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
   ]) {
     assert.match(initial, new RegExp(`CREATE TABLE "${table}"`));
   }
+  assert.match(servicios, /CREATE TABLE "servicios"/);
 });

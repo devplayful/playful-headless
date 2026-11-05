@@ -1,7 +1,18 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { shouldRunPreviewMigrate } from '../lib/cms-database.mjs';
+import {
+  shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
+  hasDatabaseUrl,
+  getPayloadConnectionString,
+  hasRuntimeDatabase,
+} from '../lib/cms-database.mjs';
 
 export const BUILD_WARNING_MS = 90_000;
 export const BUILD_INACTIVITY_MS = 180_000;
@@ -142,10 +153,109 @@ export async function runGuardedCommand(command, args, options = {}) {
   return typeof exitCode === 'number' ? exitCode : 1;
 }
 
-export { shouldRunPreviewMigrate };
+export {
+  shouldRunPreviewMigrate,
+  shouldRunPreviewServiciosSeed,
+  shouldRunPreviewCasosSeed,
+  shouldRunPreviewPaginasB1Seed,
+  shouldRunPreviewPaginasB5Seed,
+  shouldRunPreviewPaginasB4Seed,
+  shouldRunPreviewHomeSeed,
+};
 
 export function payloadMigrateArgs() {
   return ['node_modules/payload/bin.js', 'migrate', '--disable-transpile'];
+}
+
+function redactSecrets(text) {
+  return String(text)
+    .replace(/postgres(?:ql)?:\/\/[^\s'"`]+/gi, '[database-url]')
+    .replace(/\bDATABASE_URL(?:_UNPOOLED)?=[^\s]+/gi, 'DATABASE_URL=[redacted]')
+    .trim();
+}
+
+function shortErrorMessage(stdout, stderr, exitCode) {
+  const combined = redactSecrets(`${stderr}\n${stdout}`).replace(/\s+/g, ' ').trim();
+  if (!combined) return `exit code ${exitCode}`;
+  return combined.length > 180 ? `${combined.slice(0, 177)}…` : combined;
+}
+
+export function summarizePayloadMigrateOutput(output) {
+  const text = String(output);
+  const applied = [];
+  const patterns = [
+    /Migrat(?:e|ed|ing)(?::\s*|\s+)(20\d{6}_\d+)/gi,
+    /Ran migration (20\d{6}_\d+)/gi,
+    /Applying migration (20\d{6}_\d+)/gi,
+  ];
+  for (const pattern of patterns) {
+    let match = pattern.exec(text);
+    while (match) {
+      applied.push(match[1]);
+      match = pattern.exec(text);
+    }
+  }
+  const unique = [...new Set(applied)];
+  if (unique.length) return unique.join(', ');
+  if (/no migrations|nothing to migrate|already up to date|nada pendiente|0 migrations/i.test(text)) {
+    return 'nada pendiente';
+  }
+  return 'nada pendiente';
+}
+
+export function summarizeSeedServiciosOutput(output) {
+  const text = String(output);
+  const jsonStart = text.indexOf('{');
+  const jsonEnd = text.lastIndexOf('}');
+  if (jsonStart === -1 || jsonEnd <= jsonStart) return null;
+  try {
+    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    const acciones = parsed?.acciones && typeof parsed.acciones === 'object' ? parsed.acciones : {};
+    const values = Object.values(acciones);
+    const creados = values.filter((value) => value === 'creado').length;
+    const actualizados = values.filter((value) => value === 'actualizado').length;
+    return { creados, actualizados };
+  } catch {
+    return null;
+  }
+}
+
+export function summarizePreviewH4CasosOutput(output) {
+  const text = String(output);
+  const slugPattern =
+    /^\[H4-CASOS\] (jumex-shopify-dtc-ecommerce|odwalla-shopify-dtc-ecommerce|soytechno-ecommerce-venezuela) (OK|ERROR)/gm;
+  const slugLines = [...text.matchAll(slugPattern)];
+  const ok = slugLines.filter((match) => match[2] === 'OK').length;
+  const err = slugLines.filter((match) => match[2] === 'ERROR').length;
+  const resumen = text.match(/\[H4-CASOS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  const lines = slugLines.map((match) => match[0]);
+  return {
+    ok: resumen ? Number(resumen[1]) : ok,
+    err: resumen ? Number(resumen[2]) : err,
+    lines,
+    resumenLine: resumen ? resumen[0] : null,
+  };
+}
+
+async function runGuardedCommandWithCapture(command, args, options = {}) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await runGuardedCommand(command, args, {
+    ...options,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    onSpawn(child) {
+      options.onSpawn?.(child);
+      child.stdout?.on('data', (chunk) => {
+        stdout += chunk.toString();
+        process.stdout.write(chunk);
+      });
+      child.stderr?.on('data', (chunk) => {
+        stderr += chunk.toString();
+        process.stderr.write(chunk);
+      });
+    },
+  });
+  return { exitCode, stdout, stderr };
 }
 
 export async function runPayloadPreviewMigrate(env = process.env) {
@@ -155,16 +265,311 @@ export async function runPayloadPreviewMigrate(env = process.env) {
   }
   console.log('payload migrate: ejecutando (Preview/Development, DATABASE_URL presente)');
   const migrateEnv = { ...env, PAYLOAD_MIGRATING: 'true' };
-  return runGuardedCommand(
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
     process.execPath,
     payloadMigrateArgs(),
     { env: migrateEnv },
   );
+  if (exitCode !== 0) {
+    console.log(`payload migrate ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  console.log(`payload migrate OK: ${summarizePayloadMigrateOutput(`${stdout}\n${stderr}`)}`);
+  return exitCode;
+}
+
+export async function runPayloadPreviewSeedServicios(env = process.env) {
+  if (!shouldRunPreviewServiciosSeed(env)) {
+    console.log(
+      'cms:seed-servicios: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-servicios: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-servicios.ts'],
+    {
+      env,
+      budgetMs: BUILD_BUDGET_MS,
+      inactivityMs: BUILD_INACTIVITY_MS,
+    },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-servicios ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const counts = summarizeSeedServiciosOutput(stdout);
+  if (!counts) {
+    console.log('seed-servicios ERROR: no se pudo leer el resumen del seed');
+    return 1;
+  }
+  console.log(`seed-servicios OK: ${counts.creados} creados / ${counts.actualizados} actualizados`);
+  return exitCode;
+}
+
+export async function runPayloadPreviewH4Casos(env = process.env) {
+  if (!shouldRunPreviewCasosSeed(env)) {
+    console.log(
+      'preview-h4-casos: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('preview-h4-casos: ejecutando import WP casos + seed (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/preview-h4-casos.mts'],
+    {
+      env,
+      budgetMs: BUILD_BUDGET_MS,
+      inactivityMs: BUILD_INACTIVITY_MS,
+    },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewH4CasosOutput(combined);
+  if (exitCode !== 0) {
+    console.log(`preview-h4-casos ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
+  console.log(
+    `preview-h4-casos OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} casos [H4-CASOS])`,
+  );
+  if (summary.lines.length !== 3 || summary.err !== 0) {
+    console.log('preview-h4-casos ERROR: se esperaban 3 líneas OK por slug');
+    return 1;
+  }
+  return exitCode;
+}
+
+export function summarizeSeedPaginasB1Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B1\] [\w-]+ OK/gm) ?? [];
+  const errLines = text.match(/^\[H6-B1\] [\w-]+ ERROR/gm) ?? [];
+  const resumen = text.match(/\[H6-B1\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+export async function runPayloadPreviewSeedPaginasB1(env = process.env) {
+  if (!shouldRunPreviewPaginasB1Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b1: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b1: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b1.mts'],
+    { env, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b1 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB1Output(stdout);
+  if (!summary || summary.err > 0 || summary.slugOkCount < 1) {
+    console.log('seed-paginas-b1 ERROR: se esperaba [H6-B1] politica-de-privacidad OK');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b1 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B1])`,
+  );
+  return 0;
+}
+
+export function summarizeSeedPaginasB5Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B5\] [\w-]+ OK/gm) ?? [];
+  const errLines = text.match(/^\[H6-B5\] [\w-]+ ERROR/gm) ?? [];
+  const resumen = text.match(/\[H6-B5\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+export async function runPayloadPreviewSeedPaginasB5(env = process.env) {
+  if (!shouldRunPreviewPaginasB5Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b5: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b5: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b5.mts'],
+    { env, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b5 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB5Output(stdout);
+  if (!summary || summary.err > 0 || summary.slugOkCount < 2) {
+    console.log('seed-paginas-b5 ERROR: se esperaban [H6-B5] not-found y global-not-found OK');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b5 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B5])`,
+  );
+  return 0;
+}
+
+export function summarizeSeedPaginasB4Output(output) {
+  const text = String(output);
+  const okLines = text.match(/^\[H6-B4\] (?!resumen:).+ OK(?:\s|$)/gm) ?? [];
+  const errLines = text.match(/^\[H6-B4\] (?!resumen:).+ ERROR(?:\s|$)/gm) ?? [];
+  const resumen = text.match(/\[H6-B4\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  if (!resumen) return null;
+  return {
+    ok: Number(resumen[1]),
+    err: Number(resumen[2]),
+    slugOkCount: okLines.length,
+    slugErrCount: errLines.length,
+  };
+}
+
+function seedPaginasB4ChildEnv(env = process.env) {
+  const childEnv = { ...env };
+  if (!hasDatabaseUrl(childEnv) && hasRuntimeDatabase(childEnv)) {
+    childEnv.DATABASE_URL = getPayloadConnectionString(childEnv);
+  }
+  return childEnv;
+}
+
+function echoH6B4LogLines(combinedOutput) {
+  for (const line of String(combinedOutput).split(/\r?\n/)) {
+    if (line.includes('[H6-B4]')) console.log(line);
+  }
+}
+
+export async function runPayloadPreviewSeedPaginasB4(env = process.env) {
+  if (!shouldRunPreviewPaginasB4Seed(env)) {
+    console.log(
+      'cms:seed-paginas-b4: omitido (requiere VERCEL_ENV=preview y Postgres en runtime; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-paginas-b4: ejecutando (Preview, Postgres presente)');
+  const childEnv = seedPaginasB4ChildEnv(env);
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-paginas-b4.mts'],
+    { env: childEnv, budgetMs: BUILD_BUDGET_MS, inactivityMs: BUILD_INACTIVITY_MS },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  echoH6B4LogLines(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-paginas-b4 ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  const summary = summarizeSeedPaginasB4Output(combined);
+  if (!summary || summary.err > 0 || summary.ok < 2 || summary.slugOkCount < 2) {
+    console.log('seed-paginas-b4 ERROR: se esperaban [H6-B4] contactar-agencia-de-marketing-digital y reunion-playful OK');
+    console.log('[H6-B4] resumen: build rechazado (seed incompleto o sin líneas OK)');
+    return 1;
+  }
+  console.log(
+    `seed-paginas-b4 OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.slugOkCount} slug(s) [H6-B4])`,
+  );
+  return 0;
+}
+
+export function summarizePreviewHomeSeedOutput(output) {
+  const text = String(output);
+  const okPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) OK(?: \(updated\))?/gm;
+  const errPattern =
+    /^\[HOME-CMS\] (hero|premios-cima|problemas|soluciones|casos|testimonios|blog|cta) ERROR/gm;
+  const okLines = [...text.matchAll(okPattern)];
+  const errLines = [...text.matchAll(errPattern)];
+  const resumen = text.match(/\[HOME-CMS\] resumen: (\d+) OK \/ (\d+) ERROR/);
+  return {
+    ok: resumen ? Number(resumen[1]) : okLines.length,
+    err: resumen ? Number(resumen[2]) : errLines.length,
+    lines: okLines.map((match) => match[0]),
+    resumenLine: resumen ? resumen[0] : null,
+  };
+}
+
+export async function runPayloadPreviewHomeSeed(env = process.env) {
+  if (!shouldRunPreviewHomeSeed(env)) {
+    console.log(
+      'cms:seed-home: omitido (requiere VERCEL_ENV=preview y DATABASE_URL; nunca Production)',
+    );
+    return 0;
+  }
+  console.log('cms:seed-home: ejecutando (Preview, DATABASE_URL presente)');
+  const { exitCode, stdout, stderr } = await runGuardedCommandWithCapture(
+    process.execPath,
+    ['scripts/seed-home.mts'],
+    { env },
+  );
+  const combined = `${stdout}\n${stderr}`;
+  const summary = summarizePreviewHomeSeedOutput(combined);
+  if (exitCode !== 0) {
+    console.log(`seed-home ERROR: ${shortErrorMessage(stdout, stderr, exitCode)}`);
+    return exitCode;
+  }
+  if (summary.resumenLine) {
+    console.log(summary.resumenLine);
+  }
+  console.log(
+    `seed-home OK: ${summary.ok} OK / ${summary.err} ERROR (${summary.lines.length} bloques [HOME-CMS])`,
+  );
+  if (summary.lines.length !== 8 || summary.err !== 0) {
+    console.log('seed-home ERROR: se esperaban 8 líneas OK por bloque');
+    return 1;
+  }
+  return exitCode;
+}
+
+export function shouldRunPreviewH5AltsSeed(env = process.env) {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+export async function runPreviewH5AltsBuild(env = process.env) {
+  if (!shouldRunPreviewH5AltsSeed(env)) {
+    console.log('h5 alts preview seed: omitido (solo VERCEL_ENV=preview con DATABASE_URL)');
+    return 0;
+  }
+  console.log('h5 alts preview seed: ejecutando tras migrate (idempotente)');
+  const code = await runGuardedCommand(process.execPath, ['scripts/preview-h5-alts-build.ts'], { env });
+  if (code !== 0) {
+    console.warn(`h5 alts preview seed: terminó con código ${code} (no bloquea el build)`);
+  }
+  return 0;
 }
 
 export async function runGuardedBuild() {
   const migrateCode = await runPayloadPreviewMigrate();
   if (migrateCode !== 0) return migrateCode;
+  const homeSeedCode = await runPayloadPreviewHomeSeed();
+  if (homeSeedCode !== 0) return homeSeedCode;
+  const seedCode = await runPayloadPreviewSeedServicios();
+  if (seedCode !== 0) return seedCode;
+  const h4Code = await runPayloadPreviewH4Casos();
+  if (h4Code !== 0) return h4Code;
+  const b1Code = await runPayloadPreviewSeedPaginasB1();
+  if (b1Code !== 0) return b1Code;
+  const b5Code = await runPayloadPreviewSeedPaginasB5();
+  if (b5Code !== 0) return b5Code;
+  const b4Code = await runPayloadPreviewSeedPaginasB4();
+  if (b4Code !== 0) return b4Code;
+  await runPreviewH5AltsBuild();
   return runGuardedCommand(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'build'],
