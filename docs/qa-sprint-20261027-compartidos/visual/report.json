@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-10-27T21:41:26.885Z",
+  "after": "http://127.0.0.1:3100",
+  "rows": [
+    {
+      "path": "/",
+      "viewport": "390",
+      "titles": [
+        "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+        "Playful Agency | Hacemos tu Tienda Online o E-commerce"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0.001,
+      "pixels": 38
+    },
+    {
+      "path": "/",
+      "viewport": "1440",
+      "titles": [
+        "Playful Agency | Hacemos tu Tienda Online o E-commerce",
+        "Playful Agency | Hacemos tu Tienda Online o E-commerce"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0.002,
+      "pixels": 282
+    },
+    {
+      "path": "/agencia-shopify",
+      "viewport": "390",
+      "titles": [
+        "Agencia Shopify para marcas que ya venden | Playful Agency",
+        "Agencia Shopify para marcas que ya venden | Playful Agency"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0.002,
+      "pixels": 139
+    },
+    {
+      "path": "/agencia-shopify",
+      "viewport": "1440",
+      "titles": [
+        "Agencia Shopify para marcas que ya venden | Playful Agency",
+        "Agencia Shopify para marcas que ya venden | Playful Agency"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0.003,
+      "pixels": 450
+    },
+    {
+      "path": "/agencia-e-commerce",
+      "viewport": "390",
+      "titles": [
+        "Agencia de ecommerce para marcas D2C | Playful",
+        "Agencia de ecommerce para marcas D2C | Playful"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0,
+      "pixels": 0
+    },
+    {
+      "path": "/agencia-e-commerce",
+      "viewport": "1440",
+      "titles": [
+        "Agencia de ecommerce para marcas D2C | Playful",
+        "Agencia de ecommerce para marcas D2C | Playful"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0.251,
+      "pixels": 31498
+    },
+    {
+      "path": "/reunion-playful",
+      "viewport": "390",
+      "titles": [
+        "Reservar reunión | Playful Agency",
+        "Reservar reunión | Playful Agency"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0,
+      "pixels": 0
+    },
+    {
+      "path": "/reunion-playful",
+      "viewport": "1440",
+      "titles": [
+        "Reservar reunión | Playful Agency",
+        "Reservar reunión | Playful Agency"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0,
+      "pixels": 0
+    },
+    {
+      "path": "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce",
+      "viewport": "390",
+      "titles": [
+        "Zelle en Venezuela: cómo cobrar en tu tienda | Playful",
+        "Zelle en Venezuela: cómo cobrar en tu tienda | Playful"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0,
+      "pixels": 13
+    },
+    {
+      "path": "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce",
+      "viewport": "1440",
+      "titles": [
+        "Zelle en Venezuela: cómo cobrar en tu tienda | Playful",
+        "Zelle en Venezuela: cómo cobrar en tu tienda | Playful"
+      ],
+      "mismatch": false,
+      "reason": null,
+      "percent": 0,
+      "pixels": 22
+    }
+  ]
+}
