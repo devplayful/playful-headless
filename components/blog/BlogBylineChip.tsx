@@ -55,13 +55,13 @@ export function BlogBylineChip({
   const author = href ? (
     <a
       href={href}
-      className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-white hover:underline"
+      className="inline-flex min-w-0 items-center gap-2 text-white hover:underline"
     >
       {avatar}
       <span className="text-xs font-medium sm:text-sm">{name}</span>
     </a>
   ) : (
-    <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap">
+    <span className="inline-flex min-w-0 items-center gap-2">
       {avatar}
       <span className="text-xs font-medium sm:text-sm">{name}</span>
     </span>
