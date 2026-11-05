@@ -17,7 +17,7 @@ const MARKETING_TITLE =
 const MARKETING_DESCRIPTION =
   'Expandirte globalmente puede parecer complicado, pero con Playful Agency es pan comido. Te ayudamos a crear estrategias de Marketing Internacional que conectan con clientes.';
 const OPTION_A_ECOMMERCE_DESCRIPTION =
-  'Agencia de ecommerce para marcas que venden directo al consumidor: ordenamos tienda online, posicionamiento y diseño para vender más. Agenda tu llamada.';
+  'Agencia ecommerce para marcas D2C que ya venden: tienda online, posicionamiento y diseño. Casos reales de SoyTechno, Jumex y Odwalla. Agenda tu llamada.';
 const STALE_PR64_DESCRIPTION =
   'Diseño, desarrollo y optimización de tiendas online. En Playful mejoramos el rendimiento, la experiencia de compra y el SEO de tu ecommerce.';
 
@@ -86,9 +86,9 @@ test('agencia-e-commerce no longer inherits the marketing-internacional title', 
   );
   assert.equal(
     title,
-    'Agencia de ecommerce para marcas D2C | Playful',
+    'Agencia ecommerce para marcas D2C que ya venden | Playful',
   );
-  assert.equal(title.length, 46);
+  assert.equal(title.length, 57);
   assert.equal(ogTitle, title);
   assert.doesNotMatch(title, /Marketing Internacional/i);
   assert.equal(PAGE_TITLE_OVERRIDES['marketing-internacional'], undefined);
