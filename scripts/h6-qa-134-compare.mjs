@@ -10,7 +10,11 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildH6QaPaths, cmsPreviewRewriteExpected } from './h6-qa-url-set.mjs';
+import {
+  buildH6QaPaths,
+  classifyH6ProbeResponse,
+  cmsPreviewRewriteExpected,
+} from './h6-qa-url-set.mjs';
 import { paceLiveQa, PLAYFUL_QA_UA, withQaPathname } from '../lib/qa/live-fetch.mjs';
 
 const PROD = 'https://playfulagency.com';
@@ -139,29 +143,29 @@ function diffField(label, a, b) {
   return `${label}: prod=${JSON.stringify(a)} preview=${JSON.stringify(b)}`;
 }
 
-function looksProtected(html, status) {
-  return (
-    status === 401
-    || status === 403
-    || (status >= 300 && status < 400 && /vercel\.com/i.test(html))
-    || /Authentication Required|Protected by Vercel Authentication|vercel\.com\/login/i.test(html)
-  );
-}
-
 async function fetchPage(base, path, { cms = false } = {}) {
   await paceLiveQa();
   const qaPath = withQaPathname(path);
   const url = new URL(qaPath, base);
   if (cms) url.searchParams.set('cms', '1');
   const res = await fetch(url.toString(), {
-    redirect: 'follow',
+    redirect: 'manual',
     headers: {
       'user-agent': PLAYFUL_QA_UA,
       ...extraHeaders,
     },
   });
   const html = await res.text();
-  return { status: res.status, html, finalUrl: res.url };
+  const location = res.headers.get('location');
+  const probe = classifyH6ProbeResponse(res.status, location, html);
+  return {
+    status: res.status,
+    html,
+    location: probe.location,
+    probeStatus: probe.probeStatus,
+    probeNote: probe.note,
+    requestedUrl: url.toString(),
+  };
 }
 
 async function main() {
@@ -172,9 +176,11 @@ async function main() {
   let previewProbe = null;
   if (PREVIEW_BASE) {
     previewProbe = await fetchPage(PREVIEW_BASE, '/nosotros', { cms: true });
-    if (looksProtected(previewProbe.html, previewProbe.status)) {
+    if (previewProbe.probeStatus === 'PREVIEW_BLOCKED') {
       previewBlocked.blocked = true;
-      previewBlocked.error = `HTTP ${previewProbe.status}: Protected by Vercel Authentication (sin VERCEL_AUTOMATION_BYPASS_SECRET ni MCP Vercel con acceso al equipo playful-agencys-projects)`;
+      previewBlocked.error =
+        previewProbe.probeNote
+        || 'Protected by Vercel Authentication (sin VERCEL_AUTOMATION_BYPASS_SECRET ni MCP Vercel con acceso al equipo playful-agencys-projects)';
     }
   }
   const rows = [];
@@ -182,49 +188,70 @@ async function main() {
 
   for (const path of paths) {
     const prodRes = await fetchPage(PROD, path);
-    const prod = analyze(prodRes.html, PROD, path);
     const row = {
       path,
       cmsRewrite: cmsPreviewRewriteExpected(path),
       prodStatus: prodRes.status,
+      prodLocation: prodRes.location,
       previewStatus: null,
+      previewLocation: null,
       status: 'PENDING',
       diffs: [],
       brokenInternalLinks: [],
-      prod,
+      prod: null,
     };
 
-    if (prodRes.status !== 200 && path !== '/test-blog') {
+    if (prodRes.probeStatus === 'REDIRECT') {
+      row.status = 'REDIRECT';
+      row.diffs.push(prodRes.probeNote);
+    } else if (prodRes.probeStatus === 'PREVIEW_BLOCKED') {
+      row.status = 'PROD_ERROR';
+      row.diffs.push(prodRes.probeNote || `prod HTTP ${prodRes.status}`);
+    } else if (prodRes.status !== 200 && path !== '/test-blog') {
       row.status = 'PROD_ERROR';
       row.diffs.push(`prod HTTP ${prodRes.status}`);
+    } else {
+      const prod = analyze(prodRes.html, PROD, path);
+      row.prod = prod;
+      for (const link of prod.internalLinks) allInternalLinks.add(link);
     }
-    for (const link of prod.internalLinks) allInternalLinks.add(link);
 
     if (!PREVIEW_BASE) {
-      row.status = row.status === 'PENDING' ? 'NO_PREVIEW_BASE' : row.status;
-      row.diffs.push('PREVIEW_BASE no definido');
+      if (row.status === 'PENDING') row.status = 'NO_PREVIEW_BASE';
+      if (row.status === 'NO_PREVIEW_BASE') row.diffs.push('PREVIEW_BASE no definido');
     } else if (previewBlocked.blocked) {
-      row.status = row.status === 'PROD_ERROR' ? row.status : 'PREVIEW_BLOCKED';
-      if (row.status === 'PREVIEW_BLOCKED') row.diffs.push(previewBlocked.error);
+      if (row.status === 'PENDING') row.status = 'PREVIEW_BLOCKED';
+      else if (row.status !== 'PROD_ERROR' && row.status !== 'REDIRECT') row.status = 'PREVIEW_BLOCKED';
+      if (row.status === 'PREVIEW_BLOCKED' && !row.diffs.includes(previewBlocked.error)) {
+        row.diffs.push(previewBlocked.error);
+      }
+    } else if (row.status === 'REDIRECT') {
+      row.previewStatus = null;
+    } else if (row.status === 'PROD_ERROR') {
+      /* keep prod error */
     } else {
       const prevRes = await fetchPage(PREVIEW_BASE, path, { cms: true });
       row.previewStatus = prevRes.status;
-      if (looksProtected(prevRes.html, prevRes.status)) {
+      row.previewLocation = prevRes.location;
+      if (prevRes.probeStatus === 'PREVIEW_BLOCKED') {
         row.status = 'PREVIEW_BLOCKED';
-        row.diffs.push(previewBlocked.error);
-      } else if (prevRes.status !== prodRes.status && !(prodRes.status === 200 && prevRes.status === 200)) {
+        row.diffs.push(prevRes.probeNote || previewBlocked.error);
+      } else if (prevRes.probeStatus === 'REDIRECT') {
+        row.status = 'DIFF';
+        row.diffs.push(prevRes.probeNote);
+      } else if (prevRes.status !== prodRes.status) {
         row.status = 'DIFF';
         row.diffs.push(`HTTP prod=${prodRes.status} preview=${prevRes.status}`);
-      } else {
+      } else if (row.prod) {
         const preview = analyze(prevRes.html, PREVIEW_BASE, path);
         const checks = [
-          diffField('title', prod.title, preview.title),
-          diffField('description', prod.description, preview.description),
-          diffField('canonical', prod.canonical, preview.canonical),
-          diffField('robots', prod.robots, preview.robots),
-          diffField('h1', prod.h1, preview.h1),
-          diffField('imageCount', prod.imageCount, preview.imageCount),
-          diffField('imagesMissingAlt', prod.imagesMissingAlt, preview.imagesMissingAlt),
+          diffField('title', row.prod.title, preview.title),
+          diffField('description', row.prod.description, preview.description),
+          diffField('canonical', row.prod.canonical, preview.canonical),
+          diffField('robots', row.prod.robots, preview.robots),
+          diffField('h1', row.prod.h1, preview.h1),
+          diffField('imageCount', row.prod.imageCount, preview.imageCount),
+          diffField('imagesMissingAlt', row.prod.imagesMissingAlt, preview.imagesMissingAlt),
         ].filter(Boolean);
         row.diffs.push(...checks);
         row.status = checks.length ? 'DIFF' : 'OK';
@@ -242,10 +269,12 @@ async function main() {
       continue;
     }
     const check = await fetchPage(PROD, link);
-    if (check.status >= 400) brokenInternal.set(link, check.status);
+    if (check.probeStatus !== 'REDIRECT' && check.status >= 400) {
+      brokenInternal.set(link, check.status);
+    }
   }
   for (const row of rows) {
-    row.brokenInternalLinks = row.prod.internalLinks.filter((l) => brokenInternal.has(l));
+    row.brokenInternalLinks = (row.prod?.internalLinks || []).filter((l) => brokenInternal.has(l));
   }
 
   const rollbackSamples = [];
@@ -282,6 +311,7 @@ async function main() {
     urlCount: paths.length,
     ok: rows.filter((r) => r.status === 'OK').length,
     diff: rows.filter((r) => r.status === 'DIFF').length,
+    redirect: rows.filter((r) => r.status === 'REDIRECT').length,
     previewBlocked: rows.filter((r) => r.status === 'PREVIEW_BLOCKED').length,
     prodError: rows.filter((r) => r.status === 'PROD_ERROR').length,
     noPreview: rows.filter((r) => r.status === 'NO_PREVIEW_BASE').length,

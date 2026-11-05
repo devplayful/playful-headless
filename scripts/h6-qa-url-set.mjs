@@ -29,6 +29,60 @@ export function buildH6QaPaths() {
   return [...set].sort((a, b) => a.localeCompare(b));
 }
 
+/** HTTP redirect codes probed without following (redirect: manual). */
+export const H6_REDIRECT_STATUSES = new Set([301, 302, 307, 308]);
+
+export function isH6RedirectStatus(status) {
+  return H6_REDIRECT_STATUSES.has(status);
+}
+
+export function isVercelPreviewAuthLocation(location) {
+  if (!location) return false;
+  if (/_vercel_jwt/i.test(location)) return true;
+  try {
+    const u = new URL(location, 'https://playfulagency.com');
+    return /vercel\.com/i.test(u.hostname) && /\/sso/i.test(u.pathname);
+  } catch {
+    return /vercel\.com\/sso/i.test(location);
+  }
+}
+
+export function isVercelPreviewAuthBody(html) {
+  return /Protected by Vercel Authentication|Authentication Required|vercel\.com\/login/i.test(
+    html || '',
+  );
+}
+
+/**
+ * Classify a single manual-redirect fetch (prod or preview).
+ * @returns {{ probeStatus: 'OK'|'REDIRECT'|'PREVIEW_BLOCKED', location: string|null, note: string|null }}
+ */
+export function classifyH6ProbeResponse(status, locationHeader, html) {
+  const location = (locationHeader || '').trim() || null;
+  if (isH6RedirectStatus(status)) {
+    if (isVercelPreviewAuthLocation(location)) {
+      return {
+        probeStatus: 'PREVIEW_BLOCKED',
+        location,
+        note: `HTTP ${status} → ${location} (Vercel Authentication)`,
+      };
+    }
+    return {
+      probeStatus: 'REDIRECT',
+      location,
+      note: `HTTP ${status} → ${location || '(sin Location)'}`,
+    };
+  }
+  if (status === 401 || status === 403 || isVercelPreviewAuthBody(html)) {
+    return {
+      probeStatus: 'PREVIEW_BLOCKED',
+      location,
+      note: `HTTP ${status}: Protected by Vercel Authentication`,
+    };
+  }
+  return { probeStatus: 'OK', location: null, note: null };
+}
+
 export function cmsPreviewRewriteExpected(path) {
   if (path === '/') return 'home-payload-preview';
   if (path === '/casos-de-exito') return 'casos-hub-payload';
