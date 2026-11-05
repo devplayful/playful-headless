@@ -190,14 +190,7 @@ test('initial Payload migration creates CMS and payload_* tables', () => {
   assert.match(index, /20261028_195833_initial/);
   assert.match(index, /20261029_114031/);
   assert.match(index, /20261030_120000_paginas_codigo/);
-  assert.match(index, /20261103_170000_wipe_preview_usuarios/);
-  const wipeMigration = readFileSync(
-    new URL('../cms/migrations/20261103_170000_wipe_preview_usuarios.ts', import.meta.url),
-    'utf8',
-  );
-  assert.match(wipeMigration, /VERCEL_ENV !== 'preview'/);
-  assert.match(wipeMigration, /delete from usuarios/);
-  assert.match(wipeMigration, /nunca Production/);
+  assert.equal(index.includes('20261103_170000_wipe_preview_usuarios'), false);
   assert.match(servicios, /import type \{ MigrateDownArgs, MigrateUpArgs \}/);
   assert.match(paginasCodigo, /paginas_codigo/);
   for (const table of [
