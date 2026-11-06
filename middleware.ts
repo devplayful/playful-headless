@@ -200,6 +200,28 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
+  // Prod serves /reunion-playful as 308 → /reunion. This has to run before the
+  // ?cms=1 rewrite, which would otherwise render the soft client redirect.
+  if (path === '/reunion-playful') {
+    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
+  }
+
+  // Legacy 301s (including /contacto) also run before the unknown-path 404.
+  const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
+  const hadTrailingSlash = request.nextUrl.pathname !== path;
+  if (resolved.changed || hadTrailingSlash) {
+    if (resolved.absolute) {
+      const target = new URL(resolved.absolute);
+      target.search = resolved.search;
+      return attachAttributionCookies(request, NextResponse.redirect(target, 301));
+    }
+    // Plain URL, not nextUrl.clone(): NextURL re-adds the incoming trailing
+    // slash when skipTrailingSlashRedirect is on, which would loop.
+    const target = new URL(`${resolved.pathname}${resolved.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 301));
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
     if (path === '/') {
       const target = request.nextUrl.clone();
@@ -293,25 +315,19 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
-  const hadTrailingSlash = request.nextUrl.pathname !== path;
-  if (resolved.changed || hadTrailingSlash) {
-    if (resolved.absolute) {
-      const target = new URL(resolved.absolute);
-      target.search = resolved.search;
-      return attachAttributionCookies(request, NextResponse.redirect(target, 301));
-    }
-    // Plain URL, not nextUrl.clone(): NextURL re-adds the incoming trailing
-    // slash when skipTrailingSlashRedirect is on, which would loop.
-    const target = new URL(`${resolved.pathname}${resolved.search}`, request.url);
-    return attachAttributionCookies(request, NextResponse.redirect(target, 301));
-  }
-
   // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
   // so pagination, category and search keep working without dynamizing /blog.
+  // ?cms=1 is a preview flag, not a listing query: drop it so /blog?cms=1
+  // serves the same indexable listing as /blog.
   if (path === '/blog' && request.nextUrl.search && request.nextUrl.search !== '?') {
+    const listingParams = new URLSearchParams(request.nextUrl.searchParams);
+    listingParams.delete('cms');
+    if (listingParams.size === 0) {
+      return attachAttributionCookies(request, NextResponse.next());
+    }
     const target = request.nextUrl.clone();
     target.pathname = '/blog/q';
+    target.search = `?${listingParams.toString()}`;
     return attachAttributionCookies(request, NextResponse.rewrite(target));
   }
 

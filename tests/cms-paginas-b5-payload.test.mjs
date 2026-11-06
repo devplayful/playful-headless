@@ -12,6 +12,7 @@ const {
 const { paginasB5SeedBodyForSlug, PAGINAS_B5_SLUGS } = await import(
   '../cms/data/paginas-b5-payload.ts'
 );
+const { isKnownPublicAppPath } = await import('../lib/cms-paginas-b5-known-paths.ts');
 
 const notFoundPage = readFileSync(
   new URL('../app/(frontend)/not-found.tsx', import.meta.url),
@@ -41,6 +42,9 @@ test('Preview ?cms=1 en URL desconocida reescribe a cms-pagina-b5-preview/not-fo
   assert.match(middleware, /cmsPreviewPaginaB5Path\('not-found'\)/);
   assert.match(middleware, /NextResponse\.rewrite\(target, \{ status: 404 \}\)/);
   assert.equal(cmsPreviewPaginaB5Path('not-found'), '/cms-pagina-b5-preview/not-found');
+  const redirectAt = middleware.indexOf('const resolved = resolveSingleHopRedirect');
+  const unknownAt = middleware.indexOf("cmsPreviewPaginaB5Path('not-found')");
+  assert.ok(redirectAt > 0 && redirectAt < unknownAt, '301 legacy must run before the unknown-path 404');
 });
 
 test('not-found.tsx no importa Payload ni rutas B5 (congelado como fase1)', () => {
@@ -66,6 +70,18 @@ test('seed B5 define not-found y global-not-found', () => {
     assert.equal(body.bloque, 'b5');
     assert.match(String(body.content.checksum), /^[a-f0-9]{64}$/);
   }
+});
+
+test('reunion, eshow y el post de migración no caen en el 404 de ?cms=1', () => {
+  assert.equal(isKnownPublicAppPath('/reunion'), true);
+  assert.equal(isKnownPublicAppPath('/eshow'), true);
+  assert.equal(isKnownPublicAppPath('/eshow/gracias'), true);
+  assert.equal(
+    isKnownPublicAppPath('/blog/seo/migracion-seo-cambiar-de-plataforma-alternativa'),
+    true,
+  );
+  assert.equal(isKnownPublicAppPath('/contacto'), false);
+  assert.equal(isKnownPublicAppPath('/ruta-que-no-existe'), false);
 });
 
 test('data-cms-source=payload solo en Preview', () => {

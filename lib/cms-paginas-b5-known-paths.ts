@@ -15,7 +15,10 @@ const EXACT_PUBLIC_PATHS = new Set([
   '/nosotros',
   '/podcast',
   '/politica-de-privacidad',
+  '/reunion',
   '/reunion-playful',
+  '/eshow',
+  '/eshow/gracias',
   '/robots.txt',
   '/sitemap.xml',
   '/test-blog',
@@ -38,6 +41,7 @@ export function isKnownPublicAppPath(pathname: string): boolean {
   const path = normalizePublicPath(pathname);
   if (EXACT_PUBLIC_PATHS.has(path)) return true;
   if (path.startsWith('/blog/')) return true;
+  if (path.startsWith('/eshow/')) return true;
   if (path.startsWith('/podcast/')) return true;
   if (path.startsWith('/casos-de-exito/')) return true;
   if (path.startsWith('/admin')) return true;
