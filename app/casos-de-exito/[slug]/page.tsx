@@ -5,7 +5,10 @@ import type { Metadata } from 'next';
 import { canonicalForPath } from '@/utils/canonical';
 import { pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
 import { getPublicCaseStudySeoOverride } from '@/utils/public-case-study-overrides';
-import { normalizeCaseStudyAcf } from '@/utils/case-study-acf-fields';
+import {
+  normalizeCaseStudyAcf,
+  omitOdwallaUnsignedResultClaims,
+} from '@/utils/case-study-acf-fields';
 import SoyTechnoSectionA from '@/components/soytechno/SoyTechnoSectionA';
 import SoyTechnoSectionB from '@/components/soytechno/SoyTechnoSectionB';
 import SoyTechnoSectionC from '@/components/soytechno/SoyTechnoSectionC';
@@ -166,7 +169,10 @@ export default async function SuccessStoryPage({
 
   const story = {
     ...rawStory,
-    acf: normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered),
+    acf: omitOdwallaUnsignedResultClaims(
+      slug,
+      normalizeCaseStudyAcf(rawStory.acf, rawStory.title?.rendered),
+    ),
   };
 
   // SoyTechno template detection

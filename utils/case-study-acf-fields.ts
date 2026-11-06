@@ -229,3 +229,32 @@ export function normalizeCaseStudyAcf<T extends Record<string, unknown>>(
 
   return out as T;
 }
+
+const ODWALLA_CASE_SLUG = 'odwalla-shopify-dtc-ecommerce';
+
+function fieldText(value: unknown): string {
+  return typeof value === 'string' ? normalizeComparableText(value) : '';
+}
+
+/**
+ * Odwalla only. Drops the unsigned conversion-rate card and the
+ * third-place SEO card. The H1 and the rest of the ficha stay.
+ */
+export function omitOdwallaUnsignedResultClaims<T extends Record<string, unknown>>(
+  slug: string,
+  acf: T,
+): T {
+  if (slug !== ODWALLA_CASE_SLUG) return acf;
+  const out: Record<string, unknown> = { ...acf };
+  const card1 = `${fieldText(out.resultado1)} ${fieldText(out.resultadop1)}`;
+  const card2 = `${fieldText(out.resultado2)} ${fieldText(out.resultadop2)}`;
+  if (/tasa de conversi[oó]n|incremento en los pedidos/.test(card1)) {
+    out.resultado1 = '';
+    out.resultadop1 = '';
+  }
+  if (/tercer puesto|posicionamiento seo consolidado/.test(card2)) {
+    out.resultado2 = '';
+    out.resultadop2 = '';
+  }
+  return out as T;
+}
