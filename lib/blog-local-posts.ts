@@ -182,14 +182,13 @@ function localPostCategoryIds(post: LocalBlogListingPost): number[] {
   return ids;
 }
 
-/** Last update, then publish. Same fallback the listing cards print. */
 /**
- * playfulagency.com/blog on 2026-11-06 matches WordPress `orderby=modified`
- * (not `orderby=date`). The listing fetch still asks WP for `orderby=date`;
- * this key is what puts the merged list in the same order as production.
+ * Publication instant for /blog. José, 23 oct 2026: Premios CIMA first and
+ * Zelle on page 1. playfulagency.com/blog still sorts by modified; that
+ * difference is expected on this preview.
  */
 export function localBlogListingDateMs(post: LocalBlogListingPost): number {
-  const raw = post.modified_gmt || post.modified || post.date_gmt || post.date || '';
+  const raw = post.date_gmt || post.date || post.modified_gmt || post.modified || '';
   const ms = Date.parse(raw);
   return Number.isFinite(ms) ? ms : 0;
 }
@@ -236,7 +235,7 @@ function matchesLocalListingFilters(
 /**
  * Fold production local posts into a WordPress listing.
  * WordPress wins on slug so a later CMS publish does not duplicate the card.
- * Sorted by last update, falling back to publish date.
+ * Sorted by publication date (`date_gmt`, then `date`).
  */
 export function mergeProductionLocalBlogPosts<T extends LocalBlogListingPost>(
   wpPosts: readonly T[] | null | undefined,

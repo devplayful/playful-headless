@@ -27,6 +27,7 @@ const {
   isStagingLocalBlogEnabled,
   getStagingLocalBlogPost,
   listProductionLocalBlogPosts,
+  localBlogListingDateMs,
   listStagingLocalBlogStaticParams,
   listStagingSitemapBlogEntries,
   mergeProductionLocalBlogPosts,
@@ -325,6 +326,37 @@ test('production local listings include eShow, skip Merchant Center, and prefer 
     fromWp.find((post) => post.slug === ESHOW_MADRID_2026_SLUG).featured_media_url,
     '/wp.jpg',
   );
+});
+
+test('listing sorts by publication date: CIMA before a later edit, Zelle on page 1', () => {
+  const publishedLater = localBlogListingDateMs({
+    date_gmt: '2026-10-20T07:10:05Z',
+    modified_gmt: '2020-01-01T00:00:00Z',
+  });
+  const editedLater = localBlogListingDateMs({
+    date_gmt: '2025-04-22T19:28:54Z',
+    modified_gmt: '2026-10-23T11:00:16Z',
+  });
+  assert.ok(publishedLater > editedLater);
+
+  const merged = mergeProductionLocalBlogPosts(
+    [
+      {
+        slug: 'zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+        date_gmt: '2025-04-22T19:28:54Z',
+        modified_gmt: '2026-10-23T11:00:16Z',
+      },
+      {
+        slug: 'premios-cima-2026-soytechno-playful',
+        date_gmt: '2026-10-20T07:10:05Z',
+        modified_gmt: '2026-10-23T04:29:56Z',
+      },
+    ],
+    { env: { VERCEL_ENV: 'production', VERCEL_GIT_COMMIT_REF: 'main' } },
+  );
+  assert.equal(merged[0].slug, 'premios-cima-2026-soytechno-playful');
+  const zelleAt = merged.findIndex((post) => post.slug.startsWith('zelle-'));
+  assert.ok(zelleAt >= 1 && zelleAt < 10, `Zelle at ${zelleAt}`);
 });
 
 test('CIMA 2026 is a WordPress post, not a Next local entry', () => {
