@@ -217,10 +217,6 @@ test('does not invent dests outside the closed list', () => {
     '/agencia-prestashop',
   );
   assert.equal(
-    decideBrokenInternalHref('/agencia-woocommerce', '/blog/tecnologia/que-es-wordpress-por-que-tengo-que-usarlo').href,
-    '/agencia-woocommerce',
-  );
-  assert.equal(
     decideBrokenInternalHref('/servicios/automatizacion-del-marketing', '/blog/seo/aprende-todo-sobre-el-seo').href,
     '/servicios/automatizacion-del-marketing',
   );

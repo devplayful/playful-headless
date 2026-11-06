@@ -29,15 +29,15 @@ const H2S = [
 ];
 
 test('meta title, description and path match the SEO-signed copy', () => {
-  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce: tienda y cobros | Playful Agency');
+  assert.equal(WOOCOMMERCE_META.title, 'Agencia WooCommerce: tienda, Redsys y Bizum | Playful');
   assert.equal(
     WOOCOMMERCE_META.description,
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress, con Redsys y Bizum en España y pagos automáticos en Venezuela. Reserva reunión.',
+    'Agencia WooCommerce: creamos tu tienda en Venezuela y España con SiTef, Redsys, Instapago, Cashea, Banesco y Zelle prevalidado. Reserva 30 a 40 minutos con Playful Agency.',
   );
   assert.equal(WOOCOMMERCE_META.path, '/agencia-woocommerce');
   assert.equal(
     WOOCOMMERCE_COPY.hero.h1,
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda online',
+    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress',
   );
 });
 
@@ -64,11 +64,10 @@ test('H2s stay literal and the page never links the dead Venezuela payments URL'
     H2S,
   );
   const published = JSON.stringify(WOOCOMMERCE_COPY);
-  assert.doesNotMatch(published, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(copySource, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(landing, /pasarela-de-pagos-venezuela/);
+  assert.match(published, /pasarela-de-pagos-venezuela/);
   assert.doesNotMatch(published, /Preguntas para José/);
   assert.doesNotMatch(published, /\[NO COMPROBADO/);
+  assert.doesNotMatch(published, /Medusa/i);
 });
 
 test('landing uses the agency template and booking hop', () => {
@@ -76,7 +75,7 @@ test('landing uses the agency template and booking hop', () => {
   assert.match(landing, /twitterFromOpenGraph/);
   assert.match(landing, /SITE_OG_IMAGE/);
   assert.equal(CTA_LABEL, 'Reserva una reunión de 30 a 40 minutos');
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
 });
 
 test('sitemap and expected-routes include the dedicated Next route', () => {

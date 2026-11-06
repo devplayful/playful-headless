@@ -22,7 +22,6 @@ const middlewareSource = readFileSync(new URL('../middleware.ts', import.meta.ur
 const APEX = 'https://playfulagency.com';
 
 const LANDING_301 = [
-  ['/agencia-woocommerce', '/agencia-e-commerce'],
   ['/agencia-prestashop', '/agencia-e-commerce'],
   ['/shopify-precios', '/agencia-shopify'],
 ];
@@ -34,7 +33,7 @@ const permanent301 = mergeCanibalizacionIntoPermanent301({
 }, categoryRedirects);
 
 test('unpublished landing 404s 301 in one hop to live ecommerce/shopify pages', () => {
-  assert.equal(Object.keys(unpublishedLandingRedirects).length, 3);
+  assert.equal(Object.keys(unpublishedLandingRedirects).length, 2);
 
   for (const [origin, destPath] of LANDING_301) {
     const dest = `${APEX}${destPath}`;
@@ -54,4 +53,9 @@ test('unpublished landing 404s 301 in one hop to live ecommerce/shopify pages', 
 test('middleware loads unpublished landing redirect map before runtime lookup', () => {
   assert.match(middlewareSource, /unpublished-landing-redirect-map\.json/);
   assert.match(middlewareSource, /\.\.\.unpublishedLandingRedirects/);
+});
+
+test('agencia-woocommerce is no longer redirected to agencia-e-commerce', () => {
+  assert.equal(unpublishedLandingRedirects['/agencia-woocommerce'], undefined);
+  assert.equal(permanent301['/agencia-woocommerce'], undefined);
 });

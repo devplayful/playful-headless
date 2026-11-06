@@ -1,9 +1,9 @@
 import type { AgencyLandingCopy } from '@/lib/agency-copy-landing';
 
 export const WOOCOMMERCE_META = {
-  title: 'Agencia WooCommerce: tienda y cobros | Playful Agency',
+  title: 'Agencia WooCommerce: tienda, Redsys y Bizum | Playful',
   description:
-    'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress, con Redsys y Bizum en España y pagos automáticos en Venezuela. Reserva reunión.',
+    'Agencia WooCommerce: creamos tu tienda en Venezuela y España con SiTef, Redsys, Instapago, Cashea, Banesco y Zelle prevalidado. Reserva 30 a 40 minutos con Playful Agency.',
   path: '/agencia-woocommerce',
   serviceName: 'Agencia WooCommerce',
 } as const;
@@ -14,7 +14,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
   meta: WOOCOMMERCE_META,
   ctaLabel: CTA_LABEL,
   hero: {
-    h1: 'Agencia WooCommerce para montar, conectar y mejorar tu tienda online',
+    h1: 'Agencia WooCommerce para montar, conectar y mejorar tu tienda en WordPress',
     paragraphs: [
       'Si buscas una agencia WooCommerce, lo normal es que tengas una tienda en WordPress que quieres montar, conectar con tu inventario o mejorar porque se ha quedado atrás. En Playful somos una agencia WooCommerce que diseña la tienda, la conecta con tu cobro y con tus sistemas, y la mantiene después de la entrega.',
       'Conectamos el cobro con el banco con el que ya trabajas en España, y en Venezuela WooCommerce es la plataforma con la que integramos los pagos locales de forma automática. Trabajamos con tiendas que ya funcionan, con tiendas físicas que dan el paso a internet y con proyectos que empiezan desde cero.',
@@ -53,7 +53,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'Cuando la tienda pide más, la hacemos evolucionar con funciones nuevas, como un comparador de productos o un club de puntos. Trabajamos sobre la tienda en marcha, para que tus clientes sigan comprando mientras tanto.',
+          text: 'Cuando la tienda pide más, la hacemos evolucionar con funciones nuevas, como un comparador de productos. Trabajamos sobre la tienda en marcha, para que tus clientes sigan comprando mientras tanto.',
         },
       ],
     },
@@ -91,15 +91,11 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'En España, para conectar WooCommerce con Redsys usamos la pasarela oficial que Redsys publica para WooCommerce, que se conecta con el TPV virtual que tienes contratado con tu banco. Según la propia Redsys, esa pasarela incluye el pago con Bizum.',
+          text: 'En España, para conectar WooCommerce con Redsys usamos la pasarela oficial que Redsys publica para WooCommerce, que se conecta con el TPV virtual que tienes contratado con tu banco. Según la propia [Redsys](https://pagosonline.redsys.es/desarrolladores-inicio/documentacion-tipos-de-integracion/modulos-pago/), esa pasarela incluye el pago con Bizum.',
         },
         {
           type: 'p',
-          text: 'En Venezuela, WooCommerce es nuestra plataforma probada para cobrar de forma automática con SiTef, Instapago, Cashea, Banesco, Zelle y BDV. Hacemos lo mismo en apps y en tiendas sobre Medusa, así que el pago se confirma en el pedido sin que nadie lo valide a mano.',
-        },
-        {
-          type: 'p',
-          text: 'Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en nuestra página de [agencia Shopify](https://playfulagency.com/agencia-shopify).',
+          text: 'En Venezuela, WooCommerce es nuestra plataforma probada para cobrar de forma automática con los [métodos de cobro que ya usa Venezuela](https://playfulagency.com/pasarela-de-pagos-venezuela): SiTef, Instapago, Cashea, Banesco, Zelle y BDV. Integramos Zelle en tiendas de marcas que ya tienen su cuenta, y lo contamos en [Zelle en Venezuela como método de pago para tu ecommerce](https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce). Para vender fuera con cobro internacional, trabajamos con Shopify, como explicamos en [tienda Shopify cuando vendes fuera](https://playfulagency.com/agencia-shopify).',
         },
       ],
     },
@@ -109,7 +105,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'En Venezuela, [SoyTechno](https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela) es una tienda de tecnología hecha en WooCommerce. Desarrollamos un Smart Checkout que deja pagar en bolívares o en divisas desde una sola pantalla y la primera integración nativa de Cashea en un ecommerce venezolano.',
+          text: 'En Venezuela, [el checkout de SoyTechno](https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela) una tienda de tecnología hecha en WooCommerce. Desarrollamos un Smart Checkout con Cashea que deja pagar en bolívares o en divisas desde una sola pantalla.',
         },
         {
           type: 'quote',
@@ -119,7 +115,7 @@ export const WOOCOMMERCE_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'En España, nuestros casos publicados son de consumo masivo. [Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce) son dos tiendas en Shopify en las que trabajamos el catálogo, las colecciones, las variantes y las vistas de escritorio y móvil.',
+          text: '[Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce) son dos tiendas en Shopify en las que trabajamos el catálogo, las colecciones, las variantes y las vistas de escritorio y móvil.',
         },
       ],
     },
