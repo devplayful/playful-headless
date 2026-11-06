@@ -12,10 +12,7 @@ const {
 const APEX = 'https://playfulagency.com';
 
 test('unpublished landings stay out of the production sitemap until they 200', () => {
-  assert.deepEqual([...SITEMAP_UNPUBLISHED_PATHS], [
-    '/agencia-prestashop',
-    '/shopify-precios',
-  ]);
+  assert.deepEqual([...SITEMAP_UNPUBLISHED_PATHS], ['/shopify-precios']);
 
   const locs = getSitemapLocs();
   const paths = getSitemapPaths();

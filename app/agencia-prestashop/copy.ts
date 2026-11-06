@@ -1,9 +1,9 @@
 import type { AgencyLandingCopy } from '@/lib/agency-copy-landing';
 
 export const PRESTASHOP_META = {
-  title: 'Agencia PrestaShop: tienda, SEO y migración | Playful Agency',
+  title: 'Agencia PrestaShop: tienda, SEO y migración | Playful',
   description:
-    'Agencia PrestaShop para tu tienda online: catálogo, fichas, SEO y cobros con un solo equipo, y migración a Shopify si la necesitas. Reserva tu reunión.',
+    'Agencia PrestaShop para tu tienda: catálogo, fichas, SEO y cobros desde el mismo equipo. Reserva 30 a 40 minutos y miramos tu tienda con Playful Agency.',
   path: '/agencia-prestashop',
   serviceName: 'Agencia PrestaShop',
 } as const;
@@ -14,7 +14,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
   meta: PRESTASHOP_META,
   ctaLabel: CTA_LABEL,
   hero: {
-    h1: 'Agencia PrestaShop para tu tienda online: catálogo, SEO y cobros',
+    h1: 'Agencia PrestaShop para tu tienda: catálogo, SEO y cobros',
     paragraphs: [
       'Cuando comparas agencias PrestaShop, lo que quieres saber es quién se ocupa de tu tienda cada vez que hay que cambiar algo. En Playful somos una agencia PrestaShop que lleva el catálogo, las fichas, el backoffice, el SEO y el cobro desde el mismo equipo.',
       'Hoy es habitual que uno toque el servidor, otro instale un módulo y otro escriba las fichas, y que nadie revise si Google encuentra la tienda. Nosotros lo juntamos todo y te decimos con claridad cuándo te conviene seguir en PrestaShop y cuándo te conviene migrar a Shopify.',
@@ -28,11 +28,11 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'Hay marcas que llegan después de uno o dos intentos de tienda que no terminaron de salir. Otras tienen un equipo que conoce muy bien su producto, pero que nunca ha llevado una tienda online y espera que alguien marque cómo tiene que funcionar para quien compra.',
+          text: 'Empezamos por decidir contigo qué tiene que hacer la tienda. A partir de ahí ordenamos el catálogo, escribimos las fichas, dejamos el SEO configurado dentro de PrestaShop y conectamos la tienda con el cobro y con los sistemas donde facturas.',
         },
         {
           type: 'p',
-          text: 'En los dos casos empezamos por decidir contigo qué tiene que hacer la tienda. A partir de ahí ordenamos el catálogo, escribimos las fichas, dejamos el SEO configurado dentro de PrestaShop y conectamos la tienda con el cobro y con los sistemas donde facturas.',
+          text: 'Hay marcas que llegan después de uno o dos intentos de tienda que no terminaron de salir. Otras tienen un equipo que conoce muy bien su producto, pero que nunca ha llevado una tienda online y espera que alguien marque cómo tiene que funcionar para quien compra.',
         },
         {
           type: 'p',
@@ -63,7 +63,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
       ],
     },
     {
-      h2: 'SEO para tiendas PrestaShop',
+      h2: 'Agencia SEO PrestaShop: posicionamiento para tu tienda',
       variant: 'plain',
       blocks: [
         {
@@ -72,7 +72,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'En PrestaShop hay ajustes técnicos que pesan mucho en el SEO. Las URL amigables solo funcionan si el servidor admite la reescritura de URL, y la documentación oficial avisa de que activarlas en un servidor que no la admite puede dejar la tienda sin acceso para los clientes. Por eso lo comprobamos antes de tocar nada.',
+          text: 'En PrestaShop hay ajustes técnicos que pesan mucho en el SEO. Las URL amigables solo funcionan si el servidor admite la reescritura de URL, y la [documentación oficial](https://docs.prestashop-project.org/1.7-documentation/user-guide/configuring-shop/shop-parameters/traffic/seo-and-urls) avisa de que activarlas en un servidor que no la admite puede dejar la tienda sin acceso para los clientes. Por eso lo comprobamos antes de tocar nada.',
         },
         {
           type: 'p',
@@ -80,47 +80,11 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
         },
         {
           type: 'p',
-          text: 'Con el archivo `robots.txt`, que indica a los buscadores qué partes de la tienda no deben rastrear, tenemos en cuenta que PrestaShop sustituye el archivo entero cada vez que lo regenera. Las reglas propias las añadimos después.',
+          text: 'Con el archivo robots.txt, que indica a los buscadores qué partes de la tienda no deben rastrear, tenemos en cuenta que PrestaShop sustituye el archivo entero cada vez que lo regenera. Las reglas propias las añadimos después.',
         },
         {
           type: 'p',
           text: 'Si quieres ver cómo trabajamos el posicionamiento fuera de la tienda, lo tienes en nuestra página de [agencia SEO](https://playfulagency.com/agencia-seo).',
-        },
-      ],
-    },
-    {
-      h2: 'Mantenimiento de tu tienda PrestaShop',
-      variant: 'cream',
-      blocks: [
-        {
-          type: 'p',
-          text: 'Una tienda PrestaShop también se lleva en el día a día. PrestaShop tiene miles de módulos y temas, según su propia web, y elegir cuáles instalar, configurarlos y comprobar que no se pisan entre ellos es trabajo de la tienda.',
-        },
-        {
-          type: 'p',
-          text: 'Revisamos los módulos y el tema cuando hay que actualizarlos, comprobamos que el cobro y el envío siguen funcionando después de cada cambio y hablamos con tu proveedor de hosting cuando el servidor necesita algo, como la reescritura de URL.',
-        },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿ofrecemos el mantenimiento de PrestaShop como servicio mensual con nombre propio, o solo dentro de un proyecto?]',
-        },
-      ],
-    },
-    {
-      h2: 'Cobros en PrestaShop con Redsys y Bizum',
-      variant: 'purple',
-      blocks: [
-        {
-          type: 'p',
-          text: 'Si cobras con el TPV virtual de tu banco, que es el terminal con el que cobras con tarjeta por internet, Redsys publica una pasarela oficial para PrestaShop. Según la propia Redsys, esa pasarela incluye el pago con Bizum.',
-        },
-        {
-          type: 'p',
-          text: 'En la reunión vemos qué tienes contratado con tu banco y cómo encaja en el checkout de tu tienda.',
-        },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿hemos integrado nosotros la pasarela de Redsys en una tienda PrestaShop?]',
         },
       ],
     },
@@ -152,7 +116,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
       blocks: [
         {
           type: 'p',
-          text: 'En España, nuestros casos publicados son de consumo masivo. [Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce) son dos tiendas en Shopify, con catálogo, colecciones, variantes y vistas de escritorio y móvil, y son el destino que trabajamos cuando una tienda PrestaShop se muda.',
+          text: '[Jumex](https://playfulagency.com/casos-de-exito/jumex-shopify-dtc-ecommerce) y [Odwalla](https://playfulagency.com/casos-de-exito/odwalla-shopify-dtc-ecommerce) son dos tiendas en Shopify, con catálogo, colecciones, variantes y vistas de escritorio y móvil.',
         },
         {
           type: 'quote',
@@ -163,10 +127,6 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
         {
           type: 'p',
           text: 'En Venezuela, nuestro caso publicado es [SoyTechno](https://playfulagency.com/casos-de-exito/soytechno-ecommerce-venezuela), una tienda de tecnología.',
-        },
-        {
-          type: 'p',
-          text: '[NO COMPROBADO: ¿qué proyectos PrestaShop podemos citar?]',
         },
       ],
     },
@@ -184,7 +144,7 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
       },
       {
         lead: 'Construcción o mejora de la tienda.',
-        body: 'Trabajamos el catálogo, las fichas, el SEO, el cobro y las integraciones que hayamos acordado.',
+        body: 'Trabajamos el catálogo, las fichas, el SEO, la implementación de métodos de pago para gestionar el cobro y las integraciones que hayamos acordado.',
       },
       {
         lead: 'Entrega con garantía de 30 días.',
@@ -198,17 +158,17 @@ export const PRESTASHOP_COPY: AgencyLandingCopy = {
       {
         question: '¿Qué hace una agencia PrestaShop como Playful?',
         answer:
-          'Nos ocupamos de la tienda que ya tienes o de la que vas a tener. Ordenamos el catálogo, escribimos las fichas, dejamos el SEO configurado dentro de PrestaShop, conectamos el cobro y le enseñamos a tu equipo a llevar el backoffice. Si PrestaShop deja de encajar con tu negocio, también te ayudamos a migrar a Shopify.',
+          'Nos ocupamos de la tienda que ya tienes o de la que vas a tener. Ordenamos el catálogo, escribimos las fichas, dejamos el SEO configurado dentro de PrestaShop, conectamos el cobro o métodos de pago y le enseñamos a tu equipo a llevar el backoffice. Si PrestaShop deja de encajar con tu negocio, también te ayudamos a migrar a Shopify.',
       },
       {
         question: '¿Qué tenemos que mirar al comparar agencias PrestaShop?',
         answer:
-          'Lo primero es saber quién se ocupa de cada parte de la tienda cuando hay que cambiar algo. En Playful llevamos el catálogo, las fichas, el SEO y el cobro desde el mismo equipo, te presentamos 2 propuestas visuales cuando el proyecto incluye diseño y corregimos cualquier error durante los 30 días siguientes a la entrega. También te decimos con claridad si te conviene seguir en PrestaShop o migrar a Shopify.',
+          'Lo primero es saber quién se ocupa de cada parte de la tienda cuando hay que cambiar algo. En Playful llevamos el catálogo, las fichas, el SEO y la gestión de los métodos de pago con el mismo equipo de trabajo, te presentamos 2 propuestas visuales cuando el proyecto incluye diseño y corregimos cualquier error durante los 30 días siguientes a la entrega. También te decimos con claridad si te conviene seguir en PrestaShop o migrar a Shopify.',
       },
       {
         question: '¿Trabajáis el SEO dentro de PrestaShop o hay que contratar otra agencia?',
         answer:
-          'Lo trabajamos nosotros, dentro de la propia tienda y con el mismo equipo que la lleva. Eso incluye las URL amigables, la URL canónica, los títulos y descripciones para buscadores, el `robots.txt` y la estructura de categorías.',
+          'Lo trabajamos nosotros, dentro de la propia tienda y con el mismo equipo que la lleva. Eso incluye las URL amigables, la URL canónica, los títulos y descripciones para buscadores, el robots.txt y la estructura de categorías.',
       },
       {
         question: '¿Podéis migrar mi tienda de PrestaShop a Shopify sin perder las URLs que ya posicionan?',

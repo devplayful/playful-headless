@@ -88,7 +88,7 @@ export function splitMarkdown(text: string): MarkdownPart[] {
 
 export function toInternalHref(href: string): string {
   if (href === 'https://api.playfulagency.com/widget/bookings/reunion-playful') {
-    return '/reunion-playful';
+    return '/reunion';
   }
   if (href.startsWith('https://playfulagency.com')) {
     return href.replace('https://playfulagency.com', '') || '/';

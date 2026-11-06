@@ -13,7 +13,6 @@ const SITEMAP_ORIGIN = 'https://playfulagency.com';
  * Re-add each path to SITEMAP_STATIC_PATHS when the page ships a 200.
  */
 export const SITEMAP_UNPUBLISHED_PATHS = [
-  '/agencia-prestashop',
   '/shopify-precios',
 ] as const;
 
@@ -27,6 +26,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/agencia-shopify",
   "/pasarela-de-pagos-venezuela",
   "/agencia-woocommerce",
+  "/agencia-prestashop",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",

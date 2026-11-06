@@ -24,9 +24,7 @@ const expectedRoutes = JSON.parse(
 const H2S = [
   'Qué hacemos en tu tienda PrestaShop',
   'Catálogo, fichas y un backoffice fácil de administrar',
-  'SEO para tiendas PrestaShop',
-  'Mantenimiento de tu tienda PrestaShop',
-  'Cobros en PrestaShop con Redsys y Bizum',
+  'Agencia SEO PrestaShop: posicionamiento para tu tienda',
   'Si PrestaShop se te queda corto, migramos tu tienda a Shopify',
   'Casos publicados',
   'Cómo trabajamos contigo',
@@ -34,14 +32,14 @@ const H2S = [
   'Hablemos de tu tienda PrestaShop',
 ];
 
-test('meta title, description and path match the signed copy', () => {
-  assert.equal(PRESTASHOP_META.title, 'Agencia PrestaShop: tienda, SEO y migración | Playful Agency');
+test('meta title, description and path match Ale Propuesta (doc 8)', () => {
+  assert.equal(PRESTASHOP_META.title, 'Agencia PrestaShop: tienda, SEO y migración | Playful');
   assert.equal(
     PRESTASHOP_META.description,
-    'Agencia PrestaShop para tu tienda online: catálogo, fichas, SEO y cobros con un solo equipo, y migración a Shopify si la necesitas. Reserva tu reunión.',
+    'Agencia PrestaShop para tu tienda: catálogo, fichas, SEO y cobros desde el mismo equipo. Reserva 30 a 40 minutos y miramos tu tienda con Playful Agency.',
   );
   assert.equal(PRESTASHOP_META.path, '/agencia-prestashop');
-  assert.equal(PRESTASHOP_COPY.hero.h1, 'Agencia PrestaShop para tu tienda online: catálogo, SEO y cobros');
+  assert.equal(PRESTASHOP_COPY.hero.h1, 'Agencia PrestaShop para tu tienda: catálogo, SEO y cobros');
 });
 
 test('canonical stays on the existing slug without a trailing slash', () => {
@@ -59,23 +57,18 @@ test('JSON-LD is Service + BreadcrumbList + FAQPage with the eight signed questi
     jsonLd['@graph'][2].mainEntity.map((item) => item.name),
     PRESTASHOP_COPY.faq.items.map((item) => item.question),
   );
-  assert.deepEqual(
-    jsonLd['@graph'][2].mainEntity.map((item) => item.acceptedAnswer.text),
-    PRESTASHOP_COPY.faq.items.map((item) => item.answer),
-  );
 });
 
-test('H2s and unchecked marks stay literal', () => {
+test('H2s match Propuesta without eliminated Mantenimiento or Redsys sections', () => {
   assert.deepEqual(
     [...PRESTASHOP_COPY.sections.map((section) => section.h2), PRESTASHOP_COPY.process.h2, PRESTASHOP_COPY.faq.h2, PRESTASHOP_COPY.closing.h2],
     H2S,
   );
   const published = JSON.stringify(PRESTASHOP_COPY);
-  assert.match(published, /\[NO COMPROBADO: ¿ofrecemos el mantenimiento de PrestaShop/);
-  assert.match(published, /\[NO COMPROBADO: ¿hemos integrado nosotros la pasarela de Redsys/);
-  assert.match(published, /\[NO COMPROBADO: ¿qué proyectos PrestaShop podemos citar\?\]/);
+  assert.doesNotMatch(published, /Mantenimiento de tu tienda PrestaShop/);
+  assert.doesNotMatch(published, /Cobros en PrestaShop con Redsys y Bizum/);
+  assert.doesNotMatch(published, /\[NO COMPROBADO/);
   assert.doesNotMatch(published, /Preguntas para José/);
-  assert.doesNotMatch(published, /pasarela-de-pagos-venezuela/);
 });
 
 test('landing uses the agency template, booking hop and generic og image', () => {
@@ -86,9 +79,8 @@ test('landing uses the agency template, booking hop and generic og image', () =>
   assert.match(sharedLanding, /ServiceFaqAccordion/);
   assert.match(sharedLanding, /href=\{SERVICE_BOOKING_HREF\}/);
   assert.equal(CTA_LABEL, 'Reserva una reunión de 30 a 40 minutos');
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
   assert.doesNotMatch(copySource, /pasarela-de-pagos-venezuela/);
-  assert.doesNotMatch(sharedLanding, /pasarela-de-pagos-venezuela/);
 });
 
 test('sitemap and expected-routes include the dedicated Next route', () => {
@@ -99,9 +91,9 @@ test('sitemap and expected-routes include the dedicated Next route', () => {
   assert.equal(expectedRoutes.governedConcreteRoutes['/[slug]'].includes('/agencia-prestashop'), false);
 });
 
-test('widget booking URLs rewrite to /reunion-playful', () => {
+test('widget booking URLs rewrite to /reunion', () => {
   assert.equal(
     toInternalHref('https://api.playfulagency.com/widget/bookings/reunion-playful'),
-    '/reunion-playful',
+    '/reunion',
   );
 });

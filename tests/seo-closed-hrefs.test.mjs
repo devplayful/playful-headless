@@ -213,10 +213,6 @@ test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', 
 
 test('does not invent dests outside the closed list', () => {
   assert.equal(
-    decideBrokenInternalHref('/agencia-prestashop', '/blog/tecnologia/crear-un-e-commerce').href,
-    '/agencia-prestashop',
-  );
-  assert.equal(
     decideBrokenInternalHref('/servicios/automatizacion-del-marketing', '/blog/seo/aprende-todo-sobre-el-seo').href,
     '/servicios/automatizacion-del-marketing',
   );

@@ -44,9 +44,7 @@ export const LANDING_CAROUSEL_SOURCE_SLUGS = Object.freeze([
 ]);
 
 /** Do not invent dests for unpublished landings. */
-export const SKIP_BROKEN_HREF_PATHS = Object.freeze([
-  '/agencia-prestashop',
-]);
+export const SKIP_BROKEN_HREF_PATHS: readonly string[] = [];
 
 const SKIP_SOURCE_SET = new Set(SKIP_REWRITE_SOURCE_SLUGS);
 const LANDING_SOURCE_SET = new Set(LANDING_CAROUSEL_SOURCE_SLUGS);
