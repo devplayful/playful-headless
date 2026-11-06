@@ -121,8 +121,8 @@ test('article cards on this page use Leer plus the real title', () => {
     new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
     'utf8',
   );
-  assert.match(landing, /linkLabel=\{\(title\) => `Leer: \$\{title\}`\}/);
-  assert.match(related, /linkLabel \? linkLabel\(post\.title\) : 'Leer más'/);
+  assert.match(landing, /linkLabel="article-title"/);
+  assert.match(related, /linkLabel === 'article-title' \? `Leer: \$\{post\.title\}` : 'Leer más'/);
 });
 
 test('intro links the first Shopify and WooCommerce mentions to direct 200 pages', () => {
