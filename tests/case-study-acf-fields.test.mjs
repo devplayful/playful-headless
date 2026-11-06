@@ -6,6 +6,7 @@ const {
   asRenderableHtml,
   headingsMatch,
   normalizeCaseStudyAcf,
+  omitOdwallaUnsignedResultClaims,
   stripTrailingResultBleed,
 } = await import('../utils/case-study-acf-fields.ts');
 
@@ -116,6 +117,30 @@ test('Odwalla drops the H1-as-H2, the repeated Shopify block and the SEO bleed i
   assert.equal(acf.resultado2, 'Posicionamiento SEO Consolidado');
   assert.match(acf.resultadop2, /tercer puesto de búsquedas clave/);
   assert.doesNotMatch(acf.resultadop1, /Posicionamiento SEO Consolidado/);
+});
+
+test('Odwalla drops unsigned conversion-rate and third-place SEO cards only', () => {
+  const normalized = normalizeCaseStudyAcf(odwallaAcf, odwallaTitle);
+  const acf = omitOdwallaUnsignedResultClaims('odwalla-shopify-dtc-ecommerce', normalized);
+  assert.equal(acf.resultado1, '');
+  assert.equal(acf.resultadop1, '');
+  assert.equal(acf.resultado2, '');
+  assert.equal(acf.resultadop2, '');
+  assert.equal(acf.resultado3, odwallaAcf.resultado3);
+  assert.equal(acf.resultadop3, odwallaAcf.resultadop3);
+  assert.equal(
+    acf.primerah3desarrollo,
+    'Estructura de Shopify Optimizada (Colecciones y Variantes)',
+  );
+  assert.equal(acf.tercerh3desarrollo, 'Optimización de Velocidad y SEO Técnico');
+  assert.equal(
+    omitOdwallaUnsignedResultClaims('jumex-shopify-dtc-ecommerce', jumexAcf).resultado1,
+    jumexAcf.resultado1,
+  );
+  assert.match(
+    page,
+    /omitOdwallaUnsignedResultClaims\(\s*slug,\s*normalizeCaseStudyAcf\(rawStory\.acf, rawStory\.title\?\.rendered\),?\s*\)/,
+  );
 });
 
 test('Jumex approved headings and results stay intact', () => {
