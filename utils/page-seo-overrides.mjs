@@ -15,7 +15,7 @@ export const PAGE_TITLE_OVERRIDES = {
   'pasarela-de-pago-ecommerce':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
   'agencia-diseno-web':
-    'Agencia de diseño web para tiendas online | Playful Agency',
+    'Agencia de diseño web para tiendas online | Playful',
 };
 
 export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {

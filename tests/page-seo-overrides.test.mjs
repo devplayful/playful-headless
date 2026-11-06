@@ -97,7 +97,7 @@ test('agencia-e-commerce no longer inherits the marketing-internacional title', 
   assert.equal(PAGE_TITLE_OVERRIDES['marketing-internacional'], undefined);
 });
 
-const DISENO_TITLE = 'Agencia de diseño web para tiendas online | Playful Agency';
+const DISENO_TITLE = 'Agencia de diseño web para tiendas online | Playful';
 const DISENO_DESCRIPTION =
   'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.';
 

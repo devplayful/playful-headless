@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { canonicalForPath } from '@/utils/canonical';
+import { applyPageTitleOverride, pageSocialMetadata } from '@/utils/page-seo-overrides.mjs';
+import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
 import TestimonialsSection from '@/components/TestimonialsSectionClient';
 import BlogRelatedPostsSection from '@/components/sections/BlogRelatedPostsSection';
 import { getLatestBlogPosts } from '@/services/wordpress';
@@ -22,16 +24,25 @@ import {
 } from './copy';
 
 const PAGE_URL = canonicalForPath(DISENO_META.path);
+const PAGE_TITLE = applyPageTitleOverride(
+  'agencia-diseno-web',
+  DISENO_META.title,
+  DISENO_META.title,
+).title;
+const OG_IMAGE_PATH = ogJpegForPath(DISENO_META.path);
+const OG_IMAGE_URL = `https://playfulagency.com${OG_IMAGE_PATH}`;
 
 export const metadata: Metadata = {
-  title: DISENO_META.title,
+  title: PAGE_TITLE,
   description: DISENO_META.description,
   alternates: { canonical: PAGE_URL },
-  openGraph: {
-    title: DISENO_META.title,
+  ...pageSocialMetadata({
+    title: PAGE_TITLE,
     description: DISENO_META.description,
     url: PAGE_URL,
-  },
+    images: [ogJpegMeta(OG_IMAGE_URL, PAGE_TITLE)],
+    type: 'website',
+  }),
 };
 
 function LinkedMarkdown({
@@ -101,7 +112,9 @@ export default async function AgenciaDisenoWebPage() {
               <h1 className="playful-h1 text-[36px] leading-[42px] md:text-[45px] md:leading-[52px] lg:text-[56px] lg:leading-[1.1]">
                 {HERO.h1}
               </h1>
-              <p className="playful-contenido-p">{HERO.body}</p>
+              <p className="playful-contenido-p">
+                <LinkedMarkdown text={HERO.body} />
+              </p>
               <TalkCta />
             </div>
           </div>
