@@ -21,7 +21,6 @@ export const dynamicParams = false;
 const SERVICE_SLUGS = [
   'agencia-seo',
   'agencia-sem',
-  'agencia-diseno-web',
   'agencia-e-commerce',
   'marketing-internacional',
   'agencia-ux-ui',

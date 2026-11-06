@@ -14,6 +14,8 @@ export const PAGE_TITLE_OVERRIDES = {
     'Pagos Online para E-commerce | Haz tu Integración con Playful Agency',
   'pasarela-de-pago-ecommerce':
     'Pasarela de Pago funcional para tu E-commerce | Playful Agency',
+  'agencia-diseno-web':
+    'Agencia de diseño web para tiendas online | Playful Agency',
 };
 
 export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {
@@ -25,6 +27,8 @@ export function applyPageTitleOverride(slug, yoastTitle, _yoastOgTitle) {
 export const PAGE_DESCRIPTION_OVERRIDES = {
   'agencia-e-commerce':
     'Agencia de ecommerce para marcas que venden directo al consumidor: ordenamos tienda online, posicionamiento y diseño para vender más. Agenda tu llamada.',
+  'agencia-diseno-web':
+    'Diseño de tienda online orientado a conversión para marcas que ya venden, tiendas físicas que pasan a online o proyectos desde cero. Agenda tu llamada.',
 };
 
 export function applyPageDescriptionOverride(slug, yoastDescription, _yoastOgDescription) {
