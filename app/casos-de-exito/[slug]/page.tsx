@@ -208,7 +208,7 @@ export default async function SuccessStoryPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="text-left md:pt-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#4A4453]">
-                {story.title.rendered}
+                {override?.h1 || story.title.rendered}
               </h1>
               <p
                 className="text-base sm:text-lg text-[#4A4453]"
