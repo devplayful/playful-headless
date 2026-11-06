@@ -54,6 +54,7 @@ test('middleware rewrites /blog queries without attributing the listing path', (
   assert.match(middleware, /pathname === '\/blog\/q'/);
   assert.match(middleware, /NextResponse\.rewrite\(target\)/);
   assert.match(middleware, /target\.pathname = '\/blog\/q'/);
+  assert.match(middleware, /listingParams\.delete\('cms'\)/);
   assert.doesNotMatch(middleware, /shouldCaptureAttributionPath\('\/blog'\)/);
   assert.match(middleware, /attachAttributionCookies\(request, NextResponse\.rewrite/);
 });

@@ -39,7 +39,12 @@
     "/politica-de-privacidad",
     "/robots.txt",
     "/sitemap.xml",
-    "/test-blog"
+    "/test-blog",
+    "/api/calificacion",
+    "/api/eshow",
+    "/eshow",
+    "/eshow/gracias",
+    "/reunion"
   ],
   "criticalRoutes": [
     "/",
@@ -60,7 +65,12 @@
     "/politica-de-privacidad",
     "/robots.txt",
     "/sitemap.xml",
-    "/test-blog"
+    "/test-blog",
+    "/api/calificacion",
+    "/api/eshow",
+    "/eshow",
+    "/eshow/gracias",
+    "/reunion"
   ],
   "nextRouting": {
     "redirects": [],

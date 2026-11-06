@@ -26,7 +26,11 @@ import {
 } from '@/lib/blog-cover-image';
 import { BLOG_POST_FEATURED_SIZES } from '@/lib/blog-image-sizes';
 import { ogJpegForBlogSlug, ogJpegMeta } from '@/lib/og-images';
-import { blogBodyForSlug } from '@/lib/blog-body-overrides';
+import {
+  blogBodyForSlug,
+  MIGRACION_SEO_ALT_BLOG_PATH,
+  MIGRACION_SEO_ALT_BLOG_SLUG,
+} from '@/lib/blog-body-overrides';
 import { getBlogFaqJsonLd } from '@/utils/service-faq-jsonld';
 import { rewriteBookingWidgetHrefs } from '@/utils/booking';
 import { rewriteInSitePageHrefs } from '@/services/rewrite-in-site-hrefs.mjs';
@@ -203,7 +207,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const editorial = resolveBlogEditorialUpdate(postSlug, editorialDates);
   const articleDates = resolveBlogArticleTimestamps(editorialDates);
   const articleAuthor = resolveBlogArticleAuthor(post, editorial);
-  const postCanonical = canonicalForPath(blogPostPath(post));
+  const postCanonical = blogPostCanonical(post, postSlug);
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
   const ogImagePath = applyBlobImagesToUrl(
     resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK),
@@ -639,6 +643,13 @@ const BLOG_SEO_OVERRIDES: Record<string, { title?: string; description: string; 
   },
 };
 
+function blogPostCanonical(post: WPPost, postSlug: string): string {
+  if (postSlug === MIGRACION_SEO_ALT_BLOG_SLUG) {
+    return canonicalForPath(MIGRACION_SEO_ALT_BLOG_PATH);
+  }
+  return canonicalForPath(blogPostPath(post));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
   const [, postSlug] = slug;
@@ -652,7 +663,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
-  const url = canonicalForPath(blogPostPath(post));
+  const url = blogPostCanonical(post, postSlug);
 
   const { title, description } = blogPostSeoCopy(post, postSlug);
   const coverOverride = blogCoverForSlug(postSlug);

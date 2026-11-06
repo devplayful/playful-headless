@@ -17,6 +17,8 @@ const loc = `${APEX}${path}`;
 test('migración-seo-alternativa has own canonical, no noindex, one sitemap loc', () => {
   assert.equal(canonicalForPath(path), loc);
   assert.match(blogPage, /canonicalForPath\(\s*blogPostPath\(post\),?\s*\)/);
+  assert.match(blogPage, /canonicalForPath\(MIGRACION_SEO_ALT_BLOG_PATH\)/);
+  assert.match(blogPage, /postSlug === MIGRACION_SEO_ALT_BLOG_SLUG/);
   assert.doesNotMatch(blogPage, /MIGRACION_SEO_PLAN_PATH/);
   assert.doesNotMatch(blogPage, /MIGRACION_SEO_ALT_BLOG_SLUG[\s\S]{0,80}robots/);
   assert.doesNotMatch(blogPage, /index:\s*false/);

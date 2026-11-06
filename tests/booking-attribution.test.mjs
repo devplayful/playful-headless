@@ -249,9 +249,11 @@ test('cookie fbclid fills the hop when the incoming URL omitted it', () => {
   assert.equal(new URL(incomingWins.location).searchParams.get('fbclid'), 'TEST123');
 });
 
-test('middleware no longer 302s /reunion-playful; the Next page handles GA then redirect', () => {
+test('middleware 308s /reunion-playful to /reunion and does not send it to the widget', () => {
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
-  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
+  const redirectAt = middleware.indexOf("if (path === '/reunion-playful')");
+  assert.ok(redirectAt > 0);
+  assert.match(middleware.slice(redirectAt, redirectAt + 500), /NextResponse\.redirect\(target, 308\)/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
 });

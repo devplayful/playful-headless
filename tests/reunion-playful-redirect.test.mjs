@@ -11,10 +11,16 @@ const { BOOKING_WIDGET_HREF } = await import('../utils/booking-attribution.ts');
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 const reunionPage = readFileSync(new URL('../app/(frontend)/reunion-playful/page.tsx', import.meta.url), 'utf8');
 
-test('/reunion-playful is a Next page, not a middleware 302 to GHL', () => {
+test('/reunion-playful is a 308 to /reunion before the cms preview rewrite', () => {
   assert.match(reunionPage, /ReunionPlayfulRedirect/);
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
-  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
+  const redirectAt = middleware.indexOf("if (path === '/reunion-playful')");
+  const cmsAt = middleware.indexOf("searchParams.get('cms') === '1'");
+  assert.ok(redirectAt > 0, 'middleware must 308 /reunion-playful');
+  assert.ok(cmsAt > redirectAt, '308 must run before the ?cms=1 rewrite');
+  const hop = middleware.slice(redirectAt, cmsAt);
+  assert.match(hop, /\/reunion\$\{request\.nextUrl\.search\}/);
+  assert.match(hop, /NextResponse\.redirect\(target, 308\)/);
 });
 
 test('reunionPlayfulWidgetDestination merges search onto the widget URL', () => {
