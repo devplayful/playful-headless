@@ -107,13 +107,13 @@ test('sitemap and route manifest treat the landing as its own source', () => {
   assert.ok(!expectedRoutes.governedConcreteRoutes['/[slug]'].includes('/agencia-diseno-web'));
 });
 
-test('intro links the first Shopify mention to the direct 200 page and leaves WooCommerce unlinked', () => {
+test('intro links the first Shopify and WooCommerce mentions to direct 200 pages', () => {
   assert.match(
     HERO.body,
-    /en \[Shopify\]\(https:\/\/playfulagency\.com\/agencia-shopify\) o WooCommerce\./,
+    /en \[Shopify\]\(https:\/\/playfulagency\.com\/agencia-shopify\) o \[WooCommerce\]\(https:\/\/playfulagency\.com\/agencia-e-commerce\)\./,
   );
   assert.equal((HERO.body.match(/\[Shopify\]/g) || []).length, 1);
-  assert.doesNotMatch(HERO.body, /\[WooCommerce\]/);
+  assert.equal((HERO.body.match(/\[WooCommerce\]/g) || []).length, 1);
   assert.match(landing, /<LinkedMarkdown text=\{HERO\.body\}/);
   assert.match(landing, /https:\/\/playfulagency\.com\$\{OG_IMAGE_PATH\}/);
   assert.match(landing, /applyPageTitleOverride\(\s*'agencia-diseno-web'/);

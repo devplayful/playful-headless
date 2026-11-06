@@ -7,7 +7,7 @@ export const DISENO_META = {
 
 export const HERO = {
   h1: 'Diseño de tienda online que convierte visitas en pedidos',
-  body: 'Tu tienda recibe visitas, pero el diseño no las convierte en pedidos. Diseñamos o rediseñamos la página de lista de productos (PLP), la página de detalle de producto (PDP) y el checkout para que cada clic acerque a tu cliente a la compra, en [Shopify](https://playfulagency.com/agencia-shopify) o WooCommerce.',
+  body: 'Tu tienda recibe visitas, pero el diseño no las convierte en pedidos. Diseñamos o rediseñamos la página de lista de productos (PLP), la página de detalle de producto (PDP) y el checkout para que cada clic acerque a tu cliente a la compra, en [Shopify](https://playfulagency.com/agencia-shopify) o [WooCommerce](https://playfulagency.com/agencia-e-commerce).',
   cta: 'Agenda tu llamada diagnóstica',
 } as const;
 
