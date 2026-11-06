@@ -5,6 +5,7 @@
     "/",
     "/[slug]",
     "/agencia-shopify",
+    "/pasarela-de-pagos-venezuela",
     "/api/blog-posts",
     "/api/contact",
     "/api/eshow",
@@ -45,6 +46,7 @@
   "criticalRoutes": [
     "/",
     "/agencia-shopify",
+    "/pasarela-de-pagos-venezuela",
     "/api/blog-posts",
     "/api/contact",
     "/api/eshow",

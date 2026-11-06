@@ -45,7 +45,6 @@ export const LANDING_CAROUSEL_SOURCE_SLUGS = Object.freeze([
 
 /** Do not invent dests for unpublished landings. */
 export const SKIP_BROKEN_HREF_PATHS = Object.freeze([
-  '/pasarela-de-pagos-venezuela',
   '/agencia-prestashop',
   '/agencia-woocommerce',
 ]);

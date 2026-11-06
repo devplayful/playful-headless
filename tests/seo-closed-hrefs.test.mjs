@@ -213,10 +213,6 @@ test('item 24 unwraps the H2 to /seo-internacional and keeps the heading text', 
 
 test('does not invent dests outside the closed list', () => {
   assert.equal(
-    decideBrokenInternalHref('/pasarela-de-pagos-venezuela', '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce').href,
-    '/pasarela-de-pagos-venezuela',
-  );
-  assert.equal(
     decideBrokenInternalHref('/agencia-prestashop', '/blog/tecnologia/crear-un-e-commerce').href,
     '/agencia-prestashop',
   );

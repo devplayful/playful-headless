@@ -15,7 +15,6 @@ test('unpublished landings stay out of the production sitemap until they 200', (
   assert.deepEqual([...SITEMAP_UNPUBLISHED_PATHS], [
     '/agencia-prestashop',
     '/agencia-woocommerce',
-    '/pasarela-de-pagos-venezuela',
     '/shopify-precios',
   ]);
 

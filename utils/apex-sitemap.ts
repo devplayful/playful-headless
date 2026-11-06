@@ -15,7 +15,6 @@ const SITEMAP_ORIGIN = 'https://playfulagency.com';
 export const SITEMAP_UNPUBLISHED_PATHS = [
   '/agencia-prestashop',
   '/agencia-woocommerce',
-  '/pasarela-de-pagos-venezuela',
   '/shopify-precios',
 ] as const;
 
@@ -27,6 +26,7 @@ export const SITEMAP_STATIC_PATHS = [
   "/contactar-agencia-de-marketing-digital",
   "/agencia-e-commerce",
   "/agencia-shopify",
+  "/pasarela-de-pagos-venezuela",
   "/agencia-seo",
   "/agencia-sem",
   "/agencia-diseno-web",
