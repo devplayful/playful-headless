@@ -107,6 +107,24 @@ test('sitemap and route manifest treat the landing as its own source', () => {
   assert.ok(!expectedRoutes.governedConcreteRoutes['/[slug]'].includes('/agencia-diseno-web'));
 });
 
+test('paragraph under the first H2 stays between 40 and 60 words', () => {
+  const words = AUDIENCE.paragraphs[0].trim().split(/\s+/);
+  assert.ok(words.length >= 40 && words.length <= 60, `word count ${words.length}`);
+  assert.match(AUDIENCE.paragraphs[0], /no todas las visitas terminan en pedido/);
+  assert.match(AUDIENCE.paragraphs[0], /duda en la ficha/);
+  assert.match(AUDIENCE.paragraphs[0], /intención de comprar/);
+  assert.match(AUDIENCE.paragraphs[0], /buen diseño puede convertir una parte en ventas/);
+});
+
+test('article cards on this page use Leer plus the real title', () => {
+  const related = readFileSync(
+    new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(landing, /linkLabel=\{\(title\) => `Leer: \$\{title\}`\}/);
+  assert.match(related, /linkLabel \? linkLabel\(post\.title\) : 'Leer más'/);
+});
+
 test('intro links the first Shopify and WooCommerce mentions to direct 200 pages', () => {
   assert.match(
     HERO.body,
