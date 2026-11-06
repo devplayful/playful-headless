@@ -10,6 +10,10 @@ const soytechnoBody = readFileSync(
   new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url),
   'utf8',
 );
+const caseStudyPage = readFileSync(
+  new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  'utf8',
+);
 
 test('Jumex and Odwalla no longer ship the PR #27 technical-scope rewrite', () => {
   assert.doesNotMatch(overrides, /JUMEX: implementación de ecommerce en Shopify/);
@@ -19,8 +23,13 @@ test('Jumex and Odwalla no longer ship the PR #27 technical-scope rewrite', () =
   assert.doesNotMatch(overrides, /testimonialnombre: ''/);
 });
 
-test('case SEO titles match the pre-PR #27 CASO_SEO_OVERRIDES (233ea6e)', () => {
-  assert.match(overrides, /Jumex Shopify DTC: canal propio para un catálogo grande/);
+test('Jumex preview title and H1; descriptions and Odwalla stay on the pre-PR #27 set', () => {
+  assert.match(overrides, /Jumex en Shopify: canal DTC y catálogo grande \/ Playful/);
+  assert.match(
+    overrides,
+    /h1: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande'/,
+  );
+  assert.match(caseStudyPage, /\{override\?\.h1 \|\| story\.title\.rendered\}/);
   assert.match(
     overrides,
     /Construimos el canal DTC de Jumex en Shopify\. Catálogo grande y pedido propio en jumexus\.com/,

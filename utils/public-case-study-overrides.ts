@@ -8,11 +8,16 @@ type CaseStudyRecord = {
 /**
  * Document title/description that was live before PR #27
  * (commit 233ea6e, still present on parent of merge a108e17).
+ * Jumex is the exception: preview title and H1 only; its description stays.
  * Body, results and testimonials come from WordPress again.
  */
-const PUBLIC_CASE_STUDY_SEO: Record<string, { title: string; description: string }> = {
+const PUBLIC_CASE_STUDY_SEO: Record<
+  string,
+  { title: string; description: string; h1?: string }
+> = {
   'jumex-shopify-dtc-ecommerce': {
-    title: 'Jumex Shopify DTC: canal propio para un catálogo grande',
+    title: 'Jumex en Shopify: canal DTC y catálogo grande / Playful',
+    h1: 'Jumex en Shopify: cómo construimos el canal DTC para un catálogo grande',
     description:
       'Construimos el canal DTC de Jumex en Shopify. Catálogo grande y pedido propio en jumexus.com, para que la venta no se quede en el marketplace.',
   },
