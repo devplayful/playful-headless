@@ -22,10 +22,12 @@ export default function BlogRelatedPostsSection({
   posts: initialPosts,
   excludeSlug,
   excludeId,
+  linkLabel,
 }: {
   posts?: BlogPost[];
   excludeSlug?: string;
   excludeId?: number | string;
+  linkLabel?: 'article-title';
 } = {}) {
   const hasServerPosts = initialPosts !== undefined;
   const [posts, setPosts] = useState<BlogPost[]>(() =>
@@ -120,7 +122,7 @@ export default function BlogRelatedPostsSection({
                 <div className="mt-auto flex justify-between items-center">
                   <span className="text-xs text-gray-500">{post.date?.replace(/\//g, ' / ')}</span>
                   <Link href={post.href} className="bg-[#440099] hover:bg-[#330077] text-white font-semibold rounded-full px-4 py-2 text-sm transition-colors">
-                    Leer más
+                    {linkLabel === 'article-title' ? `Leer: ${post.title}` : 'Leer más'}
                   </Link>
                 </div>
               </div>

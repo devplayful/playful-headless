@@ -4,6 +4,7 @@ import ElementorPageScripts from './ElementorPageScripts';
 import { rewriteAgenciaDisenoUxUiLink } from '@/utils/agencia-diseno-ux-ui-link';
 import { rewriteElementorBodyHrefs } from '@/utils/booking';
 import { rewriteEcommerceSoytechnoCaseLink } from '@/utils/ecommerce-soytechno-case-link';
+import { rewriteEcommerceDisenoWebLink } from '@/utils/ecommerce-diseno-web-link';
 import { rewriteEcommerceShopifyLink } from '@/utils/ecommerce-shopify-link';
 import { rewriteEcommerceZelleCover } from '@/utils/ecommerce-zelle-cover';
 import { applyImageAltOverrides } from '@/lib/image-alt-overrides';
@@ -168,8 +169,11 @@ export default function ElementorPageContent({
       rewriteElementorBodyHrefs(
         rewriteEcommerceZelleCover(
           rewriteEcommerceSoytechnoCaseLink(
-            rewriteEcommerceShopifyLink(
-              rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+            rewriteEcommerceDisenoWebLink(
+              rewriteEcommerceShopifyLink(
+                rewriteAgenciaDisenoUxUiLink(restoreOldBodyCopy(html), slug),
+                slug,
+              ),
               slug,
             ),
             slug,
