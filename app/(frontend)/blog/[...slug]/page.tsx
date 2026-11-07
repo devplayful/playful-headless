@@ -75,6 +75,7 @@ import {
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
+import { rewritePostBodyImagesForPreview } from '@/lib/post-body-blob-images';
 import articleBodyStyles from '../article-body.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
 
@@ -192,8 +193,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     linkFirstUnlinkedServiceMention($, serviceCta);
   }
 
-  // Actualizar el contenido con los IDs agregados
-  const contentWithIds = $.html();
+  // Actualizar el contenido con los IDs agregados.
+  // En preview, src/srcset del cuerpo pasan al Blob si el mapa H2 tiene la copia.
+  const contentWithIds = rewritePostBodyImagesForPreview($.html());
   const pageH1 = BLOG_SEO_OVERRIDES[postSlug]?.h1 ?? post.title.rendered;
   const editorialDates = {
     published: post.date,

@@ -1,0 +1,838 @@
+{
+  "medido": "2026-11-07",
+  "fuente": "REST público de endpoint.playfulagency.com (mismo origen que cms:import): content.rendered de 135 posts",
+  "mapa": "docs/blob-migration-map.json",
+  "criterioSrc": "src de <img> en endpoint.playfulagency.com o i0.wp.com/crear.endpoint",
+  "antes": {
+    "src": 786,
+    "conEquivalenteBlob": 516,
+    "sinEquivalente": 270
+  },
+  "despues": {
+    "srcLegacy": 270,
+    "reescritos": 516
+  },
+  "srcset": {
+    "candidatosLegacy": 1512,
+    "reescritos": 1512,
+    "sinEquivalente": 0
+  },
+  "sinEquivalente": [
+    {
+      "src": "https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif",
+      "ocurrencias": 270
+    }
+  ],
+  "posts": [
+    {
+      "path": "/blog/email-marketing/5-plataformas-para-email-marketing-efectivo",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/aprende-como-hacer-un-estrategia-digital-de-email-marketing",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/como-aprovechar-el-email-marketing-y-las-redes-sociales",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/como-captar-clientes-potenciales",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/como-crear-una-base-de-datos-de-email-marketing",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/como-hacer-un-email-marketing-eficaz-durante-la-pandemia",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/email-marketing-beneficio-que-te-generara-ingresos",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/email-marketing-efectivo-que-todas-las-empresas-deben-usar",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/email-marketing-una-herramienta-que-no-puedes-dejar-de-usar-en-tu-empresa",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/estrategia-de-email-marketing",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/haz-email-marketing-como-todo-un-experto-ejemplos",
+      "src": 10,
+      "reescritos": 8,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/email-marketing/seguir-los-reglamentos-te-hara-evitar-una-penalizacion",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/como-hacer-publicidad-en-instagram-en-el-2023",
+      "src": 11,
+      "reescritos": 9,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/cual-es-la-mejor-hora-para-publicar-en-tiktok",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/diseno-web-de-paginas-web",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/ecosistema-digital-de-tu-marca",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/los-5-problemas-de-e-commerce",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/marketing-deportivo-qatar-2022",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/messi-y-el-marketing-hablemos-sobre-su-marca-personal",
+      "src": 11,
+      "reescritos": 9,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/que-es-una-agencia-de-sem",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/quiero-ver-mi-negocio-en-google-maps",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/rediseno-web",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/shakira-y-pique-un-buen-ejemplo-del-marketing-emocional",
+      "src": 10,
+      "reescritos": 8,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/todo-lo-que-debes-saber-para-ganar-dinero-con-tiktok",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/mas-vistos/wireframe-conoce-ejemplos-tipos-y-herramientas-para-implementarlo",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/como-posicionar-tu-negocio-en-google-ads",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/conoce-todo-sobre-instagram-ads",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/debes-usar-el-lenguaje-inclusivo-en-redes-sociales",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/descubre-por-que-debes-usar-whatsapp-business-en-tu-negocio",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/el-gran-e-importante-big-data",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/es-tiktok-el-nuevo-google",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/estrategia-para-el-dia-de-las-madres",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/ibai-llanos-por-que-es-tendencia-y-que-tiene-que-ver-con-el-futbol",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/impulsa-tu-negocio-con-una-escalera-de-valor",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/lgbtq-siglas-con-historia-significado-y-marketing-de-inclusion",
+      "src": 11,
+      "reescritos": 9,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/marketing-de-guerrilla-te-atreves-a-intentarlo",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/marketing-para-medicos-como-ganar-mientras-ayudas",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/mes-del-orgullo-gay-por-que-se-celebra",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/metaverso-que-es",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/por-que-debes-hacer-publicidad-digital-en-tu-negocio",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/premios-cima-2026-soytechno-playful",
+      "src": 2,
+      "reescritos": 0,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/tiktok-live-studio-la-forma-mas-facil-de-realizar-tu-directo",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/una-herramienta-para-ganar-autoridad",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/otros/ya-sabes-cuando-se-celebra-el-dia-mundial-del-emoji",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/5-ventajas-para-obtener-clientes-con-facebook-ads",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/actualizaciones-de-instagram",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/analitica-web-que-es-como-puede-ayudar-a-mi-marca",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/anuncios-en-linkedin",
+      "src": 11,
+      "reescritos": 9,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/como-crear-anuncios-en-facebook",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/como-crear-anuncios-en-instagram",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/como-ser-tendencia",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/como-usar-el-remarketing-para-tener-mas-clientes",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/como-usar-instagram-para-expandir-tu-negocio",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/conoce-como-impulsar-tu-marca-online",
+      "src": 10,
+      "reescritos": 8,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/conoce-el-marketing-digital-del-2020",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/conoce-los-tipos-de-marketing",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/conoce-todo-sobre-la-publicidad-en-redes-sociales",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/consejos-para-que-hagas-pautas-en-tus-post-de-instagram",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/convierte-en-el-experto-de-los-webinar",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/criptomonedas-las-utilizarias-como-metodo-de-pago",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/descubre-todo-lo-que-el-posicionamiento-sem-tiene-para-ti",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/el-pixel-de-facebook-y-como-te-ayuda-con-tus-campanas",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/el-sms-marketing",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/errores-que-pueden-perjudicar-a-tu-marca-al-generar-anuncios-en-facebook",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/estrategias-de-marketing-digital-para-el-2022",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/google-grants-descubre-que-es-y-como-funciona",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/guia-para-hacer-marketing-digital",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/la-nueva-gestion-de-google-ads",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/linkedin-ads-aumenta-el-alcance-de-tu-negocio",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/live-stream-shopping-compra-mientras-interactuas",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/pasos-para-aumentar-clientes-en-tu-negocio",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/por-que-incluir-la-transformacion-digital-en-mi-negocio",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/porque-tener-un-perfil-empresarial-en-linkedin",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/publicidad-digital-en-tu-negocio",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/publicidad-navidena",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/que-son-los-buyer-persona-y-como-se-determinan",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/storytelling-en-el-marketing-digital",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/tiktok-ads-ahora-puedes-hacer-publicidad-en-tiktok",
+      "src": 10,
+      "reescritos": 8,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/tipos-de-publicidad-online",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/tipos-de-publicidad-online-conceptos-y-datos-curiosos",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/twitter-ads",
+      "src": 10,
+      "reescritos": 8,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/pautas-digitales/whatsapp-business",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/6-herramientas-para-crear-informes-seo",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/7-consejos-seo-para-posicionar-tu-pagina",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/aplicaciones-de-la-inteligencia-artificial",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/aprende-todo-sobre-el-seo",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/auditoria-seo-que-es-como-se-hace",
+      "src": 12,
+      "reescritos": 10,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/black-hat-seo",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/blog-corporativo-aumenta-el-trafico-de-tu-sitio-web",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/busqueda-por-voz-que-es-y-como-afecta-al-seo",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/chat-gpt-puede-mejorar-el-seo-de-una-pagina-web",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/como-elegir-tus-palabras-claves",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/como-hacer-posicionamiento-web-en-buscadores",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/como-verificar-la-veracidad-del-contenido-creado-con-herramientas-de-inteligencia-artificial",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/conoce-los-tipos-de-enlaces-seo",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/consejos-para-la-optimizacion-web",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/contenido-duplicado",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/desarrollo-ui-ux",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/diseno-web-y-posicionamiento-seo",
+      "src": 12,
+      "reescritos": 10,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/ejemplos-de-marketing-de-contenido",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/google-y-su-inteligencia-artificial",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/hacks-seo-local",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/marketing-social-la-estrategia-ganadora-de-las-ong",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/metadescripcion-que-es",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/optimizacion-multimedia",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/posicionamiento-organico-vs-pago",
+      "src": 3,
+      "reescritos": 1,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/que-es-data-studio-de-google-y-como-funciona",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/que-es-la-intencion-de-busqueda-y-cuales-son-sus-beneficios",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/que-es-un-blog",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/rich-snippet-ayuda-a-optimizar-tu-web",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/seo-y-sem-que-son-y-en-que-se-diferencian",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/tendencias-seo-2020",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/todo-sobre-el-seo",
+      "src": 9,
+      "reescritos": 7,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/seo/web-app-y-app-nativa-cual-es-la-mejor-opcion",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/actualizar-tu-e-commerce",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/chatbot-inteligencia-artificial-personalizada-para-tu-activo-digital",
+      "src": 6,
+      "reescritos": 4,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/cintillos-de-promocion",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/como-crear-un-chatbot-para-tu-empresa-en-5-minutos",
+      "src": 8,
+      "reescritos": 6,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/crear-un-e-commerce",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/desarrollo-de-aplicaciones-web",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/ecommerce-mi-negocio-online",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/google-ads-grants-con-un-blog-digital",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/lenguajes-de-programacion-para-que-sirve-y-cuales-son-los-mas-usados",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/programacion-web-que-es-como-puede-servirle-a-mi-marca",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/que-es-wix",
+      "src": 5,
+      "reescritos": 3,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/que-es-wordpress-por-que-tengo-que-usarlo",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/tendencias-en-diseno-web-para-el-2022",
+      "src": 4,
+      "reescritos": 2,
+      "sinEquivalente": 2
+    },
+    {
+      "path": "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce",
+      "src": 7,
+      "reescritos": 5,
+      "sinEquivalente": 2
+    }
+  ]
+}
