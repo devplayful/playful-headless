@@ -11,6 +11,7 @@ import { writeFileSync } from 'node:fs';
 import { getPayload, type Payload } from 'payload';
 import config from '../payload.config.ts';
 import { CASO_ACF_IMAGE_FIELDS } from '../cms/collections/casos-acf-fields.ts';
+import { rewritePostBodyHtml } from '../lib/post-body-blob-images.ts';
 
 const WP = (process.env.WP_REST_URL || 'https://endpoint.playfulagency.com/wp-json').replace(/\/$/, '');
 const UA = 'PlayfulQA/1.0';
@@ -183,7 +184,7 @@ async function main() {
   const media = (id?: number) => (id && ids.medios.get(id)) || null;
 
   for (const p of posts) {
-    const html = p.content?.rendered || '';
+    const html = rewritePostBodyHtml(p.content?.rendered || '');
     const catIds = (p.categories || []).map((c: number) => ids.categorias.get(c)).filter(Boolean);
     for (const k of Object.keys(p.acf || {})) if (k !== 'articulos_relacionados') noteUnmapped('posts', `acf.${k}`);
     if ((p.tags || []).length) noteUnmapped('posts', 'tags');

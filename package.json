@@ -36,6 +36,7 @@
     "payload": "payload --disable-transpile",
     "cms:importmap": "payload generate:importmap --disable-transpile",
     "cms:types": "payload generate:types --disable-transpile",
+    "test:post-body-blob": "node --experimental-strip-types --test tests/post-body-blob-images.test.mjs",
     "cms:import": "node scripts/import-wp.ts",
     "cms:seed-casos": "node scripts/seed-casos.ts"
   },
