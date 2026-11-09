@@ -2,6 +2,19 @@
   "medido": "2026-11-07",
   "fuente": "REST público de endpoint.playfulagency.com (mismo origen que cms:import): content.rendered de 135 posts",
   "mapa": "docs/blob-migration-map.json",
+  "portadaRelacionadosOg": {
+    "medido": "2026-11-09",
+    "fuente": "REST público de posts publicados, la misma resolución de portada y OG que /blog, y selectRelatedFromIndex para las tarjetas",
+    "postsAbiertos": 106,
+    "portada": { "posts": 73, "urls": 73 },
+    "relacionados": { "tarjetas": 442, "urls": 73 },
+    "og": {
+      "posts": 1,
+      "urls": 1,
+      "slugs": ["premios-cima-2026-soytechno-playful"]
+    },
+    "sinEquivalente": []
+  },
   "criterioSrc": "src de <img> en endpoint.playfulagency.com o i0.wp.com/crear.endpoint",
   "antes": {
     "src": 786,

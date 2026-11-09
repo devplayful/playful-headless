@@ -6,6 +6,7 @@ const {
   blobUrlForBodyImage,
   countLegacyPostBodyImageSrcs,
   isLegacyPostBodyImageSrc,
+  rewriteBlogMediaUrlForPreview,
   rewritePostBodyHtml,
   rewritePostBodyImagesForPreview,
   shouldRewritePostBodyImages,
@@ -95,4 +96,45 @@ test('el import y el render del post usan la reescritura del cuerpo', () => {
   assert.match(page, /blogBodyForSlug\(postSlug\) \|\| post\.content\?\.rendered/);
   assert.match(page, /rewritePostBodyImagesForPreview\(\$\.html\(\)\)/);
   assert.match(page, /dangerouslySetInnerHTML=\{\{ __html: contentWithIds \}\}/);
+});
+
+test('portada, relacionados y OG usan el mapa solo en preview', () => {
+  const tapa = Object.keys(map).find((key) => key.includes('importancia-TAPA.png'));
+  const intencion = Object.keys(map).find((key) => key.includes('TAPA_') && key.includes('intencion-de-busqueda') && !/-\d+x\d+\./.test(key));
+  const agencia = Object.keys(map).find((key) => key.includes('Agencia-SEO-Internacional') && key.includes('@2x.png') && !/-\d+x\d+\./.test(key));
+  assert.ok(tapa && intencion && agencia);
+  for (const src of [tapa, intencion, agencia]) {
+    const blob = rewriteBlogMediaUrlForPreview(src, { VERCEL_ENV: 'preview' });
+    assert.match(blob, /^https:\/\/xl21culwxno499zc\.public\.blob\.vercel-storage\.com\/media\//);
+    assert.notEqual(blob, src);
+    assert.equal(rewriteBlogMediaUrlForPreview(src, { VERCEL_ENV: 'production' }), src);
+    assert.equal(rewriteBlogMediaUrlForPreview(blob, { VERCEL_ENV: 'preview' }), blob);
+  }
+  const localCover = '/images/blog/auditoria-seo-magnific.png';
+  const localOg = '/images/og/blog-seo-diseno-web-y-posicionamiento-seo.jpg';
+  assert.equal(rewriteBlogMediaUrlForPreview(localCover, { VERCEL_ENV: 'preview' }), localCover);
+  assert.equal(rewriteBlogMediaUrlForPreview(localOg, { VERCEL_ENV: 'preview' }), localOg);
+  const pixel = 'https://endpoint.playfulagency.com/wp-content/plugins/wti-like-post/images/pixel.gif';
+  assert.equal(rewriteBlogMediaUrlForPreview(pixel, { VERCEL_ENV: 'preview' }), pixel);
+  const unmapped = 'https://endpoint.playfulagency.com/wp-content/uploads/2099/01/no-esta-en-el-mapa.png';
+  assert.equal(rewriteBlogMediaUrlForPreview(unmapped, { VERCEL_ENV: 'preview' }), unmapped);
+});
+
+test('la ruta /blog reescribe portada, relacionados y OG; Home no', () => {
+  const page = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  const listing = readFileSync(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
+  const shopify = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+  const nextConfig = readFileSync(new URL('../next.config.js', import.meta.url), 'utf8');
+  assert.match(page, /coverSrc = rewriteBlogMediaUrlForPreview\(post\.featured_media_url\)/);
+  assert.match(page, /imageUrl: rewriteBlogMediaUrlForPreview\(card\.imageUrl\)/);
+  assert.match(page, /rewriteBlogMediaUrlForPreview\(\s*resolveBlogOgUrl\(/);
+  assert.match(page, /jpeg \|\| ogOverride \|\| coverOverride \|\| post\.featured_media_url/);
+  assert.match(page, /src=\{coverSrc\}/);
+  assert.match(page, /posts=\{relatedPosts\}/);
+  assert.match(listing, /rewriteBlogMediaUrlForPreview\(post\.featured_media_url\)/);
+  assert.doesNotMatch(home, /rewriteBlogMediaUrlForPreview/);
+  assert.doesNotMatch(shopify, /rewriteBlogMediaUrlForPreview/);
+  assert.match(nextConfig, /xl21culwxno499zc\.public\.blob\.vercel-storage\.com/);
+  assert.match(nextConfig, /pathname: '\/media\/\*\*'/);
 });

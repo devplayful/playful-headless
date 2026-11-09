@@ -85,6 +85,19 @@ export function rewritePostBodyImagesForPreview(
   return rewritePostBodyHtml(html);
 }
 
+/**
+ * Portada, tarjeta relacionada e imagen OG. Misma puerta que el cuerpo y el
+ * mismo mapa. Una ruta local o una URL sin equivalente se devuelve igual.
+ */
+export function rewriteBlogMediaUrlForPreview(
+  url: string | null | undefined,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  if (!url) return url || '';
+  if (!shouldRewritePostBodyImages(env)) return url;
+  return blobUrlForBodyImage(url, loadBlobMigrationMap()) || url;
+}
+
 export function isLegacyPostBodyImageSrc(src: string): boolean {
   const trimmed = decodeAttrUrl(src).trim();
   if (!trimmed) return false;

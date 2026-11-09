@@ -75,7 +75,10 @@ import {
   localBlogStaticParams,
 } from '@/lib/blog-local-posts';
 import { optimizeBlogInlineMedia } from '@/lib/blog-inline-media';
-import { rewritePostBodyImagesForPreview } from '@/lib/post-body-blob-images';
+import {
+  rewriteBlogMediaUrlForPreview,
+  rewritePostBodyImagesForPreview,
+} from '@/lib/post-body-blob-images';
 import articleBodyStyles from '../article-body.module.css';
 import eshowArticleStyles from '../eshow-article.module.css';
 
@@ -136,7 +139,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const relatedPosts = excludeCurrentBlogPost(
+  let relatedPosts = excludeCurrentBlogPost(
     await getRelatedBlogPostsForPost(post, {
       categorySlug: category,
     }),
@@ -148,6 +151,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (relatedPosts.length === 0 && emptyRelatedBehavior() === 'throw') {
     throw new RelatedIndexUnavailableError();
   }
+  relatedPosts = relatedPosts.map((card) => ({
+    ...card,
+    imageUrl: rewriteBlogMediaUrlForPreview(card.imageUrl),
+  }));
 
   const postCategory = getPrimaryCategorySlug(post);
 
@@ -210,8 +217,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     postSlug === MIGRACION_SEO_ALT_BLOG_SLUG ? MIGRACION_SEO_PLAN_PATH : blogPostPath(post),
   );
   const { description: metaDescription } = blogPostSeoCopy(post, postSlug);
-  const ogImagePath =
-    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK);
+  const ogImagePath = rewriteBlogMediaUrlForPreview(
+    resolveBlogOgUrl(postSlug, post.featured_media_url || BLOG_COVER_FALLBACK),
+  );
+  const coverSrc = rewriteBlogMediaUrlForPreview(post.featured_media_url);
   const isEshow = postSlug === ESHOW_MADRID_2026_SLUG;
   const jsonLdExtras = blogArticleJsonLdExtras(postSlug);
   const articleJsonLd = buildBlogArticleJsonLd({
@@ -334,7 +343,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {/* Columna derecha: Imagen destacada */}
-            {post.featured_media_url && (
+            {coverSrc && (
               <div
                 className={
                   isEshow
@@ -344,7 +353,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 {isEshow ? (
                   <Image
-                    src={post.featured_media_url}
+                    src={coverSrc}
                     alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
                     width={ESHOW_MADRID_2026_FAN_IMAGE_WIDTH}
                     height={ESHOW_MADRID_2026_FAN_IMAGE_HEIGHT}
@@ -355,7 +364,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   />
                 ) : (
                   <Image
-                    src={post.featured_media_url}
+                    src={coverSrc}
                     alt={resolveBlogCoverAlt(post.slug, post.featured_media_alt || post.title.rendered)}
                     fill
                     className="object-contain object-center p-4"
@@ -662,8 +671,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const coverOverride = blogCoverForSlug(postSlug);
   const ogOverride = blogOgForSlug(postSlug);
   const jpeg = ogJpegForBlogSlug(postSlug);
-  const imageUrl =
-    jpeg || ogOverride || coverOverride || post.featured_media_url || BLOG_COVER_FALLBACK;
+  const imageUrl = rewriteBlogMediaUrlForPreview(
+    jpeg || ogOverride || coverOverride || post.featured_media_url || BLOG_COVER_FALLBACK,
+  );
   const imageSize = jpeg || ogOverride || !coverOverride
     ? BLOG_OG_SIZE
     : { width: 2560, height: 1440 };

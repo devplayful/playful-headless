@@ -14,6 +14,7 @@ import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_LISTING_CARD_SIZES, BLOG_LISTING_HERO_SIZES } from '@/lib/blog-image-sizes';
 import { resolveBlogCoverAlt } from '@/lib/blog-cover-image';
 import { BLOG_LISTING_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
+import { rewriteBlogMediaUrlForPreview } from '@/lib/post-body-blob-images';
 
 export default async function BlogListingView({
   currentPage,
@@ -39,6 +40,11 @@ export default async function BlogListingView({
       return title.includes(query) || excerpt.includes(query);
     });
   }
+
+  posts = posts.map((post) => ({
+    ...post,
+    featured_media_url: rewriteBlogMediaUrlForPreview(post.featured_media_url),
+  }));
 
   return (
     <div className="min-h-screen">
