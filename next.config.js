@@ -39,6 +39,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'xl21culwxno499zc.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/media/**',
+      },
     ],
     // Opcional: Configura tamaños de imagen para diferentes breakpoints
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
