@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
+import { shouldRewriteBlogListingToQueryPath } from './utils/blog-listing-query';
 import { blogLegacyListingRedirectDecision } from './utils/blog-legacy-listing-redirects';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
@@ -127,7 +128,7 @@ type ResolvedRedirect = {
  * AMP junk params) internally so the client always gets ONE 301 to the
  * final canonical URL: no slash → 308 → 301 chains.
  */
-function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
+export function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
   let pathname = startPath;
   // WP-era links like `?amp/` carry the slash inside the query key.
   const cleanParams = new URLSearchParams();
@@ -320,9 +321,7 @@ export function middleware(request: NextRequest) {
   // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
   // so pagination, category and search keep working without dynamizing /blog.
   // Preview flag `cms=1` alone must not send the listing to /blog/q (SEO/breadcrumb).
-  const blogListingParams = new URLSearchParams(request.nextUrl.searchParams);
-  blogListingParams.delete('cms');
-  if (path === '/blog' && blogListingParams.toString()) {
+  if (path === '/blog' && shouldRewriteBlogListingToQueryPath(request.nextUrl.searchParams)) {
     const target = request.nextUrl.clone();
     target.pathname = '/blog/q';
     return attachAttributionCookies(request, NextResponse.rewrite(target));

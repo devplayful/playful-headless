@@ -116,7 +116,8 @@ test('clean /blog generateMetadata title and robots stay unchanged', () => {
     metadataFn,
     /description:\s*'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog\.'/,
   );
-  assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
+  assert.match(metadataFn, /stripCmsFromBlogListingSearchParams\(searchParams\)/);
+  assert.match(metadataFn, /shouldNoindexBlogListing\(listingParams\)/);
   assert.match(metadataFn, /blogListingCanonicalUrl\(/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.match(listingIndex, /buildBlogListingMetadata\(\)/);

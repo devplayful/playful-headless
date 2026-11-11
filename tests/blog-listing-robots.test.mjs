@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const { shouldNoindexBlogListing } = await import('../utils/blog-listing-robots.ts');
+const {
+  buildBlogListingMetadata,
+  shouldRewriteBlogListingToQueryPath,
+} = await import('../utils/blog-listing-query.ts');
 
 const listingPage = readFileSync(
   new URL('../app/(frontend)/blog/page.tsx', import.meta.url),
@@ -52,15 +56,48 @@ test('invalid or negative page values still count as a query', () => {
   assert.equal(shouldNoindexBlogListing({ page: 'abc' }), true);
 });
 
-test('/blog?cms=1 does not rewrite to /blog/q (preview CMS flag only)', () => {
-  assert.match(middleware, /blogListingParams\.delete\('cms'\)/);
-  assert.match(middleware, /path === '\/blog' && blogListingParams\.toString\(\)/);
+test('?cms=1 alone does not trigger blog listing rewrite (middleware helper)', () => {
+  assert.match(middleware, /shouldRewriteBlogListingToQueryPath/);
+  assert.equal(
+    shouldRewriteBlogListingToQueryPath(new URLSearchParams('cms=1')),
+    false,
+  );
+  assert.equal(
+    shouldRewriteBlogListingToQueryPath(new URLSearchParams('page=2&cms=1')),
+    true,
+  );
+  assert.equal(
+    shouldRewriteBlogListingToQueryPath(new URLSearchParams('category=seo&cms=1')),
+    true,
+  );
+});
+
+test('/blog?cms=1 matches prod SEO: indexable + no robots noindex', () => {
+  assert.equal(shouldNoindexBlogListing({ cms: '1' }), false);
+  const meta = buildBlogListingMetadata({ cms: '1' });
+  assert.equal(meta.robots, undefined);
+  assert.equal(meta.alternates.canonical, 'https://playfulagency.com/blog');
+});
+
+test('/blog listing queries with cms=1 match prod robots', () => {
+  assert.equal(shouldNoindexBlogListing({ page: '2', cms: '1' }), true);
+  assert.equal(shouldNoindexBlogListing({ category: 'seo', cms: '1' }), true);
+  assert.equal(buildBlogListingMetadata({ page: '2', cms: '1' }).robots?.index, false);
+});
+
+test('clean /blog listing page keeps BreadcrumbList JSON-LD (not /blog/q)', () => {
+  assert.match(listingPage, /buildBlogListingBreadcrumbJsonLd/);
+  assert.doesNotMatch(
+    readFileSync(new URL('../app/(frontend)/blog/q/page.tsx', import.meta.url), 'utf8'),
+    /buildBlogListingBreadcrumbJsonLd/,
+  );
 });
 
 test('listing generateMetadata noindexes any query and keeps /blog canonical', () => {
   assert.match(listingQuery, /shouldNoindexBlogListing/);
   assert.match(queryPage, /buildBlogListingMetadata\(await searchParams\)/);
-  assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
+  assert.match(metadataFn, /stripCmsFromBlogListingSearchParams\(searchParams\)/);
+  assert.match(metadataFn, /shouldNoindexBlogListing\(listingParams\)/);
   assert.match(metadataFn, /blogListingCanonicalUrl\(/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.doesNotMatch(metadataFn, /parsedPage\s*>=\s*2/);

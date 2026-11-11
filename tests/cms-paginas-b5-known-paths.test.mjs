@@ -8,23 +8,30 @@ const expectedRoutes = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );
 
+function isGovernedPublicRoute(route) {
+  if (route.startsWith('/cms-')) return false;
+  if (/\.(ico|png|svg|vcf|webmanifest)$/i.test(route)) return false;
+  if (route === '/llms.txt' || route === '/llms-full.txt') return false;
+  return true;
+}
+
 /** Rutas públicas del manifest que no deben caer en B5 404 con ?cms=1 (ni en prod con B5). */
 function publicRoutesFromExpectedRoutesManifest() {
   const routes = new Set();
 
   for (const route of expectedRoutes.criticalRoutes ?? []) {
-    routes.add(route);
+    if (isGovernedPublicRoute(route)) routes.add(route);
   }
 
   for (const concrete of Object.values(expectedRoutes.governedConcreteRoutes ?? {})) {
     for (const route of concrete) {
-      routes.add(route);
+      if (isGovernedPublicRoute(route)) routes.add(route);
     }
   }
 
   for (const route of expectedRoutes.sourceRoutes ?? []) {
     if (route.includes('[') || route.includes('(')) continue;
-    if (route.startsWith('/cms-')) continue;
+    if (!isGovernedPublicRoute(route)) continue;
     routes.add(route);
   }
 

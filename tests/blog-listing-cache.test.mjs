@@ -53,6 +53,7 @@ test('parseBlogListingSearchParams keeps page, category and search', () => {
 test('middleware rewrites /blog queries without attributing the listing path', () => {
   assert.match(middleware, /pathname === '\/blog\/q'/);
   assert.match(middleware, /NextResponse\.rewrite\(target\)/);
+  assert.match(middleware, /shouldRewriteBlogListingToQueryPath/);
   assert.match(middleware, /target\.pathname = '\/blog\/q'/);
   assert.doesNotMatch(middleware, /shouldCaptureAttributionPath\('\/blog'\)/);
   assert.match(middleware, /attachAttributionCookies\(request, NextResponse\.rewrite/);
