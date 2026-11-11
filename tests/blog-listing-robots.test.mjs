@@ -16,6 +16,7 @@ const listingQuery = readFileSync(
   new URL('../utils/blog-listing-query.ts', import.meta.url),
   'utf8',
 );
+const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 
 const metadataFn = listingQuery.slice(
   listingQuery.indexOf('export function buildBlogListingMetadata'),
@@ -49,6 +50,11 @@ test('invalid or negative page values still count as a query', () => {
   assert.equal(shouldNoindexBlogListing({ page: '-41', category: 'seo' }), true);
   assert.equal(shouldNoindexBlogListing({ page: '0' }), true);
   assert.equal(shouldNoindexBlogListing({ page: 'abc' }), true);
+});
+
+test('/blog?cms=1 does not rewrite to /blog/q (preview CMS flag only)', () => {
+  assert.match(middleware, /blogListingParams\.delete\('cms'\)/);
+  assert.match(middleware, /path === '\/blog' && blogListingParams\.toString\(\)/);
 });
 
 test('listing generateMetadata noindexes any query and keeps /blog canonical', () => {

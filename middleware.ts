@@ -319,7 +319,10 @@ export function middleware(request: NextRequest) {
 
   // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
   // so pagination, category and search keep working without dynamizing /blog.
-  if (path === '/blog' && request.nextUrl.search && request.nextUrl.search !== '?') {
+  // Preview flag `cms=1` alone must not send the listing to /blog/q (SEO/breadcrumb).
+  const blogListingParams = new URLSearchParams(request.nextUrl.searchParams);
+  blogListingParams.delete('cms');
+  if (path === '/blog' && blogListingParams.toString()) {
     const target = request.nextUrl.clone();
     target.pathname = '/blog/q';
     return attachAttributionCookies(request, NextResponse.rewrite(target));
