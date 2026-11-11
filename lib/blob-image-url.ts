@@ -5,7 +5,7 @@
 
 export const CMS_BLOB_IMAGES_ENV = 'CMS_BLOB_IMAGES';
 
-/** Preview de medición H2 (PR #393) e integración H7 (#396): nunca producción. */
+/** Preview H2/H7: ramas listadas; producción solo con CMS_BLOB_IMAGES=true. */
 export const BLOB_IMAGES_PREVIEW_BRANCH = 'cursor/payload-h2-imagenes-5a28';
 
 export const BLOB_IMAGES_PREVIEW_BRANCHES = [
@@ -14,7 +14,9 @@ export const BLOB_IMAGES_PREVIEW_BRANCHES = [
 ] as const;
 
 export function isBlobImagesEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  if (env.VERCEL_ENV === 'production') return false;
+  if (env.VERCEL_ENV === 'production') {
+    return env[CMS_BLOB_IMAGES_ENV] === 'true';
+  }
   if (env.VERCEL_ENV === 'preview') {
     const ref = env.VERCEL_GIT_COMMIT_REF || '';
     return (BLOB_IMAGES_PREVIEW_BRANCHES as readonly string[]).includes(ref);

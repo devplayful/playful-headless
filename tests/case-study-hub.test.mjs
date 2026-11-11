@@ -16,7 +16,7 @@ import { buildSitemapXml } from '../utils/apex-sitemap.ts';
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
-const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 const hubContent = readFileSync(new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
 const soytechno = readFileSync(new URL('../components/soytechno/SoyTechnoCaseStudy.tsx', import.meta.url), 'utf8');
 const notFound = readFileSync(new URL('../app/(frontend)/not-found.tsx', import.meta.url), 'utf8');
@@ -70,7 +70,7 @@ test('chrome, breadcrumbs and hub metadata point at /casos-de-exito', () => {
   assert.match(theme, /pathname === '\/casos-de-exito'/);
   assert.match(hubPage, /canonicalForPath\(CASE_STUDIES_HUB_PATH\)/);
   assert.match(hubPage, /getPageMetadataBySlug\(CASE_STUDIES_HUB_WP_SLUG\)/);
-  assert.match(hubPage, /Contento hub SERP 1247n70uwtz/);
+  assert.match(hubPage, /CASE_STUDIES_HUB_TITLE/);
   assert.doesNotMatch(header, /casos-de-exito-agencia-de-marketing-digital/);
   assert.doesNotMatch(footer, /casos-de-exito-agencia-de-marketing-digital/);
   assert.doesNotMatch(notFound, /casos-de-exito-agencia-de-marketing-digital/);

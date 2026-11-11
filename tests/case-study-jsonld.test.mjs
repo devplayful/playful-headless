@@ -11,7 +11,7 @@ import { serializeServiceLandingJsonLd } from '../utils/service-landing-jsonld.t
 import { ORGANIZATION_SCHEMA } from '../utils/organization-schema.mjs';
 
 const casePage = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
-const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/page.tsx', import.meta.url), 'utf8');
+const hubPage = readFileSync(new URL('../app/(frontend)/casos-de-exito/hub-page.tsx', import.meta.url), 'utf8');
 const casoCta = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
 const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
 const blogPost = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
@@ -68,7 +68,7 @@ test('case, hub and blog pages wire the JSON-LD scripts', () => {
   assert.match(blogPost, /id="playful-article"/);
 });
 
-test('existing body CTAs point at /reunion-playful without touching header Contáctanos', () => {
+test('existing body CTAs point at /reunion without touching header Contáctanos', () => {
   assert.match(casoCta, /SERVICE_BOOKING_HREF/);
   assert.doesNotMatch(casoCta, /href="\/contactar-agencia-de-marketing-digital"/);
   assert.match(home, /buttonLink=\{SERVICE_BOOKING_HREF\}/);

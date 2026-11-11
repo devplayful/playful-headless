@@ -50,6 +50,14 @@ Con flags apagados, el sitio usa el camino legacy aunque exista Payload en Neon:
 
 Rollback operativo en un deploy: **no definir** estas variables o ponerlas en `false` y redeploy.
 
+### Imágenes Blob en producción (futuro cutover)
+
+En producción, `isBlobImagesEnabled` solo devuelve `true` cuando `CMS_BLOB_IMAGES=true` (cadena exacta). Sin variable, `false` u otro valor → el HTML sigue apuntando a `endpoint.playfulagency.com` como hoy.
+
+**Rollback de medios a endpoint:** quitar `CMS_BLOB_IMAGES` o ponerla en `false` / cualquier valor distinto de `true`, redeploy a producción y validar que las páginas de servicio vuelven a cargar uploads desde `endpoint.*` (salvo `pixel.gif` en `/wp-static` en preview).
+
+En Preview de las ramas `cursor/payload-h2-imagenes-5a28` y `cursor/payload-h7-integracion`, Blob sigue activo **sin** depender de `CMS_BLOB_IMAGES`.
+
 ## 3. Lo que NO hacer en rollback
 
 - **No** mergear PR #396 / H6 hasta QA preview completo.

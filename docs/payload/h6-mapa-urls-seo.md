@@ -28,20 +28,25 @@ Referencia: rama `cursor/payload-h7-integracion` (PR #396). **La URL pública no
 | `/casos-de-exito/odwalla-shopify-dtc-ecommerce` | *(idem)* | path propio | H4 |
 | `/politica-de-privacidad` | `/cms-pagina-b1-preview/politica-de-privacidad` | `/politica-de-privacidad` | B1 PR #389 |
 | `/contactar-agencia-de-marketing-digital` | `/cms-pagina-b4-preview/contactar-agencia-de-marketing-digital` | path propio | B4 PR #392 |
-| `/reunion-playful` | `/cms-pagina-b4-preview/reunion-playful` | `/reunion-playful` | B4; `noindex,follow` |
 
 Activación en producción futura (fuera de H6): variables `CMS_*_FROM_PAYLOAD=true` por bloque, no `?cms=1`.
 
+**`/reunion-playful`:** **308** permanente a `/reunion` **antes** de cualquier rewrite `?cms=1` (sin canonical propia; no es rewrite B4).
+
 ## Bloque B · Sin Payload en Preview (`?cms=1` no cambia origen)
 
-Incluye **todo el blog** (~100 URLs del sitemap), **podcast** (episodios indexables), **`/nosotros`** (copy TSX + equipo WP; PR #390 sin rewrite en middleware), **`/links`**, landings WP vía `[slug]` no incluidas en H3 (`/marketing-internacional`, `/seo-expertos`, `/seo-vigo`), funnel `/gracias`, `/firma/*`, `/test-blog`.
+Incluye **todo el blog** (~100 URLs del sitemap), **podcast** (episodios indexables), **`/nosotros`**, **`/links`**, **`/seo-vigo`** (Elementor), funnel `/gracias`, `/firma/*`, landings de campaña Next (`/eshow`, `/reunion`, `/jose`, `/qa/filtro-reunion`), `/test-blog`.
 
-| URL producción | Origen actual | Canonical |
-|----------------|---------------|-----------|
+| URL producción | Origen actual | Canonical / robots |
+|----------------|---------------|-------------------|
 | `/blog/…` | WordPress | URL del post |
 | `/podcast/{slug}` | WordPress CPT | URL episodio |
 | `/nosotros` | Código + equipo WP | `/nosotros` |
-| `/marketing-internacional`, `/seo-expertos`, `/seo-vigo` | WordPress Elementor | path propio |
+| `/seo-vigo` | WordPress Elementor | `/seo-vigo` |
+| `/marketing-internacional`, `/seo-expertos` | WordPress Elementor | **301** → servicio (mapa cruce H7); no son landings 200 |
+| `/eshow`, `/eshow/gracias` | App Router (merge main) | `noindex,follow` |
+| `/reunion` | App Router calificación | `noindex,follow`; canonical a `/reunion` |
+| `/jose` | App Router contacto | `noindex,nofollow` |
 
 ## Bloque C · 404 Payload solo en Preview (rutas desconocidas + `?cms=1`)
 
@@ -58,6 +63,10 @@ Ejemplos críticos (`middleware.ts`, mapas JSON):
 | `/servicios`, `/services` | `/agencia-e-commerce` | 301 |
 | `/landing-seo`, `/seo`, `/servicios/seo` | `/agencia-seo` | 301 |
 | `/servicios/desarrollo-web` | `/agencia-diseno-web` | 301 |
+| `/marketing-internacional` | `/agencia-e-commerce` | 301 (cruce H7) |
+| `/seo-expertos` | `/agencia-seo` | 301 (cruce H7) |
+| `/reunion-playful` | `/reunion` | **308** (antes de `?cms=1`) |
+| 7 posts blog (mapa `seo-cruce-2810-redirect-map.json`) | Destinos acordados | 301 |
 | Varias URLs blog (canibalización, categorías) | Post/canonical nuevo | 301/308 |
 | Posts en `blog-closed-paths` | 410 Gone | 410 |
 
@@ -69,21 +78,22 @@ No crear nuevas redirecciones en H6 salvo auditoría SEO aparte.
 |--------------|--------|------------|
 | `/agencia-prestashop`, `/agencia-woocommerce`, `/pasarela-de-pagos-venezuela`, `/shopify-precios` | En `SITEMAP_UNPUBLISHED_PATHS`; redirects en mapa unpublished | Ya fuera de sitemap; redirects existentes |
 | `/podcast` (hub) | `noindex,follow` | Fuera de sitemap a propósito |
-| `/links`, `/reunion-playful`, `/gracias`, `/firma/*`, `/test-blog` | `noindex` o QA | Fuera de sitemap |
+| `/links`, `/reunion-playful`, `/gracias`, `/firma/*`, `/test-blog`, `/eshow`, `/eshow/gracias`, `/reunion`, `/jose` | `noindex` o QA | Fuera de sitemap (salvo post indexable abajo) |
 | `/admin`, `/cms-api/*`, `/cms-*-preview/*` | Técnicas / admin | `noindex`; disallow robots |
 | Landings `/lp/*` históricas | Sin `page.tsx`; reglas middleware | Tratar caso a caso en mapas SEO existentes |
 
-## Bloque F · Staging solo en código (divergencia sitemap)
+## Bloque F · Sitemap e eShow
 
-| URL | En sitemap repo (`buildSitemapXml`) | En sitemap producción (nov 2026) |
-|-----|-------------------------------------|----------------------------------|
-| `/blog/otros/eshow-madrid-2026` | Sí | No (118 locs live) |
+| URL | En sitemap repo (`buildSitemapXml`) | Notas |
+|-----|-------------------------------------|--------|
+| `/blog/otros/eshow-madrid-2026` | **Sí** | Post indexable eShow Madrid (118 locs live en prod nov 2026) |
+| `/eshow` (landing formulario) | No | `noindex,follow`; campaña, no canonical de producto |
 
 En cutover, alinear lastmod/sitemap con lo publicado en Neon, no con staging del repo.
 
 ## Resumen cutover SEO
 
-1. **Canonical siempre** `https://playfulagency.com{path}` para páginas indexables Payload (ya sembrado en Yoast Payload B1/B4 y servicios/casos).
+1. **Canonical siempre** `https://playfulagency.com{path}` para páginas indexables Payload (Yaast Payload B1/B4 y servicios/casos).
 2. **No hay slugs nuevos** para el bloque migrado: Payload alimenta las mismas URLs.
-3. **301 existentes** siguen en middleware antes del rewrite CMS.
+3. **301/308 existentes** siguen en middleware; **308 `/reunion-playful`** precede al rewrite CMS.
 4. **No indexar** rutas internas `cms-*-preview`.

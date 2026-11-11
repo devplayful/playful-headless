@@ -1,0 +1,146 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f3e5f5 0%, #faf8fc 42%, #ffffff 100%);
+  padding: 2rem 1.25rem 3rem;
+}
+
+.inner {
+  max-width: 26rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 4px 8px 3px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.logoLink:hover {
+  transform: scale(1.03);
+}
+
+.card {
+  width: 100%;
+  border-radius: 1.5rem;
+  background: #fff;
+  padding: 1.75rem 1.5rem;
+  box-shadow:
+    0 4px 8px 3px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.name {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-paytone-one), system-ui, sans-serif;
+  font-size: 1.65rem;
+  line-height: 1.2;
+  color: #440099;
+  text-align: center;
+}
+
+.role {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2a0064;
+  text-align: center;
+}
+
+.org {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #4a4453;
+  text-align: center;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.itemLabel {
+  display: block;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7a7285;
+  margin-bottom: 0.15rem;
+}
+
+.itemLink {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  color: #440099;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.itemLink:hover {
+  text-decoration: underline;
+}
+
+.itemMuted {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #4a4453;
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.25rem;
+  border: none;
+  border-radius: 9999px;
+  background: #39ddcb;
+  color: #2a0064;
+  font-family: var(--font-paytone-one), system-ui, sans-serif;
+  font-size: 1.05rem;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(68, 0, 153, 0.15);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.saveBtn:hover {
+  background: #2ec4b6;
+  transform: translateY(-1px);
+}
+
+.saveBtn:active {
+  transform: scale(0.99);
+}
+
+@media (min-width: 480px) {
+  .page {
+    padding-top: 2.5rem;
+  }
+
+  .name {
+    font-size: 1.85rem;
+  }
+}

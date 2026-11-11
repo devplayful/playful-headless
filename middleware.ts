@@ -72,38 +72,38 @@ const PUBLIC_CASE_STUDY_SLUGS = new Set([
 
 const PERMANENT_301: Record<string, string> = {
   ...mergeCanibalizacionIntoPermanent301({
-  '/servicios': '/agencia-e-commerce',
-  '/services': '/agencia-e-commerce',
-  '/contacto': '/contactar-agencia-de-marketing-digital',
-  '/contactanos': '/contactar-agencia-de-marketing-digital',
-  '/casos': '/casos-de-exito',
-  '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
-  // E-book PDF (404 since the WP migration; not in WP media): send to the SEO landing.
-  '/e-books/Seo-Local/Playful_Agengy_Ebook_seo_local.pdf': '/agencia-seo',
-  '/blog/email-marketing/tipos-de-publicidad-online':
-    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
-  '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
-    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
-  '/otros/conoce-todo-sobre-instagram-ads':
-    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
-  '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
-    'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
-  '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
-    '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
-  '/blog/mas-vistos/los-5-procesos-de-e-commerce':
-    '/blog/mas-vistos/los-5-problemas-de-e-commerce',
-  '/blog/mas-vistos/como-elegir-un-buen-framework':
-    '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
-  ...seoServiceRedirects,
-  ...unpublishedLandingRedirects,
-  ...canibalizacionOrigins,
-}, categoryRedirects),
+    '/servicios': '/agencia-e-commerce',
+    '/services': '/agencia-e-commerce',
+    '/contacto': '/contactar-agencia-de-marketing-digital',
+    '/contactanos': '/contactar-agencia-de-marketing-digital',
+    '/casos': '/casos-de-exito',
+    '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
+    // E-book PDF (404 since the WP migration; not in WP media): send to the SEO landing.
+    '/e-books/Seo-Local/Playful_Agengy_Ebook_seo_local.pdf': '/agencia-seo',
+    '/blog/email-marketing/tipos-de-publicidad-online':
+      'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
+    '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
+      'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+    '/otros/conoce-todo-sobre-instagram-ads':
+      'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
+      'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
+      '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
+    '/blog/mas-vistos/los-5-procesos-de-e-commerce':
+      '/blog/mas-vistos/los-5-problemas-de-e-commerce',
+    '/blog/mas-vistos/como-elegir-un-buen-framework':
+      '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
+    ...seoServiceRedirects,
+    ...unpublishedLandingRedirects,
+    ...canibalizacionOrigins,
+  }, categoryRedirects),
   // SEO cruce 28 oct last: keep the closed-list destination on overlap.
   ...seoCruce2810Redirects,
 };
@@ -205,6 +205,11 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.next());
   }
 
+  if (path === '/reunion-playful') {
+    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
     if (path === '/') {
       const target = request.nextUrl.clone();
@@ -298,11 +303,6 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if (path === '/reunion-playful') {
-    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
-    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
-  }
-
   const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);
   const hadTrailingSlash = request.nextUrl.pathname !== path;
   if (resolved.changed || hadTrailingSlash) {
@@ -354,6 +354,8 @@ export const config = {
     '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/reunion',
+    '/reunion/',
     '/otros/conoce-todo-sobre-instagram-ads',
     '/otros/conoce-todo-sobre-instagram-ads/',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',

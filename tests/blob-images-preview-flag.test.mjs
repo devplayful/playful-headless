@@ -7,10 +7,32 @@ import {
 } from '../lib/blob-image-url.ts';
 
 describe('isBlobImagesEnabled', () => {
-  it('nunca en producción', () => {
+  it('producción sin CMS_BLOB_IMAGES=true → legacy (endpoint)', () => {
+    assert.equal(isBlobImagesEnabled({ VERCEL_ENV: 'production' }), false);
+    assert.equal(
+      isBlobImagesEnabled({ VERCEL_ENV: 'production', CMS_BLOB_IMAGES_ENV: 'false' }),
+      false,
+    );
     assert.equal(
       isBlobImagesEnabled({ VERCEL_ENV: 'production', CMS_BLOB_IMAGES_ENV: '1' }),
       false,
+    );
+  });
+
+  it('producción con CMS_BLOB_IMAGES=true → Blob', () => {
+    assert.equal(
+      isBlobImagesEnabled({ VERCEL_ENV: 'production', CMS_BLOB_IMAGES_ENV: 'true' }),
+      true,
+    );
+  });
+
+  it('preview rama integración H7 → Blob', () => {
+    assert.equal(
+      isBlobImagesEnabled({
+        VERCEL_ENV: 'preview',
+        VERCEL_GIT_COMMIT_REF: 'cursor/payload-h7-integracion',
+      }),
+      true,
     );
   });
 

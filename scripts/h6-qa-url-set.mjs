@@ -1,9 +1,16 @@
 /**
  * Conjunto H6 de 134 URLs públicas:
- * - 125 locs de buildSitemapXml() (incl. /seo-vigo y staging eshow-madrid-2026 como prod)
- * - 9 rutas públicas fuera del sitemap (QA extras; ver docs/payload/h6-qa-134.md)
+ * - 118 locs de buildSitemapXml() (builder repo)
+ * - 9 rutas públicas fuera del sitemap (QA extras)
+ * - 7 orígenes del cruce SEO blog (301; fuera del sitemap tras H7)
+ * Ver docs/payload/h6-qa-134.md (118 + 9 + 7 = 134).
  */
 import { buildSitemapXml } from '../utils/apex-sitemap.ts';
+import seoCruce2810Redirects from '../utils/seo-cruce-2810-redirect-map.json' with { type: 'json' };
+
+const SEO_CRUCE_BLOG_QA_PATHS = Object.keys(seoCruce2810Redirects).filter((p) =>
+  p.startsWith('/blog/'),
+);
 
 const QA_EXTRAS = [
   '/links',
@@ -25,6 +32,7 @@ export function buildH6QaPaths() {
   });
   const set = new Set(fromSitemap);
   for (const p of QA_EXTRAS) set.add(p);
+  for (const p of SEO_CRUCE_BLOG_QA_PATHS) set.add(p);
   return [...set].sort((a, b) => a.localeCompare(b));
 }
 
@@ -52,7 +60,6 @@ export function cmsPreviewRewriteExpected(path) {
   if (servicios.has(rootSlug)) return 'servicio-payload';
   if (rootSlug === 'politica-de-privacidad') return 'pagina-b1-payload';
   if (rootSlug === 'contactar-agencia-de-marketing-digital') return 'pagina-b4-payload';
-  if (rootSlug === 'reunion-playful') return 'pagina-b4-payload';
   return null;
 }
 

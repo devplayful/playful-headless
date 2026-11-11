@@ -31,7 +31,7 @@ test('organization includes verified sameAs, contactPoint and areaServed', () =>
     url: ORGANIZATION_LOGO_URL,
   });
   assert.equal(ORGANIZATION_SCHEMA.contactPoint.length, 2);
-  assert.equal(ORGANIZATION_SCHEMA.contactPoint[0].url, 'https://playfulagency.com/reunion-playful');
+  assert.equal(ORGANIZATION_SCHEMA.contactPoint[0].url, 'https://playfulagency.com/reunion');
   assert.equal(
     ORGANIZATION_SCHEMA.contactPoint[1].url,
     'https://playfulagency.com/contactar-agencia-de-marketing-digital',

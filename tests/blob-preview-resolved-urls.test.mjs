@@ -38,7 +38,19 @@ const QA_PAGE_BLOB_SOURCES = [
   `${WP}/2025/11/Azul.png`,
   `${WP}/2024/09/Potencia-tu-presencia-con-publicidad.png`,
   `${WP}/2024/09/Agencia-de-diseno-web.png`,
+  `${WP}/2024/09/Incrementa-la-visibilidad.png`,
 ];
+
+const H7_PREVIEW_ENV = {
+  ...process.env,
+  VERCEL_ENV: 'preview',
+  VERCEL_GIT_COMMIT_REF: 'cursor/payload-h7-integracion',
+};
+
+const { optimizeElementorLcpHero } = await import('../lib/elementor-html-optimize.ts');
+const { applyBlobImagesToHtml, countEndpointUploadImageRefs } = await import(
+  '../lib/blob-image-render.ts'
+);
 
 test('nosotros avatars and podcast cover stay on /wp-static when absent from blob map', () => {
   clearBlobMigrationMapCache();
@@ -72,6 +84,17 @@ test('maybeRewriteMediaUrl does not invent blob URLs without map entry', () => {
     const out = maybeRewriteMediaUrl(href, map, PREVIEW_ENV);
     assert.equal(out, href);
   }
+});
+
+test('agencia-seo hero Incrementa migrates to blob through LCP optimize pipeline', () => {
+  clearBlobMigrationMapCache();
+  const hero = `${WP}/2024/09/Incrementa-la-visibilidad.png`;
+  const html = `<img width="437" height="417" src="${hero}" alt="Incrementa la visibilidad" />`;
+  const blobbed = applyBlobImagesToHtml(html, H7_PREVIEW_ENV);
+  const optimized = optimizeElementorLcpHero(blobbed, 'agencia-seo');
+  const out = applyBlobImagesToHtml(optimized, H7_PREVIEW_ENV);
+  assert.equal(countEndpointUploadImageRefs(out), 0, out);
+  assert.match(out, /\.public\.blob\.vercel-storage\.com\/media\/2024\/09\/Incrementa-la-visibilidad/);
 });
 
 test('HEAD 200 for blob URLs resolved on QA page uploads', async () => {

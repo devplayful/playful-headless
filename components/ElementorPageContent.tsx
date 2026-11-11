@@ -174,12 +174,11 @@ export default function ElementorPageContent({
       ),
     ),
   );
-  const lcpSrc = firstHeroImageSrc(preparedHtml, slug);
+  const dimensionalHtml = applyElementorIntrinsicDimensions(preparedHtml);
+  const blobbedForLcp = applyBlobImagesToHtml(dimensionalHtml);
+  const lcpSrc = firstHeroImageSrc(blobbedForLcp, slug);
   const bodyHtml = applyBlobImagesToHtml(
-    optimizeElementorLcpHero(
-      applyElementorIntrinsicDimensions(preparedHtml),
-      slug,
-    ),
+    optimizeElementorLcpHero(blobbedForLcp, slug),
   );
   const allStylesheets = elementorPageStylesheetUrls(pageId, stylesheetIds);
 

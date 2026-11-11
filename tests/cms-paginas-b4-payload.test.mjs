@@ -26,10 +26,6 @@ const contactClient = readFileSync(
   new URL('../app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
   'utf8',
 );
-const reunionPage = readFileSync(
-  new URL('../app/(frontend)/reunion-playful/page.tsx', import.meta.url),
-  'utf8',
-);
 const reunionRedirect = readFileSync(
   new URL('../app/(frontend)/reunion-playful/ReunionPlayfulRedirect.tsx', import.meta.url),
   'utf8',
@@ -62,11 +58,6 @@ test('páginas públicas B4 sin diff respecto a fase1', () => {
     }).trim();
     assert.equal(diff, '', `${file} debe ser idéntico a fase1`);
   }
-  assert.doesNotMatch(
-    reunionPage,
-    /alternates:\s*\{\s*canonical/,
-    'H7: /reunion-playful no debe emitir canonical propia (308 → /reunion)',
-  );
 });
 
 test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () => {
@@ -85,7 +76,6 @@ test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () =
   assert.match(previewPage, /generateReunionPlayfulMetadata/);
   assert.doesNotMatch(contactPage, /cms-paginas-b4|paginas-b4/);
   assert.doesNotMatch(contactClient, /cms-paginas-b4|paginas-b4/);
-  assert.doesNotMatch(reunionPage, /cms-paginas-b4|paginas-b4/);
   assert.doesNotMatch(reunionRedirect, /cms-paginas-b4|paginas-b4/);
 });
 

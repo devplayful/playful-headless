@@ -51,7 +51,6 @@ function reunionPayloadBody() {
     yoast: {
       title: REUNION_PLAYFUL_SEO.title,
       description: REUNION_PLAYFUL_SEO.description,
-      canonical: 'https://playfulagency.com/reunion-playful',
     },
   };
 }

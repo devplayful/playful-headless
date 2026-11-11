@@ -1,0 +1,51 @@
+/* Solo ruta /reunion (no globals.css). */
+
+body:has([data-reunion-calificacion-root]) #lc_chat-widget,
+body:has([data-reunion-calificacion-root]) #chat-widget-container,
+body:has([data-reunion-calificacion-root]) .lc_text-widget--bubble,
+body:has([data-reunion-calificacion-root]) [class*="chat-widget-launcher"],
+body:has([data-reunion-calificacion-root]) iframe#lc_widget_iframe {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.reunion-calificacion-root {
+  scroll-padding-top: 7rem;
+}
+
+.reunion-calificacion-root [data-reunion-outcome="rejected"],
+.reunion-calificacion-root [data-reunion-outcome="review"] {
+  padding-top: 7rem;
+  scroll-margin-top: 7rem;
+}
+
+@media (min-width: 768px) {
+  .reunion-calificacion-root [data-reunion-outcome="rejected"],
+  .reunion-calificacion-root [data-reunion-outcome="review"] {
+    padding-top: 6.5rem;
+  }
+}
+
+.reunion-calificacion-root [data-reunion-outcome="qualified"] {
+  padding-top: 7rem;
+  scroll-margin-top: 7rem;
+}
+
+@media (min-width: 768px) {
+  .reunion-calificacion-root [data-reunion-outcome="qualified"] {
+    padding-top: 6.5rem;
+  }
+}
+
+.reunion-calificacion-root .reunion-calendar-iframe {
+  min-height: 920px;
+  height: min(920px, 78vh);
+}
+
+@media (min-width: 768px) {
+  .reunion-calificacion-root .reunion-calendar-iframe {
+    min-height: 880px;
+    height: 880px;
+  }
+}
