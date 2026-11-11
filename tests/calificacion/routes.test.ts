@@ -10,6 +10,8 @@ test('/reunion page exists with noindex metadata', () => {
     'utf8',
   );
   assert.match(page, /index: false/);
+  assert.match(page, /follow: true/);
+  assert.match(page, /canonicalForPath\(CALIFICACION_PUBLIC_ROUTE\)/);
   assert.match(page, /ReunionCalificacionClient/);
 });
 
