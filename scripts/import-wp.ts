@@ -11,6 +11,8 @@ import { writeFileSync } from 'node:fs';
 import { getPayload, type Payload } from 'payload';
 import config from '../payload.config.ts';
 import { CASO_ACF_IMAGE_FIELDS } from '../cms/collections/casos-acf-fields.ts';
+import { activeH5ContentAltOverrides } from '../cms/data/posts-content-alt-h5.ts';
+import { applyContentAltOverrides, contentImages } from '../cms/lib/post-content-images.ts';
 
 const WP = (process.env.WP_REST_URL || 'https://endpoint.playfulagency.com/wp-json').replace(/\/$/, '');
 const UA = 'PlayfulQA/1.0';
@@ -68,15 +70,7 @@ function yoast(item: Json) {
   };
 }
 
-function contentImages(html: string) {
-  const out: { src: string; alt: string | null }[] = [];
-  for (const tag of html.match(/<img\b[^>]*>/gi) || []) {
-    const src = /\ssrc=["']([^"']*)["']/i.exec(tag)?.[1] || '';
-    const altMatch = /\salt=["']([^"']*)["']/i.exec(tag);
-    out.push({ src, alt: altMatch ? altMatch[1] : null });
-  }
-  return out;
-}
+const h5AltOverrides = activeH5ContentAltOverrides(false);
 
 async function upsert(payload: Payload, collection: any, wpId: number, data: Json, idx: Map<number, number | string>) {
   const s = stat(collection);
@@ -183,7 +177,9 @@ async function main() {
   const media = (id?: number) => (id && ids.medios.get(id)) || null;
 
   for (const p of posts) {
-    const html = p.content?.rendered || '';
+    let html = p.content?.rendered || '';
+    let imagenes = contentImages(html);
+    ({ html, images: imagenes } = applyContentAltOverrides(p.id, html, imagenes, h5AltOverrides));
     const catIds = (p.categories || []).map((c: number) => ids.categorias.get(c)).filter(Boolean);
     for (const k of Object.keys(p.acf || {})) if (k !== 'articulos_relacionados') noteUnmapped('posts', `acf.${k}`);
     if ((p.tags || []).length) noteUnmapped('posts', 'tags');
@@ -200,7 +196,7 @@ async function main() {
       extracto: text(p.excerpt?.rendered) || null,
       contentHtml: html,
       imagenDestacada: media(p.featured_media),
-      imagenesContenido: contentImages(html),
+      imagenesContenido: imagenes,
       articulosRelacionadosWpIds: p.acf?.articulos_relacionados ?? p.meta?.articulos_relacionados ?? [],
       yoast: yoast(p),
     }, ids.posts);

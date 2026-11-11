@@ -7,6 +7,12 @@ const TestimonialsSection = dynamic(
   { ssr: false }
 );
 
-export default function TestimonialsSectionClient({ className }: { className?: string }) {
-  return <TestimonialsSection className={className} />;
+export default function TestimonialsSectionClient({
+  className,
+  copy,
+}: {
+  className?: string;
+  copy?: import('@/cms/data/home-main-content').HomeMainContent['testimonios'];
+}) {
+  return <TestimonialsSection className={className} copy={copy} />;
 }

@@ -25,7 +25,7 @@ export const ORGANIZATION_SCHEMA = Object.freeze({
     Object.freeze({
       '@type': 'ContactPoint',
       contactType: 'sales',
-      url: 'https://playfulagency.com/reunion-playful',
+      url: 'https://playfulagency.com/reunion',
       availableLanguage: Object.freeze(['es']),
     }),
     Object.freeze({

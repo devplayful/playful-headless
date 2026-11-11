@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { blogSeoRedirectDecision } from './utils/amp-junk-query';
+import { shouldRewriteBlogListingToQueryPath } from './utils/blog-listing-query';
 import { blogLegacyListingRedirectDecision } from './utils/blog-legacy-listing-redirects';
 import { blogClosedDecision } from './utils/blog-closed-paths';
 import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
 import seoServiceRedirects from './utils/seo-service-redirect-map.json';
 import unpublishedLandingRedirects from './utils/unpublished-landing-redirect-map.json';
+import seoCruce2810Redirects from './utils/seo-cruce-2810-redirect-map.json';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -17,6 +19,35 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import {
+  cmsPreviewServicioPath,
+  isCmsPreviewServicioInternalPath,
+  isPayloadServicioSlug,
+} from './lib/cms-servicios-flag';
+import {
+  cmsPreviewCasosHubPath,
+  isCmsPreviewCasosInternalPath,
+  isPayloadCasoSlug,
+} from './lib/cms-casos-flag';
+import {
+  cmsPreviewPaginaB1Path,
+  isCmsPreviewPaginaB1InternalPath,
+} from './lib/cms-paginas-b1-flag';
+import { isPaginasB1Slug } from './cms/data/paginas-b1-payload';
+import { isPaginasB4Slug } from './cms/data/paginas-b4-payload';
+import {
+  cmsPreviewPaginaB4Path,
+  isCmsPreviewPaginaB4InternalPath,
+} from './lib/cms-paginas-b4-flag';
+import { isKnownPublicAppPath } from './lib/cms-paginas-b5-known-paths';
+import {
+  cmsPreviewPaginaB5Path,
+  isCmsPreviewPaginaB5InternalPath,
+} from './lib/cms-paginas-b5-flag';
+import {
+  CMS_PREVIEW_HOME_PATH,
+  isCmsPreviewHomeInternalPath,
+} from './lib/cms-home-flag';
 
 function attachAttributionCookies(request: NextRequest, response: NextResponse): NextResponse {
   if (!shouldCaptureAttributionPath(request.nextUrl.pathname)) return response;
@@ -40,39 +71,43 @@ const PUBLIC_CASE_STUDY_SLUGS = new Set([
   'odwalla-shopify-dtc-ecommerce',
 ]);
 
-const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent301({
-  '/servicios': '/agencia-e-commerce',
-  '/services': '/agencia-e-commerce',
-  '/contacto': '/contactar-agencia-de-marketing-digital',
-  '/contactanos': '/contactar-agencia-de-marketing-digital',
-  '/casos': '/casos-de-exito',
-  '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
-  // E-book PDF (404 since the WP migration; not in WP media): send to the SEO landing.
-  '/e-books/Seo-Local/Playful_Agengy_Ebook_seo_local.pdf': '/agencia-seo',
-  '/blog/email-marketing/tipos-de-publicidad-online':
-    'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
-  '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
-    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
-  '/otros/conoce-todo-sobre-instagram-ads':
-    'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
-  '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
-    'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
-  '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
-    'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
-    '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
-  '/blog/mas-vistos/los-5-procesos-de-e-commerce':
-    '/blog/mas-vistos/los-5-problemas-de-e-commerce',
-  '/blog/mas-vistos/como-elegir-un-buen-framework':
-    '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
-  ...seoServiceRedirects,
-  ...unpublishedLandingRedirects,
-  ...canibalizacionOrigins,
-}, categoryRedirects);
+const PERMANENT_301: Record<string, string> = {
+  ...mergeCanibalizacionIntoPermanent301({
+    '/servicios': '/agencia-e-commerce',
+    '/services': '/agencia-e-commerce',
+    '/contacto': '/contactar-agencia-de-marketing-digital',
+    '/contactanos': '/contactar-agencia-de-marketing-digital',
+    '/casos': '/casos-de-exito',
+    '/casos-de-exito-agencia-de-marketing-digital': '/casos-de-exito',
+    // E-book PDF (404 since the WP migration; not in WP media): send to the SEO landing.
+    '/e-books/Seo-Local/Playful_Agengy_Ebook_seo_local.pdf': '/agencia-seo',
+    '/blog/email-marketing/tipos-de-publicidad-online':
+      'https://playfulagency.com/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
+    '/blog/pautas-digitales/conoce-todo-sobre-instagram-ads':
+      'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+    '/otros/conoce-todo-sobre-instagram-ads':
+      'https://playfulagency.com/blog/otros/conoce-todo-sobre-instagram-ads',
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
+      'https://playfulagency.com/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
+    '/blog/tecnologia/zelle-en-venezuela-un-metodo-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/tecnologia/zelle-venezuela-metodo-de-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/tecnologia/zelle-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+      'https://playfulagency.com/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/blog/pautas-digitales/aprende-a-humanizar-la-marca-de-tu-negocio':
+      '/blog/pautas-digitales/storytelling-en-el-marketing-digital',
+    '/blog/mas-vistos/los-5-procesos-de-e-commerce':
+      '/blog/mas-vistos/los-5-problemas-de-e-commerce',
+    '/blog/mas-vistos/como-elegir-un-buen-framework':
+      '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
+    ...seoServiceRedirects,
+    ...unpublishedLandingRedirects,
+    ...canibalizacionOrigins,
+  }, categoryRedirects),
+  // SEO cruce 28 oct last: keep the closed-list destination on overlap.
+  ...seoCruce2810Redirects,
+};
 
 function normalizePath(pathname: string): string {
   return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
@@ -93,7 +128,7 @@ type ResolvedRedirect = {
  * AMP junk params) internally so the client always gets ONE 301 to the
  * final canonical URL: no slash → 308 → 301 chains.
  */
-function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
+export function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParams): ResolvedRedirect {
   let pathname = startPath;
   // WP-era links like `?amp/` carry the slash inside the query key.
   const cleanParams = new URLSearchParams();
@@ -147,10 +182,33 @@ function resolveSingleHopRedirect(startPath: string, startParams: URLSearchParam
 export function middleware(request: NextRequest) {
   const path = normalizePath(request.nextUrl.pathname);
 
-  if (isWpProbePath(path)) {
-    const target = request.nextUrl.clone();
-    target.pathname = '/_not-found';
-    return attachAttributionCookies(request, NextResponse.rewrite(target));
+  if (isCmsPreviewServicioInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewCasosInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB1InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB4InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewPaginaB5InternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (isCmsPreviewHomeInternalPath(path)) {
+    return attachAttributionCookies(request, NextResponse.next());
+  }
+
+  if (path === '/reunion-playful') {
+    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
   }
 
   const closed = blogClosedDecision(path);
@@ -159,6 +217,82 @@ export function middleware(request: NextRequest) {
       status: 410,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     }));
+  }
+
+  if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
+    if (path === '/') {
+      const target = request.nextUrl.clone();
+      target.pathname = CMS_PREVIEW_HOME_PATH;
+      target.searchParams.delete('cms');
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-cms-home-preview', '1');
+      return attachAttributionCookies(
+        request,
+        NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+      );
+    }
+    if (path === '/casos-de-exito') {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewCasosHubPath();
+      target.searchParams.delete('cms');
+      return attachAttributionCookies(request, NextResponse.rewrite(target));
+    }
+    if (path.startsWith('/casos-de-exito/')) {
+      const slug = path.slice('/casos-de-exito/'.length);
+      if (slug && !slug.includes('/') && isPayloadCasoSlug(slug)) {
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-casos-preview', '1');
+        const target = request.nextUrl.clone();
+        target.searchParams.delete('cms');
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+    }
+    if (path.length > 1 && path.indexOf('/', 1) === -1) {
+      const slug = path.slice(1);
+      if (isPaginasB1Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB1Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b1-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+      if (isPaginasB4Slug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewPaginaB4Path(slug);
+        target.searchParams.delete('cms');
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-cms-paginas-b4-preview', slug);
+        return attachAttributionCookies(
+          request,
+          NextResponse.rewrite(target, { request: { headers: requestHeaders } }),
+        );
+      }
+      if (isPayloadServicioSlug(slug)) {
+        const target = request.nextUrl.clone();
+        target.pathname = cmsPreviewServicioPath(slug);
+        return attachAttributionCookies(request, NextResponse.rewrite(target));
+      }
+    }
+    if (!isKnownPublicAppPath(path)) {
+      const target = request.nextUrl.clone();
+      target.pathname = cmsPreviewPaginaB5Path('not-found');
+      target.searchParams.delete('cms');
+      const response = NextResponse.rewrite(target, { status: 404 });
+      return attachAttributionCookies(request, response);
+    }
+  }
+
+  if (isWpProbePath(path)) {
+    const target = request.nextUrl.clone();
+    target.pathname = '/_not-found';
+    return attachAttributionCookies(request, NextResponse.rewrite(target));
   }
 
   if (path.startsWith('/casos-de-exito/')) {
@@ -186,7 +320,8 @@ export function middleware(request: NextRequest) {
 
   // Clean /blog is ISR. Query variants stay on the same public URL via rewrite
   // so pagination, category and search keep working without dynamizing /blog.
-  if (path === '/blog' && request.nextUrl.search && request.nextUrl.search !== '?') {
+  // Preview flag `cms=1` alone must not send the listing to /blog/q (SEO/breadcrumb).
+  if (path === '/blog' && shouldRewriteBlogListingToQueryPath(request.nextUrl.searchParams)) {
     const target = request.nextUrl.clone();
     target.pathname = '/blog/q';
     return attachAttributionCookies(request, NextResponse.rewrite(target));
@@ -221,6 +356,8 @@ export const config = {
     '/casos-de-exito-agencia-de-marketing-digital/',
     '/reunion-playful',
     '/reunion-playful/',
+    '/reunion',
+    '/reunion/',
     '/otros/conoce-todo-sobre-instagram-ads',
     '/otros/conoce-todo-sobre-instagram-ads/',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',

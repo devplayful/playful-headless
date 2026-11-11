@@ -176,7 +176,7 @@ test('primary Shopify CTAs book the GHL reunion widget, not the contact form', (
     BOOKING_HREF,
     'https://api.playfulagency.com/widget/bookings/reunion-playful',
   );
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
   assert.match(landing, /href = SERVICE_BOOKING_HREF/);
   assert.match(landing, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
@@ -200,10 +200,17 @@ test('does not ship ShopifyDeferredCss (cached CSS must not stay on media=print)
   );
 });
 
-test('/reunion-playful stays on the Next app for GA4 before the client redirect to GHL', () => {
+test('/reunion-playful uses middleware 308 to /reunion (matcher still lists the path)', () => {
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
+  assert.match(middleware, /path === '\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
+});
+
+test('/reunion stays on the Next app for GA4 before the client redirect to GHL', () => {
+  assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
+  assert.match(middleware, /'\/reunion'/);
+  assert.match(middleware, /'\/reunion\/'/);
 });
 
 test('landing includes exactly one contextual href to the Zelle blog post', () => {

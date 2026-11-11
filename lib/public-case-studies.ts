@@ -55,9 +55,50 @@ function slugOf(item: { slug?: unknown }): string | null {
   return typeof item?.slug === 'string' && item.slug ? item.slug : null;
 }
 
+/** Hub card order on production (SoyTechno → Jumex → Odwalla). */
+export const HUB_CASE_STUDY_SLUG_ORDER = [
+  SOYTECHNO_CASE_SLUG,
+  'jumex-shopify-dtc-ecommerce',
+  'odwalla-shopify-dtc-ecommerce',
+] as const;
+
+export function sortHubCaseStudies<T extends { slug?: unknown }>(items: readonly T[]): T[] {
+  const rank = (slug: string | null) => {
+    if (!slug) return HUB_CASE_STUDY_SLUG_ORDER.length;
+    const index = HUB_CASE_STUDY_SLUG_ORDER.indexOf(slug as (typeof HUB_CASE_STUDY_SLUG_ORDER)[number]);
+    return index === -1 ? HUB_CASE_STUDY_SLUG_ORDER.length : index;
+  };
+  return [...items].sort((left, right) => rank(slugOf(left)) - rank(slugOf(right)));
+}
+
+/** Listing copy for SoyTechno on the hub matches prod (SEO + categoría), not Payload titulo. */
+function applyPublicHubListingFields<T extends { slug?: unknown; acf?: unknown }>(
+  item: T,
+  synthetic: PublicCaseStudy,
+): T {
+  return {
+    ...item,
+    title: synthetic.title,
+    excerpt: synthetic.excerpt,
+    featured_media_url: synthetic.featured_media_url || (item as { featured_media_url?: string }).featured_media_url,
+    acf: {
+      ...(typeof item.acf === 'object' && item.acf ? item.acf : {}),
+      categoria1: synthetic.acf.categoria1,
+      categoria2: synthetic.acf.categoria2,
+      categoria3: synthetic.acf.categoria3,
+      categoria4: synthetic.acf.categoria4,
+      categoria5: synthetic.acf.categoria5,
+      badge: synthetic.acf.badge,
+      badge_color: synthetic.acf.badge_color,
+      button_text: synthetic.acf.button_text,
+      button_color: synthetic.acf.button_color,
+    },
+  };
+}
+
 /**
  * Prepend public/synthetic cases, then remaining WordPress items.
- * WordPress wins on slug collision so a later CMS publish replaces the override.
+ * On slug collision the CMS row wins for id/body; hub listing copy for SoyTechno stays public.
  */
 export function mergePublicCaseStudies<T extends { slug?: unknown }>(
   wpItems: readonly T[] | null | undefined,
@@ -75,7 +116,7 @@ export function mergePublicCaseStudies<T extends { slug?: unknown }>(
 
   for (const synthetic of PUBLIC_CASE_STUDIES) {
     const fromWp = wpBySlug.get(synthetic.slug);
-    merged.push(fromWp ?? synthetic);
+    merged.push(fromWp ? applyPublicHubListingFields(fromWp, synthetic) : synthetic);
     seen.add(synthetic.slug);
   }
 
@@ -86,5 +127,5 @@ export function mergePublicCaseStudies<T extends { slug?: unknown }>(
     merged.push(item);
   }
 
-  return merged;
+  return sortHubCaseStudies(merged);
 }

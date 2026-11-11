@@ -16,7 +16,6 @@ const ONG_PATH = '/blog/seo/marketing-social-la-estrategia-ganadora-de-las-ong';
 
 const GSC_UNKNOWN_BLOG_PATHS = [
   '/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias',
-  '/blog/pautas-digitales/conoce-como-impulsar-tu-marca-online',
   '/blog/pautas-digitales/el-sms-marketing',
   '/blog/pautas-digitales/necesitas-realizar-un-informe-seo-nosotros-lo-hacemos-por-ti',
   '/blog/seo/aprende-todo-sobre-el-seo',
@@ -66,18 +65,22 @@ test('5) ONG closed post is not in sitemap and has no in-repo internal hrefs', (
   assert.equal(SITEMAP_BLOG_PATHS.includes(ONG_PATH), false);
   const xml = buildSitemapXml();
   assert.doesNotMatch(xml, new RegExp(`${ONG_PATH.replaceAll('/', '\\/')}<`));
+  const repoRoot = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
   const hits = execSync(
-    `rg -l '${ONG_PATH}' /workspace --glob '!tests/gsc-brief-web-2026-10-20.test.mjs'`,
+    `rg -l '${ONG_PATH}' ${repoRoot} --glob '!tests/gsc-brief-web-2026-10-20.test.mjs'`,
     { encoding: 'utf8' },
   )
     .trim()
     .split('\n')
     .filter(Boolean)
-    .map((path) => path.replace(/^\/workspace\//, ''));
+    .map((path) => path.replace(`${repoRoot}/`, '').replace(/^\//, ''));
   assert.deepEqual(
     hits.sort(),
     [
       'config/blog-closed-posts.json',
+      'config/blog-sitemap-lastmod.json',
+      'docs/migracion/payload-no-importar.json',
+      'docs/migracion/seo-cruce-2810/urls-161.csv',
       'tests/blog-closed-posts.test.mjs',
       'utils/blog-closed-paths.ts',
     ].sort(),

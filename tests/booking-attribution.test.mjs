@@ -83,7 +83,7 @@ test('booking query keys are the Ads click ids, fbclid and five utms', () => {
   ]);
   assert.equal(BOOKING_WIDGET_HREF, 'https://api.playfulagency.com/widget/bookings/reunion-playful');
   assert.equal(BOOKING_HREF, BOOKING_WIDGET_HREF);
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
 });
 
 test('builder keeps URL values and drops empty keys', () => {
@@ -183,7 +183,7 @@ test('route resolver 302s to the widget with URL query, cookie fallback, or a cl
   assert.equal(buildBookingWidgetUrl({ search: '?utm_medium=' }), BOOKING_WIDGET_HREF);
 });
 
-test('GET /reunion-playful forwards the entire incoming query including fbclid and unknown keys', () => {
+test('GET /reunion forwards the entire incoming query including fbclid and unknown keys', () => {
   const search = '?utm_source=facebook&utm_medium=paid_social&utm_campaign=set1&utm_content=ad1&fbclid=TEST123&gclid=G456&foo=bar';
   const { location, status } = resolveBookingWidgetRedirect({ search });
   assert.equal(status, 302);
@@ -249,33 +249,34 @@ test('cookie fbclid fills the hop when the incoming URL omitted it', () => {
   assert.equal(new URL(incomingWins.location).searchParams.get('fbclid'), 'TEST123');
 });
 
-test('middleware no longer 302s /reunion-playful; the Next page handles GA then redirect', () => {
+test('middleware 308s /reunion-playful to /reunion; legacy widget URLs still rewrite to /reunion', () => {
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
-  assert.doesNotMatch(middleware, /path === '\/reunion-playful'/);
+  assert.match(middleware, /path === '\/reunion-playful'/);
+  assert.match(middleware, /NextResponse\.redirect\(target, 308\)/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
 });
 
-test('visible booking hrefs stay on /reunion-playful and rewrite widget URLs', () => {
-  assert.equal(isBookingHref('/reunion-playful'), true);
+test('visible booking hrefs stay on /reunion and rewrite widget URLs', () => {
+  assert.equal(isBookingHref('/reunion'), true);
   assert.equal(isBookingHref(BOOKING_WIDGET_HREF), true);
-  assert.equal(isBookingHref('https://playfulagency.com/reunion-playful?gclid=1'), true);
+  assert.equal(isBookingHref('https://playfulagency.com/reunion?gclid=1'), true);
   assert.equal(isBookingHref('/contactar-agencia-de-marketing-digital'), false);
   assert.equal(
     toServiceBookingHref(`${BOOKING_WIDGET_HREF}?gclid=TEST123&utm_medium=`),
-    '/reunion-playful?gclid=TEST123',
+    '/reunion?gclid=TEST123',
   );
-  assert.equal(bookingHrefFromPageSearch('?gclid=TEST123&utm_source=google&foo=1'), '/reunion-playful?gclid=TEST123&utm_source=google');
-  assert.equal(bookingHrefFromPageSearch(''), '/reunion-playful');
+  assert.equal(bookingHrefFromPageSearch('?gclid=TEST123&utm_source=google&foo=1'), '/reunion?gclid=TEST123&utm_source=google');
+  assert.equal(bookingHrefFromPageSearch(''), '/reunion');
 
   const html = [
     `<a href="${BOOKING_WIDGET_HREF}">Agendar</a>`,
-    '<a href="https://playfulagency.com/reunion-playful?gclid=A&utm_source=">Apex</a>',
+    '<a href="https://playfulagency.com/reunion?gclid=A&utm_source=">Apex</a>',
     '<a href="/contactar-agencia-de-marketing-digital">Formulario</a>',
   ].join('');
   const rewritten = rewriteBookingWidgetHrefs(html);
-  assert.equal((rewritten.match(/href="\/reunion-playful"/g) || []).length, 1);
-  assert.match(rewritten, /href="\/reunion-playful\?gclid=A"/);
+  assert.equal((rewritten.match(/href="\/reunion"/g) || []).length, 1);
+  assert.match(rewritten, /href="\/reunion\?gclid=A"/);
   assert.doesNotMatch(rewritten, /api\.playfulagency\.com/);
   assert.match(rewritten, /href="\/contactar-agencia-de-marketing-digital"/);
 
@@ -283,15 +284,15 @@ test('visible booking hrefs stay on /reunion-playful and rewrite widget URLs', (
     `<a href="${BOOKING_WIDGET_HREF}">Agendar</a>`,
     'marketing-internacional',
   );
-  assert.match(otherLanding, /href="\/reunion-playful"/);
+  assert.match(otherLanding, /href="\/reunion"/);
   assert.doesNotMatch(otherLanding, /api\.playfulagency\.com/);
 });
 
-test('Shopify, gracias and blog CTAs go through /reunion-playful; layout propagates query', () => {
+test('Shopify, gracias and blog CTAs go through /reunion; layout propagates query', () => {
   assert.match(shopifyPage, /href = SERVICE_BOOKING_HREF/);
   assert.match(shopifyPage, /buttonLink=\{SERVICE_BOOKING_HREF\}/);
   assert.doesNotMatch(shopifyPage, /buttonLink=\{BOOKING_HREF\}/);
-  assert.match(gracias, /href="\/reunion-playful"/);
+  assert.match(gracias, /SERVICE_BOOKING_HREF/);
   assert.doesNotMatch(gracias, /api\.playfulagency\.com\/widget\/bookings/);
   assert.match(blogPage, /rewriteBookingWidgetHrefs\(/);
   assert.match(layout, /BookingQueryPropagator/);
@@ -447,6 +448,7 @@ test('no booking upsert route: GHL confirm does not send email or contactId', ()
   const names = existsSync(apiDir) ? readdirSync(apiDir) : [];
   assert.equal(names.includes('booking-attribution'), false);
   assert.equal(names.includes('eshow-lista'), true);
+  assert.equal(names.includes('eshow'), true);
   const component = readFileSync(new URL('../components/BookingWidgetAttribution.tsx', import.meta.url), 'utf8');
   assert.match(component, /does not upsert/);
   assert.doesNotMatch(component, /fetch\('\/api\//);

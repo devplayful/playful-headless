@@ -1,5 +1,8 @@
 import { canonicalForPath } from './canonical.ts';
-import { shouldNoindexBlogListing } from './blog-listing-robots.ts';
+import {
+  shouldNoindexBlogListing,
+  stripCmsFromBlogListingSearchParams,
+} from './blog-listing-robots.ts';
 import { twitterFromOpenGraph } from './page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '../lib/og-images.ts';
 
@@ -61,9 +64,24 @@ export function blogListingCanonicalUrl(
   return `${base}?category=${encodeURIComponent(category)}`;
 }
 
+export function blogListingRewriteSearchParams(
+  searchParams: URLSearchParams,
+): URLSearchParams {
+  const params = new URLSearchParams(searchParams);
+  params.delete('cms');
+  return params;
+}
+
+export function shouldRewriteBlogListingToQueryPath(
+  searchParams: URLSearchParams,
+): boolean {
+  return blogListingRewriteSearchParams(searchParams).toString().length > 0;
+}
+
 export function buildBlogListingMetadata(searchParams?: BlogListingSearchParams | null) {
-  const noindexFollow = shouldNoindexBlogListing(searchParams);
-  const url = blogListingCanonicalUrl(searchParams);
+  const listingParams = stripCmsFromBlogListingSearchParams(searchParams);
+  const noindexFollow = shouldNoindexBlogListing(listingParams);
+  const url = blogListingCanonicalUrl(listingParams);
   return {
     title: 'Blog - Playful Agency',
     description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',

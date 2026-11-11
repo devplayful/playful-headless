@@ -11,7 +11,10 @@ const related = readFileSync(
 const hub = readFileSync(new URL('../app/(frontend)/casos-de-exito/CaseStudiesContent.tsx', import.meta.url), 'utf8');
 const imageSizes = readFileSync(new URL('../lib/blog-image-sizes.ts', import.meta.url), 'utf8');
 const caseCta = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/CasoExitoCta.tsx', import.meta.url), 'utf8');
-const privacy = readFileSync(new URL('../app/(frontend)/politica-de-privacidad/page.tsx', import.meta.url), 'utf8');
+const privacy = readFileSync(
+  new URL('../components/paginas-codigo/PoliticaPrivacidadView.tsx', import.meta.url),
+  'utf8',
+);
 const contact = readFileSync(
   new URL('../app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient.tsx', import.meta.url),
   'utf8',

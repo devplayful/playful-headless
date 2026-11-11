@@ -41,10 +41,10 @@ function functionBody(source, name) {
 
 test('shared booking constant matches the Shopify GHL widget', () => {
   assert.equal(BOOKING_HREF, 'https://api.playfulagency.com/widget/bookings/reunion-playful');
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
   assert.equal(BOOKING_CTA_LABEL, 'Agendar Reunión con Playful');
   assert.equal(CONTACT_HREF, '/contactar-agencia-de-marketing-digital');
-  assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF \} from '\.\.\/\.\.\/utils\/booking\.ts'/);
+  assert.match(shopifyCopy, /export \{ BOOKING_HREF, CONTACT_HREF, SERVICE_BOOKING_HREF \} from '\.\.\/\.\.\/\.\.\/utils\/booking\.ts'/);
 });
 
 test('allowlist is the GO service landings including /agencia-ux-ui', () => {
@@ -111,7 +111,7 @@ test('rewrites every body contactar href on an allowlisted slug', () => {
 
   const rewritten = rewriteServiceBookingCtas(html, 'agencia-seo');
 
-  assert.equal((rewritten.match(/href="\/reunion-playful"/g) || []).length, 2);
+  assert.equal((rewritten.match(/href="\/reunion"/g) || []).length, 2);
   assert.equal(rewritten.includes('api.playfulagency.com/widget/bookings/reunion-playful'), false);
   assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
   assert.match(rewritten, /<span class="text">¡Quiero saber más!<\/span>/);
@@ -133,7 +133,7 @@ test('rewrites absolute WP and relative contactar hrefs used in live Elementor H
   const rewritten = rewriteServiceBookingCtas(html, 'agencia-e-commerce');
   assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
   assert.equal(rewritten.includes('api.playfulagency.com/widget/bookings'), false);
-  assert.match(rewritten, /href="\/reunion-playful"/);
+  assert.match(rewritten, /href="\/reunion"/);
   assert.match(rewritten, /Haz que funcione tu tienda/);
   assert.match(rewritten, /Optimiza mi e-commerce/);
   assert.equal((rewritten.match(new RegExp(BOOKING_CTA_LABEL, 'g')) || []).length, 2);
@@ -147,7 +147,7 @@ test('diseño-web closer ¡Hablemos! becomes the booking label so the page has A
 
   const rewritten = rewriteServiceBookingCtas(html, 'agencia-diseno-web');
   assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
-  assert.match(rewritten, /href="\/reunion-playful"/);
+  assert.match(rewritten, /href="\/reunion"/);
   assert.match(rewritten, /¡Hagamos una página web!/);
   assert.doesNotMatch(rewritten, /¡Hablemos!/);
   assert.match(rewritten, new RegExp(BOOKING_CTA_LABEL));
@@ -162,7 +162,7 @@ test('does not rewrite other SERVICE_SLUGS such as marketing-internacional', () 
   assert.equal(rewriteServiceBookingCtas(html, 'seo-vigo'), html);
 });
 
-test('/agencia-ux-ui sends body CTAs to /reunion-playful and keeps the visible label', () => {
+test('/agencia-ux-ui sends body CTAs to /reunion and keeps the visible label', () => {
   const html = [
     MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', 'Quiero una experiencia que atrape'),
     MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', '¡Contáctanos y empieza ya!'),
@@ -170,7 +170,7 @@ test('/agencia-ux-ui sends body CTAs to /reunion-playful and keeps the visible l
 
   const rewritten = rewriteServiceBookingCtas(html, 'agencia-ux-ui');
   assert.equal(rewritten.includes('contactar-agencia-de-marketing-digital'), false);
-  assert.equal((rewritten.match(/href="\/reunion-playful"/g) || []).length, 2);
+  assert.equal((rewritten.match(/href="\/reunion"/g) || []).length, 2);
   assert.match(rewritten, /Quiero una experiencia que atrape/);
   assert.match(rewritten, /¡Contáctanos y empieza ya!/);
   assert.doesNotMatch(rewritten, new RegExp(BOOKING_CTA_LABEL));
@@ -186,18 +186,18 @@ test('skips the sticky header Contáctanos even if it appears in the HTML fragme
     rewritten,
     /playful-boton-header[^>]+href="\/contactar-agencia-de-marketing-digital">Contáctanos<\/a>/,
   );
-  assert.match(rewritten, /master-button[^>]+href="\/reunion-playful"/);
+  assert.match(rewritten, /master-button[^>]+href="\/reunion"/);
   assert.match(rewritten, new RegExp(`<span class="text">${BOOKING_CTA_LABEL}</span>`));
 });
 
-test('service landings use /reunion-playful, not the Shopify widget API URL', () => {
+test('service landings use /reunion, not the Shopify widget API URL', () => {
   const rewritten = rewriteServiceBookingCtas(
     MASTER_BUTTON('/contactar-agencia-de-marketing-digital/', 'Contáctanos'),
     'agencia-seo',
   );
-  assert.match(rewritten, /href="\/reunion-playful"/);
+  assert.match(rewritten, /href="\/reunion"/);
   assert.doesNotMatch(rewritten, /api\.playfulagency\.com/);
-  assert.equal(SERVICE_BOOKING_HREF, '/reunion-playful');
+  assert.equal(SERVICE_BOOKING_HREF, '/reunion');
   assert.equal(BOOKING_HREF, 'https://api.playfulagency.com/widget/bookings/reunion-playful');
 });
 

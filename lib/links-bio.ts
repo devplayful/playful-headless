@@ -23,8 +23,18 @@ export function linksBioArticleSlug(path: string): string | null {
 export const LINKS_BIO_UTM =
   '?utm_source=instagram&utm_medium=social&utm_campaign=bio';
 
+export const LINKS_BIO_INTRO_LINE1 =
+  'E-commerce para marcas D2C que ya facturan. Shopify / WooCommerce.';
+export const LINKS_BIO_INTRO_LINE2 =
+  '¿Vas al eShow Madrid 4–5 nov? Te lo contamos ↓';
+export const LINKS_BIO_INTRO = `${LINKS_BIO_INTRO_LINE1} ${LINKS_BIO_INTRO_LINE2}`;
+
 export const LINKS_BIO_ENTRIES: readonly LinksBioEntry[] = [
   // Cashea: add first when that campaign is ready.
+  {
+    label: 'eShow Madrid 2026: te lo contamos',
+    path: '/eshow',
+  },
   {
     label: 'Cómo integrar Zelle en tu tienda',
     path: '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',

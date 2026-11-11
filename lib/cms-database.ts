@@ -47,3 +47,52 @@ export function shouldRunPreviewMigrate(
 ): boolean {
   return hasDatabaseUrl(env) && env.VERCEL_ENV !== 'production';
 }
+
+/** Seed de servicios: solo Preview con DATABASE_URL (nunca Production). */
+export function shouldRunPreviewServiciosSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** Seed/migrate H4 casos: solo Preview con DATABASE_URL (nunca Production). */
+export function shouldRunPreviewCasosSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** Preview: seed H6 bloque 1 (legales). */
+export function shouldRunPreviewPaginasB1Seed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** Preview: seed H6 bloque 5 (404). */
+export function shouldRunPreviewPaginasB5Seed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** Preview: seed H6 bloque 4 (contacto/reunión). */
+export function shouldRunPreviewPaginasB4Seed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** Preview: seed Home congelada (main). */
+export function shouldRunPreviewHomeSeed(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}
+
+/** One-shot: vaciar `usuarios` solo en Preview. Nunca Production. */
+export function shouldRunPreviewUsuariosWipe(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  return hasDatabaseUrl(env) && env.VERCEL_ENV === 'preview';
+}

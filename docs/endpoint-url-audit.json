@@ -1,0 +1,182 @@
+{
+  "generado": "2026-10-30T18:39:35.006Z",
+  "cmsBlobImages": "1",
+  "antes": {
+    "post-body": 2026,
+    "post-og": 115,
+    "post-jsonld-yoast": 925,
+    "page-body": 1347,
+    "page-og": 29,
+    "caso-body": 0,
+    "caso-og": 2,
+    "caso-acf": 0
+  },
+  "despues": {
+    "post-body": 0,
+    "post-og": 0,
+    "post-jsonld-yoast": 0,
+    "page-body": 0,
+    "page-og": 0,
+    "caso-body": 0,
+    "caso-og": 0,
+    "caso-acf": 0
+  },
+  "rotas404": [
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/case.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/…",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/06/BANNER.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2021/12/elementor/thumbs/ALT-Tendencias-en-el-diseno-web-para-el-2022-pij73c68amj3zk1ly7tqm7bq16ofvisif0eke9w978.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2021/x-300x300.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/11/banner.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/a-300x200.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/a.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2023/03/elementor/thumbs/TikTok-Live-Studio-la-forma-mas-facil-de-realizar-tu-directo-1-q4bz04683p0gxiwcmsilvfud9o4p6xc7q2nhszvpuc.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2023/05/tiktok-live-studio.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/09/Haz-Pruebas-y-",
+      "posts": [],
+      "paginas": [
+        "agencia-sem"
+      ],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/11/guia.pdf",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/11/hero.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/02/Playful-Agencia-",
+      "posts": [],
+      "paginas": [
+        "pasarela-de-pago-ecommerce"
+      ],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2026/09/jumex.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/a.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/avatar.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/jumex.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/x.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/zelle.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/06/BANNER.png",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2021/x.jpg",
+      "posts": [],
+      "paginas": [],
+      "casos": []
+    }
+  ],
+  "truncadas404": [
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/09/Haz-Pruebas-y-",
+      "origen": [
+        {
+          "kind": "wp-page-content",
+          "detail": "agencia-sem"
+        }
+      ]
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/02/Playful-Agencia-",
+      "origen": [
+        {
+          "kind": "wp-page-content",
+          "detail": "pasarela-de-pago-ecommerce"
+        }
+      ]
+    }
+  ]
+}
