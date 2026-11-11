@@ -40,6 +40,21 @@ test('410 Gone paths: /test-blog and /landing-page', () => {
   assert.deepEqual(blogClosedDecision('/landing-page'), { type: 'gone', status: 410 });
   const body = middleware.slice(middleware.indexOf('export function middleware'));
   const goneIdx = body.indexOf("closed.type === 'gone'");
+  const cmsIdx = body.indexOf("searchParams.get('cms') === '1'");
+  const b5Idx = body.indexOf("cmsPreviewPaginaB5Path('not-found')");
   const redirectIdx = body.indexOf('resolveSingleHopRedirect');
+  assert.ok(goneIdx > 0 && cmsIdx > goneIdx, '410 runs before Preview CMS block');
+  assert.ok(goneIdx > 0 && b5Idx > goneIdx, '410 runs before B5 not-found allowlist');
   assert.ok(goneIdx > 0 && goneIdx < redirectIdx, '410 runs before 301 chain');
+});
+
+test('410 paths stay in blog-closed-paths for landing-page and test-blog', () => {
+  assert.match(
+    readFileSync(new URL('../utils/blog-closed-paths.ts', import.meta.url), 'utf8'),
+    /'\/landing-page'/,
+  );
+  assert.match(
+    readFileSync(new URL('../utils/blog-closed-paths.ts', import.meta.url), 'utf8'),
+    /'\/test-blog'/,
+  );
 });

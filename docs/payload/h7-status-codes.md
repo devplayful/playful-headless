@@ -15,7 +15,7 @@ Comando: `curl -sI` (sin `-L`). Base: `http://127.0.0.1:3456`.
 | `/test-blog` | — | **410** | cuerpo `Gone` |
 | `/test-blog` | sí | **410** | igual (410 antes que rewrite CMS) |
 | `/landing-page` | — | **410** | cuerpo `Gone` |
-| `/landing-page` | sí | **404** | ruta no está en `isKnownPublicAppPath` → rewrite B5 `not-found` **antes** del 410 (comportamiento Preview) |
+| `/landing-page` | sí | **410** | igual que sin `cms`; el 410 corre **antes** del bloque `?cms=1` / B5 |
 | `/blog` | — | **200** | listing ISR |
 | `/blog` | sí | **200** | no rewrite a `/blog/q` (solo `cms`) |
 | `/blog?page=2` | — | **200** | rewrite interno a `/blog/q` (URL pública sin cambio) |

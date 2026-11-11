@@ -211,6 +211,14 @@ export function middleware(request: NextRequest) {
     return attachAttributionCookies(request, NextResponse.redirect(target, 308));
   }
 
+  const closed = blogClosedDecision(path);
+  if (closed.type === 'gone') {
+    return attachAttributionCookies(request, new NextResponse('Gone', {
+      status: 410,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    }));
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
     if (path === '/') {
       const target = request.nextUrl.clone();
@@ -285,14 +293,6 @@ export function middleware(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname = '/_not-found';
     return attachAttributionCookies(request, NextResponse.rewrite(target));
-  }
-
-  const closed = blogClosedDecision(path);
-  if (closed.type === 'gone') {
-    return attachAttributionCookies(request, new NextResponse('Gone', {
-      status: 410,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    }));
   }
 
   if (path.startsWith('/casos-de-exito/')) {
