@@ -200,8 +200,9 @@ test('does not ship ShopifyDeferredCss (cached CSS must not stay on media=print)
   );
 });
 
-test('/reunion-playful stays on the Next app for GA4 before the client redirect to GHL', () => {
+test('/reunion-playful uses middleware 308 to /reunion (matcher still lists the path)', () => {
   assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
+  assert.match(middleware, /path === '\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful'/);
   assert.match(middleware, /'\/reunion-playful\/'/);
 });

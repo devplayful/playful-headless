@@ -7,6 +7,7 @@ import categoryRedirects from './utils/blog-category-redirect-map.json';
 import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json';
 import seoServiceRedirects from './utils/seo-service-redirect-map.json';
 import unpublishedLandingRedirects from './utils/unpublished-landing-redirect-map.json';
+import seoCruce2810Redirects from './utils/seo-cruce-2810-redirect-map.json';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -69,7 +70,8 @@ const PUBLIC_CASE_STUDY_SLUGS = new Set([
   'odwalla-shopify-dtc-ecommerce',
 ]);
 
-const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent301({
+const PERMANENT_301: Record<string, string> = {
+  ...mergeCanibalizacionIntoPermanent301({
   '/servicios': '/agencia-e-commerce',
   '/services': '/agencia-e-commerce',
   '/contacto': '/contactar-agencia-de-marketing-digital',
@@ -101,7 +103,10 @@ const PERMANENT_301: Record<string, string> = mergeCanibalizacionIntoPermanent30
   ...seoServiceRedirects,
   ...unpublishedLandingRedirects,
   ...canibalizacionOrigins,
-}, categoryRedirects);
+}, categoryRedirects),
+  // SEO cruce 28 oct last: keep the closed-list destination on overlap.
+  ...seoCruce2810Redirects,
+};
 
 function normalizePath(pathname: string): string {
   return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
@@ -291,6 +296,11 @@ export function middleware(request: NextRequest) {
       target.pathname = '/_not-found';
       return attachAttributionCookies(request, NextResponse.rewrite(target));
     }
+  }
+
+  if (path === '/reunion-playful') {
+    const target = new URL(`/reunion${request.nextUrl.search}`, request.url);
+    return attachAttributionCookies(request, NextResponse.redirect(target, 308));
   }
 
   const resolved = resolveSingleHopRedirect(path, request.nextUrl.searchParams);

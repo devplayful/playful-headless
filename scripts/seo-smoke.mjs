@@ -64,13 +64,11 @@ await expectRedirect(
   301,
 );
 
-{
-  const reunion = await request('/reunion-playful?utm_source=seo-smoke');
-  assert.equal(reunion.status, 200, '/reunion-playful should return 200 HTML for GA4');
-  const reunionHtml = await reunion.text();
-  assert.match(reunionHtml, /ReunionPlayfulRedirect|Redirigiendo al calendario/);
-  assert.doesNotMatch(reunionHtml, /widget\/bookings\/reunion-playful/);
-}
+await expectRedirect(
+  '/reunion-playful?utm_source=seo-smoke',
+  '/reunion',
+  308,
+);
 await expectRedirect(
   '/blog/otros/bad-bunny-como-marca-la-potencia-del-marketing-musical?utm_source=seo-smoke&utm_medium=organic&utm_campaign=canonical-alias&utm_content=one&utm_content=two',
   '/blog/mas-vistos/bad-bunny-como-marca-la-potencia-del-marketing-musical',

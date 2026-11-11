@@ -54,7 +54,6 @@ test('páginas públicas B4 sin diff respecto a fase1', () => {
   const paths = [
     'app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx',
     'app/(frontend)/contactar-agencia-de-marketing-digital/ContactPageClient.tsx',
-    'app/(frontend)/reunion-playful/page.tsx',
     'app/(frontend)/reunion-playful/ReunionPlayfulRedirect.tsx',
   ];
   for (const file of paths) {
@@ -63,6 +62,11 @@ test('páginas públicas B4 sin diff respecto a fase1', () => {
     }).trim();
     assert.equal(diff, '', `${file} debe ser idéntico a fase1`);
   }
+  assert.doesNotMatch(
+    reunionPage,
+    /alternates:\s*\{\s*canonical/,
+    'H7: /reunion-playful no debe emitir canonical propia (308 → /reunion)',
+  );
 });
 
 test('preview B4 reutiliza clientes de prod y solo añade data-cms-source', () => {

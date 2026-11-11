@@ -1,5 +1,7 @@
 # H6 — Inventario de páginas (contenido y origen)
 
+**Única ruta de este inventario:** `docs/h6-inventario.md`. QA de 134 URLs y mapa SEO: `docs/payload/h6-qa-134.md`, `docs/payload/h6-mapa-urls-seo.md`. Redirecciones conservadas en integración Payload: `docs/payload/h7-redirecciones-conservadas.md`.
+
 Base: `cursor/cms-payload-fase1`. Ámbito: todo `app/**/page.tsx` y `app/**/route.ts` que devuelve documento (HTML, XML o texto plano) al navegador.
 
 Leyenda **origen del contenido**:
@@ -33,7 +35,7 @@ Leyenda **H6**: ¿entra en la migración de «páginas que viven en código»?
 | `/politica-de-privacidad` | `app/(frontend)/politica-de-privacidad/page.tsx` | Sí | No | Código (B1 en Payload con flag apagado) | **Sí** — bloque 1 (**migrado** en PR #389) |
 | `/nosotros` | `app/(frontend)/nosotros/page.tsx` | Sí | No | Código (+ **equipo WP**; sin mover equipo en H6) | **Sí** — bloque 3 (copy TSX; equipo sigue WP) |
 | `/links` | `app/(frontend)/links/page.tsx` (+ `links/layout.tsx`) | No (`noindex`) | No | Código | **Sí** — bloque 2 (sin tocar en paralelo a eShow staging) |
-| `/reunion-playful` | `app/(frontend)/reunion-playful/page.tsx` | No (`noindex, follow`) | **Sí** — redirect cliente GHL | Redirect (+ metadata código) | **Sí** — bloque 4 (funnel) |
+| `/reunion-playful` | `app/(frontend)/reunion-playful/page.tsx` (prod: **308** middleware → `/reunion`) | No (`noindex, follow`) | **Sí** — funnel vía `/reunion` | Redirect servidor + página legado | **Sí** — bloque 4 (funnel) |
 | `/gracias` | `app/(frontend)/gracias/page.tsx` | No | **Sí** — `BookAppointmentTracker` | Código (post-submit) | **No** — página técnica funnel |
 | `/firma/alejandra-da-costa` | `app/(frontend)/firma/alejandra-da-costa/page.tsx` | No | No (copiar firma HTML) | Código | **No** — herramienta firma email |
 | `/podcast` | `app/(frontend)/podcast/page.tsx` | No (hub noindex) | No | WordPress (episodios CPT) | **No** — podcast WP |
