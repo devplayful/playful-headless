@@ -9,20 +9,20 @@ const {
 } = await import('../lib/elementor-html-optimize.ts');
 
 const HERO =
-  '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/09/Potencia-tu-presencia-con-publicidad.png" alt="hero" />';
+  '<img width="437" height="417" src="/wp-media/wp-content/uploads/2024/09/Potencia-tu-presencia-con-publicidad.png" alt="hero" />';
 const LOGO =
-  '<img class="swiper-slide-image" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/08/Cliente-Playful-_-SoyTechno.png" alt="SoyTechno" />';
+  '<img class="swiper-slide-image" src="/wp-media/wp-content/uploads/2024/08/Cliente-Playful-_-SoyTechno.png" alt="SoyTechno" />';
 
-test('SEM hero is rewritten to /_next/image with sizes and fetchpriority', () => {
+test('SEM hero is rewritten with sizes and fetchpriority on snapshot media', () => {
   const out = optimizeElementorLcpHero(HERO, 'agencia-sem');
-  assert.match(out, /src="\/_next\/image\?url=/);
+  assert.match(out, /src="\/wp-media\/wp-content\/uploads\/2024\/09\/Potencia-tu-presencia-con-publicidad\.png"/);
   assert.match(out, /fetchpriority="high"/i);
   assert.match(out, /sizes="/);
   assert.match(out, /750px/);
   assert.doesNotMatch(out, /[&?]w=437/);
   assert.doesNotMatch(out, /[&?]w=300/);
   assert.match(out, /750w/);
-  assert.match(firstOptimizableHeroSrc(HERO, 'agencia-sem'), /\/_next\/image/);
+  assert.match(firstOptimizableHeroSrc(HERO, 'agencia-sem'), /\/wp-media\//);
 });
 
 test('carousel logos gain intrinsic width and height', () => {
@@ -33,11 +33,11 @@ test('carousel logos gain intrinsic width and height', () => {
 
 test('agencia-e-commerce SVG hero stays on origin with reserved 437/417 box', () => {
   const svgHero =
-    '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg" alt="e-commerce hero" srcset="/_next/image?url=x&w=750 750w" sizes="100vw" />';
+    '<img width="437" height="417" src="/wp-media/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg" alt="e-commerce hero" srcset="/wp-media/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg 750w" sizes="100vw" />';
   const out = optimizeElementorLcpHero(svgHero, 'agencia-e-commerce');
   assert.match(
     out,
-    /src="https:\/\/endpoint\.playfulagency\.com\/wp-content\/uploads\/2024\/10\/Payful-Agencia-de-Marketing-Internacional0\.svg"/,
+    /src="\/wp-media\/wp-content\/uploads\/2024\/10\/Payful-Agencia-de-Marketing-Internacional0\.svg"/,
   );
   assert.doesNotMatch(out, /\/_next\/image/);
   assert.match(out, /width="437"/);
@@ -47,7 +47,7 @@ test('agencia-e-commerce SVG hero stays on origin with reserved 437/417 box', ()
   assert.doesNotMatch(out, /\/\s+style=/);
   assert.equal(
     firstOptimizableHeroSrc(svgHero, 'agencia-e-commerce'),
-    'https://endpoint.playfulagency.com/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg',
+    '/wp-media/wp-content/uploads/2024/10/Payful-Agencia-de-Marketing-Internacional0.svg',
   );
 });
 
@@ -68,14 +68,14 @@ test('e-com hero CSS reserves 437/417 and does not min-height 9102780', async ()
   assert.match(page, /playful-ecom-hero-cls/);
 });
 
-test('agencia-e-commerce raster hero still uses /_next/image', () => {
+test('agencia-e-commerce raster hero still uses snapshot media URL', () => {
   const out = optimizeElementorLcpHero(HERO, 'agencia-e-commerce');
-  assert.match(out, /\/_next\/image/);
+  assert.match(out, /\/wp-media\/wp-content\/uploads\/2024\/09\/Potencia-tu-presencia-con-publicidad\.png/);
 });
 
 test('agencia-ux-ui leaves the hero SVG URL untouched (/_next/image regresses mobile LCP)', () => {
   const svgHero =
-    '<img width="437" height="417" src="https://endpoint.playfulagency.com/wp-content/uploads/2024/11/Playful-Transforma-tu-experiencia-digital-con-nuestra-Agencia-UX.svg" alt="UX hero" />';
+    '<img width="437" height="417" src="/wp-media/wp-content/uploads/2024/11/Playful-Transforma-tu-experiencia-digital-con-nuestra-Agencia-UX.svg" alt="UX hero" />';
   const out = optimizeElementorLcpHero(svgHero, 'agencia-ux-ui');
   assert.match(out, /Playful-Transforma-tu-experiencia-digital-con-nuestra-Agencia-UX\.svg/);
   assert.doesNotMatch(out, /\/_next\/image/);

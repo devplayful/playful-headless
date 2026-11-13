@@ -2,7 +2,7 @@ import { largestAllowedCaseStudyMediaUrl } from '../services/case-study-media-po
 
 /** Same listing endpoint and featured-media resolver as /casos-de-exito. */
 export const CASE_STUDIES_LISTING_EMBED_URL =
-  'https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed';
+  'https://playful-headless/wp-json/wp/v2/casos-de-exito?_embed';
 
 export const CASE_STUDY_COVER_SIZE = { width: 1200, height: 1200 } as const;
 

@@ -32,7 +32,9 @@
     "test:route-integrity": "node --experimental-strip-types --test tests/route-integrity.test.mjs tests/twitter-og-parity.test.mjs tests/page-seo-overrides.test.mjs tests/not-found-dynamic.test.mjs tests/wp-probe-404.test.mjs tests/agencia-ux-ui-sitemap.test.mjs tests/sitemap-unpublished.test.mjs tests/podcast-sitemap.test.mjs tests/links-bio.test.mjs tests/jose-contact.test.mjs tests/seo-cruce-2810-freeze.test.mjs tests/seo-cruce-2810-no-import.test.mjs",
     "verify:lockfile": "node scripts/verify-lockfile-install.mjs",
     "verify:routes": "node scripts/verify-route-artifact.mjs",
-    "verify:routes:build": "node scripts/build-and-verify-routes.mjs"
+    "verify:routes:build": "node scripts/build-and-verify-routes.mjs",
+    "export:wp-snapshot": "tsx scripts/export-wp-snapshot.ts",
+    "audit:rendered-wp-urls": "tsx scripts/audit-rendered-endpoint-urls.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

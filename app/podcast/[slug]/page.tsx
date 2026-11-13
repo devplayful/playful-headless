@@ -7,8 +7,23 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getPodcastEpisodeBySlug, PodcastEpisode } from '@/services/wordpress';
-import { WordPressUnavailableError } from '@/services/wordpress-request.mjs';
+type PodcastEpisode = {
+  slug: string;
+  date: string;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  content: { rendered: string };
+  featured_media_url?: string | null;
+  featured_media_alt?: string;
+  yoast_head_json?: {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: Array<{ url: string }>;
+  };
+};
 import Head from 'next/head';
 
 // Componente de loading
@@ -44,16 +59,20 @@ export default function EpisodePage() {
       try {
         setLoading(true);
         setError(null);
-        const episodeData = await getPodcastEpisodeBySlug(slug);
-        
-        if (!episodeData) {
+        const res = await fetch(`/api/podcast-episodes/${encodeURIComponent(slug)}`);
+        if (res.status === 404) {
           setError('not-found');
-        } else {
-          setEpisode(episodeData);
+          return;
         }
+        if (!res.ok) {
+          setError('unavailable');
+          return;
+        }
+        const episodeData = (await res.json()) as PodcastEpisode;
+        setEpisode(episodeData);
       } catch (err) {
         console.error('Error cargando episodio:', err);
-        setError(err instanceof WordPressUnavailableError ? 'unavailable' : 'unexpected');
+        setError('unexpected');
       } finally {
         setLoading(false);
       }
@@ -182,17 +201,17 @@ export default function EpisodePage() {
               "name": cleanTitle(episode.title.rendered),
               "description": episode.excerpt.rendered.replace(/<[^>]*>/g, ''),
               "datePublished": episode.date,
-              "url": episode.yoast_head_json?.canonical || `https://endpoint.playfulagency.com/podcast/${episode.slug}/`,
+              "url": episode.yoast_head_json?.canonical || `https://playfulagency.com/podcast/${episode.slug}/`,
               "image": episode.featured_media_url || episode.yoast_head_json?.og_image?.[0]?.url,
               "partOfSeries": {
                 "@type": "PodcastSeries",
                 "name": "Bendita Web",
-                "url": "https://endpoint.playfulagency.com/podcast/"
+                "url": "https://playfulagency.com/podcast/"
               },
               "publisher": {
                 "@type": "Organization",
                 "name": "Playful Agency",
-                "url": "https://endpoint.playfulagency.com/"
+                "url": "https://playfulagency.com/"
               }
             })
           }}

@@ -1,4 +1,5 @@
 import canibalizacionOrigins from '../utils/blog-canibalizacion-redirect-map.json' with { type: 'json' };
+import { rewriteStringUrls } from '../lib/wp-snapshot/rewrite-media-urls.mjs';
 import { rewriteBrokenInternalAnchors } from '../utils/broken-internal-hrefs.ts';
 import {
   CLOSED_BLOG_PATHS,
@@ -314,7 +315,7 @@ function rewriteRenderedField(field, sourcePath = '') {
   }
   return {
     ...field,
-    rendered: rewriteInSitePageHrefs(field.rendered, sourcePath),
+    rendered: rewriteStringUrls(rewriteInSitePageHrefs(field.rendered, sourcePath)),
   };
 }
 

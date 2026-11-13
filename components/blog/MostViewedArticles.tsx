@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { WPPost } from '@/services/wordpress';
+import type { WPPost } from '@/services/wordpress';
 import { blogPostPath } from '@/utils/blog-url';
 import { formatBlogListingDate } from '@/lib/blog-editorial-meta';
 import { BLOG_MOST_VIEWED_SIZES } from '@/lib/blog-image-sizes';

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MenuItem, menuItems, getPageMetadataBySlug } from '@/services/wordpress';
+import { MenuItem, menuItems, type YoastMetaData } from '@/services/wordpress';
 
 interface MegaMenuProps {
   isOpen: boolean;
@@ -56,7 +56,9 @@ export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
   const preloadMetadata = async (slug: string) => {
     try {
       setLoadingSlug(slug);
-      const metadata = await getPageMetadataBySlug(slug);
+      const response = await fetch(`/api/page-metadata?slug=${encodeURIComponent(slug)}`);
+      if (!response.ok) throw new Error(`metadata ${response.status}`);
+      const metadata = await response.json() as YoastMetaData;
       setMetadataCache(prev => ({
         ...prev,
         [slug]: metadata

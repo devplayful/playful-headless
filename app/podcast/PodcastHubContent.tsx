@@ -1,8 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getPodcastEpisodes, PodcastEpisode } from '@/services/wordpress';
+import type { PodcastEpisode } from '@/services/wordpress';
 import { loadPodcastEpisodesState, resolvePodcastEpisodesView } from '@/services/podcast-loader.mjs';
+
+async function fetchPodcastEpisodes(page: number, perPage: number) {
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: String(perPage),
+  });
+  const response = await fetch(`/api/podcast-episodes?${params.toString()}`);
+  if (!response.ok) {
+    throw new Error(`podcast episodes ${response.status}`);
+  }
+  return response.json() as Promise<{ episodes: PodcastEpisode[]; totalPages: number }>;
+}
 
 function LoadingSpinner() {
   return (
@@ -172,16 +184,12 @@ export default function PodcastHubContent({
     async function loadEpisodes() {
       setEpisodesLoading(true);
       setEpisodesError(null);
-      const result = await loadPodcastEpisodesState<PodcastEpisode>(
-        getPodcastEpisodes,
-        currentPage,
-        episodesPerPage,
-      );
-      if (result.status === 'ready') {
+      try {
+        const result = await fetchPodcastEpisodes(currentPage, episodesPerPage);
         setEpisodes(result.episodes);
         setTotalPages(result.totalPages);
-      } else {
-        setEpisodesError(result.status);
+      } catch {
+        setEpisodesError('unavailable');
       }
       setEpisodesLoading(false);
     }

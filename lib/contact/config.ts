@@ -70,10 +70,10 @@ export function readContactPipelineConfig(
   );
   const idempotentRetriesEnabled = env.WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED === 'true';
   const deliveryCriticalSectionMs = contactDeliveryLeaseMinimumMs(idempotentRetriesEnabled);
-  if (leaseSeconds * 1000 < deliveryCriticalSectionMs) {
+  if (idempotentRetriesEnabled && leaseSeconds * 1000 < deliveryCriticalSectionMs) {
     const minimumSeconds = Math.ceil(deliveryCriticalSectionMs / 1000);
     throw new ContactPipelineConfigurationError(
-      `CONTACT_PROCESSING_LEASE_SECONDS debe ser al menos ${minimumSeconds} para cubrir el protocolo WordPress completo, sus checkpoints Redis y el margen de seguridad.`,
+      `CONTACT_PROCESSING_LEASE_SECONDS debe ser al menos ${minimumSeconds} cuando WORDPRESS_CONTACT_IDEMPOTENCY_ENABLED está activo.`,
     );
   }
 
