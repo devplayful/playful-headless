@@ -11,12 +11,10 @@ import {
   SubmissionValidationError,
 } from '@/lib/contact/normalize';
 import {
-  checkWordPressReceipt,
   ContactDeliveryError,
-  DeterministicContactDeliveryError,
-  deliverToWordPress,
   verifyRecaptcha,
 } from '@/lib/contact/delivery';
+import { acknowledgeContactSubmission } from '@/lib/contact/snapshot-delivery';
 import {
   RedisRestIdempotencyStore,
   SubmissionInProgressError,
@@ -82,29 +80,14 @@ function requestedReconciliation(body: Record<string, unknown>): boolean {
   throw new SubmissionValidationError('La acción solicitada no es válida.');
 }
 
-async function processRedisFreeRollback(
-  lead: ReturnType<typeof normalizeWebsiteLead>,
-  reconcileOnly: boolean,
-) {
-  if (reconcileOnly) {
-    try {
-      const receipt = await checkWordPressReceipt(lead);
-      if (receipt === 'completed') return success(false, false, true);
-      if (receipt === 'missing') throw new DeliveryReceiptMissingError();
-      return pendingConfirmation(true, false);
-    } catch (error) {
-      if (error instanceof DeliveryReceiptMissingError) throw error;
-      return pendingConfirmation(true, false);
-    }
-  }
-
-  try {
-    await deliverToWordPress(lead, { idempotentRetriesEnabled: false });
-    return success(false, false, false);
-  } catch (error) {
-    if (error instanceof DeterministicContactDeliveryError) throw error;
-    return pendingConfirmation(false, false);
-  }
+function pipelineRequiredResponse() {
+  return NextResponse.json(
+    {
+      success: false,
+      message: 'El formulario requiere el pipeline de contacto (CONTACT_PIPELINE_ENABLED). WordPress ya no recibe envíos.',
+    },
+    { status: 503 },
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -165,7 +148,7 @@ export async function POST(request: NextRequest) {
     const productionCanary = isProductionCanaryLead(lead.email);
 
     if (!isContactPipelineEnabled() && !productionCanary) {
-      return await processRedisFreeRollback(lead, reconcileOnly);
+      return pipelineRequiredResponse();
     }
 
     const contactPipeline = readContactPipelineConfig();
@@ -179,8 +162,7 @@ export async function POST(request: NextRequest) {
     if (!highLevel.enabled) {
       const result = await processContactPipeline(lead, {
         store,
-        deliver: deliverToWordPress,
-        reconcileDelivery: checkWordPressReceipt,
+        deliver: acknowledgeContactSubmission,
         dryRun: false,
         reconcileOnly,
       });
@@ -195,8 +177,7 @@ export async function POST(request: NextRequest) {
 
     const result = await processContactPipeline(lead, {
       store,
-      deliver: deliverToWordPress,
-      reconcileDelivery: checkWordPressReceipt,
+      deliver: acknowledgeContactSubmission,
       syncCrm: (submission, control) => syncWebsiteLeadToHighLevel(
         submission,
         gateway,
@@ -238,7 +219,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           retryable: true,
-          message: 'No pudimos iniciar el envío. WordPress no fue contactado; inténtalo de nuevo.',
+          message: 'No pudimos iniciar el envío. Inténtalo de nuevo.',
         },
         { status: 503 },
       );
@@ -266,7 +247,7 @@ export async function POST(request: NextRequest) {
       console.error('El pipeline de contacto no pudo completar una operación segura.');
     }
     // Post-delivery CRM failures are returned as success by the orchestrator.
-    // This 502 is only for unexpected errors before a confirmed WordPress delivery.
+    // This 502 is only for unexpected errors before a confirmed local delivery.
     return NextResponse.json(
       { success: false, retryable: true, message: 'No pudimos completar el envío. Inténtalo de nuevo.' },
       { status: 502 },

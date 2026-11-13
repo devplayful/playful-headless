@@ -40,5 +40,5 @@ test('podcast episode page stays client-only and is annotated as out of this cha
   assert.match(episodePage, /^['"]use client['"]/m);
   assert.match(episodePage, /Out of this change/);
   assert.match(episodePage, /app\/not-found\.tsx/);
-  assert.match(episodePage, /getPodcastEpisodeBySlug/);
+  assert.match(episodePage, /\/api\/podcast-episodes\//);
 });

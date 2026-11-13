@@ -74,7 +74,7 @@ export {
   rewriteWpYoastFields,
 };
 
-const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
+const WORDPRESS_API_URL = 'https://playful-headless/wp-json';
 
 /** WP REST fields that Next must never serialize into RSC / client props. */
 const WP_LEAK_KEYS = new Set([
@@ -1368,7 +1368,7 @@ export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
     const fallback: YoastMetaData = {
       yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
       yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
-      yoast_wpseo_canonical: 'https://endpoint.playfulagency.com/podcast/',
+      yoast_wpseo_canonical: 'https://playfulagency.com/podcast/',
       yoast_wpseo_og_title: 'Podcast - Bendita Web | Playful Agency',
       yoast_wpseo_og_description: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
       yoast_wpseo_og_image: ''
@@ -1400,7 +1400,7 @@ export async function getPodcastPageMetadata(): Promise<YoastMetaData> {
     return {
       yoast_wpseo_title: 'Podcast - Bendita Web | Playful Agency',
       yoast_wpseo_metadesc: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
-      yoast_wpseo_canonical: 'https://endpoint.playfulagency.com/podcast/',
+      yoast_wpseo_canonical: 'https://playfulagency.com/podcast/',
       yoast_wpseo_og_title: 'Podcast - Bendita Web | Playful Agency',
       yoast_wpseo_og_description: 'Escucha nuestro podcast Bendita Web donde hablamos de marketing digital, SEO, desarrollo web y más.',
       yoast_wpseo_og_image: ''
@@ -1414,9 +1414,17 @@ export async function getPodcastEpisodes(page: number = 1, perPage: number = 10)
     { next: { revalidate: 60 }, headers: { 'Content-Type': 'application/json' } }
   );
   const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
-  const processedEpisodes = episodes.map(episode => {
+  const processedEpisodes = episodes.map((episode) => {
     const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
-    return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+    if (!episode.excerpt) episode.excerpt = { rendered: '' };
+    rewriteWpYoastFields(episode as unknown as Record<string, unknown>);
+    rewriteWpRenderedHtmlFields(episode as unknown as Record<string, unknown>);
+    const withMedia = {
+      ...episode,
+      featured_media_url: featuredMedia?.source_url || null,
+      featured_media_alt: featuredMedia?.alt_text || '',
+    };
+  return sanitizeWpPayload(withMedia);
   });
   return { episodes: processedEpisodes, totalPages };
 }
@@ -1516,7 +1524,20 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
   if (!episode.excerpt) episode.excerpt = { rendered: '' };
-  return { ...episode, featured_media_url: featuredMedia?.source_url || null, featured_media_alt: featuredMedia?.alt_text || '' };
+  rewriteWpYoastFields(episode as unknown as Record<string, unknown>);
+  rewriteWpRenderedHtmlFields(episode as unknown as Record<string, unknown>);
+  const { _links, _embedded, yoast_head, link, guid, ...rest } = episode as PodcastEpisode & {
+    _links?: unknown;
+    _embedded?: unknown;
+    yoast_head?: unknown;
+    link?: unknown;
+    guid?: unknown;
+  };
+  return {
+    ...rest,
+    featured_media_url: featuredMedia?.source_url || null,
+    featured_media_alt: featuredMedia?.alt_text || '',
+  };
 }
 
 const caseStudiesCache: RelatedPostsCacheState<any[]> = { current: null };

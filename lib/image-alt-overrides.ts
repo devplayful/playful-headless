@@ -1,6 +1,6 @@
 import IMAGE_ALT_OVERRIDE_ENTRIES from './image-alt-overrides.json' with { type: 'json' };
 
-export const WP_MEDIA_HOST = 'https://endpoint.playfulagency.com';
+export const WP_MEDIA_HOST = '/wp-media';
 export const WP_UPLOADS_PREFIX = '/wp-content/uploads/';
 export const WP_KEY_PREFIX = 'WP:';
 

@@ -1,3 +1,14 @@
+import { WordPressUnavailableError } from './wordpress-errors.mjs';
+
+/** Live WordPress fetches are only for scripts/export-wp-snapshot.ts (set WORDPRESS_LIVE_FETCH=1). */
+function useWordPressLiveFetch(env = process.env) {
+  return env.WORDPRESS_LIVE_FETCH === '1' || env.WORDPRESS_LIVE_FETCH === 'true';
+}
+
+async function snapshotModule() {
+  return import('../lib/wp-snapshot/rest-router.mjs');
+}
+
 const DEFAULT_MAX_ATTEMPTS = 2;
 const BUILD_MAX_ATTEMPTS = 2;
 const DEFAULT_BASE_DELAY_MS = 150;
@@ -110,19 +121,7 @@ export function consumeWordPressBuildRetry(env = process.env) {
 
 const TRANSIENT_STATUSES = new Set([408, 425, 429]);
 
-export class WordPressUnavailableError extends Error {
-  constructor(message, { url, status, attempts, cause } = {}) {
-    super(message, { cause });
-    this.name = 'WordPressUnavailableError';
-    this.url = url;
-    this.status = status;
-    this.attempts = attempts;
-  }
-}
-
-// Backwards-compatible name retained for callers/tests created in the first
-// resilience patch.
-export { WordPressUnavailableError as WordPressUpstreamError };
+export { WordPressUnavailableError, WordPressUnavailableError as WordPressUpstreamError };
 
 export function isTransientWordPressStatus(status) {
   return TRANSIENT_STATUSES.has(status) || (status >= 500 && status <= 599);
@@ -288,6 +287,10 @@ async function wordpressRequest(input, init, options, consumeResponse) {
 }
 
 export async function wordpressFetch(input, init = {}, options = {}) {
+  if (!useWordPressLiveFetch() && !options.fetchImpl) {
+    const mod = await snapshotModule();
+    return mod.wordpressFetchFromSnapshot(input);
+  }
   return wordpressRequest(input, init, options, async (response, { url }) => {
     const body = await response.arrayBuffer();
     if (isWordPressMeterEnabled()) {
@@ -299,6 +302,10 @@ export async function wordpressFetch(input, init = {}, options = {}) {
 
 /** Fetch a WordPress REST collection while preserving absence vs outage. */
 export async function wordpressFetchCollection(input, init = {}, options = {}) {
+  if (!useWordPressLiveFetch() && !options.fetchImpl) {
+    const mod = await snapshotModule();
+    return mod.wordpressFetchCollectionFromSnapshot(input);
+  }
   return wordpressRequest(input, init, options, async (response, { attempt, url }) => {
     if (response.status !== 200) {
       throw new WordPressUnavailableError(

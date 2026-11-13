@@ -1,4 +1,4 @@
-import { WordPressUnavailableError } from './wordpress-request.mjs';
+import { WordPressUnavailableError } from './wordpress-errors.mjs';
 
 /** Convert the podcast collection call into an explicit UI state. */
 export async function loadPodcastEpisodesState(fetchEpisodes, page, perPage) {

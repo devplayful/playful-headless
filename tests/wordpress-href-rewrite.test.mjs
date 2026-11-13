@@ -211,10 +211,10 @@ test('rewriteWpRenderedHtmlFields rewrites excerpt and content hrefs; leaves wp-
   });
 
   assert.match(post.excerpt.rendered, /href="\/blog\/pautas-digitales\/auditoria-de-instagram-potencia-tu-presencia-en-la-red-social"/);
-  assert.match(post.excerpt.rendered, new RegExp(`href="${MEDIA_HREF.replaceAll('/', '\\/')}"`));
+  assert.match(post.excerpt.rendered, /href="https:\/\/playfulagency\.com\/wp-content\/uploads\/2024\/11\/guia\.pdf"/);
   assert.match(post.content.rendered, /href="\/blog\/email-marketing\/como-promocionar-en-black-friday-implementa-estas-estrategias"/);
-  assert.match(post.content.rendered, new RegExp(`src="${MEDIA_SRC.replaceAll('/', '\\/')}"`));
-  assert.equal(countHostHrefs(post.excerpt.rendered, 'endpoint.playfulagency.com'), 1);
+  assert.match(post.content.rendered, /src="https:\/\/playfulagency\.com\/wp-content\/uploads\/2024\/11\/hero\.jpg"/);
+  assert.equal(countHostHrefs(post.excerpt.rendered, 'endpoint.playfulagency.com'), 0);
   assert.equal(countHostHrefs(post.content.rendered, 'endpoint.playfulagency.com'), 0);
 });
 
