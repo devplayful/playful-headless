@@ -76,6 +76,7 @@ jobs:
             sleep 2
           done
           BASE_URL=http://127.0.0.1:3456 node scripts/verify-sin-wp-smoke.mjs
+          BASE_URL=http://127.0.0.1:3456 node scripts/verify-wp-media-html-guard.mjs
           kill "$srv_pid" 2>/dev/null || true
 
   unsigned-copy:

@@ -66,3 +66,5 @@ pids
 
 # Payload (medios en disco en local)
 /media
+
+data/wp-snapshot/wp-media-mirror.json

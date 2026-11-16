@@ -4,6 +4,7 @@ import {
   maybeRewriteHtmlForBlob,
   maybeRewriteMediaUrl,
 } from './blob-image-url.ts';
+import { rewriteStringUrls } from './wp-snapshot/rewrite-media-urls.mjs';
 import { rewriteWtiLikeTrackingPixels, rewriteEndpointUrlsInHtmlForPreview, rewriteEndpointAssetUrlForPreview } from './wp-endpoint-surface.ts';
 import { ORGANIZATION_LOGO_URL } from '../utils/organization-schema.mjs';
 
@@ -17,10 +18,15 @@ export function applyBlobImagesToHtml(
   html: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
+  const snapshotSafe = rewriteStringUrls(html);
   const map = loadBlobMigrationMap(env);
-  const rewritten = maybeRewriteHtmlForBlob(html, map, env);
+  const rewritten = maybeRewriteHtmlForBlob(snapshotSafe, map, env);
   const surfaced = rewriteEndpointUrlsInHtmlForPreview(rewritten, env);
-  return rewriteWtiLikeTrackingPixels(surfaced, env);
+  const wtiFixed = rewriteWtiLikeTrackingPixels(surfaced, env);
+  return wtiFixed.replace(
+    /https?:\/\/endpoint\.playfulagency\.com\/wp-content\/plugins\/wti-like-post\/images\/pixel\.gif/gi,
+    '/wp-static/wp-content/plugins/wti-like-post/images/pixel.gif',
+  );
 }
 
 export function applyBlobImagesToUrl(
@@ -28,21 +34,30 @@ export function applyBlobImagesToUrl(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   if (!url) return url || '';
-  if (isBlobImagesEnabled(env)) {
-    return rewriteEndpointAssetUrlForPreview(url, env);
+  const trimmed = url.trim();
+  if (trimmed.startsWith('/wp-media/')) return trimmed.split('?')[0];
+  if (trimmed.startsWith('/wp-content/uploads/')) {
+    return rewriteStringUrls(trimmed).split('?')[0];
   }
+  if (isBlobImagesEnabled(env)) {
+    return rewriteEndpointAssetUrlForPreview(trimmed, env);
+  }
+  const normalized = rewriteStringUrls(trimmed);
   const map = loadBlobMigrationMap(env);
-  return maybeRewriteMediaUrl(url, map, env);
+  return maybeRewriteMediaUrl(normalized, map, env);
 }
 
 export function applyBlobImagesToJsonLd<T>(value: T, env: NodeJS.ProcessEnv = process.env): T {
-  if (!isBlobImagesEnabled(env)) return value;
-  const map = loadBlobMigrationMap(env);
-  if (!map) return value;
   let json = JSON.stringify(value);
+  json = rewriteStringUrls(json);
+  json = json.split(YOAST_SCHEMA_LOGO_ENDPOINT).join(ORGANIZATION_LOGO_URL);
+  if (!isBlobImagesEnabled(env)) {
+    return JSON.parse(json) as T;
+  }
+  const map = loadBlobMigrationMap(env);
+  if (!map) return JSON.parse(json) as T;
   json = maybeRewriteHtmlForBlob(json, map, env);
   json = rewriteEndpointUrlsInHtmlForPreview(json, env);
-  json = json.split(YOAST_SCHEMA_LOGO_ENDPOINT).join(ORGANIZATION_LOGO_URL);
   return JSON.parse(json) as T;
 }
 
