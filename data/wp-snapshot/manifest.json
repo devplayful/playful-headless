@@ -1,0 +1,22 @@
+{
+  "exportedAt": "2026-11-13T17:01:18.904Z",
+  "source": "https://endpoint.playfulagency.com/wp-json",
+  "counts": {
+    "posts": 135,
+    "categories": 7,
+    "users": 10,
+    "media": 135,
+    "pages": 11,
+    "podcast": 18,
+    "equipo": 6,
+    "casosDeExito": 2
+  },
+  "media": {
+    "filesCommitted": 908,
+    "totalBytes": 42810535,
+    "totalMegabytes": 40.83,
+    "abortedOver300MB": false,
+    "audioSkipped": []
+  },
+  "contentHash": "21009cbfadba4454"
+}
