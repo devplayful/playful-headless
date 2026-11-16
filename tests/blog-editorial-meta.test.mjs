@@ -467,7 +467,7 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(blogPage, /<BlogRelatedPostsSection/);
   assert.match(blogPage, /posts=\{relatedPosts\}/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
-  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /getRelatedBlogPostsForPostWithCms\(post/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.match(blogPage, /resolveBlogArticleAuthor\(post, editorial\)/);
