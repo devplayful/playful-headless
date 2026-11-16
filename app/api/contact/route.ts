@@ -199,8 +199,7 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
-    if (error instanceof DeliveryReceiptMissingError
-      || error instanceof SubmissionPayloadMismatchError) {
+    if (error instanceof SubmissionPayloadMismatchError) {
       return NextResponse.json(
         {
           success: false,
@@ -215,7 +214,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           retryable: true,
-          message: 'No pudimos iniciar el envío. WordPress no fue contactado; inténtalo de nuevo.',
+          message: 'No pudimos iniciar el envío. Inténtalo de nuevo.',
         },
         { status: 503 },
       );

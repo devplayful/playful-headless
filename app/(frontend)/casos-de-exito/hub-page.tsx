@@ -26,9 +26,10 @@ type HubOptions = {
 };
 
 export async function renderCaseStudiesHub(options: HubOptions) {
-  const items = options.renderFromPayload
+  const fromPayload = options.renderFromPayload
     ? await getAllCaseStudiesFromPayload({ renderFromPayload: true })
-    : await getAllCaseStudies();
+    : [];
+  const items = fromPayload.length > 0 ? fromPayload : await getAllCaseStudies();
   const initialCaseStudies = items.map(mapCaseStudyToListingCard);
   const previewAttrs =
     options.renderFromPayload && process.env.VERCEL_ENV === 'preview'
