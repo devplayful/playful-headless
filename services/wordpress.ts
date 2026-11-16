@@ -78,7 +78,7 @@ export {
   rewriteWpYoastFields,
 };
 
-const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
+const WORDPRESS_API_URL = 'https://playful-headless/wp-json';
 
 /** WP REST fields that Next must never serialize into RSC / client props. */
 const WP_LEAK_KEYS = new Set([
