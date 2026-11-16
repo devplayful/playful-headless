@@ -1,4 +1,4 @@
-import { getBlogPosts } from '@/services/wordpress';
+import { getBlogPostsWithCms } from '@/lib/cms-blog';
 import { BLOG_LISTING_PER_PAGE } from '@/utils/blog-listing-query';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -27,7 +27,7 @@ export default async function BlogListingView({
   const perPage = BLOG_LISTING_PER_PAGE; // 1 destacado + 9 en el grid (3x3)
 
   // Obtener los posts del blog (filtrados por categoría si existe)
-  const { posts: allPosts, totalPages } = await getBlogPosts(currentPage, perPage, category);
+  const { posts: allPosts, totalPages } = await getBlogPostsWithCms(currentPage, perPage, category);
   
   // Filtrar posts por búsqueda si existe query
   let posts = filterOpenBlogPosts(allPosts);

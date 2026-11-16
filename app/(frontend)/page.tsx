@@ -66,7 +66,9 @@ import { resolveHomeContentForPayloadRender } from "@/lib/cms-home";
 import CimaBreaker from "@/components/premios-cima/CimaBreaker";
 import TwoColumnCtaSection from "@/components/ui/TwoColumnCtaSection";
 import BlogRelatedPostsSection from "@/components/sections/BlogRelatedPostsSection";
-import { getAllCaseStudies, getLatestBlogPosts } from "@/services/wordpress";
+import { getAllCaseStudies } from "@/services/wordpress";
+import { getLatestBlogPostsWithCms } from '@/lib/cms-blog';
+import { shouldRenderBlogFromPayload } from '@/lib/cms-blog-flag';
 
 const shell = "max-w-[1200px] mx-auto px-4 md:px-6";
 
@@ -74,7 +76,9 @@ async function HomeContent() {
   // Obtener casos de éxito y posts del bloque de blog una sola vez en el servidor
   const [casosDeExito, blogPosts] = await Promise.all([
     getAllCaseStudies(),
-    getLatestBlogPosts(6).catch(() => []),
+    getLatestBlogPostsWithCms(6, {
+      renderFromPayload: shouldRenderBlogFromPayload(false),
+    }).catch(() => []),
   ]);
   return (
     <div className="">

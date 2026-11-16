@@ -14,6 +14,8 @@ import { PaginasCodigo } from './cms/collections/PaginasCodigo.ts';
 import { Posts } from './cms/collections/Posts.ts';
 import { Servicios } from './cms/collections/Servicios.ts';
 import { Usuarios } from './cms/collections/Usuarios.ts';
+import { PodcastEpisodios } from './cms/collections/PodcastEpisodios.ts';
+import { Equipo } from './cms/collections/Equipo.ts';
 import { getPayloadConnectionString } from './lib/cms-database.ts';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -32,7 +34,20 @@ export default buildConfig({
     importMap: { baseDir: dirname },
     meta: { titleSuffix: ' · CMS Playful', robots: 'noindex, nofollow' },
   },
-  collections: [Posts, Paginas, PaginasCodigo, Casos, Home, Servicios, Autores, Categorias, Medios, Usuarios],
+  collections: [
+    Posts,
+    Paginas,
+    PaginasCodigo,
+    Casos,
+    Home,
+    Servicios,
+    Autores,
+    Categorias,
+    Medios,
+    Usuarios,
+    PodcastEpisodios,
+    Equipo,
+  ],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: { connectionString: databaseUri },

@@ -1,4 +1,5 @@
-import { getPageMetadataBySlug, TeamMember, getTeamMembers } from '@/services/wordpress';
+import { getPageMetadataBySlug, TeamMember } from '@/services/wordpress';
+import { getTeamMembersWithCms } from '@/lib/cms-equipo';
 import { canonicalForPath } from '@/utils/canonical';
 import { twitterFromOpenGraph } from '@/utils/page-seo-overrides.mjs';
 import { ogJpegForPath, ogJpegMeta } from '@/lib/og-images';
@@ -185,7 +186,7 @@ const TeamMemberCard = ({ member }: { member: TeamMember }) => {
 // --- COMPONENTE DE EQUIPO ---
 const EquipoSection = async () => {
   // Obtener los miembros del equipo desde WordPress
-  const teamMembers = await getTeamMembers();
+  const teamMembers = await getTeamMembersWithCms();
   
   // Separar fundadores del resto del equipo
   const fundadores = teamMembers.filter(member => 

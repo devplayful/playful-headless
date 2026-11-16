@@ -569,6 +569,10 @@ type RelatedCardCategoryLookup = {
   fallback?: { name?: string; slug?: string };
 };
 
+export function relatedBlogCardsFromPosts(posts: WPPost[], perPage: number): RelatedBlogCard[] {
+  return filterOpenBlogPosts(posts.map((post) => toRelatedBlogCard(post))).slice(0, perPage);
+}
+
 function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): RelatedBlogCard {
   let category = 'Sin categoría';
   let categorySlug = 'sin-categoria';

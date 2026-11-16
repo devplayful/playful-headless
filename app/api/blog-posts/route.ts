@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getLatestBlogPosts } from '@/services/wordpress';
+import { getLatestBlogPostsWithCms } from '@/lib/cms-blog';
 import {
   RELATED_BLOG_CARD_COUNT,
   RELATED_BLOG_FETCH_COUNT,
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const exclude = searchParams.get('exclude') || searchParams.get('excludeSlug');
-    const posts = await getLatestBlogPosts(
+    const posts = await getLatestBlogPostsWithCms(
       exclude ? RELATED_BLOG_FETCH_COUNT : RELATED_BLOG_CARD_COUNT,
     );
     const payload = exclude
