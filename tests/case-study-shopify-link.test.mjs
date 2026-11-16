@@ -10,16 +10,16 @@ const {
 } = await import('../utils/case-study-shopify-link.ts');
 
 const page = readFileSync(
-  new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const component = readFileSync(
-  new URL('../app/casos-de-exito/[slug]/ShopifyServiceLink.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/[slug]/ShopifyServiceLink.tsx', import.meta.url),
   'utf8',
 );
 const header = readFileSync(new URL('../components/HeaderClient.tsx', import.meta.url), 'utf8');
 const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
-const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
 
 test('allowlist is only Jumex and Odwalla', () => {
   assert.deepEqual([...SHOPIFY_CASE_STUDY_SLUGS], [

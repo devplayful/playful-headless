@@ -67,7 +67,7 @@ test('publicWebpIfPresent leaves remotes, svg and missing siblings alone', () =>
 test('wordpress listing and shopify hero consume the helper without rewriting overrides', () => {
   const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
   const home = readFileSync(new URL('../components/HomeHeroArt.tsx', import.meta.url), 'utf8');
-  const shopify = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+  const shopify = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
   const zelle = readFileSync(new URL('../utils/ecommerce-zelle-cover.ts', import.meta.url), 'utf8');
   const covers = readFileSync(new URL('../lib/blog-cover-image.ts', import.meta.url), 'utf8');
   assert.match(wordpress, /publicWebpIfPresent\(\s*resolveBlogCoverUrl/);

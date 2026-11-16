@@ -13,6 +13,9 @@ const nextConfig = {
   // the legacy redirects (Next's built-in 308 made slash → 308 → 301 chains).
   skipTrailingSlashRedirect: true,
   experimental: {
+    // 404 global con layout de la web pública (app/global-not-found.tsx):
+    // necesario porque Payload añade un segundo layout raíz.
+    globalNotFound: true,
     // WordPress is a small shared origin. Keep static generation deliberately
     // tightly bounded so a release cannot create the burst of REST calls
     // that previously produced transient 500s and false 404 pages.
@@ -23,6 +26,11 @@ const nextConfig = {
     staticGenerationRetryCount: 1,
   },
   images: {
+    localPatterns: [
+      {
+        pathname: '/wp-static/**',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -33,6 +41,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
         port: '',
         pathname: '/**',
       },
@@ -97,4 +111,8 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Payload v3 (CMS en /admin y /cms-api). withPayload solo añade alias y
+// paquetes externos de servidor; no cambia rutas ni cabeceras de la web.
+const { withPayload } = require('@payloadcms/next/withPayload');
+
+module.exports = withPayload(nextConfig, { devBundleServerPackages: false });

@@ -14,7 +14,7 @@ const {
 const { rewriteInSitePageHrefs } = await import('../services/rewrite-in-site-hrefs.mjs');
 
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const serviceCta = readFileSync(

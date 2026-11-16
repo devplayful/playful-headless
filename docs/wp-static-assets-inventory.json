@@ -1,0 +1,647 @@
+{
+  "generated": "2026-10-31T08:36:24.046Z",
+  "total": 91,
+  "ok": 90,
+  "http404": 1,
+  "items": [
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor-pro/assets/css/widget-form.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor-pro/assets/css/widget-form.min.css",
+      "httpStatus": 200,
+      "bytes": 6798,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css",
+      "httpStatus": 200,
+      "bytes": 7025,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/conditionals/e-swiper.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/conditionals/e-swiper.min.css",
+      "httpStatus": 200,
+      "bytes": 5486,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/frontend.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/frontend.min.css",
+      "httpStatus": 200,
+      "bytes": 53644,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-accordion.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-accordion.min.css",
+      "httpStatus": 200,
+      "bytes": 1744,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-heading.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-heading.min.css",
+      "httpStatus": 200,
+      "bytes": 560,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css",
+      "httpStatus": 200,
+      "bytes": 10430,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-image-carousel.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-image-carousel.min.css",
+      "httpStatus": 200,
+      "bytes": 342,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-image.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-image.min.css",
+      "httpStatus": 200,
+      "bytes": 214,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css",
+      "httpStatus": 200,
+      "bytes": 5110,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/css/widget-spacer.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/css/widget-spacer.min.css",
+      "httpStatus": 200,
+      "bytes": 1793,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/js/frontend-modules.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/js/frontend-modules.min.js",
+      "httpStatus": 200,
+      "bytes": 73735,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/js/frontend.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/js/frontend.min.js",
+      "httpStatus": 200,
+      "bytes": 31880,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js",
+      "httpStatus": 200,
+      "bytes": 5667,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/animations/styles/zoomIn.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/animations/styles/zoomIn.min.css",
+      "httpStatus": 200,
+      "bytes": 106,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css",
+      "httpStatus": 200,
+      "bytes": 21256,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf",
+      "httpStatus": 200,
+      "bytes": 231404,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff",
+      "httpStatus": 200,
+      "bytes": 127192,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2",
+      "httpStatus": 200,
+      "bytes": 103532,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/all.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/css/all.min.css",
+      "httpStatus": 200,
+      "bytes": 59344,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css",
+      "httpStatus": 200,
+      "bytes": 675,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css",
+      "httpStatus": 200,
+      "bytes": 669,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/v4-shims.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/css/v4-shims.min.css",
+      "httpStatus": 200,
+      "bytes": 26702,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2",
+      "httpStatus": 200,
+      "bytes": 78196,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css",
+      "httpStatus": 200,
+      "bytes": 16471,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/swiper/v8/swiper.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/swiper/v8/swiper.min.js",
+      "httpStatus": 200,
+      "bytes": 143709,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/core-icons.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/core-icons.css",
+      "httpStatus": 200,
+      "bytes": 6412,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/cubeportfolio.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/cubeportfolio.css",
+      "httpStatus": 200,
+      "bytes": 85493,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/flickity.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/flickity.css",
+      "httpStatus": 200,
+      "bytes": 1796,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/mae-widgets.min.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/mae-widgets.min.css",
+      "httpStatus": 200,
+      "bytes": 96885,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/magnific.popup.css",
+      "httpStatus": 200,
+      "bytes": 5459,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/pollock-icons.css",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/css/pollock-icons.css",
+      "httpStatus": 200,
+      "bytes": 1382,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff",
+      "httpStatus": 200,
+      "bytes": 37580,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/core.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/core.min.js",
+      "httpStatus": 200,
+      "bytes": 35279,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/cubeportfolio.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/cubeportfolio.js",
+      "httpStatus": 200,
+      "bytes": 81398,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/flickity.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/flickity.js",
+      "httpStatus": 200,
+      "bytes": 53771,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/gsap.min.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/gsap.min.js",
+      "httpStatus": 200,
+      "bytes": 63372,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js",
+      "httpStatus": 200,
+      "bytes": 27488,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/magnific.popup.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/magnific.popup.js",
+      "httpStatus": 200,
+      "bytes": 21146,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/parallax-scroll.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/parallax-scroll.js",
+      "httpStatus": 200,
+      "bytes": 3122,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/waitforimages.js",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/waitforimages.js",
+      "httpStatus": 200,
+      "bytes": 1960,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep1-2.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep1-2.jpg",
+      "httpStatus": 200,
+      "bytes": 105165,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep2.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep2.jpg",
+      "httpStatus": 200,
+      "bytes": 97251,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/03/Bendita-Web_Ep3.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/03/Bendita-Web_Ep3.jpg",
+      "httpStatus": 200,
+      "bytes": 91921,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2022/06/E1_T2_Podcast-Bendita-Web.jpg",
+      "publicPath": "/wp-static/wp-content/uploads/2022/06/E1_T2_Podcast-Bendita-Web.jpg",
+      "httpStatus": 200,
+      "bytes": 90110,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
+      "publicPath": "/wp-static/wp-content/uploads/2024/08/system-regular-161-trending-flat.json",
+      "httpStatus": 200,
+      "bytes": 5039,
+      "kind": "other"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Alejandro-Da-Costa.-Directora-Fundadora.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Alejandro-Da-Costa.-Directora-Fundadora.png",
+      "httpStatus": 200,
+      "bytes": 101944,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Arturo-Tovar-Avatar.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Arturo-Tovar-Avatar.png",
+      "httpStatus": 200,
+      "bytes": 247797,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Avata-Playful.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Avata-Playful.png",
+      "httpStatus": 200,
+      "bytes": 8894,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Indira-Jaen.-Disenador-UIUX.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Indira-Jaen.-Disenador-UIUX.png",
+      "httpStatus": 200,
+      "bytes": 95120,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Jose-Miguel-Reyes.-Director-Fundador.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Jose-Miguel-Reyes.-Director-Fundador.png",
+      "httpStatus": 200,
+      "bytes": 82978,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2025/10/Stefanni-Paravabidez.-Redactora-creativa-Seo.png",
+      "publicPath": "/wp-static/wp-content/uploads/2025/10/Stefanni-Paravabidez.-Redactora-creativa-Seo.png",
+      "httpStatus": 200,
+      "bytes": 96756,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-8.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-8.css",
+      "httpStatus": 200,
+      "bytes": 1860,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83510.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-83510.css",
+      "httpStatus": 200,
+      "bytes": 59054,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83848.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-83848.css",
+      "httpStatus": 200,
+      "bytes": 41748,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-83849.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-83849.css",
+      "httpStatus": 200,
+      "bytes": 65036,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84478.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84478.css",
+      "httpStatus": 200,
+      "bytes": 3972,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84514.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84514.css",
+      "httpStatus": 200,
+      "bytes": 4711,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-84545.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-84545.css",
+      "httpStatus": 200,
+      "bytes": 3290,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85414.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-85414.css",
+      "httpStatus": 200,
+      "bytes": 38032,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85582.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-85582.css",
+      "httpStatus": 200,
+      "bytes": 38032,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85604.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-85604.css",
+      "httpStatus": 200,
+      "bytes": 38032,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85655.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-85655.css",
+      "httpStatus": 200,
+      "bytes": 38032,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/elementor/css/post-85722.css",
+      "publicPath": "/wp-static/wp-content/uploads/elementor/css/post-85722.css",
+      "httpStatus": 200,
+      "bytes": 38032,
+      "kind": "css"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-includes/js/jquery/jquery.min.js",
+      "publicPath": "/wp-static/wp-includes/js/jquery/jquery.min.js",
+      "httpStatus": 200,
+      "bytes": 87553,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-includes/js/jquery/ui/core.min.js",
+      "publicPath": "/wp-static/wp-includes/js/jquery/ui/core.min.js",
+      "httpStatus": 200,
+      "bytes": 21464,
+      "kind": "js"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.eot",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.eot",
+      "httpStatus": 200,
+      "bytes": 231564,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.svg",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.svg",
+      "httpStatus": 200,
+      "bytes": 354110,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.eot",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.eot",
+      "httpStatus": 200,
+      "bytes": 151556,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff2",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff2",
+      "httpStatus": 200,
+      "bytes": 81612,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff",
+      "httpStatus": 200,
+      "bytes": 97804,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.ttf",
+      "httpStatus": 200,
+      "bytes": 151368,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.svg#fontawesome",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.svg",
+      "httpStatus": 200,
+      "bytes": 749223,
+      "kind": "other"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.eot",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.eot",
+      "httpStatus": 200,
+      "bytes": 34034,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff2",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff2",
+      "httpStatus": 200,
+      "bytes": 13276,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff",
+      "httpStatus": 200,
+      "bytes": 16276,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.ttf",
+      "httpStatus": 200,
+      "bytes": 33736,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.svg#fontawesome",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.svg",
+      "httpStatus": 200,
+      "bytes": 144714,
+      "kind": "other"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.eot",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.eot",
+      "httpStatus": 200,
+      "bytes": 203030,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff",
+      "httpStatus": 200,
+      "bytes": 101652,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.ttf",
+      "httpStatus": 200,
+      "bytes": 202744,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.svg#fontawesome",
+      "publicPath": "/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.svg",
+      "httpStatus": 200,
+      "bytes": 918991,
+      "kind": "other"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.eot",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.eot",
+      "httpStatus": 200,
+      "bytes": 37668,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.ttf",
+      "httpStatus": 200,
+      "bytes": 37504,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.svg",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.svg",
+      "httpStatus": 200,
+      "bytes": 123878,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/img/cbp-sprite.png",
+      "publicPath": null,
+      "httpStatus": 404,
+      "bytes": null,
+      "kind": "image",
+      "error": "not_found"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.eot",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.eot",
+      "httpStatus": 200,
+      "bytes": 16472,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.ttf",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.ttf",
+      "httpStatus": 200,
+      "bytes": 16308,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.woff",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.woff",
+      "httpStatus": 200,
+      "bytes": 16384,
+      "kind": "font"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.svg",
+      "publicPath": "/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/pollock-icons/pollock-icons.svg",
+      "httpStatus": 200,
+      "bytes": 66060,
+      "kind": "image"
+    },
+    {
+      "url": "https://endpoint.playfulagency.com/wp-content/uploads/2024/08/Dayflow-Abstract-5.png",
+      "publicPath": "/wp-static/wp-content/uploads/2024/08/Dayflow-Abstract-5.png",
+      "httpStatus": 200,
+      "bytes": 18054,
+      "kind": "image"
+    }
+  ],
+  "pendingUnresolved": []
+}

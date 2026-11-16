@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
+const slugPage = readFileSync(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const casePage = readFileSync(
-  new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');

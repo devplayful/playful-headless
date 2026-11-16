@@ -27,7 +27,7 @@ test('middleware rewrites WordPress probes to the prerendered 404, not 410', () 
   const notFoundIdx = body.indexOf("pathname = '/_not-found'");
   const goneIdx = body.indexOf("status: 410");
   assert.ok(probeIdx !== -1 && notFoundIdx !== -1 && probeIdx < notFoundIdx);
-  assert.ok(goneIdx === -1 || probeIdx < goneIdx);
+  assert.ok(goneIdx === -1 || goneIdx < probeIdx, '410 Gone may precede WP probes; probes still 404');
   assert.match(middleware, /from '\.\/utils\/wp-probe-paths'/);
 });
 

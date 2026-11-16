@@ -60,7 +60,7 @@ const wordpressSource = readFileSync(
   'utf8',
 );
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const sitemapSource = readFileSync(
@@ -68,7 +68,7 @@ const sitemapSource = readFileSync(
   'utf8',
 );
 const listingSource = readFileSync(
-  new URL('../app/blog/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/page.tsx', import.meta.url),
   'utf8',
 );
 const expectedRoutes = readFileSync(

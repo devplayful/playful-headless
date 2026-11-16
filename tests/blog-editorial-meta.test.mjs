@@ -37,7 +37,7 @@ const { ZELLE_VE_BLOG_SLUG } = await import('../lib/blog-body-overrides.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const chipSource = readFileSync(
@@ -373,13 +373,13 @@ test('listing, home, related and más vistos share formatBlogExcerpt and cut on 
     /\.\.\.|\[\s*…\s*\]/,
   );
 
-  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const listingPage = readFileSync(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
   const mostViewed = readFileSync(
     new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
     'utf8',
   );
   const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
-  const home = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
+  const home = readFileSync(new URL('../app/(frontend)/page.tsx', import.meta.url), 'utf8');
   const relatedSection = readFileSync(
     new URL('../components/sections/BlogRelatedPostsSection.tsx', import.meta.url),
     'utf8',
@@ -431,7 +431,7 @@ test('listing cards use honored update or publication, long and slash formats', 
 });
 
 test('blog listing surfaces and latest-posts cards wire formatBlogListingDate', () => {
-  const listingPage = readFileSync(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const listingPage = readFileSync(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
   const mostViewed = readFileSync(
     new URL('../components/blog/MostViewedArticles.tsx', import.meta.url),
     'utf8',

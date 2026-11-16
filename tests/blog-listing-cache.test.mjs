@@ -8,8 +8,8 @@ const {
   parseBlogListingSearchParams,
 } = await import('../utils/blog-listing-query.ts');
 
-const listingPage = readFileSync(new URL('../app/blog/page.tsx', import.meta.url), 'utf8');
-const queryPage = readFileSync(new URL('../app/blog/q/page.tsx', import.meta.url), 'utf8');
+const listingPage = readFileSync(new URL('../app/(frontend)/blog/page.tsx', import.meta.url), 'utf8');
+const queryPage = readFileSync(new URL('../app/(frontend)/blog/q/page.tsx', import.meta.url), 'utf8');
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
 const expectedRoutes = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
@@ -53,6 +53,7 @@ test('parseBlogListingSearchParams keeps page, category and search', () => {
 test('middleware rewrites /blog queries without attributing the listing path', () => {
   assert.match(middleware, /pathname === '\/blog\/q'/);
   assert.match(middleware, /NextResponse\.rewrite\(target\)/);
+  assert.match(middleware, /shouldRewriteBlogListingToQueryPath/);
   assert.match(middleware, /target\.pathname = '\/blog\/q'/);
   assert.doesNotMatch(middleware, /shouldCaptureAttributionPath\('\/blog'\)/);
   assert.match(middleware, /attachAttributionCookies\(request, NextResponse\.rewrite/);

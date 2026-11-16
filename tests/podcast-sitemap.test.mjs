@@ -14,11 +14,11 @@ const APEX = 'https://playfulagency.com';
 const TARGET = '/podcast/lo-que-hacemos-impacta-diseno-ux-en-el-seo';
 
 const episodeLayout = readFileSync(
-  new URL('../app/podcast/[slug]/layout.tsx', import.meta.url),
+  new URL('../app/(frontend)/podcast/[slug]/layout.tsx', import.meta.url),
   'utf8',
 );
 const hubLayout = readFileSync(
-  new URL('../app/podcast/layout.tsx', import.meta.url),
+  new URL('../app/(frontend)/podcast/layout.tsx', import.meta.url),
   'utf8',
 );
 

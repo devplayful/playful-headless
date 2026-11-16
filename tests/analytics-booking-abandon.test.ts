@@ -339,11 +339,11 @@ test('hooks live in existing trackers; layout GTM Ads and Meta are untouched', (
   const tracker = readFileSync(new URL('../components/CtaClickTracker.tsx', import.meta.url), 'utf8');
   const thanks = readFileSync(new URL('../components/BookAppointmentTracker.tsx', import.meta.url), 'utf8');
   const clicks = readFileSync(new URL('../lib/analytics/cta-click.ts', import.meta.url), 'utf8');
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   const ga = readFileSync(new URL('../components/GoogleAnalytics.tsx', import.meta.url), 'utf8');
   const gtm = readFileSync(new URL('../components/GoogleTagManager.tsx', import.meta.url), 'utf8');
   const meta = readFileSync(new URL('../components/MetaPixel.tsx', import.meta.url), 'utf8');
-  const globals = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
+  const globals = readFileSync(new URL('../app/(frontend)/globals.css', import.meta.url), 'utf8');
   const header = readFileSync(new URL('../components/Header.tsx', import.meta.url), 'utf8');
   const footer = readFileSync(new URL('../components/Footer.tsx', import.meta.url), 'utf8');
 

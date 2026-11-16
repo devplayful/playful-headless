@@ -17,7 +17,7 @@ const elementor = readFileSync(
 );
 const wordpress = readFileSync(new URL('../services/wordpress.ts', import.meta.url), 'utf8');
 const casePage = readFileSync(
-  new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const soyB = readFileSync(
@@ -40,9 +40,9 @@ const SEM_ALT =
 const OTHER_SRC =
   'https://endpoint.playfulagency.com/wp-content/uploads/2020/06/BANNER-CTA_PLAYFUL_DataStudio.png';
 
-test('the signed map covers exactly 92 src keys', () => {
-  assert.equal(IMAGE_ALT_OVERRIDE_COUNT, 92);
-  assert.equal(Object.keys(IMAGE_ALT_OVERRIDES).length, 92);
+test('the signed map covers exactly 94 src keys', () => {
+  assert.equal(IMAGE_ALT_OVERRIDE_COUNT, 94);
+  assert.equal(Object.keys(IMAGE_ALT_OVERRIDES).length, 94);
 });
 
 test('replaces an existing alt when src hits the map', () => {
@@ -104,6 +104,15 @@ test('resolveImageAlt uses the map and otherwise the fallback', () => {
     ),
     '',
   );
+  const federicoSrc =
+    'https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Ellipse-12.png';
+  assert.equal(resolveMediaAlt({ url: federicoSrc, alt: 'Ellipse 12' }, 'Ellipse 12'), '\u00a0Federico Vera');
+});
+
+test('blob media URLs resolve Jumex WP alt keys', () => {
+  const blob =
+    'https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2025/11/Azul.png';
+  assert.equal(lookupImageAlt(blob), 'Muestra del color Catalina Blue (HEX 113278)');
 });
 
 test('the transform is idempotent', () => {

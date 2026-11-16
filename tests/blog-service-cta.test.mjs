@@ -9,7 +9,7 @@ const {
 } = await import('../utils/blog-service-cta.ts');
 
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 

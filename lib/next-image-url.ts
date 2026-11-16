@@ -1,4 +1,5 @@
 const WP_UPLOADS_HOST = 'endpoint.playfulagency.com';
+const BLOB_HOST_SUFFIX = '.public.blob.vercel-storage.com';
 
 /** Build a same-origin `/_next/image` URL for remote WordPress uploads. */
 export function buildNextImageUrl(
@@ -13,7 +14,7 @@ export function buildNextImageUrl(
   if (!/^https?:\/\//i.test(trimmed)) return trimmed;
   try {
     const host = new URL(trimmed).hostname;
-    if (host !== WP_UPLOADS_HOST) return trimmed;
+    if (host !== WP_UPLOADS_HOST && !host.endsWith(BLOB_HOST_SUFFIX)) return trimmed;
   } catch {
     return trimmed;
   }
@@ -29,6 +30,7 @@ export function isOptimizableWpUpload(src: string): boolean {
   if (!src?.trim()) return false;
   try {
     const url = new URL(src.trim());
+    if (url.hostname.endsWith(BLOB_HOST_SUFFIX)) return true;
     return (
       url.hostname === WP_UPLOADS_HOST
       && url.pathname.startsWith('/wp-content/uploads/')

@@ -15,16 +15,27 @@ export const BLOG_CATEGORIES_WITH_OWN_TEXT = new Set<string>([]);
  * Any `/blog` listing with a query string is a duplicate of `/blog`.
  * Clean `/blog` stays indexable; canonical remains https://playfulagency.com/blog.
  */
+/** Preview `?cms=1` must not change listing robots vs the same URL without that flag. */
+export function stripCmsFromBlogListingSearchParams(
+  searchParams?: BlogListingSearchParams | null,
+): BlogListingSearchParams | null | undefined {
+  if (!searchParams) return searchParams;
+  if (searchParams.cms === undefined) return searchParams;
+  const { cms: _cms, ...rest } = searchParams;
+  return rest;
+}
+
 export function shouldNoindexBlogListing(
   searchParams?: BlogListingSearchParams | null,
 ): boolean {
-  if (!searchParams) {
+  const params = stripCmsFromBlogListingSearchParams(searchParams);
+  if (!params) {
     return false;
   }
 
-  const pagePresent = searchParams.page !== undefined;
-  const categoryPresent = searchParams.category !== undefined;
-  const anyOtherQuery = Object.entries(searchParams).some(
+  const pagePresent = params.page !== undefined;
+  const categoryPresent = params.category !== undefined;
+  const anyOtherQuery = Object.entries(params).some(
     ([key, value]) => value !== undefined && key !== 'page' && key !== 'category',
   );
 
@@ -32,8 +43,8 @@ export function shouldNoindexBlogListing(
     categoryPresent
     && !pagePresent
     && !anyOtherQuery
-    && typeof searchParams.category === 'string'
-    && BLOG_CATEGORIES_WITH_OWN_TEXT.has(searchParams.category)
+    && typeof params.category === 'string'
+    && BLOG_CATEGORIES_WITH_OWN_TEXT.has(params.category)
   ) {
     return false;
   }

@@ -1,27 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
+import { ELEMENTOR_PAGE_SCRIPTS, WP_ENDPOINT_ORIGIN } from '@/lib/elementor-static-asset-urls';
 
-const WP_HOST = 'https://endpoint.playfulagency.com';
+type ElementorPageScriptsProps = {
+  pageId: number;
+  deferUntilLoad?: boolean;
+  /** URLs ya resueltas (Blob / wp-static) desde el servidor en preview H2. */
+  scriptUrls?: string[];
+  elementorAssetsBase?: string;
+};
 
-const SCRIPTS = [
-  `${WP_HOST}/wp-includes/js/jquery/jquery.min.js`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/js/frontend-modules.min.js`,
-  `${WP_HOST}/wp-includes/js/jquery/ui/core.min.js`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/js/frontend.min.js`,
-  `${WP_HOST}/wp-content/plugins/elementor/assets/lib/swiper/v8/swiper.min.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/waitforimages.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/gsap.min.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/core.min.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/flickity.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/cubeportfolio.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/parallax-scroll.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/magnific.popup.js`,
-  `${WP_HOST}/wp-content/plugins/masterlayer-addons-for-elementor/assets/js/init.js`,
-];
-
-/** Flickity testimonial carousels need these on the critical path when deferring Elementor. */
 const CRITICAL_WHEN_DEFER_PATH_SNIPPETS = [
   'jquery/jquery.min.js',
   'waitforimages.js',
@@ -349,10 +338,12 @@ function injectQa2Style() {
 export default function ElementorPageScripts({
   pageId,
   deferUntilLoad = false,
-}: {
-  pageId: number;
-  deferUntilLoad?: boolean;
-}) {
+  scriptUrls,
+  elementorAssetsBase,
+}: ElementorPageScriptsProps) {
+  const scripts = scriptUrls?.length ? scriptUrls : ELEMENTOR_PAGE_SCRIPTS;
+  const assetsBase =
+    elementorAssetsBase || `${WP_ENDPOINT_ORIGIN}/wp-content/plugins/elementor/assets/`;
   useEffect(() => {
     document.body.classList.add('playful-elementor-plain');
     initPillsMarquee();
@@ -421,9 +412,9 @@ export default function ElementorPageScripts({
       is_static: false,
       experimentalFeatures: {},
       urls: {
-        assets: `${WP_HOST}/wp-content/plugins/elementor/assets/`,
-        ajaxurl: `${WP_HOST}/wp-admin/admin-ajax.php`,
-        uploadUrl: `${WP_HOST}/wp-content/uploads`,
+        assets: assetsBase,
+        ajaxurl: `${WP_ENDPOINT_ORIGIN}/wp-admin/admin-ajax.php`,
+        uploadUrl: `${WP_ENDPOINT_ORIGIN}/wp-content/uploads`,
       },
       settings: { page: {}, editorPreferences: {} },
       kit: { active_breakpoints: ['viewport_mobile', 'viewport_tablet'] },
@@ -433,7 +424,7 @@ export default function ElementorPageScripts({
     let cancelled = false;
     const runDeferredHeavyScripts = () => {
       (async () => {
-        for (const src of SCRIPTS) {
+        for (const src of scripts) {
           if (cancelled || !shouldDeferScript(src, deferUntilLoad)) continue;
           await loadScript(src);
         }
@@ -447,7 +438,7 @@ export default function ElementorPageScripts({
     };
 
     (async () => {
-      for (const src of SCRIPTS) {
+      for (const src of scripts) {
         if (cancelled) return;
         if (shouldDeferScript(src, deferUntilLoad)) continue;
         await loadScript(src);

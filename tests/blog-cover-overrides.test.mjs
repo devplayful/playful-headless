@@ -590,10 +590,10 @@ test('listing and by-slug pipelines apply resolveBlogCoverAlt', async () => {
   assert.match(source, /const loadBlogPostBySlug[\s\S]*resolveBlogCoverAlt\(/);
   assert.match(source, /function toRelatedBlogCard[\s\S]*resolveBlogCoverAlt\(/);
   assert.match(source, /function relatedCardFromIndexPost[\s\S]*resolveBlogCoverAlt\(/);
-  const listing = await readFile(new URL('../app/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
+  const listing = await readFile(new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url), 'utf8');
   assert.match(listing, /resolveBlogCoverAlt/);
   assert.match(listing, /featured_media_alt \|\| .*title\.rendered/);
-  const article = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  const article = await readFile(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.match(article, /resolveBlogCoverAlt/);
   assert.match(article, /featured_media_alt \|\| post\.title\.rendered/);
   const carousel = await readFile(new URL('../components/blog/MostViewedArticles.tsx', import.meta.url), 'utf8');
@@ -616,7 +616,7 @@ test('listing, latest and by-slug pipelines apply resolveBlogCoverUrl', async ()
 });
 
 test('blog post generateMetadata points OG and Twitter at the OG crop when present', async () => {
-  const source = await readFile(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+  const source = await readFile(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
   assert.match(source, /blogCoverForSlug/);
   assert.match(source, /blogOgForSlug/);
   assert.match(source, /BLOG_OG_SIZE/);

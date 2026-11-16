@@ -10,7 +10,7 @@ const {
 } = await import('../lib/case-study-gif-video.ts');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const page = readFileSync(new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
+const page = readFileSync(new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url), 'utf8');
 
 test('Jumex UX and Odwalla drink GIFs map to local mp4, webm and poster', () => {
   const jumex = caseStudyGifVideoForSrc(

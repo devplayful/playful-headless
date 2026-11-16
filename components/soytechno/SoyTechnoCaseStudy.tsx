@@ -9,7 +9,7 @@ const base = '/images/casos/soytechno'
 const image = (name: string) => `${base}/images/${name}`
 const vector = (name: string) => `${base}/vectors/${name}`
 
-const approvedCopy = {
+const defaultApprovedCopy = {
   title: 'SoyTechno: El eCommerce que entendió cómo paga y confía Venezuela',
   executiveChallenge: 'Tras su soft launch, SoyTechno debía consolidar su eCommerce en un mercado donde la industria asumía que el consumidor no confía y solo compra por WhatsApp. El reto 2025: demostrar que el venezolano sí transacciona masivamente online cuando se le brinda una infraestructura formal, segura y transparente.',
   insight: 'El venezolano no compra tecnología; la planifica. Con 67% de compras en divisas, BNPL creciendo +250% y 43% estirando cada dólar, el ganador no es el más barato: es quien ofrece catálogo, cuotas y autonomía. El consumidor no abandona por desinterés, sino por fricción logística y de pago.',
@@ -45,26 +45,30 @@ const splitCopy = (text: string, boundaries: string[]) => {
   return [...fragments, text.slice(start).trim()]
 }
 
-const caseCopy = {
-  executiveChallenge: splitCopy(approvedCopy.executiveChallenge, ['El reto 2025:']),
-  insight: splitCopy(approvedCopy.insight, ['El consumidor no abandona']),
-  idea: [approvedCopy.idea],
-  challenge: splitCopy(approvedCopy.challenge, ['El reto de SoyTechno no era tecnológico']),
-  audience: splitCopy(approvedCopy.audience, ['Navegan en su mayoría']),
-  objectives: splitCopy(approvedCopy.objectives, ['(3) Incrementar']),
-  strategy: splitCopy(approvedCopy.strategy, ['Autonomía Financiera:', 'Arquitectura de Confianza:']),
-  strategicResponse: splitCopy(approvedCopy.strategicResponse, ['La respuesta fue diseñar', 'No se le pidió']),
-  media: splitCopy(approvedCopy.media, ['El módulo de rastreo MRW']),
-  results: splitCopy(approvedCopy.results, ['Logramos una tasa de conversión global']),
-  evidence: splitCopy(approvedCopy.evidence, ['La Semana Cosecha Cashea']),
-  baseline: splitCopy(approvedCopy.baseline, ['Cada objetivo declarado']),
-  innovation: splitCopy(approvedCopy.innovation, ['Implementamos Freshchat']),
-  resources: splitCopy(approvedCopy.resources, ['Para la atención al cliente']),
-  contribution: splitCopy(approvedCopy.contribution, ['Eso no solo benefició']),
-  checkout: splitCopy(approvedCopy.checkout, ['El usuario elige la moneda', 'SoyTechno fue el primer ecommerce']),
-  mobileShare: [approvedCopy.mobileShare],
-  resultsIntro: splitCopy(approvedCopy.resultsIntro, ['Logramos una tasa de conversión global', 'Cerramos 2025 con 12.722 ventas']),
-} as const
+export type SoyTechnoCaseCopy = typeof defaultApprovedCopy
+
+function buildCaseCopy(source: SoyTechnoCaseCopy) {
+  return {
+    executiveChallenge: splitCopy(source.executiveChallenge, ['El reto 2025:']),
+    insight: splitCopy(source.insight, ['El consumidor no abandona']),
+    idea: [source.idea],
+    challenge: splitCopy(source.challenge, ['El reto de SoyTechno no era tecnológico']),
+    audience: splitCopy(source.audience, ['Navegan en su mayoría']),
+    objectives: splitCopy(source.objectives, ['(3) Incrementar']),
+    strategy: splitCopy(source.strategy, ['Autonomía Financiera:', 'Arquitectura de Confianza:']),
+    strategicResponse: splitCopy(source.strategicResponse, ['La respuesta fue diseñar', 'No se le pidió']),
+    media: splitCopy(source.media, ['El módulo de rastreo MRW']),
+    results: splitCopy(source.results, ['Logramos una tasa de conversión global']),
+    evidence: splitCopy(source.evidence, ['La Semana Cosecha Cashea']),
+    baseline: splitCopy(source.baseline, ['Cada objetivo declarado']),
+    innovation: splitCopy(source.innovation, ['Implementamos Freshchat']),
+    resources: splitCopy(source.resources, ['Para la atención al cliente']),
+    contribution: splitCopy(source.contribution, ['Eso no solo benefició']),
+    checkout: splitCopy(source.checkout, ['El usuario elige la moneda', 'SoyTechno fue el primer ecommerce']),
+    mobileShare: [source.mobileShare],
+    resultsIntro: splitCopy(source.resultsIntro, ['Logramos una tasa de conversión global', 'Cerramos 2025 con 12.722 ventas']),
+  } as const
+}
 
 const SectionTitle = ({ children }: { children: ReactNode }) => (
   <div className={styles.sectionTitle}>
@@ -79,7 +83,13 @@ const ContentItem = ({ title, children }: { title: string; children: ReactNode }
   </div>
 )
 
-export default function SoyTechnoCaseStudy() {
+export default function SoyTechnoCaseStudy({
+  copy,
+}: {
+  copy?: SoyTechnoCaseCopy
+} = {}) {
+  const approvedCopy = copy ?? defaultApprovedCopy
+  const caseCopy = buildCaseCopy(approvedCopy)
   return (
     <article className={`soytechno-case-study ${styles.page}`}>
       <div className={styles.heroBackdrop}>

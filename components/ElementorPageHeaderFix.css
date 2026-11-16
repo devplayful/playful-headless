@@ -205,28 +205,28 @@ body.playful-elementor-plain {
 
 @font-face {
   font-family: "core-icons";
-  src: url("https://endpoint.playfulagency.com/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff") format("woff");
+  src: url("/wp-static/wp-content/plugins/masterlayer-addons-for-elementor/assets/fonts/core-icons/core-icons.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: eicons;
-  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2") format("woff2");
+  src: url("/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: eicons;
-  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff") format("woff");
+  src: url("/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: eicons;
-  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf") format("truetype");
+  src: url("/wp-static/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -236,7 +236,7 @@ body.playful-elementor-plain {
   font-weight: 900;
   font-style: normal;
   font-display: swap;
-  src: url("https://endpoint.playfulagency.com/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  src: url("/wp-static/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
 }
 
 .playful-wp-page {
@@ -490,7 +490,7 @@ body:has(.playful-wp-page) .playful-header nav {
 .playful-wp-page .elementor-element.container.contenedor-texto,
 .playful-wp-page .contenedor-texto {
   background-color: #DCF8F5 !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
   box-shadow: none !important;
   border: 0 !important;
   margin-top: 0 !important;
@@ -970,7 +970,7 @@ body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
   max-height: none !important;
   overflow: visible !important;
   background-color: #DCF8F5 !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
 }
 
 .playful-wp-page .moving-text-zurdo > .elementor-widget-wrap,
@@ -1274,7 +1274,7 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-element-0088077 {
 body.playful-elementor-plain .playful-wp-page .elementor-element-45ee457,
 body:has(.playful-wp-page) .playful-wp-page .contenedor-texto {
   background-color: #DCF8F5 !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
 }
 
 /* 2) Testimonials intro: center + softer dark (#453A53, same as SEO-why body copy).
@@ -1454,7 +1454,7 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-83849 .elementor-element-
   padding-left: 0 !important;
   padding-right: 0 !important;
   background-color: #D3B0FF !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
@@ -1593,7 +1593,7 @@ body:has(.playful-wp-page) .playful-wp-page .elementor-83848 .elementor-element-
   /* Native SEM is #FFDBDB (same as hero). Shared Next CSS paints SEO mint
      #DCF8F5; post-83848.css locks .contenedor-texto at height:150px + clip. */
   background-color: #FFDBDB !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
@@ -1711,7 +1711,7 @@ body.playful-elementor-plain .elementor-83848 .elementor-element-45ee457 {
   max-height: none !important;
   overflow: visible !important;
   background-color: #FFDBDB !important;
-  background-image: url("https://endpoint.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png") !important;
 }
 .playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c,
 .playful-wp-page[data-playful-page="83848"] .elementor-element-867a80c.elementor-column,

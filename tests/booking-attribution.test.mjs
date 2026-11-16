@@ -43,10 +43,10 @@ const {
 const { rewriteBookingWidgetHrefs, rewriteElementorBodyHrefs, BOOKING_HREF } = await import('../utils/booking.ts');
 
 const middleware = readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8');
-const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
-const gracias = readFileSync(new URL('../app/gracias/page.tsx', import.meta.url), 'utf8');
-const blogPage = readFileSync(new URL('../app/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
+const shopifyPage = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+const gracias = readFileSync(new URL('../app/(frontend)/gracias/page.tsx', import.meta.url), 'utf8');
+const blogPage = readFileSync(new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url), 'utf8');
 
 const LAST_TOUCH = emptyAttribution({
   captured: true,
@@ -250,6 +250,7 @@ test('cookie fbclid fills the hop when the incoming URL omitted it', () => {
 });
 
 test('middleware 308s /reunion-playful to /reunion; legacy widget URLs still rewrite to /reunion', () => {
+  assert.doesNotMatch(middleware, /resolveBookingWidgetRedirect/);
   assert.match(middleware, /path === '\/reunion-playful'/);
   assert.match(middleware, /NextResponse\.redirect\(target, 308\)/);
   assert.match(middleware, /'\/reunion-playful'/);

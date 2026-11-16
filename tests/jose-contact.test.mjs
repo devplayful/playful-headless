@@ -17,9 +17,12 @@ import {
 } from '../utils/apex-sitemap.ts';
 
 const APEX = 'https://playfulagency.com';
-const layout = readFileSync(new URL('../app/jose/layout.tsx', import.meta.url), 'utf8');
-const page = readFileSync(new URL('../app/jose/page.tsx', import.meta.url), 'utf8');
-const route = readFileSync(new URL('../app/jose/contacto.vcf/route.ts', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../app/(frontend)/jose/layout.tsx', import.meta.url), 'utf8');
+const page = readFileSync(new URL('../app/(frontend)/jose/page.tsx', import.meta.url), 'utf8');
+const route = readFileSync(
+  new URL('../app/(frontend)/jose/contacto.vcf/route.ts', import.meta.url),
+  'utf8',
+);
 const manifest = JSON.parse(
   readFileSync(new URL('../config/expected-routes.json', import.meta.url), 'utf8'),
 );

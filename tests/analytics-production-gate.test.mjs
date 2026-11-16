@@ -44,7 +44,7 @@ test('only VERCEL_ENV=production loads the live GA4, GTM and Apollo IDs', () => 
 });
 
 test('layout and tag components stay server-gated so production HTML is unchanged', () => {
-  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  const layout = readFileSync(new URL('../app/(frontend)/layout.tsx', import.meta.url), 'utf8');
   const ga = readFileSync(new URL('../components/GoogleAnalytics.tsx', import.meta.url), 'utf8');
   const gtm = readFileSync(new URL('../components/GoogleTagManager.tsx', import.meta.url), 'utf8');
   const apollo = readFileSync(new URL('../components/ApolloTracker.tsx', import.meta.url), 'utf8');

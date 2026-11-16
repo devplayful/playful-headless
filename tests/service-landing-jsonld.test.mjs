@@ -9,8 +9,8 @@ import {
 } from '../utils/service-landing-jsonld.ts';
 import { ORGANIZATION_SCHEMA } from '../utils/organization-schema.mjs';
 
-const slugPage = readFileSync(new URL('../app/[slug]/page.tsx', import.meta.url), 'utf8');
-const shopifyPage = readFileSync(new URL('../app/agencia-shopify/page.tsx', import.meta.url), 'utf8');
+const slugPage = readFileSync(new URL('../app/(frontend)/[slug]/page.tsx', import.meta.url), 'utf8');
+const shopifyPage = readFileSync(new URL('../app/(frontend)/agencia-shopify/page.tsx', import.meta.url), 'utf8');
 
 test('sitemap service landings share the Service + BreadcrumbList builders', () => {
   const slugs = [

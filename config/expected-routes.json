@@ -4,6 +4,8 @@
   "sourceRoutes": [
     "/",
     "/[slug]",
+    "/admin/[[...segments]]",
+    "/cms-servicio-preview/[slug]",
     "/agencia-shopify",
     "/api/blog-posts",
     "/api/contact",
@@ -16,6 +18,12 @@
     "/blog/[...slug]",
     "/casos-de-exito",
     "/casos-de-exito/[slug]",
+    "/cms-casos-preview/hub",
+    "/cms-home-preview",
+    "/cms-api/[...slug]",
+    "/cms-pagina-b1-preview/[slug]",
+    "/cms-pagina-b4-preview/[slug]",
+    "/cms-pagina-b5-preview/not-found",
     "/contactar-agencia-de-marketing-digital",
     "/eshow",
     "/eshow/gracias",
@@ -194,8 +202,18 @@
       "/blog/tecnologia/tendencias-en-diseno-web-para-el-2022",
       "/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce"
     ],
+    "/admin/[[...segments]]": [],
+    "/cms-servicio-preview/[slug]": [],
     "/casos-de-exito/[slug]": [],
-    "/podcast/[slug]": []
+    "/cms-api/[...slug]": [],
+    "/podcast/[slug]": [],
+    "/cms-pagina-b1-preview/[slug]": [
+      "/cms-pagina-b1-preview/politica-de-privacidad"
+    ],
+    "/cms-pagina-b4-preview/[slug]": [
+      "/cms-pagina-b4-preview/contactar-agencia-de-marketing-digital",
+      "/cms-pagina-b4-preview/reunion-playful"
+    ]
   },
   "allowedArtifactOnlyRoutes": [
     "/_not-found"

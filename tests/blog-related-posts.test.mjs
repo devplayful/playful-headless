@@ -51,7 +51,7 @@ test('test:canonical includes this file so CI runs it with the rest of the suite
 });
 
 const blogPage = readFileSync(
-  new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   'utf8',
 );
 const apiRoute = readFileSync(

@@ -40,11 +40,11 @@ const GSC_CATEGORY_LISTING_POSTS = [
 ];
 
 const listingView = readFileSync(
-  new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url),
   'utf8',
 );
 const crawlNav = readFileSync(
-  new URL('../app/blog/BlogListingCrawlNav.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/BlogListingCrawlNav.tsx', import.meta.url),
   'utf8',
 );
 

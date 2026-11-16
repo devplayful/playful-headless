@@ -5,12 +5,13 @@ import { readFile } from 'node:fs/promises';
 import { twitterFromOpenGraph } from '../utils/page-seo-overrides.mjs';
 
 const files = {
-  blogPost: new URL('../app/blog/[...slug]/page.tsx', import.meta.url),
+  blogPost: new URL('../app/(frontend)/blog/[...slug]/page.tsx', import.meta.url),
   blogListing: new URL('../utils/blog-listing-query.ts', import.meta.url),
-  contact: new URL('../app/contactar-agencia-de-marketing-digital/page.tsx', import.meta.url),
-  privacy: new URL('../app/politica-de-privacidad/page.tsx', import.meta.url),
-  caseStudy: new URL('../app/casos-de-exito/[slug]/page.tsx', import.meta.url),
-  links: new URL('../app/links/layout.tsx', import.meta.url),
+  contact: new URL('../app/(frontend)/contactar-agencia-de-marketing-digital/page.tsx', import.meta.url),
+  privacy: new URL('../app/(frontend)/politica-de-privacidad/page.tsx', import.meta.url),
+  privacyMeta: new URL('../lib/paginas-codigo/politica-privacidad-metadata.ts', import.meta.url),
+  caseStudy: new URL('../app/(frontend)/casos-de-exito/[slug]/page.tsx', import.meta.url),
+  links: new URL('../app/(frontend)/links/layout.tsx', import.meta.url),
 };
 
 async function readAll() {
@@ -49,7 +50,11 @@ test('post, caso, /blog, contactar, privacidad y /links wire twitter from the sa
   assert.match(blogMeta, /images:\s*\[imageUrl\]/);
   assert.match(listingMeta, /twitterFromOpenGraph\(\s*'Blog - Playful Agency'/);
   assert.match(src.contact, /twitterFromOpenGraph\(CONTACT_TITLE, CONTACT_DESCRIPTION\)/);
-  assert.match(src.privacy, /twitterFromOpenGraph\(PRIVACY_TITLE, PRIVACY_DESCRIPTION\)/);
+  assert.match(src.privacy, /generatePoliticaPrivacidadMetadata/);
+  assert.match(
+    await readFile(files.privacyMeta, 'utf8'),
+    /twitterFromOpenGraph\(ogTitle, ogDescription\)/,
+  );
   assert.match(src.links, /pageSocialMetadata\(/);
   assert.match(src.links, /index:\s*false/);
   assert.match(caseMeta, /pageSocialMetadata\(/);

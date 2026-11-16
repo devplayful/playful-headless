@@ -6,6 +6,10 @@ const source = readFileSync(
   new URL('../components/ElementorPageScripts.tsx', import.meta.url),
   'utf8',
 );
+const assetUrls = readFileSync(
+  new URL('../lib/elementor-static-asset-urls.ts', import.meta.url),
+  'utf8',
+);
 
 test('defer slug set covers the four heavy Elementor service landings', async () => {
   const { ELEMENTOR_DEFER_UNTIL_LOAD_SLUGS, shouldDeferElementorScriptsUntilLoad } = await import(
@@ -29,6 +33,10 @@ test('partial defer keeps flickity path critical and defers Elementor + swiper',
     assert.match(source, new RegExp(keep.replace(/\./g, '\\.')));
   }
   for (const defer of ['swiper.min.js', 'frontend.min.js', 'gsap.min.js', 'cubeportfolio.js']) {
-    assert.match(source, new RegExp(defer.replace('.', '\\.')));
+    assert.match(
+      `${source}\n${assetUrls}`,
+      new RegExp(defer.replace('.', '\\.')),
+      defer,
+    );
   }
 });

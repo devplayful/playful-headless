@@ -6,23 +6,23 @@ const { blogListingPath, BLOG_LISTING_CATEGORY_SLUGS } = await import('../utils/
 const { blogListingCanonicalUrl } = await import('../utils/blog-listing-query.ts');
 
 const listingPage = readFileSync(
-  new URL('../app/blog/blog-listing-view.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/blog-listing-view.tsx', import.meta.url),
   'utf8',
 );
 const crawlNav = readFileSync(
-  new URL('../app/blog/BlogListingCrawlNav.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/BlogListingCrawlNav.tsx', import.meta.url),
   'utf8',
 );
 const listingIndex = readFileSync(
-  new URL('../app/blog/page.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/page.tsx', import.meta.url),
   'utf8',
 );
 const pagination = readFileSync(
-  new URL('../app/blog/BlogListingPagination.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/BlogListingPagination.tsx', import.meta.url),
   'utf8',
 );
 const categories = readFileSync(
-  new URL('../app/blog/BlogCategories.tsx', import.meta.url),
+  new URL('../app/(frontend)/blog/BlogCategories.tsx', import.meta.url),
   'utf8',
 );
 
@@ -116,7 +116,8 @@ test('clean /blog generateMetadata title and robots stay unchanged', () => {
     metadataFn,
     /description:\s*'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog\.'/,
   );
-  assert.match(metadataFn, /shouldNoindexBlogListing\(searchParams\)/);
+  assert.match(metadataFn, /stripCmsFromBlogListingSearchParams\(searchParams\)/);
+  assert.match(metadataFn, /shouldNoindexBlogListing\(listingParams\)/);
   assert.match(metadataFn, /blogListingCanonicalUrl\(/);
   assert.match(metadataFn, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
   assert.match(listingIndex, /buildBlogListingMetadata\(\)/);
