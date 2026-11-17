@@ -34,13 +34,23 @@ function absolutePlayfulUrl(pathOrUrl: string): string {
   return canonicalForPath(path);
 }
 
+const HANGING_TITLE_END = /[\s:–\-,;!?¡¿]+$/;
+
 export function formatPlayfulDocumentTitle(segment: string): string {
   let clean = decodeHtmlEntities(segment)
     .replace(/\s*[-–|]\s*Playful Agency.*$/i, '')
+    .replace(/\s*\|\s*Playful\s*$/i, '')
     .trim();
-  const maxBody = TITLE_SEGMENT_MAX - PLAYFUL_SUFFIX.length;
-  if (clean.length > maxBody) {
-    clean = `${clean.slice(0, maxBody).replace(/\s+\S*$/, '').trim()}`;
+  if (clean.length > TITLE_SEGMENT_MAX) {
+    let trimmed = clean.slice(0, TITLE_SEGMENT_MAX).replace(/\s+\S*$/, '').trim();
+    trimmed = trimmed.replace(HANGING_TITLE_END, '').trim();
+    if (!trimmed) {
+      trimmed = clean
+        .slice(0, TITLE_SEGMENT_MAX)
+        .replace(HANGING_TITLE_END, '')
+        .trim();
+    }
+    clean = trimmed;
   }
   return `${clean}${PLAYFUL_SUFFIX}`;
 }
