@@ -14,7 +14,6 @@ const ENDPOINT_HOST_RE =
   /(?:https?:)?\/\/(?:endpoint\.|crear\.endpoint\.)?playfulagency\.com/gi;
 
 const WTI_PIXEL_RE = /wti-like-post\/images\/pixel\.gif/i;
-const WTI_PIXEL_STATIC = '/wp-static/wp-content/plugins/wti-like-post/images/pixel.gif';
 
 const NON_IMAGE_STATIC_RE =
   /\/wp-content\/(?:plugins|uploads\/elementor\/css|themes)|\/wp-includes\/js\//i;
@@ -206,15 +205,16 @@ export function rewriteEndpointUrlsInHtmlForPreview(
   return out;
 }
 
-export function rewriteWtiLikeTrackingPixels(html: string, env: NodeJS.ProcessEnv = process.env): string {
-  if (!html) return html;
-  return html.replace(/<img\b[^>]*>/gi, (tag) => {
-    if (!WTI_PIXEL_RE.test(tag)) return tag;
-    if (/\bsrc\s*=/i.test(tag)) {
-      return tag.replace(/\bsrc\s*=\s*(["'])[^"']*\1/i, `src="${WTI_PIXEL_STATIC}"`);
-    }
-    return tag.replace(/<img\b/i, `<img src="${WTI_PIXEL_STATIC}"`);
-  });
+/** Quita el pixel de likes WP (403 en apex); no sustituir por /wp-content/plugins. */
+export function stripWtiLikePixelImages(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<img\b[^>]*\bwti-pixel\b[^>]*>/gi, '')
+    .replace(/<img\b[^>]*wti-like-post\/images\/pixel\.gif[^>]*>/gi, '');
+}
+
+export function rewriteWtiLikeTrackingPixels(html: string, _env: NodeJS.ProcessEnv = process.env): string {
+  return stripWtiLikePixelImages(html);
 }
 
 export function countEndpointHostRefs(text: string): number {

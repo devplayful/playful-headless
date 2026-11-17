@@ -59,6 +59,18 @@ const REWRITES = [
   { source: '/blog/pautas-digitales/tiktok-ads-ahora-puedes-hacer-publicidad-en-tiktok', from: '/servicios/pautas-digitales', to: CONTACT_HREF, anchor: 'servicio de Pautas Digitales' },
   { source: '/blog/email-marketing/haz-email-marketing-como-todo-un-experto-ejemplos', from: 'https://emailmarketing.crear.endpoint.playfulagency.com/', to: CONTACT_HREF, anchor: 'email' },
   { source: '/blog/mas-vistos/ecosistema-digital-de-tu-marca', from: 'https://promociones.crear.endpoint.playfulagency.com/optin1631114756459', to: CONTACT_HREF, anchor: 'promociones' },
+  {
+    source: '/blog/email-marketing/como-promocionar-en-black-friday-implementa-estas-estrategias',
+    from: 'https://playfulagency.com/optin1631114756459',
+    to: CONTACT_HREF,
+    anchor: 'optin',
+  },
+  {
+    source: '/blog/mas-vistos/ecosistema-digital-de-tu-marca',
+    from: 'https://playfulagency.com/optin1631114756459',
+    to: CONTACT_HREF,
+    anchor: 'optin',
+  },
   { source: '/blog/pautas-digitales/publicidad-digital-en-tu-negocio', from: '/tipos-de-publicidad-online', to: GUIA_MARKETING_HREF, anchor: 'Las estrategias de Marketing Digital' },
   { source: '/blog/pautas-digitales/el-pixel-de-facebook-y-como-te-ayuda-con-tus-campanas', from: '/blog/pautas-digitales/implementa-publicidad-online-en-tus-estrategias', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'cómo puede mejorar tus estrategias' },
   { source: '/blog/otros/conoce-todo-sobre-instagram-ads', from: '/implementa-publicidad-online-en-tus-estrategias', to: PUBLICIDAD_DIGITAL_HREF, anchor: 'Implementa la publicidad online' },

@@ -28,11 +28,7 @@ export function applyBlobImagesToHtml(
   const map = loadBlobMigrationMap(env);
   const rewritten = maybeRewriteHtmlForBlob(snapshotSafe, map, env);
   const surfaced = rewriteEndpointUrlsInHtmlForPreview(rewritten, env);
-  const wtiFixed = rewriteWtiLikeTrackingPixels(surfaced, env);
-  return wtiFixed.replace(
-    /https?:\/\/endpoint\.playfulagency\.com\/wp-content\/plugins\/wti-like-post\/images\/pixel\.gif/gi,
-    '/wp-static/wp-content/plugins/wti-like-post/images/pixel.gif',
-  );
+  return rewriteWtiLikeTrackingPixels(surfaced, env);
 }
 
 export function applyBlobImagesToUrl(

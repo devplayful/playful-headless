@@ -33,6 +33,7 @@ import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerp
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { collectElementorStylesheetIds } from '@/lib/elementor-stylesheet-urls';
 import { rewriteStringUrls } from '@/lib/wp-snapshot/rewrite-media-urls.mjs';
+import { stripWtiLikePixelImages } from '@/lib/wp-endpoint-surface.ts';
 import { sanitizePodcastEpisodeForHubClient } from '@/lib/podcast-client-payload';
 import {
   getStagingLocalBlogPost,
@@ -131,6 +132,9 @@ function sanitizeWpValue(value: unknown): unknown {
   if (typeof value === 'string') {
     if (value.toLowerCase().includes('yoast')) {
       return undefined;
+    }
+    if (value.includes('wti-pixel') || value.includes('wti-like-post/images/pixel.gif')) {
+      return stripWtiLikePixelImages(value);
     }
     if (value.includes(WP_ENDPOINT_HOST) || value.includes('/wp-content/uploads/')) {
       return rewriteStringUrls(value);

@@ -81,6 +81,7 @@ export const BROKEN_HREF_DEFAULTS: Readonly<Record<string, string | null>> = Obj
   '/servicios/seo': AGENCIA_SEO_HREF,
   '/servicios/desarrollo-web': AGENCIA_DISENO_HREF,
   '/contactanos': CONTACT_HREF,
+  '/optin1631114756459': CONTACT_HREF,
   '/blog/pautas-digitales/implementa-publicidad-online-en-tus-estrategias': PUBLICIDAD_DIGITAL_HREF,
   '/implementa-publicidad-online-en-tus-estrategias': PUBLICIDAD_DIGITAL_HREF,
   /** Posts 75 and 60 (items 15 and 23). Same dest. */

@@ -19,6 +19,7 @@ export const OG_JPEG_BY_PATH = {
   "/casos-de-exito/odwalla-shopify-dtc-ecommerce": "/images/og/casos-de-exito-odwalla-shopify-dtc-ecommerce.jpg",
   "/agencia-e-commerce": "/images/og/agencia-e-commerce.jpg",
   "/agencia-seo": "/images/og/agencia-seo.jpg",
+  "/seo-vigo": "/images/og/agencia-seo.jpg",
   "/agencia-sem": "/images/og/agencia-sem.jpg",
   "/agencia-diseno-web": "/images/og/agencia-diseno-web.jpg",
   "/casos-de-exito": "/images/og/casos-de-exito.jpg",
