@@ -12,49 +12,49 @@ const episodes = JSON.parse(
   readFileSync(new URL('../data/wp-snapshot/collections/podcast.json', import.meta.url), 'utf8'),
 );
 
-test('short titles keep ¿ ¡ and trailing ! when under length cap', () => {
+const BAD_TITLE_END = /(?:¿|¡|:|,)$/;
+
+test('episodios 5, 8 y 10 referencia: longitudes 50, 49 y 49 sin recorte innecesario', () => {
+  const baseTitle = (slug) => {
+    const ep = episodes.find((e) => e.slug === slug);
+    assert.ok(ep, slug);
+    const seg = decodeHtmlEntities((ep.title?.rendered || '').replace(/<[^>]+>/g, ''));
+    return formatPlayfulDocumentTitle(seg).replace(/ \| Playful$/, '');
+  };
+  assert.equal(baseTitle('el-meollo-del-asunto-que-es-el-seo').length, 50);
   assert.equal(
-    formatPlayfulDocumentTitle('Episodio 8 – SEO para E-commerce: ¡Sé el primero!'),
-    'Episodio 8 – SEO para E-commerce: ¡Sé el primero! | Playful',
+    baseTitle('episodio-8-seo-para-e-commerce'),
+    'Episodio 8 – SEO para E-commerce: ¡Sé el primero!',
   );
   assert.equal(
-    formatPlayfulDocumentTitle('Episodio 5 – Inteligencia Artificial y SEO Optimizamos a otro nivel'),
-    'Episodio 5 – Inteligencia Artificial y SEO Optimizamos a otro nivel | Playful',
-  );
-  assert.equal(
-    formatPlayfulDocumentTitle('Episodio 10 – Llegamos al final: ¡Nos toca medir!'),
-    'Episodio 10 – Llegamos al final: ¡Nos toca medir! | Playful',
+    baseTitle('llegamos-al-final-nos-toca-medir'),
+    'Episodio 10 – Llegamos al final: ¡Nos toca medir!',
   );
 });
 
-test('formatPlayfulDocumentTitle trims dangling punctuation only when over segment cap', () => {
-  const long = 'Episodio 6 – Plan de contenidos: ¿Qué es? ¿Por qué te hace vender más en digital y seguir creciendo?';
-  assert.ok(long.length > 70);
-  const doc = formatPlayfulDocumentTitle(long);
-  const base = doc.replace(/ \| Playful$/, '');
-  assert.ok(base.length <= 70, `${base} (${base.length})`);
-  const openQ = (base.match(/¿/g) || []).length;
-  const closeQ = (base.match(/\?/g) || []).length;
-  assert.ok(openQ <= closeQ, base);
-});
-
-test('exports 18 episode titles and og:titles for SEO report snapshot', () => {
-  const lines = [];
-  const titles = episodes.map((ep) => {
+test('18 episodios: title ≤50, sin cierre colgante, og:title idéntico', () => {
+  const rows = [];
+  for (const ep of episodes) {
     const seg = decodeHtmlEntities((ep.title?.rendered || '').replace(/<[^>]+>/g, ''));
     const doc = formatPlayfulDocumentTitle(seg);
+    const base = doc.replace(/ \| Playful$/, '');
     const meta = buildPodcastEpisodeMetadata({
       ...ep,
       title: { rendered: ep.title?.rendered || ep.slug },
     });
-    const ogTitle = typeof meta.openGraph?.title === 'string' ? meta.openGraph.title : String(meta.openGraph?.title ?? '');
-    lines.push(`${ep.slug}\ttitle=${doc}\tog:title=${ogTitle}`);
-    return doc;
-  });
-  assert.equal(titles.length, 18);
+    const ogTitle =
+      typeof meta.openGraph?.title === 'string'
+        ? meta.openGraph.title
+        : String(meta.openGraph?.title ?? '');
+    assert.ok(base.length <= 50, `${ep.slug} len=${base.length} ${base}`);
+    assert.ok(!BAD_TITLE_END.test(base), `${ep.slug} ends badly: ${base}`);
+    assert.equal(ogTitle, doc, `${ep.slug} og:title`);
+    rows.push({ slug: ep.slug, before: seg, beforeLen: seg.length, after: base, afterLen: base.length, doc });
+  }
+  assert.equal(rows.length, 18);
   try {
-    writeFileSync('/opt/cursor/artifacts/podcast-18-titles.txt', `${lines.join('\n')}\n`);
+    writeFileSync('/opt/cursor/artifacts/podcast-18-titles.txt', `${JSON.stringify(rows, null, 2)}\n`);
   } catch {
-    // artifacts dir may be absent locally
+    /* optional */
   }
 });

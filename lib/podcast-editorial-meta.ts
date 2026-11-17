@@ -10,7 +10,7 @@ export const PODCAST_HUB_OG_IMAGE_PATH =
   '/wp-media/wp-content/uploads/2022/03/Banner-BenditaWeb_Podcast_Playful_750x750-560x560.png';
 
 const PLAYFUL_SUFFIX = ' | Playful';
-const TITLE_SEGMENT_MAX = 70;
+const TITLE_SEGMENT_MAX = 50;
 const META_MIN = 120;
 const META_MAX = 155;
 
@@ -77,21 +77,34 @@ function trimDanglingTitleSegment(segment: string): string {
 }
 
 export function formatPlayfulDocumentTitle(segment: string): string {
-  let clean = decodeHtmlEntities(segment)
+  const clean = decodeHtmlEntities(segment)
     .replace(/\s*[-–|]\s*Playful Agency.*$/i, '')
     .replace(/\s*\|\s*Playful\s*$/i, '')
     .trim();
-  if (clean.length > TITLE_SEGMENT_MAX) {
-    let trimmed = clean.slice(0, TITLE_SEGMENT_MAX).replace(/\s+\S*$/, '').trim();
-    trimmed = trimDanglingTitleSegment(trimmed.replace(HANGING_TITLE_END, '').trim());
-    if (!trimmed) {
-      trimmed = trimDanglingTitleSegment(
-        clean.slice(0, TITLE_SEGMENT_MAX).replace(HANGING_TITLE_END, '').trim(),
-      );
-    }
-    clean = trimmed;
+
+  if (clean.length <= TITLE_SEGMENT_MAX) {
+    return `${clean}${PLAYFUL_SUFFIX}`;
   }
-  return `${clean}${PLAYFUL_SUFFIX}`;
+
+  const colonIdx = clean.indexOf(':');
+  if (colonIdx !== -1) {
+    const beforeColon = clean.slice(0, colonIdx).trim();
+    if (beforeColon.length <= TITLE_SEGMENT_MAX) {
+      return `${beforeColon}${PLAYFUL_SUFFIX}`;
+    }
+  }
+
+  let trimmed = clean.slice(0, TITLE_SEGMENT_MAX).replace(/\s+\S*$/, '').trim();
+  if (!trimmed) {
+    trimmed = clean.slice(0, TITLE_SEGMENT_MAX).trim();
+  }
+  trimmed = trimDanglingTitleSegment(trimmed.replace(HANGING_TITLE_END, '').trim());
+  if (!trimmed) {
+    trimmed = trimDanglingTitleSegment(
+      clean.slice(0, TITLE_SEGMENT_MAX).replace(HANGING_TITLE_END, '').trim(),
+    );
+  }
+  return `${trimmed}${PLAYFUL_SUFFIX}`;
 }
 
 export function fitPodcastMetaDescription(source: string): string {

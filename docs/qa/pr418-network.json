@@ -1,0 +1,389 @@
+{
+  "generatedAt": "2026-11-17T18:40:22.128Z",
+  "baseUrl": "http://127.0.0.1:3456",
+  "landings": [
+    {
+      "path": "/agencia-e-commerce",
+      "name": "agencia-e-commerce",
+      "requestCount": 96,
+      "failureCount": 4,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "path": "/agencia-seo",
+      "name": "agencia-seo",
+      "requestCount": 100,
+      "failureCount": 3,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "path": "/agencia-sem",
+      "name": "agencia-sem",
+      "requestCount": 82,
+      "failureCount": 3,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "path": "/agencia-diseno-web",
+      "name": "agencia-diseno-web",
+      "requestCount": 85,
+      "failureCount": 3,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "path": "/agencia-ux-ui",
+      "name": "agencia-ux-ui",
+      "requestCount": 83,
+      "failureCount": 4,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "path": "/seo-vigo",
+      "name": "seo-vigo",
+      "requestCount": 96,
+      "failureCount": 3,
+      "externalRequestCount": 5,
+      "externalHosts": [
+        "fonts.googleapis.com",
+        "fonts.gstatic.com",
+        "xl21culwxno499zc.public.blob.vercel-storage.com"
+      ],
+      "externalRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap",
+          "method": "GET",
+          "resourceType": "stylesheet"
+        },
+        {
+          "url": "https://xl21culwxno499zc.public.blob.vercel-storage.com/media/2024/07/CONFETY-PLAYFUL.png",
+          "method": "GET",
+          "resourceType": "image"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/paytoneone/v25/0nksC9P7MfYHj2oFtYm2ChTtgPs.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-JDV30TGc.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        },
+        {
+          "url": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+          "method": "GET",
+          "resourceType": "font"
+        }
+      ],
+      "forbiddenEndpointRequests": [],
+      "forbiddenEndpointCount": 0,
+      "failures": [
+        {
+          "url": "http://127.0.0.1:3456/_next/static/css/3a90ca4ac00a16b1.css",
+          "method": "GET",
+          "resourceType": "stylesheet",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/1046-e3fdcb286ff3eff7.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3456/_next/static/chunks/174-84d508889a11096f.js",
+          "method": "GET",
+          "resourceType": "script",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "requests": 542,
+    "external": 30,
+    "forbiddenEndpoint": 0
+  }
+}
