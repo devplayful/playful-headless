@@ -14,6 +14,9 @@ const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3456').replace(/\/$/, ''
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WP_MEDIA_DIR = path.join(ROOT, 'public', 'wp-media');
 
+const FETCH_TIMEOUT_MS = Number(process.env.WP_MEDIA_GUARD_FETCH_MS || 12_000);
+const ASSET_FETCH_CONCURRENCY = Number(process.env.WP_MEDIA_GUARD_ASSET_CONCURRENCY || 4);
+
 const EXTRA_PATHS = [
   '/',
   '/agencia-seo',
@@ -82,11 +85,23 @@ function invalidNextImageLocalUrls(html) {
   return [...new Set(bad)];
 }
 
-async function fetchHtml(pathname) {
+async function fetchWithTimeout(url, init = {}) {
   await paceLiveQa();
-  const res = await fetch(new URL(withQaPathname(pathname), BASE), {
+  const res = await fetch(url, {
+    ...init,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    headers: {
+      'user-agent': PLAYFUL_QA_UA,
+      ...(init.headers || {}),
+    },
+  });
+  return res;
+}
+
+async function fetchHtml(pathname) {
+  const res = await fetchWithTimeout(new URL(withQaPathname(pathname), BASE), {
     redirect: 'manual',
-    headers: { 'user-agent': PLAYFUL_QA_UA, accept: 'text/html' },
+    headers: { accept: 'text/html' },
   });
   if (res.status >= 500) throw new Error(`${pathname} returned ${res.status}`);
   const html = await res.text();
@@ -95,24 +110,37 @@ async function fetchHtml(pathname) {
 }
 
 async function fetchText(url) {
-  await paceLiveQa();
-  const res = await fetch(url, {
-    headers: { 'user-agent': PLAYFUL_QA_UA },
-  });
+  const res = await fetchWithTimeout(url);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
   return res.text();
 }
 
+/** Mismas reglas que el guard original, sin bundles `/_next/` (falsos positivos en minificado). */
 function linkedAssetUrls(html) {
   const out = [];
   const re = /(?:href|src)\s*=\s*(["'])([^"']+)\1/gi;
   for (const m of html.matchAll(re)) {
     const value = decodeHtmlAttr(m[2]);
-    if (/\.(?:css|js)(?:\?|$)/i.test(value) || value.includes('/wp-static/') || value.includes('/wp-media/')) {
+    if (value.includes('/_next/')) continue;
+    if (
+      /\.(?:css|js)(?:\?|$)/i.test(value) ||
+      value.includes('/wp-static/') ||
+      value.includes('/wp-media/')
+    ) {
       out.push(value);
     }
   }
-  return [...new Set(out)];
+  return out;
+}
+
+function resolveSameOriginAsset(href) {
+  try {
+    const abs = new URL(href, BASE);
+    if (abs.origin !== new URL(BASE).origin) return null;
+    return abs.href;
+  } catch {
+    return null;
+  }
 }
 
 function forbiddenRuntimeRefs(text) {
@@ -133,8 +161,24 @@ function missingWpMediaFiles(html) {
   return missing;
 }
 
+async function mapConcurrent(items, concurrency, worker) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function runner() {
+    while (next < items.length) {
+      const index = next;
+      next += 1;
+      results[index] = await worker(items[index], index);
+    }
+  }
+  const runners = Array.from({ length: Math.min(concurrency, items.length) }, () => runner());
+  await Promise.all(runners);
+  return results;
+}
+
 const results = [];
-let fail = 0;
+const globalAssetUrls = new Set();
+
 for (const pathname of PATHS) {
   const html = await fetchHtml(pathname);
   const forbidden = [...html.matchAll(FORBIDDEN_RE)].length;
@@ -143,36 +187,22 @@ for (const pathname of PATHS) {
   const badNextImage = invalidNextImageLocalUrls(html);
   const wtiPixel = WTI_PIXEL_RE.test(html);
   const optin = OPTIN_RE.test(html);
-  let servedAssetForbidden = 0;
-  const badAssets = [];
+
   for (const href of linkedAssetUrls(html)) {
-    try {
-      const abs = new URL(href, BASE).href;
-      if (!abs.startsWith(BASE)) continue;
-      const body = await fetchText(abs);
-      const hits = forbiddenRuntimeRefs(body);
-      if (hits > 0) {
-        servedAssetForbidden += hits;
-        badAssets.push({ href: abs, hits });
-      }
-    } catch {
-      // skip unreachable assets in smoke
-    }
+    const abs = resolveSameOriginAsset(href);
+    if (abs) globalAssetUrls.add(abs);
   }
+
   const ok =
     forbidden === 0 &&
-    servedAssetForbidden === 0 &&
     missing.length === 0 &&
     rawWp.length === 0 &&
     badNextImage.length === 0 &&
     !wtiPixel &&
     !optin;
-  if (!ok) fail += 1;
   results.push({
     path: pathname,
     forbiddenMatches: forbidden,
-    servedAssetForbiddenMatches: servedAssetForbidden,
-    badServedAssets: badAssets.slice(0, 3),
     rawWpContentAttrs: rawWp.slice(0, 3),
     rawWpContentCount: rawWp.length,
     invalidNextImageLocal: badNextImage.slice(0, 3),
@@ -185,13 +215,43 @@ for (const pathname of PATHS) {
   });
 }
 
+const assetList = [...globalAssetUrls].sort();
+const assetScanResults = await mapConcurrent(assetList, ASSET_FETCH_CONCURRENCY, async (url) => {
+  try {
+    const body = await fetchText(url);
+    const hits = forbiddenRuntimeRefs(body);
+    return { url, hits, error: null };
+  } catch (error) {
+    return {
+      url,
+      hits: 0,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+});
+
+const badAssets = assetScanResults.filter((row) => row.hits > 0);
+const servedAssetForbidden = badAssets.reduce((sum, row) => sum + row.hits, 0);
+const pageFailures = results.filter((row) => !row.ok).length;
+const assetFailures = servedAssetForbidden > 0 ? 1 : 0;
+const fail = pageFailures + assetFailures;
+
 const summary = {
   base: BASE,
   sitemapPathCount: PATHS.length,
+  servedAssetsScanned: assetList.length,
+  servedAssetConcurrency: ASSET_FETCH_CONCURRENCY,
+  fetchTimeoutMs: FETCH_TIMEOUT_MS,
+  servedAssetForbiddenMatches: servedAssetForbidden,
+  badServedAssets: badAssets.slice(0, 5),
+  assetFetchErrors: assetScanResults.filter((row) => row.error).length,
   sitemapXmlLocs: (buildSitemapXml().match(/<loc>/g) || []).length,
-  pass: results.length - fail,
+  pass: results.length - pageFailures,
   fail,
+  pageFailures,
+  assetFailures,
   results,
 };
+
 console.log(JSON.stringify(summary, null, 2));
 process.exitCode = fail ? 1 : 0;
