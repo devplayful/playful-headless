@@ -244,6 +244,7 @@ async function main() {
       pending: pending.size,
     }),
   );
+  console.log('Run node scripts/mirror-elementor-webpack-bundles.mjs for lazy webpack chunks.');
 }
 
 main().catch((e) => {

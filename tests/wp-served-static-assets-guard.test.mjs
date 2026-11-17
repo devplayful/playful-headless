@@ -68,6 +68,18 @@ test('CONFETY en header fix global apunta a /wp-media', () => {
   );
 });
 
+test('webpack.runtime elementor apunta a bundles presentes en public/wp-static', () => {
+  const runtime = read('public/wp-static/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js');
+  const names = [
+    ...new Set([...runtime.matchAll(/(["'])([^"']*\.bundle\.min\.js)\1/g)].map((m) => m[2])),
+  ];
+  assert.ok(names.length >= 20, `bundles=${names.length}`);
+  for (const name of names) {
+    const rel = `public/wp-static/wp-content/plugins/elementor/assets/js/${name}`;
+    assert.ok(existsSync(`${ROOT}/${rel}`), rel);
+  }
+});
+
 test('archivos servidos clave sin referencias WP remotas en fuente estática', () => {
   const files = [
     'lib/case-study-listing-image.ts',

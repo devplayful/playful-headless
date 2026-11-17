@@ -61,6 +61,43 @@ function isLocalhost(url) {
   return h === '127.0.0.1' || h === 'localhost';
 }
 
+function isOwnSiteRequest(url) {
+  if (!isLocalhost(url)) return false;
+  try {
+    const { pathname } = new URL(url);
+    return (
+      pathname.startsWith('/_next/')
+      || pathname.startsWith('/wp-static/')
+      || pathname.startsWith('/wp-media/')
+      || pathname === '/'
+      || pathname.startsWith('/agencia-')
+      || pathname.startsWith('/seo-vigo')
+      || pathname.startsWith('/api/')
+    );
+  } catch {
+    return false;
+  }
+}
+
+async function interactWithWidgets(page) {
+  const accordion = page.locator('.elementor-accordion .elementor-tab-title').first();
+  if (await accordion.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await accordion.click({ timeout: 5000 }).catch(() => {});
+    await page.waitForTimeout(800);
+  }
+  const accordionItems = page.locator('.elementor-accordion .elementor-tab-title');
+  const count = await accordionItems.count().catch(() => 0);
+  for (let i = 1; i < Math.min(count, 4); i += 1) {
+    await accordionItems.nth(i).click({ timeout: 3000 }).catch(() => {});
+    await page.waitForTimeout(400);
+  }
+  const next = page.locator('.elementor-image-carousel .swiper-button-next, .swiper-button-next').first();
+  if (await next.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await next.click({ timeout: 3000 }).catch(() => {});
+    await page.waitForTimeout(600);
+  }
+}
+
 function basenameAsset(url) {
   try {
     const { pathname } = new URL(url);
@@ -92,6 +129,7 @@ async function auditLanding(browser, landing) {
   const page = await browser.newPage();
   const requests = [];
   const failures = [];
+  const badResponses = [];
 
   page.on('request', (req) => {
     requests.push({
@@ -108,10 +146,23 @@ async function auditLanding(browser, landing) {
       failure: req.failure()?.errorText ?? 'unknown',
     });
   });
+  page.on('response', (res) => {
+    const status = res.status();
+    if (status < 400) return;
+    const url = res.url();
+    if (!isOwnSiteRequest(url)) return;
+    badResponses.push({
+      url,
+      status,
+      statusText: res.statusText(),
+      resourceType: res.request().resourceType(),
+    });
+  });
 
   const url = `${BASE}${landing.path}`;
   await page.goto(url, { waitUntil: 'networkidle', timeout: 120_000 });
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await interactWithWidgets(page);
   await page.waitForTimeout(3000);
 
   const external = requests.filter((r) => !isLocalhost(r.url));
@@ -139,6 +190,16 @@ async function auditLanding(browser, landing) {
       return false;
     }
   });
+  const ownSiteFailures = failures.filter((f) => isOwnSiteRequest(f.url));
+  const wpStaticBundleLoads = requests
+    .filter((r) => {
+      try {
+        return new URL(r.url).pathname.includes('/wp-static/') && r.url.includes('.bundle.min.js');
+      } catch {
+        return false;
+      }
+    })
+    .map((r) => basenameAsset(r.url));
   const nextChunksLoaded = [
     ...new Set(
       nextRequests
@@ -154,8 +215,12 @@ async function auditLanding(browser, landing) {
     name: landing.name,
     requestCount: requests.length,
     failureCount: failures.length,
+    ownSiteFailureCount: ownSiteFailures.length + badResponses.length,
+    ownSiteFailures: [...ownSiteFailures, ...badResponses],
     nextFailureCount: nextFailures.length,
     nextFailures,
+    badResponseCount: badResponses.length,
+    wpStaticBundlesLoaded: [...new Set(wpStaticBundleLoads)].sort(),
     externalRequestCount: external.length,
     externalHosts: [...new Set(external.map((r) => hostOf(r.url)).filter(Boolean))].sort(),
     forbiddenByKind,
@@ -202,6 +267,7 @@ const summary = {
     forbiddenOld: results.reduce((s, r) => s + r.forbiddenOldCount, 0),
     forbiddenCrear: results.reduce((s, r) => s + r.forbiddenCrearCount, 0),
     nextFailures: results.reduce((s, r) => s + r.nextFailureCount, 0),
+    ownSiteFailures: results.reduce((s, r) => s + r.ownSiteFailureCount, 0),
   },
 };
 
@@ -222,17 +288,17 @@ const mdLines = [
     ? `**Faltan:** ${preflight.missingExpectedAssets.join(', ')}`
     : '**OK** — los tres assets aparecen en el HTML.',
   '',
-  '| Landing | Total requests | Externas | endpoint | old | crear | `/_next` fallos |',
-  '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+  '| Landing | Total | Externas | endpoint | old | crear | Fallos propios | `/_next` |',
+  '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
 ];
 for (const r of results) {
   mdLines.push(
-    `| ${r.path} | ${r.requestCount} | ${r.externalRequestCount} | ${r.forbiddenEndpointCount} | ${r.forbiddenOldCount} | ${r.forbiddenCrearCount} | ${r.nextFailureCount} |`,
+    `| ${r.path} | ${r.requestCount} | ${r.externalRequestCount} | ${r.forbiddenEndpointCount} | ${r.forbiddenOldCount} | ${r.forbiddenCrearCount} | ${r.ownSiteFailureCount} | ${r.nextFailureCount} |`,
   );
 }
 mdLines.push(
   '',
-  `**Totales:** endpoint=${summary.totals.forbiddenEndpoint}, old=${summary.totals.forbiddenOld}, crear=${summary.totals.forbiddenCrear}, \`/_next\` fallos=${summary.totals.nextFailures}`,
+  `**Totales:** endpoint=${summary.totals.forbiddenEndpoint}, old=${summary.totals.forbiddenOld}, crear=${summary.totals.forbiddenCrear}, fallos propios=${summary.totals.ownSiteFailures}, \`/_next\`=${summary.totals.nextFailures}`,
   '',
 );
 for (const r of results) {
@@ -241,8 +307,17 @@ for (const r of results) {
     '',
     `- Chunks/CSS \`/_next\` cargados (únicos): ${r.nextChunksLoaded.join(', ') || '(ninguno)'}`,
     `- 174/1046/749451: ${JSON.stringify(r.keyAssetsPresent)}`,
+    `- Bundles wp-static: ${r.wpStaticBundlesLoaded.join(', ') || '(ninguno)'}`,
     '',
   );
+  if (r.ownSiteFailures.length) {
+    mdLines.push('**Fallos propios (abort/4xx/5xx):**');
+    for (const f of r.ownSiteFailures) {
+      const label = f.failure || `HTTP ${f.status}`;
+      mdLines.push(`- ${label} — ${f.url}`);
+    }
+    mdLines.push('');
+  }
   if (r.nextFailures.length) {
     mdLines.push('**Fallos `/_next`:**');
     for (const f of r.nextFailures) {
@@ -259,6 +334,7 @@ if (
   || summary.totals.forbiddenOld > 0
   || summary.totals.forbiddenCrear > 0
   || summary.totals.nextFailures > 0
+  || summary.totals.ownSiteFailures > 0
 ) {
   process.exitCode = 1;
 }

@@ -1,6 +1,6 @@
 {
-  "measuredCommitSha": "f4dd454ededad9a85034935bb30027be572249a9",
-  "generatedAtUtc": "2026-11-17T19:32:44.047Z",
+  "measuredCommitSha": "a0e2a74e60e5889f1dbdb11fcf871fc6f65c13e5",
+  "generatedAtUtc": "2026-11-17T19:51:34.121Z",
   "baseUrl": "http://127.0.0.1:3460",
   "htmlPreflight": {
     "probePath": "/agencia-seo",
@@ -31,7 +31,7 @@
       "cbe18726b2b69fbc.css\\",
       "main-app-df7f376871fb71d8.js",
       "polyfills-42372ed130431b0a.js",
-      "webpack-ada8644ee8704dc2.js"
+      "webpack-97fba68893fc2216.js"
     ],
     "ok": true
   },
@@ -44,14 +44,30 @@
     {
       "path": "/agencia-e-commerce",
       "name": "agencia-e-commerce",
-      "requestCount": 153,
-      "failureCount": 10,
+      "requestCount": 169,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 25,
       "externalHosts": [
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -103,87 +119,43 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     },
     {
       "path": "/agencia-seo",
       "name": "agencia-seo",
-      "requestCount": 158,
-      "failureCount": 10,
+      "requestCount": 175,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 26,
       "externalHosts": [
+        "cdn.jsdelivr.net",
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -235,87 +207,43 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     },
     {
       "path": "/agencia-sem",
       "name": "agencia-sem",
-      "requestCount": 153,
-      "failureCount": 10,
+      "requestCount": 169,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 25,
       "externalHosts": [
+        "cdn.jsdelivr.net",
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -367,87 +295,42 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     },
     {
       "path": "/agencia-diseno-web",
       "name": "agencia-diseno-web",
-      "requestCount": 155,
-      "failureCount": 10,
+      "requestCount": 171,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 25,
       "externalHosts": [
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -499,87 +382,43 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     },
     {
       "path": "/agencia-ux-ui",
       "name": "agencia-ux-ui",
-      "requestCount": 154,
-      "failureCount": 10,
+      "requestCount": 170,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 25,
       "externalHosts": [
+        "cdn.jsdelivr.net",
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -631,87 +470,42 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     },
     {
       "path": "/seo-vigo",
       "name": "seo-vigo",
-      "requestCount": 155,
-      "failureCount": 10,
+      "requestCount": 171,
+      "failureCount": 0,
+      "ownSiteFailureCount": 0,
+      "ownSiteFailures": [],
       "nextFailureCount": 0,
       "nextFailures": [],
-      "externalRequestCount": 4,
+      "badResponseCount": 0,
+      "wpStaticBundlesLoaded": [
+        "accordion.8b0db5058afeb74622f5.bundle.min.js",
+        "image-carousel.6167d20b95b33386757b.bundle.min.js",
+        "section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
+        "shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
+        "text-editor.45609661e409413f1cef.bundle.min.js"
+      ],
+      "externalRequestCount": 25,
       "externalHosts": [
+        "fonts.bunny.net",
         "fonts.googleapis.com",
         "fonts.gstatic.com",
+        "images.leadconnectorhq.com",
+        "services.leadconnectorhq.com",
+        "services.msgsndr.com",
+        "stcdn.leadconnectorhq.com",
+        "widgets.leadconnectorhq.com",
         "xl21culwxno499zc.public.blob.vercel-storage.com"
       ],
       "forbiddenByKind": {
@@ -763,83 +557,23 @@
         "page-b0f69d8534a09644.js",
         "page-bc16e6b6f5e24b33.js",
         "page-c29d6e4c991451c2.js",
-        "webpack-ada8644ee8704dc2.js"
+        "webpack-97fba68893fc2216.js"
       ],
       "keyAssetsPresent": {
         "css749451b90872367a": true,
         "js174": true,
         "js1046": true
       },
-      "failures": [
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/section-frontend-handlers.d85ab872da118940910d.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/shared-frontend-handlers.03caa53373b56d3bab67.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/text-editor.45609661e409413f1cef.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/accordion.8b0db5058afeb74622f5.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        },
-        {
-          "url": "http://127.0.0.1:3460/wp-static/wp-content/plugins/elementor/assets/js/image-carousel.6167d20b95b33386757b.bundle.min.js",
-          "method": "GET",
-          "resourceType": "script",
-          "failure": "net::ERR_ABORTED"
-        }
-      ]
+      "failures": []
     }
   ],
   "totals": {
-    "requests": 928,
-    "external": 24,
+    "requests": 1025,
+    "external": 151,
     "forbiddenEndpoint": 0,
     "forbiddenOld": 0,
     "forbiddenCrear": 0,
-    "nextFailures": 0
+    "nextFailures": 0,
+    "ownSiteFailures": 0
   }
 }
