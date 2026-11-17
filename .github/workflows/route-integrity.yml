@@ -49,6 +49,8 @@ jobs:
         run: node --experimental-strip-types --test tests/wp-endpoint-runtime.test.mjs
       - name: Podcast document titles (sin cortes ¿ ¡)
         run: npx tsx --test tests/podcast-title-format.test.mjs
+      - name: WP served static/runtime guard (HTML + CSS/JS servidos)
+        run: node --experimental-strip-types --test tests/wp-served-static-assets-guard.test.mjs
 
   sin-wp-smoke:
     runs-on: ubuntu-latest

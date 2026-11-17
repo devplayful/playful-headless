@@ -14,13 +14,27 @@ const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3456').replace(/\/$/, ''
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WP_MEDIA_DIR = path.join(ROOT, 'public', 'wp-media');
 
-const EXTRA_PATHS = ['/blog', '/podcast'];
+const EXTRA_PATHS = [
+  '/',
+  '/agencia-seo',
+  '/agencia-sem',
+  '/agencia-diseno-web',
+  '/agencia-e-commerce',
+  '/marketing-internacional',
+  '/agencia-ux-ui',
+  '/casos-de-exito',
+  '/casos-de-exito/jumex-shopify-dtc-ecommerce',
+  '/blog',
+  '/podcast',
+];
 const PATHS = [...new Set([...getSitemapPaths(), ...EXTRA_PATHS])].sort((a, b) =>
   a.localeCompare(b),
 );
 
 const FORBIDDEN_RE =
-  /endpoint\.playfulagency\.com|crear\.endpoint\.playfulagency\.com|\/\/i[0-2]\.wp\.com\b|i[0-2]\.wp\.com\//gi;
+  /endpoint\.playfulagency\.com|old\.playfulagency\.com|crear\.endpoint\.playfulagency\.com|\/\/i[0-2]\.wp\.com\b|i[0-2]\.wp\.com\//gi;
+const EXTERNAL_WP_RUNTIME_RE =
+  /https?:\/\/[^"'\s)]+(?:\/wp-json|\/wp-includes)\b|https?:\/\/[^"'\s)]*(?:endpoint|old)\.playfulagency\.com/gi;
 const WP_MEDIA_REF_RE = /\/wp-media\/wp-content\/uploads\/[^\s"'<>\\)]+/gi;
 const WTI_PIXEL_RE = /<img\b[^>]*(?:\bwti-pixel\b|wti-like-post\/images\/pixel\.gif)[^>]*>/i;
 
@@ -80,6 +94,31 @@ async function fetchHtml(pathname) {
   return html;
 }
 
+async function fetchText(url) {
+  await paceLiveQa();
+  const res = await fetch(url, {
+    headers: { 'user-agent': PLAYFUL_QA_UA },
+  });
+  if (!res.ok) throw new Error(`${url} returned ${res.status}`);
+  return res.text();
+}
+
+function linkedAssetUrls(html) {
+  const out = [];
+  const re = /(?:href|src)\s*=\s*(["'])([^"']+)\1/gi;
+  for (const m of html.matchAll(re)) {
+    const value = decodeHtmlAttr(m[2]);
+    if (/\.(?:css|js)(?:\?|$)/i.test(value) || value.includes('/wp-static/') || value.includes('/wp-media/')) {
+      out.push(value);
+    }
+  }
+  return [...new Set(out)];
+}
+
+function forbiddenRuntimeRefs(text) {
+  return [...text.matchAll(EXTERNAL_WP_RUNTIME_RE)].length;
+}
+
 function missingWpMediaFiles(html) {
   const missing = [];
   const seen = new Set();
@@ -104,8 +143,25 @@ for (const pathname of PATHS) {
   const badNextImage = invalidNextImageLocalUrls(html);
   const wtiPixel = WTI_PIXEL_RE.test(html);
   const optin = OPTIN_RE.test(html);
+  let servedAssetForbidden = 0;
+  const badAssets = [];
+  for (const href of linkedAssetUrls(html)) {
+    try {
+      const abs = new URL(href, BASE).href;
+      if (!abs.startsWith(BASE)) continue;
+      const body = await fetchText(abs);
+      const hits = forbiddenRuntimeRefs(body);
+      if (hits > 0) {
+        servedAssetForbidden += hits;
+        badAssets.push({ href: abs, hits });
+      }
+    } catch {
+      // skip unreachable assets in smoke
+    }
+  }
   const ok =
     forbidden === 0 &&
+    servedAssetForbidden === 0 &&
     missing.length === 0 &&
     rawWp.length === 0 &&
     badNextImage.length === 0 &&
@@ -115,6 +171,8 @@ for (const pathname of PATHS) {
   results.push({
     path: pathname,
     forbiddenMatches: forbidden,
+    servedAssetForbiddenMatches: servedAssetForbidden,
+    badServedAssets: badAssets.slice(0, 3),
     rawWpContentAttrs: rawWp.slice(0, 3),
     rawWpContentCount: rawWp.length,
     invalidNextImageLocal: badNextImage.slice(0, 3),

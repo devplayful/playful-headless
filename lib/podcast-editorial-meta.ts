@@ -10,7 +10,7 @@ export const PODCAST_HUB_OG_IMAGE_PATH =
   '/wp-media/wp-content/uploads/2022/03/Banner-BenditaWeb_Podcast_Playful_750x750-560x560.png';
 
 const PLAYFUL_SUFFIX = ' | Playful';
-const TITLE_SEGMENT_MAX = 50;
+const TITLE_SEGMENT_MAX = 70;
 const META_MIN = 120;
 const META_MAX = 155;
 
@@ -90,8 +90,6 @@ export function formatPlayfulDocumentTitle(segment: string): string {
       );
     }
     clean = trimmed;
-  } else {
-    clean = trimDanglingTitleSegment(clean);
   }
   return `${clean}${PLAYFUL_SUFFIX}`;
 }

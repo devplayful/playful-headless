@@ -8,10 +8,10 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  ELEMENTOR_HEADER_FIX_FONT_URLS,
-  ELEMENTOR_PAGE_SCRIPTS,
+  ELEMENTOR_HEADER_FIX_FONT_URLS_EXPORT,
+  ELEMENTOR_PAGE_SCRIPTS_EXPORT,
   ELEMENTOR_SERVICE_PAGE_SLUGS,
-  WP_ENDPOINT_ORIGIN,
+  WP_ENDPOINT_EXPORT_ORIGIN,
 } from '../lib/elementor-static-asset-urls.ts';
 import {
   ELEMENTOR_CORE_STYLESHEETS,
@@ -27,7 +27,7 @@ const INV_PATH = path.join(ROOT, 'docs/wp-static-assets-inventory.json');
 const API_REPORT_PATH = path.join(ROOT, 'docs/wp-static-api-images-report.json');
 const BLOB_MAP_PATH = path.join(ROOT, 'docs/blob-migration-map.json');
 const UA = 'PlayfulQA/1.0';
-const WP_JSON = `${WP_ENDPOINT_ORIGIN}/wp-json`;
+const WP_JSON = `${WP_ENDPOINT_EXPORT_ORIGIN}/wp-json`;
 
 type InvRow = {
   url: string;
@@ -79,7 +79,7 @@ function rewriteCssUrls(cssText: string, cssUrl: string): string {
   return cssText.replace(/url\(\s*([^)]+)\s*\)/gi, (full, inner: string) => {
     const abs = resolveCssUrl(cssUrl, inner);
     if (!abs) return full;
-    if (!abs.includes('playfulagency.com') && !abs.startsWith(WP_ENDPOINT_ORIGIN)) return full;
+    if (!abs.includes('playfulagency.com') && !abs.startsWith(WP_ENDPOINT_EXPORT_ORIGIN)) return full;
     const mapped = map[abs] || blobImageMap[abs];
     if (!mapped) {
       pending.add(abs);
@@ -174,8 +174,8 @@ async function wpPage(slug: string): Promise<{ id: number; html: string } | null
 async function collectSeedUrls(): Promise<string[]> {
   const urls = new Set<string>();
   for (const u of ELEMENTOR_CORE_STYLESHEETS) urls.add(u.split('?')[0]);
-  for (const u of ELEMENTOR_PAGE_SCRIPTS) urls.add(u.split('?')[0]);
-  for (const u of ELEMENTOR_HEADER_FIX_FONT_URLS) urls.add(u.split('?')[0]);
+  for (const u of ELEMENTOR_PAGE_SCRIPTS_EXPORT) urls.add(u.split('?')[0]);
+  for (const u of ELEMENTOR_HEADER_FIX_FONT_URLS_EXPORT) urls.add(u.split('?')[0]);
   for (const slug of ELEMENTOR_SERVICE_PAGE_SLUGS) {
     const page = await wpPage(slug);
     if (!page) continue;
@@ -219,7 +219,7 @@ async function main() {
   );
   writeFileSync(
     MAP_PATH,
-    JSON.stringify({ generated: new Date().toISOString(), origin: WP_ENDPOINT_ORIGIN, map }, null, 2) + '\n',
+    JSON.stringify({ generated: new Date().toISOString(), origin: WP_ENDPOINT_EXPORT_ORIGIN, map }, null, 2) + '\n',
   );
   writeFileSync(
     INV_PATH,
