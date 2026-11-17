@@ -65,19 +65,6 @@ function invalidNextImageLocalUrls(html) {
       /* skip malformed */
     }
   }
-  const encodedRe = /%2Fimages%2F|%2Fcasos%2F/gi;
-  if (encodedRe.test(html)) {
-    for (const m of html.matchAll(/_next\/image\?url=([^&"'\\s]+)/gi)) {
-      try {
-        const decoded = decodeURIComponent(decodeHtmlAttr(m[1]));
-        if (decoded.startsWith('/') && !pathMatchesNextImageLocalPattern(decoded)) {
-          bad.push(decoded);
-        }
-      } catch {
-        /* skip */
-      }
-    }
-  }
   return [...new Set(bad)];
 }
 
