@@ -73,9 +73,11 @@ export interface CreateTaskInput {
 export interface HighLevelGateway {
   upsertContact(input: UpsertContactInput): Promise<UpsertContactResult>;
   getContactCustomFields(contactId: string): Promise<HighLevelCustomFieldValue[]>;
+  getContactTags(contactId: string): Promise<string[]>;
   updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void>;
   updateContactLastName?(contactId: string, lastName: string | null): Promise<void>;
   addContactTags(contactId: string, tags: string[]): Promise<void>;
+  removeContactTags(contactId: string, tags: string[]): Promise<void>;
   addContactNote?(contactId: string, body: string): Promise<void>;
   findOpenOpportunities(locationId: string, pipelineId: string, contactId: string): Promise<HighLevelOpportunity[]>;
   createOpportunity(input: CreateOpportunityInput): Promise<{ id: string }>;
@@ -120,7 +122,12 @@ export class HighLevelApiClient implements HighLevelGateway {
     private readonly baseUrl = 'https://services.leadconnectorhq.com',
   ) {}
 
-  private async request<T>(operation: string, path: string, init: RequestInit): Promise<T> {
+  private async request<T>(
+    operation: string,
+    path: string,
+    init: RequestInit,
+    options?: { allowEmptyBody?: boolean },
+  ): Promise<T> {
     const response = await this.fetchImpl(`${this.baseUrl}${path}`, {
       ...init,
       headers: {
@@ -146,6 +153,7 @@ export class HighLevelApiClient implements HighLevelGateway {
 
     const text = await response.text();
     if (!text.trim()) {
+      if (options?.allowEmptyBody) return undefined as T;
       throw new HighLevelApiError(502, operation, 'respuesta vacía');
     }
     try {
@@ -174,6 +182,13 @@ export class HighLevelApiClient implements HighLevelGateway {
     }));
   }
 
+  async getContactTags(contactId: string): Promise<string[]> {
+    const result = await this.request<{
+      contact: { tags?: string[] };
+    }>('get contact tags', `/contacts/${encodeURIComponent(contactId)}`, { method: 'GET' });
+    return Array.isArray(result.contact.tags) ? [...result.contact.tags] : [];
+  }
+
   async updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
     await this.request('update contact attribution', `/contacts/${encodeURIComponent(contactId)}`, {
       method: 'PUT',
@@ -193,6 +208,18 @@ export class HighLevelApiClient implements HighLevelGateway {
       method: 'POST',
       body: JSON.stringify({ tags }),
     });
+  }
+
+  async removeContactTags(contactId: string, tags: string[]): Promise<void> {
+    await this.request(
+      'remove contact tag',
+      `/contacts/${encodeURIComponent(contactId)}/tags`,
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ tags }),
+      },
+      { allowEmptyBody: true },
+    );
   }
 
   async addContactNote(contactId: string, body: string): Promise<void> {
@@ -281,12 +308,16 @@ export class DryRunHighLevelGateway implements HighLevelGateway {
   async getContactCustomFields(): Promise<HighLevelCustomFieldValue[]> {
     return Array.from(this.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
   }
+  async getContactTags(): Promise<string[]> {
+    return [];
+  }
   async updateContactCustomFields(_contactId: string, customFields: HighLevelCustomFieldValue[]): Promise<void> {
     for (const item of customFields) {
       if (item.id) this.customFields.set(item.id, item.fieldValue);
     }
   }
   async addContactTags(): Promise<void> {}
+  async removeContactTags(): Promise<void> {}
   async updateContactLastName(): Promise<void> {}
   async addContactNote(): Promise<void> {}
   async findOpenOpportunities(): Promise<HighLevelOpportunity[]> { return []; }
