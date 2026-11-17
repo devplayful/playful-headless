@@ -1,17 +1,24 @@
 #!/usr/bin/env node
 /**
  * PR #418 — captura de red en build de producción local (6 landings Elementor).
- * Uso: BASE_URL=http://127.0.0.1:3456 node scripts/qa-pr418-landing-network.mjs
+ * Uso: BASE_URL=http://127.0.0.1:3460 node scripts/qa-pr418-landing-network.mjs
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import { chromium } from 'playwright';
 
-const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3456').replace(/\/$/, '');
+const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3460').replace(/\/$/, '');
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_JSON = join(ROOT, 'docs/qa/pr418-network.json');
 const OUT_MD = join(ROOT, 'docs/qa/pr418-network.md');
+
+const EXPECTED_HTML_ASSETS = [
+  '749451b90872367a.css',
+  '174-7689b7d3e9c28799.js',
+  '1046-62d7694e79f5fe91.js',
+];
 
 const LANDINGS = [
   { path: '/agencia-e-commerce', name: 'agencia-e-commerce' },
@@ -22,8 +29,24 @@ const LANDINGS = [
   { path: '/seo-vigo', name: 'seo-vigo' },
 ];
 
-const FORBIDDEN_HOST_RE =
-  /^(?:endpoint|old|.*\.crear\.endpoint)\.playfulagency\.com$/i;
+function measuredCommitSha() {
+  try {
+    return execSync('git rev-parse HEAD', { cwd: ROOT, encoding: 'utf8' }).trim();
+  } catch {
+    return process.env.MEASURED_COMMIT_SHA?.trim() || 'unknown';
+  }
+}
+
+function classifyForbiddenHost(hostname) {
+  if (!hostname) return null;
+  const h = hostname.toLowerCase();
+  if (h === 'endpoint.playfulagency.com') return 'endpoint';
+  if (h === 'old.playfulagency.com') return 'old';
+  if (h === 'crear.playfulagency.com' || h.endsWith('.crear.endpoint.playfulagency.com')) {
+    return 'crear';
+  }
+  return null;
+}
 
 function hostOf(url) {
   try {
@@ -36,6 +59,33 @@ function hostOf(url) {
 function isLocalhost(url) {
   const h = hostOf(url);
   return h === '127.0.0.1' || h === 'localhost';
+}
+
+function basenameAsset(url) {
+  try {
+    const { pathname } = new URL(url);
+    const base = pathname.split('/').pop() || '';
+    return base.split('?')[0];
+  } catch {
+    return '';
+  }
+}
+
+async function assertHtmlPreflight() {
+  const probe = `${BASE}/agencia-seo`;
+  const res = await fetch(probe, { headers: { accept: 'text/html' } });
+  const html = await res.text();
+  const missing = EXPECTED_HTML_ASSETS.filter((needle) => !html.includes(needle));
+  const nextRefs = [...html.matchAll(/\/_next\/static\/(?:css|chunks)\/([^"'?#\s]+)/g)].map(
+    (m) => m[1],
+  );
+  return {
+    probePath: '/agencia-seo',
+    status: res.status,
+    missingExpectedAssets: missing,
+    nextStaticRefsSample: [...new Set(nextRefs)].sort().slice(0, 40),
+    ok: res.status === 200 && missing.length === 0,
+  };
 }
 
 async function auditLanding(browser, landing) {
@@ -65,7 +115,37 @@ async function auditLanding(browser, landing) {
   await page.waitForTimeout(3000);
 
   const external = requests.filter((r) => !isLocalhost(r.url));
-  const forbidden = external.filter((r) => FORBIDDEN_HOST_RE.test(hostOf(r.url)));
+  const forbiddenByKind = { endpoint: 0, old: 0, crear: 0 };
+  const forbiddenRequests = [];
+  for (const r of external) {
+    const kind = classifyForbiddenHost(hostOf(r.url));
+    if (kind) {
+      forbiddenByKind[kind] += 1;
+      forbiddenRequests.push({ ...r, forbiddenKind: kind });
+    }
+  }
+
+  const nextRequests = requests.filter((r) => {
+    try {
+      return new URL(r.url).pathname.startsWith('/_next/');
+    } catch {
+      return false;
+    }
+  });
+  const nextFailures = failures.filter((f) => {
+    try {
+      return new URL(f.url).pathname.startsWith('/_next/');
+    } catch {
+      return false;
+    }
+  });
+  const nextChunksLoaded = [
+    ...new Set(
+      nextRequests
+        .map((r) => basenameAsset(r.url))
+        .filter((name) => /\.(?:js|css)$/.test(name)),
+    ),
+  ].sort();
 
   await page.close();
 
@@ -74,32 +154,54 @@ async function auditLanding(browser, landing) {
     name: landing.name,
     requestCount: requests.length,
     failureCount: failures.length,
+    nextFailureCount: nextFailures.length,
+    nextFailures,
     externalRequestCount: external.length,
     externalHosts: [...new Set(external.map((r) => hostOf(r.url)).filter(Boolean))].sort(),
-    externalRequests: external,
-    forbiddenEndpointRequests: forbidden,
-    forbiddenEndpointCount: forbidden.length,
+    forbiddenByKind,
+    forbiddenEndpointCount: forbiddenByKind.endpoint,
+    forbiddenOldCount: forbiddenByKind.old,
+    forbiddenCrearCount: forbiddenByKind.crear,
+    forbiddenRequests,
+    nextChunksLoaded,
+    keyAssetsPresent: {
+      css749451b90872367a: nextChunksLoaded.includes('749451b90872367a.css'),
+      js174: nextChunksLoaded.some((n) => n.startsWith('174-') && n.endsWith('.js')),
+      js1046: nextChunksLoaded.some((n) => n.startsWith('1046-') && n.endsWith('.js')),
+    },
     failures,
   };
+}
+
+const measuredSha = measuredCommitSha();
+const preflight = await assertHtmlPreflight();
+if (!preflight.ok) {
+  console.error('HTML preflight failed', JSON.stringify(preflight, null, 2));
+  process.exit(1);
 }
 
 const browser = await chromium.launch({ headless: true });
 const results = [];
 for (const landing of LANDINGS) {
-  // eslint-disable-next-line no-console
   console.log(`Auditing ${landing.path}…`);
   results.push(await auditLanding(browser, landing));
 }
 await browser.close();
 
 const summary = {
-  generatedAt: new Date().toISOString(),
+  measuredCommitSha: measuredSha,
+  generatedAtUtc: new Date().toISOString(),
   baseUrl: BASE,
+  htmlPreflight: preflight,
+  expectedHtmlAssets: EXPECTED_HTML_ASSETS,
   landings: results,
   totals: {
     requests: results.reduce((s, r) => s + r.requestCount, 0),
     external: results.reduce((s, r) => s + r.externalRequestCount, 0),
     forbiddenEndpoint: results.reduce((s, r) => s + r.forbiddenEndpointCount, 0),
+    forbiddenOld: results.reduce((s, r) => s + r.forbiddenOldCount, 0),
+    forbiddenCrear: results.reduce((s, r) => s + r.forbiddenCrearCount, 0),
+    nextFailures: results.reduce((s, r) => s + r.nextFailureCount, 0),
   },
 };
 
@@ -109,35 +211,54 @@ writeFileSync(OUT_JSON, `${JSON.stringify(summary, null, 2)}\n`);
 const mdLines = [
   '# PR #418 — red en landings (build local)',
   '',
-  `Generado: ${summary.generatedAt}`,
+  `Commit medido: \`${summary.measuredCommitSha}\``,
+  `Generado (UTC): ${summary.generatedAtUtc}`,
   `Base: ${BASE}`,
   '',
-  '| Landing | Total requests | Externas (≠ localhost) | endpoint/old/crear.endpoint |',
-  '| --- | ---: | ---: | ---: |',
+  '## Preflight HTML (`/agencia-seo`)',
+  '',
+  `Assets esperados en HTML: ${EXPECTED_HTML_ASSETS.map((a) => `\`${a}\``).join(', ')}.`,
+  preflight.missingExpectedAssets.length
+    ? `**Faltan:** ${preflight.missingExpectedAssets.join(', ')}`
+    : '**OK** — los tres assets aparecen en el HTML.',
+  '',
+  '| Landing | Total requests | Externas | endpoint | old | crear | `/_next` fallos |',
+  '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 ];
 for (const r of results) {
   mdLines.push(
-    `| ${r.path} | ${r.requestCount} | ${r.externalRequestCount} | ${r.forbiddenEndpointCount} |`,
+    `| ${r.path} | ${r.requestCount} | ${r.externalRequestCount} | ${r.forbiddenEndpointCount} | ${r.forbiddenOldCount} | ${r.forbiddenCrearCount} | ${r.nextFailureCount} |`,
   );
 }
-mdLines.push('', `**Total endpoint/old/crear.endpoint:** ${summary.totals.forbiddenEndpoint}`);
-mdLines.push('');
+mdLines.push(
+  '',
+  `**Totales:** endpoint=${summary.totals.forbiddenEndpoint}, old=${summary.totals.forbiddenOld}, crear=${summary.totals.forbiddenCrear}, \`/_next\` fallos=${summary.totals.nextFailures}`,
+  '',
+);
 for (const r of results) {
-  if (r.externalHosts.length) {
-    mdLines.push(`### ${r.path} — hosts externos`, '', r.externalHosts.map((h) => `- \`${h}\``).join('\n'), '');
-  }
-  if (r.forbiddenEndpointRequests.length) {
-    mdLines.push(`### ${r.path} — peticiones prohibidas`, '');
-    for (const req of r.forbiddenEndpointRequests) {
-      mdLines.push(`- ${req.method} ${req.url}`);
+  mdLines.push(
+    `### ${r.path}`,
+    '',
+    `- Chunks/CSS \`/_next\` cargados (únicos): ${r.nextChunksLoaded.join(', ') || '(ninguno)'}`,
+    `- 174/1046/749451: ${JSON.stringify(r.keyAssetsPresent)}`,
+    '',
+  );
+  if (r.nextFailures.length) {
+    mdLines.push('**Fallos `/_next`:**');
+    for (const f of r.nextFailures) {
+      mdLines.push(`- ${f.failure} — ${f.url}`);
     }
     mdLines.push('');
   }
 }
 writeFileSync(OUT_MD, `${mdLines.join('\n')}\n`);
 
-// eslint-disable-next-line no-console
 console.log(JSON.stringify(summary.totals, null, 2));
-if (summary.totals.forbiddenEndpoint > 0) {
+if (
+  summary.totals.forbiddenEndpoint > 0
+  || summary.totals.forbiddenOld > 0
+  || summary.totals.forbiddenCrear > 0
+  || summary.totals.nextFailures > 0
+) {
   process.exitCode = 1;
 }
