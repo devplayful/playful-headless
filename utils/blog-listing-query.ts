@@ -10,6 +10,12 @@ export const BLOG_LISTING_REVALIDATE_SECONDS = 600;
 export const BLOG_LISTING_PER_PAGE = 10;
 export const BLOG_LISTING_QUERY_PATH = '/blog/q';
 
+/** Propuesta SEO /blog (120–155 caracteres). Cambiar solo esta constante tras validación. */
+export const BLOG_LISTING_META_DESCRIPTION_PROPOSED =
+  'Blog de Playful Agency con consejos de marketing digital y ecommerce: SEO, SEM, redes y estrategia para hacer crecer tu negocio online.';
+
+export const BLOG_LISTING_META_DESCRIPTION = BLOG_LISTING_META_DESCRIPTION_PROPOSED;
+
 export type BlogListingSearchParams = {
   [key: string]: string | string[] | undefined;
 };
@@ -84,12 +90,12 @@ export function buildBlogListingMetadata(searchParams?: BlogListingSearchParams 
   const url = blogListingCanonicalUrl(listingParams);
   return {
     title: 'Blog - Playful Agency',
-    description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+    description: BLOG_LISTING_META_DESCRIPTION,
     alternates: { canonical: url },
     ...(noindexFollow ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title: 'Blog - Playful Agency',
-      description: 'Descubre las últimas noticias y consejos sobre marketing digital en nuestro blog.',
+      description: BLOG_LISTING_META_DESCRIPTION,
       url,
       images: [
         ogJpegMeta(

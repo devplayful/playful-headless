@@ -590,14 +590,7 @@ export function buildBlogArticleJsonLd(input: {
           name: input.authorName || 'Playful Agency',
           url: input.authorUrl || BLOG_AUTHOR_URL,
         },
-    publisher: {
-      '@type': 'Organization',
-      name: input.publisherName || 'Playful Agency',
-      logo: {
-        '@type': 'ImageObject',
-        url: input.publisherLogo || 'https://playfulagency.com/images/logos/playful-logo-schema.png',
-      },
-    },
+    publisher: { '@id': 'https://playfulagency.com/#organization' },
     mainEntityOfPage: canonical,
     url: canonical,
     ...(input.about ? { about: input.about } : {}),

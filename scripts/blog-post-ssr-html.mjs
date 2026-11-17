@@ -263,7 +263,10 @@ export function analyzeBlogPostJsonLd(html, expected = {}) {
   const mainEntity = mainEntityUrl(article.mainEntityOfPage);
   const url = typeof article.url === 'string' ? article.url : '';
   const authorName = authorNameFromJsonLd(article.author);
-  const logo = publisherLogoUrl(article.publisher);
+  const publisher = article.publisher;
+  const publisherId =
+    publisher && typeof publisher['@id'] === 'string' ? publisher['@id'].trim() : '';
+  const logo = publisherLogoUrl(publisher);
 
   if (expected.h1Text && headline !== expected.h1Text) reasons.push('headline!=h1');
   if (expected.description != null && description !== expected.description) {
@@ -276,7 +279,13 @@ export function analyzeBlogPostJsonLd(html, expected = {}) {
   if (!isIso8601(article.datePublished)) reasons.push('datePublished');
   if (!isIso8601(article.dateModified)) reasons.push('dateModified');
   if (!authorName) reasons.push('author');
-  if (!isAbsoluteHttpUrl(logo)) reasons.push('publisher.logo');
+  if (publisherId) {
+    if (publisherId !== 'https://playfulagency.com/#organization') {
+      reasons.push('publisher.@id');
+    }
+  } else if (!isAbsoluteHttpUrl(logo)) {
+    reasons.push('publisher.logo');
+  }
   if (canonical && mainEntity !== canonical) reasons.push('mainEntityOfPage!=canonical');
   if (canonical && url !== canonical) reasons.push('url!=canonical');
 

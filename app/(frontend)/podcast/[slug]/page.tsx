@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getPodcastEpisodeBySlug, PodcastEpisode } from '@/services/wordpress';
 import { WordPressUnavailableError } from '@/services/wordpress-request.mjs';
-import Head from 'next/head';
 
 // Componente de loading
 function LoadingSpinner() {
@@ -126,79 +125,6 @@ export default function EpisodePage() {
   }
 
   return (
-    <>
-      <Head>
-        {/* Usar metadatos de Yoast si están disponibles */}
-        <title>
-          {episode.yoast_head_json?.title || cleanTitle(episode.title.rendered)}
-        </title>
-        <meta 
-          name="description" 
-          content={episode.yoast_head_json?.description || episode.excerpt.rendered.replace(/<[^>]*>/g, '')} 
-        />
-        
-        {episode.yoast_head_json?.canonical && (
-          <link rel="canonical" href={episode.yoast_head_json.canonical} />
-        )}
-
-        {/* Open Graph */}
-        <meta 
-          property="og:title" 
-          content={episode.yoast_head_json?.og_title || episode.yoast_head_json?.title || cleanTitle(episode.title.rendered)} 
-        />
-        <meta 
-          property="og:description" 
-          content={episode.yoast_head_json?.og_description || episode.yoast_head_json?.description || episode.excerpt.rendered.replace(/<[^>]*>/g, '')} 
-        />
-        <meta property="og:type" content="article" />
-        {episode.yoast_head_json?.canonical && (
-          <meta property="og:url" content={episode.yoast_head_json.canonical} />
-        )}
-        {episode.yoast_head_json?.og_image?.[0]?.url && (
-          <meta property="og:image" content={episode.yoast_head_json.og_image[0].url} />
-        )}
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta 
-          name="twitter:title" 
-          content={episode.yoast_head_json?.og_title || episode.yoast_head_json?.title || cleanTitle(episode.title.rendered)} 
-        />
-        <meta 
-          name="twitter:description" 
-          content={episode.yoast_head_json?.og_description || episode.yoast_head_json?.description || episode.excerpt.rendered.replace(/<[^>]*>/g, '')} 
-        />
-        {episode.yoast_head_json?.og_image?.[0]?.url && (
-          <meta name="twitter:image" content={episode.yoast_head_json.og_image[0].url} />
-        )}
-
-        {/* Schema.org structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "PodcastEpisode",
-              "name": cleanTitle(episode.title.rendered),
-              "description": episode.excerpt.rendered.replace(/<[^>]*>/g, ''),
-              "datePublished": episode.date,
-              "url": episode.yoast_head_json?.canonical || `https://endpoint.playfulagency.com/podcast/${episode.slug}/`,
-              "image": episode.featured_media_url || episode.yoast_head_json?.og_image?.[0]?.url,
-              "partOfSeries": {
-                "@type": "PodcastSeries",
-                "name": "Bendita Web",
-                "url": "https://endpoint.playfulagency.com/podcast/"
-              },
-              "publisher": {
-                "@type": "Organization",
-                "name": "Playful Agency",
-                "url": "https://endpoint.playfulagency.com/"
-              }
-            })
-          }}
-        />
-      </Head>
-
       <div className="min-h-screen bg-gray-50">
         {/* Breadcrumb */}
         <div className="bg-white border-b">
@@ -226,11 +152,6 @@ export default function EpisodePage() {
                 </svg>
                 Podcast Bendita Web
               </div>
-              
-              <h1 
-                className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight"
-                dangerouslySetInnerHTML={{ __html: episode.title.rendered }}
-              />
               
               <div className="text-lg text-gray-600 mb-6">
                 Publicado el {formatDate(episode.date)}
@@ -305,6 +226,5 @@ export default function EpisodePage() {
           </div>
         </article>
       </div>
-    </>
   );
 }

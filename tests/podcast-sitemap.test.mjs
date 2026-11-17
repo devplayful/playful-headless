@@ -17,8 +17,8 @@ const episodeLayout = readFileSync(
   new URL('../app/(frontend)/podcast/[slug]/layout.tsx', import.meta.url),
   'utf8',
 );
-const hubLayout = readFileSync(
-  new URL('../app/(frontend)/podcast/layout.tsx', import.meta.url),
+const podcastEditorialMeta = readFileSync(
+  new URL('../lib/podcast-editorial-meta.ts', import.meta.url),
   'utf8',
 );
 
@@ -46,6 +46,7 @@ test('published podcast episodes are in the sitemap without trailing slashes', (
 });
 
 test('episode metadata overrides hub noindex so sitemap URLs stay indexable', () => {
-  assert.match(hubLayout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
-  assert.match(episodeLayout, /robots:\s*\{\s*index:\s*true,\s*follow:\s*true\s*\}/);
+  assert.match(podcastEditorialMeta, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/);
+  assert.match(podcastEditorialMeta, /robots:\s*\{\s*index:\s*true,\s*follow:\s*true\s*\}/);
+  assert.match(episodeLayout, /buildPodcastEpisodeMetadata/);
 });

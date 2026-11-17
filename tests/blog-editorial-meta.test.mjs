@@ -208,14 +208,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
     name: 'Stefanni Parabavidez',
     url: 'https://playfulagency.com/nosotros',
   });
-  assert.deepEqual(jsonLd.publisher, {
-    '@type': 'Organization',
-    name: 'Playful Agency',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://playfulagency.com/images/logos/playful-logo-schema.png',
-    },
-  });
+  assert.deepEqual(jsonLd.publisher, { '@id': 'https://playfulagency.com/#organization' });
   assert.equal(jsonLd.mainEntityOfPage, url);
   assert.equal(jsonLd.url, url);
   assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
