@@ -24,10 +24,12 @@ describe('sanitizePodcastEpisodeForHubClient', () => {
     featured_media_alt: 'alt',
   };
 
-  it('prod: no recorta el objeto', () => {
+  it('prod: recorta RSC del hub y reescribe excerpt', () => {
     const out = sanitizePodcastEpisodeForHubClient(fatEpisode, PROD);
-    assert.equal(out.yoast_head, fatEpisode.yoast_head);
-    assert.match(JSON.stringify(out), /endpoint\.playfulagency\.com/);
+    assert.equal(out.yoast_head, undefined);
+    assert.equal(out.content.rendered, '');
+    assert.equal(out.excerpt.rendered.includes('/blog/foo'), true);
+    assert.doesNotMatch(JSON.stringify(out), /endpoint\.playfulagency\.com/);
   });
 
   it('preview: recorta yoast, links, embedded y content', () => {

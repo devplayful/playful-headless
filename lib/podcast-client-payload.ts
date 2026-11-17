@@ -1,5 +1,4 @@
 import { applyBlobImagesToHtml, applyBlobImagesToUrl } from './blob-image-render.ts';
-import { isBlobImagesEnabled } from './blob-image-url.ts';
 import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
 import type { PodcastEpisode } from '@/services/wordpress';
 
@@ -8,8 +7,6 @@ export function sanitizePodcastEpisodeForHubClient(
   episode: PodcastEpisode,
   env: NodeJS.ProcessEnv = process.env,
 ): PodcastEpisode {
-  if (!isBlobImagesEnabled(env)) return episode;
-
   const slug = episode.slug || '';
   const pagePath = `/podcast/${slug}`;
   const featured_media_url =
