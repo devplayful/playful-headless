@@ -5,7 +5,13 @@ import {
   maybeRewriteMediaUrl,
 } from './blob-image-url.ts';
 import { rewriteStringUrls } from './wp-snapshot/rewrite-media-urls.mjs';
-import { rewriteWtiLikeTrackingPixels, rewriteEndpointUrlsInHtmlForPreview, rewriteEndpointAssetUrlForPreview } from './wp-endpoint-surface.ts';
+import {
+  rewriteWtiLikeTrackingPixels,
+  rewriteEndpointUrlsInHtmlForPreview,
+  rewriteEndpointAssetUrlForPreview,
+  rewriteEndpointAssetUrlForRuntime,
+  isNonImageEndpointStaticUrl,
+} from './wp-endpoint-surface.ts';
 import { ORGANIZATION_LOGO_URL } from '../utils/organization-schema.mjs';
 
 const YOAST_SCHEMA_LOGO_ENDPOINT =
@@ -38,6 +44,13 @@ export function applyBlobImagesToUrl(
   if (trimmed.startsWith('/wp-media/')) return trimmed.split('?')[0];
   if (trimmed.startsWith('/wp-content/uploads/')) {
     return rewriteStringUrls(trimmed).split('?')[0];
+  }
+  if (
+    trimmed.includes('endpoint.playfulagency.com') ||
+    trimmed.startsWith('//endpoint.') ||
+    isNonImageEndpointStaticUrl(trimmed)
+  ) {
+    return rewriteEndpointAssetUrlForRuntime(trimmed, env);
   }
   if (isBlobImagesEnabled(env)) {
     return rewriteEndpointAssetUrlForPreview(trimmed, env);

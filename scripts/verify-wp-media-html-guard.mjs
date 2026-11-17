@@ -1,27 +1,21 @@
 #!/usr/bin/env node
 /**
- * HTML guard: sin endpoint/i*.wp.com en rutas A/B/C; todo /wp-media existe en public/.
+ * HTML guard: sin endpoint/i*.wp.com en rutas del sitemap; todo /wp-media existe en public/.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PLAYFUL_QA_UA, withQaPathname, paceLiveQa } from '../lib/qa/live-fetch.mjs';
+import { buildSitemapXml, getSitemapPaths } from '../utils/apex-sitemap.ts';
 
 const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3456').replace(/\/$/, '');
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WP_MEDIA_DIR = path.join(ROOT, 'public', 'wp-media');
 
-const PATHS = [
-  '/blog',
-  '/blog/seo/aprende-todo-sobre-el-seo',
-  '/blog/otros/premios-cima-2026-soytechno-playful',
-  '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
-  '/blog/mas-vistos/los-5-problemas-de-e-commerce',
-  '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
-  '/podcast',
-  '/nosotros',
-  '/',
-];
+const EXTRA_PATHS = ['/blog', '/podcast'];
+const PATHS = [...new Set([...getSitemapPaths(), ...EXTRA_PATHS])].sort((a, b) =>
+  a.localeCompare(b),
+);
 
 const FORBIDDEN_RE =
   /endpoint\.playfulagency\.com|crear\.endpoint\.playfulagency\.com|\/\/i[0-2]\.wp\.com\b|i[0-2]\.wp\.com\//gi;
@@ -61,9 +55,22 @@ for (const pathname of PATHS) {
   const missing = missingWpMediaFiles(html);
   const ok = forbidden === 0 && missing.length === 0;
   if (!ok) fail += 1;
-  results.push({ path: pathname, forbiddenMatches: forbidden, missingWpMedia: missing.slice(0, 5), missingCount: missing.length, ok });
+  results.push({
+    path: pathname,
+    forbiddenMatches: forbidden,
+    missingWpMedia: missing.slice(0, 5),
+    missingCount: missing.length,
+    ok,
+  });
 }
 
-const summary = { base: BASE, pass: results.length - fail, fail, results };
+const summary = {
+  base: BASE,
+  sitemapPathCount: PATHS.length,
+  sitemapXmlLocs: (buildSitemapXml().match(/<loc>/g) || []).length,
+  pass: results.length - fail,
+  fail,
+  results,
+};
 console.log(JSON.stringify(summary, null, 2));
 process.exitCode = fail ? 1 : 0;

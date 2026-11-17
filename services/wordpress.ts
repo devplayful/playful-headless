@@ -32,6 +32,7 @@ import { repairBlogPostYoastCanonical, type BlogPostYoastFields } from '@/utils/
 import { BLOG_CARD_EXCERPT_MAX, formatBlogExcerpt } from '@/lib/blog-hero-excerpt';
 import { publicWebpIfPresent } from '@/lib/public-webp-src';
 import { collectElementorStylesheetIds } from '@/lib/elementor-stylesheet-urls';
+import { rewriteStringUrls } from '@/lib/wp-snapshot/rewrite-media-urls.mjs';
 import { sanitizePodcastEpisodeForHubClient } from '@/lib/podcast-client-payload';
 import {
   getStagingLocalBlogPost,
@@ -131,12 +132,10 @@ function sanitizeWpValue(value: unknown): unknown {
     if (value.toLowerCase().includes('yoast')) {
       return undefined;
     }
-    if (!value.includes(WP_ENDPOINT_HOST)) {
-      return value;
+    if (value.includes(WP_ENDPOINT_HOST) || value.includes('/wp-content/uploads/')) {
+      return rewriteStringUrls(value);
     }
-    const cleaned = stripEndpointHost(value);
-    if (!cleaned.trim()) return undefined;
-    return cleaned;
+    return value;
   }
   return value;
 }
