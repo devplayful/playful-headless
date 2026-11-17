@@ -78,7 +78,7 @@ export {
   rewriteWpYoastFields,
 };
 
-const WORDPRESS_API_URL = 'https://endpoint.playfulagency.com/wp-json';
+const WORDPRESS_API_URL = 'https://playful-headless/wp-json';
 
 /** WP REST fields that Next must never serialize into RSC / client props. */
 const WP_LEAK_KEYS = new Set([
@@ -568,6 +568,10 @@ type RelatedCardCategoryLookup = {
   byId?: Map<number, RelatedCategoryTerm>;
   fallback?: { name?: string; slug?: string };
 };
+
+export function relatedBlogCardsFromPosts(posts: WPPost[], perPage: number): RelatedBlogCard[] {
+  return filterOpenBlogPosts(posts.map((post) => toRelatedBlogCard(post))).slice(0, perPage);
+}
 
 function toRelatedBlogCard(post: WPPost, lookup?: RelatedCardCategoryLookup): RelatedBlogCard {
   let category = 'Sin categoría';

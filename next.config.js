@@ -30,6 +30,9 @@ const nextConfig = {
       {
         pathname: '/wp-static/**',
       },
+      {
+        pathname: '/wp-media/**',
+      },
     ],
     remotePatterns: [
       {

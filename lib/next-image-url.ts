@@ -11,6 +11,9 @@ export function buildNextImageUrl(
   if (!trimmed || trimmed.startsWith('/_next/image') || trimmed.startsWith('data:')) {
     return trimmed;
   }
+  if (trimmed.startsWith('/wp-media/') || trimmed.startsWith('/wp-content/uploads/')) {
+    return trimmed;
+  }
   if (!/^https?:\/\//i.test(trimmed)) return trimmed;
   try {
     const host = new URL(trimmed).hostname;
@@ -28,8 +31,10 @@ export function buildNextImageUrl(
 
 export function isOptimizableWpUpload(src: string): boolean {
   if (!src?.trim()) return false;
+  const trimmed = src.trim();
+  if (trimmed.startsWith('/wp-media/wp-content/uploads/')) return true;
   try {
-    const url = new URL(src.trim());
+    const url = new URL(trimmed);
     if (url.hostname.endsWith(BLOB_HOST_SUFFIX)) return true;
     return (
       url.hostname === WP_UPLOADS_HOST

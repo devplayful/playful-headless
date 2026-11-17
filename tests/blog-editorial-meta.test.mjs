@@ -208,14 +208,7 @@ test('BlogPosting JSON-LD includes description, image, publisher and canonical',
     name: 'Stefanni Parabavidez',
     url: 'https://playfulagency.com/nosotros',
   });
-  assert.deepEqual(jsonLd.publisher, {
-    '@type': 'Organization',
-    name: 'Playful Agency',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://playfulagency.com/images/logos/playful-logo-schema.png',
-    },
-  });
+  assert.deepEqual(jsonLd.publisher, { '@id': 'https://playfulagency.com/#organization' });
   assert.equal(jsonLd.mainEntityOfPage, url);
   assert.equal(jsonLd.url, url);
   assert.doesNotMatch(serializeJsonLd(jsonLd), /</);
@@ -391,7 +384,7 @@ test('listing, home, related and más vistos share formatBlogExcerpt and cut on 
   assert.match(mostViewed, /formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
   assert.match(wordpress, /function toRelatedBlogCard[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
   assert.match(wordpress, /function toRelatedIndexPost[\s\S]*formatBlogExcerpt\(post\.excerpt\?\.rendered, BLOG_CARD_EXCERPT_MAX\)/);
-  assert.match(home, /getLatestBlogPosts\(6\)/);
+  assert.match(home, /getLatestBlogPostsWithCms\(6/);
   assert.match(relatedSection, /\{post\.excerpt\}/);
 });
 
@@ -467,7 +460,7 @@ test('blog post page wires one combined chip under H1 and Article JSON-LD', () =
   assert.match(blogPage, /<BlogRelatedPostsSection/);
   assert.match(blogPage, /posts=\{relatedPosts\}/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
-  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /getRelatedBlogPostsForPostWithCms\(post/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.match(blogPage, /resolveBlogArticleAuthor\(post, editorial\)/);

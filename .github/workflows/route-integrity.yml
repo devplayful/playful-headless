@@ -43,6 +43,41 @@ jobs:
         run: npx tsc --noEmit
       - name: Build and verify a fresh route artifact
         run: npm run verify:routes:build
+      - name: WordPress live endpoint guard
+        run: node --experimental-strip-types --test tests/wp-live-endpoint-guard.test.mjs
+
+  sin-wp-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.6.0
+          cache: npm
+      - name: Use the declared npm version
+        run: npm install --global npm@10.9.8
+      - name: Install the locked dependency tree
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Production build for smoke
+        run: npm run build
+      - name: Sin-WP smoke A/B/C
+        run: |
+          PORT=3456 HOSTNAME=127.0.0.1 npm run start &
+          srv_pid=$!
+          for attempt in $(seq 1 90); do
+            if curl -fsS -o /dev/null -H 'user-agent: PlayfulQa/1.0' "http://127.0.0.1:3456/blog"; then
+              break
+            fi
+            if ! kill -0 "$srv_pid" 2>/dev/null; then
+              echo "next start exited before becoming ready"
+              exit 1
+            fi
+            sleep 2
+          done
+          BASE_URL=http://127.0.0.1:3456 node scripts/verify-sin-wp-smoke.mjs
+          BASE_URL=http://127.0.0.1:3456 node scripts/verify-wp-media-html-guard.mjs
+          kill "$srv_pid" 2>/dev/null || true
 
   unsigned-copy:
     runs-on: ubuntu-latest

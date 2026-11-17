@@ -1,4 +1,9 @@
-import { getBlogPostBySlug, getBlogStaticParams, getRelatedBlogPostsForPost, type WPPost } from '@/services/wordpress';
+import type { WPPost } from '@/services/wordpress';
+import {
+  getBlogPostBySlugWithCms,
+  getBlogStaticParamsWithCms,
+  getRelatedBlogPostsForPostWithCms,
+} from '@/lib/cms-blog';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -91,7 +96,7 @@ export async function generateStaticParams() {
   // Slim `_fields=id,slug,categories` pages (~8 KB each). The old
   // getBlogPosts(1, 100) + `_embed` path was 3.5–4.7 MB and Next
   // refused to cache it. Staging still unions local-only slugs.
-  const fromWp = await getBlogStaticParams();
+  const fromWp = await getBlogStaticParamsWithCms();
   const seen = new Set(fromWp.map((entry) => entry.slug.join('/')));
   const fromLocal = localBlogStaticParams().filter((entry) => !seen.has(entry.slug.join('/')));
   return [...fromWp, ...fromLocal];
@@ -126,14 +131,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const post = await getBlogPostBySlug(postSlug);
+  const post = await getBlogPostBySlugWithCms(postSlug);
   
   if (!post) {
     notFound();
   }
 
   const relatedPosts = excludeCurrentBlogPost(
-    await getRelatedBlogPostsForPost(post, {
+    await getRelatedBlogPostsForPostWithCms(post, {
       categorySlug: category,
     }),
     {
@@ -647,7 +652,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
-  const post = await getBlogPostBySlug(postSlug);
+  const post = await getBlogPostBySlugWithCms(postSlug);
   if (!post || getPrimaryCategorySlug(post) !== slug[0]) {
     notFound();
   }

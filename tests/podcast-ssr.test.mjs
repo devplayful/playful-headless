@@ -19,7 +19,8 @@ test('podcast hub fetches episodes on the server and keeps the existing H1', () 
   assert.match(hubPage, /getPodcastEpisodes/);
   assert.match(hubPage, /initialState=\{initialState\}/);
   assert.doesNotMatch(hubPage, /<Suspense/);
-  assert.doesNotMatch(hubPage, /generateMetadata/);
+  assert.match(hubPage, /generateMetadata/);
+  assert.match(hubPage, /buildPodcastHubMetadata/);
   assert.doesNotMatch(hubPage, /<h1[\s>]/);
 });
 

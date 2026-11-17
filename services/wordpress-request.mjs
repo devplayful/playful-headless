@@ -1,3 +1,12 @@
+/** Live WordPress fetches are only for scripts/export-wp-snapshot.ts (set WORDPRESS_LIVE_FETCH=1). */
+function useWordPressLiveFetch(env = process.env) {
+  return env.WORDPRESS_LIVE_FETCH === '1' || env.WORDPRESS_LIVE_FETCH === 'true';
+}
+
+async function snapshotModule() {
+  return import('../lib/wp-snapshot/rest-router.mjs');
+}
+
 const DEFAULT_MAX_ATTEMPTS = 2;
 const BUILD_MAX_ATTEMPTS = 2;
 const DEFAULT_BASE_DELAY_MS = 150;
@@ -288,6 +297,10 @@ async function wordpressRequest(input, init, options, consumeResponse) {
 }
 
 export async function wordpressFetch(input, init = {}, options = {}) {
+  if (!useWordPressLiveFetch(options.env) && !options.fetchImpl) {
+    const mod = await snapshotModule();
+    return mod.wordpressFetchFromSnapshot(input);
+  }
   return wordpressRequest(input, init, options, async (response, { url }) => {
     const body = await response.arrayBuffer();
     if (isWordPressMeterEnabled()) {
@@ -299,6 +312,10 @@ export async function wordpressFetch(input, init = {}, options = {}) {
 
 /** Fetch a WordPress REST collection while preserving absence vs outage. */
 export async function wordpressFetchCollection(input, init = {}, options = {}) {
+  if (!useWordPressLiveFetch(options.env) && !options.fetchImpl) {
+    const mod = await snapshotModule();
+    return mod.wordpressFetchCollectionFromSnapshot(input);
+  }
   return wordpressRequest(input, init, options, async (response, { attempt, url }) => {
     if (response.status !== 200) {
       throw new WordPressUnavailableError(

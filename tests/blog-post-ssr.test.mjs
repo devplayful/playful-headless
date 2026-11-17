@@ -29,7 +29,7 @@ test('blog post page is a server component and renders article HTML directly', (
   assert.match(blogPage, /posts=\{relatedPosts\}/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
   assert.match(blogPage, /excludeId=\{post\.id\}/);
-  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /getRelatedBlogPostsForPostWithCms\(post/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
 });
@@ -122,11 +122,7 @@ test('JSON-LD BlogPosting must be unique, valid and aligned with H1/meta/OG', ()
     datePublished: '2020-06-15T14:22:00.000Z',
     dateModified: '2026-09-24T00:00:00.000Z',
     author: { '@type': 'Person', name: 'Stefanni Parabavidez' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Playful Agency',
-      logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logo-schema.png' },
-    },
+    publisher: { '@id': 'https://playfulagency.com/#organization' },
     mainEntityOfPage: canonical,
     url: canonical,
   };
@@ -201,11 +197,7 @@ test('JSON-LD description with leftover WP entities still matches decoded meta',
       datePublished: '2021-03-01T10:00:00.000Z',
       dateModified: '2021-03-01T10:00:00.000Z',
       author: { '@type': 'Person', name: 'Playful Agency' },
-      publisher: {
-        '@type': 'Organization',
-        name: 'Playful Agency',
-        logo: { '@type': 'ImageObject', url: 'https://playfulagency.com/images/logos/playful-logo-schema.png' },
-      },
+      publisher: { '@id': 'https://playfulagency.com/#organization' },
       mainEntityOfPage:
         'https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online',
       url: 'https://playfulagency.com/blog/tecnologia/ecommerce-mi-negocio-online',

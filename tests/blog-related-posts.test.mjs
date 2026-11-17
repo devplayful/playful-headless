@@ -195,7 +195,7 @@ test('pickRelatedCategoryId prefers the URL slug on multi-category posts', () =>
 });
 
 test('blog post page resolves related from the shared index, not a live WP fetch', () => {
-  assert.match(blogPage, /getRelatedBlogPostsForPost\(post/);
+  assert.match(blogPage, /getRelatedBlogPostsForPostWithCms\(post/);
   assert.match(blogPage, /categorySlug: category/);
   assert.match(blogPage, /excludeCurrentBlogPost\(/);
   assert.match(blogPage, /excludeSlug=\{post\.slug\}/);
@@ -203,7 +203,7 @@ test('blog post page resolves related from the shared index, not a live WP fetch
   assert.match(blogPage, /emptyRelatedBehavior\(\)/);
   assert.match(blogPage, /RelatedIndexUnavailableError/);
   assert.match(blogPage, /relatedPosts\.length > 0/);
-  assert.match(blogPage, /getBlogStaticParams\(\)/);
+  assert.match(blogPage, /getBlogStaticParamsWithCms\(\)/);
   assert.doesNotMatch(blogPage, /getBlogPosts\(page, perPage\)/);
   assert.doesNotMatch(blogPage, /getLatestBlogPosts/);
   assert.doesNotMatch(blogPage, /fetchLatestRelatedBlogPosts/);
