@@ -30,8 +30,8 @@ const ROUTES = [
 ];
 
 const VIEWPORTS = [
-  { name: 'desktop', width: 1440, height: 900 },
-  { name: 'mobile', width: 390, height: 844 },
+  { name: '1440', width: 1440, height: 900 },
+  { name: '390', width: 390, height: 844 },
 ];
 
 fs.mkdirSync(OUT, { recursive: true });
