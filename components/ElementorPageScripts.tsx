@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ELEMENTOR_PAGE_SCRIPTS, WP_ENDPOINT_ORIGIN } from '@/lib/elementor-static-asset-urls';
+import {
+  ELEMENTOR_PAGE_SCRIPTS,
+  ELEMENTOR_STATIC_ASSETS_BASE,
+  ELEMENTOR_UPLOADS_BASE,
+} from '@/lib/elementor-static-asset-urls';
 
 type ElementorPageScriptsProps = {
   pageId: number;
@@ -342,8 +346,7 @@ export default function ElementorPageScripts({
   elementorAssetsBase,
 }: ElementorPageScriptsProps) {
   const scripts = scriptUrls?.length ? scriptUrls : ELEMENTOR_PAGE_SCRIPTS;
-  const assetsBase =
-    elementorAssetsBase || `${WP_ENDPOINT_ORIGIN}/wp-content/plugins/elementor/assets/`;
+  const assetsBase = elementorAssetsBase || ELEMENTOR_STATIC_ASSETS_BASE;
   useEffect(() => {
     document.body.classList.add('playful-elementor-plain');
     initPillsMarquee();
@@ -413,8 +416,9 @@ export default function ElementorPageScripts({
       experimentalFeatures: {},
       urls: {
         assets: assetsBase,
-        ajaxurl: `${WP_ENDPOINT_ORIGIN}/wp-admin/admin-ajax.php`,
-        uploadUrl: `${WP_ENDPOINT_ORIGIN}/wp-content/uploads`,
+        // Same-origin placeholders: no runtime calls to WordPress hosts.
+        ajaxurl: '/wp-admin/admin-ajax.php',
+        uploadUrl: ELEMENTOR_UPLOADS_BASE,
       },
       settings: { page: {}, editorPreferences: {} },
       kit: { active_breakpoints: ['viewport_mobile', 'viewport_tablet'] },

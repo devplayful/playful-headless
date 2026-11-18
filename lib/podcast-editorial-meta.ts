@@ -35,24 +35,76 @@ function absolutePlayfulUrl(pathOrUrl: string): string {
 }
 
 const HANGING_TITLE_END = /[\s:–\-,;!?¡¿]+$/;
+const DANGLING_END_WORD =
+  /^(vs\.?|en|a|de|el|la|los|las|y|o|con|para|por|del|al|un|una|tu|tu)$/i;
+
+function hasUnclosedSpanishPunctuation(text: string): boolean {
+  const openQ = (text.match(/¿/g) || []).length;
+  const closeQ = (text.match(/\?/g) || []).length;
+  const openEx = (text.match(/¡/g) || []).length;
+  const closeEx = (text.match(/!/g) || []).length;
+  if (openQ > closeQ) return true;
+  if (openEx > closeEx) return true;
+  if (/¿[^?]*$/.test(text)) return true;
+  if (/¡[^!]*$/.test(text)) return true;
+  return false;
+}
+
+function trimDanglingTitleSegment(segment: string): string {
+  let out = segment.trim();
+  for (let guard = 0; guard < 24; guard += 1) {
+    const prev = out;
+    out = out.replace(HANGING_TITLE_END, '').trim();
+    if (hasUnclosedSpanishPunctuation(out)) {
+      const qIdx = out.lastIndexOf('¿');
+      const exIdx = out.lastIndexOf('¡');
+      const cut = Math.max(qIdx, exIdx);
+      if (cut >= 0) {
+        out = out.slice(0, cut).replace(HANGING_TITLE_END, '').trim();
+        continue;
+      }
+    }
+    const parts = out.split(/\s+/).filter(Boolean);
+    const last = parts[parts.length - 1] ?? '';
+    if (last && DANGLING_END_WORD.test(last)) {
+      parts.pop();
+      out = parts.join(' ').trim();
+      continue;
+    }
+  if (prev === out) break;
+  }
+  return out;
+}
 
 export function formatPlayfulDocumentTitle(segment: string): string {
-  let clean = decodeHtmlEntities(segment)
+  const clean = decodeHtmlEntities(segment)
     .replace(/\s*[-–|]\s*Playful Agency.*$/i, '')
     .replace(/\s*\|\s*Playful\s*$/i, '')
     .trim();
-  if (clean.length > TITLE_SEGMENT_MAX) {
-    let trimmed = clean.slice(0, TITLE_SEGMENT_MAX).replace(/\s+\S*$/, '').trim();
-    trimmed = trimmed.replace(HANGING_TITLE_END, '').trim();
-    if (!trimmed) {
-      trimmed = clean
-        .slice(0, TITLE_SEGMENT_MAX)
-        .replace(HANGING_TITLE_END, '')
-        .trim();
-    }
-    clean = trimmed;
+
+  if (clean.length <= TITLE_SEGMENT_MAX) {
+    return `${clean}${PLAYFUL_SUFFIX}`;
   }
-  return `${clean}${PLAYFUL_SUFFIX}`;
+
+  const colonIdx = clean.indexOf(':');
+  if (colonIdx !== -1) {
+    const beforeColon = clean.slice(0, colonIdx).trim();
+    if (beforeColon.length <= TITLE_SEGMENT_MAX) {
+      return `${beforeColon}${PLAYFUL_SUFFIX}`;
+    }
+  }
+
+  let trimmed = clean.slice(0, TITLE_SEGMENT_MAX).replace(/\s+\S*$/, '').trim();
+  if (!trimmed) {
+    trimmed = clean.slice(0, TITLE_SEGMENT_MAX).trim();
+  }
+  trimmed = trimDanglingTitleSegment(trimmed.replace(HANGING_TITLE_END, '').trim());
+  if (!trimmed) {
+    trimmed = trimDanglingTitleSegment(
+      clean.slice(0, TITLE_SEGMENT_MAX).replace(HANGING_TITLE_END, '').trim(),
+    );
+  }
+  return `${trimmed}${PLAYFUL_SUFFIX}`;
 }
 
 export function fitPodcastMetaDescription(source: string): string {

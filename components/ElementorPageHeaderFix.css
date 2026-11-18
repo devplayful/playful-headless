@@ -598,7 +598,7 @@ body:has(.playful-wp-page) .playful-header nav {
 .playful-wp-page .elementor-element-4d2eb64,
 .playful-wp-page .elementor-element-4d2eb64 > .elementor-background-overlay {
   background-color: #FFF7DB !important;
-  background-image: url("https://old.playfulagency.com/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
+  background-image: url("/wp-media/wp-content/uploads/2024/07/CONFETY-PLAYFUL.png") !important;
   border: 0 !important;
   box-shadow: none !important;
 }

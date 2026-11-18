@@ -33,6 +33,12 @@ const nextConfig = {
       {
         pathname: '/wp-media/**',
       },
+      {
+        pathname: '/images/**',
+      },
+      {
+        pathname: '/casos/**',
+      },
     ],
     remotePatterns: [
       {
