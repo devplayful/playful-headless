@@ -192,12 +192,13 @@ position:absolute!important;pointer-events:none!important}
 @media (max-width:767px){
 .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469>.elementor-container,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469.elementor-section-content-middle>.elementor-container{
-align-items:flex-start!important;flex-wrap:nowrap!important}
-.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b,
+align-items:flex-start!important;flex-wrap:wrap!important}
+.playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b{
+flex:0 0 100%!important;width:100%!important;max-width:100%!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
-flex:0 0 50%!important;width:50%!important;max-width:50%!important}
+flex:0 0 100%!important;width:100%!important;max-width:100%!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7{
-align-self:flex-start!important;height:calc(50vw * 417 / 437)!important;min-height:calc(50vw * 417 / 437)!important;max-height:calc(50vw * 417 / 437)!important;overflow:hidden!important;contain:layout!important}
+align-self:flex-start!important;height:calc(100vw * 417 / 437)!important;min-height:calc(100vw * 417 / 437)!important;max-height:calc(100vw * 417 / 437)!important;overflow:hidden!important;contain:layout!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .elementor-widget-container,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4 .master-gallery-stack,
@@ -206,7 +207,7 @@ aspect-ratio:437/417!important;width:100%!important;height:auto!important;displa
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p{
-font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;max-height:14em!important;overflow:hidden!important}
+font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;hyphens:none!important;-webkit-hyphens:none!important;word-break:normal!important;overflow-wrap:normal!important;max-width:100%!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .sub-heading{
 font-family:var(--font-dm-sans),"DM Sans",sans-serif!important;font-size:18px!important;line-height:28px!important;color:#F7F7F7!important}
 }`;
