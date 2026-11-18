@@ -25,6 +25,7 @@ import { config, lead } from './fixtures.ts';
 class GatewayMock implements HighLevelGateway {
   calls: Array<{ operation: string; value?: unknown }> = [];
   contact: UpsertContactResult = { id: 'contact-1', isNew: true };
+  contactTags: string[] = [];
   opportunities: HighLevelOpportunity[] = [];
   tasks: HighLevelTask[] = [];
   customFields = new Map<string, string>();
@@ -48,6 +49,10 @@ class GatewayMock implements HighLevelGateway {
     this.calls.push({ operation: 'get-fields' });
     return Array.from(this.customFields).map(([id, fieldValue]) => ({ id, fieldValue }));
   }
+  async getContactTags(contactId: string) {
+    this.calls.push({ operation: 'get-tags', value: { contactId } });
+    return [...this.contactTags];
+  }
   async updateContactCustomFields(contactId: string, customFields: HighLevelCustomFieldValue[]) {
     this.calls.push({ operation: 'update-original', value: { contactId, customFields } });
     if (this.originalWriteError) throw this.originalWriteError;
@@ -61,6 +66,13 @@ class GatewayMock implements HighLevelGateway {
   }
   async addContactTags(contactId: string, tags: string[]) {
     this.calls.push({ operation: 'tag', value: { contactId, tags } });
+    for (const item of tags) {
+      if (!this.contactTags.includes(item)) this.contactTags.push(item);
+    }
+  }
+  async removeContactTags(contactId: string, tags: string[]) {
+    this.calls.push({ operation: 'untag', value: { contactId, tags } });
+    this.contactTags = this.contactTags.filter((item) => !tags.includes(item));
   }
   async findOpenOpportunities() {
     this.calls.push({ operation: 'search' });

@@ -18,6 +18,8 @@ import type {
   UpsertContactInput,
 } from './client.ts';
 import { HighLevelApiError } from './client.ts';
+import { logInboundTagRetagFailure } from '../contact/crm-alert.ts';
+import { refreshInboundTagForWorkflowRetrigger } from './inbound-tag-retag.ts';
 import {
   HIGHLEVEL_CLICK_FIELD_KEYS,
   HIGHLEVEL_KNOWN_CLICK_FIELD_IDS,
@@ -282,8 +284,11 @@ export async function syncWebsiteLeadToHighLevel(
   const control = suppliedControl || localControl(lead);
   const fit = qualificationLevel(lead);
   let contactId = control.progress.contactId;
+  let existingContactHadInboundTag = false;
+  let upsertedThisRun = false;
 
   if (!contactId) {
+    upsertedThisRun = true;
     const contact = await gateway.upsertContact({
       name: lead.name,
       email: lead.email,
@@ -296,6 +301,14 @@ export async function syncWebsiteLeadToHighLevel(
       createNewIfDuplicateAllowed: false,
     });
     contactId = contact.id;
+    if (!contact.isNew) {
+      try {
+        const tags = await gateway.getContactTags(contactId);
+        existingContactHadInboundTag = tags.includes(config.contactTag);
+      } catch (error) {
+        logInboundTagRetagFailure(error);
+      }
+    }
     await control.checkpoint({ contactId });
   }
 
@@ -328,6 +341,22 @@ export async function syncWebsiteLeadToHighLevel(
   }
 
   if (!control.progress.tagsCompleted) {
+    let shouldRetagInbound = existingContactHadInboundTag;
+    if (!upsertedThisRun) {
+      try {
+        const tags = await gateway.getContactTags(contactId);
+        shouldRetagInbound = tags.includes(config.contactTag);
+      } catch (error) {
+        logInboundTagRetagFailure(error);
+        shouldRetagInbound = false;
+      }
+    }
+    await refreshInboundTagForWorkflowRetrigger(
+      gateway,
+      contactId,
+      config.contactTag,
+      shouldRetagInbound,
+    );
     await gateway.addContactTags(contactId, [
       config.contactTag,
       `fit:${fit}`,

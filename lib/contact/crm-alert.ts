@@ -35,3 +35,10 @@ export function logCrmFailureAfterDelivery(error: unknown, progress: CrmProgress
     describeCrmFailure(error),
   );
 }
+
+export function logInboundTagRetagFailure(error: unknown): void {
+  console.error(
+    'ALERTA interna: no se pudo refrescar la etiqueta inbound en HighLevel para re-disparar el aviso.',
+    describeCrmFailure(error),
+  );
+}
