@@ -2101,9 +2101,10 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
     font-size: 34px !important;
     line-height: 1.12 !important;
     max-width: 100% !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-    hyphens: auto !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     box-sizing: border-box !important;
@@ -2138,26 +2139,34 @@ body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elemen
 }
 
 /*
- * E-com hero CLS (page 85582). Trace of #280 (LH node 9102780):
- * - 022b469 is `elementor-section-content-middle`; columns stay 50/50 on
- *   mobile (frontend.min.css has no 767px width:100% for .elementor-col-50).
- * - Origin SVG paint grew 0d098e7; content-middle recentered the text
- *   column and 9102780 (mae-headings sub-heading under Paytone 702f19a) moved.
- * - Stacking 50%→100% or min-height on 9102780 reflowed that subtitle more.
- * Reserve the illustration slot (437/417) and flex-start the inner row.
- * Do not defer WP CSS. Do not stack columns. Do not min-height 9102780.
+ * E-com hero CLS (page 85582). Mobile: stack text + illustration (100% width)
+ * so Paytone 702f19a is not squeezed in a 50% column with hyphen breaks.
+ * Reserve illustration slot (437/417). Do not min-height 9102780.
  */
 @media (max-width: 767px) {
   .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container,
   .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469.elementor-section-content-middle > .elementor-container,
   body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-022b469 > .elementor-container {
     align-items: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-47a966b {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7,
+  body.playful-elementor-plain .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
   .playful-wp-page[data-playful-page="85582"] .elementor-element-0d098e7 {
     align-self: flex-start !important;
-    height: calc(50vw * 417 / 437) !important;
-    min-height: calc(50vw * 417 / 437) !important;
-    max-height: calc(50vw * 417 / 437) !important;
+    height: calc(100vw * 417 / 437) !important;
+    min-height: calc(100vw * 417 / 437) !important;
+    max-height: calc(100vw * 417 / 437) !important;
     overflow: hidden !important;
   }
   .playful-wp-page[data-playful-page="85582"] .elementor-element-ab148e4,
