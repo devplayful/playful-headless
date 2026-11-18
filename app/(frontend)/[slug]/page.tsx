@@ -74,9 +74,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const wpOgImage = metadata.yoast_wpseo_og_image
     ? applyBlobImagesToUrl(metadata.yoast_wpseo_og_image)
     : '';
+  const wpOgLooksRaster = Boolean(wpOgImage && !/\.svg(\?|$)/i.test(wpOgImage));
   const images = jpeg
     ? [ogJpegMeta(jpeg, title || 'Playful Agency')]
-    : wpOgImage
+    : wpOgLooksRaster
       ? [wpOgImage]
       : undefined;
   return {

@@ -6,6 +6,7 @@ import {
   maybeRewriteMediaUrl,
 } from './blob-image-url.ts';
 import { lookupWpStaticPublicUrl, resolveMirroredAssetUrl } from './wp-static-assets-map.ts';
+import { rewriteStringUrls } from './wp-snapshot/rewrite-media-urls.mjs';
 
 export const WP_ENDPOINT_ORIGIN = 'https://endpoint.playfulagency.com';
 
@@ -13,7 +14,6 @@ const ENDPOINT_HOST_RE =
   /(?:https?:)?\/\/(?:endpoint\.|crear\.endpoint\.)?playfulagency\.com/gi;
 
 const WTI_PIXEL_RE = /wti-like-post\/images\/pixel\.gif/i;
-const WTI_PIXEL_STATIC = '/wp-static/wp-content/plugins/wti-like-post/images/pixel.gif';
 
 const NON_IMAGE_STATIC_RE =
   /\/wp-content\/(?:plugins|uploads\/elementor\/css|themes)|\/wp-includes\/js\//i;
@@ -50,24 +50,38 @@ function isUnresolvedEndpointUploadUrl(url: string): boolean {
   }
 }
 
-export function rewriteEndpointAssetUrlForPreview(
+/** Producción + preview: CSS/JS/fuentes → /wp-static; uploads del mirror/Blob cuando existan. */
+export function rewriteEndpointAssetUrlForRuntime(
   href: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
-  if (!href?.trim() || !isBlobImagesEnabled(env)) return href;
+  if (!href?.trim()) return href;
   const normalized = normalizePreviewAssetHref(href);
   const trimmed = normalized.split('?')[0];
-  const map = loadBlobMigrationMap(env);
-  const mapped = lookupBlobMapTarget(normalized, map || {});
-  if (mapped) {
-    return blobPublicUrlFromStoredMapTarget(mapped, env);
+  const map = isBlobImagesEnabled(env) ? loadBlobMigrationMap(env) : null;
+  if (map) {
+    const mapped = lookupBlobMapTarget(normalized, map);
+    if (mapped) {
+      return blobPublicUrlFromStoredMapTarget(mapped, env);
+    }
   }
   const staticPath = lookupWpStaticPublicUrl(trimmed);
   if (staticPath) return staticPath;
   const mirrored = resolveMirroredAssetUrl(trimmed, map, env);
   if (mirrored?.startsWith('http')) return mirrored;
   if (mirrored?.startsWith('/')) return mirrored;
+  if (trimmed.includes('endpoint.playfulagency.com') || trimmed.includes('/wp-content/uploads/')) {
+    const rewritten = rewriteStringUrls(trimmed);
+    if (rewritten !== trimmed) return rewritten;
+  }
   return href.startsWith('//') ? normalized : href;
+}
+
+export function rewriteEndpointAssetUrlForPreview(
+  href: string,
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  return rewriteEndpointAssetUrlForRuntime(href, env);
 }
 
 function isInvalidSrcsetUrl(url: string): boolean {
@@ -89,7 +103,7 @@ function isCompleteEndpointUploadUrl(url: string): boolean {
 
 function rewriteEndpointUrlInHtmlFragment(url: string, env: NodeJS.ProcessEnv): string {
   if (!isCompleteEndpointUploadUrl(url)) return url;
-  return rewriteEndpointAssetUrlForPreview(url, env);
+  return rewriteEndpointAssetUrlForRuntime(url, env);
 }
 
 function parseSrcsetCandidate(part: string): { url: string; descriptor: string } | null {
@@ -109,13 +123,13 @@ export function rewritePreviewMediaAttributesInHtml(
   html: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
-  if (!html || !isBlobImagesEnabled(env)) return html;
+  if (!html) return html;
   return html.replace(/<img\b([^>]*)>/gi, (_full, attrs: string) => {
     let next = attrs;
     const srcMatch = /\bsrc\s*=\s*(["'])([^"']*)\1/i.exec(attrs);
     if (srcMatch) {
       const q = srcMatch[1];
-      const resolved = rewriteEndpointAssetUrlForPreview(srcMatch[2], env);
+      const resolved = rewriteEndpointAssetUrlForRuntime(srcMatch[2], env);
       next = next.replace(srcMatch[0], `src=${q}${resolved}${q}`);
     }
     const srcsetMatch = /\bsrcset\s*=\s*(["'])([^"']*)\1/i.exec(attrs);
@@ -127,7 +141,7 @@ export function rewritePreviewMediaAttributesInHtml(
         if (!parsed) continue;
         const { url: rawUrl, descriptor } = parsed;
         if (isInvalidSrcsetUrl(rawUrl)) continue;
-        const resolved = rewriteEndpointAssetUrlForPreview(rawUrl, env);
+        const resolved = rewriteEndpointAssetUrlForRuntime(rawUrl, env);
         if (isInvalidSrcsetUrl(resolved) || isUnresolvedEndpointUploadUrl(resolved)) continue;
         kept.push(descriptor ? `${resolved} ${descriptor}` : resolved);
       }
@@ -145,7 +159,7 @@ export function rewriteElementorScriptUrlForPreview(
   src: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
-  return rewriteEndpointAssetUrlForPreview(src, env);
+  return rewriteEndpointAssetUrlForRuntime(src, env);
 }
 
 const ENDPOINT_URL_IN_TEXT_RE =
@@ -170,7 +184,7 @@ export function rewriteEndpointUrlsInHtmlForPreview(
   html: string,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
-  if (!html || !isBlobImagesEnabled(env)) return html;
+  if (!html) return html;
   let out = rewritePreviewMediaAttributesInHtml(html, env);
   out = out.replace(ENDPOINT_URL_IN_TEXT_RE, (url) => rewriteEndpointUrlInHtmlFragment(url, env));
   out = out.replace(PROTOCOL_RELATIVE_ENDPOINT_UPLOAD_RE, (url) => {
@@ -184,22 +198,23 @@ export function rewriteEndpointUrlsInHtmlForPreview(
   out = rewritePreviewMediaAttributesInHtml(out, env);
   out = out.replace(JSON_ESCAPED_ENDPOINT_URL_RE, (escaped) => {
     const plain = unescapeJsonSlashes(escaped);
-    const resolved = rewriteEndpointAssetUrlForPreview(plain, env);
+    const resolved = rewriteEndpointAssetUrlForRuntime(plain, env);
     if (resolved === plain) return escaped;
     return escapeJsonSlashes(resolved);
   });
   return out;
 }
 
-export function rewriteWtiLikeTrackingPixels(html: string, env: NodeJS.ProcessEnv = process.env): string {
-  if (!html || !isBlobImagesEnabled(env)) return html;
-  return html.replace(/<img\b[^>]*>/gi, (tag) => {
-    if (!WTI_PIXEL_RE.test(tag)) return tag;
-    if (/\bsrc\s*=/i.test(tag)) {
-      return tag.replace(/\bsrc\s*=\s*(["'])[^"']*\1/i, `src="${WTI_PIXEL_STATIC}"`);
-    }
-    return tag.replace(/<img\b/i, `<img src="${WTI_PIXEL_STATIC}"`);
-  });
+/** Quita el pixel de likes WP (403 en apex); no sustituir por /wp-content/plugins. */
+export function stripWtiLikePixelImages(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<img\b[^>]*\bwti-pixel\b[^>]*>/gi, '')
+    .replace(/<img\b[^>]*wti-like-post\/images\/pixel\.gif[^>]*>/gi, '');
+}
+
+export function rewriteWtiLikeTrackingPixels(html: string, _env: NodeJS.ProcessEnv = process.env): string {
+  return stripWtiLikePixelImages(html);
 }
 
 export function countEndpointHostRefs(text: string): number {

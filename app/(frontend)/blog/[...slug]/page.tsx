@@ -163,7 +163,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const sourceHtml = applyBlobImagesToHtml(
     optimizeBlogInlineMedia(
       rewriteBookingWidgetHrefs(
-        rewriteInSitePageHrefs(blogBodyForSlug(postSlug) || post.content?.rendered || ''),
+        rewriteInSitePageHrefs(
+          blogBodyForSlug(postSlug) || post.content?.rendered || '',
+          `/blog/${category}/${postSlug}`,
+        ),
       ),
       postSlug,
     ),

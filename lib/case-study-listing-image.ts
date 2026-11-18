@@ -1,8 +1,7 @@
 import { largestAllowedCaseStudyMediaUrl } from '../services/case-study-media-policy.mjs';
 
-/** Same listing endpoint and featured-media resolver as /casos-de-exito. */
-export const CASE_STUDIES_LISTING_EMBED_URL =
-  'https://endpoint.playfulagency.com/wp-json/wp/v2/casos-de-exito?_embed';
+/** Same-origin listing; el handler lee snapshot/Payload en servidor. */
+export const CASE_STUDIES_LISTING_EMBED_URL = '/api/public/casos-de-exito';
 
 export const CASE_STUDY_COVER_SIZE = { width: 1200, height: 1200 } as const;
 

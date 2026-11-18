@@ -15,19 +15,12 @@ import {
   optimizeElementorLcpHero,
 } from '@/lib/elementor-html-optimize';
 import { shouldDeferElementorScriptsUntilLoad } from '@/lib/elementor-defer-slugs';
-import {
-  elementorPageStylesheetUrls,
-  WP_ENDPOINT_ORIGIN,
-} from '@/lib/elementor-stylesheet-urls';
-import { isBlobImagesEnabled } from '@/lib/blob-image-url.ts';
+import { elementorPageStylesheetUrls } from '@/lib/elementor-stylesheet-urls';
 import { applyBlobImagesToHtml } from '@/lib/blob-image-render.ts';
 import {
-  rewriteEndpointAssetUrlForPreview,
-  rewriteElementorScriptUrlForPreview,
+  rewriteEndpointAssetUrlForRuntime,
 } from '@/lib/wp-endpoint-surface.ts';
 import { ELEMENTOR_PAGE_SCRIPTS } from '@/lib/elementor-static-asset-urls';
-
-const WP_HOST = WP_ENDPOINT_ORIGIN;
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Paytone+One&family=Montserrat:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Varela+Round&display=swap';
@@ -182,22 +175,15 @@ export default function ElementorPageContent({
   );
   const allStylesheets = elementorPageStylesheetUrls(pageId, stylesheetIds);
 
-  const blobPreview = isBlobImagesEnabled();
-  const stylesheetHref = (href: string) =>
-    blobPreview ? rewriteEndpointAssetUrlForPreview(href) : href;
+  const stylesheetHref = (href: string) => rewriteEndpointAssetUrlForRuntime(href);
   const resolvedLcp = lcpSrc ? stylesheetHref(lcpSrc) : null;
-  const resolvedScripts = blobPreview
-    ? ELEMENTOR_PAGE_SCRIPTS.map((src) => rewriteElementorScriptUrlForPreview(src))
-    : undefined;
-  const elementorAssetsBase = blobPreview
-    ? '/wp-static/wp-content/plugins/elementor/assets/'
-    : undefined;
+  const resolvedScripts = ELEMENTOR_PAGE_SCRIPTS.map((src) => rewriteEndpointAssetUrlForRuntime(src));
+  const elementorAssetsBase = '/wp-static/wp-content/plugins/elementor/assets/';
 
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      {!blobPreview ? <link rel="preconnect" href={WP_HOST} /> : null}
       {resolvedLcp ? (
         <link rel="preload" as="image" href={resolvedLcp} fetchPriority="high" />
       ) : null}

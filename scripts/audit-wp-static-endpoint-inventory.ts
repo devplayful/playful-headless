@@ -6,7 +6,7 @@ import path from 'node:path';
 import {
   ELEMENTOR_PAGE_SCRIPTS,
   ELEMENTOR_SERVICE_PAGE_SLUGS,
-  WP_ENDPOINT_ORIGIN,
+  WP_ENDPOINT_EXPORT_ORIGIN,
 } from '../lib/elementor-static-asset-urls.ts';
 import {
   collectElementorStylesheetIds,
@@ -23,7 +23,7 @@ import { loadWpStaticAssetsMap } from '../lib/wp-static-assets-map.ts';
 import inventory from '../docs/wp-static-assets-inventory.json' with { type: 'json' };
 
 const AUDIT_ENV = { ...process.env, CMS_BLOB_IMAGES: '1' } as NodeJS.ProcessEnv;
-const WP_JSON = `${WP_ENDPOINT_ORIGIN}/wp-json`;
+const WP_JSON = `${WP_ENDPOINT_EXPORT_ORIGIN}/wp-json`;
 const OUT = path.join(process.cwd(), 'docs/wp-static-endpoint-audit.json');
 
 async function wpPage(slug: string) {
