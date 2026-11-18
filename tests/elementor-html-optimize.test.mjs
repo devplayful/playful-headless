@@ -64,6 +64,8 @@ test('e-com hero CSS reserves 437/417 and does not min-height 9102780', async ()
   assert.match(ECOM_HERO_CRITICAL_CSS, /022b469[\s\S]*flex-wrap:wrap/);
   assert.match(ECOM_HERO_CRITICAL_CSS, /47a966b[\s\S]*flex:0 0 100%/);
   assert.match(ECOM_HERO_CRITICAL_CSS, /702f19a[\s\S]*hyphens:none/);
+  assert.match(ECOM_HERO_CRITICAL_CSS, /702f19a[\s\S]*padding-left:0!important/);
+  assert.match(css, /elementor-element-702f19a[\s\S]*padding-left: 0 !important/);
   assert.match(ECOM_HERO_CRITICAL_CSS, /9102780 \.sub-heading/);
   assert.doesNotMatch(ECOM_HERO_CRITICAL_CSS, /9102780[^{]*\{[^}]*min-height/);
   assert.match(page, /ECOM_HERO_CRITICAL_CSS/);

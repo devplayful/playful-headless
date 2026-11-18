@@ -207,7 +207,7 @@ aspect-ratio:437/417!important;width:100%!important;height:auto!important;displa
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a .elementor-widget-container,
 .playful-wp-page[data-playful-page="85582"] .elementor-element-702f19a p{
-font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;hyphens:none!important;-webkit-hyphens:none!important;word-break:normal!important;overflow-wrap:normal!important;max-width:100%!important}
+font-family:var(--font-paytone-one),"Paytone One",Montserrat,sans-serif!important;font-size:34px!important;line-height:1.12!important;hyphens:none!important;-webkit-hyphens:none!important;word-break:normal!important;overflow-wrap:normal!important;max-width:100%!important;width:100%!important;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important}
 .playful-wp-page[data-playful-page="85582"] .elementor-element-9102780 .sub-heading{
 font-family:var(--font-dm-sans),"DM Sans",sans-serif!important;font-size:18px!important;line-height:28px!important;color:#F7F7F7!important}
 }`;
