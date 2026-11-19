@@ -136,7 +136,13 @@ function sanitizeWpValue(value: unknown): unknown {
     if (value.includes('wti-pixel') || value.includes('wti-like-post/images/pixel.gif')) {
       return stripWtiLikePixelImages(value);
     }
-    if (value.includes(WP_ENDPOINT_HOST) || value.includes('/wp-content/uploads/')) {
+    if (
+      value.includes(WP_ENDPOINT_HOST) ||
+      value.includes('/wp-content/uploads/') ||
+      value.includes('/wp-content/plugins/') ||
+      value.includes('/wp-content/themes/') ||
+      /playfulagency\.com\/wp-content\//i.test(value)
+    ) {
       return rewriteStringUrls(value);
     }
     return value;
@@ -1549,6 +1555,10 @@ function applyBlobImagesToSuccessStory(story: SuccessStory): SuccessStory {
   return next;
 }
 
+function sanitizePodcastRenderedHtml(html: string): string {
+  return stripWtiLikePixelImages(rewriteStringUrls(html || ''));
+}
+
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
   const { items: episodes } = await wordpressFetchCollection<PodcastEpisode>(
     `${WORDPRESS_API_URL}/wp/v2/podcast?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia,wp:term&_fields=id,date,slug,title,excerpt,content,featured_media,categoria,etiqueta,yoast_head,yoast_head_json,_links,_embedded`,
@@ -1558,8 +1568,17 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
   if (!episode) return null;
   const featuredMedia = episode._embedded?.['wp:featuredmedia']?.[0];
   if (!episode.excerpt) episode.excerpt = { rendered: '' };
+  const sanitized = sanitizeWpPayload(episode) as PodcastEpisode;
   return {
-    ...episode,
+    ...sanitized,
+    content: {
+      ...sanitized.content,
+      rendered: sanitizePodcastRenderedHtml(sanitized.content?.rendered || ''),
+    },
+    excerpt: {
+      ...sanitized.excerpt,
+      rendered: sanitizePodcastRenderedHtml(sanitized.excerpt?.rendered || ''),
+    },
     featured_media_url: applyBlobImagesToUrl(featuredMedia?.source_url || null) || null,
     featured_media_alt: featuredMedia?.alt_text || '',
   };
