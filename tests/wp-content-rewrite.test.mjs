@@ -15,3 +15,11 @@ test('rewriteStringUrls maps relative plugin paths to /wp-static', () => {
   const out = rewriteStringUrls(inHtml);
   assert.match(out, /\/wp-static\/wp-content\/plugins\/wti-like-post\/images\/pixel\.gif/);
 });
+
+test('rewriteStringUrls maps crear.playfulagency.com uploads to /wp-media', () => {
+  const inHtml =
+    '<img src="https://crear.playfulagency.com/wp-content/uploads/2020/08/Herramienta-SEO-2.png">';
+  const out = rewriteStringUrls(inHtml);
+  assert.match(out, /\/wp-media\/wp-content\/uploads\/2020\/08\/Herramienta-SEO-2\.png/);
+  assert.doesNotMatch(out, /crear\.playfulagency\.com/);
+});
