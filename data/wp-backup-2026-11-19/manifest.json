@@ -1,0 +1,45 @@
+{
+  "source": "https://endpoint.playfulagency.com/wp-json",
+  "startedAtMadrid": "2026-11-19 13:10:38 Europe/Madrid",
+  "status": "incomplete",
+  "finishedAtMadrid": null,
+  "stoppedAtMadrid": "2026-11-19 13:11:06 Europe/Madrid",
+  "stoppedReason": "HTTP 403 Forbidden on /wp/v2/users — export halted per policy (no retries)",
+  "counts": {
+    "posts": 135,
+    "pages": 31,
+    "podcast": 18,
+    "casos-de-exito": 2,
+    "equipo": 6,
+    "media": 2073,
+    "categories": 7,
+    "tags": 21,
+    "users": null
+  },
+  "typeSlugs": [
+    "post",
+    "page",
+    "attachment",
+    "nav_menu_item",
+    "wp_block",
+    "wp_template",
+    "wp_template_part",
+    "wp_global_styles",
+    "wp_navigation",
+    "podcast",
+    "casos-de-exito",
+    "equipo"
+  ],
+  "files": [
+    "posts.json",
+    "pages.json",
+    "podcast.json",
+    "casos-de-exito.json",
+    "equipo.json",
+    "media.json",
+    "categories.json",
+    "tags.json"
+  ],
+  "missingFiles": ["users.json"],
+  "errorManifest": "manifest-error.json"
+}

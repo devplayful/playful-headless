@@ -1,0 +1,2879 @@
+[
+  {
+    "id": 45,
+    "count": 1,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/analitica-web/",
+    "name": "Analítica web",
+    "slug": "analitica-web",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Analítica web archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Analítica web archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/analitica-web/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Analítica web archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Analítica web archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/analitica-web/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/analitica-web/",
+            "url": "https://endpoint.playfulagency.com/tag/analitica-web/",
+            "name": "Analítica web archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/analitica-web/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/analitica-web/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Analítica web"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/45",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=45"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 81,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/api/",
+    "name": "api",
+    "slug": "api",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>api archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"api archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/api/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "api archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "api archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/api/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/api/",
+            "url": "https://endpoint.playfulagency.com/tag/api/",
+            "name": "api archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/api/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/api/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "api"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/81",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=81"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 82,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/apps/",
+    "name": "apps",
+    "slug": "apps",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>apps archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"apps archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/apps/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "apps archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "apps archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/apps/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/apps/",
+            "url": "https://endpoint.playfulagency.com/tag/apps/",
+            "name": "apps archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/apps/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/apps/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "apps"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/82",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=82"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 83,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/branding/",
+    "name": "branding",
+    "slug": "branding",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>branding archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"branding archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/branding/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "branding archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "branding archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/branding/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/branding/",
+            "url": "https://endpoint.playfulagency.com/tag/branding/",
+            "name": "branding archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/branding/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/branding/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "branding"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/83",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=83"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 84,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/design/",
+    "name": "design",
+    "slug": "design",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>design archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"design archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/design/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "design archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "design archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/design/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/design/",
+            "url": "https://endpoint.playfulagency.com/tag/design/",
+            "name": "design archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/design/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/design/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "design"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/84",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=84"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "count": 2,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/destacado/",
+    "name": "Destacado",
+    "slug": "destacado",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Destacado archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Destacado archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/destacado/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Destacado archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Destacado archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/destacado/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/destacado/",
+            "url": "https://endpoint.playfulagency.com/tag/destacado/",
+            "name": "Destacado archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/destacado/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/destacado/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Destacado"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/28",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=28"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 85,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/development/",
+    "name": "development",
+    "slug": "development",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>development archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"development archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/development/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "development archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "development archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/development/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/development/",
+            "url": "https://endpoint.playfulagency.com/tag/development/",
+            "name": "development archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/development/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/development/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "development"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/85",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=85"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 86,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/devops/",
+    "name": "devops",
+    "slug": "devops",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>devops archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"devops archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/devops/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "devops archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "devops archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/devops/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/devops/",
+            "url": "https://endpoint.playfulagency.com/tag/devops/",
+            "name": "devops archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/devops/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/devops/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "devops"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/86",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=86"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 87,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/email/",
+    "name": "email",
+    "slug": "email",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>email archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"email archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/email/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "email archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "email archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/email/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/email/",
+            "url": "https://endpoint.playfulagency.com/tag/email/",
+            "name": "email archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/email/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/email/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "email"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/87",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=87"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 88,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/fintech/",
+    "name": "fintech",
+    "slug": "fintech",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>fintech archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"fintech archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/fintech/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "fintech archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "fintech archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/fintech/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/fintech/",
+            "url": "https://endpoint.playfulagency.com/tag/fintech/",
+            "name": "fintech archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/fintech/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/fintech/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "fintech"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/88",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=88"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 52,
+    "count": 2,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/google-grants/",
+    "name": "Google Grants",
+    "slug": "google-grants",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Google Grants archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Google Grants archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/google-grants/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Google Grants archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Google Grants archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/google-grants/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/google-grants/",
+            "url": "https://endpoint.playfulagency.com/tag/google-grants/",
+            "name": "Google Grants archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/google-grants/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/google-grants/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Google Grants"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/52",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=52"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 109,
+    "count": 1,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/mas-vistos/",
+    "name": "Más vistos",
+    "slug": "mas-vistos",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Más vistos archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Más vistos archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/mas-vistos/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Más vistos archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Más vistos archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/mas-vistos/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/mas-vistos/",
+            "url": "https://endpoint.playfulagency.com/tag/mas-vistos/",
+            "name": "Más vistos archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/mas-vistos/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/mas-vistos/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Más vistos"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/109",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=109"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/music/",
+    "name": "Music",
+    "slug": "music",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Music archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Music archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/music/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Music archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Music archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/music/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/music/",
+            "url": "https://endpoint.playfulagency.com/tag/music/",
+            "name": "Music archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/music/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/music/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Music"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/9",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=9"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 89,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/news/",
+    "name": "news",
+    "slug": "news",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>news archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"news archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/news/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "news archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "news archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/news/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/news/",
+            "url": "https://endpoint.playfulagency.com/tag/news/",
+            "name": "news archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/news/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/news/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "news"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/89",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=89"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 46,
+    "count": 1,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/servicios/",
+    "name": "Servicios",
+    "slug": "servicios",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Servicios archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Servicios archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/servicios/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Servicios archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Servicios archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/servicios/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/servicios/",
+            "url": "https://endpoint.playfulagency.com/tag/servicios/",
+            "name": "Servicios archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/servicios/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/servicios/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Servicios"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/46",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=46"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 90,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/shop/",
+    "name": "shop",
+    "slug": "shop",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>shop archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"shop archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/shop/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "shop archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "shop archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/shop/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/shop/",
+            "url": "https://endpoint.playfulagency.com/tag/shop/",
+            "name": "shop archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/shop/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/shop/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "shop"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/90",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=90"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 91,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/startup/",
+    "name": "startup",
+    "slug": "startup",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>startup archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"startup archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/startup/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "startup archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "startup archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/startup/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/startup/",
+            "url": "https://endpoint.playfulagency.com/tag/startup/",
+            "name": "startup archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/startup/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/startup/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "startup"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/91",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=91"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 92,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/starups/",
+    "name": "starups",
+    "slug": "starups",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>starups archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"starups archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/starups/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "starups archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "starups archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/starups/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/starups/",
+            "url": "https://endpoint.playfulagency.com/tag/starups/",
+            "name": "starups archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/starups/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/starups/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "starups"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/92",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=92"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/style/",
+    "name": "Style",
+    "slug": "style",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Style archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Style archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/style/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "Style archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "Style archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/style/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/style/",
+            "url": "https://endpoint.playfulagency.com/tag/style/",
+            "name": "Style archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/style/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/style/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Style"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/10",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=10"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 93,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/technology/",
+    "name": "technology",
+    "slug": "technology",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>technology archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"technology archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/technology/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "technology archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "technology archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/technology/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/technology/",
+            "url": "https://endpoint.playfulagency.com/tag/technology/",
+            "name": "technology archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/technology/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/technology/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "technology"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/93",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=93"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 94,
+    "count": 0,
+    "description": "",
+    "link": "https://endpoint.playfulagency.com/tag/wordpress/",
+    "name": "wordpress",
+    "slug": "wordpress",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>wordpress archivos - Playful Agency</title>\n<meta name=\"robots\" content=\"noindex, follow\" />\n<meta property=\"og:locale\" content=\"es_ES\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"wordpress archivos - Playful Agency\" />\n<meta property=\"og:url\" content=\"https://endpoint.playfulagency.com/tag/wordpress/\" />\n<meta property=\"og:site_name\" content=\"Playful Agency\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<!-- / Yoast SEO plugin. -->",
+    "yoast_head_json": {
+      "title": "wordpress archivos - Playful Agency",
+      "robots": {
+        "index": "noindex",
+        "follow": "follow"
+      },
+      "og_locale": "es_ES",
+      "og_type": "article",
+      "og_title": "wordpress archivos - Playful Agency",
+      "og_url": "https://endpoint.playfulagency.com/tag/wordpress/",
+      "og_site_name": "Playful Agency",
+      "twitter_card": "summary_large_image",
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://endpoint.playfulagency.com/tag/wordpress/",
+            "url": "https://endpoint.playfulagency.com/tag/wordpress/",
+            "name": "wordpress archivos - Playful Agency",
+            "isPartOf": {
+              "@id": "https://endpoint.playfulagency.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://endpoint.playfulagency.com/tag/wordpress/#breadcrumb"
+            },
+            "inLanguage": "es"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://endpoint.playfulagency.com/tag/wordpress/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Portada",
+                "item": "https://endpoint.playfulagency.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "wordpress"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://endpoint.playfulagency.com/#website",
+            "url": "https://endpoint.playfulagency.com/",
+            "name": "Playful Agency",
+            "description": "",
+            "publisher": {
+              "@id": "https://endpoint.playfulagency.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://endpoint.playfulagency.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "es"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://endpoint.playfulagency.com/#organization",
+            "name": "Playful Agency",
+            "url": "https://endpoint.playfulagency.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "es",
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/",
+              "url": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "contentUrl": "https://endpoint.playfulagency.com/wp-content/uploads/2020/12/PlayfulAgency-logo-blanco.svg",
+              "width": 601,
+              "height": 140,
+              "caption": "Playful Agency"
+            },
+            "image": {
+              "@id": "https://endpoint.playfulagency.com/#/schema/logo/image/"
+            }
+          }
+        ]
+      }
+    },
+    "_links": {
+      "self": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags/94",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://endpoint.playfulagency.com/wp-json/wp/v2/posts?tags=94"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]
