@@ -38,15 +38,34 @@ async function allHrefs(page) {
   );
 }
 
+function cropPng(img, w, h) {
+  if (img.width === w && img.height === h) return img;
+  const out = new PNG({ width: w, height: h });
+  for (let y = 0; y < h; y += 1) {
+    for (let x = 0; x < w; x += 1) {
+      const i = (img.width * y + x) << 2;
+      const o = (w * y + x) << 2;
+      out.data[o] = img.data[i];
+      out.data[o + 1] = img.data[i + 1];
+      out.data[o + 2] = img.data[i + 2];
+      out.data[o + 3] = img.data[y < img.height && x < img.width ? i + 3 : ((w * y + x) << 2) + 3];
+      if (y >= img.height || x >= img.width) out.data[o + 3] = 255;
+    }
+  }
+  return out;
+}
+
 function diffPng(aPath, bPath, outPath) {
-  const a = PNG.sync.read(readFileSync(aPath));
-  const b = PNG.sync.read(readFileSync(bPath));
+  let a = PNG.sync.read(readFileSync(aPath));
+  let b = PNG.sync.read(readFileSync(bPath));
   const w = Math.min(a.width, b.width);
   const h = Math.min(a.height, b.height);
+  a = cropPng(a, w, h);
+  b = cropPng(b, w, h);
   const out = new PNG({ width: w, height: h });
   const n = pixelmatch(a.data, b.data, out.data, w, h, { threshold: 0.08, includeAA: true });
   writeFileSync(outPath, PNG.sync.write(out));
-  return { diffPixels: n, totalPixels: w * h, diffPct: (n / (w * h)) * 100 };
+  return { diffPixels: n, totalPixels: w * h, diffPct: (n / (w * h)) * 100, cropped: true };
 }
 
 async function shot(page, url, file) {

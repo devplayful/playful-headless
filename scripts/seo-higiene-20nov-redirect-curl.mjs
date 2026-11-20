@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 /**
- * curl -I style check against local Next (BASE_URL) for 7 new 301s + agencia-seo unchanged.
+ * Validates 7 new 301s + agencia-seo via resolveSingleHopRedirect (middleware),
+ * then optional HTTP check against local Next (BASE_URL).
  */
+import { resolveSingleHopRedirect } from '../middleware.ts';
+
 const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3011').replace(/\/$/, '');
+const SKIP_HTTP = process.env.SKIP_HTTP === '1';
 
 const SEVEN = [
   ['/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce', '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce'],
@@ -28,24 +32,42 @@ function locationPath(res) {
 
 const results = [];
 
-async function head(path) {
-  const res = await fetch(`${BASE}${path}`, { redirect: 'manual' });
-  return { path, status: res.status, location: res.headers.get('location'), locationPath: locationPath(res) };
-}
-
 for (const [origin, dest] of SEVEN) {
-  const r = await head(origin);
-  const ok = r.status === 301 && r.locationPath === dest;
-  results.push({ ...r, expected: dest, ok });
+  const resolved = resolveSingleHopRedirect(origin, new URLSearchParams());
+  const ok = resolved.changed && resolved.pathname === dest;
+  results.push({ path: origin, mode: 'resolve', expected: dest, resolved, ok });
 }
 
-const ag = await head(AGENCIA);
+const agResolved = resolveSingleHopRedirect(AGENCIA, new URLSearchParams());
 results.push({
-  ...ag,
+  path: AGENCIA,
+  mode: 'resolve',
   expected: AGENCIA_DEST,
-  ok: ag.status === 301 && ag.locationPath === AGENCIA_DEST,
-  note: 'existing middleware 301 (no new map entry)',
+  resolved: agResolved,
+  ok: agResolved.changed && agResolved.pathname === AGENCIA_DEST,
+  note: 'existing middleware inline map',
 });
+
+if (!SKIP_HTTP) {
+  async function head(path) {
+    const res = await fetch(`${BASE}${path}`, { redirect: 'manual' });
+    return { path, status: res.status, location: res.headers.get('location'), locationPath: locationPath(res) };
+  }
+  for (const [origin, dest] of SEVEN) {
+    const r = await head(origin);
+    const row = results.find((x) => x.path === origin);
+    if (row) {
+      row.http = r;
+      row.httpOk = r.status === 301 && r.locationPath === dest;
+    }
+  }
+  const ag = await head(AGENCIA);
+  const agRow = results.find((x) => x.path === AGENCIA);
+  if (agRow) {
+    agRow.http = ag;
+    agRow.httpOk = ag.status === 301 && ag.locationPath === AGENCIA_DEST;
+  }
+}
 
 const failed = results.filter((r) => !r.ok);
 console.log(JSON.stringify({ base: BASE, results, failed: failed.length }, null, 2));
