@@ -41,6 +41,7 @@ export const LANDING_CAROUSEL_SOURCE_SLUGS = Object.freeze([
   'agencia-sem',
   'agencia-diseno-web',
   'agencia-ux-ui',
+  'seo-vigo',
 ]);
 
 /** Do not invent dests for unpublished landings. */
@@ -185,6 +186,11 @@ export const BROKEN_HREF_BY_SOURCE: Readonly<Record<string, Readonly<Record<stri
   },
   'ecosistema-digital-de-tu-marca': {
     '/blog/email-marketing': '/blog/email-marketing/estrategia-de-email-marketing',
+  },
+  'seo-vigo': {
+    '/author/arosillo': UNWRAP,
+    '/author/lsantamaria': UNWRAP,
+    '/author/stefanniparabavidez': UNWRAP,
   },
 });
 
