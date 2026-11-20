@@ -9,11 +9,22 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import config from '../payload.config.ts';
 import { CASO_ACF_IMAGE_FIELDS } from '../cms/collections/casos-acf-fields.ts';
+import { wordpressFetchCollection } from '../services/wordpress-request.mjs';
 
-const WP = (process.env.WP_REST_URL || 'https://endpoint.playfulagency.com/wp-json').replace(
-  /\/$/,
-  '',
-);
+function useWordPressLiveFetch() {
+  return process.env.WORDPRESS_LIVE_FETCH === '1' || process.env.WORDPRESS_LIVE_FETCH === 'true';
+}
+
+function wpApiBase() {
+  if (useWordPressLiveFetch()) {
+    return (process.env.WP_REST_URL || 'https://endpoint.playfulagency.com/wp-json').replace(
+      /\/$/,
+      '',
+    );
+  }
+  return 'https://playful-headless/wp-json';
+}
+
 const UA = 'PlayfulQA/1.0';
 const MIN_GAP_MS = 1000;
 
@@ -27,13 +38,13 @@ async function wp(path: string): Promise<{ data: any; totalPages: number }> {
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastRequest = Date.now();
   requests++;
-  const res = await fetch(`${WP}${path}`, {
+  const url = `${wpApiBase()}${path}`;
+  const { items, response } = await wordpressFetchCollection(url, {
     headers: { 'User-Agent': UA, Accept: 'application/json' },
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status} en ${path}`);
   return {
-    data: await res.json(),
-    totalPages: Number(res.headers.get('x-wp-totalpages') || 1),
+    data: items,
+    totalPages: Number(response.headers.get('x-wp-totalpages') || 1),
   };
 }
 
