@@ -1,7 +1,7 @@
 /**
  * Lectura WP para cms:seed-servicios sin importar services/wordpress.ts (Next cache).
- * Por defecto usa data/wp-snapshot (mismo contrato que runtime). Solo llama a
- * endpoint.playfulagency.com con WORDPRESS_LIVE_FETCH=1.
+ * Solo usa data/wp-snapshot (mismo contrato que runtime) y backup local opcional;
+ * nunca llama a endpoint.playfulagency.com en el build de preview.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -17,14 +17,8 @@ import { wordpressFetchCollection } from '../services/wordpress-request.mjs';
 
 const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-function useWordPressLiveFetch(env = process.env) {
-  return env.WORDPRESS_LIVE_FETCH === '1' || env.WORDPRESS_LIVE_FETCH === 'true';
-}
-
-function wordpressApiBase(env = process.env) {
-  if (useWordPressLiveFetch(env)) {
-    return (env.WORDPRESS_API_URL || 'https://endpoint.playfulagency.com/wp-json').replace(/\/$/, '');
-  }
+/** Preview seed nunca llama al endpoint live (solo snapshot / backup local). */
+function wordpressApiBase() {
   return 'https://playful-headless/wp-json';
 }
 
