@@ -45,6 +45,8 @@ jobs:
         run: npm run verify:routes:build
       - name: WordPress live endpoint guard
         run: node --experimental-strip-types --test tests/wp-live-endpoint-guard.test.mjs
+      - name: Servicios seed reads snapshot (no live WP)
+        run: node --import tsx --test tests/servicios-wp-for-seed.test.mjs
       - name: Endpoint runtime rewrite (sin CMS_BLOB_IMAGES)
         run: node --experimental-strip-types --test tests/wp-endpoint-runtime.test.mjs
       - name: Podcast document titles (sin cortes ¿ ¡)

@@ -1,6 +1,11 @@
 /**
  * Lectura WP para cms:seed-servicios sin importar services/wordpress.ts (Next cache).
+ * Por defecto usa data/wp-snapshot (mismo contrato que runtime). Solo llama a
+ * endpoint.playfulagency.com con WORDPRESS_LIVE_FETCH=1.
  */
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { applyImageAltOverrides } from '../lib/image-alt-overrides.ts';
 import { rewriteAgenciaDisenoUxUiLink } from '../utils/agencia-diseno-ux-ui-link.ts';
 import { rewriteElementorBodyHrefs } from '../utils/booking.ts';
@@ -8,10 +13,20 @@ import { rewriteEcommerceShopifyLink } from '../utils/ecommerce-shopify-link.ts'
 import { rewriteEcommerceSoytechnoCaseLink } from '../utils/ecommerce-soytechno-case-link.ts';
 import { rewriteEcommerceZelleCover } from '../utils/ecommerce-zelle-cover.ts';
 import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
+import { wordpressFetchCollection } from '../services/wordpress-request.mjs';
 
-const WP =
-  (process.env.WORDPRESS_API_URL || 'https://endpoint.playfulagency.com/wp-json').replace(/\/$/, '');
-const UA = 'PlayfulQA/1.0';
+const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+function useWordPressLiveFetch(env = process.env) {
+  return env.WORDPRESS_LIVE_FETCH === '1' || env.WORDPRESS_LIVE_FETCH === 'true';
+}
+
+function wordpressApiBase(env = process.env) {
+  if (useWordPressLiveFetch(env)) {
+    return (env.WORDPRESS_API_URL || 'https://endpoint.playfulagency.com/wp-json').replace(/\/$/, '');
+  }
+  return 'https://playful-headless/wp-json';
+}
 
 function stripHtml(html) {
   return html
@@ -37,18 +52,51 @@ function collectStylesheetIds(html, pageId) {
   return Array.from(ids);
 }
 
-async function wpFetch(path) {
-  const res = await fetch(`${WP}${path}`, {
-    headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} en ${path}`);
-  return res.json();
+function pickFields(item, fieldsParam) {
+  if (!fieldsParam) return item;
+  const fields = fieldsParam.split(',').map((f) => f.trim()).filter(Boolean);
+  if (!fields.length) return item;
+  const out = {};
+  for (const field of fields) {
+    if (field in item) out[field] = item[field];
+  }
+  if (!('id' in out) && 'id' in item) out.id = item.id;
+  return out;
+}
+
+function backupPagesPaths() {
+  const paths = [];
+  const envPath = (process.env.WP_BACKUP_PAGES_PATH || '').trim();
+  if (envPath) paths.push(envPath);
+  paths.push(path.join(REPO_ROOT, 'data', 'wp-backup-2026-11-19', 'pages.json'));
+  return paths;
+}
+
+function findPageInBackup(slug) {
+  for (const file of backupPagesPaths()) {
+    if (!existsSync(file)) continue;
+    try {
+      const pages = JSON.parse(readFileSync(file, 'utf8'));
+      const page = Array.isArray(pages) ? pages.find((item) => item.slug === slug) : null;
+      if (page) return page;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
+async function fetchPagesBySlug(slug, fields) {
+  const url = `${wordpressApiBase()}/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=${encodeURIComponent(fields)}`;
+  const { items } = await wordpressFetchCollection(url);
+  if (items?.[0]) return items;
+  const backup = findPageInBackup(slug);
+  if (!backup) return [];
+  return [pickFields(backup, fields)];
 }
 
 export async function fetchServicioPageBySlug(slug) {
-  const pages = await wpFetch(
-    `/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,content`,
-  );
+  const pages = await fetchPagesBySlug(slug, 'id,slug,title,content');
   const page = pages?.[0];
   if (!page) return null;
   const rawHtml = page.content?.rendered || '';
@@ -90,9 +138,7 @@ function getMetaContent(html, name) {
 }
 
 export async function fetchServicioPageMetadataBySlug(slug) {
-  const pages = await wpFetch(
-    `/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=yoast_head`,
-  );
+  const pages = await fetchPagesBySlug(slug, 'yoast_head');
   const pageData = pages?.[0];
   if (!pageData?.yoast_head) {
     return {
