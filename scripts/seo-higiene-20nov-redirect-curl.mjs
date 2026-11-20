@@ -69,6 +69,6 @@ if (!SKIP_HTTP) {
   }
 }
 
-const failed = results.filter((r) => !r.ok);
+const failed = results.filter((r) => !r.ok || r.httpOk === false);
 console.log(JSON.stringify({ base: BASE, results, failed: failed.length }, null, 2));
 process.exit(failed.length ? 1 : 0);

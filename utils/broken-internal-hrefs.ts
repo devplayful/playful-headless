@@ -41,7 +41,6 @@ export const LANDING_CAROUSEL_SOURCE_SLUGS = Object.freeze([
   'agencia-sem',
   'agencia-diseno-web',
   'agencia-ux-ui',
-  'seo-vigo',
 ]);
 
 /** Do not invent dests for unpublished landings. */
@@ -188,6 +187,18 @@ export const BROKEN_HREF_BY_SOURCE: Readonly<Record<string, Readonly<Record<stri
     '/blog/email-marketing': '/blog/email-marketing/estrategia-de-email-marketing',
   },
   'seo-vigo': {
+    '/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce':
+      '/blog/tecnologia/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/cintillos-de-promocion': '/blog/tecnologia/cintillos-de-promocion',
+    '/que-es-una-agencia-de-sem': '/blog/mas-vistos/que-es-una-agencia-de-sem',
+    '/publicidad-digital-en-tu-negocio':
+      '/blog/pautas-digitales/publicidad-digital-en-tu-negocio',
+    '/premios-cima-2026-soytechno-playful':
+      '/blog/otros/premios-cima-2026-soytechno-playful',
+    '/los-5-problemas-de-e-commerce': '/blog/mas-vistos/los-5-problemas-de-e-commerce',
+    '/actualizar-tu-e-commerce': '/blog/tecnologia/actualizar-tu-e-commerce',
+    '/agencia-seo-internacional-en-el-2025-es-una-necesidad':
+      '/blog/tecnologia/agencia-seo-internacional-en-el-2025-es-una-necesidad',
     '/author/arosillo': UNWRAP,
     '/author/lsantamaria': UNWRAP,
     '/author/stefanniparabavidez': UNWRAP,

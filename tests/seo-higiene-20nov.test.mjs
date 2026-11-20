@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { rewriteInSitePageHrefs } from '../services/rewrite-in-site-hrefs.mjs';
-import { LANDING_CAROUSEL_SOURCE_SLUGS } from '../utils/broken-internal-hrefs.ts';
+import { BROKEN_HREF_BY_SOURCE } from '../utils/broken-internal-hrefs.ts';
+import { SEO_HIGIENE_20NOV_ROOT_301 } from '../utils/seo-higiene-20nov-root-redirects.ts';
 import { SEO_CRUCE_2810_REDIRECTS } from '../utils/seo-cruce-2810.ts';
 import {
   CASHEA_COMERCIOS_BLOG_BODY_HTML,
@@ -71,8 +72,16 @@ const ROOT_301 = [
   ['/actualizar-tu-e-commerce', `${APEX}/blog/tecnologia/actualizar-tu-e-commerce`],
 ];
 
-test('seo-vigo is on the landing carousel allowlist', () => {
-  assert.equal(LANDING_CAROUSEL_SOURCE_SLUGS.includes('seo-vigo'), true);
+test('seo-vigo is not on the landing carousel allowlist (href overrides only)', () => {
+  assert.equal('seo-vigo' in BROKEN_HREF_BY_SOURCE, true);
+  assert.equal(Object.keys(BROKEN_HREF_BY_SOURCE['seo-vigo']).length, 11);
+});
+
+test('seo-higiene root 301 map stays aligned with seo-cruce JSON', () => {
+  for (const [origin, dest] of ROOT_301) {
+    assert.equal(SEO_HIGIENE_20NOV_ROOT_301[origin], dest, origin);
+  }
+  assert.equal(Object.keys(SEO_HIGIENE_20NOV_ROOT_301).length, 7);
 });
 
 test('/seo-vigo carousel hrefs resolve to live blog paths', () => {
