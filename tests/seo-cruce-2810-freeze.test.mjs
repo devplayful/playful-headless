@@ -101,8 +101,8 @@ test('CSV freeze: 32 live 410s stay gone in code', () => {
   }
 });
 
-test('SEO cruce 22 new 301s are one hop and last-write the closed list', () => {
-  assert.equal(Object.keys(SEO_CRUCE_2810_REDIRECTS).length, 22);
+test('SEO cruce 29 new 301s are one hop and last-write the closed list', () => {
+  assert.equal(Object.keys(SEO_CRUCE_2810_REDIRECTS).length, 29);
   assert.match(middlewareSource, /seo-cruce-2810-redirect-map\.json/);
   assert.match(middlewareSource, /\.\.\.seoCruce2810Redirects/);
   assert.match(middlewareSource, /NextResponse\.redirect\(target, 301\)/);

@@ -9,6 +9,7 @@ import canibalizacionOrigins from './utils/blog-canibalizacion-redirect-map.json
 import seoServiceRedirects from './utils/seo-service-redirect-map.json';
 import unpublishedLandingRedirects from './utils/unpublished-landing-redirect-map.json';
 import seoCruce2810Redirects from './utils/seo-cruce-2810-redirect-map.json';
+import { SEO_HIGIENE_20NOV_ROOT_301 } from './utils/seo-higiene-20nov-root-redirects.ts';
 import { mergeCanibalizacionIntoPermanent301 } from './utils/blog-canibalizacion-redirects';
 import {
   ATTRIBUTION_COOKIE_FIRST,
@@ -103,6 +104,7 @@ const PERMANENT_301: Record<string, string> = {
       '/blog/mas-vistos/los-5-problemas-de-e-commerce',
     '/blog/mas-vistos/como-elegir-un-buen-framework':
       '/blog/mas-vistos/como-elegir-el-mejor-framework-para-tu-web',
+    ...SEO_HIGIENE_20NOV_ROOT_301,
     ...seoServiceRedirects,
     ...unpublishedLandingRedirects,
     ...canibalizacionOrigins,
@@ -142,7 +144,7 @@ export function resolveSingleHopRedirect(startPath: string, startParams: URLSear
   });
   let search = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
   for (let i = 0; i < 8; i += 1) {
-    const dest = PERMANENT_301[pathname];
+    const dest = PERMANENT_301[pathname] ?? SEO_HIGIENE_20NOV_ROOT_301[pathname];
     if (dest) {
       changed = true;
       if (/^https?:\/\//i.test(dest)) {
@@ -373,6 +375,20 @@ export const config = {
     '/otros/conoce-todo-sobre-instagram-ads/',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad',
     '/agencia-seo-internacional-en-el-2025-es-una-necesidad/',
+    '/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce',
+    '/zelle-en-venezuela-un-metodo-de-pago-para-tu-ecommerce/',
+    '/cintillos-de-promocion',
+    '/cintillos-de-promocion/',
+    '/que-es-una-agencia-de-sem',
+    '/que-es-una-agencia-de-sem/',
+    '/publicidad-digital-en-tu-negocio',
+    '/publicidad-digital-en-tu-negocio/',
+    '/premios-cima-2026-soytechno-playful',
+    '/premios-cima-2026-soytechno-playful/',
+    '/los-5-problemas-de-e-commerce',
+    '/los-5-problemas-de-e-commerce/',
+    '/actualizar-tu-e-commerce',
+    '/actualizar-tu-e-commerce/',
     '/project/bottle-mockup',
     '/project/bottle-mockup/',
     '/project/cosmetic-mockup',

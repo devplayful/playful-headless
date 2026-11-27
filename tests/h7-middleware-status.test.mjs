@@ -29,7 +29,7 @@ test('seo-cruce sample: map has 22 entries and middleware imports it', () => {
   for (const origin of SAMPLE_301_ORIGINS) {
     assert.ok(seoCruce2810Redirects[origin], origin);
   }
-  assert.equal(Object.keys(seoCruce2810Redirects).length, 22);
+  assert.equal(Object.keys(seoCruce2810Redirects).length, 29);
   assert.match(middleware, /seo-cruce-2810-redirect-map\.json/);
   assert.match(middleware, /\.\.\.seoCruce2810Redirects/);
   assert.ok(Object.keys(permanent301).length > 0, 'sample sanity');
