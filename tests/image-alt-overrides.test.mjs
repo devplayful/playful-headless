@@ -105,7 +105,7 @@ test('resolveImageAlt uses the map and otherwise the fallback', () => {
     '',
   );
   const federicoSrc =
-    'https://endpoint.playfulagency.com/wp-content/uploads/2025/11/Ellipse-12.png';
+    'https://playfulagency.com/wp-media/wp-content/uploads/2025/11/Ellipse-12.png';
   assert.equal(resolveMediaAlt({ url: federicoSrc, alt: 'Ellipse 12' }, 'Ellipse 12'), '\u00a0Federico Vera');
 });
 
