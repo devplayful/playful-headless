@@ -19,6 +19,7 @@ import {
   shouldCaptureAttributionPath,
 } from './lib/contact/attribution';
 import { isWpProbePath } from './utils/wp-probe-paths';
+import { isElementorAssetsDirectoryGone } from './utils/elementor-assets-directory-gone';
 import {
   cmsPreviewServicioPath,
   isCmsPreviewServicioInternalPath,
@@ -220,6 +221,13 @@ export function middleware(request: NextRequest) {
     }));
   }
 
+  if (isElementorAssetsDirectoryGone(path)) {
+    return attachAttributionCookies(request, new NextResponse('Gone', {
+      status: 410,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    }));
+  }
+
   if (process.env.VERCEL_ENV === 'preview' && request.nextUrl.searchParams.get('cms') === '1') {
     if (path === '/') {
       const target = request.nextUrl.clone();
@@ -378,6 +386,8 @@ export const config = {
     '/wp-admin',
     '/wp-admin/',
     '/wp-admin/:path*',
+    '/wp-static/wp-content/plugins/elementor/assets',
+    '/wp-static/wp-content/plugins/elementor/assets/',
     '/blog',
     '/blog/',
     '/blog/:path*',
